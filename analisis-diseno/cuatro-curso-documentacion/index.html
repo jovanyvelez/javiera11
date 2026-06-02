@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📜 Documentación de Requerimientos — Clase 4</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- =================== HEADER + PROGRESO =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">📜</span>
+    <div>
+      <h1>Documentación de Requerimientos</h1>
+      <p class="subtitulo">Clase 4 · Casos de Uso e IEEE 830</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span id="porcentaje">0%</span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">1️⃣ ¿Por qué?</button>
+  <button class="btn-modulo" data-modulo="2">2️⃣ IEEE 830</button>
+  <button class="btn-modulo" data-modulo="3">3️⃣ Casos de Uso</button>
+  <button class="btn-modulo" data-modulo="4">4️⃣ Plantilla</button>
+  <button class="btn-modulo" data-modulo="5">5️⃣ Práctica</button>
+  <button class="btn-modulo" data-modulo="6">6️⃣ SRS Template</button>
+  <button class="btn-modulo" data-modulo="7">7️⃣ Revisión</button>
+  <button class="btn-modulo" data-modulo="8">🏆 Final</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>📜 ¡Bienvenid@ a la Clase 4!</h2>
+    <p class="lead">Ya descubriste los requerimientos. Ahora toca <strong>plasmarlos en papel</strong> de manera profesional, usando estándares que la industria reconoce mundialmente. Esta es la clase que convierte tus hallazgos en <strong>documentos oficiales</strong>.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">⏱️</span>
+      <h3>Duración</h3>
+      <p>3 horas y 45 minutos en 9 módulos.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Dominar casos de uso, el estándar IEEE 830 y la revisión cruzada.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🏆</span>
+      <h3>Resultado</h3>
+      <p>Saldrás capaz de redactar documentos que cualquier empresa profesional aceptaría.</p>
+    </div>
+  </div>
+
+  <div class="caja-destacada">
+    <h3>🗺️ Ruta de la clase</h3>
+    <ol class="ruta">
+      <li><strong>Módulo 1 (20 min):</strong> ¿Por qué documentar? Costos de no hacerlo.</li>
+      <li><strong>Módulo 2 (35 min):</strong> 📘 El estándar IEEE 830 (SRS).</li>
+      <li><strong>Módulo 3 (30 min):</strong> 🎭 Casos de uso — concepto y diagramas.</li>
+      <li><strong>Módulo 4 (35 min):</strong> 📋 Plantilla completa de caso de uso.</li>
+      <li><strong>Módulo 5 (40 min):</strong> ✍️ Práctica: constructor interactivo de casos de uso.</li>
+      <li><strong>Módulo 6 (30 min):</strong> 📑 Plantilla SRS IEEE — sección por sección.</li>
+      <li><strong>Módulo 7 (25 min):</strong> 🔎 Revisión cruzada: detecta errores en un SRS real.</li>
+      <li><strong>Módulo 8 (10 min):</strong> 🏆 Reto integrador final.</li>
+    </ol>
+  </div>
+
+  <div class="caja-recordatorio">
+    <h4>🔁 Recordatorio rápido del recorrido</h4>
+    <ul>
+      <li><strong>Clase 1:</strong> Análisis y diseño · Ciclo de vida · Metodologías.</li>
+      <li><strong>Clase 2:</strong> Requerimientos funcionales, no funcionales y atributos de calidad.</li>
+      <li><strong>Clase 3:</strong> Técnicas de elicitación (entrevistas, encuestas, observación).</li>
+      <li><strong>Esta clase:</strong> <em>¿Cómo escribirlo todo de forma profesional?</em></li>
+    </ul>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Tip importante</h4>
+    <p>En las clases anteriores aprendiste a <strong>pensar y descubrir</strong>. En esta aprenderás a <strong>escribir y formalizar</strong>. Es una habilidad menos creativa pero <em>igualmente crítica</em>: si nadie puede leer y entender tu trabajo, no sirve.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1 →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — ¿POR QUÉ DOCUMENTAR?
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>1️⃣ ¿Por qué documentar?</h2>
+  <p class="meta-modulo">⏱️ 20 minutos · 🧠 La importancia de poner por escrito</p>
+
+  <div class="caja-concepto">
+    <h3>🤔 La pregunta del millón</h3>
+    <p>Hablaste con los clientes, observaste el proceso, hiciste encuestas. <strong>Tienes la información en tu cabeza.</strong> ¿Para qué perder tiempo escribiendo todo?</p>
+    <p>Esta es la trampa más común de los analistas junior. Y casi siempre termina en desastre.</p>
+  </div>
+
+  <h3>🧠 Mente vs Papel</h3>
+
+  <div class="comparativa">
+    <div class="comp-lado malo">
+      <h4>🧠 "Lo tengo en la cabeza"</h4>
+      <ul>
+        <li>❌ Te olvidas detalles en horas o días.</li>
+        <li>❌ Nadie más puede acceder a esa información.</li>
+        <li>❌ Si te enfermas o renuncias, todo se pierde.</li>
+        <li>❌ Imposible auditar o validar.</li>
+        <li>❌ Cambia con tu estado de ánimo.</li>
+      </ul>
+    </div>
+    <div class="comp-lado bueno">
+      <h4>📜 Documentado en papel</h4>
+      <ul>
+        <li>✅ Permanece igual a través del tiempo.</li>
+        <li>✅ Todo el equipo puede consultarlo.</li>
+        <li>✅ Sobrevive a cambios de personal.</li>
+        <li>✅ Sirve de evidencia legal.</li>
+        <li>✅ Se puede revisar y mejorar.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>💸 Casos reales de no documentar</h3>
+
+  <div class="caja-historia">
+    <h4>🚨 Caso 1: El programador estrella se va</h4>
+    <p>Una empresa pequeña tenía un solo desarrollador que sabía todo del sistema. Nunca documentó nada. Un día renunció. La empresa pagó 3 meses de un consultor para que entendiera el código antiguo. <strong>Costo total:</strong> 45 millones de pesos por algo que se habría evitado con documentación.</p>
+  </div>
+
+  <div class="caja-historia">
+    <h4>🚨 Caso 2: "No, eso no fue lo que dije"</h4>
+    <p>Un cliente pide una app. El analista entiende algo, el cliente entendió otra cosa. Sin documentación firmada, cuando entregan el producto el cliente dice "yo nunca pedí eso". <strong>Resultado:</strong> 6 meses extra rehaciendo. Sin firma, no hay defensa.</p>
+  </div>
+
+  <div class="caja-historia">
+    <h4>🚨 Caso 3: La auditoría imposible</h4>
+    <p>Un banco recibe una multa de la Superintendencia. Tienen que demostrar que sus requerimientos cumplen una ley específica. Sin documentación formal, no pueden probar nada. <strong>Multa:</strong> 500 millones.</p>
+  </div>
+
+  <h3>🎯 Las 5 funciones de la documentación</h3>
+
+  <div class="funciones-doc">
+    <div class="funcion-item">
+      <span class="func-emoji">🤝</span>
+      <h4>1. Acuerdo</h4>
+      <p>Es un <strong>contrato</strong> entre cliente y equipo: "esto es lo que acordamos construir".</p>
+    </div>
+    <div class="funcion-item">
+      <span class="func-emoji">🗺️</span>
+      <h4>2. Guía</h4>
+      <p>Le dice a los desarrolladores <strong>qué construir</strong>, sin tener que adivinar.</p>
+    </div>
+    <div class="funcion-item">
+      <span class="func-emoji">🧪</span>
+      <h4>3. Verificación</h4>
+      <p>Los testers la usan para <strong>probar</strong> que el sistema hace lo prometido.</p>
+    </div>
+    <div class="funcion-item">
+      <span class="func-emoji">📚</span>
+      <h4>4. Conocimiento</h4>
+      <p>Es <strong>memoria</strong> del proyecto que sobrevive a las personas.</p>
+    </div>
+    <div class="funcion-item">
+      <span class="func-emoji">⚖️</span>
+      <h4>5. Legal</h4>
+      <p>Sirve como <strong>evidencia</strong> en disputas o auditorías.</p>
+    </div>
+  </div>
+
+  <h3>📊 ¿Cuánto documentar?</h3>
+  <div class="caja-importante">
+    <p>No es "todo o nada". Depende del contexto:</p>
+    <ul>
+      <li>🚀 <strong>Startup pequeña, app interna:</strong> documentación mínima (historias de usuario en Trello).</li>
+      <li>🏢 <strong>Empresa mediana, app comercial:</strong> SRS resumido + casos de uso clave.</li>
+      <li>🏛️ <strong>Gobierno o banca:</strong> SRS completo IEEE 830, firmado y versionado.</li>
+      <li>🏥 <strong>Software médico o crítico:</strong> documentación exhaustiva con trazabilidad total.</li>
+    </ul>
+    <p>👉 Regla de oro: <strong>a más riesgo, más documentación</strong>.</p>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Cuál NO es una función de la documentación de requerimientos?</p>
+      <button class="opcion" data-op="a">Servir como acuerdo entre cliente y equipo</button>
+      <button class="opcion" data-op="b">Guiar a los desarrolladores</button>
+      <button class="opcion" data-op="c">Reemplazar al programador</button>
+      <button class="opcion" data-op="d">Servir de evidencia legal</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> "Tengo todo en la cabeza, no necesito documentar." ¿Cuál es el principal riesgo?</p>
+      <button class="opcion" data-op="a">Que te canses</button>
+      <button class="opcion" data-op="b">Olvidos, salida del personal, imposibilidad de verificar</button>
+      <button class="opcion" data-op="c">Ninguno</button>
+      <button class="opcion" data-op="d">Solo aplica a empresas grandes</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Cuál proyecto requiere MÁS documentación?</p>
+      <button class="opcion" data-op="a">Una app para amigos</button>
+      <button class="opcion" data-op="b">Una página personal</button>
+      <button class="opcion" data-op="c">Un juego de hobbies</button>
+      <button class="opcion" data-op="d">Software médico de hospital</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: IEEE 830 →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — IEEE 830
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>2️⃣ 📘 El estándar IEEE 830</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · 🌐 El idioma universal del software</p>
+
+  <div class="caja-concepto">
+    <h3>📖 ¿Qué es IEEE 830?</h3>
+    <p>El <strong>IEEE 830</strong> es un estándar internacional creado por el <strong>Institute of Electrical and Electronics Engineers (IEEE)</strong> que define <strong>cómo escribir un documento de especificación de requerimientos de software (SRS)</strong>. Su nombre completo es <em>"IEEE Recommended Practice for Software Requirements Specifications"</em>.</p>
+    <p>Es como el "diccionario oficial" para documentar requerimientos. Si lo usas, cualquier ingeniero del mundo puede leer tu documento y entenderlo.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 SRS = Software Requirements Specification</h4>
+    <p>Es el "documento maestro" donde se escriben TODOS los requerimientos de un sistema. Cuando alguien dice "el SRS del proyecto", se refiere a este documento.</p>
+  </div>
+
+  <h3>🎯 ¿Por qué usar IEEE 830?</h3>
+  <div class="cuadricula-2">
+    <div class="caja-bueno">
+      <h4>✅ Beneficios</h4>
+      <ul>
+        <li>Estructura clara y reconocida.</li>
+        <li>No olvidas secciones importantes.</li>
+        <li>Cualquier programador lo entiende.</li>
+        <li>Facilita auditorías.</li>
+        <li>Mejora la comunicación con el cliente.</li>
+      </ul>
+    </div>
+    <div class="caja-malo">
+      <h4>⚠️ Críticas</h4>
+      <ul>
+        <li>Puede ser excesivo para proyectos pequeños.</li>
+        <li>Toma tiempo llenarlo todo.</li>
+        <li>Requiere disciplina mantenerlo actualizado.</li>
+        <li>No es ágil por naturaleza (pero se puede adaptar).</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>📑 Estructura del SRS IEEE 830</h3>
+  <p>El estándar define <strong>3 secciones principales</strong>, cada una con subsecciones. Haz clic en cada sección para explorar su contenido:</p>
+
+  <div class="srs-explorador">
+    <div class="srs-seccion" data-seccion="1">
+      <div class="srs-encabezado">
+        <span class="srs-num">1</span>
+        <h4>Introducción</h4>
+        <span class="srs-flecha">▼</span>
+      </div>
+      <div class="srs-contenido">
+        <p>Es la sección de presentación. Le dice al lector <strong>de qué se trata</strong> este documento.</p>
+        <ul>
+          <li><strong>1.1 Propósito:</strong> ¿Para qué existe este documento? ¿Quién lo va a leer?</li>
+          <li><strong>1.2 Alcance:</strong> ¿Qué hace el sistema? ¿Qué NO hace?</li>
+          <li><strong>1.3 Definiciones, acrónimos y abreviaturas:</strong> Glosario de términos.</li>
+          <li><strong>1.4 Referencias:</strong> Otros documentos relacionados.</li>
+          <li><strong>1.5 Visión general:</strong> Breve resumen de las siguientes secciones.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="srs-seccion" data-seccion="2">
+      <div class="srs-encabezado">
+        <span class="srs-num">2</span>
+        <h4>Descripción general</h4>
+        <span class="srs-flecha">▼</span>
+      </div>
+      <div class="srs-contenido">
+        <p>Vista de alto nivel del sistema y su entorno. <strong>SIN entrar en detalles técnicos todavía</strong>.</p>
+        <ul>
+          <li><strong>2.1 Perspectiva del producto:</strong> ¿Es un sistema nuevo? ¿Reemplaza a uno viejo? ¿Se conecta a otros?</li>
+          <li><strong>2.2 Funciones del producto:</strong> Resumen de las funciones principales.</li>
+          <li><strong>2.3 Características del usuario:</strong> ¿Quién usa el sistema? ¿Qué saben hacer?</li>
+          <li><strong>2.4 Restricciones:</strong> Limitaciones (presupuesto, plataforma, leyes).</li>
+          <li><strong>2.5 Suposiciones y dependencias:</strong> ¿De qué depende el éxito?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="srs-seccion" data-seccion="3">
+      <div class="srs-encabezado">
+        <span class="srs-num">3</span>
+        <h4>Requisitos específicos</h4>
+        <span class="srs-flecha">▼</span>
+      </div>
+      <div class="srs-contenido">
+        <p>El corazón del documento. Aquí se listan TODOS los requerimientos con el máximo detalle.</p>
+        <ul>
+          <li><strong>3.1 Requisitos funcionales:</strong> Qué hace el sistema. Lista numerada (RF-001, RF-002…).</li>
+          <li><strong>3.2 Requisitos no funcionales:</strong> Calidad, rendimiento, seguridad (RNF-001, RNF-002…).</li>
+          <li><strong>3.3 Interfaces externas:</strong> Con qué otros sistemas o usuarios se conecta.</li>
+          <li><strong>3.4 Casos de uso:</strong> Aquí van los casos de uso detallados.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="srs-seccion" data-seccion="4">
+      <div class="srs-encabezado">
+        <span class="srs-num">4</span>
+        <h4>Apéndices</h4>
+        <span class="srs-flecha">▼</span>
+      </div>
+      <div class="srs-contenido">
+        <p>Información complementaria que no encaja en las otras secciones.</p>
+        <ul>
+          <li>Diagramas adicionales.</li>
+          <li>Glosario extendido.</li>
+          <li>Bocetos de pantallas.</li>
+          <li>Tablas de trazabilidad.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>✨ Características de un buen SRS</h3>
+  <p>El propio IEEE 830 dice que un buen SRS debe ser:</p>
+
+  <div class="cuadricula">
+    <div class="caract-srs">
+      <span class="caract-num">1</span>
+      <strong>Correcto</strong>
+      <p>Sin errores. Cada requerimiento es real y verdadero.</p>
+    </div>
+    <div class="caract-srs">
+      <span class="caract-num">2</span>
+      <strong>No ambiguo</strong>
+      <p>Una sola interpretación posible.</p>
+    </div>
+    <div class="caract-srs">
+      <span class="caract-num">3</span>
+      <strong>Completo</strong>
+      <p>Cubre todo lo necesario. Sin TODOs sin resolver.</p>
+    </div>
+    <div class="caract-srs">
+      <span class="caract-num">4</span>
+      <strong>Consistente</strong>
+      <p>Sin contradicciones internas.</p>
+    </div>
+    <div class="caract-srs">
+      <span class="caract-num">5</span>
+      <strong>Clasificado por importancia</strong>
+      <p>Prioridades claras.</p>
+    </div>
+    <div class="caract-srs">
+      <span class="caract-num">6</span>
+      <strong>Verificable</strong>
+      <p>Cada requerimiento se puede probar.</p>
+    </div>
+    <div class="caract-srs">
+      <span class="caract-num">7</span>
+      <strong>Modificable</strong>
+      <p>Cambios pequeños no rompen todo el documento.</p>
+    </div>
+    <div class="caract-srs">
+      <span class="caract-num">8</span>
+      <strong>Trazable</strong>
+      <p>Cada requerimiento tiene origen y destino claros.</p>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué significa SRS?</p>
+      <button class="opcion" data-op="a">System Response Speed</button>
+      <button class="opcion" data-op="b">Standard Review Specification</button>
+      <button class="opcion" data-op="c">Software Requirements Specification</button>
+      <button class="opcion" data-op="d">Source Repository Server</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Quién creó el estándar IEEE 830?</p>
+      <button class="opcion" data-op="a">El Institute of Electrical and Electronics Engineers (IEEE)</button>
+      <button class="opcion" data-op="b">Microsoft</button>
+      <button class="opcion" data-op="c">La ONU</button>
+      <button class="opcion" data-op="d">Google</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿En cuál sección del SRS se listan los requerimientos funcionales detallados?</p>
+      <button class="opcion" data-op="a">Sección 1 (Introducción)</button>
+      <button class="opcion" data-op="b">Sección 3 (Requisitos específicos)</button>
+      <button class="opcion" data-op="c">Sección 2 (Descripción general)</button>
+      <button class="opcion" data-op="d">Apéndices</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Casos de Uso →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — CASOS DE USO CONCEPTO
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>3️⃣ 🎭 Casos de Uso</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 📖 Contar historias técnicas</p>
+
+  <div class="caja-concepto">
+    <h3>📖 ¿Qué es un caso de uso?</h3>
+    <p>Un <strong>caso de uso</strong> es una <strong>descripción narrativa</strong> de cómo un usuario interactúa con el sistema para lograr un objetivo. Cuenta una "mini-historia" paso a paso.</p>
+    <p>Mientras un requerimiento dice <em>"el sistema deberá permitir reservar libros"</em>, un caso de uso explica <em>EXACTAMENTE cómo</em> ocurre esa reserva, paso a paso, incluyendo qué pasa si todo va bien y qué pasa si algo falla.</p>
+  </div>
+
+  <h3>🎬 La diferencia clave</h3>
+  <div class="cuadricula-2">
+    <div class="caja-malo">
+      <h4>📋 Requerimiento (qué)</h4>
+      <p><em>"El sistema deberá permitir al usuario iniciar sesión con correo y contraseña."</em></p>
+      <p>👉 Una frase. Dice qué pasa pero no cómo.</p>
+    </div>
+    <div class="caja-bueno">
+      <h4>🎭 Caso de uso (cómo, paso a paso)</h4>
+      <ol>
+        <li>Usuario abre la app.</li>
+        <li>Sistema muestra pantalla de login.</li>
+        <li>Usuario digita correo y contraseña.</li>
+        <li>Usuario presiona "Entrar".</li>
+        <li>Sistema verifica credenciales.</li>
+        <li>Sistema muestra el inicio personalizado.</li>
+      </ol>
+      <p>👉 Una historia completa con secuencia.</p>
+    </div>
+  </div>
+
+  <h3>🧩 Componentes de un caso de uso</h3>
+
+  <div class="componentes-cu">
+    <div class="comp-cu">
+      <span class="comp-emoji">🎭</span>
+      <h4>Actor</h4>
+      <p>La persona, sistema o cosa que interactúa con el software. Puede ser humano (estudiante, profesor) o externo (servicio de pagos, base de datos).</p>
+    </div>
+    <div class="comp-cu">
+      <span class="comp-emoji">⚙️</span>
+      <h4>Sistema</h4>
+      <p>El software que estamos diseñando. Hace cosas en respuesta al actor.</p>
+    </div>
+    <div class="comp-cu">
+      <span class="comp-emoji">🎯</span>
+      <h4>Objetivo</h4>
+      <p>Lo que el actor quiere conseguir. Ej: "reservar un libro", "ver mis notas".</p>
+    </div>
+    <div class="comp-cu">
+      <span class="comp-emoji">📜</span>
+      <h4>Escenario</h4>
+      <p>La secuencia de pasos que ocurren para lograr (o no) el objetivo.</p>
+    </div>
+  </div>
+
+  <h3>📐 Diagrama UML de casos de uso</h3>
+  <p>Además de la versión escrita, los casos de uso se pueden dibujar. La notación se llama <strong>UML</strong> (Unified Modeling Language):</p>
+
+  <div class="diagrama-uml">
+    <div class="actor-uml">
+      <div class="actor-figura">🧍</div>
+      <div class="actor-nombre">Estudiante</div>
+    </div>
+    <div class="sistema-uml">
+      <div class="sistema-titulo">Sistema Biblioteca</div>
+      <div class="caso-uso-uml">Buscar libro</div>
+      <div class="caso-uso-uml">Reservar libro</div>
+      <div class="caso-uso-uml">Devolver libro</div>
+      <div class="caso-uso-uml">Ver mis préstamos</div>
+    </div>
+    <div class="actor-uml">
+      <div class="actor-figura">🧑‍💼</div>
+      <div class="actor-nombre">Bibliotecario</div>
+    </div>
+  </div>
+
+  <div class="leyenda-uml">
+    <p>📝 <strong>Convenciones UML:</strong></p>
+    <ul>
+      <li><strong>🧍 Figura humana:</strong> representa un actor.</li>
+      <li><strong>Óvalos:</strong> casos de uso (acciones que se pueden hacer).</li>
+      <li><strong>Rectángulo grande:</strong> el sistema (sus "fronteras").</li>
+      <li><strong>Líneas:</strong> conectan actores con los casos de uso que pueden ejecutar.</li>
+    </ul>
+  </div>
+
+  <h3>🔗 Relaciones especiales</h3>
+
+  <div class="relaciones">
+    <div class="rel-card include">
+      <h4>📎 Include (incluye)</h4>
+      <p>Un caso de uso <strong>siempre usa otro caso de uso</strong> como parte de su flujo.</p>
+      <p class="rel-ej">Ej: "Reservar libro" SIEMPRE incluye "Iniciar sesión".</p>
+      <code>Reservar libro ‹‹include›› Iniciar sesión</code>
+    </div>
+    <div class="rel-card extend">
+      <h4>➕ Extend (extiende)</h4>
+      <p>Un caso de uso <strong>extiende a otro</strong> agregando comportamiento opcional bajo cierta condición.</p>
+      <p class="rel-ej">Ej: "Reservar libro" PUEDE extenderse con "Pagar multa" (solo si hay multa pendiente).</p>
+      <code>Pagar multa ‹‹extend›› Reservar libro</code>
+    </div>
+  </div>
+
+  <h3>🎮 Práctica: identifica componentes</h3>
+
+  <div class="juego-comp">
+    <div class="item-comp" data-correcta="actor">
+      <p>📝 <em>"Profesor Hernando, que registra notas en el sistema."</em></p>
+      <div class="op-comp">
+        <button class="btn-comp" data-rta="actor">🎭 Actor</button>
+        <button class="btn-comp" data-rta="objetivo">🎯 Objetivo</button>
+        <button class="btn-comp" data-rta="escenario">📜 Escenario</button>
+      </div>
+    </div>
+    <div class="item-comp" data-correcta="objetivo">
+      <p>📝 <em>"Generar el reporte mensual de asistencia."</em></p>
+      <div class="op-comp">
+        <button class="btn-comp" data-rta="actor">🎭 Actor</button>
+        <button class="btn-comp" data-rta="objetivo">🎯 Objetivo</button>
+        <button class="btn-comp" data-rta="escenario">📜 Escenario</button>
+      </div>
+    </div>
+    <div class="item-comp" data-correcta="escenario">
+      <p>📝 <em>"1. Profesor selecciona el mes. 2. Sistema muestra opciones. 3. Profesor confirma. 4. Sistema genera PDF."</em></p>
+      <div class="op-comp">
+        <button class="btn-comp" data-rta="actor">🎭 Actor</button>
+        <button class="btn-comp" data-rta="objetivo">🎯 Objetivo</button>
+        <button class="btn-comp" data-rta="escenario">📜 Escenario</button>
+      </div>
+    </div>
+    <div class="item-comp" data-correcta="actor">
+      <p>📝 <em>"Servicio externo de envío de correos electrónicos."</em></p>
+      <div class="op-comp">
+        <button class="btn-comp" data-rta="actor">🎭 Actor</button>
+        <button class="btn-comp" data-rta="objetivo">🎯 Objetivo</button>
+        <button class="btn-comp" data-rta="escenario">📜 Escenario</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la principal diferencia entre un requerimiento y un caso de uso?</p>
+      <button class="opcion" data-op="a">No hay diferencia</button>
+      <button class="opcion" data-op="b">El caso de uso es una historia paso a paso; el requerimiento es una frase</button>
+      <button class="opcion" data-op="c">El requerimiento se dibuja, el caso de uso se escribe</button>
+      <button class="opcion" data-op="d">El caso de uso lo escribe el programador</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué es un actor en un caso de uso?</p>
+      <button class="opcion" data-op="a">El programador</button>
+      <button class="opcion" data-op="b">El nombre del software</button>
+      <button class="opcion" data-op="c">Una pantalla del sistema</button>
+      <button class="opcion" data-op="d">Una persona o sistema que interactúa con el software</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué relación UML usarías para "Reservar libro SIEMPRE necesita Iniciar sesión"?</p>
+      <button class="opcion" data-op="a">‹‹include››</button>
+      <button class="opcion" data-op="b">‹‹extend››</button>
+      <button class="opcion" data-op="c">‹‹inherit››</button>
+      <button class="opcion" data-op="d">‹‹connect››</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: Plantilla →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — PLANTILLA DE CASO DE USO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <h2>4️⃣ 📋 Plantilla profesional de caso de uso</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · 📑 Estructura formal</p>
+
+  <div class="caja-concepto">
+    <h3>📖 La plantilla estándar</h3>
+    <p>Un caso de uso bien escrito tiene <strong>12 secciones</strong>. No todas son obligatorias en proyectos pequeños, pero conocerlas te hace un profesional. Aquí está la plantilla completa:</p>
+  </div>
+
+  <h3>📑 Estructura completa</h3>
+
+  <div class="plantilla-cu">
+    <div class="plantilla-fila">
+      <div class="pl-campo">🏷️ ID</div>
+      <div class="pl-valor">Identificador único. Ej: <code>CU-001</code></div>
+    </div>
+    <div class="plantilla-fila">
+      <div class="pl-campo">📛 Nombre</div>
+      <div class="pl-valor">Verbo + objeto. Ej: "Reservar libro", "Generar reporte"</div>
+    </div>
+    <div class="plantilla-fila">
+      <div class="pl-campo">🎭 Actor(es) principal(es)</div>
+      <div class="pl-valor">Quién(es) ejecuta(n) el caso. Ej: Estudiante, Bibliotecario</div>
+    </div>
+    <div class="plantilla-fila">
+      <div class="pl-campo">📝 Descripción breve</div>
+      <div class="pl-valor">Una frase explicando el objetivo del caso de uso.</div>
+    </div>
+    <div class="plantilla-fila">
+      <div class="pl-campo">✅ Precondiciones</div>
+      <div class="pl-valor">Qué debe ser cierto ANTES de empezar. Ej: "El usuario está autenticado"</div>
+    </div>
+    <div class="plantilla-fila">
+      <div class="pl-campo">🎯 Postcondiciones</div>
+      <div class="pl-valor">Qué debe ser cierto DESPUÉS del éxito. Ej: "El libro queda reservado por 3 días"</div>
+    </div>
+    <div class="plantilla-fila">
+      <div class="pl-campo">▶️ Flujo principal</div>
+      <div class="pl-valor">Pasos numerados del escenario "todo sale bien".</div>
+    </div>
+    <div class="plantilla-fila">
+      <div class="pl-campo">🔀 Flujos alternos</div>
+      <div class="pl-valor">Caminos alternativos válidos pero distintos al principal.</div>
+    </div>
+    <div class="plantilla-fila">
+      <div class="pl-campo">⚠️ Excepciones</div>
+      <div class="pl-valor">Qué pasa cuando algo falla (libro no existe, sin internet, etc.).</div>
+    </div>
+    <div class="plantilla-fila">
+      <div class="pl-campo">📜 Reglas de negocio</div>
+      <div class="pl-valor">Restricciones que aplican. Ej: "Máximo 3 libros por estudiante".</div>
+    </div>
+    <div class="plantilla-fila">
+      <div class="pl-campo">📊 Frecuencia de uso</div>
+      <div class="pl-valor">Qué tan seguido se usa. Ej: "Muy frecuente: ~100 veces al día".</div>
+    </div>
+    <div class="plantilla-fila">
+      <div class="pl-campo">⭐ Prioridad</div>
+      <div class="pl-valor">Alta / Media / Baja. Define en qué orden se construye.</div>
+    </div>
+  </div>
+
+  <h3>📘 Ejemplo completo: "Reservar libro"</h3>
+
+  <div class="ejemplo-cu">
+    <div class="cu-titulo">CU-001: Reservar libro</div>
+    <div class="cu-row"><strong>🎭 Actor:</strong> Estudiante</div>
+    <div class="cu-row"><strong>📝 Descripción:</strong> El estudiante reserva un libro disponible para retirarlo en los próximos 3 días.</div>
+    <div class="cu-row"><strong>✅ Precondiciones:</strong>
+      <ul>
+        <li>Estudiante autenticado en el sistema.</li>
+        <li>Estudiante tiene menos de 3 libros reservados activos.</li>
+        <li>Estudiante no tiene multas pendientes.</li>
+      </ul>
+    </div>
+    <div class="cu-row"><strong>🎯 Postcondiciones:</strong>
+      <ul>
+        <li>El libro queda marcado como "reservado" por el estudiante.</li>
+        <li>La reserva expira en 72 horas.</li>
+        <li>Se envía un correo de confirmación.</li>
+      </ul>
+    </div>
+    <div class="cu-row"><strong>▶️ Flujo principal:</strong>
+      <ol>
+        <li>El estudiante selecciona "Buscar libro".</li>
+        <li>El sistema muestra el formulario de búsqueda.</li>
+        <li>El estudiante ingresa el título.</li>
+        <li>El sistema muestra los resultados disponibles.</li>
+        <li>El estudiante selecciona el libro deseado.</li>
+        <li>El estudiante presiona "Reservar".</li>
+        <li>El sistema verifica disponibilidad.</li>
+        <li>El sistema marca el libro como reservado.</li>
+        <li>El sistema envía correo de confirmación.</li>
+        <li>El sistema muestra mensaje de éxito.</li>
+      </ol>
+    </div>
+    <div class="cu-row"><strong>🔀 Flujo alterno A:</strong> Buscar por autor en lugar de título.
+      <ul>
+        <li>En el paso 3, el estudiante elige "buscar por autor" y digita el autor.</li>
+      </ul>
+    </div>
+    <div class="cu-row"><strong>⚠️ Excepción E1:</strong> Libro no disponible.
+      <ul>
+        <li>En el paso 7, si el libro ya está reservado, el sistema muestra "Libro no disponible" y ofrece añadirlo a una lista de espera.</li>
+      </ul>
+    </div>
+    <div class="cu-row"><strong>⚠️ Excepción E2:</strong> Estudiante con multas.
+      <ul>
+        <li>En el paso 7, si hay multas pendientes, el sistema bloquea la reserva y muestra el monto adeudado.</li>
+      </ul>
+    </div>
+    <div class="cu-row"><strong>📜 Reglas de negocio:</strong>
+      <ul>
+        <li>RN-01: Un estudiante puede tener máximo 3 libros reservados a la vez.</li>
+        <li>RN-02: Las reservas expiran automáticamente en 72 horas si no se retira.</li>
+      </ul>
+    </div>
+    <div class="cu-row"><strong>📊 Frecuencia:</strong> Alta (~50 reservas/día)</div>
+    <div class="cu-row"><strong>⭐ Prioridad:</strong> Alta</div>
+  </div>
+
+  <h3>⚠️ Errores comunes al escribir casos de uso</h3>
+
+  <div class="errores-grid">
+    <div class="error-item">
+      <span class="err-num">❌</span>
+      <h4>Confundir con un manual de usuario</h4>
+      <p class="mal">"El usuario hace clic en el botón azul de la esquina superior derecha…"</p>
+      <p class="bien">✅ Mejor: enfocarse en QUÉ hace el usuario, no en CÓMO se ve la interfaz.</p>
+    </div>
+    <div class="error-item">
+      <span class="err-num">❌</span>
+      <h4>Mezclar pasos del actor con del sistema</h4>
+      <p class="mal">"El sistema selecciona el libro y verifica disponibilidad."</p>
+      <p class="bien">✅ Mejor: el ACTOR selecciona; el SISTEMA verifica. Roles separados.</p>
+    </div>
+    <div class="error-item">
+      <span class="err-num">❌</span>
+      <h4>Olvidar excepciones</h4>
+      <p class="mal">Solo describir el caso "feliz" donde todo sale bien.</p>
+      <p class="bien">✅ Mejor: pensar qué puede salir mal y documentarlo.</p>
+    </div>
+    <div class="error-item">
+      <span class="err-num">❌</span>
+      <h4>Demasiado abstracto o demasiado detallado</h4>
+      <p class="mal">"Usuario gestiona libros" (vago) o "usuario digita la letra A" (excesivo).</p>
+      <p class="bien">✅ Mejor: granularidad media. Pasos significativos.</p>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Práctica →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — PRÁCTICA: CONSTRUCTOR DE CASOS DE USO
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>5️⃣ ✍️ Práctica: Construye tu Caso de Uso</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · 🛠️ Modo constructor</p>
+
+  <div class="caja-concepto">
+    <h3>🎬 Tu misión</h3>
+    <p>Vas a construir un caso de uso completo paso a paso. Usaremos el caso <strong>"Inscribirse a un torneo deportivo del colegio"</strong>. Llenarás cada sección y al final verás tu documento completo.</p>
+  </div>
+
+  <div class="caso-personaje">
+    <span class="personaje-icono">🏃</span>
+    <div>
+      <h4>Caso: Inscripción a Torneo</h4>
+      <p>El colegio organiza torneos cada trimestre. Los estudiantes deben poder inscribirse desde la app. El sistema valida que estén al día con asistencia y notas. Si todo está bien, los inscribe y envía notificación al coordinador.</p>
+    </div>
+  </div>
+
+  <h3>🛠️ Constructor interactivo</h3>
+  <p>Completa cada campo. Algunos tienen sugerencias en gris para guiarte.</p>
+
+  <div class="constructor-cu">
+
+    <div class="cu-input-grupo">
+      <label>🏷️ ID del caso de uso:</label>
+      <input type="text" id="cu-id" placeholder="Ej: CU-001" value="CU-001">
+    </div>
+
+    <div class="cu-input-grupo">
+      <label>📛 Nombre:</label>
+      <input type="text" id="cu-nombre" placeholder="Ej: Inscribirse a torneo">
+    </div>
+
+    <div class="cu-input-grupo">
+      <label>🎭 Actor principal:</label>
+      <input type="text" id="cu-actor" placeholder="Ej: Estudiante">
+    </div>
+
+    <div class="cu-input-grupo">
+      <label>📝 Descripción breve:</label>
+      <textarea id="cu-desc" rows="2" placeholder="Una frase. Ej: El estudiante se inscribe a un torneo deportivo organizado por el colegio."></textarea>
+    </div>
+
+    <div class="cu-input-grupo">
+      <label>✅ Precondiciones (una por línea):</label>
+      <textarea id="cu-pre" rows="3" placeholder="- El estudiante está autenticado&#10;- El torneo está abierto a inscripciones&#10;- El estudiante cumple los requisitos académicos"></textarea>
+    </div>
+
+    <div class="cu-input-grupo">
+      <label>🎯 Postcondiciones (una por línea):</label>
+      <textarea id="cu-post" rows="3" placeholder="- El estudiante queda inscrito en el torneo&#10;- Se notifica al coordinador deportivo&#10;- Se envía confirmación al correo"></textarea>
+    </div>
+
+    <div class="cu-input-grupo">
+      <label>▶️ Flujo principal (un paso por línea):</label>
+      <textarea id="cu-flujo" rows="6" placeholder="1. El estudiante accede a 'Torneos disponibles'&#10;2. El sistema muestra los torneos abiertos&#10;3. El estudiante selecciona un torneo&#10;4. El sistema muestra los requisitos&#10;5. El estudiante confirma su inscripción&#10;6. El sistema valida y registra la inscripción"></textarea>
+    </div>
+
+    <div class="cu-input-grupo">
+      <label>⚠️ Excepciones (al menos una):</label>
+      <textarea id="cu-excep" rows="3" placeholder="E1. No cumple requisitos académicos: el sistema rechaza la inscripción.&#10;E2. Cupos agotados: el sistema ofrece lista de espera."></textarea>
+    </div>
+
+    <div class="cu-input-grupo">
+      <label>📜 Reglas de negocio (al menos una):</label>
+      <textarea id="cu-reglas" rows="2" placeholder="RN-01: Solo pueden inscribirse estudiantes con asistencia ≥ 85% y promedio ≥ 3.0"></textarea>
+    </div>
+
+    <div class="cu-input-grupo-flex">
+      <div class="cu-input-grupo">
+        <label>📊 Frecuencia:</label>
+        <select id="cu-freq">
+          <option value="Baja (~1 vez/trimestre)">Baja</option>
+          <option value="Media (~10 veces/trimestre)" selected>Media</option>
+          <option value="Alta (~100 veces/trimestre)">Alta</option>
+        </select>
+      </div>
+      <div class="cu-input-grupo">
+        <label>⭐ Prioridad:</label>
+        <select id="cu-prio">
+          <option value="Alta">Alta</option>
+          <option value="Media" selected>Media</option>
+          <option value="Baja">Baja</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-generar" onclick="generarCasoUso()">✨ Generar mi caso de uso</button>
+  </div>
+
+  <div class="cu-resultado" id="cu-resultado"></div>
+
+  <h3>💡 Tips para mejorar</h3>
+  <div class="caja-tip">
+    <ul>
+      <li>📌 Cada paso debe empezar con un verbo claro (selecciona, ingresa, muestra…).</li>
+      <li>📌 Distingue siempre quién hace qué: actor o sistema.</li>
+      <li>📌 Si tu flujo tiene más de 15 pasos, probablemente debes dividirlo en varios casos de uso.</li>
+      <li>📌 Las excepciones casi siempre se descubren probando "¿qué pasa si…?"</li>
+    </ul>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: SRS Template →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — PLANTILLA SRS IEEE
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>6️⃣ 📑 Plantilla SRS IEEE — Por Secciones</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 🏗️ Construye tu documento maestro</p>
+
+  <div class="caja-concepto">
+    <h3>📖 La plantilla aplicada</h3>
+    <p>En el módulo 2 viste la estructura del IEEE 830. Ahora la verás <strong>llena con ejemplos reales</strong>, sección por sección, con un caso completo: <strong>"Sistema de Gestión de Biblioteca Escolar"</strong>.</p>
+    <p>Esta plantilla está lista para que la copies, la adaptes y la uses en tus proyectos.</p>
+  </div>
+
+  <h3>📑 SRS — Sección por sección con ejemplo</h3>
+
+  <div class="srs-template">
+
+    <div class="srs-bloque">
+      <h4>📌 Carátula</h4>
+      <pre>SISTEMA DE GESTIÓN DE BIBLIOTECA ESCOLAR
+Documento de Especificación de Requerimientos (SRS)
+Versión 1.0
+Fecha: junio de 2026
+Autor: [Tu nombre]
+Cliente: Colegio San Antonio</pre>
+    </div>
+
+    <div class="srs-bloque">
+      <h4>📌 1. Introducción</h4>
+
+      <h5>1.1 Propósito</h5>
+      <p class="srs-ej">Este documento describe los requerimientos del Sistema de Gestión de Biblioteca Escolar (SGBE) que reemplazará el actual sistema basado en cuadernos físicos. Está dirigido al equipo de desarrollo, al coordinador académico y a los bibliotecarios.</p>
+
+      <h5>1.2 Alcance</h5>
+      <p class="srs-ej">El sistema permitirá gestionar el catálogo de libros, registrar préstamos y devoluciones, generar reportes, y permitirá a estudiantes y profesores consultar y reservar libros desde dispositivos móviles. NO incluye gestión de adquisiciones ni contabilidad.</p>
+
+      <h5>1.3 Definiciones</h5>
+      <ul>
+        <li><strong>Préstamo:</strong> entrega temporal de un libro a un usuario.</li>
+        <li><strong>Reserva:</strong> apartado de un libro disponible para retiro posterior.</li>
+        <li><strong>SGBE:</strong> Sistema de Gestión de Biblioteca Escolar.</li>
+        <li><strong>RF:</strong> Requerimiento Funcional.</li>
+        <li><strong>RNF:</strong> Requerimiento No Funcional.</li>
+      </ul>
+
+      <h5>1.4 Referencias</h5>
+      <ul>
+        <li>Reglamento interno de la biblioteca del Colegio San Antonio.</li>
+        <li>Estándar IEEE 830-1998 para SRS.</li>
+        <li>Ley 1581 de 2012 (protección de datos personales en Colombia).</li>
+      </ul>
+
+      <h5>1.5 Visión general</h5>
+      <p class="srs-ej">La sección 2 presenta una descripción general del sistema. La sección 3 detalla los requerimientos funcionales, no funcionales y de interfaz. Los apéndices contienen diagramas y referencias adicionales.</p>
+    </div>
+
+    <div class="srs-bloque">
+      <h4>📌 2. Descripción general</h4>
+
+      <h5>2.1 Perspectiva del producto</h5>
+      <p class="srs-ej">El SGBE es un sistema nuevo que reemplazará completamente el método actual (cuadernos físicos). Se integrará con el sistema académico existente para validar la identidad de estudiantes y profesores.</p>
+
+      <h5>2.2 Funciones del producto</h5>
+      <ul>
+        <li>Gestión del catálogo de libros.</li>
+        <li>Registro de préstamos y devoluciones.</li>
+        <li>Reservas de libros.</li>
+        <li>Búsqueda de libros desde web y app móvil.</li>
+        <li>Generación de reportes.</li>
+        <li>Notificaciones automáticas.</li>
+      </ul>
+
+      <h5>2.3 Características del usuario</h5>
+      <ul>
+        <li><strong>Estudiantes (800):</strong> usuarios casuales, dominio básico de tecnología.</li>
+        <li><strong>Profesores (40):</strong> usuarios ocasionales, dominio variable.</li>
+        <li><strong>Bibliotecarios (3):</strong> usuarios diarios, capacitados.</li>
+        <li><strong>Coordinador académico (1):</strong> usuario administrativo.</li>
+      </ul>
+
+      <h5>2.4 Restricciones</h5>
+      <ul>
+        <li>Presupuesto máximo: 15 millones de pesos.</li>
+        <li>Plazo de entrega: 4 meses.</li>
+        <li>Debe funcionar en navegador y como app móvil (Android e iOS).</li>
+        <li>Debe cumplir con la Ley 1581 de protección de datos.</li>
+      </ul>
+
+      <h5>2.5 Suposiciones y dependencias</h5>
+      <ul>
+        <li>Se asume disponibilidad de internet estable en el colegio.</li>
+        <li>El sistema académico actual expone API para validar usuarios.</li>
+        <li>Los bibliotecarios recibirán capacitación de 4 horas.</li>
+      </ul>
+    </div>
+
+    <div class="srs-bloque">
+      <h4>📌 3. Requisitos específicos</h4>
+
+      <h5>3.1 Requerimientos Funcionales</h5>
+      <div class="rf-tabla">
+        <div class="rf-fila">
+          <span class="rf-id">RF-001</span>
+          <div class="rf-desc">El sistema deberá permitir a los estudiantes buscar libros por título, autor o categoría.</div>
+        </div>
+        <div class="rf-fila">
+          <span class="rf-id">RF-002</span>
+          <div class="rf-desc">El sistema deberá permitir reservar un libro disponible por máximo 72 horas.</div>
+        </div>
+        <div class="rf-fila">
+          <span class="rf-id">RF-003</span>
+          <div class="rf-desc">El sistema deberá registrar préstamos asociando libro, usuario y fechas de retiro/devolución.</div>
+        </div>
+        <div class="rf-fila">
+          <span class="rf-id">RF-004</span>
+          <div class="rf-desc">El sistema deberá enviar correo de recordatorio 24 horas antes de la fecha de devolución.</div>
+        </div>
+        <div class="rf-fila">
+          <span class="rf-id">RF-005</span>
+          <div class="rf-desc">El sistema deberá generar un reporte mensual con los 20 libros más prestados.</div>
+        </div>
+      </div>
+
+      <h5>3.2 Requerimientos No Funcionales</h5>
+      <div class="rf-tabla">
+        <div class="rf-fila rnf">
+          <span class="rf-id">RNF-001</span>
+          <div class="rf-desc">El tiempo de respuesta para búsquedas no deberá superar 2 segundos para el 95% de las consultas.</div>
+        </div>
+        <div class="rf-fila rnf">
+          <span class="rf-id">RNF-002</span>
+          <div class="rf-desc">El sistema deberá tener disponibilidad mínima del 99% durante el horario escolar (7am–5pm).</div>
+        </div>
+        <div class="rf-fila rnf">
+          <span class="rf-id">RNF-003</span>
+          <div class="rf-desc">Las contraseñas deberán almacenarse cifradas con bcrypt factor 12.</div>
+        </div>
+        <div class="rf-fila rnf">
+          <span class="rf-id">RNF-004</span>
+          <div class="rf-desc">El sistema deberá soportar 100 usuarios concurrentes sin degradación notable.</div>
+        </div>
+      </div>
+
+      <h5>3.3 Interfaces externas</h5>
+      <ul>
+        <li><strong>Interfaz con sistema académico:</strong> API REST para validar usuarios.</li>
+        <li><strong>Interfaz con servicio de correo:</strong> SMTP para envío de notificaciones.</li>
+        <li><strong>Interfaz con app móvil:</strong> API REST en HTTPS con autenticación JWT.</li>
+      </ul>
+
+      <h5>3.4 Casos de uso</h5>
+      <p class="srs-ej">Ver Anexo A para los casos de uso detallados (CU-001 a CU-015).</p>
+    </div>
+
+    <div class="srs-bloque">
+      <h4>📌 4. Apéndices</h4>
+      <ul>
+        <li><strong>Anexo A:</strong> Casos de uso detallados.</li>
+        <li><strong>Anexo B:</strong> Diagrama UML general del sistema.</li>
+        <li><strong>Anexo C:</strong> Bocetos de las pantallas principales.</li>
+        <li><strong>Anexo D:</strong> Tabla de trazabilidad requerimientos ↔ casos de uso.</li>
+        <li><strong>Anexo E:</strong> Glosario extendido.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Y los IDs?</h4>
+    <p>Fíjate cómo cada requerimiento y caso de uso tiene un <strong>identificador único</strong> (RF-001, RNF-002, CU-001…). Esto es <strong>fundamental</strong>:</p>
+    <ul>
+      <li>Permite referenciar el requerimiento en otros documentos.</li>
+      <li>Facilita la trazabilidad (saber qué requerimiento dio origen a qué código).</li>
+      <li>Ayuda en las pruebas: "este test verifica RF-003".</li>
+    </ul>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Revisión Cruzada →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 7 — REVISIÓN CRUZADA
+============================================================ -->
+<section class="modulo" data-modulo="7">
+  <h2>7️⃣ 🔎 Revisión Cruzada</h2>
+  <p class="meta-modulo">⏱️ 25 minutos · 👥 Cuatro ojos ven más que dos</p>
+
+  <div class="caja-concepto">
+    <h3>📖 ¿Qué es la revisión cruzada?</h3>
+    <p>La <strong>revisión cruzada</strong> es cuando otro analista (o varios) lee TU documento buscando errores, ambigüedades, contradicciones o cosas faltantes. Es la primera defensa contra un mal SRS.</p>
+    <p>Es como mostrarle tu tarea a un compañero antes de entregarla: él ve cosas que tú, por estar tan metido, ya no ves.</p>
+  </div>
+
+  <h3>🎯 ¿Qué buscar en una revisión cruzada?</h3>
+
+  <div class="checklist-rev">
+    <div class="check-item">
+      <span class="check-emoji">🔍</span>
+      <strong>Ambigüedades</strong>
+      <p>Palabras vagas como "rápido", "fácil", "amigable", "moderno". Marcar y exigir métricas.</p>
+    </div>
+    <div class="check-item">
+      <span class="check-emoji">⚖️</span>
+      <strong>Contradicciones</strong>
+      <p>Un requerimiento que choca con otro. Ej: "todos los datos públicos" vs "contraseñas cifradas".</p>
+    </div>
+    <div class="check-item">
+      <span class="check-emoji">❓</span>
+      <strong>Faltantes</strong>
+      <p>Casos no cubiertos: ¿qué pasa si X? ¿qué pasa si Y?</p>
+    </div>
+    <div class="check-item">
+      <span class="check-emoji">🔢</span>
+      <strong>No medibles</strong>
+      <p>RNF sin métrica clara. Si no se puede probar, no sirve.</p>
+    </div>
+    <div class="check-item">
+      <span class="check-emoji">🔗</span>
+      <strong>Dependencias</strong>
+      <p>Requerimientos que dependen de otros sin estar explícitos.</p>
+    </div>
+    <div class="check-item">
+      <span class="check-emoji">💥</span>
+      <strong>No atómicos</strong>
+      <p>Dos ideas en un solo requerimiento. Hay que partirlos.</p>
+    </div>
+    <div class="check-item">
+      <span class="check-emoji">🤖</span>
+      <strong>Jerga técnica innecesaria</strong>
+      <p>Si el cliente debe firmar y no entiende, hay que reescribir.</p>
+    </div>
+    <div class="check-item">
+      <span class="check-emoji">📐</span>
+      <strong>Sin verificación posible</strong>
+      <p>¿Cómo se probará este requerimiento? Si no se sabe, hay que reformular.</p>
+    </div>
+  </div>
+
+  <h3>🎮 Tu turno: Revisa este SRS</h3>
+  <p>A continuación tienes un SRS real con <strong>varios problemas</strong>. Tu misión: <strong>haz clic en los renglones que tengan algún error</strong>. Al final verás tu desempeño.</p>
+
+  <div class="caja-importante">
+    <h4>📋 SRS: Sistema de Reservas de Salón de Estudio</h4>
+    <p>(Documento entregado por un analista junior. Revísalo.)</p>
+  </div>
+
+  <div class="srs-revisar" id="srs-revisar">
+
+    <div class="renglon-srs ok">
+      <strong>RF-001:</strong> El sistema deberá permitir reservar un salón de estudio por bloques de 1 hora.
+    </div>
+
+    <div class="renglon-srs error" data-error="ambiguo">
+      <strong>RF-002:</strong> El sistema deberá ser rápido y bonito.
+    </div>
+
+    <div class="renglon-srs ok">
+      <strong>RF-003:</strong> El sistema deberá enviar un correo de confirmación al usuario al completar una reserva.
+    </div>
+
+    <div class="renglon-srs error" data-error="no-atomico">
+      <strong>RF-004:</strong> El sistema deberá permitir cancelar reservas y también deberá generar reportes mensuales y enviar SMS.
+    </div>
+
+    <div class="renglon-srs ok">
+      <strong>RF-005:</strong> El sistema deberá impedir reservar el mismo salón en el mismo horario por dos usuarios distintos.
+    </div>
+
+    <div class="renglon-srs error" data-error="contradiccion">
+      <strong>RF-006:</strong> Los datos de las reservas deberán ser públicos y visibles para todos.
+    </div>
+
+    <div class="renglon-srs error" data-error="tecnico">
+      <strong>RF-007:</strong> El usuario deberá hacer GET a /api/v2/rooms con header Authorization Bearer JWT_TOKEN.
+    </div>
+
+    <div class="renglon-srs ok">
+      <strong>RNF-001:</strong> El tiempo de respuesta de la búsqueda no deberá superar los 2 segundos.
+    </div>
+
+    <div class="renglon-srs error" data-error="no-medible">
+      <strong>RNF-002:</strong> El sistema deberá ser muy seguro.
+    </div>
+
+    <div class="renglon-srs ok">
+      <strong>RNF-003:</strong> El sistema deberá funcionar en Chrome, Firefox y Safari en sus últimas dos versiones.
+    </div>
+
+    <div class="renglon-srs error" data-error="contradiccion">
+      <strong>RNF-004:</strong> Las contraseñas no necesitan ser cifradas porque el sistema es interno.
+    </div>
+
+    <div class="renglon-srs ok">
+      <strong>RNF-005:</strong> El sistema deberá soportar 50 usuarios concurrentes sin degradación notable.
+    </div>
+
+  </div>
+
+  <button class="btn-evaluar" onclick="evaluarRevision()">⚖️ Evaluar mi revisión</button>
+
+  <div class="resultado-rev" id="resultado-rev"></div>
+
+  <h3>📚 Resumen del proceso de revisión cruzada</h3>
+  <div class="proceso-rev">
+    <div class="paso-rev">
+      <span class="paso-num">1</span>
+      <div>
+        <h4>Lee con calma</h4>
+        <p>Sin prisa. Idealmente en dos sesiones distintas.</p>
+      </div>
+    </div>
+    <div class="paso-rev">
+      <span class="paso-num">2</span>
+      <div>
+        <h4>Marca con colores</h4>
+        <p>Rojo = error crítico, amarillo = duda, verde = OK.</p>
+      </div>
+    </div>
+    <div class="paso-rev">
+      <span class="paso-num">3</span>
+      <div>
+        <h4>Reúne con el autor</h4>
+        <p>NO envíes una lista fría. Conversa los hallazgos.</p>
+      </div>
+    </div>
+    <div class="paso-rev">
+      <span class="paso-num">4</span>
+      <div>
+        <h4>Verifica correcciones</h4>
+        <p>Después de corregir, vuelve a revisar.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Anterior</button>
+    <button class="btn-siguiente" data-ir="8">Siguiente: Reto Final →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 8 — RETO FINAL
+============================================================ -->
+<section class="modulo" data-modulo="8">
+  <h2>8️⃣ 🏆 Reto Final</h2>
+  <p class="meta-modulo">⏱️ 10 minutos · 🎓 Aplica todo lo aprendido</p>
+
+  <div class="hero">
+    <h2>📜 ¡Felicidades, documentador@!</h2>
+    <p class="lead">Acabas de aprender lo que muchos profesionales pasan AÑOS dominando. Sabes documentar requerimientos como un experto.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">📘</span>
+      <h3>IEEE 830</h3>
+      <p>Conoces la estructura completa del SRS estándar.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🎭</span>
+      <h3>Casos de Uso</h3>
+      <p>Sabes escribirlos con todas sus 12 secciones.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🧩</span>
+      <h3>Plantillas</h3>
+      <p>Tienes ejemplos completos para reutilizar.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🔎</span>
+      <h3>Revisión cruzada</h3>
+      <p>Identificas errores y los corriges.</p>
+    </div>
+  </div>
+
+  <h3>🚀 Tu reto final</h3>
+  <div class="caja-desafio">
+    <p><strong>Misión:</strong> Toma un sistema de tu elección (puede ser uno de los ejercicios anteriores) y produce un <strong>mini-SRS profesional</strong> con:</p>
+    <ol>
+      <li><strong>Sección 1 (Introducción):</strong> propósito, alcance, definiciones (mínimo 3 términos).</li>
+      <li><strong>Sección 2 (Descripción general):</strong> perspectiva, características del usuario, restricciones.</li>
+      <li><strong>Sección 3 (Requisitos específicos):</strong>
+        <ul>
+          <li>5 RF con ID y descripción.</li>
+          <li>3 RNF medibles con ID.</li>
+        </ul>
+      </li>
+      <li><strong>2 casos de uso detallados</strong> con la plantilla completa (ID, nombre, actor, precondiciones, postcondiciones, flujo principal, al menos una excepción).</li>
+      <li><strong>Revisión cruzada:</strong> intercambia tu documento con un compañero y aplica el checklist del módulo 7.</li>
+    </ol>
+    <p>📸 Este reto te entrena en lo que <em>realmente</em> se hace en las empresas. Es la última etapa antes de la programación.</p>
+  </div>
+
+  <h3>📚 Para seguir profundizando</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">📖</span>
+      <h3>IEEE 830-1998</h3>
+      <p>El documento oficial del estándar (en inglés, técnico pero útil).</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎨</span>
+      <h3>UML completo</h3>
+      <p>Más allá de los casos de uso: diagramas de clases, secuencia, actividades.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎯</span>
+      <h3>Próxima clase</h3>
+      <p>Modelado de procesos y sistemas con BPMN, diagramas de flujo.</p>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💭 Reflexión final</h4>
+    <p>Documentar bien es un <strong>acto de respeto</strong>: respetas a los desarrolladores que vendrán después, al cliente que firma, al auditor que revisará en 5 años. Tu documento sobrevivirá a ti en el proyecto. Hazlo digno de ser leído.</p>
+  </div>
+
+  <div class="cierre">
+    <h2>📜 ¡Lo lograste!</h2>
+    <p>Ahora tienes el conocimiento para escribir documentos profesionales que cualquier ingeniero del mundo entenderá.</p>
+    <button class="btn-final" onclick="reiniciarCurso()">🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="7">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <p>📜 Clase 4: Documentación · Curso de Análisis y Diseño de Software · 2026</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

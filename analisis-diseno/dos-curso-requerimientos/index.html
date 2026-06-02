@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📋 Requerimientos de Software — Nivel 2</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- =================== HEADER + PROGRESO =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">📋</span>
+    <div>
+      <h1>Requerimientos de Software</h1>
+      <p class="subtitulo">Nivel 2 · Continuación del curso de Análisis y Diseño</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span id="porcentaje">0%</span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">1️⃣ Concepto</button>
+  <button class="btn-modulo" data-modulo="2">2️⃣ Funcionales</button>
+  <button class="btn-modulo" data-modulo="3">3️⃣ No Funcionales</button>
+  <button class="btn-modulo" data-modulo="4">4️⃣ Calidad</button>
+  <button class="btn-modulo" data-modulo="5">5️⃣ Taller</button>
+  <button class="btn-modulo" data-modulo="6">6️⃣ Historias</button>
+  <button class="btn-modulo" data-modulo="7">🏆 Final</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🚀 ¡Bienvenid@ al Nivel 2!</h2>
+    <p class="lead">En el curso anterior aprendiste <strong>qué es un requerimiento</strong>. Ahora vas a aprender a <strong>capturarlos, escribirlos y trabajarlos como un profesional</strong>. Este curso es la diferencia entre alguien que "sabe que existen" y alguien que sabe HACERLOS bien.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">⏱️</span>
+      <h3>Duración</h3>
+      <p>3 horas y 45 minutos en 8 módulos. Pausa y continúa cuando quieras.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Dominar requerimientos funcionales, no funcionales, atributos de calidad e historias de usuario.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">📚</span>
+      <h3>Prerrequisito</h3>
+      <p>Haber completado el curso de Análisis y Diseño (Nivel 1). Si no lo hiciste, sigue funcionando, pero te recomendamos verlo primero.</p>
+    </div>
+  </div>
+
+  <div class="caja-destacada">
+    <h3>🗺️ La ruta de aprendizaje</h3>
+    <ol class="ruta">
+      <li><strong>Módulo 1 (25 min):</strong> Profundización del concepto de requerimiento</li>
+      <li><strong>Módulo 2 (35 min):</strong> 🔧 Requerimientos Funcionales</li>
+      <li><strong>Módulo 3 (35 min):</strong> ⚙️ Requerimientos No Funcionales</li>
+      <li><strong>Módulo 4 (30 min):</strong> 💎 Atributos de Calidad (ISO 25010)</li>
+      <li><strong>Módulo 5 (45 min):</strong> 🧩 Taller de Análisis de Necesidades + Caso simulado</li>
+      <li><strong>Módulo 6 (35 min):</strong> 📝 Historias de Usuario (formato ágil)</li>
+      <li><strong>Módulo 7 (10 min):</strong> 🏆 Reto integrador final</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Recordatorio del curso anterior</h4>
+    <p>Si necesitas refrescar, repasa estos conceptos:</p>
+    <ul>
+      <li><strong>Requerimiento:</strong> descripción de lo que el sistema debe hacer o cumplir.</li>
+      <li><strong>SMART:</strong> Específico, Medible, Alcanzable, Relevante, con Plazo.</li>
+      <li><strong>Elicitación:</strong> técnicas para descubrir requerimientos (entrevistas, observación, prototipos…).</li>
+    </ul>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1 →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — PROFUNDIZACIÓN DEL CONCEPTO
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>1️⃣ Profundización del concepto</h2>
+  <p class="meta-modulo">⏱️ 25 minutos · 🧠 Vamos más profundo</p>
+
+  <div class="caja-concepto">
+    <h3>📜 La definición formal</h3>
+    <p>En el curso anterior aprendiste que un requerimiento es <em>"algo que el sistema debe hacer o cumplir"</em>. Esa es una buena definición de inicio. La definición formal de la <strong>ingeniería del software</strong> es más precisa:</p>
+    <blockquote class="cita">
+      Un <strong>requerimiento</strong> es una propiedad documentada que un sistema debe poseer para resolver un problema o lograr un objetivo. Es una <strong>declaración verificable</strong> de una funcionalidad, restricción o característica de calidad. <br><em>— IEEE 830 (estándar para especificación de requerimientos)</em>
+    </blockquote>
+    <p>Fíjate en las dos palabras clave: <strong>documentada</strong> y <strong>verificable</strong>. Si no se puede escribir y comprobar, NO es un requerimiento.</p>
+  </div>
+
+  <h3>🪜 Niveles de abstracción</h3>
+  <p>Los requerimientos viven en distintos "pisos" de abstracción. Lo que dice el cliente NO es lo mismo que lo que escribe el analista, ni lo mismo que lo que recibe el programador.</p>
+
+  <div class="escalera">
+    <div class="escalon piso-1">
+      <span class="nivel-num">3</span>
+      <div>
+        <h4>💻 Especificación técnica</h4>
+        <p>"La API <code>/menu/dia</code> debe retornar un JSON con los platos del día, en menos de 300 ms, usando HTTPS."</p>
+      </div>
+    </div>
+    <div class="escalon piso-2">
+      <span class="nivel-num">2</span>
+      <div>
+        <h4>📋 Requerimiento del sistema</h4>
+        <p>"El sistema debe mostrar el menú del día actualizado a todos los estudiantes autenticados."</p>
+      </div>
+    </div>
+    <div class="escalon piso-3">
+      <span class="nivel-num">1</span>
+      <div>
+        <h4>🗣️ Necesidad del usuario</h4>
+        <p>"Quiero saber qué hay de comida para no perder el viaje a la cafetería."</p>
+      </div>
+    </div>
+  </div>
+
+  <p>Tu trabajo como analista es <strong>traducir hacia arriba</strong>: tomar lo que dice el usuario (informal, emocional) y convertirlo en algo formal, documentado y verificable.</p>
+
+  <h3>🌐 Fuentes de requerimientos</h3>
+  <p>No salen solos. Vienen de diferentes <strong>stakeholders</strong> (palabra elegante que significa "personas con interés en el proyecto"):</p>
+
+  <div class="cuadricula-2">
+    <div class="tarjeta-fuente">
+      <h4>👤 Usuarios finales</h4>
+      <p>Los que usarán el sistema día a día. Saben los detalles operativos.</p>
+    </div>
+    <div class="tarjeta-fuente">
+      <h4>🏢 Clientes / patrocinadores</h4>
+      <p>Los que pagan. Tienen objetivos de negocio (vender más, ahorrar, cumplir leyes).</p>
+    </div>
+    <div class="tarjeta-fuente">
+      <h4>📜 Leyes y normas</h4>
+      <p>Regulaciones que el sistema debe cumplir (datos personales, accesibilidad).</p>
+    </div>
+    <div class="tarjeta-fuente">
+      <h4>🔌 Sistemas externos</h4>
+      <p>Otros programas con los que se debe integrar (correo, pasarelas de pago).</p>
+    </div>
+  </div>
+
+  <h3>✅ Características de un BUEN requerimiento</h3>
+  <p>Además de SMART (curso anterior), un requerimiento profesional debe cumplir estas 7 cualidades:</p>
+
+  <div class="lista-caracteristicas">
+    <div class="caract-item"><strong>Necesario</strong> — Si lo quitas, el sistema no cumple su propósito.</div>
+    <div class="caract-item"><strong>No ambiguo</strong> — Una sola interpretación posible.</div>
+    <div class="caract-item"><strong>Verificable</strong> — Se puede probar si se cumple o no.</div>
+    <div class="caract-item"><strong>Consistente</strong> — No contradice a otro requerimiento.</div>
+    <div class="caract-item"><strong>Completo</strong> — Incluye toda la información necesaria.</div>
+    <div class="caract-item"><strong>Atómico</strong> — Una sola idea por requerimiento.</div>
+    <div class="caract-item"><strong>Trazable</strong> — Se puede rastrear de dónde vino y a qué afecta.</div>
+  </div>
+
+  <h3>🧪 Ejemplo: detectar problemas</h3>
+  <p>Mira este requerimiento y trata de encontrar todos sus defectos antes de revelar:</p>
+
+  <div class="ejemplo-malo-grande">
+    <p>"<em>El sistema debe ser rápido y seguro, además de mostrar los datos de los estudiantes y permitir hacer reportes.</em>"</p>
+  </div>
+
+  <button class="btn-toggle-sol" onclick="toggleSolucion('sol-1-1')">👁️ Ver los defectos</button>
+  <div class="solucion" id="sol-1-1">
+    <p>Defectos encontrados:</p>
+    <ul>
+      <li>❌ <strong>No atómico:</strong> tiene 4 ideas mezcladas en una sola frase.</li>
+      <li>❌ <strong>Ambiguo:</strong> "rápido" y "seguro" no tienen métrica.</li>
+      <li>❌ <strong>No verificable:</strong> no se puede probar "rápido" sin un umbral.</li>
+      <li>❌ <strong>Incompleto:</strong> ¿qué datos? ¿qué reportes? ¿quién puede ver?</li>
+    </ul>
+    <p><strong>Cómo se debería escribir (separado en 4 requerimientos atómicos):</strong></p>
+    <ol>
+      <li>"El sistema debe responder a una consulta de notas en menos de 2 segundos."</li>
+      <li>"El sistema debe cifrar todas las contraseñas con bcrypt con factor 12."</li>
+      <li>"El sistema debe mostrar la lista de estudiantes (nombre, código, curso) a usuarios con rol de profesor."</li>
+      <li>"El sistema debe generar un reporte mensual de notas por curso en formato PDF, descargable por el coordinador."</li>
+    </ol>
+  </div>
+
+  <!-- QUIZ MÓDULO 1 -->
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuáles son las dos palabras clave en la definición formal de requerimiento?</p>
+      <button class="opcion" data-op="a">Rápido y seguro</button>
+      <button class="opcion" data-op="b">Documentado y verificable</button>
+      <button class="opcion" data-op="c">Fácil y útil</button>
+      <button class="opcion" data-op="d">Largo y detallado</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Qué significa que un requerimiento sea "atómico"?</p>
+      <button class="opcion" data-op="a">Que sea muy técnico</button>
+      <button class="opcion" data-op="b">Que esté escrito en LaTeX</button>
+      <button class="opcion" data-op="c">Que exprese una sola idea/funcionalidad</button>
+      <button class="opcion" data-op="d">Que use átomos en su definición</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> En la "escalera" de abstracción, ¿en qué nivel está la frase del usuario "quiero saber qué hay de comida"?</p>
+      <button class="opcion" data-op="a">Necesidad del usuario (más abajo)</button>
+      <button class="opcion" data-op="b">Especificación técnica (más arriba)</button>
+      <button class="opcion" data-op="c">Requerimiento del sistema (medio)</button>
+      <button class="opcion" data-op="d">No es ningún nivel</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Funcionales →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — REQUERIMIENTOS FUNCIONALES
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>2️⃣ 🔧 Requerimientos Funcionales</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · 📋 El "qué hace" del sistema</p>
+
+  <div class="caja-concepto">
+    <h3>📖 Definición precisa</h3>
+    <p>Un <strong>requerimiento funcional (RF)</strong> describe una <strong>acción concreta</strong> que el sistema debe realizar. Define las funciones, tareas, cálculos o respuestas del sistema ante entradas específicas.</p>
+    <p>Si pudieras hacer una "lista de tareas del sistema", los RF serían cada tarea de esa lista.</p>
+  </div>
+
+  <h3>🔍 Cómo identificarlos</h3>
+  <p>Cuando estés leyendo entrevistas o documentos, busca:</p>
+  <ul>
+    <li>🔤 <strong>Verbos de acción:</strong> permitir, registrar, calcular, mostrar, enviar, generar, validar, modificar.</li>
+    <li>📥 <strong>Entradas y salidas:</strong> "el sistema recibe X y produce Y".</li>
+    <li>🚦 <strong>Decisiones:</strong> "si pasa X, hacer Y; si no, hacer Z".</li>
+    <li>👥 <strong>Roles:</strong> "el administrador puede…", "el estudiante debe…".</li>
+  </ul>
+
+  <h3>📝 Plantilla profesional</h3>
+  <p>Para que todos los RF se vean iguales y sean fáciles de leer, usa esta plantilla:</p>
+
+  <div class="plantilla">
+    <div class="plantilla-frase">
+      <span class="plantilla-fijo">El sistema</span>
+      <span class="plantilla-var">deberá</span>
+      <span class="plantilla-var">[acción/verbo]</span>
+      <span class="plantilla-var">[objeto]</span>
+      <span class="plantilla-var">[condiciones / restricciones]</span>
+      <span class="plantilla-fijo">.</span>
+    </div>
+  </div>
+
+  <p><strong>Ejemplos completos:</strong></p>
+  <div class="ejemplo-bueno">
+    <p>"El sistema deberá <span class="rojo-marca">permitir</span> al estudiante <span class="rojo-marca">consultar el menú del día</span> <span class="rojo-marca">cuando esté autenticado y dentro del horario escolar</span>."</p>
+  </div>
+  <div class="ejemplo-bueno">
+    <p>"El sistema deberá <span class="rojo-marca">calcular</span> el <span class="rojo-marca">promedio aritmético de las notas</span> de cada estudiante <span class="rojo-marca">redondeado a 2 decimales</span>."</p>
+  </div>
+  <div class="ejemplo-bueno">
+    <p>"El sistema deberá <span class="rojo-marca">enviar</span> un <span class="rojo-marca">correo de confirmación</span> al usuario <span class="rojo-marca">dentro de los 30 segundos posteriores al registro exitoso</span>."</p>
+  </div>
+
+  <h3>🗂️ Categorías de RF</h3>
+  <div class="cuadricula-2">
+    <div class="categoria-card">
+      <h4>🔐 De autenticación</h4>
+      <p>Inicio de sesión, registro, recuperación de contraseña, permisos.</p>
+      <p class="ej-cat">Ej: "El sistema deberá permitir iniciar sesión con correo y contraseña."</p>
+    </div>
+    <div class="categoria-card">
+      <h4>📊 De cálculo</h4>
+      <p>Operaciones matemáticas, agregaciones, estadísticas.</p>
+      <p class="ej-cat">Ej: "El sistema deberá calcular el promedio ponderado considerando porcentajes de cada nota."</p>
+    </div>
+    <div class="categoria-card">
+      <h4>💾 De persistencia</h4>
+      <p>Guardar, leer, modificar, eliminar datos (CRUD).</p>
+      <p class="ej-cat">Ej: "El sistema deberá almacenar el historial de pedidos por al menos 6 meses."</p>
+    </div>
+    <div class="categoria-card">
+      <h4>📨 De comunicación</h4>
+      <p>Notificaciones, correos, integraciones externas.</p>
+      <p class="ej-cat">Ej: "El sistema deberá enviar SMS al usuario cuando su pedido esté listo."</p>
+    </div>
+    <div class="categoria-card">
+      <h4>📑 De reporte</h4>
+      <p>Generar documentos, exportar datos.</p>
+      <p class="ej-cat">Ej: "El sistema deberá exportar el reporte mensual en formato PDF y Excel."</p>
+    </div>
+    <div class="categoria-card">
+      <h4>✅ De validación</h4>
+      <p>Verificar reglas, formatos, restricciones.</p>
+      <p class="ej-cat">Ej: "El sistema deberá rechazar contraseñas con menos de 8 caracteres."</p>
+    </div>
+  </div>
+
+  <h3>🎮 Juego: ¿Bueno o malo?</h3>
+  <p>Lee cada requerimiento funcional y decide si está bien escrito o tiene problemas. Recibirás retroalimentación inmediata.</p>
+
+  <div class="juego-clasificar">
+    <div class="item-rf" data-correcta="malo">
+      <p>📝 "El sistema debe ser amigable."</p>
+      <div class="op-rf">
+        <button class="btn-rf" data-rta="bueno">✅ Bueno</button>
+        <button class="btn-rf" data-rta="malo">❌ Malo</button>
+      </div>
+      <p class="explic-rf">No es un RF (eso es no-funcional), y además "amigable" no es medible.</p>
+    </div>
+
+    <div class="item-rf" data-correcta="bueno">
+      <p>📝 "El sistema deberá permitir al usuario reservar un plato del menú del día seleccionándolo desde una lista."</p>
+      <div class="op-rf">
+        <button class="btn-rf" data-rta="bueno">✅ Bueno</button>
+        <button class="btn-rf" data-rta="malo">❌ Malo</button>
+      </div>
+      <p class="explic-rf">Tiene verbo de acción, objeto, condición y es claro.</p>
+    </div>
+
+    <div class="item-rf" data-correcta="malo">
+      <p>📝 "El sistema gestionará usuarios y enviará notificaciones cuando sea necesario."</p>
+      <div class="op-rf">
+        <button class="btn-rf" data-rta="bueno">✅ Bueno</button>
+        <button class="btn-rf" data-rta="malo">❌ Malo</button>
+      </div>
+      <p class="explic-rf">No es atómico (2 ideas), y "cuando sea necesario" es ambiguo.</p>
+    </div>
+
+    <div class="item-rf" data-correcta="bueno">
+      <p>📝 "El sistema deberá generar un reporte mensual de asistencia en formato PDF, descargable por el coordinador académico."</p>
+      <div class="op-rf">
+        <button class="btn-rf" data-rta="bueno">✅ Bueno</button>
+        <button class="btn-rf" data-rta="malo">❌ Malo</button>
+      </div>
+      <p class="explic-rf">Específico, atómico, con rol, formato y frecuencia.</p>
+    </div>
+
+    <div class="item-rf" data-correcta="malo">
+      <p>📝 "El sistema debe funcionar bien y rápido."</p>
+      <div class="op-rf">
+        <button class="btn-rf" data-rta="bueno">✅ Bueno</button>
+        <button class="btn-rf" data-rta="malo">❌ Malo</button>
+      </div>
+      <p class="explic-rf">No es un RF (es no-funcional) y además ambiguo: "bien" y "rápido" sin métrica.</p>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Cuál de estos es un requerimiento funcional?</p>
+      <button class="opcion" data-op="a">El sistema debe ser muy rápido</button>
+      <button class="opcion" data-op="b">El sistema debe ser fácil de usar</button>
+      <button class="opcion" data-op="c">El sistema debe permitir registrar nuevos estudiantes</button>
+      <button class="opcion" data-op="d">El sistema debe estar disponible 24/7</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Qué señales te ayudan a identificar un RF en un texto?</p>
+      <button class="opcion" data-op="a">Adjetivos vagos</button>
+      <button class="opcion" data-op="b">Verbos de acción y entradas/salidas</button>
+      <button class="opcion" data-op="c">Nombres propios</button>
+      <button class="opcion" data-op="d">Adverbios de modo</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> Si un requerimiento dice "el sistema gestionará usuarios y enviará alertas", ¿qué le falta?</p>
+      <button class="opcion" data-op="a">Está perfecto</button>
+      <button class="opcion" data-op="b">Le falta tener color</button>
+      <button class="opcion" data-op="c">Es demasiado corto</button>
+      <button class="opcion" data-op="d">No es atómico — son dos ideas en una</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: No Funcionales →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — REQUERIMIENTOS NO FUNCIONALES
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>3️⃣ ⚙️ Requerimientos No Funcionales</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · 🎚️ El "cómo es" del sistema</p>
+
+  <div class="caja-concepto">
+    <h3>📖 Definición</h3>
+    <p>Un <strong>requerimiento no funcional (RNF)</strong> describe <strong>cómo debe comportarse</strong> el sistema, no qué hace. Define características de calidad, restricciones y propiedades que el sistema debe cumplir.</p>
+    <p>Mientras los RF te dicen QUÉ tareas hace el sistema, los RNF te dicen CON QUÉ CALIDAD las hace.</p>
+  </div>
+
+  <h3>🚨 ¿Por qué son críticos?</h3>
+  <div class="caja-historia">
+    <p>Imagina una app de pedidos de comida que SÍ permite ordenar (cumple sus RF) pero…</p>
+    <ul>
+      <li>⏱️ Tarda 30 segundos en cargar la página → <strong>nadie la usa</strong>.</li>
+      <li>🔓 Su seguridad es débil y filtra contraseñas → <strong>escándalo legal</strong>.</li>
+      <li>📵 No funciona en celulares → <strong>la mitad de los usuarios no entra</strong>.</li>
+      <li>💥 Se cae cada hora → <strong>desconfianza total</strong>.</li>
+    </ul>
+    <p>👉 Conclusión: un sistema puede ser <strong>funcionalmente perfecto</strong> y a la vez un <strong>fracaso total</strong> si descuida los RNF.</p>
+  </div>
+
+  <h3>🎚️ Las grandes categorías de RNF</h3>
+
+  <div class="cuadricula-2">
+    <div class="rnf-card">
+      <h4>⚡ Rendimiento (Performance)</h4>
+      <p>Velocidad, tiempos de respuesta, uso de recursos.</p>
+      <p class="ej-rnf">Ej: "El sistema deberá responder a cualquier consulta en menos de 2 segundos para el 95% de las solicitudes."</p>
+    </div>
+    <div class="rnf-card">
+      <h4>🔒 Seguridad</h4>
+      <p>Autenticación, autorización, cifrado, auditoría.</p>
+      <p class="ej-rnf">Ej: "Las contraseñas deberán almacenarse cifradas con bcrypt factor 12, nunca en texto plano."</p>
+    </div>
+    <div class="rnf-card">
+      <h4>👍 Usabilidad</h4>
+      <p>Facilidad de uso, accesibilidad, aprendizaje.</p>
+      <p class="ej-rnf">Ej: "Un usuario nuevo deberá poder hacer un pedido en menos de 3 minutos sin tutorial."</p>
+    </div>
+    <div class="rnf-card">
+      <h4>🛡️ Confiabilidad</h4>
+      <p>Funciona sin fallar, tolera errores, se recupera.</p>
+      <p class="ej-rnf">Ej: "El sistema deberá tener una disponibilidad mínima del 99.5% durante el horario escolar."</p>
+    </div>
+    <div class="rnf-card">
+      <h4>📈 Escalabilidad</h4>
+      <p>Soporta crecimiento sin romperse.</p>
+      <p class="ej-rnf">Ej: "El sistema deberá soportar 5,000 usuarios concurrentes sin degradación notable."</p>
+    </div>
+    <div class="rnf-card">
+      <h4>🔧 Mantenibilidad</h4>
+      <p>Facilidad para arreglar y mejorar el código.</p>
+      <p class="ej-rnf">Ej: "El código deberá tener cobertura de pruebas mínima del 80%."</p>
+    </div>
+    <div class="rnf-card">
+      <h4>📱 Portabilidad / Compatibilidad</h4>
+      <p>Funciona en distintos dispositivos y navegadores.</p>
+      <p class="ej-rnf">Ej: "La aplicación deberá funcionar en Chrome, Firefox, Safari y Edge en sus últimas dos versiones."</p>
+    </div>
+    <div class="rnf-card">
+      <h4>📜 Legales / Regulatorios</h4>
+      <p>Cumplimiento de leyes y normas.</p>
+      <p class="ej-rnf">Ej: "El sistema deberá cumplir con la Ley 1581 de 2012 de protección de datos personales."</p>
+    </div>
+  </div>
+
+  <h3>📏 La regla de oro: ¡MEDIR!</h3>
+  <div class="caja-importante">
+    <p>Un RNF sin métrica es un deseo, no un requerimiento. Para cada RNF debes responder:</p>
+    <ul>
+      <li>📊 <strong>¿Qué métrica</strong> usas? (tiempo, %, número de usuarios, etc.)</li>
+      <li>🎯 <strong>¿Cuál es el umbral aceptable?</strong></li>
+      <li>📐 <strong>¿Cómo lo vas a verificar?</strong></li>
+    </ul>
+  </div>
+
+  <h3>⚖️ Trade-offs: cuando los RNF chocan</h3>
+  <p>A veces, mejorar un RNF empeora otro. Los más comunes:</p>
+
+  <div class="tradeoffs">
+    <div class="tradeoff-item">
+      <span class="t-left">🔒 Seguridad</span>
+      <span class="t-vs">⚔️</span>
+      <span class="t-right">👍 Usabilidad</span>
+      <p>Más login y 2FA = más seguro pero menos cómodo.</p>
+    </div>
+    <div class="tradeoff-item">
+      <span class="t-left">⚡ Rendimiento</span>
+      <span class="t-vs">⚔️</span>
+      <span class="t-right">🔧 Mantenibilidad</span>
+      <p>Código super optimizado es más rápido pero difícil de modificar.</p>
+    </div>
+    <div class="tradeoff-item">
+      <span class="t-left">📈 Escalabilidad</span>
+      <span class="t-vs">⚔️</span>
+      <span class="t-right">💰 Costo</span>
+      <p>Aguantar millones de usuarios requiere infraestructura cara.</p>
+    </div>
+  </div>
+
+  <p>Un buen analista <strong>balancea</strong> los trade-offs según lo más importante para el cliente.</p>
+
+  <h3>🎮 Práctica: Clasifica los RNF</h3>
+  <p>Asocia cada requerimiento con su categoría:</p>
+
+  <div class="juego-clasificar-rnf">
+    <div class="item-clas" data-categoria="rendimiento">
+      <p>"La búsqueda debe devolver resultados en menos de 1 segundo."</p>
+      <div class="op-clas">
+        <button class="btn-clas" data-cat="rendimiento">⚡ Rendimiento</button>
+        <button class="btn-clas" data-cat="seguridad">🔒 Seguridad</button>
+        <button class="btn-clas" data-cat="usabilidad">👍 Usabilidad</button>
+        <button class="btn-clas" data-cat="escalabilidad">📈 Escalabilidad</button>
+      </div>
+      <p class="explic-clas"></p>
+    </div>
+    <div class="item-clas" data-categoria="seguridad">
+      <p>"Los datos sensibles deben transmitirse cifrados con TLS 1.3."</p>
+      <div class="op-clas">
+        <button class="btn-clas" data-cat="rendimiento">⚡ Rendimiento</button>
+        <button class="btn-clas" data-cat="seguridad">🔒 Seguridad</button>
+        <button class="btn-clas" data-cat="usabilidad">👍 Usabilidad</button>
+        <button class="btn-clas" data-cat="escalabilidad">📈 Escalabilidad</button>
+      </div>
+      <p class="explic-clas"></p>
+    </div>
+    <div class="item-clas" data-categoria="usabilidad">
+      <p>"Un usuario debe poder completar el registro en máximo 4 pasos."</p>
+      <div class="op-clas">
+        <button class="btn-clas" data-cat="rendimiento">⚡ Rendimiento</button>
+        <button class="btn-clas" data-cat="seguridad">🔒 Seguridad</button>
+        <button class="btn-clas" data-cat="usabilidad">👍 Usabilidad</button>
+        <button class="btn-clas" data-cat="escalabilidad">📈 Escalabilidad</button>
+      </div>
+      <p class="explic-clas"></p>
+    </div>
+    <div class="item-clas" data-categoria="escalabilidad">
+      <p>"El sistema debe soportar 10,000 usuarios concurrentes en hora pico."</p>
+      <div class="op-clas">
+        <button class="btn-clas" data-cat="rendimiento">⚡ Rendimiento</button>
+        <button class="btn-clas" data-cat="seguridad">🔒 Seguridad</button>
+        <button class="btn-clas" data-cat="usabilidad">👍 Usabilidad</button>
+        <button class="btn-clas" data-cat="escalabilidad">📈 Escalabilidad</button>
+      </div>
+      <p class="explic-clas"></p>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la diferencia clave entre RF y RNF?</p>
+      <button class="opcion" data-op="a">Los RF son escritos por programadores, los RNF por diseñadores</button>
+      <button class="opcion" data-op="b">Los RF dicen QUÉ hace; los RNF dicen CÓMO debe ser</button>
+      <button class="opcion" data-op="c">Los RNF se ignoran usualmente</button>
+      <button class="opcion" data-op="d">No hay diferencia</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué falta en este RNF? "El sistema debe ser rápido."</p>
+      <button class="opcion" data-op="a">El sujeto</button>
+      <button class="opcion" data-op="b">El verbo</button>
+      <button class="opcion" data-op="c">Más adjetivos</button>
+      <button class="opcion" data-op="d">Una métrica medible y un umbral</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Por qué existen trade-offs entre RNF?</p>
+      <button class="opcion" data-op="a">Porque los programadores son flojos</button>
+      <button class="opcion" data-op="b">Porque los clientes piden mucho</button>
+      <button class="opcion" data-op="c">Porque mejorar un aspecto a veces empeora otro (recursos limitados)</button>
+      <button class="opcion" data-op="d">No existen, todo se puede tener al máximo</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: Calidad →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — ATRIBUTOS DE CALIDAD
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <h2>4️⃣ 💎 Atributos de Calidad</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 🏆 Lo que hace excelente al software</p>
+
+  <div class="caja-concepto">
+    <h3>📖 ¿Qué son?</h3>
+    <p>Los <strong>atributos de calidad</strong> son las características generales que determinan qué tan bueno es un software. Son los <em>conceptos abstractos</em> que luego se concretan en los RNF.</p>
+    <p>Existe un estándar internacional que los clasifica: la <strong>norma ISO/IEC 25010</strong>. Define 8 atributos principales.</p>
+  </div>
+
+  <h3>🔗 RNF vs Atributos: la diferencia</h3>
+  <div class="caja-tip">
+    <p>Confusión común. Aclárala:</p>
+    <ul>
+      <li>📐 <strong>Atributo de calidad</strong> = concepto general (ej: "Seguridad").</li>
+      <li>📋 <strong>RNF</strong> = forma concreta y medible del atributo (ej: "El sistema bloqueará el login después de 5 intentos fallidos en 1 minuto").</li>
+    </ul>
+    <p>👉 Los atributos son la <em>categoría</em>; los RNF son los <em>ejemplares</em>.</p>
+  </div>
+
+  <h3>💎 Los 8 atributos según ISO 25010</h3>
+
+  <div class="cuadricula-2">
+    <div class="atributo-card">
+      <h4>1. ✅ Adecuación funcional</h4>
+      <p>¿Hace lo que se supone que debe hacer? Mide completitud, corrección y pertinencia de las funciones.</p>
+    </div>
+    <div class="atributo-card">
+      <h4>2. ⚡ Eficiencia de desempeño</h4>
+      <p>¿Es rápido y usa bien los recursos? Tiempo de respuesta, uso de CPU y memoria.</p>
+    </div>
+    <div class="atributo-card">
+      <h4>3. 🔗 Compatibilidad</h4>
+      <p>¿Funciona bien con otros sistemas? Interoperabilidad y coexistencia.</p>
+    </div>
+    <div class="atributo-card">
+      <h4>4. 👍 Usabilidad</h4>
+      <p>¿Es fácil de aprender y usar? Reconocimiento, aprendizaje, operabilidad, accesibilidad.</p>
+    </div>
+    <div class="atributo-card">
+      <h4>5. 🛡️ Confiabilidad</h4>
+      <p>¿Funciona consistentemente sin fallar? Madurez, disponibilidad, tolerancia a fallos, recuperabilidad.</p>
+    </div>
+    <div class="atributo-card">
+      <h4>6. 🔒 Seguridad</h4>
+      <p>¿Protege la información y a los usuarios? Confidencialidad, integridad, no-repudio, autenticidad.</p>
+    </div>
+    <div class="atributo-card">
+      <h4>7. 🔧 Mantenibilidad</h4>
+      <p>¿Se puede modificar fácilmente? Modularidad, reusabilidad, analizabilidad, modificabilidad, capacidad de prueba.</p>
+    </div>
+    <div class="atributo-card">
+      <h4>8. 📦 Portabilidad</h4>
+      <p>¿Se puede mover a otro entorno? Adaptabilidad, instalabilidad, reemplazabilidad.</p>
+    </div>
+  </div>
+
+  <h3>🎯 Ejemplos de la vida real</h3>
+
+  <div class="caja-historia">
+    <p>👉 <strong>WhatsApp</strong> brilla en <strong>usabilidad</strong> (cualquier abuela la usa) y <strong>confiabilidad</strong> (rara vez falla).</p>
+    <p>👉 <strong>Google</strong> brilla en <strong>eficiencia de desempeño</strong> (responde búsquedas en milisegundos sobre miles de millones de páginas).</p>
+    <p>👉 Los <strong>bancos</strong> brillan en <strong>seguridad</strong> (¡imagina si tu saldo se viera con un clic!).</p>
+    <p>👉 <strong>Netflix</strong> brilla en <strong>escalabilidad</strong> y <strong>compatibilidad</strong> (millones viendo videos, en cualquier dispositivo).</p>
+  </div>
+
+  <h3>🎮 Práctica: relaciona atributos con situaciones</h3>
+  <p>¿Cuál atributo es el más crítico en cada escenario?</p>
+
+  <div class="juego-atributo">
+    <div class="item-atr" data-correcta="seguridad">
+      <p>🏦 Aplicación de banca móvil donde los usuarios consultan saldo y transfieren dinero.</p>
+      <div class="op-atr">
+        <button class="btn-atr" data-rta="seguridad">🔒 Seguridad</button>
+        <button class="btn-atr" data-rta="usabilidad">👍 Usabilidad</button>
+        <button class="btn-atr" data-rta="portabilidad">📦 Portabilidad</button>
+      </div>
+      <p class="explic-atr"></p>
+    </div>
+
+    <div class="item-atr" data-correcta="usabilidad">
+      <p>👵 App de telemedicina para adultos mayores que casi no saben usar el celular.</p>
+      <div class="op-atr">
+        <button class="btn-atr" data-rta="eficiencia">⚡ Eficiencia</button>
+        <button class="btn-atr" data-rta="usabilidad">👍 Usabilidad</button>
+        <button class="btn-atr" data-rta="mantenibilidad">🔧 Mantenibilidad</button>
+      </div>
+      <p class="explic-atr"></p>
+    </div>
+
+    <div class="item-atr" data-correcta="confiabilidad">
+      <p>🚑 Sistema de despacho de ambulancias 911.</p>
+      <div class="op-atr">
+        <button class="btn-atr" data-rta="confiabilidad">🛡️ Confiabilidad</button>
+        <button class="btn-atr" data-rta="compatibilidad">🔗 Compatibilidad</button>
+        <button class="btn-atr" data-rta="portabilidad">📦 Portabilidad</button>
+      </div>
+      <p class="explic-atr"></p>
+    </div>
+
+    <div class="item-atr" data-correcta="eficiencia">
+      <p>🎮 Videojuego competitivo en línea donde milisegundos importan.</p>
+      <div class="op-atr">
+        <button class="btn-atr" data-rta="eficiencia">⚡ Eficiencia</button>
+        <button class="btn-atr" data-rta="mantenibilidad">🔧 Mantenibilidad</button>
+        <button class="btn-atr" data-rta="portabilidad">📦 Portabilidad</button>
+      </div>
+      <p class="explic-atr"></p>
+    </div>
+
+    <div class="item-atr" data-correcta="portabilidad">
+      <p>📱 App de mensajería que debe correr en celulares viejos, nuevos, iOS, Android y web.</p>
+      <div class="op-atr">
+        <button class="btn-atr" data-rta="seguridad">🔒 Seguridad</button>
+        <button class="btn-atr" data-rta="eficiencia">⚡ Eficiencia</button>
+        <button class="btn-atr" data-rta="portabilidad">📦 Portabilidad</button>
+      </div>
+      <p class="explic-atr"></p>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz" data-quiz="4">
+    <h3>🎯 Mini-Quiz del Módulo 4</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál estándar define los atributos de calidad del software?</p>
+      <button class="opcion" data-op="a">IEEE 830</button>
+      <button class="opcion" data-op="b">ISO/IEC 25010</button>
+      <button class="opcion" data-op="c">HTML 5</button>
+      <button class="opcion" data-op="d">JSON Schema</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Si tu sistema funciona bien hoy pero no se puede modificar mañana, ¿qué atributo falla?</p>
+      <button class="opcion" data-op="a">Seguridad</button>
+      <button class="opcion" data-op="b">Usabilidad</button>
+      <button class="opcion" data-op="c">Mantenibilidad</button>
+      <button class="opcion" data-op="d">Portabilidad</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuál es la relación entre atributo de calidad y RNF?</p>
+      <button class="opcion" data-op="a">El atributo es el concepto general, el RNF es su forma medible</button>
+      <button class="opcion" data-op="b">Son sinónimos</button>
+      <button class="opcion" data-op="c">Los RNF son atributos de los RF</button>
+      <button class="opcion" data-op="d">No tienen relación</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — TALLER DE ANÁLISIS DE NECESIDADES + CASO
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>5️⃣ 🧩 Taller: Análisis de Necesidades + Caso Simulado</h2>
+  <p class="meta-modulo">⏱️ 45 minutos · 🛠️ Modo práctico ON</p>
+
+  <div class="caja-concepto">
+    <h3>🎬 Tu rol</h3>
+    <p>Imagina que eres <strong>analista de software junior</strong> en una empresa. El rector de tu colegio te contrató para crear una nueva app. Tu misión: analizar la situación y construir los requerimientos paso a paso.</p>
+  </div>
+
+  <h3>📋 El Caso: "SchoolEats"</h3>
+  <div class="caso-contexto">
+    <h4>🍽️ Contexto</h4>
+    <p>El Colegio San Antonio tiene una cafetería con problemas crónicos:</p>
+    <ul>
+      <li>⏰ Filas larguísimas en hora de almuerzo (¡hasta 30 minutos esperando!).</li>
+      <li>🍽️ La comida se acaba antes de que los últimos estudiantes lleguen.</li>
+      <li>❓ Nadie sabe qué menú hay del día hasta llegar a la cafetería.</li>
+      <li>💵 Los estudiantes deben pagar en efectivo, y muchas veces no tienen suelto.</li>
+      <li>👨‍🍳 Los cocineros no saben cuánta comida preparar.</li>
+    </ul>
+    <p>El rector te dice: <em>"Queremos una app que solucione esto. Tienes que averiguar exactamente qué necesitamos."</em></p>
+  </div>
+
+  <!-- PASO 1: STAKEHOLDERS -->
+  <h3>🪜 Paso 1: Identifica los stakeholders</h3>
+  <p>Selecciona <strong>todas las personas/grupos</strong> que deberías considerar para entender bien las necesidades:</p>
+
+  <div class="seleccion-multiple" id="paso1-stk">
+    <button class="opt-multi" data-id="estudiantes" data-correcta="true">🎓 Estudiantes</button>
+    <button class="opt-multi" data-id="cocineros" data-correcta="true">👨‍🍳 Cocineros/cafetería</button>
+    <button class="opt-multi" data-id="rector" data-correcta="true">🎩 Rector/administración</button>
+    <button class="opt-multi" data-id="proveedores" data-correcta="true">🚚 Proveedores de comida</button>
+    <button class="opt-multi" data-id="padres" data-correcta="true">👪 Padres de familia</button>
+    <button class="opt-multi" data-id="microsoft" data-correcta="false">🏢 Microsoft</button>
+    <button class="opt-multi" data-id="vecinos" data-correcta="false">🏘️ Vecinos del colegio</button>
+    <button class="opt-multi" data-id="hacienda" data-correcta="false">💼 DIAN / Ministerio de Hacienda</button>
+  </div>
+  <button class="btn-validar" data-paso="1" onclick="validarPaso(1)">✅ Validar selección</button>
+  <div class="retro-paso" id="retro-paso-1"></div>
+
+  <!-- PASO 2: TÉCNICAS DE ELICITACIÓN -->
+  <h3>🪜 Paso 2: Elige las técnicas de elicitación correctas</h3>
+  <p>Para cada stakeholder, ¿qué técnica usarías para sacar la información?</p>
+
+  <div class="tabla-tecnicas">
+    <div class="fila-tecnica">
+      <div class="celda-stk">🎓 Estudiantes (cientos de ellos)</div>
+      <div class="celda-tec">
+        <button class="btn-tec" data-stk="estudiantes" data-tec="entrevista">💬 Entrevista uno a uno</button>
+        <button class="btn-tec correcta-tec" data-stk="estudiantes" data-tec="encuesta">📊 Encuesta + Focus group</button>
+        <button class="btn-tec" data-stk="estudiantes" data-tec="observacion">👀 Solo observar</button>
+      </div>
+    </div>
+    <div class="fila-tecnica">
+      <div class="celda-stk">👨‍🍳 Cocineros (5 personas, trabajan en flujo)</div>
+      <div class="celda-tec">
+        <button class="btn-tec correcta-tec" data-stk="cocineros" data-tec="observacion">👀 Observación + entrevista</button>
+        <button class="btn-tec" data-stk="cocineros" data-tec="encuesta">📊 Encuesta digital</button>
+        <button class="btn-tec" data-stk="cocineros" data-tec="leer">📚 Solo leer manuales</button>
+      </div>
+    </div>
+    <div class="fila-tecnica">
+      <div class="celda-stk">🎩 Rector (1 persona, decisor)</div>
+      <div class="celda-tec">
+        <button class="btn-tec correcta-tec" data-stk="rector" data-tec="entrevista">💬 Entrevista estructurada</button>
+        <button class="btn-tec" data-stk="rector" data-tec="encuesta">📊 Encuesta anónima</button>
+        <button class="btn-tec" data-stk="rector" data-tec="brainstorm">🧠 Brainstorm grupal</button>
+      </div>
+    </div>
+    <div class="fila-tecnica">
+      <div class="celda-stk">👪 Padres (muchos, dispersos)</div>
+      <div class="celda-tec">
+        <button class="btn-tec correcta-tec" data-stk="padres" data-tec="encuesta">📊 Encuesta digital</button>
+        <button class="btn-tec" data-stk="padres" data-tec="observacion">👀 Observación</button>
+        <button class="btn-tec" data-stk="padres" data-tec="prototipo">🎨 Solo prototipo</button>
+      </div>
+    </div>
+  </div>
+  <div class="retro-paso" id="retro-paso-2">
+    <p>💡 Tip: cuando hay muchas personas, usa encuestas. Para flujos de trabajo, observa. Para decisores clave, entrevista individual.</p>
+  </div>
+
+  <!-- PASO 3: NECESIDADES ELICITADAS -->
+  <h3>🪜 Paso 3: Necesidades reveladas</h3>
+  <p>Después de aplicar tus técnicas, esto fue lo que descubriste:</p>
+
+  <div class="lista-necesidades">
+    <div class="necesidad"><strong>Estudiantes:</strong> "Quiero ver el menú desde mi celular antes de bajar a la cafetería."</div>
+    <div class="necesidad"><strong>Estudiantes:</strong> "Quiero poder reservar mi almuerzo para que no se acabe."</div>
+    <div class="necesidad"><strong>Estudiantes:</strong> "Quiero pagar con la app sin llevar dinero suelto."</div>
+    <div class="necesidad"><strong>Estudiantes:</strong> "Quiero saber cuándo está listo mi pedido para no esperar de pie."</div>
+    <div class="necesidad"><strong>Cocineros:</strong> "Necesitamos saber cuántas porciones preparar para no desperdiciar."</div>
+    <div class="necesidad"><strong>Cocineros:</strong> "Necesitamos ver los pedidos en una pantalla mientras cocinamos."</div>
+    <div class="necesidad"><strong>Rector:</strong> "Quiero reportes mensuales de ventas y consumo por curso."</div>
+    <div class="necesidad"><strong>Rector:</strong> "El sistema no puede caerse en hora de almuerzo, todos lo usarán."</div>
+    <div class="necesidad"><strong>Padres:</strong> "Quiero poder recargar el saldo de mi hijo desde el banco."</div>
+    <div class="necesidad"><strong>Padres:</strong> "Quiero recibir un resumen semanal de lo que comió mi hijo."</div>
+  </div>
+
+  <!-- PASO 4: CLASIFICAR EN F vs NF -->
+  <h3>🪜 Paso 4: Clasifica como Funcional o No Funcional</h3>
+  <p>Toma cada necesidad ya convertida en requerimiento y clasifícala:</p>
+
+  <div class="juego-fnf">
+    <div class="item-fnf" data-correcta="F">
+      <p>📋 "El sistema deberá mostrar el menú del día a estudiantes autenticados."</p>
+      <div class="op-fnf">
+        <button class="btn-fnf" data-rta="F">🔧 Funcional</button>
+        <button class="btn-fnf" data-rta="NF">⚙️ No Funcional</button>
+      </div>
+    </div>
+    <div class="item-fnf" data-correcta="F">
+      <p>📋 "El sistema deberá permitir reservar y pagar un plato del menú con saldo en la cuenta."</p>
+      <div class="op-fnf">
+        <button class="btn-fnf" data-rta="F">🔧 Funcional</button>
+        <button class="btn-fnf" data-rta="NF">⚙️ No Funcional</button>
+      </div>
+    </div>
+    <div class="item-fnf" data-correcta="NF">
+      <p>📋 "El sistema deberá tener disponibilidad mínima del 99.5% durante el horario escolar."</p>
+      <div class="op-fnf">
+        <button class="btn-fnf" data-rta="F">🔧 Funcional</button>
+        <button class="btn-fnf" data-rta="NF">⚙️ No Funcional</button>
+      </div>
+    </div>
+    <div class="item-fnf" data-correcta="NF">
+      <p>📋 "La app deberá funcionar en iOS, Android y navegador web."</p>
+      <div class="op-fnf">
+        <button class="btn-fnf" data-rta="F">🔧 Funcional</button>
+        <button class="btn-fnf" data-rta="NF">⚙️ No Funcional</button>
+      </div>
+    </div>
+    <div class="item-fnf" data-correcta="F">
+      <p>📋 "El sistema deberá generar reportes mensuales de ventas en formato PDF."</p>
+      <div class="op-fnf">
+        <button class="btn-fnf" data-rta="F">🔧 Funcional</button>
+        <button class="btn-fnf" data-rta="NF">⚙️ No Funcional</button>
+      </div>
+    </div>
+    <div class="item-fnf" data-correcta="NF">
+      <p>📋 "El tiempo de respuesta de la app no deberá superar los 2 segundos."</p>
+      <div class="op-fnf">
+        <button class="btn-fnf" data-rta="F">🔧 Funcional</button>
+        <button class="btn-fnf" data-rta="NF">⚙️ No Funcional</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASO 5: ATRIBUTOS CRÍTICOS -->
+  <h3>🪜 Paso 5: Identifica los 3 atributos de calidad más críticos</h3>
+  <p>De todos los atributos, ¿cuáles son los TRES más importantes para SchoolEats? Selecciona exactamente 3:</p>
+
+  <div class="seleccion-3" id="paso5-atr">
+    <button class="opt-3" data-correcta="true">🛡️ Confiabilidad</button>
+    <button class="opt-3" data-correcta="true">👍 Usabilidad</button>
+    <button class="opt-3" data-correcta="true">🔒 Seguridad</button>
+    <button class="opt-3" data-correcta="false">📦 Portabilidad</button>
+    <button class="opt-3" data-correcta="false">🔧 Mantenibilidad</button>
+    <button class="opt-3" data-correcta="false">🔗 Compatibilidad</button>
+  </div>
+  <button class="btn-validar" data-paso="5" onclick="validarPaso(5)">✅ Validar selección</button>
+  <div class="retro-paso" id="retro-paso-5"></div>
+
+  <h3>🎓 Reflexión del taller</h3>
+  <div class="caja-tip">
+    <h4>💡 Lo que acabas de practicar</h4>
+    <ul>
+      <li>Identificar stakeholders relevantes (y descartar los que no aportan).</li>
+      <li>Elegir técnicas según el contexto (no usar entrevistas para 1000 personas).</li>
+      <li>Convertir necesidades informales en requerimientos formales.</li>
+      <li>Distinguir RF de RNF en escenarios reales.</li>
+      <li>Priorizar atributos de calidad según el contexto del negocio.</li>
+    </ul>
+    <p>👉 Este flujo es <strong>exactamente</strong> lo que hacen los analistas profesionales en su trabajo diario.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Historias →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — HISTORIAS DE USUARIO
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>6️⃣ 📝 Historias de Usuario</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · 🏃 La forma ágil de capturar requerimientos</p>
+
+  <div class="caja-concepto">
+    <h3>📖 ¿Qué son?</h3>
+    <p>Una <strong>historia de usuario</strong> es una <strong>descripción corta y simple</strong> de un requerimiento contada desde la perspectiva del usuario que lo necesita. Nacieron en las metodologías ágiles (Scrum, XP) y son el corazón de muchísimos equipos modernos.</p>
+    <p>👉 NO reemplazan a los RF formales, sino que son <strong>otra forma de expresarlos</strong>, más conversacional y centrada en el valor del usuario.</p>
+  </div>
+
+  <h3>📐 La fórmula mágica</h3>
+  <div class="formula-grande">
+    <span class="formula-fijo">Como</span>
+    <span class="formula-var">[tipo de usuario]</span>
+    <span class="formula-fijo">,</span><br>
+    <span class="formula-fijo">quiero</span>
+    <span class="formula-var">[acción / funcionalidad]</span>
+    <span class="formula-fijo">,</span><br>
+    <span class="formula-fijo">para</span>
+    <span class="formula-var">[beneficio / objetivo]</span>
+    <span class="formula-fijo">.</span>
+  </div>
+
+  <p>Tres partes simples:</p>
+  <ol>
+    <li><strong>Como [usuario]:</strong> ¿quién lo necesita?</li>
+    <li><strong>Quiero [acción]:</strong> ¿qué quiere hacer?</li>
+    <li><strong>Para [beneficio]:</strong> ¿por qué lo quiere? (el famoso "para qué")</li>
+  </ol>
+
+  <h3>✨ Ejemplos completos</h3>
+
+  <div class="historia-ejemplo">
+    <p><strong>Como</strong> estudiante,</p>
+    <p><strong>quiero</strong> ver el menú del día desde mi celular,</p>
+    <p><strong>para</strong> decidir si comer en la cafetería o llevar algo de casa.</p>
+  </div>
+
+  <div class="historia-ejemplo">
+    <p><strong>Como</strong> cocinero,</p>
+    <p><strong>quiero</strong> recibir alertas de pedidos nuevos en una pantalla de la cocina,</p>
+    <p><strong>para</strong> preparar la comida sin perder ningún pedido.</p>
+  </div>
+
+  <div class="historia-ejemplo">
+    <p><strong>Como</strong> padre de familia,</p>
+    <p><strong>quiero</strong> recargar el saldo de mi hijo desde el banco,</p>
+    <p><strong>para</strong> evitar que cargue efectivo al colegio.</p>
+  </div>
+
+  <h3>⭐ INVEST — Las 6 reglas de oro</h3>
+  <p>Una buena historia de usuario cumple INVEST (acrónimo en inglés):</p>
+
+  <div class="invest">
+    <div class="invest-item">
+      <span class="invest-letra">I</span>
+      <div>
+        <strong>Independent</strong> (Independiente)
+        <p>No depende de otras historias para entregar valor.</p>
+      </div>
+    </div>
+    <div class="invest-item">
+      <span class="invest-letra">N</span>
+      <div>
+        <strong>Negotiable</strong> (Negociable)
+        <p>Se puede discutir y refinar, no es un contrato cerrado.</p>
+      </div>
+    </div>
+    <div class="invest-item">
+      <span class="invest-letra">V</span>
+      <div>
+        <strong>Valuable</strong> (Valiosa)
+        <p>Entrega valor real al usuario.</p>
+      </div>
+    </div>
+    <div class="invest-item">
+      <span class="invest-letra">E</span>
+      <div>
+        <strong>Estimable</strong> (Estimable)
+        <p>Se puede calcular cuánto cuesta o tarda.</p>
+      </div>
+    </div>
+    <div class="invest-item">
+      <span class="invest-letra">S</span>
+      <div>
+        <strong>Small</strong> (Pequeña)
+        <p>Cabe en un sprint corto (días, no meses).</p>
+      </div>
+    </div>
+    <div class="invest-item">
+      <span class="invest-letra">T</span>
+      <div>
+        <strong>Testable</strong> (Testeable)
+        <p>Hay forma de comprobar si está terminada.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>✅ Criterios de aceptación</h3>
+  <p>Una historia sin criterios de aceptación es un deseo. Los <strong>criterios de aceptación</strong> definen las condiciones que debe cumplir para considerarse completada. Se escriben en formato <strong>Given/When/Then</strong> (Dado/Cuando/Entonces).</p>
+
+  <div class="caja-criterios">
+    <h4>📋 Historia:</h4>
+    <p><em>Como estudiante, quiero ver el menú del día en mi celular, para decidir qué comer.</em></p>
+
+    <h4>✅ Criterios de aceptación:</h4>
+    <ul>
+      <li><strong>Dado</strong> que soy un estudiante autenticado,<br>
+          <strong>cuando</strong> abro la app,<br>
+          <strong>entonces</strong> veo el menú del día con foto, nombre y precio de cada plato.</li>
+      <li><strong>Dado</strong> que un plato está agotado,<br>
+          <strong>cuando</strong> el menú se muestra,<br>
+          <strong>entonces</strong> ese plato aparece marcado como "AGOTADO" y no se puede seleccionar.</li>
+      <li><strong>Dado</strong> que no hay conexión a internet,<br>
+          <strong>cuando</strong> abro la app,<br>
+          <strong>entonces</strong> muestra el último menú guardado con un aviso de "sin conexión".</li>
+    </ul>
+  </div>
+
+  <h3>🎨 Constructor interactivo de historias</h3>
+  <p>Selecciona las piezas y construye tu propia historia de usuario:</p>
+
+  <div class="constructor">
+    <div class="constructor-fila">
+      <label>Como…</label>
+      <select id="cons-quien">
+        <option value="">— elige un usuario —</option>
+        <option>estudiante</option>
+        <option>profesor</option>
+        <option>cocinero</option>
+        <option>padre de familia</option>
+        <option>rector</option>
+        <option>bibliotecario</option>
+      </select>
+    </div>
+    <div class="constructor-fila">
+      <label>Quiero…</label>
+      <select id="cons-que">
+        <option value="">— elige una acción —</option>
+        <option>ver el menú del día</option>
+        <option>reservar mi almuerzo</option>
+        <option>recibir notificaciones de pedidos listos</option>
+        <option>recargar el saldo de la cuenta</option>
+        <option>consultar las notas del estudiante</option>
+        <option>generar un reporte de consumo</option>
+      </select>
+    </div>
+    <div class="constructor-fila">
+      <label>Para…</label>
+      <select id="cons-para">
+        <option value="">— elige un beneficio —</option>
+        <option>decidir qué comer sin bajar a la cafetería</option>
+        <option>evitar que se acabe la comida</option>
+        <option>no perder tiempo esperando de pie</option>
+        <option>no llevar dinero en efectivo al colegio</option>
+        <option>estar al tanto del progreso académico</option>
+        <option>tomar mejores decisiones administrativas</option>
+      </select>
+    </div>
+    <button class="btn-construir" onclick="construirHistoria()">✨ Construir historia</button>
+    <div class="resultado-historia" id="resultado-historia"></div>
+  </div>
+
+  <h3>🎯 Práctica final: escribe tres historias</h3>
+  <div class="caja-desafio">
+    <p><strong>Reto:</strong> En tu cuaderno (o mentalmente), escribe 3 historias de usuario para SchoolEats que NO estén en los ejemplos. Cada una con:</p>
+    <ol>
+      <li>Formato Como/Quiero/Para.</li>
+      <li>Al menos 2 criterios de aceptación (Given/When/Then).</li>
+      <li>Que cumpla INVEST.</li>
+    </ol>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('reto-historias')">👁️ Ver una propuesta de ejemplo</button>
+    <div class="solucion" id="reto-historias">
+      <p><strong>Historia 1:</strong></p>
+      <p>Como rector, quiero recibir un reporte semanal de ventas en mi correo, para tomar decisiones sin entrar manualmente al sistema.</p>
+      <ul>
+        <li>Dado que soy rector autenticado, cuando termina la semana, entonces recibo un correo con el reporte en PDF adjunto.</li>
+        <li>Dado que no hubo ventas en la semana, cuando llega el reporte, entonces incluye un mensaje "sin ventas registradas".</li>
+      </ul>
+      <p><strong>Historia 2:</strong></p>
+      <p>Como cocinero, quiero ver un resumen de los pedidos pendientes en orden de llegada, para preparar la comida sin saltarme ningún pedido.</p>
+      <ul>
+        <li>Dado que ingresan pedidos nuevos, cuando abro la pantalla de cocina, entonces los veo listados por hora de llegada.</li>
+        <li>Dado que termino un pedido, cuando lo marco como listo, entonces desaparece de la lista pendiente y se notifica al estudiante.</li>
+      </ul>
+      <p><strong>Historia 3:</strong></p>
+      <p>Como padre de familia, quiero ver un historial de lo que ha comido mi hijo, para asegurarme de que tiene una dieta balanceada.</p>
+      <ul>
+        <li>Dado que soy padre autenticado, cuando entro a la sección "mi hijo", entonces veo el historial de pedidos del último mes.</li>
+        <li>Dado que selecciono un día, cuando hago tap en él, entonces se despliega el detalle de lo consumido ese día.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es el formato correcto de una historia de usuario?</p>
+      <button class="opcion" data-op="a">"El sistema debe… porque… cuando…"</button>
+      <button class="opcion" data-op="b">"Como [usuario], quiero [acción], para [beneficio]."</button>
+      <button class="opcion" data-op="c">"Si [condición], entonces [acción]."</button>
+      <button class="opcion" data-op="d">"Sistema: hacer X."</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué significa la "S" de INVEST?</p>
+      <button class="opcion" data-op="a">System (Sistema)</button>
+      <button class="opcion" data-op="b">Strong (Fuerte)</button>
+      <button class="opcion" data-op="c">Simple (Simple)</button>
+      <button class="opcion" data-op="d">Small (Pequeña)</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿En qué formato se escriben los criterios de aceptación?</p>
+      <button class="opcion" data-op="a">Dado/Cuando/Entonces (Given/When/Then)</button>
+      <button class="opcion" data-op="b">Sujeto/Verbo/Objeto</button>
+      <button class="opcion" data-op="c">If/Else/Endif</button>
+      <button class="opcion" data-op="d">JSON</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Reto Final →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 7 — RETO FINAL
+============================================================ -->
+<section class="modulo" data-modulo="7">
+  <h2>7️⃣ 🏆 Reto Integrador Final</h2>
+  <p class="meta-modulo">⏱️ 10 minutos · 🎓 Aplica TODO lo aprendido</p>
+
+  <div class="hero">
+    <h2>🎉 ¡Lo lograste!</h2>
+    <p class="lead">Has dominado los requerimientos de software. Sabes capturarlos, clasificarlos, escribirlos y traducirlos a historias de usuario. Esa es una habilidad que pocos jóvenes de tu edad poseen.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🧠</span>
+      <h3>Conceptos</h3>
+      <p>Entiendes los niveles, fuentes y características de los requerimientos.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🔧</span>
+      <h3>RF</h3>
+      <p>Escribes requerimientos funcionales atómicos y verificables.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">⚙️</span>
+      <h3>RNF</h3>
+      <p>Identificas RNF y los expresas con métricas medibles.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">💎</span>
+      <h3>Calidad</h3>
+      <p>Conoces los 8 atributos ISO 25010 y sus trade-offs.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">📝</span>
+      <h3>Historias</h3>
+      <p>Construyes historias de usuario con criterios de aceptación.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🧩</span>
+      <h3>Análisis</h3>
+      <p>Sabes hacer un análisis de necesidades completo.</p>
+    </div>
+  </div>
+
+  <h3>🚀 Tu reto final</h3>
+  <div class="caja-desafio">
+    <p><strong>Misión:</strong> Elige un sistema (real o imaginario) y produce un mini-documento de requerimientos completo:</p>
+    <ul>
+      <li>📚 Sistema de biblioteca escolar.</li>
+      <li>🚗 Sistema de transporte estudiantil con rutas.</li>
+      <li>🏃 App para inscripción a deportes extracurriculares.</li>
+      <li>📅 Sistema de reservas de salones de estudio.</li>
+      <li>💡 O cualquier sistema que se te ocurra.</li>
+    </ul>
+    <p>Tu entrega debe incluir:</p>
+    <ol>
+      <li><strong>Contexto:</strong> un párrafo describiendo el problema.</li>
+      <li><strong>Stakeholders:</strong> al menos 3 con su rol.</li>
+      <li><strong>Técnicas de elicitación</strong> elegidas para cada stakeholder.</li>
+      <li><strong>5 RF</strong> bien escritos (plantilla "El sistema deberá…").</li>
+      <li><strong>3 RNF</strong> medibles, con métricas y umbrales.</li>
+      <li><strong>3 atributos de calidad</strong> críticos justificados.</li>
+      <li><strong>3 historias de usuario</strong> con criterios de aceptación (Given/When/Then).</li>
+    </ol>
+    <p>📸 Comparte el resultado con tu profesor. Esto es exactamente lo que un analista profesional entrega como producto.</p>
+  </div>
+
+  <h3>📚 Para seguir aprendiendo</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">📖</span>
+      <h3>ISO/IEC 25010</h3>
+      <p>El estándar oficial de calidad del software.</p>
+      <a href="https://iso25000.com/index.php/normas-iso-25000/iso-25010" target="_blank">Visitar →</a>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">📋</span>
+      <h3>IEEE 830</h3>
+      <p>Plantilla profesional para especificación de requerimientos.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎯</span>
+      <h3>Próximo nivel</h3>
+      <p>Diagramas UML, casos de uso formales y arquitectura de software.</p>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💭 Reflexión final</h4>
+    <p>Los requerimientos son <strong>el puente entre la idea y el código</strong>. Sin ellos, un programador puede escribir el software más bonito del mundo… y construir algo que nadie necesitaba. Acabas de aprender a construir ese puente. Es una habilidad que vale ORO en la industria. Úsala bien.</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🚀 ¡Felicitaciones!</h2>
+    <p>Eres oficialmente un capturador de requerimientos. El mundo del software es mejor contigo en él.</p>
+    <button class="btn-final" onclick="reiniciarCurso()">🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <p>📋 Curso de Requerimientos · Nivel 2 · Diseñado para jóvenes analistas · 2026</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

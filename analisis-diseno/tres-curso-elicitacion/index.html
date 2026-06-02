@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔍 Elicitación de Requerimientos — Clase 3</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- =================== HEADER + PROGRESO =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🔍</span>
+    <div>
+      <h1>Elicitación de Requerimientos</h1>
+      <p class="subtitulo">Clase 3 · El arte de descubrir lo que el cliente realmente necesita</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span id="porcentaje">0%</span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">1️⃣ ¿Qué es?</button>
+  <button class="btn-modulo" data-modulo="2">2️⃣ Entrevistas</button>
+  <button class="btn-modulo" data-modulo="3">3️⃣ Encuestas</button>
+  <button class="btn-modulo" data-modulo="4">4️⃣ Observación</button>
+  <button class="btn-modulo" data-modulo="5">5️⃣ Juego de Roles</button>
+  <button class="btn-modulo" data-modulo="6">6️⃣ Simulación</button>
+  <button class="btn-modulo" data-modulo="7">7️⃣ Viabilidad</button>
+  <button class="btn-modulo" data-modulo="8">🏆 Final</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🕵️ ¡Bienvenid@ a la Clase 3!</h2>
+    <p class="lead">Hasta ahora aprendiste qué es un requerimiento y cómo escribirlo. Pero hay un secreto: <strong>los requerimientos NO están escritos en ningún lado</strong>. Viven en la cabeza del cliente, en sus rutinas, en lo que NO dice. Tu misión hoy es aprender a <strong>extraerlos</strong>… como un detective.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">⏱️</span>
+      <h3>Duración</h3>
+      <p>3 horas y 45 minutos en 9 módulos. Avanza a tu ritmo.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Dominar las 3 técnicas clásicas de elicitación + análisis de viabilidad.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎮</span>
+      <h3>Lo más divertido</h3>
+      <p>Un <strong>juego de roles</strong> donde TÚ serás el analista entrevistando a una clienta real (simulada).</p>
+    </div>
+  </div>
+
+  <div class="caja-destacada">
+    <h3>🗺️ Ruta de la clase</h3>
+    <ol class="ruta">
+      <li><strong>Módulo 1 (20 min):</strong> El arte de elicitar — eres un detective.</li>
+      <li><strong>Módulo 2 (35 min):</strong> 💬 Entrevistas — la técnica reina.</li>
+      <li><strong>Módulo 3 (30 min):</strong> 📊 Encuestas — para llegar a muchos.</li>
+      <li><strong>Módulo 4 (25 min):</strong> 👀 Observación — ver lo que nadie cuenta.</li>
+      <li><strong>Módulo 5 (40 min):</strong> 🎭 Juego de Roles: Cliente-Analista.</li>
+      <li><strong>Módulo 6 (30 min):</strong> 📋 Simulación de levantamiento de información.</li>
+      <li><strong>Módulo 7 (30 min):</strong> ⚖️ Análisis de Viabilidad del requerimiento.</li>
+      <li><strong>Módulo 8 (15 min):</strong> 🏆 Reto integrador final.</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Antes de empezar</h4>
+    <p>Esta clase es <strong>muy práctica</strong>. Hay mucho menos "teoría seca" y mucho más "ponte en los zapatos del analista". Prepárate para tomar decisiones, hacer preguntas y descubrir información oculta.</p>
+  </div>
+
+  <div class="caja-recordatorio">
+    <h4>🔁 Recordatorio de las clases anteriores</h4>
+    <ul>
+      <li><strong>Clase 1:</strong> Análisis y Diseño · Ciclo de vida · Metodologías ágiles vs estructuradas.</li>
+      <li><strong>Clase 2:</strong> Requerimientos funcionales y no funcionales · Atributos de calidad · Historias de usuario.</li>
+      <li><strong>Esta clase:</strong> <em>¿Cómo descubrir esos requerimientos en primer lugar?</em></li>
+    </ul>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1 →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — ¿QUÉ ES ELICITAR?
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>1️⃣ El arte de elicitar</h2>
+  <p class="meta-modulo">⏱️ 20 minutos · 🧠 Concepto y mentalidad</p>
+
+  <div class="caja-concepto">
+    <h3>📖 Definición</h3>
+    <p><strong>Elicitar</strong> significa "sacar, extraer, hacer salir". En ingeniería de software, <strong>elicitación de requerimientos</strong> es el proceso de <em>descubrir</em> las necesidades del cliente y los usuarios, traduciéndolas en requerimientos formales.</p>
+    <p>Ojo con la palabra: NO es "recolectar" (que suena pasivo), es <strong>elicitar</strong> (activo). El cliente rara vez sabe exactamente qué necesita; tu trabajo es hacérselo descubrir.</p>
+  </div>
+
+  <h3>🕵️ El analista como detective</h3>
+  <p>Sherlock Holmes no preguntaba "¿quién mató al duque?". Observaba, preguntaba cosas indirectas, escuchaba silencios y conectaba pistas. Un buen analista hace lo mismo.</p>
+
+  <div class="cita-grande">
+    <p>"Si hubiera preguntado a la gente qué quería, me habrían dicho: caballos más rápidos."</p>
+    <span>— Atribuida a Henry Ford</span>
+  </div>
+
+  <p>Lo que dice esa frase es profundo: los clientes <strong>describen soluciones que conocen, no problemas reales</strong>. Tu trabajo es ir más allá de lo que dicen y descubrir <em>por qué</em> lo dicen.</p>
+
+  <h3>🎯 Las 3 grandes técnicas (las que veremos hoy)</h3>
+
+  <div class="cuadricula">
+    <div class="tecnica-card violeta">
+      <span class="tecnica-icono">💬</span>
+      <h3>Entrevistas</h3>
+      <p>Conversación uno-a-uno. Profundas pero lentas. La técnica reina.</p>
+    </div>
+    <div class="tecnica-card rosa">
+      <span class="tecnica-icono">📊</span>
+      <h3>Encuestas</h3>
+      <p>Preguntas a muchas personas. Datos cuantitativos. Rápido pero superficial.</p>
+    </div>
+    <div class="tecnica-card dorado">
+      <span class="tecnica-icono">👀</span>
+      <h3>Observación</h3>
+      <p>Ver a la gente trabajar. Descubre lo que NO te cuentan.</p>
+    </div>
+  </div>
+
+  <p>👉 Las tres se <strong>complementan</strong>. Un buen analista no usa solo una; combina las tres según el contexto.</p>
+
+  <h3>🛠️ Habilidades blandas que necesitas</h3>
+  <div class="habilidades">
+    <div class="hab-item">
+      <span class="hab-emoji">👂</span>
+      <strong>Escucha activa</strong>
+      <p>Concentrarte 100% en lo que dice el otro, no en lo que vas a responder.</p>
+    </div>
+    <div class="hab-item">
+      <span class="hab-emoji">❓</span>
+      <strong>Curiosidad genuina</strong>
+      <p>Preguntar "¿por qué?" muchas veces. Como un niño de 5 años.</p>
+    </div>
+    <div class="hab-item">
+      <span class="hab-emoji">🤐</span>
+      <strong>Saber callar</strong>
+      <p>El silencio incomoda… y a veces revela lo más importante.</p>
+    </div>
+    <div class="hab-item">
+      <span class="hab-emoji">🪞</span>
+      <strong>Empatía</strong>
+      <p>Ponerte en los zapatos del cliente, sin juzgar.</p>
+    </div>
+    <div class="hab-item">
+      <span class="hab-emoji">📝</span>
+      <strong>Tomar notas</strong>
+      <p>Tu memoria miente. El papel no.</p>
+    </div>
+    <div class="hab-item">
+      <span class="hab-emoji">🚫</span>
+      <strong>No asumir</strong>
+      <p>"Lo obvio" para ti puede no serlo para el cliente, y viceversa.</p>
+    </div>
+  </div>
+
+  <h3>⚠️ El problema del iceberg</h3>
+  <p>Lo que el cliente <em>te dice</em> es solo la punta del iceberg. Debajo hay:</p>
+  <div class="iceberg">
+    <div class="ice-punta">
+      <h4>🧊 Lo que dice</h4>
+      <p>"Quiero una app rápida y bonita."</p>
+    </div>
+    <div class="ice-medio">
+      <h4>💭 Lo que piensa pero no dice</h4>
+      <p>"Mi competencia tiene una, así que yo también necesito."</p>
+    </div>
+    <div class="ice-fondo">
+      <h4>🌊 Lo que NO sabe que piensa</h4>
+      <p>Procesos automáticos, miedos, suposiciones culturales, rutinas que considera "normales".</p>
+    </div>
+  </div>
+
+  <p>Tu trabajo como analista es sacar el iceberg completo a la superficie.</p>
+
+  <!-- QUIZ -->
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué significa "elicitar"?</p>
+      <button class="opcion" data-op="a">Imprimir requerimientos en una hoja</button>
+      <button class="opcion" data-op="b">Extraer/descubrir activamente las necesidades</button>
+      <button class="opcion" data-op="c">Programar la app</button>
+      <button class="opcion" data-op="d">Hacer una presentación</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Según la frase atribuida a Ford, ¿qué problema tienen los clientes?</p>
+      <button class="opcion" data-op="a">Son lentos al hablar</button>
+      <button class="opcion" data-op="b">No tienen dinero</button>
+      <button class="opcion" data-op="c">Describen soluciones conocidas, no problemas reales</button>
+      <button class="opcion" data-op="d">No saben usar computadores</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Por qué se compara al analista con un detective?</p>
+      <button class="opcion" data-op="a">Porque usa lupa</button>
+      <button class="opcion" data-op="b">Porque viste de negro</button>
+      <button class="opcion" data-op="c">Porque arresta gente</button>
+      <button class="opcion" data-op="d">Porque observa, pregunta indirecto, escucha y conecta pistas</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Entrevistas →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — ENTREVISTAS
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>2️⃣ 💬 Entrevistas</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · 🎤 La técnica reina</p>
+
+  <div class="caja-concepto">
+    <h3>📖 ¿Qué es una entrevista?</h3>
+    <p>Una <strong>entrevista</strong> es una conversación con propósito entre el analista (tú) y un stakeholder. El objetivo: <strong>extraer información</strong> que ayude a definir el sistema. NO es un interrogatorio, NO es un chequeo de lista. Es una conversación guiada.</p>
+  </div>
+
+  <h3>🎨 Tres tipos de entrevistas</h3>
+
+  <div class="tipos-entrevista">
+    <div class="tipo-card">
+      <h4>📋 Estructurada</h4>
+      <p>Lista cerrada de preguntas en orden fijo. Como un formulario hablado.</p>
+      <p class="usar"><strong>Úsala cuando:</strong> tienes muchas personas que entrevistar y necesitas comparar respuestas.</p>
+      <p class="prosCon">✅ Datos comparables · ❌ Rígida, no descubre lo inesperado.</p>
+    </div>
+    <div class="tipo-card">
+      <h4>🗣️ No estructurada</h4>
+      <p>Conversación libre, sin guion. Solo un tema general.</p>
+      <p class="usar"><strong>Úsala cuando:</strong> recién empiezas y no sabes qué preguntar todavía.</p>
+      <p class="prosCon">✅ Descubre sorpresas · ❌ Difícil de comparar y analizar.</p>
+    </div>
+    <div class="tipo-card destacada">
+      <h4>⭐ Semi-estructurada</h4>
+      <p>Tienes preguntas guía, pero te permites desviarte si surge algo interesante.</p>
+      <p class="usar"><strong>Úsala cuando:</strong> casi siempre. Es el equilibrio perfecto.</p>
+      <p class="prosCon">✅ Lo mejor de ambos mundos · ❌ Requiere práctica.</p>
+    </div>
+  </div>
+
+  <h3>🕒 Las 3 etapas de toda entrevista</h3>
+
+  <div class="etapas">
+    <div class="etapa-item">
+      <div class="etapa-num">1</div>
+      <div>
+        <h4>📋 ANTES (preparación)</h4>
+        <ul>
+          <li>Investiga sobre la empresa/persona.</li>
+          <li>Define los objetivos: ¿qué quiero saber?</li>
+          <li>Prepara 5-10 preguntas guía.</li>
+          <li>Agenda y confirma la cita.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="etapa-item">
+      <div class="etapa-num">2</div>
+      <div>
+        <h4>🎤 DURANTE (ejecución)</h4>
+        <ul>
+          <li>Rompe el hielo con conversación informal.</li>
+          <li>Explica brevemente el propósito.</li>
+          <li>Empieza con preguntas abiertas y amplias.</li>
+          <li>Profundiza con repreguntas.</li>
+          <li>Toma notas o pide grabar (con permiso).</li>
+          <li>Resume al final para validar.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="etapa-item">
+      <div class="etapa-num">3</div>
+      <div>
+        <h4>📝 DESPUÉS (consolidación)</h4>
+        <ul>
+          <li>Pasa las notas a limpio en menos de 24 horas.</li>
+          <li>Identifica requerimientos potenciales.</li>
+          <li>Marca dudas para una segunda ronda.</li>
+          <li>Agradece al entrevistado por correo.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>❓ Los 3 tipos de preguntas</h3>
+
+  <div class="cuadricula-2">
+    <div class="pregunta-tipo abierta">
+      <h4>🌍 Abiertas</h4>
+      <p>Invitan a explicar, no se contestan con sí/no.</p>
+      <p class="ej">Ej: <em>"¿Cómo es un día típico en su trabajo?"</em></p>
+      <p class="usar2">👉 Úsalas <strong>al inicio</strong> y para explorar.</p>
+    </div>
+    <div class="pregunta-tipo cerrada">
+      <h4>🎯 Cerradas</h4>
+      <p>Tienen respuesta corta: sí/no, número, opción.</p>
+      <p class="ej">Ej: <em>"¿Cuántos empleados tiene?"</em></p>
+      <p class="usar2">👉 Úsalas <strong>para datos específicos</strong> o confirmar.</p>
+    </div>
+    <div class="pregunta-tipo sondeo">
+      <h4>🔍 De sondeo</h4>
+      <p>Profundizan en algo que el entrevistado dijo.</p>
+      <p class="ej">Ej: <em>"¿Podría darme un ejemplo de cuándo pasó eso?"</em></p>
+      <p class="usar2">👉 Úsalas <strong>para ir más profundo</strong>.</p>
+    </div>
+  </div>
+
+  <h3>🎮 Práctica: Clasifica las preguntas</h3>
+  <p>Identifica qué tipo de pregunta es cada una:</p>
+
+  <div class="juego-preg">
+    <div class="item-preg" data-correcta="abierta">
+      <p>📝 "Cuénteme cómo gestiona los pedidos hoy en día."</p>
+      <div class="op-preg">
+        <button class="btn-preg" data-rta="abierta">🌍 Abierta</button>
+        <button class="btn-preg" data-rta="cerrada">🎯 Cerrada</button>
+        <button class="btn-preg" data-rta="sondeo">🔍 Sondeo</button>
+      </div>
+    </div>
+    <div class="item-preg" data-correcta="cerrada">
+      <p>📝 "¿Cuántos empleados trabajan en horario nocturno?"</p>
+      <div class="op-preg">
+        <button class="btn-preg" data-rta="abierta">🌍 Abierta</button>
+        <button class="btn-preg" data-rta="cerrada">🎯 Cerrada</button>
+        <button class="btn-preg" data-rta="sondeo">🔍 Sondeo</button>
+      </div>
+    </div>
+    <div class="item-preg" data-correcta="sondeo">
+      <p>📝 "Acaba de decir que 'se descuadra el inventario'. ¿Me da un ejemplo concreto?"</p>
+      <div class="op-preg">
+        <button class="btn-preg" data-rta="abierta">🌍 Abierta</button>
+        <button class="btn-preg" data-rta="cerrada">🎯 Cerrada</button>
+        <button class="btn-preg" data-rta="sondeo">🔍 Sondeo</button>
+      </div>
+    </div>
+    <div class="item-preg" data-correcta="abierta">
+      <p>📝 "¿Qué es lo más frustrante de su trabajo actualmente?"</p>
+      <div class="op-preg">
+        <button class="btn-preg" data-rta="abierta">🌍 Abierta</button>
+        <button class="btn-preg" data-rta="cerrada">🎯 Cerrada</button>
+        <button class="btn-preg" data-rta="sondeo">🔍 Sondeo</button>
+      </div>
+    </div>
+    <div class="item-preg" data-correcta="sondeo">
+      <p>📝 "Interesante… ¿podría profundizar en eso último?"</p>
+      <div class="op-preg">
+        <button class="btn-preg" data-rta="abierta">🌍 Abierta</button>
+        <button class="btn-preg" data-rta="cerrada">🎯 Cerrada</button>
+        <button class="btn-preg" data-rta="sondeo">🔍 Sondeo</button>
+      </div>
+    </div>
+  </div>
+
+  <h3>⚠️ Errores comunes (NO los hagas)</h3>
+
+  <div class="errores-grid">
+    <div class="error-item">
+      <span class="err-num">❌</span>
+      <h4>Preguntar y responderte tú mismo</h4>
+      <p class="mal">"¿Y cómo organizan los pedidos? Supongo que con Excel, ¿no?"</p>
+      <p class="bien">✅ Mejor: "¿Cómo organizan los pedidos?" (¡y CALLATE!)</p>
+    </div>
+    <div class="error-item">
+      <span class="err-num">❌</span>
+      <h4>Hacer preguntas técnicas demasiado pronto</h4>
+      <p class="mal">"¿Prefiere PostgreSQL o MySQL?"</p>
+      <p class="bien">✅ Mejor: ese tipo de pregunta es para el diseño, NO para entrevistar al cliente.</p>
+    </div>
+    <div class="error-item">
+      <span class="err-num">❌</span>
+      <h4>Asumir lo que el otro va a decir</h4>
+      <p class="mal">"Como todos los negocios pequeños, usted debe usar Excel para…"</p>
+      <p class="bien">✅ Mejor: preguntar siempre, nunca dar por sentado.</p>
+    </div>
+    <div class="error-item">
+      <span class="err-num">❌</span>
+      <h4>Cortar al entrevistado</h4>
+      <p class="mal">Cliente: "Pues mire, lo que pasa es que…" / Tú: "Ya, ya entiendo. Otra cosa…"</p>
+      <p class="bien">✅ Mejor: deja que termine. Especialmente cuando pausa.</p>
+    </div>
+    <div class="error-item">
+      <span class="err-num">❌</span>
+      <h4>Preguntas que sugieren respuesta</h4>
+      <p class="mal">"¿No le parecería bueno tener notificaciones automáticas?"</p>
+      <p class="bien">✅ Mejor: "¿Qué le gustaría que pasara cuando llega un pedido?"</p>
+    </div>
+    <div class="error-item">
+      <span class="err-num">❌</span>
+      <h4>No tomar notas</h4>
+      <p class="mal">"Tranquilo, yo me acuerdo de todo."</p>
+      <p class="bien">✅ Mejor: tu memoria miente. Toma notas o graba (con permiso).</p>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Cuál tipo de entrevista combina guion preparado con flexibilidad?</p>
+      <button class="opcion" data-op="a">Estructurada</button>
+      <button class="opcion" data-op="b">No estructurada</button>
+      <button class="opcion" data-op="c">Semi-estructurada</button>
+      <button class="opcion" data-op="d">Improvisada</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cuándo usarías una pregunta abierta?</p>
+      <button class="opcion" data-op="a">Al inicio y para explorar el tema</button>
+      <button class="opcion" data-op="b">Solo al final</button>
+      <button class="opcion" data-op="c">Cuando necesitas un número exacto</button>
+      <button class="opcion" data-op="d">Nunca</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Qué NO deberías hacer en una entrevista?</p>
+      <button class="opcion" data-op="a">Tomar notas</button>
+      <button class="opcion" data-op="b">Hacer preguntas de sondeo</button>
+      <button class="opcion" data-op="c">Romper el hielo al inicio</button>
+      <button class="opcion" data-op="d">Asumir respuestas antes de que el cliente conteste</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Encuestas →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — ENCUESTAS
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>3️⃣ 📊 Encuestas</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 📈 Cuando son muchos</p>
+
+  <div class="caja-concepto">
+    <h3>📖 ¿Qué es una encuesta?</h3>
+    <p>Una <strong>encuesta</strong> es un cuestionario que respondes <em>asincrónicamente</em> (en tu tiempo libre). Sirve para recoger información de MUCHAS personas a la vez, sin necesidad de hablar con cada una.</p>
+  </div>
+
+  <h3>🤔 ¿Cuándo usar encuestas?</h3>
+  <div class="cuadricula-2">
+    <div class="caja-bueno">
+      <h4>✅ Usa encuestas cuando…</h4>
+      <ul>
+        <li>El grupo es <strong>muy grande</strong> (cientos o miles de personas).</li>
+        <li>Necesitas <strong>datos cuantitativos</strong> (porcentajes, números).</li>
+        <li>Los participantes están dispersos.</li>
+        <li>Quieres respuestas anónimas (más honestas).</li>
+        <li>Ya hiciste algunas entrevistas y quieres validar.</li>
+      </ul>
+    </div>
+    <div class="caja-malo">
+      <h4>❌ NO uses encuestas cuando…</h4>
+      <ul>
+        <li>Necesitas profundidad y matices.</li>
+        <li>Es un tema complejo que requiere explicación.</li>
+        <li>Son pocas personas clave (mejor entrevista).</li>
+        <li>Los participantes son no técnicos y la encuesta es larga.</li>
+        <li>El tema es muy nuevo y aún no sabes qué preguntar.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>🛠️ Tipos de preguntas en encuestas</h3>
+
+  <div class="tipos-encuesta">
+    <div class="encuesta-tipo">
+      <h4>1️⃣ Selección única</h4>
+      <p><strong>Ejemplo:</strong> ¿Cuál es tu rol?</p>
+      <ul class="opciones-demo">
+        <li>○ Estudiante</li>
+        <li>○ Profesor</li>
+        <li>○ Administrativo</li>
+      </ul>
+    </div>
+    <div class="encuesta-tipo">
+      <h4>2️⃣ Selección múltiple</h4>
+      <p><strong>Ejemplo:</strong> ¿Cuáles funciones usarías? (marca todas)</p>
+      <ul class="opciones-demo">
+        <li>☐ Ver menú</li>
+        <li>☐ Reservar</li>
+        <li>☐ Pagar</li>
+      </ul>
+    </div>
+    <div class="encuesta-tipo destacada">
+      <h4>3️⃣ Escala Likert ⭐</h4>
+      <p><strong>Ejemplo:</strong> "La cafetería actual es eficiente":</p>
+      <div class="likert">
+        <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+      </div>
+      <p class="ej">(1=Muy en desacuerdo, 5=Muy de acuerdo)</p>
+    </div>
+    <div class="encuesta-tipo">
+      <h4>4️⃣ Numérica / corta</h4>
+      <p><strong>Ejemplo:</strong> ¿Cuántos minutos esperas hoy?</p>
+      <div class="input-demo">[ ___ minutos ]</div>
+    </div>
+    <div class="encuesta-tipo">
+      <h4>5️⃣ Abierta corta</h4>
+      <p><strong>Ejemplo:</strong> Si pudieras cambiar 1 cosa, ¿qué sería?</p>
+      <div class="input-demo">[ ____________ ]</div>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 La escala Likert</h4>
+    <p>Es la estrella de las encuestas. Permite medir <strong>actitudes y opiniones</strong> en una escala (típicamente de 1 a 5 o 1 a 7). Los resultados son cuantificables y comparables.</p>
+  </div>
+
+  <h3>📐 La regla de oro: diseña BIEN</h3>
+
+  <div class="reglas-encuesta">
+    <div class="regla-item">
+      <strong>1. Corta.</strong> Máximo 10-15 preguntas. Si pasas eso, la gente abandona.
+    </div>
+    <div class="regla-item">
+      <strong>2. Clara.</strong> Cada pregunta debe entenderse leyéndola UNA vez.
+    </div>
+    <div class="regla-item">
+      <strong>3. Una idea por pregunta.</strong> No "¿es rápida y fácil?" — son dos cosas.
+    </div>
+    <div class="regla-item">
+      <strong>4. Sin jerga técnica.</strong> No uses palabras como "API", "frontend" o "ETL".
+    </div>
+    <div class="regla-item">
+      <strong>5. Empieza por lo fácil.</strong> Las primeras preguntas deben ser cortas; al final las más complejas.
+    </div>
+    <div class="regla-item">
+      <strong>6. Anónima si es posible.</strong> Más honestidad. Solo pide datos personales si los necesitas.
+    </div>
+    <div class="regla-item">
+      <strong>7. Prueba antes.</strong> Aplícala primero a 5 personas para detectar preguntas confusas.
+    </div>
+  </div>
+
+  <h3>🎮 Detector de preguntas mal escritas</h3>
+  <p>Identifica el problema en cada pregunta:</p>
+
+  <div class="juego-mala-pregunta">
+    <div class="item-mp" data-correcta="doble">
+      <p>📝 "¿La app es rápida y fácil de usar?"</p>
+      <div class="op-mp">
+        <button class="btn-mp" data-rta="doble">🔀 Dos ideas en una</button>
+        <button class="btn-mp" data-rta="sugiere">🎭 Sugiere respuesta</button>
+        <button class="btn-mp" data-rta="tecnico">🤖 Jerga técnica</button>
+      </div>
+    </div>
+    <div class="item-mp" data-correcta="sugiere">
+      <p>📝 "¿No te parece increíble nuestra nueva app?"</p>
+      <div class="op-mp">
+        <button class="btn-mp" data-rta="doble">🔀 Dos ideas en una</button>
+        <button class="btn-mp" data-rta="sugiere">🎭 Sugiere respuesta</button>
+        <button class="btn-mp" data-rta="tecnico">🤖 Jerga técnica</button>
+      </div>
+    </div>
+    <div class="item-mp" data-correcta="tecnico">
+      <p>📝 "¿Prefieres autenticación JWT con OAuth 2.0 o sesiones server-side?"</p>
+      <div class="op-mp">
+        <button class="btn-mp" data-rta="doble">🔀 Dos ideas en una</button>
+        <button class="btn-mp" data-rta="sugiere">🎭 Sugiere respuesta</button>
+        <button class="btn-mp" data-rta="tecnico">🤖 Jerga técnica</button>
+      </div>
+    </div>
+    <div class="item-mp" data-correcta="doble">
+      <p>📝 "¿Compras frecuentemente en línea y prefieres pagar con tarjeta?"</p>
+      <div class="op-mp">
+        <button class="btn-mp" data-rta="doble">🔀 Dos ideas en una</button>
+        <button class="btn-mp" data-rta="sugiere">🎭 Sugiere respuesta</button>
+        <button class="btn-mp" data-rta="tecnico">🤖 Jerga técnica</button>
+      </div>
+    </div>
+    <div class="item-mp" data-correcta="sugiere">
+      <p>📝 "¿Estás de acuerdo en que las apps lentas son una pérdida de tiempo terrible?"</p>
+      <div class="op-mp">
+        <button class="btn-mp" data-rta="doble">🔀 Dos ideas en una</button>
+        <button class="btn-mp" data-rta="sugiere">🎭 Sugiere respuesta</button>
+        <button class="btn-mp" data-rta="tecnico">🤖 Jerga técnica</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuándo es mejor una encuesta que una entrevista?</p>
+      <button class="opcion" data-op="a">Cuando hay solo 2 personas clave</button>
+      <button class="opcion" data-op="b">Cuando son cientos de personas dispersas</button>
+      <button class="opcion" data-op="c">Cuando el tema es muy complejo</button>
+      <button class="opcion" data-op="d">Nunca</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Para qué sirve la escala Likert?</p>
+      <button class="opcion" data-op="a">Calcular promedios de edad</button>
+      <button class="opcion" data-op="b">Hacer preguntas abiertas</button>
+      <button class="opcion" data-op="c">Medir actitudes/opiniones en una escala (1-5 típicamente)</button>
+      <button class="opcion" data-op="d">Saber cuánto duerme la gente</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Qué problema tiene la pregunta "¿No estás de acuerdo con que esta app es genial?"</p>
+      <button class="opcion" data-op="a">Es demasiado corta</button>
+      <button class="opcion" data-op="b">Tiene jerga técnica</button>
+      <button class="opcion" data-op="c">Tiene dos ideas en una</button>
+      <button class="opcion" data-op="d">Sugiere la respuesta al encuestado</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: Observación →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — OBSERVACIÓN
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <h2>4️⃣ 👀 Observación</h2>
+  <p class="meta-modulo">⏱️ 25 minutos · 🕵️ Lo que nadie te cuenta</p>
+
+  <div class="caja-concepto">
+    <h3>📖 ¿Qué es la observación?</h3>
+    <p>La <strong>observación</strong> es ir al lugar donde se hace el trabajo y <em>mirar</em> cómo ocurre, sin (o con poca) interrupción. Suena simple pero es la técnica más poderosa para descubrir <strong>lo que la gente hace</strong>, que no siempre coincide con lo que <em>dice</em> que hace.</p>
+  </div>
+
+  <h3>🤯 La gran verdad de la observación</h3>
+  <div class="caja-importante">
+    <p>👁️ Las personas <strong>no son conscientes de lo que hacen</strong> en su rutina. Si le preguntas a un cajero "¿qué hace cuando llega un cliente?", te dará una respuesta limpia y ordenada. Si lo observas, verás cosas como:</p>
+    <ul>
+      <li>Saluda mientras escanea productos (multitarea).</li>
+      <li>Cuando hay billete de 50, llama al jefe (no lo mencionó).</li>
+      <li>Tiene un papelito con códigos pegado al monitor (porque no se acuerda).</li>
+      <li>Ignora completamente el botón de "ayuda" del software.</li>
+    </ul>
+    <p>👉 Eso es ORO para el análisis.</p>
+  </div>
+
+  <h3>🎭 Tipos de observación</h3>
+
+  <div class="cuadricula-2">
+    <div class="obs-tipo">
+      <h4>🪞 Directa (pasiva)</h4>
+      <p>Observas sin participar. Eres una "mosca en la pared".</p>
+      <p class="usar"><strong>Bueno para:</strong> ver flujos reales sin distorsionar.</p>
+      <p class="prosCon">✅ Realista · ❌ Las personas saben que las miras → cambian un poco su comportamiento (efecto Hawthorne).</p>
+    </div>
+    <div class="obs-tipo">
+      <h4>🎬 Participante</h4>
+      <p>Te integras al equipo y haces el trabajo tú mismo.</p>
+      <p class="usar"><strong>Bueno para:</strong> entender frustraciones desde adentro.</p>
+      <p class="prosCon">✅ Empatía total · ❌ Requiere tiempo y autorización.</p>
+    </div>
+    <div class="obs-tipo">
+      <h4>🌐 Etnográfica</h4>
+      <p>Observación profunda y prolongada (días o semanas) del entorno.</p>
+      <p class="usar"><strong>Bueno para:</strong> sistemas complejos con cultura organizacional fuerte.</p>
+      <p class="prosCon">✅ Descubre lo invisible · ❌ Muy costoso en tiempo.</p>
+    </div>
+    <div class="obs-tipo">
+      <h4>🎥 Grabación / shadowing</h4>
+      <p>Grabas el proceso (con permiso) o "sigues como sombra" a una persona.</p>
+      <p class="usar"><strong>Bueno para:</strong> procesos rápidos o complejos que requieren análisis posterior.</p>
+      <p class="prosCon">✅ Detalle máximo · ❌ Permisos legales.</p>
+    </div>
+  </div>
+
+  <h3>🔍 ¿Qué buscar al observar?</h3>
+
+  <div class="lista-observar">
+    <div class="obs-item"><strong>🔄 Flujo real de trabajo:</strong> qué se hace, en qué orden, cuántas veces.</div>
+    <div class="obs-item"><strong>📋 Documentos y herramientas:</strong> papeles, cuadernos, formatos físicos, Excel.</div>
+    <div class="obs-item"><strong>🤝 Interacciones:</strong> quién se comunica con quién y cómo.</div>
+    <div class="obs-item"><strong>⏱️ Tiempos:</strong> cuánto dura cada paso, dónde se atascan.</div>
+    <div class="obs-item"><strong>🚧 Atajos y "trucos":</strong> lo que los usuarios inventan para sobrevivir.</div>
+    <div class="obs-item"><strong>😤 Frustraciones:</strong> momentos en que la gente se queja o suspira.</div>
+    <div class="obs-item"><strong>🐛 Errores:</strong> qué se equivoca y por qué.</div>
+    <div class="obs-item"><strong>🗣️ Comunicación informal:</strong> lo que se dice en los pasillos.</div>
+  </div>
+
+  <h3>📝 Cómo registrar lo observado</h3>
+  <p>Usa una <strong>plantilla simple</strong> dividida en 4 columnas:</p>
+
+  <div class="tabla-registro">
+    <div class="th-reg">⏱️ Hora</div>
+    <div class="th-reg">👤 Quién</div>
+    <div class="th-reg">📋 Qué hace</div>
+    <div class="th-reg">💭 Observación</div>
+
+    <div>9:00</div>
+    <div>Cajera</div>
+    <div>Abre caja y revisa cuaderno</div>
+    <div>El cuaderno está gastado, busca varias páginas</div>
+
+    <div>9:05</div>
+    <div>Cliente 1</div>
+    <div>Pide café</div>
+    <div>Espera ~3 min mientras cajera busca precio</div>
+
+    <div>9:10</div>
+    <div>Cajera</div>
+    <div>Anota en cuaderno</div>
+    <div>Mancha el cuaderno, dice "ya casi no se ve"</div>
+  </div>
+
+  <h3>⚠️ El "efecto Hawthorne"</h3>
+  <div class="caja-historia">
+    <p>En 1924, una fábrica eléctrica en Hawthorne (EE. UU.) hizo experimentos para ver si más luz mejoraba la productividad. Los trabajadores rendían más con más luz… pero también con menos luz. Confundidos, los investigadores descubrieron que era el simple hecho de <strong>ser observados</strong> lo que los hacía rendir mejor.</p>
+    <p>👉 Lección para ti: cuando observes, la gente actuará un poco distinto. Para minimizarlo:</p>
+    <ul>
+      <li>Pasa varios días observando (al rato se olvidan).</li>
+      <li>No tomes notas a la vista (intimida).</li>
+      <li>Mezcla observación con entrevista informal.</li>
+    </ul>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz" data-quiz="4">
+    <h3>🎯 Mini-Quiz del Módulo 4</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la gran ventaja de la observación sobre la entrevista?</p>
+      <button class="opcion" data-op="a">Es más rápida</button>
+      <button class="opcion" data-op="b">Descubre lo que la gente hace, no solo lo que dice que hace</button>
+      <button class="opcion" data-op="c">No necesita permiso</button>
+      <button class="opcion" data-op="d">Es más barata</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué es el efecto Hawthorne?</p>
+      <button class="opcion" data-op="a">Una técnica de programación</button>
+      <button class="opcion" data-op="b">Un tipo de encuesta</button>
+      <button class="opcion" data-op="c">Una pregunta abierta</button>
+      <button class="opcion" data-op="d">Que las personas cambian su comportamiento cuando saben que las observan</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuál tipo de observación implica integrarte al equipo y trabajar?</p>
+      <button class="opcion" data-op="a">Observación participante</button>
+      <button class="opcion" data-op="b">Observación directa</button>
+      <button class="opcion" data-op="c">Encuesta</button>
+      <button class="opcion" data-op="d">Entrevista estructurada</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Juego de Roles →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — JUEGO DE ROLES CLIENTE-ANALISTA
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>5️⃣ 🎭 Juego de Roles: Cliente–Analista</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · 🎮 ¡Es tu turno de entrevistar!</p>
+
+  <div class="caja-concepto">
+    <h3>🎬 La escena</h3>
+    <p>TÚ eres el <strong>analista junior</strong> de una empresa. Te asignan tu primer cliente:</p>
+    <div class="caso-personaje">
+      <span class="personaje-icono">👩‍🍳</span>
+      <div>
+        <h4>Doña Carolina, 58 años</h4>
+        <p>Dueña de la <strong>Panadería "Pan de Cada Día"</strong> desde hace 22 años. Su hijo, que estudia ingeniería, le insistió que necesitaba "una app". Sabes muy poco de panadería. Carolina sabe muy poco de tecnología.</p>
+      </div>
+    </div>
+    <p>Tu misión: <strong>entrevistar a Carolina</strong> y descubrir los verdaderos requerimientos. Cada pregunta que elijas tiene consecuencias en lo que descubrirás (o no).</p>
+  </div>
+
+  <div class="reglas-juego">
+    <h4>📋 Reglas del juego</h4>
+    <ul>
+      <li>Hay <strong>6 turnos</strong>. En cada uno eliges UNA de 3 preguntas.</li>
+      <li>Cada elección suma puntos: <span class="pts-buena">+2 (excelente)</span>, <span class="pts-ok">+1 (aceptable)</span>, <span class="pts-mala">0 (mala/contraproducente)</span>.</li>
+      <li>Al final verás tu puntaje y los requerimientos que descubriste.</li>
+    </ul>
+  </div>
+
+  <!-- INICIO JUEGO -->
+  <div class="juego-roles" id="juego-roles">
+    <button class="btn-iniciar-juego" onclick="iniciarJuegoRoles()">🎬 Iniciar entrevista</button>
+  </div>
+
+  <!-- CONTENEDOR DEL JUEGO (se llena con JS) -->
+  <div class="dialogo-juego" id="dialogo-juego" style="display:none;"></div>
+
+  <!-- RESULTADO FINAL DEL JUEGO -->
+  <div class="resultado-juego-roles" id="resultado-juego-roles" style="display:none;"></div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Simulación →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — SIMULACIÓN DE LEVANTAMIENTO
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>6️⃣ 📋 Simulación de Levantamiento de Información</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 🛠️ Combinando técnicas</p>
+
+  <div class="caja-concepto">
+    <h3>🎬 La idea</h3>
+    <p>Levantar información NO es usar UNA sola técnica. Un buen analista <strong>combina las 3</strong> en una secuencia estratégica. Vas a vivir esa secuencia completa con un caso simulado.</p>
+  </div>
+
+  <h3>📅 El proceso típico (5 etapas)</h3>
+
+  <div class="proceso-levantamiento">
+    <div class="etapa-lev">
+      <span class="lev-num">1</span>
+      <h4>🔍 Investigación previa</h4>
+      <p>Antes de hablar con nadie: leer documentos, navegar el sitio web, conocer el negocio.</p>
+    </div>
+    <div class="etapa-lev">
+      <span class="lev-num">2</span>
+      <h4>💬 Entrevistas iniciales</h4>
+      <p>Con stakeholders clave (gerente, líderes). Para entender el panorama general.</p>
+    </div>
+    <div class="etapa-lev">
+      <span class="lev-num">3</span>
+      <h4>👀 Observación</h4>
+      <p>Ver el trabajo en vivo. Descubrir lo que las entrevistas no contaron.</p>
+    </div>
+    <div class="etapa-lev">
+      <span class="lev-num">4</span>
+      <h4>📊 Encuestas masivas</h4>
+      <p>Para validar hipótesis con muchas personas. Cuantificar percepciones.</p>
+    </div>
+    <div class="etapa-lev">
+      <span class="lev-num">5</span>
+      <h4>📝 Consolidación</h4>
+      <p>Reunir todo, eliminar contradicciones, escribir requerimientos formales.</p>
+    </div>
+  </div>
+
+  <h3>🎯 Tu caso: "Biblioteca del Colegio"</h3>
+  <div class="caso-personaje">
+    <span class="personaje-icono">📚</span>
+    <div>
+      <h4>Contexto</h4>
+      <p>El rector te pide modernizar el sistema de la biblioteca escolar. Hoy todo se lleva en un cuaderno. Hay <strong>3 bibliotecarios</strong>, <strong>~800 estudiantes</strong> y <strong>40 profesores</strong>.</p>
+    </div>
+  </div>
+
+  <h3>🪜 Paso 1: ¿Qué técnica usarías con cada grupo?</h3>
+  <p>Asocia el grupo con la técnica que MÁS sentido tiene como punto de partida:</p>
+
+  <div class="matcher">
+    <div class="match-item" data-correcta="entrevista">
+      <p><strong>3 bibliotecarios</strong> (expertos en el sistema actual)</p>
+      <div class="op-match">
+        <button class="btn-match" data-rta="entrevista">💬 Entrevista</button>
+        <button class="btn-match" data-rta="encuesta">📊 Encuesta</button>
+        <button class="btn-match" data-rta="observacion">👀 Observación</button>
+      </div>
+    </div>
+    <div class="match-item" data-correcta="encuesta">
+      <p><strong>800 estudiantes</strong> (usuarios masivos)</p>
+      <div class="op-match">
+        <button class="btn-match" data-rta="entrevista">💬 Entrevista</button>
+        <button class="btn-match" data-rta="encuesta">📊 Encuesta</button>
+        <button class="btn-match" data-rta="observacion">👀 Observación</button>
+      </div>
+    </div>
+    <div class="match-item" data-correcta="observacion">
+      <p><strong>Hora pico de préstamos</strong> (el proceso real con todas las personas trabajando)</p>
+      <div class="op-match">
+        <button class="btn-match" data-rta="entrevista">💬 Entrevista</button>
+        <button class="btn-match" data-rta="encuesta">📊 Encuesta</button>
+        <button class="btn-match" data-rta="observacion">👀 Observación</button>
+      </div>
+    </div>
+    <div class="match-item" data-correcta="encuesta">
+      <p><strong>40 profesores</strong> (dispersos por horario)</p>
+      <div class="op-match">
+        <button class="btn-match" data-rta="entrevista">💬 Entrevista</button>
+        <button class="btn-match" data-rta="encuesta">📊 Encuesta</button>
+        <button class="btn-match" data-rta="observacion">👀 Observación</button>
+      </div>
+    </div>
+    <div class="match-item" data-correcta="entrevista">
+      <p><strong>Rector</strong> (decisor, presupuesto, visión)</p>
+      <div class="op-match">
+        <button class="btn-match" data-rta="entrevista">💬 Entrevista</button>
+        <button class="btn-match" data-rta="encuesta">📊 Encuesta</button>
+        <button class="btn-match" data-rta="observacion">👀 Observación</button>
+      </div>
+    </div>
+  </div>
+
+  <h3>🪜 Paso 2: Hallazgos del levantamiento</h3>
+  <p>Después de aplicar las técnicas, esta es la información obtenida. Léela con atención:</p>
+
+  <div class="hallazgos">
+    <div class="hallazgo">
+      <span class="h-fuente">💬 Entrevistas (bibliotecarios)</span>
+      <ul>
+        <li>"El cuaderno se nos llena cada 2 meses, ya no cabe nada".</li>
+        <li>"Cuando un libro no aparece, gastamos hasta una hora buscando".</li>
+        <li>"No sabemos cuáles libros se piden más, los pedimos al azar".</li>
+        <li>"Los estudiantes vienen, no encuentran lo que buscan y se van".</li>
+      </ul>
+    </div>
+    <div class="hallazgo">
+      <span class="h-fuente">👀 Observación (hora pico)</span>
+      <ul>
+        <li>Cola de hasta 15 estudiantes esperando.</li>
+        <li>Cada préstamo toma 4-5 minutos (anotar a mano).</li>
+        <li>Bibliotecarios deben consultar 2 cuadernos distintos para verificar préstamos previos.</li>
+        <li>3 de cada 10 estudiantes se va sin nada por falta de tiempo.</li>
+      </ul>
+    </div>
+    <div class="hallazgo">
+      <span class="h-fuente">📊 Encuestas (300 estudiantes respondieron)</span>
+      <ul>
+        <li>82% pediría libros desde el celular si pudiera.</li>
+        <li>76% quiere reservar para no hacer fila.</li>
+        <li>69% quiere notificación cuando el libro esté listo.</li>
+        <li>91% quiere ver qué libros hay disponibles antes de ir.</li>
+      </ul>
+    </div>
+    <div class="hallazgo">
+      <span class="h-fuente">📊 Encuestas (35 profesores respondieron)</span>
+      <ul>
+        <li>88% pediría libros para sus clases con antelación.</li>
+        <li>54% quiere reportes de qué libros leen sus estudiantes.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>🪜 Paso 3: De hallazgos a requerimientos</h3>
+  <p>Mira cómo se transforman los datos en requerimientos formales:</p>
+
+  <div class="transformacion">
+    <div class="trans-fila">
+      <div class="trans-antes">📥 "Los estudiantes quieren pedir desde el celular" (encuesta 82%)</div>
+      <div class="trans-flecha">➡️</div>
+      <div class="trans-despues">📋 <strong>RF:</strong> "El sistema deberá permitir a los estudiantes solicitar préstamos desde una app móvil."</div>
+    </div>
+    <div class="trans-fila">
+      <div class="trans-antes">📥 "Cada préstamo toma 4-5 minutos" (observación)</div>
+      <div class="trans-flecha">➡️</div>
+      <div class="trans-despues">📋 <strong>RNF:</strong> "El tiempo total de registro de un préstamo no deberá superar los 60 segundos."</div>
+    </div>
+    <div class="trans-fila">
+      <div class="trans-antes">📥 "No sabemos qué libros se piden más" (entrevistas)</div>
+      <div class="trans-flecha">➡️</div>
+      <div class="trans-despues">📋 <strong>RF:</strong> "El sistema deberá generar reportes mensuales de los 20 libros más prestados, accesibles por los bibliotecarios."</div>
+    </div>
+    <div class="trans-fila">
+      <div class="trans-antes">📥 "Cola de 15 personas en hora pico" (observación)</div>
+      <div class="trans-flecha">➡️</div>
+      <div class="trans-despues">📋 <strong>RNF:</strong> "El sistema deberá soportar al menos 30 solicitudes simultáneas sin degradar el rendimiento."</div>
+    </div>
+  </div>
+
+  <h3>🪜 Paso 4: Reflexión</h3>
+  <div class="caja-tip">
+    <h4>💡 ¿Qué acabas de aprender en este módulo?</h4>
+    <ul>
+      <li>Las técnicas <strong>se combinan</strong>: cada una aporta algo distinto.</li>
+      <li>La elección depende del <strong>grupo</strong>: muchos = encuesta; pocos clave = entrevista; procesos = observación.</li>
+      <li>Los datos <strong>brutos no son requerimientos</strong>: hay que traducirlos a frases medibles y atómicas.</li>
+      <li>Mientras más fuentes uses, más <strong>completo</strong> será tu análisis (triangulación).</li>
+    </ul>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Viabilidad →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 7 — ANÁLISIS DE VIABILIDAD
+============================================================ -->
+<section class="modulo" data-modulo="7">
+  <h2>7️⃣ ⚖️ Análisis de Viabilidad del Requerimiento</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 🤔 ¿Realmente se puede hacer?</p>
+
+  <div class="caja-concepto">
+    <h3>📖 ¿Qué es la viabilidad?</h3>
+    <p>El cliente puede pedir lo que sea. Pero no todo lo que pide es <em>posible, conveniente o realista</em>. El <strong>análisis de viabilidad</strong> es la evaluación honesta de si un requerimiento se puede cumplir en la práctica.</p>
+    <p>👉 Es donde el analista deja de ser "amigo del cliente" para volverse <strong>asesor profesional</strong>: a veces hay que decir "esto no se puede" o "esto cuesta más de lo que cree".</p>
+  </div>
+
+  <h3>📊 Las 5 dimensiones de la viabilidad</h3>
+
+  <div class="cuadricula">
+    <div class="dim-card">
+      <span class="dim-icono">🛠️</span>
+      <h4>Técnica</h4>
+      <p>¿Tenemos la <strong>tecnología</strong> para construirlo? ¿Las herramientas existen? ¿El equipo sabe cómo?</p>
+    </div>
+    <div class="dim-card">
+      <span class="dim-icono">💰</span>
+      <h4>Económica</h4>
+      <p>¿Hay <strong>presupuesto</strong> suficiente? ¿El beneficio justifica el costo?</p>
+    </div>
+    <div class="dim-card">
+      <span class="dim-icono">👥</span>
+      <h4>Operativa</h4>
+      <p>¿La gente lo <strong>usará</strong> realmente? ¿Encaja con sus procesos y cultura?</p>
+    </div>
+    <div class="dim-card">
+      <span class="dim-icono">📜</span>
+      <h4>Legal</h4>
+      <p>¿Cumple con las <strong>leyes</strong> y normas? (datos personales, accesibilidad, derechos de autor)</p>
+    </div>
+    <div class="dim-card">
+      <span class="dim-icono">⏱️</span>
+      <h4>Temporal</h4>
+      <p>¿Se puede hacer en el <strong>tiempo</strong> disponible? ¿Para cuándo lo necesita?</p>
+    </div>
+  </div>
+
+  <h3>🧪 Caso de ejemplo: análisis completo</h3>
+  <div class="caja-historia">
+    <h4>📋 Requerimiento del cliente:</h4>
+    <p>"Quiero una app que reconozca el rostro de mis empleados y abra la puerta automáticamente, identifique si están con uniforme correctamente, mida su temperatura corporal, y todo lo guarde en la nube. La quiero lista en 2 semanas y mi presupuesto es $500."</p>
+
+    <h4>⚖️ Análisis dimensional:</h4>
+    <ul>
+      <li><strong>Técnica:</strong> 🟡 Reconocimiento facial existe (Azure/AWS), pero el resto requiere visión computacional avanzada y sensores físicos.</li>
+      <li><strong>Económica:</strong> 🔴 $500 NO alcanza ni para licencias de las APIs ni para el hardware.</li>
+      <li><strong>Operativa:</strong> 🟡 ¿Aceptarán los empleados que los graben y midan?</li>
+      <li><strong>Legal:</strong> 🔴 Datos biométricos requieren consentimiento explícito y cumplir leyes de datos personales.</li>
+      <li><strong>Temporal:</strong> 🔴 2 semanas es imposible para un proyecto de esta complejidad.</li>
+    </ul>
+
+    <p><strong>Conclusión profesional:</strong> el requerimiento no es viable como está formulado. Hay que <strong>renegociar</strong> con el cliente: simplificar el alcance, ampliar el presupuesto o extender el tiempo. NO se puede simplemente decir "sí, lo hago" y fracasar después.</p>
+  </div>
+
+  <h3>🎮 Matriz de viabilidad interactiva</h3>
+  <p>Evalúa este requerimiento en las 5 dimensiones. Selecciona el nivel para cada una:</p>
+
+  <div class="req-viabilidad">
+    <h4>📋 Requerimiento a evaluar:</h4>
+    <p>"La app de la panadería debe permitir a Doña Carolina ver desde su celular cuántos panes se vendieron hoy, registrar deudas de clientes, y mostrar qué ingredientes faltan. Presupuesto: 3 millones COP. Plazo: 3 meses."</p>
+  </div>
+
+  <div class="matriz-viab">
+    <div class="dim-eval">
+      <div class="dim-label">🛠️ <strong>Técnica</strong></div>
+      <div class="dim-opciones" data-dim="tecnica" data-correcta="alta">
+        <button class="btn-dim" data-nivel="alta">🟢 Alta</button>
+        <button class="btn-dim" data-nivel="media">🟡 Media</button>
+        <button class="btn-dim" data-nivel="baja">🔴 Baja</button>
+      </div>
+    </div>
+    <div class="dim-eval">
+      <div class="dim-label">💰 <strong>Económica</strong></div>
+      <div class="dim-opciones" data-dim="economica" data-correcta="alta">
+        <button class="btn-dim" data-nivel="alta">🟢 Alta</button>
+        <button class="btn-dim" data-nivel="media">🟡 Media</button>
+        <button class="btn-dim" data-nivel="baja">🔴 Baja</button>
+      </div>
+    </div>
+    <div class="dim-eval">
+      <div class="dim-label">👥 <strong>Operativa</strong></div>
+      <div class="dim-opciones" data-dim="operativa" data-correcta="media">
+        <button class="btn-dim" data-nivel="alta">🟢 Alta</button>
+        <button class="btn-dim" data-nivel="media">🟡 Media</button>
+        <button class="btn-dim" data-nivel="baja">🔴 Baja</button>
+      </div>
+    </div>
+    <div class="dim-eval">
+      <div class="dim-label">📜 <strong>Legal</strong></div>
+      <div class="dim-opciones" data-dim="legal" data-correcta="alta">
+        <button class="btn-dim" data-nivel="alta">🟢 Alta</button>
+        <button class="btn-dim" data-nivel="media">🟡 Media</button>
+        <button class="btn-dim" data-nivel="baja">🔴 Baja</button>
+      </div>
+    </div>
+    <div class="dim-eval">
+      <div class="dim-label">⏱️ <strong>Temporal</strong></div>
+      <div class="dim-opciones" data-dim="temporal" data-correcta="alta">
+        <button class="btn-dim" data-nivel="alta">🟢 Alta</button>
+        <button class="btn-dim" data-nivel="media">🟡 Media</button>
+        <button class="btn-dim" data-nivel="baja">🔴 Baja</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-validar-viab" onclick="evaluarViabilidad()">⚖️ Evaluar mi matriz</button>
+  <div class="retro-viab" id="retro-viab"></div>
+
+  <h3>🚦 Semáforo de decisión</h3>
+  <div class="semaforo">
+    <div class="sem-item verde">
+      <span class="sem-circulo">🟢</span>
+      <div>
+        <h4>Todas altas / la mayoría altas</h4>
+        <p>Adelante con el proyecto.</p>
+      </div>
+    </div>
+    <div class="sem-item amarillo">
+      <span class="sem-circulo">🟡</span>
+      <div>
+        <h4>Mezcla de medias y algunas bajas</h4>
+        <p>Renegocia el alcance/tiempo/precio con el cliente.</p>
+      </div>
+    </div>
+    <div class="sem-item rojo">
+      <span class="sem-circulo">🔴</span>
+      <div>
+        <h4>Una o más bajas críticas (legal/económica)</h4>
+        <p>No es viable. Decirlo a tiempo evita un desastre.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz" data-quiz="7">
+    <h3>🎯 Mini-Quiz del Módulo 7</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Cuántas dimensiones tiene el análisis de viabilidad?</p>
+      <button class="opcion" data-op="a">2</button>
+      <button class="opcion" data-op="b">3</button>
+      <button class="opcion" data-op="c">5 (técnica, económica, operativa, legal, temporal)</button>
+      <button class="opcion" data-op="d">10</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> Si una dimensión sale "baja" muy crítica (ej: legal), ¿qué deberías hacer?</p>
+      <button class="opcion" data-op="a">Avisar al cliente que el requerimiento no es viable así</button>
+      <button class="opcion" data-op="b">Decir "sí" y ya veremos</button>
+      <button class="opcion" data-op="c">Ignorar esa dimensión</button>
+      <button class="opcion" data-op="d">Renunciar al proyecto sin decir nada</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> "¿La gente realmente usará el sistema?" pertenece a la viabilidad…</p>
+      <button class="opcion" data-op="a">Técnica</button>
+      <button class="opcion" data-op="b">Operativa</button>
+      <button class="opcion" data-op="c">Legal</button>
+      <button class="opcion" data-op="d">Temporal</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Anterior</button>
+    <button class="btn-siguiente" data-ir="8">Siguiente: Reto Final →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 8 — RETO FINAL
+============================================================ -->
+<section class="modulo" data-modulo="8">
+  <h2>8️⃣ 🏆 Reto Final</h2>
+  <p class="meta-modulo">⏱️ 15 minutos · 🎓 Aplica todo lo aprendido</p>
+
+  <div class="hero">
+    <h2>🎉 ¡Eres oficialmente un elicitador!</h2>
+    <p class="lead">Dominas las 3 técnicas clásicas, sabes combinarlas, hiciste juego de roles, simulaste un levantamiento real y aprendiste a evaluar viabilidad. Esa es la caja de herramientas completa de un analista profesional.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">💬</span>
+      <h3>Entrevistas</h3>
+      <p>Conoces los 3 tipos, las 3 etapas y los errores comunes.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">📊</span>
+      <h3>Encuestas</h3>
+      <p>Sabes cuándo usarlas, diseñarlas y detectar preguntas mal escritas.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">👀</span>
+      <h3>Observación</h3>
+      <p>Descubres lo que la gente no cuenta. Conoces el efecto Hawthorne.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🎭</span>
+      <h3>Juego de roles</h3>
+      <p>Entrevistaste a un cliente virtual y mediste tu desempeño.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">📋</span>
+      <h3>Levantamiento</h3>
+      <p>Combinas técnicas y traduces hallazgos en requerimientos formales.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">⚖️</span>
+      <h3>Viabilidad</h3>
+      <p>Evalúas si un requerimiento es realista en 5 dimensiones.</p>
+    </div>
+  </div>
+
+  <h3>🚀 Tu reto final</h3>
+  <div class="caja-desafio">
+    <p><strong>Misión:</strong> Elige una persona real de tu entorno (familiar, vecino, profesor) y haz una <strong>entrevista de 15 minutos</strong> para descubrir un problema que un software podría resolver. Luego entrega:</p>
+    <ol>
+      <li><strong>Preparación:</strong> 5 preguntas guía que llevaste (2 abiertas, 2 cerradas, 1 de sondeo).</li>
+      <li><strong>Notas de la entrevista:</strong> al menos 1 página.</li>
+      <li><strong>3 requerimientos descubiertos:</strong> formales, atómicos, medibles.</li>
+      <li><strong>Análisis de viabilidad</strong> de UNO de esos requerimientos en las 5 dimensiones.</li>
+      <li><strong>Reflexión personal:</strong> ¿qué te sorprendió de la entrevista? ¿Qué descubriste que no esperabas?</li>
+    </ol>
+    <p>📸 Este reto te entrena en la habilidad #1 de un analista: <strong>hablar con personas reales</strong>. Te servirá para toda la vida, no solo en software.</p>
+  </div>
+
+  <h3>📚 Para seguir aprendiendo</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">📖</span>
+      <h3>BABOK</h3>
+      <p>"Business Analysis Body of Knowledge", la guía oficial del análisis de negocio.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🌐</span>
+      <h3>IIBA</h3>
+      <p>International Institute of Business Analysis. Recurso de profesionales.</p>
+      <a href="https://www.iiba.org" target="_blank">Visitar →</a>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎯</span>
+      <h3>Próxima clase</h3>
+      <p>Modelado de procesos: cómo dibujar lo que descubriste (BPMN, diagramas de flujo).</p>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💭 Reflexión final</h4>
+    <p>Las tres técnicas que aprendiste hoy <strong>no son solo para software</strong>. Sirven para entender a la gente en cualquier contexto: para un proyecto del colegio, para entender a tu familia, para investigar antes de tomar una decisión importante. La elicitación es, en el fondo, el arte de <strong>escuchar de verdad</strong>. Pocas habilidades son tan valiosas hoy en día.</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🚀 ¡Felicitaciones, Detective!</h2>
+    <p>El caso está resuelto. Pero recuerda: cada nuevo proyecto trae un nuevo misterio. Sigue investigando.</p>
+    <button class="btn-final" onclick="reiniciarCurso()">🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="7">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <p>🔍 Clase 3: Elicitación · Curso de Análisis y Diseño de Software · 2026</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

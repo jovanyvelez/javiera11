@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📐 Análisis y Diseño de Software — Curso Interactivo</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- =================== HEADER + PROGRESO =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">📐</span>
+    <div>
+      <h1>Análisis y Diseño de Software</h1>
+      <p class="subtitulo">Aprende a pensar como un arquitecto digital</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span id="porcentaje">0%</span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">1️⃣ ¿Por qué?</button>
+  <button class="btn-modulo" data-modulo="2">2️⃣ Ciclo de Vida</button>
+  <button class="btn-modulo" data-modulo="3">3️⃣ Estructuradas</button>
+  <button class="btn-modulo" data-modulo="4">4️⃣ Ágiles</button>
+  <button class="btn-modulo" data-modulo="5">5️⃣ Taller</button>
+  <button class="btn-modulo" data-modulo="6">6️⃣ Requerimientos</button>
+  <button class="btn-modulo" data-modulo="7">🏆 Final</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>👋 ¡Bienvenido/a, futur@ arquitect@ de software!</h2>
+    <p class="lead">Antes de programar una sola línea de código, los grandes profesionales <strong>analizan, diseñan y planean</strong>. En este curso descubrirás cómo se piensa un sistema antes de construirlo — la habilidad que separa a un buen programador de un gran ingeniero.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3 horas y 45 minutos en 7 módulos cortos. Puedes detenerte y continuar después.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Entender el ciclo de vida del software y comparar metodologías ágiles vs estructuradas.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🧰</span>
+      <h3>Lo que necesitas</h3>
+      <p>Una libreta, un lápiz y curiosidad. Aquí no hay código, hay <em>pensamiento</em>.</p>
+    </div>
+  </div>
+
+  <div class="caja-destacada">
+    <h3>🗺️ La ruta de aprendizaje</h3>
+    <ol class="ruta">
+      <li><strong>Módulo 1 (25 min):</strong> ¿Por qué el análisis y diseño son tan importantes?</li>
+      <li><strong>Módulo 2 (35 min):</strong> 🗺️ El ciclo de vida del software (con mapa conceptual)</li>
+      <li><strong>Módulo 3 (30 min):</strong> Metodologías estructuradas (Cascada, V, Espiral)</li>
+      <li><strong>Módulo 4 (35 min):</strong> Metodologías ágiles (Scrum, Kanban, XP)</li>
+      <li><strong>Módulo 5 (35 min):</strong> 🧩 Taller — Compara y elige metodologías</li>
+      <li><strong>Módulo 6 (40 min):</strong> 📖 Lectura dirigida — ¿Qué es un requerimiento?</li>
+      <li><strong>Módulo 7 (15 min):</strong> 🏆 Reto final y reflexión</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Tip antes de empezar</h4>
+    <p>Este curso es <strong>conceptual</strong>: te enseña a <em>pensar</em>, no a escribir código. Eso lo hace, paradójicamente, más difícil y a la vez más importante. Tómate tu tiempo, relee cuando necesites y discute las ideas con un compañero.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1 →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — IMPORTANCIA DEL ANÁLISIS Y DISEÑO
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>1️⃣ ¿Por qué importan el análisis y el diseño?</h2>
+  <p class="meta-modulo">⏱️ 25 minutos · 🧠 Contextualización</p>
+
+  <div class="caja-concepto">
+    <h3>🏠 Una analogía que lo explica todo</h3>
+    <p>Imagina que vas a construir una casa. ¿Empezarías a poner ladrillos sin antes preguntarle al dueño cuántas habitaciones quiere? ¿Sin dibujar planos? Por supuesto que no. Sería un desastre.</p>
+    <p>Sin embargo, mucha gente intenta construir software así: <strong>"voy programando y veo qué sale"</strong>. El resultado es siempre el mismo: caos, retrasos y un producto que no sirve.</p>
+  </div>
+
+  <h3>📊 La estadística que te va a impactar</h3>
+  <div class="tarjeta-stat">
+    <div class="numero-grande">66%</div>
+    <p>de los proyectos de software <strong>fracasan o se entregan con grandes problemas</strong> (Standish Group). Y la causa #1 NO es la programación: son los requerimientos mal definidos.</p>
+  </div>
+
+  <h3>🔍 ¿Qué es el ANÁLISIS?</h3>
+  <p>Análisis significa <strong>entender el problema</strong> antes de resolverlo. Es responder preguntas como:</p>
+  <ul>
+    <li>¿Quién va a usar el sistema?</li>
+    <li>¿Qué necesita exactamente?</li>
+    <li>¿Qué información maneja?</li>
+    <li>¿Qué restricciones existen (presupuesto, tiempo, leyes)?</li>
+  </ul>
+
+  <h3>✏️ ¿Qué es el DISEÑO?</h3>
+  <p>Diseño significa <strong>planear la solución</strong> antes de construirla. Es responder:</p>
+  <ul>
+    <li>¿Cómo se va a organizar el sistema?</li>
+    <li>¿Qué partes lo componen y cómo se comunican?</li>
+    <li>¿Qué tecnologías se usarán?</li>
+    <li>¿Cómo se va a ver y sentir para el usuario?</li>
+  </ul>
+
+  <div class="caja-importante">
+    <h4>📌 La frase que debes recordar</h4>
+    <p><strong>"El análisis define QUÉ se va a construir. El diseño define CÓMO se va a construir. La programación es solo el último paso."</strong></p>
+  </div>
+
+  <h3>💸 La regla del 1-10-100</h3>
+  <p>En ingeniería de software hay una regla famosa: si arreglar un error en la fase de <strong>análisis</strong> cuesta $1...</p>
+  <div class="regla-costos">
+    <div class="costo-fase">
+      <span class="costo-num">$1</span>
+      <span class="costo-label">Análisis</span>
+    </div>
+    <div class="costo-flecha">→</div>
+    <div class="costo-fase">
+      <span class="costo-num">$10</span>
+      <span class="costo-label">Diseño</span>
+    </div>
+    <div class="costo-flecha">→</div>
+    <div class="costo-fase">
+      <span class="costo-num">$100</span>
+      <span class="costo-label">Programación</span>
+    </div>
+    <div class="costo-flecha">→</div>
+    <div class="costo-fase rojo">
+      <span class="costo-num">$1000+</span>
+      <span class="costo-label">Producción</span>
+    </div>
+  </div>
+  <p>Por eso vale la pena tomarse el tiempo de analizar y diseñar bien.</p>
+
+  <h3>🎬 Ejemplo real</h3>
+  <div class="caja-historia">
+    <p><strong>Caso real:</strong> En 1999, la NASA perdió la sonda <em>Mars Climate Orbiter</em> (costo: 327 millones de dólares) porque un equipo usaba <strong>unidades inglesas (pies)</strong> y otro <strong>unidades métricas (metros)</strong>. Nadie lo detectó porque no se hizo un buen análisis de las interfaces entre los módulos.</p>
+    <p>👉 Moraleja: el análisis y diseño no son "burocracia". Son lo que evita catástrofes.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 1 -->
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la diferencia entre análisis y diseño?</p>
+      <button class="opcion" data-op="a">Son sinónimos</button>
+      <button class="opcion" data-op="b">Análisis = QUÉ; Diseño = CÓMO</button>
+      <button class="opcion" data-op="c">Análisis = el código; Diseño = los colores</button>
+      <button class="opcion" data-op="d">El análisis es solo para apps grandes</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Según la regla del 1-10-100, ¿dónde es más barato arreglar un error?</p>
+      <button class="opcion" data-op="a">En producción</button>
+      <button class="opcion" data-op="b">En programación</button>
+      <button class="opcion" data-op="c">En análisis</button>
+      <button class="opcion" data-op="d">No importa, todo cuesta igual</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuál es la causa #1 del fracaso de proyectos de software?</p>
+      <button class="opcion" data-op="a">Requerimientos mal definidos</button>
+      <button class="opcion" data-op="b">Falta de programadores</button>
+      <button class="opcion" data-op="c">Computadoras lentas</button>
+      <button class="opcion" data-op="d">Mala suerte</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Ciclo de Vida →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — CICLO DE VIDA DEL SOFTWARE
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>2️⃣ El ciclo de vida del software</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · 🗺️ Las fases del desarrollo</p>
+
+  <div class="caja-concepto">
+    <h3>🌱 Lo que es un "ciclo de vida"</h3>
+    <p>El <strong>ciclo de vida del software</strong> es el conjunto de etapas por las que pasa un sistema desde que es una idea hasta que se vuelve obsoleto y deja de usarse. Como un ser vivo: nace, crece, madura, se reproduce (versiones) y eventualmente muere.</p>
+  </div>
+
+  <h3>🗺️ Mapa conceptual interactivo</h3>
+  <p>Haz <strong>clic en cada fase</strong> para descubrir qué se hace allí:</p>
+
+  <div class="mapa-ciclo">
+    <div class="centro-mapa">
+      <span class="centro-emoji">🔄</span>
+      <span class="centro-texto">CICLO DE VIDA<br>DEL SOFTWARE</span>
+    </div>
+    <div class="fases-mapa">
+      <button class="fase-nodo" data-fase="1">
+        <span class="fase-num">1</span>
+        <span class="fase-icono">📋</span>
+        <span class="fase-titulo">Análisis de Requerimientos</span>
+      </button>
+      <button class="fase-nodo" data-fase="2">
+        <span class="fase-num">2</span>
+        <span class="fase-icono">📐</span>
+        <span class="fase-titulo">Diseño</span>
+      </button>
+      <button class="fase-nodo" data-fase="3">
+        <span class="fase-num">3</span>
+        <span class="fase-icono">💻</span>
+        <span class="fase-titulo">Implementación</span>
+      </button>
+      <button class="fase-nodo" data-fase="4">
+        <span class="fase-num">4</span>
+        <span class="fase-icono">🧪</span>
+        <span class="fase-titulo">Pruebas</span>
+      </button>
+      <button class="fase-nodo" data-fase="5">
+        <span class="fase-num">5</span>
+        <span class="fase-icono">🚀</span>
+        <span class="fase-titulo">Despliegue</span>
+      </button>
+      <button class="fase-nodo" data-fase="6">
+        <span class="fase-num">6</span>
+        <span class="fase-icono">🔧</span>
+        <span class="fase-titulo">Mantenimiento</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="detalle-fase" id="detalle-fase">
+    <p class="instruccion-fase">👆 Haz clic en una fase del mapa para ver los detalles.</p>
+  </div>
+
+  <h3>📚 Resumen de cada fase</h3>
+
+  <div class="fase-card">
+    <h4>1️⃣ 📋 Análisis de Requerimientos</h4>
+    <p><strong>¿Qué se hace?</strong> Se habla con los usuarios y clientes para entender qué necesitan. Se documenta TODO lo que el sistema debe hacer y las restricciones.</p>
+    <p><strong>Resultado:</strong> Un documento llamado <em>Especificación de Requerimientos</em>.</p>
+    <p><strong>Ejemplo:</strong> "El sistema debe permitir que los estudiantes consulten sus notas con usuario y contraseña."</p>
+  </div>
+
+  <div class="fase-card">
+    <h4>2️⃣ 📐 Diseño</h4>
+    <p><strong>¿Qué se hace?</strong> Se decide la arquitectura: qué módulos habrá, cómo se conectan, qué base de datos se usará, cómo se verá la interfaz.</p>
+    <p><strong>Resultado:</strong> Planos, diagramas, prototipos.</p>
+    <p><strong>Ejemplo:</strong> Un diagrama mostrando que el sistema tiene 3 partes: pantalla de login, módulo de notas, base de datos.</p>
+  </div>
+
+  <div class="fase-card">
+    <h4>3️⃣ 💻 Implementación (Programación)</h4>
+    <p><strong>¿Qué se hace?</strong> Los programadores escriben el código siguiendo los diseños.</p>
+    <p><strong>Resultado:</strong> El software funcionando (pero no probado).</p>
+    <p><strong>Ejemplo:</strong> Escribir el código en C#, Java o Python que ejecuta lo que se diseñó.</p>
+  </div>
+
+  <div class="fase-card">
+    <h4>4️⃣ 🧪 Pruebas</h4>
+    <p><strong>¿Qué se hace?</strong> Se verifica que el software haga lo que debe y no tenga errores.</p>
+    <p><strong>Resultado:</strong> Reporte de errores corregidos.</p>
+    <p><strong>Ejemplo:</strong> Probar que el login funcione con usuarios correctos, falle con incorrectos, y no permita SQL injection.</p>
+  </div>
+
+  <div class="fase-card">
+    <h4>5️⃣ 🚀 Despliegue</h4>
+    <p><strong>¿Qué se hace?</strong> Se entrega el software al cliente y se pone en funcionamiento real.</p>
+    <p><strong>Resultado:</strong> Sistema usado por la gente real.</p>
+    <p><strong>Ejemplo:</strong> Subir el sistema a un servidor del colegio y enseñar a los profesores a usarlo.</p>
+  </div>
+
+  <div class="fase-card">
+    <h4>6️⃣ 🔧 Mantenimiento</h4>
+    <p><strong>¿Qué se hace?</strong> Se corrigen errores que aparecen con el uso y se agregan nuevas funciones.</p>
+    <p><strong>Resultado:</strong> Versiones mejoradas del software.</p>
+    <p><strong>Ejemplo:</strong> Agregar la opción de exportar las notas a PDF porque los profesores lo pidieron.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Es lineal o cíclico?</h4>
+    <p>En la teoría clásica las fases van una tras otra. En la práctica moderna se <strong>repiten muchas veces</strong>: terminas el mantenimiento, descubres una necesidad nueva, y vuelves al análisis. Por eso se llama <em>ciclo</em>.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 2 -->
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué fase produce el documento de "Especificación de Requerimientos"?</p>
+      <button class="opcion" data-op="a">Diseño</button>
+      <button class="opcion" data-op="b">Análisis</button>
+      <button class="opcion" data-op="c">Pruebas</button>
+      <button class="opcion" data-op="d">Mantenimiento</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> En el ciclo de vida clásico, ¿cuál es el orden correcto?</p>
+      <button class="opcion" data-op="a">Diseño → Análisis → Pruebas → Programación</button>
+      <button class="opcion" data-op="b">Programación → Diseño → Análisis → Pruebas</button>
+      <button class="opcion" data-op="c">Análisis → Diseño → Programación → Pruebas</button>
+      <button class="opcion" data-op="d">Pruebas → Programación → Diseño → Análisis</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Qué se hace en la fase de mantenimiento?</p>
+      <button class="opcion" data-op="a">Se diseñan los planos</button>
+      <button class="opcion" data-op="b">Se entrevista a los usuarios</button>
+      <button class="opcion" data-op="c">Se escribe el código por primera vez</button>
+      <button class="opcion" data-op="d">Se corrigen errores y se agregan mejoras</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Estructuradas →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — METODOLOGÍAS ESTRUCTURADAS
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>3️⃣ Metodologías Estructuradas</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 📏 Cuando la planificación lo es todo</p>
+
+  <div class="caja-concepto">
+    <h3>🏗️ La filosofía estructurada</h3>
+    <p>Las metodologías estructuradas (también llamadas "tradicionales" o "pesadas") se basan en una idea: <strong>planificar todo desde el principio y seguir el plan</strong>. Son como construir un puente — necesitas saber TODO antes de empezar a soldar.</p>
+  </div>
+
+  <h3>🌊 Modelo Cascada (Waterfall)</h3>
+  <p>El más antiguo y conocido. Cada fase termina <strong>completamente</strong> antes de iniciar la siguiente. No se regresa.</p>
+
+  <div class="diagrama-cascada">
+    <div class="fase-cascada">📋 Análisis</div>
+    <div class="flecha-cascada">↓</div>
+    <div class="fase-cascada">📐 Diseño</div>
+    <div class="flecha-cascada">↓</div>
+    <div class="fase-cascada">💻 Programación</div>
+    <div class="flecha-cascada">↓</div>
+    <div class="fase-cascada">🧪 Pruebas</div>
+    <div class="flecha-cascada">↓</div>
+    <div class="fase-cascada">🚀 Despliegue</div>
+  </div>
+
+  <div class="cuadricula-2">
+    <div class="caja-pros">
+      <h4>✅ Ventajas</h4>
+      <ul>
+        <li>Fácil de entender y administrar</li>
+        <li>Documentación completa</li>
+        <li>Bueno cuando los requerimientos son <strong>muy claros</strong> y no cambian</li>
+        <li>Cada fase tiene productos concretos</li>
+      </ul>
+    </div>
+    <div class="caja-contras">
+      <h4>❌ Desventajas</h4>
+      <ul>
+        <li>Muy rígido: cambiar algo es costoso</li>
+        <li>El cliente ve el producto solo al final</li>
+        <li>Si los requerimientos cambian, todo se complica</li>
+        <li>Muchos proyectos modernos no son tan predecibles</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>🔻 Modelo en V</h3>
+  <p>Versión mejorada de cascada: cada fase de desarrollo tiene una fase de pruebas correspondiente, formando una "V".</p>
+
+  <div class="diagrama-v">
+    <div class="lado-izq">
+      <div class="nodo-v">📋 Requerimientos</div>
+      <div class="nodo-v">📐 Diseño del sistema</div>
+      <div class="nodo-v">🔧 Diseño de módulos</div>
+      <div class="nodo-v">💻 Codificación</div>
+    </div>
+    <div class="lado-der">
+      <div class="nodo-v">🧪 Pruebas de aceptación</div>
+      <div class="nodo-v">🧪 Pruebas del sistema</div>
+      <div class="nodo-v">🧪 Pruebas de integración</div>
+      <div class="nodo-v">🧪 Pruebas unitarias</div>
+    </div>
+  </div>
+
+  <p><strong>Idea clave:</strong> mientras planificas un nivel, ya estás planificando cómo lo vas a probar después.</p>
+
+  <h3>🌀 Modelo Espiral</h3>
+  <p>Combina cascada con <strong>análisis de riesgos</strong>: se hacen vueltas (espirales) donde cada vuelta repite las fases pero con menor incertidumbre.</p>
+
+  <div class="caja-historia">
+    <p>Es como ir mejorando un dibujo: primero un boceto, luego más detalle, luego el dibujo final. Cada vuelta verifica que vamos bien y reduce el riesgo de fracasar.</p>
+  </div>
+
+  <h3>🎯 ¿Cuándo usar metodologías estructuradas?</h3>
+  <div class="caja-importante">
+    <ul>
+      <li>📜 Sistemas críticos donde NO se puede fallar (aviones, hospitales, bancos).</li>
+      <li>🏛️ Proyectos con regulaciones estrictas (gobiernos, auditorías).</li>
+      <li>📊 Requerimientos muy claros desde el inicio.</li>
+      <li>⏱️ Cuando se necesita predecir tiempo y costo con precisión.</li>
+    </ul>
+  </div>
+
+  <!-- QUIZ MÓDULO 3 -->
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la característica principal del modelo Cascada?</p>
+      <button class="opcion" data-op="a">Se pueden revertir las fases libremente</button>
+      <button class="opcion" data-op="b">Cada fase termina antes de iniciar la siguiente</button>
+      <button class="opcion" data-op="c">No requiere documentación</button>
+      <button class="opcion" data-op="d">Se entrega cada semana</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Qué añade el modelo en V respecto al Cascada?</p>
+      <button class="opcion" data-op="a">Menos documentación</button>
+      <button class="opcion" data-op="b">Reuniones diarias</button>
+      <button class="opcion" data-op="c">Una fase de pruebas correspondiente a cada fase de desarrollo</button>
+      <button class="opcion" data-op="d">Programación en equipos pequeños</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿En qué tipo de proyecto sería más apropiado usar una metodología estructurada?</p>
+      <button class="opcion" data-op="a">Sistema de control de vuelos de una aerolínea</button>
+      <button class="opcion" data-op="b">Una app social para adolescentes que evolucionará rápido</button>
+      <button class="opcion" data-op="c">Un experimento de un estudiante</button>
+      <button class="opcion" data-op="d">Una página web personal</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: Ágiles →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — METODOLOGÍAS ÁGILES
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <h2>4️⃣ Metodologías Ágiles</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · ⚡ Adaptarse o morir</p>
+
+  <div class="caja-concepto">
+    <h3>🏃 La revolución ágil</h3>
+    <p>En el año <strong>2001</strong>, 17 desarrolladores se reunieron en una estación de esquí en Utah, frustrados con la rigidez de las metodologías tradicionales. Crearon el <strong>Manifiesto Ágil</strong>: una nueva forma de pensar el desarrollo de software.</p>
+  </div>
+
+  <h3>📜 El Manifiesto Ágil</h3>
+  <p>Tiene 4 valores que <strong>no rechazan</strong> lo tradicional, sino que dicen "esto otro es más importante":</p>
+
+  <div class="valor-agil">
+    <div class="valor-izq">Individuos e interacciones</div>
+    <div class="valor-vs">sobre</div>
+    <div class="valor-der">procesos y herramientas</div>
+  </div>
+  <div class="valor-agil">
+    <div class="valor-izq">Software funcionando</div>
+    <div class="valor-vs">sobre</div>
+    <div class="valor-der">documentación extensiva</div>
+  </div>
+  <div class="valor-agil">
+    <div class="valor-izq">Colaboración con el cliente</div>
+    <div class="valor-vs">sobre</div>
+    <div class="valor-der">negociación de contratos</div>
+  </div>
+  <div class="valor-agil">
+    <div class="valor-izq">Responder al cambio</div>
+    <div class="valor-vs">sobre</div>
+    <div class="valor-der">seguir un plan</div>
+  </div>
+
+  <h3>🔁 La idea clave: iteración</h3>
+  <p>En vez de hacer todo el análisis, luego todo el diseño, etc... lo ágil <strong>repite el ciclo completo en pequeños pedazos</strong>. Cada 1-4 semanas hay una versión funcionando.</p>
+
+  <div class="diagrama-iteracion">
+    <div class="iter-paso">📋</div>
+    <div class="iter-flecha">→</div>
+    <div class="iter-paso">📐</div>
+    <div class="iter-flecha">→</div>
+    <div class="iter-paso">💻</div>
+    <div class="iter-flecha">→</div>
+    <div class="iter-paso">🧪</div>
+    <div class="iter-flecha">→</div>
+    <div class="iter-paso">🚀</div>
+    <div class="iter-flecha-ret">⤴ repetir</div>
+  </div>
+
+  <h3>🏉 Scrum — el marco más popular</h3>
+  <div class="metodologia-card">
+    <h4>¿Cómo funciona?</h4>
+    <ul>
+      <li><strong>Sprints:</strong> ciclos de 1 a 4 semanas con objetivos concretos.</li>
+      <li><strong>Daily standups:</strong> reunión diaria de 15 minutos: "¿Qué hice ayer? ¿Qué haré hoy? ¿Qué me bloquea?"</li>
+      <li><strong>Roles:</strong>
+        <ul>
+          <li>🎯 <em>Product Owner</em>: decide QUÉ se construye.</li>
+          <li>🛡️ <em>Scrum Master</em>: protege al equipo y elimina obstáculos.</li>
+          <li>👨‍💻 <em>Equipo de desarrollo</em>: construye el producto.</li>
+        </ul>
+      </li>
+      <li><strong>Demo:</strong> al final de cada sprint se muestra al cliente lo construido.</li>
+      <li><strong>Retrospectiva:</strong> el equipo discute cómo mejorar.</li>
+    </ul>
+  </div>
+
+  <h3>📋 Kanban — el tablero visual</h3>
+  <div class="metodologia-card">
+    <p>Originario de Toyota, Kanban se basa en un <strong>tablero con columnas</strong> que muestran el flujo del trabajo:</p>
+
+    <div class="tablero-kanban">
+      <div class="col-kanban">
+        <h5>📌 Por hacer</h5>
+        <div class="tarjeta-kanban">Login</div>
+        <div class="tarjeta-kanban">Notas</div>
+      </div>
+      <div class="col-kanban">
+        <h5>🔧 Haciendo</h5>
+        <div class="tarjeta-kanban">Registro</div>
+      </div>
+      <div class="col-kanban">
+        <h5>🧪 Probando</h5>
+        <div class="tarjeta-kanban">Menú</div>
+      </div>
+      <div class="col-kanban">
+        <h5>✅ Hecho</h5>
+        <div class="tarjeta-kanban">Diseño UI</div>
+      </div>
+    </div>
+
+    <p><strong>Principio:</strong> limita el trabajo "en curso" para evitar atascos. Si la columna "haciendo" llena, primero terminas algo antes de tomar otra tarea.</p>
+  </div>
+
+  <h3>⚡ XP (Extreme Programming)</h3>
+  <div class="metodologia-card">
+    <p>El más técnico de los marcos ágiles. Sus prácticas clave:</p>
+    <ul>
+      <li>👥 <strong>Programación en pares:</strong> dos personas, un computador. Una escribe, la otra revisa.</li>
+      <li>🧪 <strong>TDD (Test Driven Development):</strong> primero escribes la prueba, luego el código.</li>
+      <li>🔁 <strong>Refactorización constante:</strong> mejorar el código sin cambiar lo que hace.</li>
+      <li>🎯 <strong>Releases pequeños y frecuentes.</strong></li>
+    </ul>
+  </div>
+
+  <h3>🎯 ¿Cuándo usar metodologías ágiles?</h3>
+  <div class="caja-importante">
+    <ul>
+      <li>📱 Cuando los requerimientos pueden cambiar (apps, startups, productos digitales).</li>
+      <li>💡 Cuando no se sabe exactamente qué quiere el cliente y hay que experimentar.</li>
+      <li>👥 Equipos pequeños (5-9 personas idealmente).</li>
+      <li>🚀 Cuando se necesita lanzar rápido y mejorar después.</li>
+    </ul>
+  </div>
+
+  <!-- QUIZ MÓDULO 4 -->
+  <div class="quiz" data-quiz="4">
+    <h3>🎯 Mini-Quiz del Módulo 4</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿En qué año se publicó el Manifiesto Ágil?</p>
+      <button class="opcion" data-op="a">1995</button>
+      <button class="opcion" data-op="b">1999</button>
+      <button class="opcion" data-op="c">2001</button>
+      <button class="opcion" data-op="d">2010</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Qué es un "sprint" en Scrum?</p>
+      <button class="opcion" data-op="a">Una carrera del equipo</button>
+      <button class="opcion" data-op="b">Un ciclo corto de trabajo (1-4 semanas) con un objetivo</button>
+      <button class="opcion" data-op="c">El nombre del jefe</button>
+      <button class="opcion" data-op="d">El documento de requerimientos</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué caracteriza al modelo Kanban?</p>
+      <button class="opcion" data-op="a">Un tablero visual con columnas que limitan el trabajo en curso</button>
+      <button class="opcion" data-op="b">Programación en pares</button>
+      <button class="opcion" data-op="c">Hacer todo el análisis primero</button>
+      <button class="opcion" data-op="d">Solo trabajar de noche</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — TALLER DE COMPARACIÓN
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>5️⃣ 🧩 Taller: Compara y elige metodologías</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · 🛠️ Modo práctico ON</p>
+
+  <div class="caja-concepto">
+    <h3>🎬 Tu misión</h3>
+    <p>Hasta ahora viste la teoría. Ahora vas a <strong>analizar, comparar y decidir</strong>. Este taller tiene 3 partes:</p>
+    <ol>
+      <li>📊 Tabla comparativa</li>
+      <li>🎮 Juego: "¿Qué metodología elegirías?"</li>
+      <li>📝 Reflexión escrita</li>
+    </ol>
+  </div>
+
+  <h3>📊 Parte 1: Tabla comparativa</h3>
+  <p>Estudia esta tabla detenidamente. Te servirá para el juego que viene:</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr>
+          <th>Criterio</th>
+          <th class="th-estr">📏 Estructuradas</th>
+          <th class="th-agil">⚡ Ágiles</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Planificación</strong></td>
+          <td>Toda al inicio</td>
+          <td>Continua, en cada sprint</td>
+        </tr>
+        <tr>
+          <td><strong>Cambios</strong></td>
+          <td>Difíciles y costosos</td>
+          <td>Bienvenidos en cualquier momento</td>
+        </tr>
+        <tr>
+          <td><strong>Documentación</strong></td>
+          <td>Extensa y formal</td>
+          <td>La mínima necesaria</td>
+        </tr>
+        <tr>
+          <td><strong>Cliente</strong></td>
+          <td>Ve el producto al final</td>
+          <td>Participa constantemente</td>
+        </tr>
+        <tr>
+          <td><strong>Equipo ideal</strong></td>
+          <td>Grande, especializado</td>
+          <td>Pequeño, multifuncional</td>
+        </tr>
+        <tr>
+          <td><strong>Predicción</strong></td>
+          <td>Alta (se sabe qué saldrá)</td>
+          <td>Baja al inicio, alta al avanzar</td>
+        </tr>
+        <tr>
+          <td><strong>Riesgo</strong></td>
+          <td>Si algo se descubre tarde, desastre</td>
+          <td>Se detectan riesgos rápido</td>
+        </tr>
+        <tr>
+          <td><strong>Ejemplos</strong></td>
+          <td>Cascada, V, Espiral</td>
+          <td>Scrum, Kanban, XP</td>
+        </tr>
+        <tr>
+          <td><strong>Mejor para…</strong></td>
+          <td>Sistemas críticos, regulados</td>
+          <td>Productos que evolucionan rápido</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🎮 Parte 2: Juego "¿Qué elegirías?"</h3>
+  <p>Lee cada escenario y elige la mejor metodología. ¡Verás retroalimentación inmediata!</p>
+
+  <div class="escenario" data-correcta="estructurada">
+    <h4>🛫 Escenario 1: Sistema de Control Aéreo</h4>
+    <p>Una aerolínea necesita un sistema para controlar despegues y aterrizajes. Si falla, se ponen en riesgo vidas humanas. Los requerimientos están claramente regulados por la autoridad aeronáutica.</p>
+    <div class="opciones-esc">
+      <button class="opcion-esc" data-elec="estructurada">📏 Estructurada (Cascada/V)</button>
+      <button class="opcion-esc" data-elec="agil">⚡ Ágil (Scrum/Kanban)</button>
+    </div>
+    <div class="retro-esc"></div>
+  </div>
+
+  <div class="escenario" data-correcta="agil">
+    <h4>📱 Escenario 2: App de Redes Sociales para Adolescentes</h4>
+    <p>Una startup quiere lanzar una nueva red social. No están seguros de qué funciones tendrán éxito. Necesitan lanzar pronto, probar con usuarios reales y ajustar rápido según el feedback.</p>
+    <div class="opciones-esc">
+      <button class="opcion-esc" data-elec="estructurada">📏 Estructurada (Cascada/V)</button>
+      <button class="opcion-esc" data-elec="agil">⚡ Ágil (Scrum/Kanban)</button>
+    </div>
+    <div class="retro-esc"></div>
+  </div>
+
+  <div class="escenario" data-correcta="estructurada">
+    <h4>🏥 Escenario 3: Software Médico para Cirugías</h4>
+    <p>Un hospital necesita software que asista al cirujano durante operaciones. Debe pasar certificaciones de salud y no puede tener errores. Los requerimientos están definidos por médicos.</p>
+    <div class="opciones-esc">
+      <button class="opcion-esc" data-elec="estructurada">📏 Estructurada (Cascada/V)</button>
+      <button class="opcion-esc" data-elec="agil">⚡ Ágil (Scrum/Kanban)</button>
+    </div>
+    <div class="retro-esc"></div>
+  </div>
+
+  <div class="escenario" data-correcta="agil">
+    <h4>🎮 Escenario 4: Juego Móvil Casual</h4>
+    <p>Un estudio quiere lanzar un juego para celulares. La idea es probar mecánicas, ver qué le gusta a los jugadores e ir agregando niveles y funciones según las descargas y comentarios.</p>
+    <div class="opciones-esc">
+      <button class="opcion-esc" data-elec="estructurada">📏 Estructurada (Cascada/V)</button>
+      <button class="opcion-esc" data-elec="agil">⚡ Ágil (Scrum/Kanban)</button>
+    </div>
+    <div class="retro-esc"></div>
+  </div>
+
+  <div class="escenario" data-correcta="estructurada">
+    <h4>🏦 Escenario 5: Sistema de Auditoría Bancaria</h4>
+    <p>Un banco debe construir un sistema para reportar movimientos a la Superintendencia Financiera. Los requisitos están en una ley, no pueden cambiar y deben cumplirse al 100%.</p>
+    <div class="opciones-esc">
+      <button class="opcion-esc" data-elec="estructurada">📏 Estructurada (Cascada/V)</button>
+      <button class="opcion-esc" data-elec="agil">⚡ Ágil (Scrum/Kanban)</button>
+    </div>
+    <div class="retro-esc"></div>
+  </div>
+
+  <div class="escenario" data-correcta="agil">
+    <h4>🛒 Escenario 6: Tienda Online de un Emprendedor</h4>
+    <p>Un emprendedor quiere abrir su tienda online. Empezará con 10 productos y planea crecer y experimentar con promociones, métodos de pago y diseños según vea qué funciona.</p>
+    <div class="opciones-esc">
+      <button class="opcion-esc" data-elec="estructurada">📏 Estructurada (Cascada/V)</button>
+      <button class="opcion-esc" data-elec="agil">⚡ Ágil (Scrum/Kanban)</button>
+    </div>
+    <div class="retro-esc"></div>
+  </div>
+
+  <div class="resultado-juego" id="resultado-juego"></div>
+
+  <h3>📝 Parte 3: Reflexión personal</h3>
+  <div class="caja-desafio">
+    <p>Después del juego, responde mentalmente (o en tu cuaderno):</p>
+    <ol>
+      <li>¿Qué patrón notaste para escoger una u otra metodología?</li>
+      <li>¿Cuál de las dos te llama más la atención y por qué?</li>
+      <li>¿Pueden combinarse las dos en un mismo proyecto?</li>
+    </ol>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('reflexion-5')">👁️ Ver pistas para la reflexión</button>
+    <div class="solucion" id="reflexion-5">
+      <ul>
+        <li><strong>Patrón:</strong> mientras más críticas las consecuencias y más fijos los requerimientos, más estructurada conviene ser. Mientras más incertidumbre y más rápido se necesite cambiar, más ágil.</li>
+        <li><strong>Combinación:</strong> ¡Sí! Existen enfoques híbridos. Por ejemplo, una empresa puede usar cascada para definir requerimientos generales (regulados) y luego scrum dentro de cada módulo.</li>
+        <li>La respuesta no es "una es mejor que otra". La respuesta es <strong>"depende del contexto"</strong>. Y aprender a leer el contexto es lo que te hace un buen ingeniero.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Requerimientos →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — LECTURA DIRIGIDA: REQUERIMIENTOS
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>6️⃣ 📖 Lectura dirigida: ¿Qué es un requerimiento?</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · 📚 Lectura y discusión</p>
+
+  <div class="caja-concepto">
+    <h3>📜 Instrucciones</h3>
+    <p>Lee con calma el siguiente texto. Hay <strong>preguntas de discusión intercaladas</strong>: detente en cada una, piensa tu respuesta y luego revísala haciendo clic en el botón. Si trabajas en grupo, comenten en voz alta antes de revelar.</p>
+  </div>
+
+  <article class="lectura">
+
+    <h3>📖 Lectura 1: La definición</h3>
+    <p>Un <strong>requerimiento</strong> es una descripción de lo que un sistema debe hacer o de una restricción que debe cumplir. Dicho fácil: son las <em>condiciones del cliente</em> traducidas al lenguaje de los desarrolladores.</p>
+    <p>Imagínalo como cuando le encargas una pizza:</p>
+    <ul>
+      <li>"Quiero una pizza familiar" → <strong>requerimiento de tamaño</strong>.</li>
+      <li>"Con jamón y piña" → <strong>requerimiento de ingredientes</strong>.</li>
+      <li>"Que llegue en menos de 30 minutos" → <strong>requerimiento de tiempo</strong>.</li>
+      <li>"Sin gluten" → <strong>requerimiento de restricción</strong>.</li>
+    </ul>
+    <p>En software pasa lo mismo. El cliente dice qué quiere y los analistas lo escriben de forma precisa para que los programadores sepan exactamente qué construir.</p>
+
+    <div class="discusion">
+      <h4>💬 Pregunta de discusión #1</h4>
+      <p>Si pides una pizza diciendo solo <em>"quiero una pizza rica"</em>, ¿qué problemas podrías tener cuando llegue? Relaciona esa situación con el desarrollo de software.</p>
+      <button class="btn-toggle-sol" onclick="toggleSolucion('disc-1')">👁️ Ver una respuesta posible</button>
+      <div class="solucion" id="disc-1">
+        <p>"Rica" significa cosas distintas para personas distintas. La pizza puede llegar con ingredientes que detestas, en un tamaño equivocado o demasiado tarde. En software es igual: si el cliente dice "quiero un sistema bueno" sin precisar, el resultado seguramente NO será lo que esperaba. Por eso los requerimientos deben ser <strong>específicos, medibles y entendibles para todos</strong>.</p>
+      </div>
+    </div>
+
+    <h3>📖 Lectura 2: Tipos de requerimientos</h3>
+    <p>Los requerimientos no son todos iguales. Se clasifican en dos grandes familias:</p>
+
+    <div class="cuadricula-2">
+      <div class="tarjeta-req funcional">
+        <h4>🔧 Funcionales</h4>
+        <p>Describen <strong>qué debe hacer</strong> el sistema. Son las acciones, las funcionalidades concretas.</p>
+        <p><strong>Ejemplos:</strong></p>
+        <ul>
+          <li>El sistema debe permitir registrar usuarios.</li>
+          <li>El sistema debe calcular el promedio de notas.</li>
+          <li>El sistema debe enviar un correo de confirmación.</li>
+        </ul>
+      </div>
+      <div class="tarjeta-req no-funcional">
+        <h4>⚙️ No funcionales</h4>
+        <p>Describen <strong>cómo debe ser</strong> el sistema. Características de calidad y restricciones.</p>
+        <p><strong>Ejemplos:</strong></p>
+        <ul>
+          <li>El sistema debe responder en menos de 2 segundos.</li>
+          <li>Debe funcionar en celulares y computadores.</li>
+          <li>Debe cifrar las contraseñas con AES-256.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p>Truco mnemotécnico: <strong>"Funcional = QUÉ. No funcional = CÓMO."</strong></p>
+
+    <div class="discusion">
+      <h4>💬 Pregunta de discusión #2</h4>
+      <p>Clasifica estos requerimientos como <strong>F</strong>uncionales o <strong>NF</strong>:</p>
+      <ol>
+        <li>El sistema debe permitir pagar con tarjeta de crédito.</li>
+        <li>La página debe cargar en menos de 3 segundos.</li>
+        <li>El sistema debe estar disponible 24/7.</li>
+        <li>El sistema debe generar reportes en PDF.</li>
+        <li>La interfaz debe estar en español e inglés.</li>
+      </ol>
+      <button class="btn-toggle-sol" onclick="toggleSolucion('disc-2')">👁️ Ver respuestas</button>
+      <div class="solucion" id="disc-2">
+        <ol>
+          <li>F — es una acción concreta del sistema.</li>
+          <li>NF — es una característica de rendimiento.</li>
+          <li>NF — es una característica de disponibilidad.</li>
+          <li>F — es una funcionalidad específica.</li>
+          <li>NF — es una característica de internacionalización (también podría considerarse F si lo entiendes como "el sistema debe ofrecer la opción de cambiar idioma"). 👉 Esta dualidad muestra que clasificar requerimientos a veces es discutible.</li>
+        </ol>
+      </div>
+    </div>
+
+    <h3>📖 Lectura 3: Buenos vs malos requerimientos</h3>
+    <p>Un buen requerimiento debe cumplir 5 cualidades. En inglés se conocen como SMART:</p>
+
+    <div class="smart">
+      <div class="smart-item"><strong>S</strong>pecific — Específico (sin ambigüedades).</div>
+      <div class="smart-item"><strong>M</strong>easurable — Medible (se puede verificar).</div>
+      <div class="smart-item"><strong>A</strong>chievable — Alcanzable (no pides lo imposible).</div>
+      <div class="smart-item"><strong>R</strong>elevant — Relevante (aporta valor real).</div>
+      <div class="smart-item"><strong>T</strong>ime-bound — Con plazo (cuándo debe estar listo).</div>
+    </div>
+
+    <p>Mira estos ejemplos:</p>
+
+    <div class="ejemplo-req malo">
+      <p><strong>❌ Malo:</strong> "El sistema debe ser rápido."</p>
+      <p><em>Problema:</em> ¿Qué significa rápido? ¿1 segundo? ¿1 minuto? Imposible de verificar.</p>
+    </div>
+
+    <div class="ejemplo-req bueno">
+      <p><strong>✅ Bueno:</strong> "El sistema debe responder a una consulta de notas en menos de 2 segundos para el 95% de las solicitudes."</p>
+      <p><em>Por qué es bueno:</em> es específico, medible y verificable.</p>
+    </div>
+
+    <div class="ejemplo-req malo">
+      <p><strong>❌ Malo:</strong> "El sistema debe ser fácil de usar."</p>
+      <p><em>Problema:</em> "Fácil" depende de quién. Para un niño "fácil" no es lo mismo que para un programador.</p>
+    </div>
+
+    <div class="ejemplo-req bueno">
+      <p><strong>✅ Bueno:</strong> "Un usuario sin experiencia debe poder registrarse en el sistema en menos de 3 minutos y sin cometer más de 1 error."</p>
+      <p><em>Por qué es bueno:</em> define a quién, qué tarea y cómo se mide el éxito.</p>
+    </div>
+
+    <div class="discusion">
+      <h4>💬 Pregunta de discusión #3</h4>
+      <p>Convierte este requerimiento malo en uno bueno: <em>"El sistema debe ser seguro."</em></p>
+      <button class="btn-toggle-sol" onclick="toggleSolucion('disc-3')">👁️ Ver una propuesta</button>
+      <div class="solucion" id="disc-3">
+        <p>Una versión mejorada podría ser:</p>
+        <p><em>"Las contraseñas deben almacenarse cifradas con bcrypt. El sistema debe bloquear el acceso temporalmente después de 5 intentos fallidos. Todas las comunicaciones deben usar HTTPS con TLS 1.2 o superior. El sistema debe registrar todos los intentos de login (exitosos y fallidos) por al menos 90 días."</em></p>
+        <p>👉 Fíjate cómo ahora <strong>se puede verificar</strong> punto por punto.</p>
+      </div>
+    </div>
+
+    <h3>📖 Lectura 4: ¿De dónde salen los requerimientos?</h3>
+    <p>No salen de la cabeza del programador. Se descubren con <strong>técnicas de elicitación</strong> (palabra elegante que significa "sacar información"):</p>
+    <ul>
+      <li>🗣️ <strong>Entrevistas:</strong> conversar con usuarios y clientes.</li>
+      <li>📋 <strong>Encuestas:</strong> recoger opiniones de muchas personas.</li>
+      <li>👀 <strong>Observación:</strong> ver cómo trabaja la gente realmente.</li>
+      <li>🎯 <strong>Talleres:</strong> reuniones con stakeholders para co-crear.</li>
+      <li>📚 <strong>Análisis de documentos:</strong> revisar manuales, leyes, contratos.</li>
+      <li>🧪 <strong>Prototipos:</strong> hacer maquetas para que el cliente diga "sí, así" o "no, así no".</li>
+    </ul>
+
+    <div class="discusion">
+      <h4>💬 Pregunta de discusión #4</h4>
+      <p>Imagina que el rector de tu colegio te pide construir un sistema para gestionar la biblioteca. ¿Con qué <strong>3 personas</strong> hablarías primero para entender los requerimientos? ¿Por qué?</p>
+      <button class="btn-toggle-sol" onclick="toggleSolucion('disc-4')">👁️ Ver una respuesta posible</button>
+      <div class="solucion" id="disc-4">
+        <ul>
+          <li><strong>Bibliotecari@:</strong> es quien usa el sistema todos los días. Sabe los problemas del día a día: préstamos perdidos, multas, libros dañados.</li>
+          <li><strong>Estudiantes:</strong> son los usuarios finales. ¿Quieren reservar libros desde el celular? ¿Necesitan renovar préstamos sin ir presencialmente?</li>
+          <li><strong>Rector o administrador:</strong> tiene la visión global y conoce las restricciones (presupuesto, normas del colegio, sistemas existentes con los que se debe integrar).</li>
+        </ul>
+        <p>💡 <strong>Lección:</strong> los requerimientos vienen de <em>múltiples fuentes</em>. Hablar con una sola persona te da una visión incompleta.</p>
+      </div>
+    </div>
+
+    <h3>📖 Lectura 5: ¿Pueden cambiar los requerimientos?</h3>
+    <p>Esta es quizás la pregunta más importante. La respuesta es: <strong>SÍ, casi siempre cambian</strong>. Por eso:</p>
+    <ul>
+      <li>Las metodologías estructuradas tratan de minimizar los cambios documentándolos bien al inicio.</li>
+      <li>Las metodologías ágiles abrazan los cambios como algo natural y se preparan para ellos.</li>
+    </ul>
+    <p>Un buen ingeniero de software nunca dice <em>"así no se puede"</em>. Dice: <em>"estos son los costos y riesgos de hacer ese cambio, ¿lo aprobamos?"</em></p>
+
+    <div class="discusion">
+      <h4>💬 Pregunta de discusión #5 (la grande)</h4>
+      <p>¿Qué pasaría si en un proyecto se descubre, después de meses de programación, que un requerimiento clave estaba mal entendido?</p>
+      <button class="btn-toggle-sol" onclick="toggleSolucion('disc-5')">👁️ Ver respuesta</button>
+      <div class="solucion" id="disc-5">
+        <ul>
+          <li>Habría que rehacer parte (o todo) lo construido → <strong>tiempo perdido</strong>.</li>
+          <li>Hay que pagar más horas de los programadores → <strong>presupuesto inflado</strong>.</li>
+          <li>El cliente puede estar molesto y desconfiar del equipo → <strong>relación afectada</strong>.</li>
+          <li>Otros requerimientos dependían del incorrecto → <strong>efecto dominó</strong>.</li>
+          <li>Si el proyecto era crítico (médico, financiero, militar) → <strong>posibles consecuencias graves</strong>.</li>
+        </ul>
+        <p>Por eso vale la pena dedicar tiempo de calidad al análisis. <strong>Una hora bien invertida en análisis ahorra cien horas de reprogramación.</strong></p>
+      </div>
+    </div>
+
+  </article>
+
+  <div class="caja-importante">
+    <h4>📌 Ideas clave para llevarte</h4>
+    <ul>
+      <li>Los requerimientos son la base de todo el proyecto.</li>
+      <li>Hay funcionales (qué hace) y no funcionales (cómo es).</li>
+      <li>Deben ser SMART: específicos, medibles, alcanzables, relevantes y con plazo.</li>
+      <li>Se descubren hablando con muchas personas.</li>
+      <li>Pueden cambiar, y un buen ingeniero está preparado.</li>
+    </ul>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Reto Final →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 7 — RETO FINAL
+============================================================ -->
+<section class="modulo" data-modulo="7">
+  <h2>7️⃣ 🏆 Reto Final y Reflexión</h2>
+  <p class="meta-modulo">⏱️ 15 minutos · 🎓 Cierre del curso</p>
+
+  <div class="hero">
+    <h2>🎉 ¡Lo lograste!</h2>
+    <p class="lead">Has recorrido 3 horas y 45 minutos aprendiendo a pensar como un analista de software. Ahora dominas conceptos que muchos profesionales tardan años en entender bien.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🧠</span>
+      <h3>Entiendes el porqué</h3>
+      <p>Sabes por qué el análisis y diseño valen oro.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🗺️</span>
+      <h3>Conoces el ciclo</h3>
+      <p>Identificas las 6 fases del ciclo de vida.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">📏</span>
+      <h3>Metodologías</h3>
+      <p>Distingues estructuradas de ágiles y cuándo aplicar cada una.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">📋</span>
+      <h3>Requerimientos</h3>
+      <p>Sabes qué son y cómo escribirlos bien (SMART).</p>
+    </div>
+  </div>
+
+  <h3>🚀 Tu reto final</h3>
+  <div class="caja-desafio">
+    <p><strong>Misión:</strong> Diseña los <strong>requerimientos completos</strong> de un sistema para tu colegio (elige uno):</p>
+    <ul>
+      <li>📚 Biblioteca digital</li>
+      <li>📝 Control de notas</li>
+      <li>🏃 Inscripción a actividades extracurriculares</li>
+      <li>🍽️ Reservas de comedor</li>
+      <li>📅 Calendario académico</li>
+    </ul>
+    <p>Tu entrega debe incluir:</p>
+    <ol>
+      <li><strong>Descripción del problema</strong> (un párrafo).</li>
+      <li><strong>5 requerimientos funcionales</strong> bien escritos.</li>
+      <li><strong>3 requerimientos no funcionales</strong> medibles.</li>
+      <li><strong>Lista de 3 personas</strong> con las que entrevistarías para validar los requerimientos.</li>
+      <li><strong>Decisión final:</strong> ¿qué metodología usarías (estructurada o ágil) y por qué?</li>
+    </ol>
+    <p>📸 Comparte tu propuesta con tu profesor o compañeros. ¡Sé creativo y específico!</p>
+  </div>
+
+  <h3>📚 Para seguir aprendiendo</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">📖</span>
+      <h3>Manifiesto Ágil</h3>
+      <p>El documento original que cambió el mundo del software.</p>
+      <a href="https://agilemanifesto.org/iso/es/manifesto.html" target="_blank">Leer →</a>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🌐</span>
+      <h3>Scrum Guide</h3>
+      <p>La guía oficial de Scrum, gratis y en español.</p>
+      <a href="https://scrumguides.org/" target="_blank">Visitar →</a>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎯</span>
+      <h3>Próximo paso</h3>
+      <p>Aprende a hacer diagramas UML para representar tus diseños.</p>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💭 Reflexión final</h4>
+    <p>Lo más importante de este curso no es que memorices nombres de metodologías. Es que entiendas algo profundo: <strong>antes de hacer, hay que pensar</strong>. Esa es una habilidad que sirve para programar, sí, pero también para tu vida. Antes de empezar cualquier proyecto, pregúntate: "¿qué necesito realmente?", "¿cómo lo haré?", "¿qué podría salir mal?". Acabas de aprender a ser <em>un mejor pensador</em>.</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🚀 ¡Felicitaciones!</h2>
+    <p>Ya tienes la mentalidad del arquitecto digital. Ahora ve a construir.</p>
+    <button class="btn-final" onclick="reiniciarCurso()">🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <p>📐 Curso de Análisis y Diseño de Software · Diseñado para jóvenes pensadores · 2026</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
