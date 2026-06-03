@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏗️ Programación Orientada a Objetos en C# — Clase 10</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- =================== FONDO DE TALLER =================== -->
+<div class="estrellas">
+  <div class="est est1"></div>
+  <div class="est est2"></div>
+  <div class="est est3"></div>
+  <div class="est est4"></div>
+  <div class="est est5"></div>
+  <div class="est est6"></div>
+</div>
+
+<!-- =================== HEADER =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🏗️</span>
+    <div>
+      <h1>Programación Orientada a Objetos</h1>
+      <p class="subtitulo">Clase 10 · El arte de construir software como en la vida real</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span id="porcentaje">0%</span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">1️⃣ Paradigma</button>
+  <button class="btn-modulo" data-modulo="2">2️⃣ Clases</button>
+  <button class="btn-modulo" data-modulo="3">3️⃣ Atributos</button>
+  <button class="btn-modulo" data-modulo="4">4️⃣ Métodos</button>
+  <button class="btn-modulo" data-modulo="5">5️⃣ Constructores</button>
+  <button class="btn-modulo" data-modulo="6">6️⃣ 🧪 Taller</button>
+  <button class="btn-modulo" data-modulo="7">7️⃣ 🎭 Simulador</button>
+  <button class="btn-modulo" data-modulo="8">8️⃣ 🧩 Análisis</button>
+  <button class="btn-modulo" data-modulo="9">🏆 Final</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>👋 ¡Hola, arquitecto/a de software!</h2>
+    <p class="lead">Hasta ahora tus programas eran como <strong>recetas de cocina</strong>: una lista de pasos a seguir. Hoy vas a aprender otra forma de pensar, mucho más parecida a cómo funciona el mundo real: la <strong>Programación Orientada a Objetos</strong> (POO). En lugar de "pasos", vas a crear <em>cosas</em> que tienen <em>características</em> y <em>saben hacer cosas</em>. 🏗️</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">⏱️</span>
+      <h3>Duración</h3>
+      <p>3 horas y 45 minutos en 10 módulos cortos. Avanza a tu ritmo, sin apuro.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Aprender a crear <em>clases</em>, agregarles <em>atributos</em> y <em>métodos</em>, y entender cómo nacen los objetos con los <em>constructores</em>.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🛠️</span>
+      <h3>Lo que necesitas</h3>
+      <p>Un navegador. Para probar código: <a href="https://dotnetfiddle.net" target="_blank">dotnetfiddle.net</a> (no requiere instalar nada).</p>
+    </div>
+  </div>
+
+  <div class="caja-destacada">
+    <h3>🗺️ Tu ruta de aprendizaje</h3>
+    <ol class="ruta">
+      <li><strong>Módulo 1 (30 min):</strong> ¿Qué es la POO? Programación estructurada vs orientada a objetos</li>
+      <li><strong>Módulo 2 (25 min):</strong> Clases — el plano de construcción</li>
+      <li><strong>Módulo 3 (20 min):</strong> Atributos — las características del objeto</li>
+      <li><strong>Módulo 4 (25 min):</strong> Métodos — las acciones que puede hacer</li>
+      <li><strong>Módulo 5 (20 min):</strong> Constructores — cómo nacen los objetos</li>
+      <li><strong>Módulo 6 (35 min):</strong> 🧪 Taller: construyamos Estudiante, Auto y Libro</li>
+      <li><strong>Módulo 7 (25 min):</strong> 🎭 Simulador: objetos físicos en acción</li>
+      <li><strong>Módulo 8 (20 min):</strong> 🧩 Análisis: el mismo problema, dos formas</li>
+      <li><strong>Módulo 9 (10 min):</strong> 🏆 Reto final y reflexión</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Una idea que te va a volar la cabeza</h4>
+    <p>La POO no es un invento raro de los programadores. Es <strong>la forma en que tu cerebro ya entiende el mundo</strong>. Tú no piensas "primero la altura, luego el color, luego la edad" cuando ves a una persona. Tú piensas: <em>"veo a una persona llamada Ana, de 16 años, con chaqueta roja"</em>. La POO hace exactamente eso con el código. Vas a ver que es más natural de lo que crees. 🧠</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">¡Construyamos! →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — ¿QUÉ ES LA POO?
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>1️⃣ ¿Qué es la Programación Orientada a Objetos?</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 🧠 El cambio de mentalidad más grande del curso</p>
+
+  <div class="caja-concepto">
+    <h3>🍳 Dos formas de describir el mundo</h3>
+    <p>Imagina que quieres explicarle a un robot cómo hacer un sándwich. Tienes dos opciones:</p>
+    <ul class="lista-emoji">
+      <li>📋 <strong>Estilo estructurado (receta):</strong> "Paso 1: toma dos rebanadas de pan. Paso 2: unta mantequilla. Paso 3: pon jamón..."</li>
+      <li>🥪 <strong>Estilo orientado a objetos (cosas):</strong> "Tienes un <em>objeto pan</em> con <em>atributos</em> (tipo, grosor) y un <em>objeto cuchillo</em> con <em>métodos</em> (untar, cortar). Combínalos."</li>
+    </ul>
+    <p>Ambas opciones hacen lo mismo. La diferencia es la <strong>mentalidad</strong>: en POO piensas en <em>cosas</em> que tienen <em>datos</em> y <em>habilidades</em>.</p>
+  </div>
+
+  <h3>📖 Las dos filosofías en una frase</h3>
+  <div class="caja-destacada">
+    <p><strong>🔧 Programación estructurada:</strong> "El programa es una secuencia de pasos que transforman datos."</p>
+    <p><strong>🏗️ Programación orientada a objetos:</strong> "El programa es un conjunto de objetos que se envían mensajes entre sí."</p>
+  </div>
+
+  <h3>🤔 ¿Por qué existe la POO?</h3>
+  <p>En los años 60 y 70, los programas empezaron a hacerse <em>muy</em> grandes. La forma estructurada funcionaba, pero al juntar millones de líneas, todo se volvía un lío imposible de mantener. La POO nació para resolver un problema concreto:</p>
+  <ul>
+    <li>🧩 <strong>Reutilizar</strong> código: si ya hice un "Auto", no quiero reescribirlo para hacer una "Moto".</li>
+    <li>📦 <strong>Organizar</strong>: agrupar datos y funciones que tienen sentido juntas.</li>
+    <li>🛡️ <strong>Proteger</strong>: que cada parte solo pueda hacer lo que le corresponde.</li>
+    <li>🤝 <strong>Trabajar en equipo</strong>: cada programador hace su "objeto" y luego se conectan.</li>
+  </ul>
+
+  <h3>📜 Una historia rápida</h3>
+  <p>La POO nació con un lenguaje llamado <strong>Simula</strong> (1967), creado por dos noruegos, <em>Ole-Johan Dahl</em> y <em>Kristen Nygaard</em>, para simular fábricas. Después vino <strong>Smalltalk</strong>, y mucho más tarde <strong>C++</strong> y <strong>Java</strong>. Hoy casi todo se programa así: videojuegos, apps, páginas web, robots, cohetes. 🚀</p>
+
+  <h3>🔑 Las 4 ideas centrales de la POO</h3>
+  <p>En esta clase vamos a ver las dos primeras; las otras dos las verás en clases siguientes:</p>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">📐</span>
+      <h3>1. Clase y objeto</h3>
+      <p>Una <em>clase</em> es el plano. Un <em>objeto</em> es la casa construida con ese plano.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🔒</span>
+      <h3>2. Encapsulamiento</h3>
+      <p>Ocultar los detalles internos y mostrar solo lo que el objeto necesita compartir.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🧬</span>
+      <h3>3. Herencia</h3>
+      <p>Crear clases nuevas a partir de otras, reutilizando lo que ya existe.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎭</span>
+      <h3>4. Polimorfismo</h3>
+      <p>El mismo mensaje puede dar respuestas diferentes según el objeto que lo reciba.</p>
+    </div>
+  </div>
+
+  <h3>👀 Una comparación rápida en código</h3>
+  <p>Mira el mismo problema resuelto de las dos formas. No te preocupes si no entiendes todo: la idea es que <em>veas</em> la diferencia:</p>
+
+  <p>❌ <strong>Estructurado</strong> (datos sueltos y funciones separadas):</p>
+  <div class="bloque-codigo bloque-error">
+<pre>// Datos sueltos por ahí
+string autoMarca     = "Toyota";
+string autoColor     = "Rojo";
+int    autoVelocidad = 0;
+
+// Función separada que recibe los datos
+void Acelerar(string marca, ref int velocidad, int cantidad)
+{
+    velocidad = velocidad + cantidad;
+    Console.WriteLine(marca + " ahora va a " + velocidad + " km/h");
+}
+
+Acelerar(autoMarca, ref autoVelocidad, 20);</pre>
+  </div>
+
+  <p>✅ <strong>Orientado a objetos</strong> (datos y funciones juntos, en una sola "caja"):</p>
+  <div class="bloque-codigo">
+<pre>// Una clase que agrupa datos Y funciones
+class Auto
+{
+    public string marca;
+    public int    velocidad;
+
+    public void Acelerar(int cantidad)
+    {
+        velocidad = velocidad + cantidad;
+        Console.WriteLine(marca + " ahora va a " + velocidad + " km/h");
+    }
+}
+
+// Crear un objeto (una instancia) y usarlo
+Auto miAuto = new Auto();
+miAuto.marca = "Toyota";
+miAuto.Acelerar(20);</pre>
+  </div>
+
+  <p>¿Ves la diferencia? En POO, los datos (<code>marca</code>, <code>velocidad</code>) y las acciones (<code>Acelerar</code>) viven <strong>juntos dentro de la misma "caja"</strong> (la clase). Es como tener un control remoto: solo necesitas saber qué botones tiene, no cómo funciona la electrónica interna. 📱</p>
+
+  <h3>🏋️ Mini reflexión</h3>
+  <div class="ejercicio">
+    <p><strong>Ejercicio 1.1:</strong> Piensa en un objeto de la vida real (puede ser lo que quieras: tu mascota, tu celular, tu bicicleta, una pelota…). Escribe en un papel o en un comentario:</p>
+    <ul>
+      <li>📦 ¿Qué <strong>atributos</strong> tiene? (color, tamaño, marca, peso…)</li>
+      <li>⚙️ ¿Qué <strong>acciones</strong> puede hacer? (sonido, rodar, encenderse…)</li>
+    </ul>
+    <p>Acabas de hacer el primer paso para pensar como programador/a orientada a objetos. 🎉</p>
+    <p><em>Ejemplo: un perro → atributos: nombre, raza, edad, color. Acciones: ladrar, correr, comer, dormir.</em></p>
+  </div>
+
+  <!-- QUIZ MÓDULO 1 -->
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Cuál es la idea central de la Programación Orientada a Objetos?</p>
+      <button class="opcion" data-op="a">Escribir todo en un solo archivo</button>
+      <button class="opcion" data-op="b">Usar solo números y nada más</button>
+      <button class="opcion" data-op="c">Agrupar datos y funciones en "objetos" que se comunican entre sí</button>
+      <button class="opcion" data-op="d">Hacer que el programa sea más lento pero más bonito</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> En la analogía de POO, una <em>clase</em> es como un/una:</p>
+      <button class="opcion" data-op="a">Una casa ya construida</button>
+      <button class="opcion" data-op="b">El plano de una casa</button>
+      <button class="opcion" data-op="c">El dueño de la casa</button>
+      <button class="opcion" data-op="d">La dirección de la casa</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuál de estos NO es un beneficio típico de la POO?</p>
+      <button class="opcion" data-op="a">Hace que el código ocupe menos memoria RAM siempre</button>
+      <button class="opcion" data-op="b">Permite reutilizar código</button>
+      <button class="opcion" data-op="c">Ayuda a organizar programas grandes</button>
+      <button class="opcion" data-op="d">Facilita el trabajo en equipo</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Inicio</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Clases →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — CLASES
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>2️⃣ Clases: el plano de construcción</h2>
+  <p class="meta-modulo">⏱️ 25 minutos · 📐 Tu primer "molde" para crear objetos</p>
+
+  <div class="caja-concepto">
+    <h3>📐 La analogía del plano</h3>
+    <p>Un <strong>arquitecto</strong> no construye una casa dibujándola a mano alzada. Primero hace un <em>plano</em> con todas las medidas. Con ese plano, la constructora puede hacer <em>muchas casas</em> iguales o parecidas.</p>
+    <ul class="lista-emoji">
+      <li>📐 La <strong>clase</strong> es el plano</li>
+      <li>🏠 El <strong>objeto</strong> (o instancia) es la casa ya construida</li>
+      <li>🏘️ Con un mismo plano puedes hacer <em>muchas casas</em> diferentes (cada una con su color o su dueño)</li>
+    </ul>
+  </div>
+
+  <h3>🔍 ¿Cómo se ve una clase en C#?</h3>
+  <p>Una clase es, en su forma más simple, una "caja" con un nombre y un cuerpo. Mira el ejemplo más pequeño posible:</p>
+
+  <div class="bloque-codigo">
+<pre>class Auto
+{
+    // Aquí dentro van los atributos y métodos
+}</pre>
+  </div>
+
+  <p>Ya está. Con esas cinco líneas tienes una clase llamada <code>Auto</code>. Todavía no hace nada, pero ya existe como "plano".</p>
+
+  <h3>🆚 Clase vs Objeto: la diferencia crucial</h3>
+  <div class="caja-destacada">
+    <p>⚠️ Mucha gente confunde estos dos términos. La diferencia:</p>
+    <p><strong>Clase</strong> = el plano (la definición, la idea). Existe solo en el código fuente.</p>
+    <p><strong>Objeto</strong> = una instancia concreta, creada a partir de la clase. Vive en la memoria del programa.</p>
+  </div>
+
+  <p>Para crear un objeto a partir de una clase, usamos la palabra <code>new</code>:</p>
+
+  <div class="bloque-codigo">
+<pre>// 1) Definimos la clase (el plano)
+class Auto
+{
+}
+
+// 2) En el Main, creamos objetos a partir de la clase
+Auto miAuto    = new Auto();   // objeto 1
+Auto tuAuto    = new Auto();   // objeto 2 (¡es independiente!)
+Auto autoProfe = new Auto();   // objeto 3</pre>
+  </div>
+
+  <p>Es como decir: "tengo este plano → constrúyeme una casa. Y otra. Y otra más". Cada <code>new Auto()</code> crea un objeto nuevo, independiente de los demás. 🏘️</p>
+
+  <h3>🧬 Anatomía de una declaración de clase</h3>
+  <p>Mira este ejemplo con todas sus partes. No te asustes: la mayoría son opcionales y poco a poco las vamos a entender.</p>
+
+  <div class="bloque-codigo">
+<pre>[modificadores] class NombreDeLaClase
+{
+    // atributos (datos)
+    // métodos (funciones)
+    // constructores
+}</pre>
+  </div>
+
+  <ul>
+    <li>📛 <strong>NombreDeLaClase</strong>: empieza con <strong>mayúscula</strong>. Por convención, una palabra por nombre (<code>Auto</code>, <code>Estudiante</code>, <code>Libro</code>).</li>
+    <li>🔧 <strong>Modificadores</strong>: por ahora usaremos solo <code>public</code> (visible desde cualquier parte).</li>
+    <li>📦 Las <strong>llaves { }</strong> delimitan todo lo que pertenece a la clase.</li>
+  </ul>
+
+  <h3>🗂️ Una clase vacía es válida (pero aburrida)</h3>
+  <p>Sí, puedes tener una clase sin nada adentro. En los próximos módulos le vamos a poner <em>atributos</em> y <em>métodos</em> para que cobre vida.</p>
+
+  <h3>🎨 Reglas de oro para nombrar clases</h3>
+  <ul>
+    <li>✅ Empieza con <strong>mayúscula</strong>: <code>Auto</code>, no <code>auto</code>.</li>
+    <li>✅ Usa <strong>sustantivos</strong> (cosas), no verbos: <code>Libro</code>, no <code>Leer</code>.</li>
+    <li>✅ Si tiene varias palabras, <strong>sin espacios</strong>: <code>CuentaBancaria</code>, no <code>Cuenta Bancaria</code>.</li>
+    <li>❌ Evita abreviaturas raras: mejor <code>Estudiante</code> que <code>Est</code>.</li>
+  </ul>
+
+  <h3>🏋️ Practica</h3>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 2.1:</strong> Crea la clase más pequeña posible para representar una <code>Mascota</code>. Solo necesitas la palabra <code>class</code>, el nombre, y las llaves.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-2-1')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-2-1">
+<pre>class Mascota
+{
+    // Por ahora está vacía. ¡Pero ya existe!
+}
+
+// En el Main:
+Mascota miMascota = new Mascota();</pre>
+    </div>
+  </div>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 2.2:</strong> Crea una clase llamada <code>Celular</code>. Después, en el <code>Main</code>, crea <em>dos</em> objetos diferentes a partir de ella: <code>miCel</code> y <code>tuCel</code>. Pista: usa <code>new Celular()</code> dos veces.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-2-2')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-2-2">
+<pre>class Celular
+{
+}
+
+public static void Main()
+{
+    Celular miCel = new Celular();
+    Celular tuCel = new Celular();
+    // Ahora miCel y tuCel son DOS objetos distintos.
+}</pre>
+    </div>
+  </div>
+
+  <!-- QUIZ MÓDULO 2 -->
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la relación entre clase y objeto?</p>
+      <button class="opcion" data-op="a">Son exactamente lo mismo</button>
+      <button class="opcion" data-op="b">La clase es el plano; el objeto es una instancia construída a partir de ese plano</button>
+      <button class="opcion" data-op="c">El objeto existe antes que la clase</button>
+      <button class="opcion" data-op="d">Una clase solo puede crear un objeto</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Qué palabra clave se usa en C# para crear un objeto a partir de una clase?</p>
+      <button class="opcion" data-op="a">create</button>
+      <button class="opcion" data-op="b">make</button>
+      <button class="opcion" data-op="c">new</button>
+      <button class="opcion" data-op="d">object</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuál es una buena forma de nombrar una clase?</p>
+      <button class="opcion" data-op="a"><code>Estudiante</code> (con mayúscula inicial, sustantivo)</button>
+      <button class="opcion" data-op="b"><code>estudiante</code> (todo en minúscula)</button>
+      <button class="opcion" data-op="c"><code>hacerEstudiante</code> (verbo)</button>
+      <button class="opcion" data-op="d"><code>123clase</code> (empezando con número)</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Atributos →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — ATRIBUTOS
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>3️⃣ Atributos: las características del objeto</h2>
+  <p class="meta-modulo">⏱️ 20 minutos · 🎨 Los datos que viven dentro de la clase</p>
+
+  <div class="caja-concepto">
+    <h3>🎨 La analogía de la ficha técnica</h3>
+    <p>Cuando compras un celular en una tienda, el vendedor te muestra una <strong>ficha técnica</strong> con cosas como:</p>
+    <ul class="lista-emoji">
+      <li>📱 Marca: <em>Samsung</em></li>
+      <li>🌈 Color: <em>Negro</em></li>
+      <li>💾 Almacenamiento: <em>128 GB</em></li>
+      <li>🔋 Batería: <em>5000 mAh</em></li>
+    </ul>
+    <p>Esas son las <strong>características</strong> del celular. En POO se llaman <strong>atributos</strong> (o <em>propiedades</em>). Son los datos que cada objeto "recuerda" sobre sí mismo.</p>
+  </div>
+
+  <h3>🧬 Los atributos van <em>dentro</em> de la clase</h3>
+  <p>Para definir un atributo, escribimos su tipo de dato y su nombre dentro de las llaves de la clase:</p>
+
+  <div class="bloque-codigo">
+<pre>class Auto
+{
+    public string marca;       // texto
+    public string color;       // texto
+    public int    velocidad;   // número entero
+    public bool   encendido;   // verdadero o falso
+}</pre>
+  </div>
+
+  <p>Ahora nuestra clase <code>Auto</code> "sabe" que cualquier auto tendrá esos cuatro datos. Cada auto <em>concreto</em> podrá tener valores distintos.</p>
+
+  <h3>🆕 Dar valores a los atributos</h3>
+  <p>Una vez creado un objeto, le asignamos valores a sus atributos con un punto (<code>.</code>):</p>
+
+  <div class="bloque-codigo">
+<pre>Auto miAuto = new Auto();
+
+miAuto.marca     = "Toyota";
+miAuto.color     = "Rojo";
+miAuto.velocidad = 0;
+miAuto.encendido = false;
+
+Console.WriteLine("Mi auto es un " + miAuto.marca + " " + miAuto.color);
+// Imprime: Mi auto es un Toyota Rojo</pre>
+  </div>
+
+  <p>El punto (<code>.</code>) se llama <strong>operador de acceso</strong>. Se lee como "del objeto, dame el atributo X". En <code>miAuto.marca</code> estás diciendo: <em>"del objeto <code>miAuto</code>, dame la <code>marca</code>"</em>. 🎯</p>
+
+  <h3>🏘️ Cada objeto tiene sus propios valores</h3>
+  <p>La magia de la POO: puedes tener muchos objetos de la misma clase, y cada uno tiene sus <em>propios</em> atributos.</p>
+
+  <div class="bloque-codigo">
+<pre>Auto auto1 = new Auto();
+auto1.marca = "Toyota";
+auto1.color = "Rojo";
+
+Auto auto2 = new Auto();
+auto2.marca = "Mazda";
+auto2.color = "Azul";
+
+// Son dos autos distintos, con marcas y colores distintos.
+Console.WriteLine(auto1.marca);   // Toyota
+Console.WriteLine(auto2.marca);   // Mazda</pre>
+  </div>
+
+  <h3>🔐 La palabra <code>public</code></h3>
+  <p>¿Ves la palabra <code>public</code> antes de cada atributo? Es un <strong>modificador de acceso</strong>. Por ahora, simplemente recuerda:</p>
+  <ul>
+    <li>🔓 <code>public</code> = "este atributo es visible desde fuera de la clase". Por ahora siempre lo usaremos.</li>
+    <li>🔒 <code>private</code> = "este atributo está protegido y solo la propia clase puede tocarlo". Lo veremos más adelante.</li>
+  </ul>
+
+  <h3>📊 Tipos de datos más comunes en atributos</h3>
+  <table class="tabla-tipos">
+    <thead>
+      <tr><th>Tipo</th><th>Para guardar</th><th>Ejemplo de valor</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>string</code></td><td>Texto</td><td>"Toyota", "Ana", "Cien años de soledad"</td></tr>
+      <tr><td><code>int</code></td><td>Número entero</td><td>0, 16, -3, 1000</td></tr>
+      <tr><td><code>double</code></td><td>Número con decimales</td><td>3.14, 0.5, 9.81</td></tr>
+      <tr><td><code>bool</code></td><td>Verdadero o falso</td><td>true, false</td></tr>
+      <tr><td><code>char</code></td><td>Un solo carácter</td><td>'A', '?', '5'</td></tr>
+    </tbody>
+  </table>
+
+  <h3>🧠 ¿Qué es el "estado" de un objeto?</h3>
+  <p>El <strong>estado</strong> de un objeto es el conjunto de valores de TODOS sus atributos en un momento dado. Si un auto tiene <code>velocidad=60</code> y <code>encendido=true</code>, ese es su estado. Cuando llamas a un método, el estado puede cambiar (por ejemplo, la velocidad sube). 🔄</p>
+
+  <h3>🏋️ Practica</h3>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 3.1:</strong> Crea una clase <code>Libro</code> con cuatro atributos públicos: <code>titulo</code> (string), <code>autor</code> (string), <code>paginas</code> (int) y <code>leidas</code> (int, cuántas llevas leídas). Después, en el <code>Main</code>, crea un libro y dale valores.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-3-1')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-3-1">
+<pre>class Libro
+{
+    public string titulo;
+    public string autor;
+    public int    paginas;
+    public int    leidas;
+}
+
+public static void Main()
+{
+    Libro miLibro = new Libro();
+
+    miLibro.titulo  = "El principito";
+    miLibro.autor   = "Antoine de Saint-Exupéry";
+    miLibro.paginas = 96;
+    miLibro.leidas  = 0;
+
+    Console.WriteLine("Leyendo: " + miLibro.titulo
+                       + " — voy en la página " + miLibro.leidas);
+}</pre>
+    </div>
+  </div>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 3.2:</strong> Crea una clase <code>Estudiante</code> con <code>nombre</code>, <code>edad</code>, <code>grado</code> y <code>promedio</code>. Crea dos estudiantes con valores diferentes y muestra los datos de ambos en pantalla.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-3-2')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-3-2">
+<pre>class Estudiante
+{
+    public string nombre;
+    public int    edad;
+    public string grado;
+    public double promedio;
+}
+
+public static void Main()
+{
+    Estudiante ana = new Estudiante();
+    ana.nombre   = "Ana";
+    ana.edad     = 16;
+    ana.grado    = "10°";
+    ana.promedio = 4.2;
+
+    Estudiante juan = new Estudiante();
+    juan.nombre   = "Juan";
+    juan.edad     = 17;
+    juan.grado    = "11°";
+    juan.promedio = 3.5;
+
+    Console.WriteLine(ana.nombre  + " — " + ana.grado  + " — Prom: " + ana.promedio);
+    Console.WriteLine(juan.nombre + " — " + juan.grado + " — Prom: " + juan.promedio);
+}</pre>
+    </div>
+  </div>
+
+  <!-- QUIZ MÓDULO 3 -->
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Qué son los "atributos" de una clase?</p>
+      <button class="opcion" data-op="a">Las variables que guardan los datos del objeto</button>
+      <button class="opcion" data-op="b">Las funciones que el objeto puede ejecutar</button>
+      <button class="opcion" data-op="c">Los comentarios en el código</button>
+      <button class="opcion" data-op="d">El nombre de la clase</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Si tengo <code>Auto miAuto = new Auto();</code>, ¿cómo le pongo color rojo?</p>
+      <button class="opcion" data-op="a"><code>miAuto-&gt;color = "Rojo";</code></button>
+      <button class="opcion" data-op="b"><code>miAuto::color = "Rojo";</code></button>
+      <button class="opcion" data-op="c"><code>miAuto.color = "Rojo";</code></button>
+      <button class="opcion" data-op="d"><code>color.miAuto = "Rojo";</code></button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> Si tengo DOS objetos <code>auto1</code> y <code>auto2</code> de la misma clase <code>Auto</code>, ¿comparten los valores de sus atributos?</p>
+      <button class="opcion" data-op="a">Sí, comparten todo siempre</button>
+      <button class="opcion" data-op="b">No, cada objeto tiene sus propios valores independientes</button>
+      <button class="opcion" data-op="c">Solo si tienen el mismo nombre</button>
+      <button class="opcion" data-op="d">Solo si son del mismo color</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: Métodos →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — MÉTODOS
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <h2>4️⃣ Métodos: lo que el objeto sabe hacer</h2>
+  <p class="meta-modulo">⏱️ 25 minutos · ⚙️ Las acciones que viven dentro de la clase</p>
+
+  <div class="caja-concepto">
+    <h3>🎮 La analogía del control remoto</h3>
+    <p>Piensa en tu celular como un objeto:</p>
+    <ul class="lista-emoji">
+      <li>📦 <strong>Atributos</strong>: nivel de batería, color, marca, almacenamiento</li>
+      <li>⚙️ <strong>Métodos</strong>: hacer una llamada, sacar una foto, mandar un mensaje, subir el volumen</li>
+    </ul>
+    <p>Los <strong>métodos</strong> son las acciones que el objeto puede hacer. <em>Y aquí viene lo importante:</em> los métodos pueden usar los atributos del propio objeto.</p>
+  </div>
+
+  <h3>⚙️ Definir un método dentro de la clase</h3>
+  <p>¿Recuerdas las funciones del curso pasado? Los métodos son exactamente lo mismo, solo que viven <strong>dentro de una clase</strong>.</p>
+
+  <div class="bloque-codigo">
+<pre>class Auto
+{
+    public string marca;
+    public int    velocidad;
+
+    // Este es un método de la clase Auto
+    public void Acelerar(int cuanto)
+    {
+        velocidad = velocidad + cuanto;
+        Console.WriteLine(marca + " va a " + velocidad + " km/h");
+    }
+}</pre>
+  </div>
+
+  <p>Fíjate en <code>velocidad = velocidad + cuanto;</code>: el método está usando el <em>atributo</em> <code>velocidad</code> del propio objeto. No necesita que se lo pasemos, ya lo "conoce" porque está dentro de la misma clase. 🎯</p>
+
+  <h3>📞 Llamar a un método</h3>
+  <p>Para usar un método de un objeto, usamos otra vez el operador punto (<code>.</code>):</p>
+
+  <div class="bloque-codigo">
+<pre>Auto miAuto = new Auto();
+miAuto.marca = "Toyota";
+
+miAuto.Acelerar(20);   // imprime: Toyota va a 20 km/h
+miAuto.Acelerar(30);   // imprime: Toyota va a 50 km/h</pre>
+  </div>
+
+  <p>Se lee: <em>"del objeto <code>miAuto</code>, llama al método <code>Acelerar</code> con 20"</em>. 🚀</p>
+
+  <h3>📦 Tipos de métodos</h3>
+  <p>Igual que las funciones, los métodos pueden:</p>
+  <ul>
+    <li>📢 Ser <code>void</code>: hacen algo pero no devuelven nada.</li>
+    <li>📤 Devolver un valor: <code>int</code>, <code>string</code>, <code>bool</code>, etc.</li>
+    <li>📥 Recibir parámetros (o no).</li>
+  </ul>
+
+  <p><strong>Ejemplo completo: una clase con varios métodos</strong></p>
+  <div class="bloque-codigo">
+<pre>class Auto
+{
+    public string marca;
+    public string color;
+    public int    velocidad;
+    public bool   encendido;
+
+    public void Encender()
+    {
+        if (encendido)
+            Console.WriteLine("El auto ya estaba encendido 💡");
+        else
+        {
+            encendido = true;
+            Console.WriteLine("¡Brum brum! " + marca + " encendido.");
+        }
+    }
+
+    public void Acelerar(int cuanto)
+    {
+        velocidad = velocidad + cuanto;
+        Console.WriteLine(marca + " ahora va a " + velocidad + " km/h");
+    }
+
+    public string Describir()
+    {
+        return marca + " " + color + " a " + velocidad + " km/h";
+    }
+}</pre>
+  </div>
+
+  <h3>🔍 Diferencia entre "función" y "método"</h3>
+  <div class="caja-tip">
+    <p>Técnicamente, una <strong>función</strong> que vive suelta (fuera de una clase) y un <strong>método</strong> que vive dentro de una clase son cosas parecidas. En C# casi todo son métodos, porque hasta el <code>Main</code> está dentro de una clase. Así que si oyes "función" o "método", piensa que es la misma idea: un bloque de código con nombre. 🧠</p>
+  </div>
+
+  <h3>🎯 Los métodos pueden llamarse entre sí</h3>
+  <p>Un método puede llamar a otro método <em>del mismo objeto</em> sin necesidad de usar el punto:</p>
+
+  <div class="bloque-codigo">
+<pre>class Estudiante
+{
+    public string nombre;
+    public double nota1, nota2, nota3;
+
+    public double CalcularPromedio()
+    {
+        return (nota1 + nota2 + nota3) / 3;
+    }
+
+    public void MostrarReporte()
+    {
+        double prom = CalcularPromedio();   // llama a otro método del mismo objeto
+        Console.WriteLine(nombre + " tiene promedio: " + prom);
+    }
+}</pre>
+  </div>
+
+  <h3>🏋️ Practica</h3>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 4.1:</strong> Crea una clase <code>Libro</code> con los atributos que ya conoces (<code>titulo</code>, <code>autor</code>, <code>paginas</code>, <code>leidas</code>) y agrégale un método <code>Leer(int paginas)</code> que sume la cantidad de páginas leídas. Después, otro método <code>ObtenerProgreso()</code> que devuelva un <code>double</code> con el porcentaje leído (0 a 100).</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-4-1')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-4-1">
+<pre>class Libro
+{
+    public string titulo;
+    public string autor;
+    public int    paginas;
+    public int    leidas;
+
+    public void Leer(int cantidad)
+    {
+        leidas = leidas + cantidad;
+        Console.WriteLine("Has leído " + cantidad
+                          + " páginas de " + titulo);
+    }
+
+    public double ObtenerProgreso()
+    {
+        return (leidas * 100.0) / paginas;
+    }
+}</pre>
+    </div>
+  </div>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 4.2:</strong> Crea una clase <code>CuentaBancaria</code> con atributos <code>titular</code> (string) y <code>saldo</code> (double). Métodos: <code>Depositar(double cantidad)</code>, <code>Retirar(double cantidad)</code> (sin permitir saldo negativo) y <code>ConsultarSaldo()</code> que imprima el saldo actual.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-4-2')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-4-2">
+<pre>class CuentaBancaria
+{
+    public string titular;
+    public double saldo;
+
+    public void Depositar(double cantidad)
+    {
+        saldo = saldo + cantidad;
+        Console.WriteLine("Depósito de $" + cantidad
+                          + ". Saldo: $" + saldo);
+    }
+
+    public void Retirar(double cantidad)
+    {
+        if (cantidad &gt; saldo)
+            Console.WriteLine("❌ Saldo insuficiente");
+        else
+        {
+            saldo = saldo - cantidad;
+            Console.WriteLine("Retiro de $" + cantidad
+                              + ". Saldo: $" + saldo);
+        }
+    }
+
+    public void ConsultarSaldo()
+    {
+        Console.WriteLine(titular + " tiene $" + saldo);
+    }
+}</pre>
+    </div>
+  </div>
+
+  <!-- QUIZ MÓDULO 4 -->
+  <div class="quiz" data-quiz="4">
+    <h3>🎯 Mini-quiz del Módulo 4</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es un método en POO?</p>
+      <button class="opcion" data-op="a">Un dato del objeto</button>
+      <button class="opcion" data-op="b">Una función que vive dentro de la clase y define una acción que el objeto puede hacer</button>
+      <button class="opcion" data-op="c">Un tipo de variable</button>
+      <button class="opcion" data-op="d">El archivo donde se guarda la clase</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> Si tengo <code>Libro l = new Libro();</code> y la clase tiene un método <code>Leer(int p)</code>, ¿cómo lo llamo?</p>
+      <button class="opcion" data-op="a"><code>l.Leer(5);</code></button>
+      <button class="opcion" data-op="b"><code>Leer(l, 5);</code></button>
+      <button class="opcion" data-op="c"><code>Libro.Leer(5);</code></button>
+      <button class="opcion" data-op="d"><code>l-&gt;Leer(5);</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> Dentro de un método, ¿puedo acceder a otro método del mismo objeto sin usar el punto?</p>
+      <button class="opcion" data-op="a">No, siempre hay que usar el punto</button>
+      <button class="opcion" data-op="b">Solo si el método es público</button>
+      <button class="opcion" data-op="c">Sí, puedo llamarlo directamente por su nombre</button>
+      <button class="opcion" data-op="d">Solo si los dos métodos son <code>void</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Constructores →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — CONSTRUCTORES
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>5️⃣ Constructores: cómo nacen los objetos</h2>
+  <p class="meta-modulo">⏱️ 20 minutos · 🎂 La "ceremonia de nacimiento" de cada objeto</p>
+
+  <div class="caja-concepto">
+    <h3>👶 La analogía del nacimiento</h3>
+    <p>Cuando un bebé nace, alguien tiene que decidir su nombre, registrarlo, pesarlo, medirlo. Esos datos "iniciales" son los que se asignan <em>en el momento exacto de nacer</em>.</p>
+    <p>Un <strong>constructor</strong> hace exactamente eso con los objetos: es un método especial que se ejecuta <em>automáticamente</em> cuando haces <code>new</code>. Sirve para que el objeto nazca ya con sus datos importantes. 👶</p>
+  </div>
+
+  <h3>🆕 El constructor "por defecto" (que ya viene gratis)</h3>
+  <p>Si no escribes ningún constructor, C# crea uno invisible que no recibe parámetros. Por eso <code>new Auto()</code> ha funcionado hasta ahora.</p>
+
+  <p>Pero escribir tu propio constructor te da <strong>control</strong>: puedes obligar a que todos los objetos nazcan con datos obligatorios.</p>
+
+  <h3>✍️ Escribir tu primer constructor</h3>
+  <p>Un constructor se ve así:</p>
+
+  <div class="bloque-codigo">
+<pre>class Estudiante
+{
+    public string nombre;
+    public int    edad;
+    public string grado;
+
+    // 👇 Este es el constructor
+    public Estudiante(string n, int e, string g)
+    {
+        nombre = n;
+        edad   = e;
+        grado  = g;
+    }
+}</pre>
+  </div>
+
+  <p>Características de un constructor:</p>
+  <ul>
+    <li>✅ Se llama <strong>igual que la clase</strong> (en este caso, <code>Estudiante</code>).</li>
+    <li>✅ <strong>No devuelve nada</strong> (ni siquiera <code>void</code>).</li>
+    <li>✅ Se ejecuta <strong>automáticamente</strong> cuando escribes <code>new</code>.</li>
+  </ul>
+
+  <h3>🎂 Usar el constructor al crear el objeto</h3>
+  <p>Ahora, para crear un estudiante, <em>tienes que</em> pasarle los datos:</p>
+
+  <div class="bloque-codigo">
+<pre>// ANTES (con el constructor por defecto)
+Estudiante ana = new Estudiante();
+ana.nombre = "Ana";      // 👈 tres líneas extra
+ana.edad   = 16;          // 👈
+ana.grado  = "10°";       // 👈
+
+// AHORA (con tu propio constructor)
+Estudiante ana = new Estudiante("Ana", 16, "10°");  // ¡una sola línea!</pre>
+  </div>
+
+  <p>👀 Mucho más limpio, ¿no? Y además te aseguras de que <em>nadie</em> pueda crear un estudiante sin nombre, sin edad o sin grado.</p>
+
+  <h3>🔁 Sobrecarga: varios constructores para la misma clase</h3>
+  <p>En C# puedes tener <strong>varios constructores</strong> en la misma clase, siempre que reciban distintos parámetros. Esto se llama <em>sobrecarga</em> (overloading).</p>
+
+  <div class="bloque-codigo">
+<pre>class Estudiante
+{
+    public string nombre;
+    public int    edad;
+    public string grado;
+
+    // Constructor 1: con todos los datos
+    public Estudiante(string n, int e, string g)
+    {
+        nombre = n;
+        edad   = e;
+        grado  = g;
+    }
+
+    // Constructor 2: solo con el nombre (los demás quedan "por defecto")
+    public Estudiante(string n)
+    {
+        nombre = n;
+        edad   = 0;
+        grado  = "Sin asignar";
+    }
+}</pre>
+  </div>
+
+  <p>Ahora puedes crear estudiantes de dos formas:</p>
+
+  <div class="bloque-codigo">
+<pre>Estudiante ana   = new Estudiante("Ana", 16, "10°");
+Estudiante nuevo = new Estudiante("Sin nombre aún");</pre>
+  </div>
+
+  <h3>🔑 La palabra <code>this</code> (opcional pero útil)</h3>
+  <p>Cuando un parámetro se llama igual que un atributo, podemos usar <code>this</code> para aclarar cuál es cuál:</p>
+
+  <div class="bloque-codigo">
+<pre>class Estudiante
+{
+    public string nombre;
+    public int    edad;
+
+    public Estudiante(string nombre, int edad)
+    {
+        this.nombre = nombre;   // this.nombre = el atributo del objeto
+        this.edad   = edad;     // edad (a la derecha) = el parámetro
+    }
+}</pre>
+  </div>
+
+  <p>Se lee: <em>"el atributo <code>nombre</code> de <em>este</em> objeto (<code>this</code>) recibe el valor del parámetro <code>nombre</code>"</em>. Útil cuando los nombres se repiten, aunque muchos principiantes lo evitan simplemente usando nombres diferentes en los parámetros. 🧹</p>
+
+  <h3>🏋️ Practica</h3>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 5.1:</strong> Agrega un constructor a tu clase <code>Libro</code> que reciba <code>titulo</code>, <code>autor</code> y <code>paginas</code>. El atributo <code>leidas</code> debe empezar en 0 automáticamente.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-5-1')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-5-1">
+<pre>class Libro
+{
+    public string titulo;
+    public string autor;
+    public int    paginas;
+    public int    leidas;
+
+    public Libro(string titulo, string autor, int paginas)
+    {
+        this.titulo  = titulo;
+        this.autor   = autor;
+        this.paginas = paginas;
+        this.leidas  = 0;   // empieza sin leer
+    }
+}
+
+// Uso:
+Libro l = new Libro("El principito", "Saint-Exupéry", 96);
+// l.leidas ya vale 0 sin que tengamos que escribirlo.</pre>
+    </div>
+  </div>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 5.2:</strong> Crea una clase <code>Auto</code> con un constructor que reciba <code>marca</code>, <code>color</code> y <code>anio</code>. La velocidad debe empezar en 0 y <code>encendido</code> en <code>false</code>.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-5-2')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-5-2">
+<pre>class Auto
+{
+    public string marca;
+    public string color;
+    public int    anio;
+    public int    velocidad;
+    public bool   encendido;
+
+    public Auto(string marca, string color, int anio)
+    {
+        this.marca     = marca;
+        this.color     = color;
+        this.anio      = anio;
+        this.velocidad = 0;
+        this.encendido = false;
+    }
+}</pre>
+    </div>
+  </div>
+
+  <!-- QUIZ MÓDULO 5 -->
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Cuál es la regla principal de un constructor en C#?</p>
+      <button class="opcion" data-op="a">Debe llamarse "Constructor"</button>
+      <button class="opcion" data-op="b">Debe devolver siempre <code>void</code></button>
+      <button class="opcion" data-op="c">Debe llamarse igual que la clase y no devolver nada</button>
+      <button class="opcion" data-op="d">Solo puede haber uno por clase</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Cuándo se ejecuta el constructor de un objeto?</p>
+      <button class="opcion" data-op="a">Cada vez que llamo un método del objeto</button>
+      <button class="opcion" data-op="b">Automáticamente cuando uso <code>new</code></button>
+      <button class="opcion" data-op="c">Cuando el programa termina</button>
+      <button class="opcion" data-op="d">Nunca, hay que llamarlo a mano</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué es la "sobrecarga" de constructores?</p>
+      <button class="opcion" data-op="a">Tener varios constructores en la misma clase con distintos parámetros</button>
+      <button class="opcion" data-op="b">Crear muchos objetos de la misma clase</button>
+      <button class="opcion" data-op="c">Tener clases dentro de otras clases</button>
+      <button class="opcion" data-op="d">Una forma de borrar objetos</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — TALLER: CONSTRUYENDO CLASES
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>6️⃣ 🧪 Taller: construyamos clases reales</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · 🛠️ Hora de mancharse las manos</p>
+
+  <div class="caja-concepto">
+    <h3>🎬 ¡Bienvenido al taller!</h3>
+    <p>Ya tienes la teoría. Ahora vas a construir <strong>tres clases del mundo real</strong> desde cero: <em>Estudiante</em>, <em>Auto</em> y <em>Libro</em>. Cada una va a tener atributos, un constructor y métodos. Cuando termines, vas a sentir que la POO es algo natural. 🛠️</p>
+  </div>
+
+  <h3>🧪 Clase 1: <code>Estudiante</code></h3>
+  <p>Lee el código completo. Después te explico cada parte:</p>
+
+  <div class="bloque-codigo">
+<pre>using System;
+
+class Estudiante
+{
+    // ---- ATRIBUTOS ----
+    public string nombre;
+    public int    edad;
+    public string grado;
+    public double nota1, nota2, nota3;
+
+    // ---- CONSTRUCTOR ----
+    public Estudiante(string nombre, int edad, string grado)
+    {
+        this.nombre = nombre;
+        this.edad   = edad;
+        this.grado  = grado;
+        this.nota1  = 0;
+        this.nota2  = 0;
+        this.nota3  = 0;
+    }
+
+    // ---- MÉTODOS ----
+    public void PonerNota(int cual, double valor)
+    {
+        if (cual == 1) nota1 = valor;
+        else if (cual == 2) nota2 = valor;
+        else if (cual == 3) nota3 = valor;
+    }
+
+    public double CalcularPromedio()
+    {
+        return (nota1 + nota2 + nota3) / 3;
+    }
+
+    public string ObtenerEstado()
+    {
+        double prom = CalcularPromedio();
+        if (prom &gt;= 4.5) return "🌟 Excelente";
+        if (prom &gt;= 4.0) return "🎉 Sobresaliente";
+        if (prom &gt;= 3.0) return "👍 Aprobado";
+        return "📚 Necesita refuerzo";
+    }
+
+    public void Presentarse()
+    {
+        Console.WriteLine("Hola, soy " + nombre
+                          + ", tengo " + edad + " años y voy en " + grado);
+        Console.WriteLine("Mi promedio es " + CalcularPromedio().ToString("F2")
+                          + " (" + ObtenerEstado() + ")");
+    }
+}</pre>
+  </div>
+
+  <h3>🎮 Probando la clase <code>Estudiante</code></h3>
+  <p>En el <code>Main</code>:</p>
+
+  <div class="bloque-codigo">
+<pre>public static void Main()
+{
+    Estudiante ana = new Estudiante("Ana", 16, "10°");
+    ana.PonerNota(1, 4.5);
+    ana.PonerNota(2, 3.8);
+    ana.PonerNota(3, 4.2);
+    ana.Presentarse();
+}</pre>
+  </div>
+
+  <div class="caja-resultado">
+    <h4>📺 Salida:</h4>
+<pre>Hola, soy Ana, tengo 16 años y voy en 10°
+Mi promedio es 4.17 (🎉 Sobresaliente)</pre>
+  </div>
+
+  <h3>🚗 Clase 2: <code>Auto</code></h3>
+
+  <div class="bloque-codigo">
+<pre>using System;
+
+class Auto
+{
+    public string marca;
+    public string color;
+    public int    velocidad;
+    public bool   encendido;
+
+    public Auto(string marca, string color)
+    {
+        this.marca     = marca;
+        this.color     = color;
+        this.velocidad = 0;
+        this.encendido = false;
+    }
+
+    public void Encender()
+    {
+        if (!encendido)
+        {
+            encendido = true;
+            Console.WriteLine("🔑 ¡Brum brum! " + marca + " encendido.");
+        }
+        else
+        {
+            Console.WriteLine("Ya estaba encendido 💡");
+        }
+    }
+
+    public void Apagar()
+    {
+        if (velocidad &gt; 0)
+        {
+            Console.WriteLine("⚠️ Detén el auto primero");
+            return;
+        }
+        encendido = false;
+        Console.WriteLine("🔇 " + marca + " apagado.");
+    }
+
+    public void Acelerar(int cuanto)
+    {
+        if (!encendido)
+        {
+            Console.WriteLine("❌ Enciende el auto antes");
+            return;
+        }
+        velocidad = velocidad + cuanto;
+        Console.WriteLine("💨 " + marca + " ahora va a " + velocidad + " km/h");
+    }
+
+    public void Frenar(int cuanto)
+    {
+        velocidad = velocidad - cuanto;
+        if (velocidad &lt; 0) velocidad = 0;
+        Console.WriteLine("🛑 " + marca + " frenó a " + velocidad + " km/h");
+    }
+
+    public void TocarBocina()
+    {
+        Console.WriteLine("📣 ¡PIP PIP! (" + marca + " " + color + ")");
+    }
+}</pre>
+  </div>
+
+  <h3>🎮 Probando <code>Auto</code></h3>
+
+  <div class="bloque-codigo">
+<pre>public static void Main()
+{
+    Auto miAuto = new Auto("Toyota", "Rojo");
+    miAuto.Encender();
+    miAuto.Acelerar(40);
+    miAuto.TocarBocina();
+    miAuto.Frenar(20);
+    miAuto.Apagar();   // intentará apagar a 20 km/h
+    miAuto.Frenar(20); // ahora sí
+    miAuto.Apagar();   // ahora sí se apaga
+}</pre>
+  </div>
+
+  <div class="caja-resultado">
+    <h4>📺 Salida:</h4>
+<pre>🔑 ¡Brum brum! Toyota encendido.
+💨 Toyota ahora va a 40 km/h
+📣 ¡PIP PIP! (Toyota Rojo)
+🛑 Toyota frenó a 20 km/h
+⚠️ Detén el auto primero
+🛑 Toyota frenó a 0 km/h
+🔇 Toyota apagado.</pre>
+  </div>
+
+  <h3>📚 Clase 3: <code>Libro</code></h3>
+
+  <div class="bloque-codigo">
+<pre>using System;
+
+class Libro
+{
+    public string titulo;
+    public string autor;
+    public int    paginas;
+    public int    leidas;
+
+    public Libro(string titulo, string autor, int paginas)
+    {
+        this.titulo  = titulo;
+        this.autor   = autor;
+        this.paginas = paginas;
+        this.leidas  = 0;
+    }
+
+    public void Leer(int cantidad)
+    {
+        if (leidas + cantidad &gt; paginas)
+        {
+            cantidad = paginas - leidas;
+            Console.WriteLine("📖 Solo te quedan " + cantidad
+                              + " páginas por leer");
+        }
+        leidas = leidas + cantidad;
+        Console.WriteLine("📖 Has leído " + cantidad
+                          + " páginas de " + titulo);
+    }
+
+    public double ObtenerProgreso()
+    {
+        return (leidas * 100.0) / paginas;
+    }
+
+    public bool EstaTerminado()
+    {
+        return leidas &gt;= paginas;
+    }
+
+    public void MostrarInfo()
+    {
+        Console.WriteLine("📕 " + titulo + " — " + autor);
+        Console.WriteLine("   Progreso: " + leidas + "/" + paginas
+                          + " (" + ObtenerProgreso().ToString("F1") + "%)");
+        if (EstaTerminado())
+            Console.WriteLine("   ✅ ¡Terminado!");
+        else
+            Console.WriteLine("   ⏳ Te faltan " + (paginas - leidas)
+                              + " páginas");
+    }
+}</pre>
+  </div>
+
+  <h3>🎮 Probando <code>Libro</code></h3>
+
+  <div class="bloque-codigo">
+<pre>public static void Main()
+{
+    Libro l = new Libro("El principito", "Saint-Exupéry", 96);
+    l.MostrarInfo();
+    l.Leer(30);
+    l.Leer(40);
+    l.MostrarInfo();
+    l.Leer(50);   // se pasa, se ajusta solo
+    l.MostrarInfo();
+}</pre>
+  </div>
+
+  <div class="caja-resultado">
+    <h4>📺 Salida:</h4>
+<pre>📕 El principito — Saint-Exupéry
+   Progreso: 0/96 (0.0%)
+   ⏳ Te faltan 96 páginas
+📖 Has leído 30 páginas de El principito
+📖 Has leído 40 páginas de El principito
+📕 El principito — Saint-Exupéry
+   Progreso: 70/96 (72.9%)
+   ⏳ Te faltan 26 páginas
+📖 Solo te quedan 26 páginas por leer
+📕 El principito — Saint-Exupéry
+   Progreso: 96/96 (100.0%)
+   ✅ ¡Terminado!</pre>
+  </div>
+
+  <h3>🏋️ Tu turno: construye tu propia clase</h3>
+  <div class="ejercicio caja-desafio">
+    <p><strong>Desafío 6.1:</strong> Crea una clase <code>Mascota</code> con al menos:</p>
+    <ul>
+      <li>3 atributos (<code>nombre</code>, <code>tipo</code> (perro/gato/hamster), <code>energia</code>)</li>
+      <li>Un constructor que reciba los tres</li>
+      <li>Un método <code>Jugar(int minutos)</code> que reste energía</li>
+      <li>Un método <code>Dormir(int horas)</code> que recupere energía (sin pasarse de 100)</li>
+      <li>Un método <code>Estado()</code> que imprima cómo se siente según su energía</li>
+    </ul>
+    <p>💡 Pista para el estado: si energía &gt; 70 → "feliz", si &gt; 30 → "normal", si no → "cansado".</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-6-1')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-6-1">
+<pre>using System;
+
+class Mascota
+{
+    public string nombre;
+    public string tipo;
+    public int    energia;
+
+    public Mascota(string nombre, string tipo, int energia)
+    {
+        this.nombre  = nombre;
+        this.tipo    = tipo;
+        this.energia = energia;
+    }
+
+    public void Jugar(int minutos)
+    {
+        energia = energia - minutos;
+        if (energia &lt; 0) energia = 0;
+        Console.WriteLine("🎾 " + nombre + " jugó " + minutos + " min");
+    }
+
+    public void Dormir(int horas)
+    {
+        energia = energia + (horas * 10);
+        if (energia &gt; 100) energia = 100;
+        Console.WriteLine("😴 " + nombre + " durmió " + horas + " h");
+    }
+
+    public void Estado()
+    {
+        if (energia &gt; 70)      Console.WriteLine(nombre + " está feliz 🐾");
+        else if (energia &gt; 30) Console.WriteLine(nombre + " está normal 🙂");
+        else                   Console.WriteLine(nombre + " está cansado 😴");
+    }
+}</pre>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Simulador →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 7 — SIMULADOR INTERACTIVO
+============================================================ -->
+<section class="modulo" data-modulo="7">
+  <h2>7️⃣ 🎭 Simulador: objetos en acción</h2>
+  <p class="meta-modulo">⏱️ 25 minutos · 🎮 Crea objetos, llama métodos, observa qué pasa</p>
+
+  <div class="caja-concepto">
+    <h3>🎬 Bienvenido al laboratorio</h3>
+    <p>En el taller anterior creaste clases <em>en papel</em>. Ahora viene lo más divertido: vas a <strong>crear objetos reales, darles vida y probar sus métodos</strong>. Las tres clases ya están programadas. Tú solo tienes que darles instrucciones. 🧪</p>
+  </div>
+
+  <h3>🧰 Las tres clases que ya están listas</h3>
+  <p>Estas clases viven <em>dentro</em> del simulador. Tú solo vas a crear instancias y hablar con ellas:</p>
+
+  <ul>
+    <li>🎓 <strong>Estudiante</strong>: <code>nombre</code>, <code>edad</code>, <code>grado</code>, <code>nota1/2/3</code> · métodos: <code>PonerNota()</code>, <code>CalcularPromedio()</code>, <code>Presentarse()</code></li>
+    <li>🚗 <strong>Auto</strong>: <code>marca</code>, <code>color</code>, <code>velocidad</code>, <code>encendido</code> · métodos: <code>Encender()</code>, <code>Acelerar()</code>, <code>Frenar()</code>, <code>TocarBocina()</code>, <code>Apagar()</code></li>
+    <li>📚 <strong>Libro</strong>: <code>titulo</code>, <code>autor</code>, <code>paginas</code>, <code>leidas</code> · métodos: <code>Leer()</code>, <code>ObtenerProgreso()</code>, <code>MostrarInfo()</code></li>
+  </ul>
+
+  <h3>🎮 Elige con quién quieres interactuar</h3>
+  <div class="simulador">
+    <div class="tabs-simulador">
+      <button class="tab-sim active" data-tab="estudiante">🎓 Estudiante</button>
+      <button class="tab-sim" data-tab="auto">🚗 Auto</button>
+      <button class="tab-sim" data-tab="libro">📚 Libro</button>
+    </div>
+
+    <!-- PESTAÑA: ESTUDIANTE -->
+    <div class="tab-panel active" data-panel="estudiante">
+      <h4>🎓 Crea un estudiante</h4>
+      <div class="form-sim">
+        <label>Nombre: <input type="text" id="est-nombre" value="Ana"></label>
+        <label>Edad: <input type="number" id="est-edad" value="16" min="10" max="99"></label>
+        <label>Grado: <input type="text" id="est-grado" value="10°"></label>
+        <button class="btn-sim" id="est-crear">✨ Crear estudiante</button>
+      </div>
+      <div class="estado-obj" id="est-estado" style="display:none;">
+        <h4>📋 Estado actual</h4>
+        <div class="atributos-vis" id="est-atributos"></div>
+        <h4>⚙️ Acciones</h4>
+        <div class="acciones-obj">
+          <div class="accion-mini">
+            <label>Nota (1, 2 o 3): <input type="number" id="est-cual" value="1" min="1" max="3"></label>
+            <label>Valor: <input type="number" id="est-valor" value="4.5" step="0.1" min="0" max="5"></label>
+            <button class="btn-sim-sec" id="est-poner">📝 Poner nota</button>
+          </div>
+          <button class="btn-sim-sec" id="est-presentarse">👋 Presentarse</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PESTAÑA: AUTO -->
+    <div class="tab-panel" data-panel="auto">
+      <h4>🚗 Crea un auto</h4>
+      <div class="form-sim">
+        <label>Marca: <input type="text" id="auto-marca" value="Toyota"></label>
+        <label>Color: <input type="text" id="auto-color" value="Rojo"></label>
+        <button class="btn-sim" id="auto-crear">✨ Crear auto</button>
+      </div>
+      <div class="estado-obj" id="auto-estado" style="display:none;">
+        <h4>📋 Estado actual</h4>
+        <div class="atributos-vis" id="auto-atributos"></div>
+        <h4>⚙️ Acciones</h4>
+        <div class="acciones-obj">
+          <button class="btn-sim-sec" id="auto-encender">🔑 Encender</button>
+          <div class="accion-mini">
+            <label>Acelerar (km/h): <input type="number" id="auto-cuanto" value="20" min="1"></label>
+            <button class="btn-sim-sec" id="auto-acelerar">💨 Acelerar</button>
+          </div>
+          <div class="accion-mini">
+            <label>Frenar (km/h): <input type="number" id="auto-freno" value="20" min="1"></label>
+            <button class="btn-sim-sec" id="auto-frenar">🛑 Frenar</button>
+          </div>
+          <button class="btn-sim-sec" id="auto-bocina">📣 Tocar bocina</button>
+          <button class="btn-sim-sec" id="auto-apagar">🔇 Apagar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PESTAÑA: LIBRO -->
+    <div class="tab-panel" data-panel="libro">
+      <h4>📚 Crea un libro</h4>
+      <div class="form-sim">
+        <label>Título: <input type="text" id="lib-titulo" value="El principito"></label>
+        <label>Autor: <input type="text" id="lib-autor" value="Saint-Exupéry"></label>
+        <label>Páginas: <input type="number" id="lib-paginas" value="96" min="1"></label>
+        <button class="btn-sim" id="lib-crear">✨ Crear libro</button>
+      </div>
+      <div class="estado-obj" id="lib-estado" style="display:none;">
+        <h4>📋 Estado actual</h4>
+        <div class="atributos-vis" id="lib-atributos"></div>
+        <h4>⚙️ Acciones</h4>
+        <div class="acciones-obj">
+          <div class="accion-mini">
+            <label>Leer (páginas): <input type="number" id="lib-cantidad" value="20" min="1"></label>
+            <button class="btn-sim-sec" id="lib-leer">📖 Leer</button>
+          </div>
+          <button class="btn-sim-sec" id="lib-info">📕 Ver info</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONSOLA DE SALIDA -->
+    <div class="consola-sim">
+      <h4>📺 Consola de salida</h4>
+      <div class="consola-salida" id="consola-salida">
+        <p class="hint">Crea un objeto y prueba sus métodos. Todo lo que "haga" aparecerá aquí.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>🎯 Tu misión en el simulador</h3>
+  <div class="caja-tip">
+    <p>Prueba las siguientes situaciones. Después de cada una, anota qué pasó y por qué:</p>
+    <ol>
+      <li>🚗 Crea un auto, intenta <strong>acelerar sin encenderlo</strong>. ¿Qué mensaje sale?</li>
+      <li>🚗 Enciende el auto, acelera hasta 80, e intenta <strong>apagarlo</strong>. ¿Te deja? ¿Por qué?</li>
+      <li>📚 Crea un libro de 100 páginas, lee 60, y luego intenta leer 100 más. ¿Qué pasa?</li>
+      <li>🎓 Crea un estudiante, ponle notas 5.0, 4.0, 3.0. ¿Qué promedio le sale? ¿Qué estado?</li>
+    </ol>
+    <p>Cuando termines, sigue al siguiente módulo. 🎓</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Anterior</button>
+    <button class="btn-siguiente" data-ir="8">Siguiente: Análisis →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 8 — ANÁLISIS: ESTRUCTURADO VS POO
+============================================================ -->
+<section class="modulo" data-modulo="8">
+  <h2>8️⃣ 🧩 Análisis: estructurado vs orientado a objetos</h2>
+  <p class="meta-modulo">⏱️ 20 minutos · 🪞 El mismo problema, dos estilos</p>
+
+  <div class="caja-concepto">
+    <h3>🪞 Una comparación honesta</h3>
+    <p>Ya tienes clara la POO. Ahora vamos a comparar las dos formas de resolver <em>el mismo problema</em> para que veas con tus propios ojos las diferencias. Spoiler: ambas funcionan, pero la POO escala mejor cuando los programas crecen. 🏗️</p>
+  </div>
+
+  <h3>📋 El problema</h3>
+  <p>Supongamos que queremos representar a 3 estudiantes con sus notas, calcular el promedio de cada uno y decir si aprobó. Un problema pequeño, fácil de leer. 👀</p>
+
+  <h3>❌ Versión estructurada (variables sueltas y funciones)</h3>
+
+  <div class="bloque-codigo bloque-error">
+<pre>// 1) Datos sueltos por todos lados
+string e1Nombre = "Ana";
+int    e1Edad   = 16;
+double e1Nota1  = 4.5;
+double e1Nota2  = 3.8;
+double e1Nota3  = 4.2;
+
+string e2Nombre = "Juan";
+int    e2Edad   = 17;
+double e2Nota1  = 2.5;
+double e2Nota2  = 3.0;
+double e2Nota3  = 2.8;
+
+string e3Nombre = "Sofía";
+int    e3Edad   = 16;
+double e3Nota1  = 4.8;
+double e3Nota2  = 5.0;
+double e3Nota3  = 4.7;
+
+// 2) Funciones que reciben cada dato por separado 😱
+double CalcularPromedio(double n1, double n2, double n3)
+{
+    return (n1 + n2 + n3) / 3;
+}
+
+string ObtenerEstado(double promedio)
+{
+    if (promedio &gt;= 3.0) return "Aprobado";
+    return "Reprobado";
+}
+
+void MostrarEstudiante(string nombre, int edad,
+                       double n1, double n2, double n3)
+{
+    double prom = CalcularPromedio(n1, n2, n3);
+    Console.WriteLine(nombre + " (" + edad + " años): "
+                      + prom + " — " + ObtenerEstado(prom));
+}
+
+// 3) Main lleno de llamadas feas
+public static void Main()
+{
+    MostrarEstudiante(e1Nombre, e1Edad, e1Nota1, e1Nota2, e1Nota3);
+    MostrarEstudiante(e2Nombre, e2Edad, e2Nota1, e2Nota2, e2Nota3);
+    MostrarEstudiante(e3Nombre, e3Edad, e3Nota1, e3Nota2, e3Nota3);
+}</pre>
+  </div>
+
+  <p>👀 ¿Ves el problema? Las variables de cada estudiante están <em>mezcladas</em> con las de los demás. Si quisieras agregar un cuarto estudiante, tienes que crear 5 variables más con nombres diferentes. Las funciones reciben 5 parámetros. Es un caos. 😵</p>
+
+  <h3>✅ Versión orientada a objetos (una clase por concepto)</h3>
+
+  <div class="bloque-codigo">
+<pre>class Estudiante
+{
+    public string nombre;
+    public int    edad;
+    public double nota1, nota2, nota3;
+
+    public Estudiante(string n, int e, double n1, double n2, double n3)
+    {
+        nombre = n;
+        edad   = e;
+        nota1  = n1;
+        nota2  = n2;
+        nota3  = n3;
+    }
+
+    public double CalcularPromedio()
+    {
+        return (nota1 + nota2 + nota3) / 3;
+    }
+
+    public string ObtenerEstado()
+    {
+        if (CalcularPromedio() &gt;= 3.0) return "Aprobado";
+        return "Reprobado";
+    }
+
+    public void Presentarse()
+    {
+        Console.WriteLine(nombre + " (" + edad + " años): "
+                          + CalcularPromedio()
+                          + " — " + ObtenerEstado());
+    }
+}
+
+public static void Main()
+{
+    Estudiante ana   = new Estudiante("Ana",   16, 4.5, 3.8, 4.2);
+    Estudiante juan  = new Estudiante("Juan",  17, 2.5, 3.0, 2.8);
+    Estudiante sofia = new Estudiante("Sofía", 16, 4.8, 5.0, 4.7);
+
+    ana.Presentarse();
+    juan.Presentarse();
+    sofia.Presentarse();
+}</pre>
+  </div>
+
+  <p>¿Ves la diferencia? Cada estudiante es <strong>un objeto</strong>. Si quieres añadir uno nuevo, solo creas otro objeto. No tienes que inventar 5 variables nuevas, ni cambiar las funciones, ni reordenar nada. 🪄</p>
+
+  <h3>⚖️ La comparación directa</h3>
+  <table class="tabla-tipos">
+    <thead>
+      <tr><th>Aspecto</th><th>Estructurado</th><th>Orientado a objetos</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Cómo se organiza</strong></td><td>Variables sueltas y funciones separadas</td><td>Datos y funciones juntos en "objetos"</td></tr>
+      <tr><td><strong>Añadir un estudiante más</strong></td><td>Crear 5 variables nuevas con nombres diferentes</td><td>Crear un nuevo objeto con <code>new</code></td></tr>
+      <tr><td><strong>Las funciones</strong></td><td>Reciben muchos parámetros</td><td>Usan los atributos del propio objeto</td></tr>
+      <tr><td><strong>Escala (muchos datos)</strong></td><td>Se vuelve un caos rápido</td><td>Sigue siendo ordenado</td></tr>
+      <tr><td><strong>Para aprender</strong></td><td>Más fácil al principio</td><td>Más natural a largo plazo</td></tr>
+      <tr><td><strong>Ideal para</strong></td><td>Programas pequeños y scripts</td><td>Software grande y de equipo</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja-tip">
+    <h4>💡 Una analogía final</h4>
+    <p>La programación estructurada es como tener tu ropa <strong>mezclada en una caja grande</strong>: un pantalón por aquí, un calcetín por allá. Funciona. La POO es como tener <strong>un cajón para camisas, otro para pantalones, otro para medias</strong>. Es la misma ropa, pero ahora todo está donde debe estar. 👕👖🧦</p>
+  </div>
+
+  <h3>🏋️ Practica el análisis</h3>
+  <div class="ejercicio">
+    <p><strong>Ejercicio 8.1:</strong> Sin mirar los ejemplos, intenta escribir tú mismo las DOS versiones de un programa que represente a 2 autos (cada uno con marca, color y velocidad) y muestre en pantalla la velocidad después de acelerar 30 km/h. Pista: la versión POO usa una clase <code>Auto</code> con su método <code>Acelerar()</code>.</p>
+    <p>💡 Si te atascas, mira el taller del módulo 6. La respuesta está ahí, solo tienes que adaptarla.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 8 -->
+  <div class="quiz" data-quiz="8">
+    <h3>🎯 Mini-quiz del Módulo 8</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> En la versión estructurada, ¿qué pasa cuando tenemos MUCHOS estudiantes?</p>
+      <button class="opcion" data-op="a">El programa se vuelve más rápido</button>
+      <button class="opcion" data-op="b">Las variables se acumulan, los nombres se confunden, y las funciones reciben demasiados parámetros</button>
+      <button class="opcion" data-op="c">C# automáticamente crea clases por nosotros</button>
+      <button class="opcion" data-op="d">Nada, todo sigue perfecto</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cuál es la mayor ventaja de la POO frente a la programación estructurada cuando el programa crece?</p>
+      <button class="opcion" data-op="a">Permite agrupar datos y funciones en unidades llamadas "objetos", manteniendo todo organizado</button>
+      <button class="opcion" data-op="b">Hace que el programa sea más corto siempre</button>
+      <button class="opcion" data-op="c">No necesita variables</button>
+      <button class="opcion" data-op="d">Elimina la necesidad de funciones</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Verdadero o falso? "La POO reemplaza completamente a la programación estructurada, que ya no se usa."</p>
+      <button class="opcion" data-op="a">Verdadero, ya nadie programa estructurado</button>
+      <button class="opcion" data-op="b">Verdadero, es ilegal</button>
+      <button class="opcion" data-op="c">Falso, la programación estructurada sigue siendo útil para scripts pequeños y muchas partes internas de los lenguajes</button>
+      <button class="opcion" data-op="d">Falso, porque la POO no existe</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="7">← Anterior</button>
+    <button class="btn-siguiente" data-ir="9">Siguiente: Reto final →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 9 — RETO FINAL
+============================================================ -->
+<section class="modulo" data-modulo="9">
+  <h2>9️⃣ 🏆 Reto final y reflexión</h2>
+  <p class="meta-modulo">⏱️ 10 minutos · 🎓 Cierre del curso</p>
+
+  <div class="hero">
+    <h2>🎉 ¡Lo lograste!</h2>
+    <p class="lead">Acabas de recorrer 3 horas y 45 minutos aprendiendo uno de los paradigmas más importantes de la programación. Mira todo lo que ahora sabes hacer:</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">📐</span>
+      <h3>Clases y objetos</h3>
+      <p>Defines clases y creas objetos a partir de ellas con <code>new</code>.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🎨</span>
+      <h3>Atributos</h3>
+      <p>Guardas datos dentro de cada objeto, independientes entre sí.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">⚙️</span>
+      <h3>Métodos</h3>
+      <p>Le das acciones al objeto, que puede usar sus propios atributos.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🎂</span>
+      <h3>Constructores</h3>
+      <p>Haces que cada objeto nazca con sus datos obligatorios.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🧪</span>
+      <h3>Taller práctico</h3>
+      <p>Construiste Estudiante, Auto, Libro y Mascota desde cero.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🪞</span>
+      <h3>Visión crítica</h3>
+      <p>Comparaste programación estructurada vs POO y entendiste cuándo usar cada una.</p>
+    </div>
+  </div>
+
+  <h3>🚀 Tu misión final</h3>
+  <div class="caja-desafio">
+    <p><strong>Construye "Mi Primera App Orientada a Objetos".</strong> Elige UNO de estos proyectos y desarróllalo:</p>
+
+    <p><strong>Opción A — Videojuego de texto:</strong> Crea una clase <code>Personaje</code> con nombre, vida, ataque. Métodos: <code>Atacar()</code>, <code>RecibirDanio()</code>, <code>Curar()</code>, <code>Estado()</code>. Crea 2 personajes y haz que se enfrenten en turnos.</p>
+
+    <p><strong>Opción B — Tienda virtual:</strong> Crea una clase <code>Producto</code> con nombre, precio, stock. Métodos: <code>Vender(int cantidad)</code>, <code>Reabastecer(int cantidad)</code>. Crea un <code>Carrito</code> que tenga una lista de productos y un método <code>Total()</code>.</p>
+
+    <p><strong>Opción C — Red social mínima:</strong> Crea una clase <code>Usuario</code> con nombre, edad, seguidores, seguidos. Métodos: <code>Seguir(Usuario otro)</code>, <code>DejarDeSeguir(Usuario otro)</code>, <code>Perfil()</code>.</p>
+
+    <p><strong>Requisitos obligatorios:</strong></p>
+    <ol>
+      <li>Usa <strong>al menos una clase</strong> con constructor.</li>
+      <li>Los métodos deben <strong>modificar el estado</strong> del objeto.</li>
+      <li>Crea <strong>al menos 2 instancias</strong> y hazlas interactuar.</li>
+    </ol>
+    <p>📸 Si quieres, comparte tu solución con tu profe. ¡Sé creativo/a!</p>
+  </div>
+
+  <h3>📚 Para seguir aprendiendo</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🌐</span>
+      <h3>Microsoft Learn</h3>
+      <p>El sitio oficial y gratuito de C#, en español.</p>
+      <a href="https://learn.microsoft.com/es-es/dotnet/csharp/" target="_blank">Visitar →</a>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🧪</span>
+      <h3>dotnetfiddle.net</h3>
+      <p>Ejecuta C# en el navegador, sin instalar nada.</p>
+      <a href="https://dotnetfiddle.net" target="_blank">Visitar →</a>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎯</span>
+      <h3>Próximos temas</h3>
+      <p>Herencia, polimorfismo, encapsulamiento, interfaces.</p>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💭 Reflexión final</h4>
+    <p>La POO no es "la forma correcta" de programar. Es <strong>una forma muy útil cuando los programas crecen</strong>. Lo que aprendiste hoy — clases, atributos, métodos, constructores — es la base sobre la que se construyen videojuegos, apps, páginas web, sistemas bancarios, robots y cohetes espaciales. 🌍</p>
+    <p style="font-size:1.1rem; text-align:center; font-style:italic; color:var(--coral);">
+      "El mundo no está hecho de funciones. Está hecho de cosas que cambian y se relacionan."
+    </p>
+    <p>Acabas de aprender a modelar el mundo. Y eso es programador. 💚</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🚀 ¡Felicitaciones!</h2>
+    <p>Sigue creando. El mundo necesita más personas que sepan construir cosas.</p>
+    <button class="btn-final" onclick="reiniciarCurso()">🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="8">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <p>📘 Clase 10 · Programación Orientada a Objetos en C# · Hecho con 🧡 para jóvenes constructores de software · 2026</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
