@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎬 Funciones en C# — Clase 7 · Curso Interactivo</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- =================== FONDO ANIMADO =================== -->
+<div class="estrellas">
+  <div class="est est1"></div>
+  <div class="est est2"></div>
+  <div class="est est3"></div>
+  <div class="est est4"></div>
+  <div class="est est5"></div>
+</div>
+
+<!-- =================== HEADER =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🎬</span>
+    <div>
+      <h1>Funciones en C#</h1>
+      <p class="subtitulo">Clase 7 · El arte de dividir problemas</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span id="porcentaje">0%</span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">1️⃣ Definición</button>
+  <button class="btn-modulo" data-modulo="2">2️⃣ Parámetros</button>
+  <button class="btn-modulo" data-modulo="3">3️⃣ Retorno</button>
+  <button class="btn-modulo" data-modulo="4">4️⃣ Valor vs Ref</button>
+  <button class="btn-modulo" data-modulo="5">5️⃣ 🧮 Taller</button>
+  <button class="btn-modulo" data-modulo="6">6️⃣ 🎭 Roles</button>
+  <button class="btn-modulo" data-modulo="7">7️⃣ 🧩 Modular</button>
+  <button class="btn-modulo" data-modulo="8">🏆 Final</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>👋 ¡Hola, futuro/a programador/a!</h2>
+    <p class="lead">Hoy vas a descubrir una de las <strong>ideas más poderosas de la programación</strong>: las funciones. Son como instrucciones mágicas que puedes reutilizar una y otra vez. Cuando termines esta clase, vas a pensar diferente sobre cómo resolver problemas. ✨</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">⏱️</span>
+      <h3>Duración</h3>
+      <p>3 horas y 45 minutos en 9 módulos cortos. Avanza a tu ritmo, sin prisa.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Entender qué es una función, cómo se define, y aprender a dividir problemas grandes en pedazos pequeños y reutilizables.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🛠️</span>
+      <h3>Lo que necesitas</h3>
+      <p>Un navegador. Para probar código: <a href="https://dotnetfiddle.net" target="_blank">dotnetfiddle.net</a> (no requiere instalación).</p>
+    </div>
+  </div>
+
+  <div class="caja-destacada">
+    <h3>🗺️ Tu ruta de aprendizaje</h3>
+    <ol class="ruta">
+      <li><strong>Módulo 1 (25 min):</strong> ¿Qué es una función? Tu primera función</li>
+      <li><strong>Módulo 2 (30 min):</strong> Parámetros · cómo entran los datos</li>
+      <li><strong>Módulo 3 (25 min):</strong> Retorno · cómo salen los resultados</li>
+      <li><strong>Módulo 4 (30 min):</strong> Paso por valor vs por referencia (ref y out)</li>
+      <li><strong>Módulo 5 (35 min):</strong> 🧮 Taller de funciones matemáticas</li>
+      <li><strong>Módulo 6 (25 min):</strong> 🎭 Juego de roles: entrada/salida simulada</li>
+      <li><strong>Módulo 7 (30 min):</strong> 🧩 Algoritmos modulares (divide y vencerás)</li>
+      <li><strong>Módulo 8 (15 min):</strong> 🏆 Reto final y reflexión</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Antes de empezar, una verdad importante</h4>
+    <p>Programar <strong>no es memorizar código</strong>. Es <em>pensar</em>. Por eso, en lugar de leerte todo como si fuera una novela, te invito a: <strong>leer, escribir, romper, probar, equivocarte, reírte, intentar de nuevo</strong>. Cada vez que un programa no funciona, estás a un paso de entender algo nuevo.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">¡Comenzar! →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — ¿QUÉ ES UNA FUNCIÓN?
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>1️⃣ ¿Qué es una función?</h2>
+  <p class="meta-modulo">⏱️ 25 minutos · 📚 La idea más importante del día</p>
+
+  <div class="caja-concepto">
+    <h3>🎬 Una analogía de cine</h3>
+    <p>Piensa en una <strong>función</strong> como una <em>escena de una película</em>:</p>
+    <ul class="lista-emoji">
+      <li>🎭 Los <strong>actores</strong> que entran al escenario son los <em>parámetros</em> (los datos que recibe)</li>
+      <li>📖 La <strong>historia</strong> que se desarrolla es el <em>código interno</em></li>
+      <li>📺 Lo que <strong>termina saliendo en pantalla</strong> al final es el <em>retorno</em> (el resultado)</li>
+    </ul>
+    <p>Una función es, simplemente, <strong>una receta con nombre</strong> que puedes usar cada vez que la necesites.</p>
+  </div>
+
+  <h3>📖 La definición formal (pero amigable)</h3>
+  <p>Una <strong>función</strong> en C# (también llamada <em>método</em>) es un bloque de código con nombre que:</p>
+  <ul>
+    <li>✅ Hace una <strong>sola cosa bien hecha</strong></li>
+    <li>✅ Puede recibir datos de <strong>entrada</strong> (parámetros)</li>
+    <li>✅ Puede devolver un <strong>resultado</strong> (retorno)</li>
+    <li>✅ Se puede <strong>llamar</strong> todas las veces que quieras</li>
+  </ul>
+
+  <h3>🧬 Anatomía de una función en C#</h3>
+  <p>Mira este ejemplo. Cada parte tiene un nombre:</p>
+
+  <div class="bloque-codigo" data-lang="csharp">
+<pre>public static int Sumar(int a, int b)
+{
+    int resultado = a + b;
+    return resultado;
+}</pre>
+  </div>
+
+  <div class="anatomia">
+    <div class="anatomia-item">
+      <span class="anat-tag">public static</span>
+      <p><strong>Modificadores:</strong> indican que la función es pública y que se puede usar sin crear un objeto. Por ahora, siempre los pondremos.</p>
+    </div>
+    <div class="anatomia-item">
+      <span class="anat-tag">int</span>
+      <p><strong>Tipo de retorno:</strong> qué tipo de dato <em>devuelve</em> la función. <code>int</code> = número entero.</p>
+    </div>
+    <div class="anatomia-item">
+      <span class="anat-tag">Sumar</span>
+      <p><strong>Nombre:</strong> empieza con mayúscula y describe qué hace. Usa verbos en infinitivo.</p>
+    </div>
+    <div class="anatomia-item">
+      <span class="anat-tag">(int a, int b)</span>
+      <p><strong>Parámetros:</strong> los datos que la función necesita para trabajar.</p>
+    </div>
+    <div class="anatomia-item">
+      <span class="anat-tag">{ ... }</span>
+      <p><strong>Cuerpo:</strong> el código que se ejecuta cuando llamas a la función.</p>
+    </div>
+    <div class="anatomia-item">
+      <span class="anat-tag">return</span>
+      <p><strong>Retorno:</strong> devuelve el resultado al lugar donde se llamó la función.</p>
+    </div>
+  </div>
+
+  <h3>🚀 Tu primera función completa</h3>
+  <p>Lee este programa. Fíjate cómo se llama a la función tres veces:</p>
+
+  <div class="bloque-codigo">
+<pre>using System;
+
+class Programa
+{
+    // Definimos la función
+    public static void Saludar()
+    {
+        Console.WriteLine("¡Hola! Soy una función de C# ⚡");
+    }
+
+    public static void Main()
+    {
+        Saludar();   // Primera llamada
+        Saludar();   // Segunda llamada
+        Saludar();   // Tercera llamada — ¡mira, sin copiar!
+    }
+}</pre>
+  </div>
+
+  <div class="caja-resultado">
+    <h4>📺 Salida en pantalla:</h4>
+<pre>¡Hola! Soy una función de C# ⚡
+¡Hola! Soy una función de C# ⚡
+¡Hola! Soy una función de C# ⚡</pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🔑 La palabra <code>void</code></h4>
+    <p>Cuando una función <strong>no devuelve nada</strong>, escribimos <code>void</code> en lugar del tipo de retorno. <code>void</code> significa "vacío" en inglés.</p>
+    <ul>
+      <li>📢 <code>void Saludar()</code> → solo hace algo (imprime), no devuelve ningún valor.</li>
+      <li>📦 <code>int Sumar(...)</code> → devuelve un número entero.</li>
+    </ul>
+  </div>
+
+  <h3>🤔 ¿Por qué son tan útiles?</h3>
+  <div class="caja-tip">
+    <p>Imagina que tienes un programa que imprime un saludo en <strong>20 lugares diferentes</strong>. Sin funciones, copiarías el <code>Console.WriteLine</code> 20 veces. Si después quieres cambiar el mensaje, tendrías que cambiarlo 20 veces. 😱</p>
+    <p>Con una función, escribes el código <strong>una sola vez</strong> y la llamas 20 veces. Si cambias el mensaje, lo cambias en un solo lugar. ¡Magia! ✨</p>
+  </div>
+
+  <h3>🏋️ Tu primer ejercicio</h3>
+  <div class="ejercicio">
+    <p><strong>Ejercicio 1.1:</strong> Escribe una función llamada <code>MostrarBienvenida</code> que imprima un mensaje de bienvenida al curso. Después, llámala tres veces desde el <code>Main</code>.</p>
+    <p>💡 Pista: tu función será <code>void</code> porque no devuelve nada, solo imprime.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-1-1')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-1-1">
+<pre>public static void MostrarBienvenida()
+{
+    Console.WriteLine("🎓 ¡Bienvenido al curso de Funciones en C#!");
+    Console.WriteLine("Vamos a aprender juntos.");
+}
+
+public static void Main()
+{
+    MostrarBienvenida();
+    MostrarBienvenida();
+    MostrarBienvenida();
+}</pre>
+    </div>
+  </div>
+
+  <!-- QUIZ MÓDULO 1 -->
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué palabra usamos cuando una función NO devuelve ningún valor?</p>
+      <button class="opcion" data-op="a">return</button>
+      <button class="opcion" data-op="b">empty</button>
+      <button class="opcion" data-op="c">void</button>
+      <button class="opcion" data-op="d">null</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Cuál es la <em>principal</em> ventaja de usar funciones?</p>
+      <button class="opcion" data-op="a">Hacen el programa más lento</button>
+      <button class="opcion" data-op="b">Permiten reutilizar código y mantener todo organizado</button>
+      <button class="opcion" data-op="c">Solo funcionan con números</button>
+      <button class="opcion" data-op="d">Cambian el color del programa</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> En <code>public static int Sumar(int a, int b)</code>, la palabra <code>int</code> justo antes de <code>Sumar</code> significa:</p>
+      <button class="opcion" data-op="a">El tipo de dato que devuelve la función</button>
+      <button class="opcion" data-op="b">El nombre de la función</button>
+      <button class="opcion" data-op="c">Un parámetro</button>
+      <button class="opcion" data-op="d">No significa nada importante</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Inicio</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Parámetros →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — PARÁMETROS
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>2️⃣ Parámetros: los datos de entrada</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 📥 Cómo le pasamos información a una función</p>
+
+  <div class="caja-concepto">
+    <h3>🍕 Analogía: la pizzería</h3>
+    <p>Cuando llamas a una pizzería y pides una pizza, necesitas decir:</p>
+    <ul class="lista-emoji">
+      <li>🍕 El <strong>tamaño</strong> (¿chica, mediana, grande?)</li>
+      <li>🧀 Los <strong>ingredientes</strong> (¿queso, pepperoni, champiñones?)</li>
+      <li>📍 Tu <strong>dirección</strong> de entrega</li>
+    </ul>
+    <p>Esos tres datos son los <strong>parámetros</strong> de la función "HacerPizza". Sin ellos, la pizzería no podría hacer su trabajo.</p>
+  </div>
+
+  <h3>📥 Una función con un parámetro</h3>
+  <p>Empecemos con lo más simple: una función que recibe <strong>un solo dato</strong>.</p>
+
+  <div class="bloque-codigo">
+<pre>public static void Saludar(string nombre)
+{
+    Console.WriteLine("¡Hola, " + nombre + "!");
+}
+
+public static void Main()
+{
+    Saludar("Camila");
+    Saludar("Juan");
+    Saludar("Profe");
+}</pre>
+  </div>
+
+  <div class="caja-resultado">
+    <h4>📺 Salida:</h4>
+<pre>¡Hola, Camila!
+¡Hola, Juan!
+¡Hola, Profe!</pre>
+  </div>
+
+  <p>👀 <strong>¿Qué pasó?</strong> La función <code>Saludar</code> recibe un texto (<code>string</code>) llamado <code>nombre</code>. Cada vez que la llamamos, el valor que pasamos se guarda en <code>nombre</code>.</p>
+
+  <h3>📥📥 Varios parámetros a la vez</h3>
+  <p>Una función puede recibir <strong>todos los datos que necesite</strong>. Para eso, los separamos con comas (<code>,</code>):</p>
+
+  <div class="bloque-codigo">
+<pre>public static void MostrarFicha(string nombre, int edad, string ciudad)
+{
+    Console.WriteLine("Nombre: " + nombre);
+    Console.WriteLine("Edad: " + edad);
+    Console.WriteLine("Ciudad: " + ciudad);
+}
+
+public static void Main()
+{
+    MostrarFicha("Lucía", 16, "Bogotá");
+    MostrarFicha("Andrés", 17, "Medellín");
+}</pre>
+  </div>
+
+  <div class="caja-resultado">
+    <h4>📺 Salida:</h4>
+<pre>Nombre: Lucía
+Edad: 16
+Ciudad: Bogotá
+Nombre: Andrés
+Edad: 17
+Ciudad: Medellín</pre>
+  </div>
+
+  <h3>🎨 Los tipos de datos que más vas a usar</h3>
+  <table class="tabla-tipos">
+    <thead>
+      <tr><th>Tipo</th><th>Para qué sirve</th><th>Ejemplo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>int</code></td><td>Números enteros (sin coma)</td><td>15, -3, 1000</td></tr>
+      <tr><td><code>double</code></td><td>Números con decimales</td><td>3.14, -0.5, 9.81</td></tr>
+      <tr><td><code>string</code></td><td>Texto</td><td>"Hola", "Colombia"</td></tr>
+      <tr><td><code>bool</code></td><td>Verdadero o falso</td><td>true, false</td></tr>
+      <tr><td><code>char</code></td><td>Un solo carácter</td><td>'a', 'Z', '?'</td></tr>
+    </tbody>
+  </table>
+
+  <h3>🚨 Ojo con el orden</h3>
+  <p>El orden importa <em>mucho</em>. Si cambias el orden de los argumentos, el resultado puede ser completamente distinto:</p>
+
+  <div class="bloque-codigo bloque-error">
+<pre>public static void Restar(int a, int b)
+{
+    Console.WriteLine(a - b);
+}
+
+Restar(10, 3);   // Imprime 7
+Restar(3, 10);   // Imprime -7  ← ¡muy diferente!</pre>
+  </div>
+
+  <h3>🍎 Ejemplo del mundo real: calculadora de IMC</h3>
+  <p>El IMC (Índice de Masa Corporal) nos dice si nuestro peso es saludable. Veamos cómo se calcula con una función:</p>
+
+  <div class="bloque-codigo">
+<pre>public static void CalcularIMC(double peso, double altura)
+{
+    double imc = peso / (altura * altura);
+    Console.WriteLine("Tu IMC es: " + imc);
+
+    if (imc &lt; 18.5)
+        Console.WriteLine("Categoría: Bajo peso");
+    else if (imc &lt; 25)
+        Console.WriteLine("Categoría: Peso normal");
+    else
+        Console.WriteLine("Categoría: Sobrepeso");
+}
+
+public static void Main()
+{
+    CalcularIMC(55.5, 1.65);   // peso en kg, altura en metros
+}</pre>
+  </div>
+
+  <h3>🏋️ Practica un poco</h3>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 2.1:</strong> Crea una función <code>MostrarTriangulo</code> que reciba un número <code>n</code> y dibuje un triángulo de asteriscos con <code>n</code> filas.</p>
+    <p>Por ejemplo, <code>MostrarTriangulo(4)</code> debe imprimir:</p>
+<pre>*
+**
+***
+****</pre>
+    <p>💡 Pista: usa un <code>for</code> dentro de otro <code>for</code> (o un <code>for</code> con un <code>Write</code> y un <code>WriteLine</code>).</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-2-1')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-2-1">
+<pre>public static void MostrarTriangulo(int n)
+{
+    for (int i = 1; i &lt;= n; i++)
+    {
+        for (int j = 1; j &lt;= i; j++)
+        {
+            Console.Write("*");
+        }
+        Console.WriteLine();
+    }
+}</pre>
+    </div>
+  </div>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 2.2:</strong> Crea una función <code>SaludarCompleto</code> que reciba un nombre, una edad y un color favorito, y arme un mensaje personalizado como: <em>"Hola Ana, tienes 16 años y tu color favorito es el azul 💙"</em>.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-2-2')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-2-2">
+<pre>public static void SaludarCompleto(string nombre, int edad, string color)
+{
+    Console.WriteLine("Hola " + nombre + ", tienes " + edad
+                      + " años y tu color favorito es el " + color + " 💙");
+}
+
+// Ejemplo de uso:
+// SaludarCompleto("Ana", 16, "azul");</pre>
+    </div>
+  </div>
+
+  <!-- QUIZ MÓDULO 2 -->
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Cómo separamos varios parámetros en la definición de una función?</p>
+      <button class="opcion" data-op="a">Con puntos (.)</button>
+      <button class="opcion" data-op="b">Con punto y coma (;)</button>
+      <button class="opcion" data-op="c">Con comas (,)</button>
+      <button class="opcion" data-op="d">Con dos puntos (:)</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> Si quiero guardar la temperatura de hoy, 25.3 grados, ¿qué tipo de dato uso?</p>
+      <button class="opcion" data-op="a">double</button>
+      <button class="opcion" data-op="b">int</button>
+      <button class="opcion" data-op="c">string</button>
+      <button class="opcion" data-op="d">bool</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> Si declaro <code>void MiFuncion(int a, int b, int c)</code> y llamo <code>MiFuncion(1, 2, 3)</code>, ¿cuánto vale <code>b</code>?</p>
+      <button class="opcion" data-op="a">1</button>
+      <button class="opcion" data-op="b">2</button>
+      <button class="opcion" data-op="c">3</button>
+      <button class="opcion" data-op="d">0</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Retorno →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — RETORNO DE VALORES
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>3️⃣ Retorno: la respuesta de la función</h2>
+  <p class="meta-modulo">⏱️ 25 minutos · 📤 Cómo las funciones devuelven resultados</p>
+
+  <div class="caja-concepto">
+    <h3>🏧 Analogía: el cajero automático</h3>
+    <p>Cuando usas un cajero:</p>
+    <ul class="lista-emoji">
+      <li>💳 Metes la tarjeta y tecleas el monto que quieres sacar (esto son los <em>parámetros</em>)</li>
+      <li>⚙️ El cajero verifica tu saldo, descuenta, prepara los billetes (esto es el <em>código interno</em>)</li>
+      <li>💵 Te entrega el dinero (esto es el <em>retorno</em>)</li>
+    </ul>
+    <p>El <strong>retorno</strong> es lo que la función te "entrega" después de hacer su trabajo.</p>
+  </div>
+
+  <h3>📤 La palabra mágica: <code>return</code></h3>
+  <p>Para que una función devuelva un valor, usamos la palabra <code>return</code>:</p>
+
+  <div class="bloque-codigo">
+<pre>public static int Sumar(int a, int b)
+{
+    int resultado = a + b;
+    return resultado;     // 👈 Devolvemos el valor
+}
+
+public static void Main()
+{
+    int total = Sumar(7, 3);   // total vale 10
+    Console.WriteLine(total);   // imprime: 10
+}</pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🔑 Tres reglas de oro del <code>return</code></h4>
+    <ol>
+      <li>Lo que devuelves debe <strong>coincidir</strong> con el tipo declarado al inicio (<code>int</code>, <code>string</code>, etc.).</li>
+      <li>Una vez que se ejecuta <code>return</code>, <strong>la función termina</strong>. Lo que venga después no se ejecuta.</li>
+      <li>Si la función es <code>void</code>, no puede devolver un valor (puede tener <code>return;</code> solo, opcional).</li>
+    </ol>
+  </div>
+
+  <h3>🎁 Tipos de retorno que vas a usar</h3>
+
+  <p><strong>Devolver un número:</strong></p>
+  <div class="bloque-codigo">
+<pre>public static int Cuadrado(int n)
+{
+    return n * n;
+}
+// Cuadrado(5)  →  25</pre>
+  </div>
+
+  <p><strong>Devolver un texto:</strong></p>
+  <div class="bloque-codigo">
+<pre>public static string ObtenerSaludo(string nombre)
+{
+    return "¡Hola, " + nombre + "! Bienvenid@ al curso.";
+}
+// ObtenerSaludo("Ana")  →  "¡Hola, Ana! Bienvenid@ al curso."</pre>
+  </div>
+
+  <p><strong>Devolver un valor lógico (verdadero o falso):</strong></p>
+  <div class="bloque-codigo">
+<pre>public static bool EsPar(int numero)
+{
+    return numero % 2 == 0;
+}
+// EsPar(4)  →  true
+// EsPar(7)  →  false</pre>
+  </div>
+
+  <h3>🔗 Encadenando funciones (¡la parte divertida!)</h3>
+  <p>Lo poderoso del retorno es que puedes <strong>usar el resultado de una función como entrada de otra</strong>:</p>
+
+  <div class="bloque-codigo">
+<pre>public static int Sumar(int a, int b)   { return a + b; }
+public static int Doble(int n)          { return n * 2; }
+
+public static void Main()
+{
+    // Primero Sumar(3, 4) = 7, después Doble(7) = 14
+    int x = Doble(Sumar(3, 4));
+    Console.WriteLine(x);   // imprime: 14
+}</pre>
+  </div>
+
+  <p>Es como una cadena de montaje: una función le pasa su resultado a la siguiente. 🏭</p>
+
+  <h3>🚪 Retorno temprano: salir antes de tiempo</h3>
+  <p>A veces queremos salir de la función <em>antes</em> de llegar al final. Por ejemplo, para evitar dividir entre cero:</p>
+
+  <div class="bloque-codigo">
+<pre>public static double Dividir(double a, double b)
+{
+    if (b == 0)
+    {
+        Console.WriteLine("⚠️ No se puede dividir entre cero");
+        return 0;       // Salimos temprano
+    }
+
+    return a / b;       // Si b no es cero, hacemos la división
+}</pre>
+  </div>
+
+  <h3>🏋️ Practica</h3>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 3.1:</strong> Crea una función <code>Triple</code> que reciba un número entero y devuelva ese número multiplicado por 3.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-3-1')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-3-1">
+<pre>public static int Triple(int n)
+{
+    return n * 3;
+}</pre>
+    </div>
+  </div>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 3.2:</strong> Crea una función <code>EsAprobado</code> que reciba una nota (double) y devuelva <code>true</code> si es ≥ 3.0, o <code>false</code> en caso contrario.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-3-2')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-3-2">
+<pre>public static bool EsAprobado(double nota)
+{
+    return nota &gt;= 3.0;
+}</pre>
+    </div>
+  </div>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 3.3:</strong> Crea una función <code>MayorDeTres</code> que reciba tres números y devuelva el más grande.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-3-3')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-3-3">
+<pre>public static int MayorDeTres(int a, int b, int c)
+{
+    int max = a;
+    if (b &gt; max) max = b;
+    if (c &gt; max) max = c;
+    return max;
+}</pre>
+    </div>
+  </div>
+
+  <!-- QUIZ MÓDULO 3 -->
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace la palabra <code>return</code>?</p>
+      <button class="opcion" data-op="a">Inicia un bucle</button>
+      <button class="opcion" data-op="b">Devuelve un valor y termina la función</button>
+      <button class="opcion" data-op="c">Imprime en pantalla</button>
+      <button class="opcion" data-op="d">Crea una nueva variable</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Si declaro <code>public static string Saludar()</code>, ¿qué <em>debe</em> devolver?</p>
+      <button class="opcion" data-op="a">Un número</button>
+      <button class="opcion" data-op="b">Nada</button>
+      <button class="opcion" data-op="c">Un texto (string)</button>
+      <button class="opcion" data-op="d">Verdadero o falso</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué imprime este código?<br>
+      <code>int r = Doble(5); Console.WriteLine(r);</code> (asumiendo que <code>Doble</code> devuelve <code>n*2</code>)</p>
+      <button class="opcion" data-op="a">10</button>
+      <button class="opcion" data-op="b">5</button>
+      <button class="opcion" data-op="c">25</button>
+      <button class="opcion" data-op="d">Error</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: Valor vs Referencia →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — PASO POR VALOR Y REFERENCIA
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <h2>4️⃣ Paso por valor vs por referencia</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 🚨 El tema que más confunde (¡lo vamos a aclarar!)</p>
+
+  <div class="caja-concepto">
+    <h3>📓 Analogía: prestar el cuaderno</h3>
+    <p>Imagina que un amigo te pide tu cuaderno para hacer una tarea. Tienes dos opciones:</p>
+    <ul class="lista-emoji">
+      <li>📋 <strong>Paso por valor:</strong> le das una <em>fotocopia</em>. Él puede rayar la fotocopia todo lo que quiera, pero tu cuaderno original queda intacto.</li>
+      <li>📓 <strong>Paso por referencia:</strong> le das tu <em>cuaderno original</em>. Si él escribe o borra algo, los cambios quedan en tu cuaderno.</li>
+    </ul>
+    <p>En C# pasa algo similar cuando una función recibe variables.</p>
+  </div>
+
+  <h3>🟦 Paso por VALOR (lo que pasa por defecto)</h3>
+  <p>Por defecto, C# pasa las variables <strong>por valor</strong>: hace una copia. La función trabaja con la copia, no con el original.</p>
+
+  <div class="bloque-codigo">
+<pre>public static void Duplicar(int numero)
+{
+    numero = numero * 2;
+    Console.WriteLine("Dentro de la función: " + numero);
+}
+
+public static void Main()
+{
+    int x = 5;
+    Duplicar(x);
+    Console.WriteLine("Fuera de la función: " + x);
+}</pre>
+  </div>
+
+  <div class="caja-resultado">
+    <h4>📺 Salida:</h4>
+<pre>Dentro de la función: 10
+Fuera de la función: 5</pre>
+  </div>
+
+  <p>👀 <strong>¿Lo notaste?</strong> Aunque dentro de la función <code>numero</code> se duplicó, la variable <code>x</code> en el <code>Main</code> sigue valiendo 5. La función solo modificó su copia.</p>
+
+  <h3>🟪 Paso por REFERENCIA (usando <code>ref</code>)</h3>
+  <p>Si queremos que la función <em>modifique</em> la variable original, usamos la palabra <code>ref</code>. Hay que ponerla en <strong>dos lugares</strong>:</p>
+
+  <div class="bloque-codigo">
+<pre>public static void Duplicar(ref int numero)   // 👈 ref aquí
+{
+    numero = numero * 2;
+}
+
+public static void Main()
+{
+    int x = 5;
+    Duplicar(ref x);   // 👈 ref también aquí
+    Console.WriteLine("x ahora vale: " + x);
+}</pre>
+  </div>
+
+  <div class="caja-resultado">
+    <h4>📺 Salida:</h4>
+<pre>x ahora vale: 10</pre>
+  </div>
+
+  <p>🎉 ¡Ahora sí! La variable original cambió. Le dimos el cuaderno original, no una fotocopia.</p>
+
+  <div class="caja-importante">
+    <h4>⚠️ Detalle importante de <code>ref</code></h4>
+    <p>Cuando usas <code>ref</code>, la variable <strong>debe estar inicializada</strong> antes de llamar a la función. No puede valer <code>null</code> (en el caso de los tipos por referencia).</p>
+  </div>
+
+  <h3>🟧 La palabra <code>out</code> (devolver varios valores)</h3>
+  <p>Hay un caso especial: cuando una función quiere <strong>devolver varios valores</strong> a la vez. Para eso existe <code>out</code>.</p>
+
+  <p>La diferencia con <code>ref</code>:</p>
+  <ul>
+    <li><code>ref</code> → la variable <em>ya tiene</em> un valor al entrar, y puede salir modificada.</li>
+    <li><code>out</code> → la variable <em>no necesita</em> tener valor al entrar, pero la función <strong>está obligada</strong> a asignarle uno antes de terminar.</li>
+  </ul>
+
+  <div class="bloque-codigo">
+<pre>public static void Dividir(int a, int b, out int cociente, out int residuo)
+{
+    cociente = a / b;
+    residuo  = a % b;
+}
+
+public static void Main()
+{
+    int c, r;                    // No es necesario inicializar
+    Dividir(17, 5, out c, out r);
+    Console.WriteLine($"Cociente: {c}, Residuo: {r}");
+}</pre>
+  </div>
+
+  <div class="caja-resultado">
+    <h4>📺 Salida:</h4>
+<pre>Cociente: 3, Residuo: 2</pre>
+  </div>
+
+  <h3>⚔️ Tabla comparativa</h3>
+  <table class="tabla-tipos">
+    <thead>
+      <tr><th></th><th>Por valor</th><th><code>ref</code></th><th><code>out</code></th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>¿Modifica el original?</strong></td><td>❌ No</td><td>✅ Sí</td><td>✅ Sí</td></tr>
+      <tr><td><strong>¿Necesita valor inicial?</strong></td><td>✅ Sí</td><td>✅ Sí</td><td>❌ No</td></tr>
+      <tr><td><strong>¿Debe asignar dentro?</strong></td><td>—</td><td>Opcional</td><td>✅ Sí, obligatorio</td></tr>
+      <tr><td><strong>¿Cuándo usarlo?</strong></td><td>Cálculos normales</td><td>Modificar una variable existente</td><td>Devolver varios valores</td></tr>
+    </tbody>
+  </table>
+
+  <h3>🔁 Ejemplo clásico: intercambiar dos variables</h3>
+  <p>Un problema muy común: tienes dos variables y quieres intercambiar sus valores. ¡<code>ref</code> al rescate!</p>
+
+  <div class="bloque-codigo">
+<pre>public static void Intercambiar(ref int x, ref int y)
+{
+    int temp = x;
+    x = y;
+    y = temp;
+}
+
+public static void Main()
+{
+    int a = 100, b = 200;
+    Console.WriteLine($"Antes: a={a}, b={b}");
+
+    Intercambiar(ref a, ref b);
+
+    Console.WriteLine($"Después: a={a}, b={b}");
+}</pre>
+  </div>
+
+  <div class="caja-resultado">
+    <h4>📺 Salida:</h4>
+<pre>Antes: a=100, b=200
+Después: a=200, b=100</pre>
+  </div>
+
+  <h3>🏋️ Practica</h3>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 4.1:</strong> Crea una función <code>IncrementarEdad</code> que reciba la edad por referencia (<code>ref</code>) y le sume 1. Después demuestra en el <code>Main</code> que la variable original cambió.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-4-1')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-4-1">
+<pre>public static void IncrementarEdad(ref int edad)
+{
+    edad = edad + 1;   // también se puede escribir: edad++;
+}
+
+public static void Main()
+{
+    int miEdad = 16;
+    IncrementarEdad(ref miEdad);
+    Console.WriteLine(miEdad);   // imprime 17
+}</pre>
+    </div>
+  </div>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 4.2:</strong> Crea una función <code>MinMax</code> que reciba dos números y, usando <code>out</code>, devuelva cuál es el menor y cuál es el mayor.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-4-2')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-4-2">
+<pre>public static void MinMax(int a, int b, out int min, out int max)
+{
+    if (a &lt; b)
+    {
+        min = a;
+        max = b;
+    }
+    else
+    {
+        min = b;
+        max = a;
+    }
+}
+
+// Uso:
+// int chico, grande;
+// MinMax(8, 3, out chico, out grande);
+// Console.WriteLine($"Min: {chico}, Max: {grande}");
+// Salida: Min: 3, Max: 8</pre>
+    </div>
+  </div>
+
+  <!-- QUIZ MÓDULO 4 -->
+  <div class="quiz" data-quiz="4">
+    <h3>🎯 Mini-quiz del Módulo 4</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> Por defecto, ¿cómo pasa C# los parámetros?</p>
+      <button class="opcion" data-op="a">Por referencia</button>
+      <button class="opcion" data-op="b">Por valor (una copia)</button>
+      <button class="opcion" data-op="c">Por puntero</button>
+      <button class="opcion" data-op="d">Depende del humor del compilador</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Cuál es la diferencia clave entre <code>ref</code> y <code>out</code>?</p>
+      <button class="opcion" data-op="a">Son exactamente lo mismo</button>
+      <button class="opcion" data-op="b"><code>ref</code> es más rápido</button>
+      <button class="opcion" data-op="c"><code>out</code> obliga a asignar el valor dentro de la función</button>
+      <button class="opcion" data-op="d"><code>out</code> solo funciona con texto</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> Si quiero que una función devuelva <em>tres</em> valores a la vez, ¿qué me conviene usar?</p>
+      <button class="opcion" data-op="a"><code>out</code> para cada valor</button>
+      <button class="opcion" data-op="b">No se puede, una función solo devuelve un valor</button>
+      <button class="opcion" data-op="c"><code>void</code> en todas las variables</button>
+      <button class="opcion" data-op="d"><code>int</code> por triplicado</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Taller matemático →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — TALLER DE FUNCIONES MATEMÁTICAS
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>5️⃣ 🧮 Taller: Funciones Matemáticas</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · 🛠️ Hora de construir, no solo leer</p>
+
+  <div class="caja-concepto">
+    <h3>🎬 ¡Bienvenido al taller!</h3>
+    <p>Hasta ahora aprendiste la teoría. Ahora viene lo más divertido: <strong>vas a construir tu propia biblioteca de funciones matemáticas</strong>. Copia, modifica, rompe y vuelve a armar. La mejor forma de aprender a programar es <em>programando</em>.</p>
+  </div>
+
+  <h3>🧪 Reto 1: Calculadora con las cuatro operaciones</h3>
+  <p>Crea cuatro funciones: <code>Sumar</code>, <code>Restar</code>, <code>Multiplicar</code> y <code>Dividir</code>. La división debe protegerse del cero.</p>
+
+  <div class="bloque-codigo">
+<pre>public static double Sumar(double a, double b)
+{
+    return a + b;
+}
+
+public static double Restar(double a, double b)
+{
+    return a - b;
+}
+
+public static double Multiplicar(double a, double b)
+{
+    return a * b;
+}
+
+public static double Dividir(double a, double b)
+{
+    if (b == 0)
+    {
+        Console.WriteLine("⚠️ Error: no se puede dividir entre cero");
+        return 0;
+    }
+    return a / b;
+}</pre>
+  </div>
+
+  <h3>🧪 Reto 2: Geometría (áreas y perímetros)</h3>
+
+  <p><strong>Área de un círculo:</strong></p>
+  <div class="bloque-codigo">
+<pre>public static double AreaCirculo(double radio)
+{
+    return Math.PI * radio * radio;
+}
+// AreaCirculo(5)  →  78.54</pre>
+  </div>
+
+  <p><strong>Perímetro de un rectángulo:</strong></p>
+  <div class="bloque-codigo">
+<pre>public static double PerimetroRectangulo(double ancho, double alto)
+{
+    return 2 * (ancho + alto);
+}
+// PerimetroRectangulo(4, 3)  →  14</pre>
+  </div>
+
+  <p><strong>Hipotenusa (teorema de Pitágoras):</strong></p>
+  <div class="bloque-codigo">
+<pre>public static double Hipotenusa(double catetoA, double catetoB)
+{
+    double sumaCuadrados = (catetoA * catetoA) + (catetoB * catetoB);
+    return Math.Sqrt(sumaCuadrados);   // Math.Sqrt = raíz cuadrada
+}
+// Hipotenusa(3, 4)  →  5</pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Tu aliada: la clase <code>Math</code></h4>
+    <p>C# ya trae una caja de herramientas matemáticas lista para usar:</p>
+    <ul>
+      <li><code>Math.Sqrt(x)</code> → raíz cuadrada de <code>x</code></li>
+      <li><code>Math.Pow(x, y)</code> → <code>x</code> elevado a la <code>y</code></li>
+      <li><code>Math.Abs(x)</code> → valor absoluto (sin signo)</li>
+      <li><code>Math.PI</code> → el valor de π (3.14159...)</li>
+      <li><code>Math.Max(a, b)</code> → el mayor de dos números</li>
+      <li><code>Math.Min(a, b)</code> → el menor de dos números</li>
+    </ul>
+  </div>
+
+  <h3>🧪 Reto 3: Estadística</h3>
+
+  <p><strong>Promedio de tres notas:</strong></p>
+  <div class="bloque-codigo">
+<pre>public static double Promedio(double n1, double n2, double n3)
+{
+    return (n1 + n2 + n3) / 3;
+}
+// Promedio(4.0, 3.5, 4.8)  →  4.1</pre>
+  </div>
+
+  <p><strong>Porcentaje:</strong></p>
+  <div class="bloque-codigo">
+<pre>public static double Porcentaje(double parte, double total)
+{
+    return (parte / total) * 100;
+}
+// Porcentaje(15, 50)  →  30  (15 es el 30% de 50)</pre>
+  </div>
+
+  <p><strong>Factorial (un clásico):</strong></p>
+  <div class="bloque-codigo">
+<pre>public static long Factorial(int n)
+{
+    long resultado = 1;
+    for (int i = 2; i &lt;= n; i++)
+    {
+        resultado = resultado * i;
+    }
+    return resultado;
+}
+// Factorial(5)  →  120  (porque 1×2×3×4×5 = 120)</pre>
+  </div>
+
+  <h3>🏆 PROYECTO INTEGRADOR: Calculadora multifunción</h3>
+  <p>Combina todo lo que aprendiste en un solo programa. Léelo con calma y trata de entender cada parte:</p>
+
+  <div class="bloque-codigo">
+<pre>using System;
+
+class Calculadora
+{
+    public static double Sumar(double a, double b)       =&gt; a + b;
+    public static double Restar(double a, double b)      =&gt; a - b;
+    public static double Multiplicar(double a, double b) =&gt; a * b;
+    public static double Dividir(double a, double b)
+    {
+        if (b == 0) return 0;
+        return a / b;
+    }
+    public static double Potencia(double baseN, double exp) =&gt; Math.Pow(baseN, exp);
+    public static double Raiz(double n) =&gt; Math.Sqrt(n);
+
+    public static void MostrarMenu()
+    {
+        Console.WriteLine("=== CALCULADORA ===");
+        Console.WriteLine("1. Sumar");
+        Console.WriteLine("2. Restar");
+        Console.WriteLine("3. Multiplicar");
+        Console.WriteLine("4. Dividir");
+        Console.WriteLine("5. Potencia");
+        Console.WriteLine("6. Raíz cuadrada");
+        Console.WriteLine("0. Salir");
+    }
+
+    public static void Main()
+    {
+        int opcion;
+        do
+        {
+            MostrarMenu();
+            Console.Write("Elige una opción: ");
+            opcion = int.Parse(Console.ReadLine());
+
+            if (opcion == 0) break;
+
+            Console.Write("Primer número: ");
+            double a = double.Parse(Console.ReadLine());
+
+            double b = 0;
+            if (opcion != 6)
+            {
+                Console.Write("Segundo número: ");
+                b = double.Parse(Console.ReadLine());
+            }
+
+            double resultado = 0;
+            switch (opcion)
+            {
+                case 1: resultado = Sumar(a, b); break;
+                case 2: resultado = Restar(a, b); break;
+                case 3: resultado = Multiplicar(a, b); break;
+                case 4: resultado = Dividir(a, b); break;
+                case 5: resultado = Potencia(a, b); break;
+                case 6: resultado = Raiz(a); break;
+            }
+            Console.WriteLine("Resultado: " + resultado + "\n");
+        }
+        while (opcion != 0);
+
+        Console.WriteLine("¡Hasta luego! 👋");
+    }
+}</pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Sintaxis nueva: <code>=&gt;</code></h4>
+    <p>La flecha <code>=&gt;</code> es una forma compacta de escribir funciones de una sola línea:</p>
+    <pre>public static double Sumar(double a, double b) =&gt; a + b;</pre>
+    <p>Es equivalente a:</p>
+    <pre>public static double Sumar(double a, double b)
+{
+    return a + b;
+}</pre>
+    <p>Misma cosa, menos texto. Úsala cuando la función sea muy cortita.</p>
+  </div>
+
+  <h3>🎯 Desafíos extra (opcionales)</h3>
+
+  <div class="ejercicio">
+    <p><strong>Desafío 5.1:</strong> Crea <code>EsPrimo(int n)</code> que devuelva <code>true</code> si <code>n</code> es un número primo.</p>
+    <p>💡 Pista: un número primo solo es divisible por 1 y por sí mismo. Prueba dividirlo por todos los números entre 2 y <code>n-1</code>. Si alguno divide exacto, no es primo.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-5-1')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-5-1">
+<pre>public static bool EsPrimo(int n)
+{
+    if (n &lt; 2) return false;
+    for (int i = 2; i &lt; n; i++)
+    {
+        if (n % i == 0) return false;
+    }
+    return true;
+}</pre>
+    </div>
+  </div>
+
+  <div class="ejercicio">
+    <p><strong>Desafío 5.2:</strong> Crea <code>CelsiusAFahrenheit(double c)</code>. Fórmula: <code>F = (C × 9/5) + 32</code>.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-5-2')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-5-2">
+<pre>public static double CelsiusAFahrenheit(double c)
+{
+    return (c * 9.0 / 5.0) + 32;
+}
+// CelsiusAFahrenheit(25)  →  77</pre>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Juego de roles →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — JUEGO DE ROLES
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>6️⃣ 🎭 Juego de roles: la máquina expendedora</h2>
+  <p class="meta-modulo">⏱️ 25 minutos · 🎮 Entrada y salida simuladas, ¡en vivo!</p>
+
+  <div class="caja-concepto">
+    <h3>🎬 Una historia para empezar</h3>
+    <p>Acabas de ser contratado/a por <strong>"SnackTech S.A."</strong>, una empresa que vende máquinas expendedoras inteligentes. Tu misión: programar el cerebro de una de ellas. La máquina debe poder <strong>mostrar productos</strong>, <strong>recibir dinero</strong>, <strong>calcular devueltas</strong> y <strong>entregar el producto</strong>. Cada cosa será una función. 🛒</p>
+  </div>
+
+  <h3>🎯 Tu misión</h3>
+  <p>Vas a ver una simulación interactiva. Tu "cliente" (un sistema) va a pedirte cosas y tú vas a llamar a las funciones correctas. Lee con atención el inventario:</p>
+
+  <div class="caja-destacada">
+    <h4>📦 Inventario de la máquina</h4>
+    <table class="tabla-tipos">
+      <thead>
+        <tr><th>Código</th><th>Producto</th><th>Precio</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>A1</code></td><td>🥤 Gaseosa</td><td>$2.500</td></tr>
+        <tr><td><code>A2</code></td><td>🍟 Papas fritas</td><td>$1.800</td></tr>
+        <tr><td><code>A3</code></td><td>🍫 Chocorramo</td><td>$1.500</td></tr>
+        <tr><td><code>A4</code></td><td>💧 Agua</td><td>$1.200</td></tr>
+        <tr><td><code>A5</code></td><td>🍪 Galletas</td><td>$2.000</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🛠️ Las funciones que ya están listas</h3>
+  <p>La máquina ya tiene varias funciones programadas. Tú solo las <em>vas a llamar</em> desde el simulador:</p>
+
+  <ul>
+    <li>📋 <code>MostrarInventario()</code> — muestra los productos</li>
+    <li>💰 <code>CalcularDevuelta(int precio, int dinero)</code> — devuelve cuánto le sobra al cliente</li>
+    <li>✅ <code>ProcesarCompra(string codigo)</code> — simula la entrega del producto</li>
+    <li>⚠️ <code>ValidarCodigo(string codigo)</code> — verifica que el código exista</li>
+  </ul>
+
+  <h3>🎮 Simulador en vivo</h3>
+  <p>Completa los pasos. El simulador te guiará paso a paso:</p>
+
+  <div class="simulador">
+    <h4>🤖 Cliente: "Hola, quiero ver qué tiene la máquina"</h4>
+    <p><strong>Paso 1:</strong> ¿Qué función deberías llamar primero?</p>
+    <div class="opciones-rol" data-rol="paso1">
+      <button data-op="a" data-correcta="true">Llamar a <code>MostrarInventario()</code></button>
+      <button data-op="b">Llamar a <code>ProcesarCompra("A1")</code></button>
+      <button data-op="c">Llamar a <code>CalcularDevuelta(2500, 3000)</code></button>
+    </div>
+    <div class="feedback-rol" id="feedback-1"></div>
+  </div>
+
+  <div class="simulador">
+    <h4>🤖 Cliente: "Quiero un Chocorramo (A3). Tengo $2.000."</h4>
+    <p><strong>Paso 2:</strong> ¿Qué deberías hacer primero para asegurarte de que el código existe?</p>
+    <div class="opciones-rol" data-rol="paso2">
+      <button data-op="a">Llamar a <code>ProcesarCompra("A3")</code> directamente</button>
+      <button data-op="b" data-correcta="true">Llamar a <code>ValidarCodigo("A3")</code></button>
+      <button data-op="c">Llamar a <code>MostrarInventario()</code> otra vez</button>
+    </div>
+    <div class="feedback-rol" id="feedback-2"></div>
+  </div>
+
+  <div class="simulador">
+    <h4>🤖 Cliente: "Sí, ese es. Aquí tienes los $2.000."</h4>
+    <p><strong>Paso 3:</strong> Antes de entregar el producto, ¿cómo verificas si le falta o le sobra dinero?</p>
+    <div class="opciones-rol" data-rol="paso3">
+      <button data-op="a">Llamar a <code>ProcesarCompra("A3")</code></button>
+      <button data-op="b">Asumir que todo está bien</button>
+      <button data-op="c" data-correcta="true">Llamar a <code>CalcularDevuelta(1500, 2000)</code></button>
+    </div>
+    <div class="feedback-rol" id="feedback-3"></div>
+  </div>
+
+  <div class="simulador">
+    <h4>🤖 Cliente: "¡Perfecto! Entrégamelo, por favor."</h4>
+    <p><strong>Paso 4:</strong> ¿Cómo le entregas el producto?</p>
+    <div class="opciones-rol" data-rol="paso4">
+      <button data-op="a">Solo decirle "ya te lo entregué"</button>
+      <button data-op="b" data-correcta="true">Llamar a <code>ProcesarCompra("A3")</code></button>
+      <button data-op="c">Volver a llamar a <code>MostrarInventario()</code></button>
+    </div>
+    <div class="feedback-rol" id="feedback-4"></div>
+  </div>
+
+  <div class="caja-resultado" id="resumen-rol" style="display:none;">
+    <h4>🎉 ¡Misión completada!</h4>
+    <p>¡Lo hiciste muy bien! Acabas de coordinar <strong>cuatro funciones distintas</strong> para resolver una sola tarea del mundo real:</p>
+    <ol>
+      <li>📋 <code>MostrarInventario()</code> → sin parámetros, sin retorno (solo muestra)</li>
+      <li>✅ <code>ValidarCodigo("A3")</code> → un parámetro, sin retorno</li>
+      <li>💰 <code>CalcularDevuelta(1500, 2000)</code> → dos parámetros, con retorno (devuelve 500)</li>
+      <li>🎁 <code>ProcesarCompra("A3")</code> → un parámetro, sin retorno</li>
+    </ol>
+    <p>¿Ves cómo las funciones se <strong>combinan</strong> como piezas de LEGO? 🧱 Cada una hace su parte.</p>
+  </div>
+
+  <h3>🧠 ¿Qué acabas de aprender?</h3>
+  <div class="caja-tip">
+    <p>En este juego de rol practicaste algo fundamental: <strong>una función rara vez se usa sola</strong>. En un programa real, las funciones se llaman unas a otras, una tras otra, como una coreografía. Cada una sabe hacer su parte. El <code>Main</code> es el "director de orquesta" que decide qué función entra en cada momento. 🎼</p>
+  </div>
+
+  <h3>🏋️ Tu propio simulador</h3>
+  <div class="ejercicio">
+    <p><strong>Ejercicio 6.1:</strong> Imagina un <strong>cajero automático</strong>. Escribe en un papel (o en un comentario de tu código) las 4 funciones que necesitarías para:</p>
+    <ol>
+      <li>Mostrar el menú de opciones</li>
+      <li>Pedirle al usuario cuánto quiere retirar</li>
+      <li>Verificar que tenga saldo suficiente</li>
+      <li>Entregar el dinero y mostrar el saldo restante</li>
+    </ol>
+    <p>Para cada función, anota: nombre, qué parámetros recibe y qué devuelve.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-6-1')">👁️ Ver una propuesta</button>
+    <div class="solucion" id="sol-6-1">
+<pre>// 1. Mostrar menú
+public static void MostrarMenu()                       // sin parámetros, void
+{ ... }
+
+// 2. Pedir monto
+public static double PedirMonto(string mensaje)       // un parámetro, double
+{ ... }
+
+// 3. Verificar saldo
+public static bool SaldoEsSuficiente(double saldo,    // dos parámetros, bool
+                                     double monto)
+{ ... }
+
+// 4. Entregar dinero
+public static void EntregarDinero(double monto)       // un parámetro, void
+{ ... }</pre>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Algoritmos modulares →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 7 — ALGORITMOS MODULARES
+============================================================ -->
+<section class="modulo" data-modulo="7">
+  <h2>7️⃣ 🧩 Algoritmos modulares: divide y vencerás</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 🏗️ La habilidad más importante de un programador</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea más importante del día</h3>
+    <p>En vez de escribir un programa gigante y enmarañado, lo partes en <strong>muchas funciones pequeñas que hacen una sola cosa</strong>. Los grandes programadores no escriben código complicado: escriben <em>código simple conectado con otros códigos simples</em>.</p>
+    <p>Las ventajas:</p>
+    <ul class="lista-emoji">
+      <li>🧠 <strong>Fácil de entender</strong>: cada función cabe en tu cabeza</li>
+      <li>🔧 <strong>Fácil de arreglar</strong>: si algo falla, sabes dónde buscar</li>
+      <li>♻️ <strong>Fácil de reutilizar</strong>: la usas en otros programas</li>
+      <li>🤝 <strong>Fácil de trabajar en equipo</strong>: cada persona hace una función</li>
+    </ul>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🎯 La regla de oro</h4>
+    <p><strong>Una función = una responsabilidad.</strong></p>
+    <p>Si tu función "hace muchas cosas", probablemente deberías dividirla en varias. Si puedes explicar lo que hace la función en <em>una sola frase corta</em>, vas por buen camino.</p>
+  </div>
+
+  <h3>👀 Monolítico vs Modular: la comparación</h3>
+
+  <p>❌ <strong>Mal ejemplo</strong> (todo metido en el <code>Main</code>):</p>
+  <div class="bloque-codigo bloque-error">
+<pre>public static void Main()
+{
+    Console.Write("Nota 1: ");
+    double n1 = double.Parse(Console.ReadLine());
+    Console.Write("Nota 2: ");
+    double n2 = double.Parse(Console.ReadLine());
+    Console.Write("Nota 3: ");
+    double n3 = double.Parse(Console.ReadLine());
+
+    double prom = (n1 + n2 + n3) / 3;
+    Console.WriteLine("Promedio: " + prom);
+
+    if (prom &gt;= 3.0)
+        Console.WriteLine("APROBADO ✅");
+    else
+        Console.WriteLine("REPROBADO ❌");
+}</pre>
+  </div>
+
+  <p>✅ <strong>Buen ejemplo</strong> (modular):</p>
+  <div class="bloque-codigo">
+<pre>public static double LeerNota(string mensaje)
+{
+    Console.Write(mensaje);
+    return double.Parse(Console.ReadLine());
+}
+
+public static double CalcularPromedio(double n1, double n2, double n3)
+{
+    return (n1 + n2 + n3) / 3;
+}
+
+public static string Resultado(double promedio)
+{
+    return promedio &gt;= 3.0 ? "APROBADO ✅" : "REPROBADO ❌";
+}
+
+public static void Main()
+{
+    double n1 = LeerNota("Nota 1: ");
+    double n2 = LeerNota("Nota 2: ");
+    double n3 = LeerNota("Nota 3: ");
+
+    double prom = CalcularPromedio(n1, n2, n3);
+    Console.WriteLine("Promedio: " + prom);
+    Console.WriteLine(Resultado(prom));
+}</pre>
+  </div>
+
+  <p>👀 ¿Ves la diferencia? El segundo código se lee casi como una receta: <em>lee, lee, lee, calcula, muestra, muestra</em>. Cada paso tiene un nombre claro.</p>
+
+  <h3>🏆 PROYECTO INTEGRADOR: Sistema de notas escolares</h3>
+  <p>Construyamos un sistema completo. Léelo y trata de identificar las "responsabilidades":</p>
+
+  <div class="bloque-codigo">
+<pre>using System;
+
+class SistemaNotas
+{
+    // ---- ENTRADA ----
+    public static double LeerNota(string materia)
+    {
+        Console.Write($"Ingresa la nota de {materia} (0-5): ");
+        return double.Parse(Console.ReadLine());
+    }
+
+    // ---- CÁLCULOS ----
+    public static double CalcularPromedio(double n1, double n2, double n3, double n4)
+    {
+        return (n1 + n2 + n3 + n4) / 4;
+    }
+
+    public static double CalcularMaxima(double n1, double n2, double n3, double n4)
+    {
+        double max = n1;
+        if (n2 &gt; max) max = n2;
+        if (n3 &gt; max) max = n3;
+        if (n4 &gt; max) max = n4;
+        return max;
+    }
+
+    public static double CalcularMinima(double n1, double n2, double n3, double n4)
+    {
+        double min = n1;
+        if (n2 &lt; min) min = n2;
+        if (n3 &lt; min) min = n3;
+        if (n4 &lt; min) min = n4;
+        return min;
+    }
+
+    // ---- DECISIÓN ----
+    public static string EstadoEstudiante(double promedio)
+    {
+        if (promedio &gt;= 4.5) return "🌟 EXCELENTE";
+        if (promedio &gt;= 4.0) return "🎉 SOBRESALIENTE";
+        if (promedio &gt;= 3.0) return "👍 APROBADO";
+        return "📚 NECESITA REFUERZO";
+    }
+
+    // ---- SALIDA ----
+    public static void MostrarReporte(string nombre, double prom,
+                                      double max, double min, string estado)
+    {
+        Console.WriteLine("\n=== REPORTE DE " + nombre.ToUpper() + " ===");
+        Console.WriteLine($"Promedio:    {prom:F2}");
+        Console.WriteLine($"Nota máxima: {max:F2}");
+        Console.WriteLine($"Nota mínima: {min:F2}");
+        Console.WriteLine($"Estado:      {estado}");
+        Console.WriteLine("=============================");
+    }
+
+    // ---- PROGRAMA PRINCIPAL ----
+    public static void Main()
+    {
+        Console.Write("Nombre del estudiante: ");
+        string nombre = Console.ReadLine();
+
+        double mate = LeerNota("Matemáticas");
+        double esp  = LeerNota("Español");
+        double cien = LeerNota("Ciencias");
+        double soc  = LeerNota("Sociales");
+
+        double prom = CalcularPromedio(mate, esp, cien, soc);
+        double max  = CalcularMaxima(mate, esp, cien, soc);
+        double min  = CalcularMinima(mate, esp, cien, soc);
+        string est  = EstadoEstudiante(prom);
+
+        MostrarReporte(nombre, prom, max, min, est);
+    }
+}</pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Notaste el patrón?</h4>
+    <p>Las funciones están agrupadas por <strong>responsabilidad</strong>:</p>
+    <ul>
+      <li>📥 <strong>Entrada</strong> (<code>LeerNota</code>): recoge datos del usuario</li>
+      <li>🧮 <strong>Cálculo</strong> (<code>CalcularPromedio</code>, <code>CalcularMaxima</code>, <code>CalcularMinima</code>): hace las cuentas</li>
+      <li>🤔 <strong>Decisión</strong> (<code>EstadoEstudiante</code>): toma decisiones según los datos</li>
+      <li>📺 <strong>Salida</strong> (<code>MostrarReporte</code>): muestra los resultados</li>
+    </ul>
+    <p>Este patrón se llama <strong>Entrada-Proceso-Salida</strong> (a veces abreviado E-P-S) y es la base de casi todos los programas que vas a escribir en tu vida. Grábatelo en la memoria. 🧠</p>
+  </div>
+
+  <h3>🚀 Tu desafío integrador</h3>
+  <div class="ejercicio caja-desafio">
+    <p><strong>🏗️ Construye un convertidor de unidades modular.</strong></p>
+    <p>El programa debe tener estas funciones (todas <code>public static double</code>):</p>
+    <ul>
+      <li><code>MetrosAPies(double m)</code> → 1 metro = 3.281 pies</li>
+      <li><code>KilosALibras(double kg)</code> → 1 kg = 2.205 libras</li>
+      <li><code>CelsiusAFahrenheit(double c)</code> → (c × 9/5) + 32</li>
+      <li><code>MostrarMenu()</code> → muestra las opciones al usuario</li>
+      <li><code>Main()</code> → usa un bucle para repetir hasta que el usuario quiera salir</li>
+    </ul>
+    <p>💡 <strong>Pista profesional:</strong> usa la sintaxis <code>=&gt;</code> para las funciones de una línea.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-7-1')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-7-1">
+<pre>using System;
+
+class Convertidor
+{
+    public static double MetrosAPies(double m)         =&gt; m * 3.281;
+    public static double KilosALibras(double kg)       =&gt; kg * 2.205;
+    public static double CelsiusAFahrenheit(double c)  =&gt; (c * 9.0 / 5.0) + 32;
+
+    public static void MostrarMenu()
+    {
+        Console.WriteLine("\n=== CONVERTIDOR ===");
+        Console.WriteLine("1. Metros → Pies");
+        Console.WriteLine("2. Kilos → Libras");
+        Console.WriteLine("3. Celsius → Fahrenheit");
+        Console.WriteLine("0. Salir");
+    }
+
+    public static void Main()
+    {
+        int op;
+        do
+        {
+            MostrarMenu();
+            Console.Write("Opción: ");
+            op = int.Parse(Console.ReadLine());
+            if (op == 0) break;
+
+            Console.Write("Valor a convertir: ");
+            double v = double.Parse(Console.ReadLine());
+
+            switch (op)
+            {
+                case 1: Console.WriteLine(MetrosAPies(v) + " pies"); break;
+                case 2: Console.WriteLine(KilosALibras(v) + " libras"); break;
+                case 3: Console.WriteLine(CelsiusAFahrenheit(v) + " °F"); break;
+                default: Console.WriteLine("Opción inválida"); break;
+            }
+        }
+        while (op != 0);
+
+        Console.WriteLine("¡Adiós! 👋");
+    }
+}</pre>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Anterior</button>
+    <button class="btn-siguiente" data-ir="8">Siguiente: Reto final →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 8 — RETO FINAL
+============================================================ -->
+<section class="modulo" data-modulo="8">
+  <h2>8️⃣ 🏆 Reto final y reflexión</h2>
+  <p class="meta-modulo">⏱️ 15 minutos · 🎓 Cierre del curso</p>
+
+  <div class="hero">
+    <h2>🎉 ¡Lo lograste!</h2>
+    <p class="lead">Acabas de recorrer <strong>3 horas y 45 minutos</strong> aprendiendo uno de los temas más importantes de la programación. Las funciones no son solo "código que se reutiliza": son una <strong>manera de pensar</strong>. Mira todo lo que ya sabes hacer:</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🎬</span>
+      <h3>Definir funciones</h3>
+      <p>Conoces la sintaxis, los modificadores y cómo nombrarlas.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">📥</span>
+      <h3>Usar parámetros</h3>
+      <p>Pasas datos de cualquier tipo a tus funciones.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">📤</span>
+      <h3>Devolver valores</h3>
+      <p>Dominas <code>return</code> y los distintos tipos de retorno.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🔄</span>
+      <h3>Valor vs Referencia</h3>
+      <p>Diferencias <code>ref</code> y <code>out</code> sin problema.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🧮</span>
+      <h3>Matemática modular</h3>
+      <p>Construyes tu propia biblioteca de utilidades.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🧩</span>
+      <h3>Pensar modular</h3>
+      <p>Divides problemas grandes en piezas manejables.</p>
+    </div>
+  </div>
+
+  <h3>🚀 Tu misión final</h3>
+  <div class="caja-desafio">
+    <p><strong>Construye "Mi Centro de Comando":</strong> un programa que tenga al menos 5 opciones (calculadora, conversor, IMC, factorial, "saludo personalizado") y reúna TODO lo que aprendiste.</p>
+    <p><strong>Requisitos obligatorios:</strong></p>
+    <ol>
+      <li>Cada opción debe ser una <strong>función independiente</strong> con nombre claro.</li>
+      <li>Al menos una función debe usar <code>ref</code> o <code>out</code>.</li>
+      <li>El programa debe correr en bucle hasta que el usuario escriba "salir".</li>
+      <li>Cada función debe hacer <em>una sola cosa</em>.</li>
+    </ol>
+    <p><strong>Bonus:</strong> muestra cuántas veces se usó cada opción al final.</p>
+    <p>📸 Si quieres, comparte tu solución con tu profe o con un compañero. ¡Sé creativo/a!</p>
+  </div>
+
+  <h3>📚 Para seguir aprendiendo</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🌐</span>
+      <h3>Microsoft Learn</h3>
+      <p>El sitio oficial y gratuito de C#, en español.</p>
+      <a href="https://learn.microsoft.com/es-es/dotnet/csharp/" target="_blank">Visitar →</a>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🧪</span>
+      <h3>dotnetfiddle.net</h3>
+      <p>Ejecuta C# en el navegador, sin instalar nada.</p>
+      <a href="https://dotnetfiddle.net" target="_blank">Visitar →</a>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎯</span>
+      <h3>Próximos temas</h3>
+      <p>Arreglos, listas, estructuras, programación orientada a objetos.</p>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💭 Reflexión final</h4>
+    <p>Las funciones no son solo "código que se reutiliza". Son una <strong>manera de pensar</strong>. Cada vez que enfrentes un problema —en la programación o en la vida— pregúntate:</p>
+    <p style="font-size:1.1rem; text-align:center; font-style:italic; color:var(--verde);">
+      "¿En qué pasos más pequeños puedo dividir esto?"
+    </p>
+    <p>Acabas de aprender a programar. Y también a <strong>resolver problemas como un ingeniero</strong>. Eso vale mucho más que memorizar sintaxis. 💚</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🚀 ¡Felicitaciones!</h2>
+    <p>Sigue programando. El mundo necesita más personas que sepan crear cosas.</p>
+    <button class="btn-final" onclick="reiniciarCurso()">🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="7">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <p>📘 Clase 7 · Funciones en C# · Hecho con 💚 para jóvenes programadores · 2026</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
