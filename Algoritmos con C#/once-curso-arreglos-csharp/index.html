@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📚 Arreglos en C# — Clase 11 · Curso Interactivo</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- =================== FONDO ANIMADO =================== -->
+<div class="estrellas">
+  <div class="est est1"></div>
+  <div class="est est2"></div>
+  <div class="est est3"></div>
+  <div class="est est4"></div>
+  <div class="est est5"></div>
+  <div class="est est6"></div>
+</div>
+
+<!-- =================== HEADER =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">📚</span>
+    <div>
+      <h1>Arreglos en C#</h1>
+      <p class="subtitulo">Clase 11 · Una hilera de datos bajo control</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span id="porcentaje">0%</span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">1️⃣ El problema</button>
+  <button class="btn-modulo" data-modulo="2">2️⃣ Crear arreglos</button>
+  <button class="btn-modulo" data-modulo="3">3️⃣ Índices</button>
+  <button class="btn-modulo" data-modulo="4">4️⃣ for y Length</button>
+  <button class="btn-modulo" data-modulo="5">5️⃣ foreach</button>
+  <button class="btn-modulo" data-modulo="6">6️⃣ 🧪 Taller</button>
+  <button class="btn-modulo" data-modulo="7">7️⃣ Operaciones</button>
+  <button class="btn-modulo" data-modulo="8">🏆 Final</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>👋 ¡Hola! Hoy vas a dominar los <strong>arreglos</strong></h2>
+    <p class="lead">Imagina que tienes que guardar las notas de 30 estudiantes, los nombres de toda tu clase, o los precios de 100 productos. Con variables sueltas sería un desastre. Los <strong>arreglos</strong> son la forma ordenada de manejar <em>muchos datos del mismo tipo</em>. Al terminar esta clase, vas a poder crear, recorrer y operar sobre ellos como un profesional. 🪄</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">⏱️</span>
+      <h3>Duración</h3>
+      <p>3 horas y 45 minutos en 8 módulos. Tómate tu tiempo.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Aprender a crear arreglos unidimensionales, acceder a sus elementos con índices, recorrerlos con <code>for</code> y <code>foreach</code>, y aplicarles operaciones comunes.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🛠️</span>
+      <h3>Lo que necesitas</h3>
+      <p>Solo el navegador. Para probar el código: <a href="https://dotnetfiddle.net" target="_blank">dotnetfiddle.net</a> (gratis, sin instalar nada).</p>
+    </div>
+  </div>
+
+  <div class="caja-destacada">
+    <h3>🗺️ Tu ruta de aprendizaje</h3>
+    <ol class="ruta">
+      <li><strong>Módulo 1 (25 min):</strong> El problema de las 30 variables — ¿por qué existen los arreglos?</li>
+      <li><strong>Módulo 2 (30 min):</strong> Crear tu primer arreglo en C#</li>
+      <li><strong>Módulo 3 (30 min):</strong> Los índices — cómo acceder a cada posición</li>
+      <li><strong>Módulo 4 (30 min):</strong> Recorrer con <code>for</code> y la propiedad <code>Length</code></li>
+      <li><strong>Módulo 5 (20 min):</strong> <code>foreach</code> — más simple cuando solo lees</li>
+      <li><strong>Módulo 6 (40 min):</strong> 🧪 Taller: lista de la clase con nombres, edades y notas</li>
+      <li><strong>Módulo 7 (30 min):</strong> Operaciones útiles: sumar, promediar, buscar, contar</li>
+      <li><strong>Módulo 8 (20 min):</strong> 🏆 Quiz final y cierre</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Una verdad antes de empezar</h4>
+    <p>Un arreglo no es nada raro: es solo <strong>una hilera ordenada de cajones numerados</strong>, todos del mismo tipo. Cuando lo "veas" así, todo el curso te va a fluir. Prepárate para usar mucho la imaginación: cada vez que veas un ejemplo, intenta imaginarte los cajones. 🧠📦</p>
+  </div>
+
+  <div class="caja-ejercicio">
+    <h4>🪄 Lo que aprenderás a hacer</h4>
+    <ul>
+      <li>✅ Guardar muchos datos del mismo tipo en una sola variable</li>
+      <li>✅ Acceder a cualquier elemento con un número (el índice)</li>
+      <li>✅ Recorrer todo el arreglo con un <code>for</code></li>
+      <li>✅ Construir un programa completo con nombres, edades y calificaciones</li>
+      <li>✅ Calcular promedios, encontrar el mayor, buscar un valor</li>
+    </ul>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">¡Comenzar! →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — ¿POR QUÉ EXISTEN LOS ARREGLOS?
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>1️⃣ El problema de las muchas variables</h2>
+  <p class="meta-modulo">⏱️ 25 minutos · 🤔 La pregunta que da origen a todo</p>
+
+  <div class="caja-concepto">
+    <h3>🎬 Una historia de la profesora Laura</h3>
+    <p>La profesora Laura tiene un curso de 30 estudiantes. Hoy recibió las notas del primer examen y necesita guardarlas para calcular el promedio de la clase. Se sienta frente al computador y empieza a escribir...</p>
+  </div>
+
+  <div class="bloque-codigo bloque-error">
+<pre>double nota1  = 4.5;
+double nota2  = 3.8;
+double nota3  = 2.9;
+double nota4  = 4.2;
+double nota5  = 3.0;
+double nota6  = 4.8;
+// ...
+double nota30 = 3.5;</pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>😵 El problema</h4>
+    <p>La profesora acaba de escribir <strong>30 variables</strong>. Y se le vienen más problemas encima:</p>
+    <ul>
+      <li>🧮 ¿Cómo calcula el promedio sin escribir 30 sumas?</li>
+      <li>🔍 ¿Cómo encuentra al estudiante con la nota más alta?</li>
+      <li>📋 ¿Cómo le muestra la lista al coordinador sin escribir mil <code>Console.WriteLine</code>?</li>
+      <li>➕ Si mañana llegan <strong>5 estudiantes nuevos</strong>, ¿tiene que escribir 5 variables más?</li>
+    </ul>
+    <p>Esto no escala. Hay algo mejor. ✨</p>
+  </div>
+
+  <h3>💡 La idea: una hilera de cajones</h3>
+  <p>¿Y si pudiéramos tener <strong>una sola variable</strong> que contenga las 30 notas, todas juntas y ordenadas?</p>
+
+  <div class="caja-destacada">
+    <h4>📦 Imagina esto</h4>
+    <div class="visual-arreglo-demo" aria-hidden="true">
+      <div class="celda-demo"><span class="idx">0</span><span class="val">4.5</span></div>
+      <div class="celda-demo"><span class="idx">1</span><span class="val">3.8</span></div>
+      <div class="celda-demo"><span class="idx">2</span><span class="val">2.9</span></div>
+      <div class="celda-demo"><span class="idx">3</span><span class="val">4.2</span></div>
+      <div class="celda-demo"><span class="idx">4</span><span class="val">3.0</span></div>
+      <div class="puntos-demo">…</div>
+      <div class="celda-demo"><span class="idx">29</span><span class="val">3.5</span></div>
+    </div>
+    <p class="nota-visual">↑ Eso es un <strong>arreglo de 30 notas</strong>. Una sola variable, 30 valores adentro, cada uno en su cajón numerado.</p>
+  </div>
+
+  <h3>📚 La definición formal (pero amigable)</h3>
+  <p>Un <strong>arreglo unidimensional</strong> (también llamado <em>array</em> o <em>vector</em>) es:</p>
+  <div class="caja-importante">
+    <p>Una <strong>estructura de datos</strong> que guarda una cantidad <strong>fija</strong> de elementos <strong>del mismo tipo</strong>, organizados <strong>en posiciones numeradas</strong> (índices), accesibles mediante un número de posición.</p>
+  </div>
+
+  <p>Las palabras clave que tienes que grabar:</p>
+  <ul class="lista-emoji">
+    <li>📦 <strong>Cantidad fija:</strong> cuando creas un arreglo, decides cuántos cajones tiene, y eso <em>no cambia</em>.</li>
+    <li>🎨 <strong>Mismo tipo:</strong> todos los elementos son del mismo tipo: todos <code>int</code>, todos <code>string</code>, todos <code>double</code>...</li>
+    <li>🔢 <strong>Posiciones numeradas:</strong> cada cajón tiene un número (el <em>índice</em>) que lo identifica.</li>
+    <li>🧭 <strong>Acceso por índice:</strong> para leer o escribir un valor, dices el número de cajón.</li>
+  </ul>
+
+  <h3>🌍 Más ejemplos del mundo real</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎵</span>
+      <h3>Una playlist</h3>
+      <p>50 canciones. Cada una en su posición. <code>canciones[0]</code>, <code>canciones[1]</code>, ...</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🏫</span>
+      <h3>Una lista de clase</h3>
+      <p>30 estudiantes. <code>nombres[0]</code> es el primero, <code>nombres[29]</code> es el último.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🌡️</span>
+      <h3>Temperaturas del mes</h3>
+      <p>30 días, 30 temperaturas. <code>temps[0]</code> es la del 1 de enero, <code>temps[29]</code> la del 30.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🛒</span>
+      <h3>Productos del supermercado</h3>
+      <p>100 productos con sus precios. <code>precios[42]</code> es el precio del producto 43.</p>
+    </div>
+  </div>
+
+  <h3>🆚 Sin arreglos vs. con arreglos</h3>
+
+  <p>❌ <strong>Sin arreglos</strong> (30 variables):</p>
+  <div class="bloque-codigo bloque-error">
+<pre>double n01, n02, n03, n04, n05, n06, n07, n08, n09, n10,
+       n11, n12, n13, n14, n15, n16, n17, n18, n19, n20,
+       n21, n22, n23, n24, n25, n26, n27, n28, n29, n30;
+// ¿Y el promedio? 🙃
+double suma = n01 + n02 + n03 + /* ... 27 más ... */ + n30;
+double prom = suma / 30;</pre>
+  </div>
+
+  <p>✅ <strong>Con arreglos</strong> (¡mira qué diferencia!):</p>
+  <div class="bloque-codigo">
+<pre>double[] notas = new double[30];
+// ... (más adelante veremos cómo llenarlo) ...
+double suma = 0;
+for (int i = 0; i &lt; notas.Length; i++)
+{
+    suma = suma + notas[i];
+}
+double promedio = suma / notas.Length;</pre>
+  </div>
+
+  <p>👀 ¿Ves? El segundo programa funciona para <strong>30, 300 o 3 millones</strong> de notas sin cambiar una sola línea. Esa es la magia de los arreglos. ✨</p>
+
+  <div class="caja-tip">
+    <h4>💡 Regla de oro</h4>
+    <p><strong>Si tienes varios datos del mismo tipo, probablemente necesitas un arreglo.</strong> Siempre pregúntate: <em>"¿esto es un valor, o son muchos del mismo tipo?"</em>. Si son muchos → arreglo. 💚</p>
+  </div>
+
+  <h3>🏋️ ¿Cuándo SÍ y cuándo NO?</h3>
+  <div class="ejercicio">
+    <p><strong>Ejercicio 1.1:</strong> Lee cada caso y decide si conviene usar un arreglo o no. Lo discutimos en la siguiente sección, pero intenta pensarlo:</p>
+    <ol>
+      <li>La edad de <em>un</em> estudiante.</li>
+      <li>Las edades de <em>todos</em> los estudiantes de un curso.</li>
+      <li>El nombre del mejor amigo del usuario.</li>
+      <li>Los 12 meses del año.</li>
+      <li>El resultado de un solo examen.</li>
+      <li>Las calificaciones de los 30 estudiantes en los 4 periodos.</li>
+    </ol>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-1-1')">👁️ Ver respuestas</button>
+    <div class="solucion" id="sol-1-1">
+      <ol>
+        <li>❌ Una sola edad → una variable <code>int</code>.</li>
+        <li>✅ Muchas edades del mismo tipo → <code>int[] edades</code>.</li>
+        <li>❌ Un solo nombre → <code>string</code>.</li>
+        <li>✅ 12 elementos del mismo tipo → se puede usar un <code>string[] meses</code>.</li>
+        <li>❌ Un solo número → <code>double</code>.</li>
+        <li>✅ ¡Muchísimos! 30 × 4 = 120 valores → arreglos (¡o incluso un <em>arreglo de arreglos</em>!).</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- QUIZ MÓDULO 1 -->
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Cuál es la principal razón por la que existen los arreglos?</p>
+      <button class="opcion" data-op="a">Para hacer programas más lentos</button>
+      <button class="opcion" data-op="b">Para que el código se vea más bonito</button>
+      <button class="opcion" data-op="c">Para guardar muchos datos del mismo tipo de forma ordenada y manejable</button>
+      <button class="opcion" data-op="d">Para reemplazar todas las variables</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Verdadero o falso? <em>"Un arreglo puede guardar números y textos mezclados."</em></p>
+      <button class="opcion" data-op="a">Verdadero</button>
+      <button class="opcion" data-op="b">Falso: todos los elementos deben ser del mismo tipo</button>
+      <button class="opcion" data-op="c">Solo si son menos de 10</button>
+      <button class="opcion" data-op="d">Solo con permiso del compilador</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuál de estos es un caso claro en el que <em>sí</em> conviene usar un arreglo?</p>
+      <button class="opcion" data-op="a">Las notas de 30 estudiantes de un curso</button>
+      <button class="opcion" data-op="b">El nombre completo de un solo usuario</button>
+      <button class="opcion" data-op="c">La respuesta a una pregunta de sí o no</button>
+      <button class="opcion" data-op="d">La fecha de cumpleaños de un amigo</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Inicio</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Crear arreglos →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — CREAR TU PRIMER ARREGLO
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>2️⃣ Tu primer arreglo en C#</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 🛠️ Manos a la obra</p>
+
+  <div class="caja-concepto">
+    <h3>📐 La sintaxis, paso a paso</h3>
+    <p>Crear un arreglo en C# se hace en <strong>dos pasos</strong>: primero lo declaras (le dices al programa "voy a usar un arreglo"), después lo construyes (le dices "crea los cajones").</p>
+  </div>
+
+  <h3>🪜 Paso 1: Declarar el arreglo</h3>
+  <p>Para declarar un arreglo, escribe el tipo, seguido de <code>[]</code> (corchetes), el nombre y <code>;</code>:</p>
+
+  <div class="bloque-codigo">
+<pre>// Sintaxis general:
+// tipo[] nombre;
+
+int[]      notas;     // arreglo de números enteros
+double[]   precios;   // arreglo de precios (con decimales)
+string[]   nombres;   // arreglo de textos
+bool[]     aprobado;  // arreglo de verdadero/falso</pre>
+  </div>
+
+  <p>👀 <strong>Ojo:</strong> los corchetes <code>[]</code> van <em>siempre</em> pegados al tipo, no al nombre. Esto es importante en C#.</p>
+
+  <h3>🪜 Paso 2: Construir el arreglo</h3>
+  <p>Con la palabra <code>new</code> + el tipo + el tamaño entre corchetes:</p>
+
+  <div class="bloque-codigo">
+<pre>// Sintaxis general:
+// nombre = new tipo[tamaño];
+
+notas    = new int[30];      // 30 cajones para enteros
+precios  = new double[100];  // 100 cajones para decimales
+nombres  = new string[5];    // 5 cajones para textos</pre>
+  </div>
+
+  <p>Ahora puedes imaginarlo así:</p>
+
+  <div class="caja-destacada">
+    <h4>📦 <code>int[] notas = new int[5];</code></h4>
+    <div class="visual-arreglo-demo" aria-hidden="true">
+      <div class="celda-demo"><span class="idx">0</span><span class="val">0</span></div>
+      <div class="celda-demo"><span class="idx">1</span><span class="val">0</span></div>
+      <div class="celda-demo"><span class="idx">2</span><span class="val">0</span></div>
+      <div class="celda-demo"><span class="idx">3</span><span class="val">0</span></div>
+      <div class="celda-demo"><span class="idx">4</span><span class="val">0</span></div>
+    </div>
+    <p class="nota-visual">↑ El programa creó <strong>5 cajones</strong> y los llenó con el valor por defecto de <code>int</code>: <strong>0</strong>.</p>
+  </div>
+
+  <h3>📝 Los dos pasos en uno</h3>
+  <p>Lo más común es declarar y construir <em>en la misma línea</em>:</p>
+
+  <div class="bloque-codigo">
+<pre>int[]    notas    = new int[5];
+double[] precios  = new double[100];
+string[] nombres  = new string[3];</pre>
+  </div>
+
+  <h3>💧 Valores por defecto (¡importante!)</h3>
+  <p>Cuando creas un arreglo, C# lo llena automáticamente con el <strong>valor por defecto</strong> del tipo:</p>
+  <table class="tabla-tipos">
+    <thead>
+      <tr><th>Tipo</th><th>Valor por defecto</th><th>Ejemplo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>int</code></td><td>0</td><td><code>0, 0, 0, 0, 0</code></td></tr>
+      <tr><td><code>double</code></td><td>0.0</td><td><code>0.0, 0.0, 0.0</code></td></tr>
+      <tr><td><code>bool</code></td><td><code>false</code></td><td><code>false, false, false</code></td></tr>
+      <tr><td><code>string</code></td><td><code>null</code> (texto vacío)</td><td><code>null, null, null</code></td></tr>
+      <tr><td><code>char</code></td><td><code>'\0'</code> (carácter nulo)</td><td><code>'\0', '\0', '\0'</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja-importante">
+    <h4>⚠️ Trampa típica con <code>string</code></h4>
+    <p>Si creas <code>string[] nombres = new string[3];</code>, los tres cajones empiezan como <code>null</code> (nulo), <em>no</em> como <code>""</code> (texto vacío). Si los concatenas con otro texto, te puede dar error. La solución: inicialízalos con <code>""</code> o asígnales un valor antes de usarlos.</p>
+  </div>
+
+  <h3>🎁 Atajo: declarar y dar valores de una vez</h3>
+  <p>Si ya sabes qué valores tendrá tu arreglo, puedes crearlo así:</p>
+
+  <div class="bloque-codigo">
+<pre>int[] notas = new int[] { 45, 50, 38, 42, 49 };
+//         equivale a: ↑ tamaño implícito (5)
+
+string[] colores = { "rojo", "azul", "verde" };
+// ↑ la palabra 'new' es opcional cuando das valores</pre>
+  </div>
+
+  <p>👀 <strong>Detalle importante:</strong> si usas esta forma, <strong>no</strong> pones el tamaño. El tamaño se <em>infiere</em> de la cantidad de valores.</p>
+
+  <h3>📊 Tamaño fijo, pero se puede preguntar</h3>
+  <p>Una vez creado, el tamaño <em>no cambia</em>. Pero siempre puedes preguntarlo con la propiedad <code>Length</code>:</p>
+
+  <div class="bloque-codigo">
+<pre>int[] notas = new int[30];
+Console.WriteLine(notas.Length);   // imprime: 30
+
+string[] frutas = { "manzana", "pera", "uva" };
+Console.WriteLine(frutas.Length);  // imprime: 3</pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué importa <code>Length</code>?</h4>
+    <p>Imagina que en un momento dado no recuerdas cuántos cajones tiene un arreglo. <code>Length</code> te lo dice. Y todavía más importante: lo vamos a usar todo el tiempo en los bucles <code>for</code> para recorrer <em>todo</em> el arreglo, sin importar su tamaño. Ya llegaremos a eso. 😉</p>
+  </div>
+
+  <h3>🧪 Probemos juntos</h3>
+  <p>Lee este programa. Crea un arreglo de 4 notas y muestra cuánto vale cada cajón al inicio:</p>
+
+  <div class="bloque-codigo">
+<pre>using System;
+
+class Programa
+{
+    public static void Main()
+    {
+        int[] notas = new int[4];   // 4 cajones, todos con 0
+
+        Console.WriteLine("Cajón 0: " + notas[0]);
+        Console.WriteLine("Cajón 1: " + notas[1]);
+        Console.WriteLine("Cajón 2: " + notas[2]);
+        Console.WriteLine("Cajón 3: " + notas[3]);
+        Console.WriteLine("Tamaño:  " + notas.Length);
+    }
+}</pre>
+  </div>
+
+  <div class="caja-resultado">
+    <h4>📺 Salida:</h4>
+<pre>Cajón 0: 0
+Cajón 1: 0
+Cajón 2: 0
+Cajón 3: 0
+Tamaño:  4</pre>
+  </div>
+
+  <h3>🏋️ Practica</h3>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 2.1:</strong> Declara un arreglo de <code>double</code> llamado <code>precios</code> que tenga 5 cajones. Escribe la línea exacta.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-2-1')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-2-1">
+<pre>double[] precios = new double[5];</pre>
+    </div>
+  </div>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 2.2:</strong> Crea un arreglo <code>string[] dias</code> con los 7 días de la semana, en orden, usando la sintaxis corta (con las llaves).</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-2-2')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-2-2">
+<pre>string[] dias = { "Lunes", "Martes", "Miércoles",
+                     "Jueves", "Viernes", "Sábado", "Domingo" };</pre>
+    </div>
+  </div>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 2.3:</strong> ¿Qué imprime <code>Console.WriteLine</code> en este código?</p>
+<pre>int[] numeros = new int[3];
+Console.WriteLine(numeros[0]);
+Console.WriteLine(numeros.Length);</pre>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-2-3')">👁️ Ver respuesta</button>
+    <div class="solucion" id="sol-2-3">
+<pre>0
+3</pre>
+      <p>El primer cajón vale 0 (valor por defecto de <code>int</code>) y el tamaño es 3.</p>
+    </div>
+  </div>
+
+  <!-- QUIZ MÓDULO 2 -->
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Cuál es la sintaxis correcta para crear un arreglo de 10 enteros llamado <code>puntos</code>?</p>
+      <button class="opcion" data-op="a"><code>int puntos = new int(10);</code></button>
+      <button class="opcion" data-op="b"><code>int[] puntos = new int();</code></button>
+      <button class="opcion" data-op="c"><code>int[] puntos = new int[10];</code></button>
+      <button class="opcion" data-op="d"><code>int puntos[10] = new int();</code></button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Con qué palabra consultamos cuántos elementos tiene un arreglo en C#?</p>
+      <button class="opcion" data-op="a"><code>.size</code></button>
+      <button class="opcion" data-op="b"><code>.Length</code></button>
+      <button class="opcion" data-op="c"><code>.count</code></button>
+      <button class="opcion" data-op="d"><code>.total</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> Si acabas de crear <code>string[] saludos = new string[3];</code>, ¿qué hay dentro de los cajones?</p>
+      <button class="opcion" data-op="a"><code>null</code> en cada cajón</button>
+      <button class="opcion" data-op="b"><code>""</code> (texto vacío) en cada cajón</button>
+      <button class="opcion" data-op="c"><code>"hola"</code> en cada cajón</button>
+      <button class="opcion" data-op="d">Basura aleatoria</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Los índices →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — LOS ÍNDICES
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>3️⃣ Los índices: el GPS de los datos</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 🔑 La clave para entrar a cada cajón</p>
+
+  <div class="caja-concepto">
+    <h3>🗺️ El GPS de cada cajón</h3>
+    <p>Ya tenemos los cajones. Ahora necesitamos una forma de <strong>decirle al programa cuál cajón queremos</strong>. Para eso existen los <strong>índices</strong>: los números que identifican cada posición.</p>
+  </div>
+
+  <h3>🪜 La regla: empezamos en 0</h3>
+  <p>En C# (y en casi todos los lenguajes de programación), los índices <strong>empiezan en 0</strong>, no en 1. Es como el piso 0 de un edificio: existe y es el primero.</p>
+
+  <div class="caja-destacada">
+    <h4>📦 Arreglo de 5 elementos</h4>
+    <div class="visual-arreglo-demo" aria-hidden="true">
+      <div class="celda-demo"><span class="idx">0</span><span class="val">A</span></div>
+      <div class="celda-demo"><span class="idx">1</span><span class="val">B</span></div>
+      <div class="celda-demo"><span class="idx">2</span><span class="val">C</span></div>
+      <div class="celda-demo"><span class="idx">3</span><span class="val">D</span></div>
+      <div class="celda-demo"><span class="idx">4</span><span class="val">E</span></div>
+    </div>
+    <p class="nota-visual">El primer cajón es el <strong>0</strong>. El último es el <strong>4</strong> (no el 5).</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>🤔 ¿Por qué empiezan en 0?</h4>
+    <p>Es una convención que viene del lenguaje C, muy viejo, y que casi todos los lenguajes copiaron. La idea es: el índice representa <strong>cuántos pasos</strong> hay que dar desde el principio para llegar al cajón. Para llegar al primero, das 0 pasos. Para llegar al segundo, das 1 paso. ¡Es algo así como contar separaciones! 🚶</p>
+    <p>Lo importante es que <em>te acostumbres</em>. Después de unas horas, ni lo notas. 😉</p>
+  </div>
+
+  <h3>✍️ Asignar valores (escribir dentro de un cajón)</h3>
+  <p>Para meter un valor en un cajón, usa el <code>[]</code> con el número del cajón a la izquierda del <code>=</code>:</p>
+
+  <div class="bloque-codigo">
+<pre>int[] notas = new int[5];
+
+notas[0] = 45;   // cajón 0 ahora vale 45
+notas[1] = 50;   // cajón 1 ahora vale 50
+notas[2] = 38;   // cajón 2 ahora vale 38
+notas[3] = 42;   // cajón 3 ahora vale 42
+notas[4] = 49;   // cajón 4 ahora vale 49</pre>
+  </div>
+
+  <h3>📖 Leer valores (sacar lo que hay en un cajón)</h3>
+  <p>Para leer, usa el <code>[]</code> en una expresión, en una asignación o en un <code>Console.WriteLine</code>:</p>
+
+  <div class="bloque-codigo">
+<pre>int[] notas = { 45, 50, 38, 42, 49 };
+
+int primera = notas[0];          // primera vale 45
+int ultima  = notas[4];          // ultima vale 49
+int suma    = notas[0] + notas[1];  // 45 + 50 = 95
+
+Console.WriteLine(notas[2]);     // imprime: 38
+Console.WriteLine("La primera nota es: " + notas[0]);</pre>
+  </div>
+
+  <h3>🎮 Simulador: crea y explora tu propio arreglo</h3>
+  <p>En el siguiente simulador tienes un arreglo de 5 cajones. Puedes:</p>
+  <ul class="lista-emoji">
+    <li>📝 Escribir un valor en un cajón haciendo clic en él</li>
+    <li>🔍 Consultar un cajón escribiendo su índice</li>
+    <li>⚠️ Intentar acceder a un índice inválido para ver el error</li>
+  </ul>
+
+  <div class="simulador-arreglo">
+    <h4>📦 Tu arreglo (<code>int[] datos = new int[5];</code>)</h4>
+    <div class="arreglo-grid" id="arreglo-grid">
+      <!-- Las celdas se generan con JS -->
+    </div>
+    <div class="controles-arreglo">
+      <div class="control-grupo">
+        <label>✏️ Escribir en cajón</label>
+        <div class="fila-input">
+          <span>datos[</span>
+          <input type="number" id="idx-escribir" min="0" max="4" value="0">
+          <span>] =</span>
+          <input type="number" id="val-escribir" value="0">
+          <button class="btn-accion" id="btn-escribir">Asignar</button>
+        </div>
+      </div>
+      <div class="control-grupo">
+        <label>🔍 Consultar cajón</label>
+        <div class="fila-input">
+          <span>datos[</span>
+          <input type="number" id="idx-leer" min="-5" max="10" value="0">
+          <span>]</span>
+          <button class="btn-accion" id="btn-leer">Leer</button>
+        </div>
+      </div>
+    </div>
+    <div class="consola-arreglo" id="consola-arreglo">
+      <span class="prompt">$</span> <span class="msj">Bienvenido. Escribe un valor en un cajón o intenta leer un índice.</span>
+    </div>
+  </div>
+
+  <h3>⚠️ ¡Cuidado! Salirse del rango</h3>
+  <p>El error más común al trabajar con arreglos: intentar acceder a un cajón que <strong>no existe</strong>. Esto se llama <em>IndexOutOfRangeException</em> y en C# el programa se cae.</p>
+
+  <div class="bloque-codigo bloque-error">
+<pre>int[] notas = new int[5];   // cajones del 0 al 4
+
+Console.WriteLine(notas[5]);    // 💥 ERROR: no existe el cajón 5
+Console.WriteLine(notas[10]);   // 💥 ERROR: no existe el cajón 10
+Console.WriteLine(notas[-1]);   // 💥 ERROR: no existe el cajón -1</pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🛡️ Tres reglas de seguridad</h4>
+    <ol>
+      <li>🔢 Si el arreglo tiene <code>N</code> elementos, los índices válidos van de <code>0</code> a <code>N - 1</code>.</li>
+      <li>📏 <code>N - 1</code> = <code>arreglo.Length - 1</code>, o sea, el último cajón.</li>
+      <li>🚫 Nunca uses índices negativos ni mayores o iguales al tamaño.</li>
+    </ol>
+  </div>
+
+  <div class="caja-resultado">
+    <h4>📐 Tabla rápida: arreglo de 5 elementos</h4>
+    <table class="tabla-tipos">
+      <thead><tr><th>Índice</th><th>-2</th><th>-1</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead>
+      <tbody>
+        <tr><td>Estado</td><td>💥</td><td>💥</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>💥</td><td>💥</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🏋️ Practica</h3>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 3.1:</strong> Crea un arreglo de 7 días de la semana (con la sintaxis corta) y luego muestra el primero, el tercero y el último.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-3-1')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-3-1">
+<pre>using System;
+
+class Programa
+{
+    public static void Main()
+    {
+        string[] dias = { "Lun", "Mar", "Mié",
+                          "Jue", "Vie", "Sáb", "Dom" };
+
+        Console.WriteLine("Primero: " + dias[0]);
+        Console.WriteLine("Tercero: " + dias[2]);
+        Console.WriteLine("Último:  " + dias[6]);
+    }
+}</pre>
+    </div>
+  </div>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 3.2:</strong> ¿Cuál es el error en este código? ¿Cómo lo arreglarías?</p>
+<pre>int[] notas = new int[10];
+notas[10] = 5;   // ← línea sospechosa</pre>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-3-2')">👁️ Ver respuesta</button>
+    <div class="solucion" id="sol-3-2">
+      <p>El arreglo tiene cajones del <strong>0 al 9</strong>. El índice <code>10</code> no existe. Se debe cambiar a un índice válido (por ejemplo, <code>notas[9] = 5;</code>).</p>
+    </div>
+  </div>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 3.3:</strong> Dado <code>int[] nums = { 10, 20, 30, 40, 50 };</code>, ¿qué imprime cada línea?</p>
+<pre>Console.WriteLine(nums[1] + nums[3]);
+Console.WriteLine(nums[0] * 2);
+nums[2] = 99;
+Console.WriteLine(nums[2]);</pre>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-3-3')">👁️ Ver respuesta</button>
+    <div class="solucion" id="sol-3-3">
+<pre>60         // 20 + 40
+20         // 10 * 2
+99         // se cambió nums[2]</pre>
+    </div>
+  </div>
+
+  <!-- QUIZ MÓDULO 3 -->
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> Si tengo <code>int[] nums = new int[8];</code>, ¿cuáles son los índices <em>válidos</em>?</p>
+      <button class="opcion" data-op="a">Del 1 al 8</button>
+      <button class="opcion" data-op="b">Del 0 al 7</button>
+      <button class="opcion" data-op="c">Del 0 al 8</button>
+      <button class="opcion" data-op="d">Cualquier número</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué línea asigna correctamente el valor <code>100</code> al tercer cajón de <code>int[] datos = new int[5];</code>?</p>
+      <button class="opcion" data-op="a"><code>datos[2] = 100;</code></button>
+      <button class="opcion" data-op="b"><code>datos[3] = 100;</code></button>
+      <button class="opcion" data-op="c"><code>datos = 100;</code></button>
+      <button class="opcion" data-op="d"><code>new datos[2] = 100;</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué pasa si escribes <code>arreglo[100]</code> en un arreglo de 5 elementos?</p>
+      <button class="opcion" data-op="a">Imprime <code>null</code></button>
+      <button class="opcion" data-op="b">Crea un cajón 100 automáticamente</button>
+      <button class="opcion" data-op="c">El programa se cae con un error de "índice fuera de rango"</button>
+      <button class="opcion" data-op="d">Imprime 0</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: El poder del for →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — EL PODER DEL FOR
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <h2>4️⃣ Recorrer con <code>for</code> y la propiedad <code>Length</code></h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 🔁 El patrón más usado de los arreglos</p>
+
+  <div class="caja-concepto">
+    <h3>🤔 El problema</h3>
+    <p>Ya sabemos acceder a un cajón por su índice. Pero, ¿qué pasa si tenemos <strong>100 cajones</strong>? ¿Vamos a escribir <code>Console.WriteLine</code> 100 veces? ¡Claro que no! Para eso existe el <code>for</code>.</p>
+  </div>
+
+  <h3>🔁 El patrón clásico: recorrer un arreglo con <code>for</code></h3>
+  <p>La idea es simple: una variable (<code>i</code>) va tomando los valores <code>0, 1, 2, ...</code> hasta el último índice, y en cada vuelta hacemos algo con el cajón <code>arreglo[i]</code>.</p>
+
+  <div class="bloque-codigo">
+<pre>// Patrón: recorrer un arreglo de principio a fin
+for (int i = 0; i &lt; arreglo.Length; i++)
+{
+    // 'i' va de 0 hasta arreglo.Length - 1
+    Console.WriteLine(arreglo[i]);
+}</pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🔍 Anatomía del <code>for</code> para arreglos</h4>
+    <ul>
+      <li><code>int i = 0;</code> → empezamos en el primer cajón.</li>
+      <li><code>i &lt; arreglo.Length;</code> → seguimos <em>mientras</em> <code>i</code> sea menor que el tamaño.</li>
+      <li><code>i++</code> → pasamos al siguiente cajón.</li>
+      <li><code>arreglo[i]</code> → accedemos al cajón actual.</li>
+    </ul>
+  </div>
+
+  <h3>👀 Ejemplo: mostrar todas las notas</h3>
+
+  <div class="bloque-codigo">
+<pre>int[] notas = { 45, 50, 38, 42, 49 };
+
+for (int i = 0; i &lt; notas.Length; i++)
+{
+    Console.WriteLine("Cajón " + i + ": " + notas[i]);
+}</pre>
+  </div>
+
+  <div class="caja-resultado">
+    <h4>📺 Salida:</h4>
+<pre>Cajón 0: 45
+Cajón 1: 50
+Cajón 2: 38
+Cajón 3: 42
+Cajón 4: 49</pre>
+  </div>
+
+  <h3>🧮 Ejemplo: sumar todas las notas</h3>
+  <p>El mismo patrón, pero esta vez <em>acumulamos</em> valores en una variable:</p>
+
+  <div class="bloque-codigo">
+<pre>int[] notas = { 45, 50, 38, 42, 49 };
+int suma = 0;
+
+for (int i = 0; i &lt; notas.Length; i++)
+{
+    suma = suma + notas[i];
+}
+
+Console.WriteLine("Suma: " + suma);</pre>
+  </div>
+
+  <div class="caja-resultado">
+    <h4>📺 Salida:</h4>
+<pre>Suma: 224</pre>
+  </div>
+
+  <p>👀 <strong>¿Viste la magia?</strong> El programa recorrió los 5 cajones y fue sumando <code>0 + 45 + 50 + 38 + 42 + 49 = 224</code>. Funciona igual con 5, 50 o 5 millones de notas. Solo cambias <code>notas</code>, no el código. ✨</p>
+
+  <h3>🪜 Trazando el <code>for</code> paso a paso</h3>
+  <p>Veamos exactamente qué pasa en cada vuelta del bucle con <code>int[] x = { 10, 20, 30 };</code> y <code>suma = suma + x[i];</code>:</p>
+  <table class="tabla-tipos">
+    <thead><tr><th>Vuelta</th><th><code>i</code></th><th><code>x[i]</code></th><th><code>suma</code> antes</th><th><code>suma</code> después</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>0</td><td>10</td><td>0</td><td><strong>10</strong></td></tr>
+      <tr><td>2</td><td>1</td><td>20</td><td>10</td><td><strong>30</strong></td></tr>
+      <tr><td>3</td><td>2</td><td>30</td><td>30</td><td><strong>60</strong></td></tr>
+    </tbody>
+  </table>
+  <p>El bucle se detiene cuando <code>i</code> llega a <code>3</code>, porque <code>3 &lt; 3</code> es falso. Por eso nunca toca el cajón <code>x[3]</code> (que no existe). 🛡️</p>
+
+  <h3>⚠️ Errores comunes al usar <code>for</code></h3>
+
+  <div class="bloque-codigo bloque-error">
+<pre>// ❌ ERROR 1: usar &lt;= en vez de &lt;
+for (int i = 0; i &lt;= notas.Length; i++)  // 💥 fuera de rango en la última vuelta
+{ ... }
+
+// ✅ CORRECTO
+for (int i = 0; i &lt; notas.Length; i++)
+{ ... }</pre>
+  </div>
+
+  <div class="bloque-codigo bloque-error">
+<pre>// ❌ ERROR 2: olvidar el i++
+for (int i = 0; i &lt; notas.Length;)   // bucle infinito 💀
+{ ... }
+
+// ✅ CORRECTO
+for (int i = 0; i &lt; notas.Length; i++)
+{ ... }</pre>
+  </div>
+
+  <div class="bloque-codigo bloque-error">
+<pre>// ❌ ERROR 3: usar un número fijo en vez de Length
+for (int i = 0; i &lt; 10; i++)   // 💥 si el arreglo tiene 5 elementos, da error
+{ ... }
+
+// ✅ CORRECTO: usar Length para que sirva para cualquier tamaño
+for (int i = 0; i &lt; notas.Length; i++)
+{ ... }</pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 La regla de oro</h4>
+    <p>Cuando recorras un arreglo con <code>for</code>, casi siempre vas a usar esta plantilla:</p>
+    <pre>for (int i = 0; i &lt; miArreglo.Length; i++) { ... }</pre>
+    <p>Memorízala. La vas a usar <em>mucho</em>. 💚</p>
+  </div>
+
+  <h3>🏋️ Practica</h3>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 4.1:</strong> Escribe un programa que cree un arreglo de 5 enteros con los valores <code>{2, 4, 6, 8, 10}</code> y muestre cada uno multiplicado por 3.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-4-1')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-4-1">
+<pre>using System;
+
+class Programa
+{
+    public static void Main()
+    {
+        int[] nums = { 2, 4, 6, 8, 10 };
+
+        for (int i = 0; i &lt; nums.Length; i++)
+        {
+            Console.WriteLine(nums[i] * 3);
+        }
+    }
+}</pre>
+      <p><strong>Salida:</strong> 6, 12, 18, 24, 30.</p>
+    </div>
+  </div>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 4.2:</strong> ¿Cuánto vale <code>suma</code> al final de este código?</p>
+<pre>int[] nums = { 1, 2, 3, 4, 5 };
+int suma = 0;
+for (int i = 0; i &lt; nums.Length; i++)
+{
+    suma = suma + nums[i];
+}</pre>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-4-2')">👁️ Ver respuesta</button>
+    <div class="solucion" id="sol-4-2">
+      <p>Vale <strong>15</strong> (que es 1+2+3+4+5). Es la suma de los cinco números.</p>
+    </div>
+  </div>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 4.3:</strong> Escribe un programa que cuente cuántos cajones del arreglo <code>{ 4, 7, 2, 9, 1, 8, 5 }</code> son <strong>mayores que 5</strong>. Pista: empieza con un contador en 0 y suma 1 cada vez que se cumpla la condición.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-4-3')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-4-3">
+<pre>using System;
+
+class Programa
+{
+    public static void Main()
+    {
+        int[] nums = { 4, 7, 2, 9, 1, 8, 5 };
+        int contador = 0;
+
+        for (int i = 0; i &lt; nums.Length; i++)
+        {
+            if (nums[i] &gt; 5) contador++;
+        }
+
+        Console.WriteLine("Mayores que 5: " + contador);
+    }
+}</pre>
+      <p><strong>Salida:</strong> <code>Mayores que 5: 3</code> (el 7, el 9 y el 8).</p>
+    </div>
+  </div>
+
+  <!-- QUIZ MÓDULO 4 -->
+  <div class="quiz" data-quiz="4">
+    <h3>🎯 Mini-quiz del Módulo 4</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Cuál es la condición correcta del <code>for</code> para recorrer todo el arreglo <code>notas</code>?</p>
+      <button class="opcion" data-op="a"><code>i &lt; notas.Length</code></button>
+      <button class="opcion" data-op="b"><code>i &lt;= notas.Length</code></button>
+      <button class="opcion" data-op="c"><code>i &gt; notas.Length</code></button>
+      <button class="opcion" data-op="d"><code>i == notas.Length</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Por qué es mejor usar <code>arreglo.Length</code> que un número fijo como <code>10</code>?</p>
+      <button class="opcion" data-op="a">Porque es más corto de escribir</button>
+      <button class="opcion" data-op="b">Porque es obligatorio en C#</button>
+      <button class="opcion" data-op="c">Porque el código funciona para cualquier tamaño de arreglo, sin errores</button>
+      <button class="opcion" data-op="d">No hay diferencia</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Qué imprime este código?<br>
+      <code>int[] nums = {3, 6, 9}; int x = 0; for (int i = 0; i &lt; nums.Length; i++) x += nums[i]; Console.WriteLine(x);</code></p>
+      <button class="opcion" data-op="a">9</button>
+      <button class="opcion" data-op="b">18</button>
+      <button class="opcion" data-op="c">3</button>
+      <button class="opcion" data-op="d">0</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: foreach →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — FOREACH
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>5️⃣ <code>foreach</code>: más simple, menos flexible</h2>
+  <p class="meta-modulo">⏱️ 20 minutos · 🚀 Una forma más corta de recorrer</p>
+
+  <div class="caja-concepto">
+    <h3>🤔 ¿Hay algo más corto?</h3>
+    <p>Cuando solo quieres <strong>leer</strong> los valores de un arreglo (sin modificar nada, sin usar el índice), existe un bucle especial: el <code>foreach</code> (se lee "for each" → "para cada").</p>
+  </div>
+
+  <h3>🔁 La sintaxis</h3>
+
+  <div class="bloque-codigo">
+<pre>// Sintaxis:
+// foreach (tipo variable in arreglo)
+// {
+//     // 'variable' toma el valor de cada cajón, uno por uno
+// }
+
+int[] notas = { 45, 50, 38, 42, 49 };
+
+foreach (int n in notas)
+{
+    Console.WriteLine(n);
+}</pre>
+  </div>
+
+  <div class="caja-resultado">
+    <h4>📺 Salida:</h4>
+<pre>45
+50
+38
+42
+49</pre>
+  </div>
+
+  <p>👀 <strong>¿Qué pasó?</strong> La variable <code>n</code> tomó el valor de cada cajón, uno por uno. No tuvimos que manejar índices manualmente. ✨</p>
+
+  <h3>🆚 <code>for</code> vs <code>foreach</code></h3>
+  <table class="tabla-tipos">
+    <thead>
+      <tr><th></th><th><code>for</code></th><th><code>foreach</code></th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>¿Necesitas el índice?</strong></td><td>✅ Sí, lo maneja <code>i</code></td><td>❌ No, solo lees el valor</td></tr>
+      <tr><td><strong>¿Puedes modificar valores?</strong></td><td>✅ Sí, con <code>arreglo[i] = ...</code></td><td>❌ No, solo lectura</td></tr>
+      <tr><td><strong>¿Más corto de escribir?</strong></td><td>Un poco más largo</td><td>✅ Más corto</td></tr>
+      <tr><td><strong>¿Más seguro?</strong></td><td>Hay que cuidar <code>Length</code></td><td>✅ No hay riesgo de salirse</td></tr>
+    </tbody>
+  </table>
+
+  <h3>🎯 Cuándo usar cada uno</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🔁</span>
+      <h3>Usa <code>for</code> cuando...</h3>
+      <ul>
+        <li>Necesitas el índice (<code>i</code>) para algo</li>
+        <li>Quieres cambiar valores del arreglo</li>
+        <li>Recorres solo una parte (ej. desde el cajón 2)</li>
+        <li>Recorres en orden inverso</li>
+      </ul>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🔂</span>
+      <h3>Usa <code>foreach</code> cuando...</h3>
+      <ul>
+        <li>Solo quieres <strong>leer</strong> los valores</li>
+        <li>No te importa la posición</li>
+        <li>Quieres código más limpio y corto</li>
+        <li>Estás empezando y no necesitas el índice</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>👀 Ejemplo lado a lado</h3>
+  <p>Para <strong>sumar</strong> todos los elementos, ambos funcionan:</p>
+
+  <div class="bloque-codigo">
+<pre>// Con for
+int suma1 = 0;
+for (int i = 0; i &lt; notas.Length; i++)
+{
+    suma1 = suma1 + notas[i];
+}
+
+// Con foreach
+int suma2 = 0;
+foreach (int n in notas)
+{
+    suma2 = suma2 + n;
+}</pre>
+  </div>
+
+  <p>Para <strong>duplicar</strong> cada valor, solo <code>for</code> sirve (porque <code>foreach</code> no deja modificar):</p>
+
+  <div class="bloque-codigo">
+<pre>// Solo con for puedes hacer esto:
+for (int i = 0; i &lt; notas.Length; i++)
+{
+    notas[i] = notas[i] * 2;   // modifica el arreglo
+}</pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>⚠️ Trampa común</h4>
+    <p>En <code>foreach</code>, la variable del bucle (<code>n</code>, <code>x</code>, etc.) es <strong>solo una copia</strong> del valor. Cambiarla <em>no</em> cambia el arreglo original. Si necesitas modificar el arreglo, usa <code>for</code> siempre.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Tip profesional</h4>
+    <p>Cuando dudes, empieza con <code>foreach</code> (es más limpio). Si después necesitas el índice o modificar, cámbialo a <code>for</code>. No hay problema en mezclar los dos en el mismo programa. 💚</p>
+  </div>
+
+  <h3>🏋️ Practica</h3>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 5.1:</strong> Reescribe este <code>for</code> como un <code>foreach</code> que imprima los mismos valores.</p>
+<pre>int[] nums = { 1, 2, 3, 4, 5 };
+for (int i = 0; i &lt; nums.Length; i++)
+{
+    Console.WriteLine(nums[i] * 10);
+}</pre>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-5-1')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-5-1">
+<pre>int[] nums = { 1, 2, 3, 4, 5 };
+foreach (int n in nums)
+{
+    Console.WriteLine(n * 10);
+}</pre>
+    </div>
+  </div>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 5.2:</strong> ¿Verdadero o falso? <em>"Con <code>foreach</code> puedo cambiar un valor del arreglo."</em></p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-5-2')">👁️ Ver respuesta</button>
+    <div class="solucion" id="sol-5-2">
+      <p><strong>Falso.</strong> <code>foreach</code> solo lee. Para modificar, usa <code>for</code>.</p>
+    </div>
+  </div>
+
+  <!-- QUIZ MÓDULO 5 -->
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la sintaxis correcta de un <code>foreach</code> en C#?</p>
+      <button class="opcion" data-op="a"><code>foreach (int i = 0; i &lt; nums.Length; i++) { ... }</code></button>
+      <button class="opcion" data-op="b"><code>foreach (int n in nums) { ... }</code></button>
+      <button class="opcion" data-op="c"><code>for (int n : nums) { ... }</code></button>
+      <button class="opcion" data-op="d"><code>foreach nums as int n { ... }</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Si quiero <strong>duplicar</strong> todos los valores de un arreglo, ¿qué bucle me sirve?</p>
+      <button class="opcion" data-op="a"><code>foreach</code>, siempre</button>
+      <button class="opcion" data-op="b">Ninguno, no se puede</button>
+      <button class="opcion" data-op="c"><code>for</code>, porque necesito modificar</button>
+      <button class="opcion" data-op="d">Cualquiera de los dos funciona igual</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Verdadero o falso? <em>"Con <code>foreach</code> tengo acceso al número de cajón (índice) automáticamente."</em></p>
+      <button class="opcion" data-op="a">Falso: <code>foreach</code> no expone el índice, solo el valor</button>
+      <button class="opcion" data-op="b">Verdadero, viene en la variable <code>i</code></button>
+      <button class="opcion" data-op="c">Solo en arreglos de <code>string</code></button>
+      <button class="opcion" data-op="d">Solo si el arreglo tiene menos de 10 elementos</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: 🧪 Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — TALLER: LA LISTA DE LA CLASE
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>6️⃣ 🧪 Taller: la lista de la clase</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · 🏗️ Hora de construir con nombres, edades y calificaciones</p>
+
+  <div class="caja-concepto">
+    <h3>🎬 El proyecto</h3>
+    <p>La profesora Laura volvió. Esta vez tiene un nuevo problema: quiere un programa que guarde la <strong>lista completa</strong> de su curso: el nombre de cada estudiante, su edad y su calificación final. Después quiere poder ver la lista bonita, como una tabla. 📒</p>
+    <p>Vamos a construirlo paso a paso, en tres retos. 💪</p>
+  </div>
+
+  <h3>🎯 Reto 1: tres arreglos paralelos</h3>
+  <p>La idea: <strong>un arreglo por cada tipo de dato</strong>. El estudiante en la posición <code>i</code> del arreglo de nombres es el mismo que está en la posición <code>i</code> del arreglo de edades y de calificaciones.</p>
+
+  <div class="caja-destacada">
+    <h4>📚 El concepto: arreglos paralelos</h4>
+    <div class="visual-arreglo-demo" aria-hidden="true">
+      <div class="celda-demo"><span class="idx">0</span><span class="val">"Ana"</span></div>
+      <div class="celda-demo"><span class="idx">1</span><span class="val">"Luis"</span></div>
+      <div class="celda-demo"><span class="idx">2</span><span class="val">"Sofía"</span></div>
+      <div class="celda-demo"><span class="idx">3</span><span class="val">"Mateo"</span></div>
+    </div>
+    <p class="nota-visual"><code>nombres[0] = "Ana"</code> → <code>edades[0] = 16</code> → <code>notas[0] = 4.5</code></p>
+  </div>
+
+  <div class="bloque-codigo">
+<pre>using System;
+
+class ListaClase
+{
+    public static void Main()
+    {
+        // 1. Creamos los tres arreglos del mismo tamaño
+        string[] nombres = { "Ana", "Luis", "Sofía", "Mateo" };
+        int[]    edades   = {   16,    17,      16,      15 };
+        double[] notas    = {  4.5,   3.8,     4.9,     2.7 };
+
+        // 2. Mostramos la información en formato tabla
+        Console.WriteLine("NOMBRE   EDAD   NOTA");
+        Console.WriteLine("-------  -----  -----");
+
+        for (int i = 0; i &lt; nombres.Length; i++)
+        {
+            Console.WriteLine(nombres[i].PadRight(8) + "  "
+                              + edades[i] + "     "
+                              + notas[i]);
+        }
+    }
+}</pre>
+  </div>
+
+  <div class="caja-resultado">
+    <h4>📺 Salida:</h4>
+<pre>NOMBRE   EDAD   NOTA
+-------  -----  -----
+Ana        16     4.5
+Luis       17     3.8
+Sofía      16     4.9
+Mateo      15     2.7</pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El método <code>PadRight</code></h4>
+    <p><code>"Ana".PadRight(8)</code> rellena con espacios a la derecha hasta completar 8 caracteres. Sirve para <strong>alinear columnas</strong> en la consola. Es un truco muy útil. ✨</p>
+  </div>
+
+  <h3>🎯 Reto 2: llenar los arreglos con <code>Console.ReadLine</code></h3>
+  <p>Ahora vamos a pedirle los datos al usuario. El programa preguntará por cada estudiante y los guardará en los cajones.</p>
+
+  <div class="bloque-codigo">
+<pre>using System;
+
+class LlenarLista
+{
+    public static void Main()
+    {
+        Console.Write("¿Cuántos estudiantes tiene el curso? ");
+        int n = int.Parse(Console.ReadLine());
+
+        // Creamos los arreglos vacíos, pero del tamaño correcto
+        string[] nombres = new string[n];
+        int[]    edades  = new int[n];
+        double[] notas   = new double[n];
+
+        for (int i = 0; i &lt; n; i++)
+        {
+            Console.WriteLine("\nEstudiante #" + (i + 1));
+            Console.Write("  Nombre: ");
+            nombres[i] = Console.ReadLine();
+            Console.Write("  Edad:   ");
+            edades[i] = int.Parse(Console.ReadLine());
+            Console.Write("  Nota:   ");
+            notas[i] = double.Parse(Console.ReadLine());
+        }
+
+        // Mostramos la tabla
+        Console.WriteLine("\n=== LISTA DE LA CLASE ===");
+        Console.WriteLine("NOMBRE          EDAD   NOTA");
+        Console.WriteLine("--------------  -----  -----");
+        for (int i = 0; i &lt; n; i++)
+        {
+            Console.WriteLine(nombres[i].PadRight(15) + "  "
+                              + edades[i] + "     "
+                              + notas[i]);
+        }
+    }
+}</pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>👀 Mira lo que hicimos</h4>
+    <ul>
+      <li>📏 <strong>Tamaño dinámico:</strong> primero preguntamos cuántos estudiantes hay, y creamos los arreglos de ese tamaño.</li>
+      <li>🔁 <strong>Un solo <code>for</code>:</strong> recorremos los tres arreglos a la vez con el mismo índice <code>i</code>.</li>
+      <li>📝 <strong>Llenamos cajón por cajón:</strong> en cada vuelta, leemos nombre, edad y nota del mismo estudiante.</li>
+    </ul>
+  </div>
+
+  <h3>🎯 Reto 3: agregar estadísticas</h3>
+  <p>Ahora que tenemos los datos, podemos calcular cosas útiles: el promedio, la nota más alta, cuántos aprobaron...</p>
+
+  <div class="bloque-codigo">
+<pre>using System;
+
+class EstadisticasClase
+{
+    public static void Main()
+    {
+        string[] nombres = { "Ana", "Luis", "Sofía", "Mateo" };
+        double[] notas   = {  4.5,   3.8,    4.9,    2.7  };
+
+        // Promedio
+        double suma = 0;
+        for (int i = 0; i &lt; notas.Length; i++)
+        {
+            suma = suma + notas[i];
+        }
+        double promedio = suma / notas.Length;
+
+        // Nota más alta
+        double maxima = notas[0];
+        for (int i = 1; i &lt; notas.Length; i++)
+        {
+            if (notas[i] &gt; maxima) maxima = notas[i];
+        }
+
+        // Cuántos aprobaron (nota &gt;= 3.0)
+        int aprobados = 0;
+        for (int i = 0; i &lt; notas.Length; i++)
+        {
+            if (notas[i] &gt;= 3.0) aprobados++;
+        }
+
+        // Mostramos todo
+        Console.WriteLine("=== ESTADÍSTICAS ===");
+        Console.WriteLine("Promedio:       " + promedio);
+        Console.WriteLine("Nota máxima:    " + maxima);
+        Console.WriteLine("Aprobados:      " + aprobados + " de " + notas.Length);
+    }
+}</pre>
+  </div>
+
+  <div class="caja-resultado">
+    <h4>📺 Salida esperada:</h4>
+<pre>=== ESTADÍSTICAS ===
+Promedio:       3.975
+Nota máxima:    4.9
+Aprobados:      3 de 4</pre>
+  </div>
+
+  <h3>🏋️ Practica por tu cuenta</h3>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 6.1:</strong> Modifica el Reto 2 para que, además de los datos que ya pide, también guarde la <strong>ciudad</strong> de cada estudiante en un cuarto arreglo. Muestra la tabla con la nueva columna.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-6-1')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-6-1">
+<pre>using System;
+
+class ConCiudad
+{
+    public static void Main()
+    {
+        Console.Write("¿Cuántos estudiantes? ");
+        int n = int.Parse(Console.ReadLine());
+
+        string[] nombres = new string[n];
+        string[] ciudades = new string[n];
+        int[]    edades  = new int[n];
+        double[] notas   = new double[n];
+
+        for (int i = 0; i &lt; n; i++)
+        {
+            Console.WriteLine("Estudiante #" + (i + 1));
+            Console.Write("  Nombre:  "); nombres[i] = Console.ReadLine();
+            Console.Write("  Ciudad:  "); ciudades[i] = Console.ReadLine();
+            Console.Write("  Edad:    "); edades[i] = int.Parse(Console.ReadLine());
+            Console.Write("  Nota:    "); notas[i] = double.Parse(Console.ReadLine());
+        }
+
+        Console.WriteLine("\nNOMBRE      CIUDAD     EDAD  NOTA");
+        for (int i = 0; i &lt; n; i++)
+        {
+            Console.WriteLine(nombres[i].PadRight(11)
+                              + ciudades[i].PadRight(11)
+                              + edades[i] + "    "
+                              + notas[i]);
+        }
+    }
+}</pre>
+    </div>
+  </div>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 6.2:</strong> Encuentra al estudiante con la <strong>nota más baja</strong> en el arreglo del Reto 3. Muestra su nombre y su nota. Pista: usa un <code>for</code> y una variable <code>indiceMin</code> que guarde la posición del más bajo.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-6-2')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-6-2">
+<pre>string[] nombres = { "Ana", "Luis", "Sofía", "Mateo" };
+double[] notas   = {  4.5,   3.8,    4.9,    2.7  };
+
+int indiceMin = 0;
+for (int i = 1; i &lt; notas.Length; i++)
+{
+    if (notas[i] &lt; notas[indiceMin])
+    {
+        indiceMin = i;
+    }
+}
+
+Console.WriteLine("Nota más baja: " + nombres[indiceMin]
+                  + " con " + notas[indiceMin]);</pre>
+      <p><strong>Salida:</strong> <code>Nota más baja: Mateo con 2.7</code></p>
+    </div>
+  </div>
+
+  <div class="ejercicio caja-desafio">
+    <p><strong>🏆 Ejercicio 6.3 (Desafío):</strong> Construye un programa completo que pida al usuario las notas de 5 estudiantes, calcule el promedio, muestre los que aprobaron y los que no. Todo con tres arreglos paralelos y al menos dos <code>for</code>.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-6-3')">👁️ Ver una propuesta</button>
+    <div class="solucion" id="sol-6-3">
+<pre>using System;
+
+class ProgramaFinal
+{
+    public static void Main()
+    {
+        string[] nombres = new string[5];
+        double[] notas   = new double[5];
+
+        // 1. Pedimos los datos
+        for (int i = 0; i &lt; 5; i++)
+        {
+            Console.Write("Nombre del estudiante " + (i + 1) + ": ");
+            nombres[i] = Console.ReadLine();
+            Console.Write("Nota: ");
+            notas[i] = double.Parse(Console.ReadLine());
+        }
+
+        // 2. Calculamos el promedio
+        double suma = 0;
+        for (int i = 0; i &lt; notas.Length; i++) suma += notas[i];
+        double promedio = suma / notas.Length;
+
+        // 3. Mostramos aprobados y reprobados
+        Console.WriteLine("\nPromedio: " + promedio.ToString("F2"));
+        Console.WriteLine("\nAprobados:");
+        for (int i = 0; i &lt; notas.Length; i++)
+            if (notas[i] &gt;= 3.0)
+                Console.WriteLine("  ✅ " + nombres[i] + " (" + notas[i] + ")");
+
+        Console.WriteLine("\nReprobados:");
+        for (int i = 0; i &lt; notas.Length; i++)
+            if (notas[i] &lt; 3.0)
+                Console.WriteLine("  ❌ " + nombres[i] + " (" + notas[i] + ")");
+    }
+}</pre>
+    </div>
+  </div>
+
+  <!-- QUIZ MÓDULO 6 -->
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Qué es un <em>arreglo paralelo</em>?</p>
+      <button class="opcion" data-op="a">Varios arreglos del mismo tamaño donde la misma posición describe al mismo "ente"</button>
+      <button class="opcion" data-op="b">Un arreglo que vive en otra galaxia</button>
+      <button class="opcion" data-op="c">Un arreglo con muchos datos repetidos</button>
+      <button class="opcion" data-op="d">Una forma de crear arreglos vacíos</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Para qué sirve <code>"Ana".PadRight(8)</code>?</p>
+      <button class="opcion" data-op="a">Para convertir "Ana" en un número</button>
+      <button class="opcion" data-op="b">Para borrar los últimos 8 caracteres</button>
+      <button class="opcion" data-op="c">Para rellenar con espacios hasta completar 8 caracteres (alinear columnas)</button>
+      <button class="opcion" data-op="d">Para contar cuántas letras tiene</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> Si tengo un arreglo de 5 notas y quiero calcular el promedio, ¿qué hago después de sumar?</p>
+      <button class="opcion" data-op="a">Multiplico por 5</button>
+      <button class="opcion" data-op="b">Divido la suma entre <code>notas.Length</code></button>
+      <button class="opcion" data-op="c">Resto 1</button>
+      <button class="opcion" data-op="d">Tomo el primer valor</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Operaciones →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 7 — OPERACIONES ÚTILES
+============================================================ -->
+<section class="modulo" data-modulo="7">
+  <h2>7️⃣ Operaciones útiles con arreglos</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 🧮 Las cuentas que vas a hacer todo el tiempo</p>
+
+  <div class="caja-concepto">
+    <h3>🎯 El poder de los arreglos</h3>
+    <p>Ya sabes crear arreglos, acceder a sus cajones y recorrerlos. Ahora viene la parte donde se vuelven <em>realmente útiles</em>: <strong>aplicarles operaciones</strong>. En este módulo verás los patrones más comunes. 💪</p>
+  </div>
+
+  <h3>➕ Sumar todos los elementos</h3>
+  <p>El patrón clásico. Inicias un acumulador en 0 y le vas sumando cada cajón:</p>
+
+  <div class="bloque-codigo">
+<pre>int[] nums = { 4, 8, 2, 9, 1 };
+int suma = 0;
+for (int i = 0; i &lt; nums.Length; i++)
+{
+    suma = suma + nums[i];   // o: suma += nums[i];
+}
+Console.WriteLine(suma);   // 24</pre>
+  </div>
+
+  <h3>➗ Calcular el promedio</h3>
+  <p>El promedio es la suma dividida entre la cantidad. Ya tienes la suma del paso anterior, así que es fácil:</p>
+
+  <div class="bloque-codigo">
+<pre>double[] notas = { 4.5, 3.8, 4.9, 2.7 };
+double suma = 0;
+for (int i = 0; i &lt; notas.Length; i++)
+{
+    suma += notas[i];
+}
+double promedio = suma / notas.Length;
+Console.WriteLine("Promedio: " + promedio);   // 3.975</pre>
+  </div>
+
+  <h3>🔝 Encontrar el valor más alto</h3>
+  <p>Empezamos suponiendo que el primer cajón es el más grande. Después, vamos comparando con los demás y actualizamos si encontramos uno mayor.</p>
+
+  <div class="bloque-codigo">
+<pre>int[] nums = { 4, 8, 2, 9, 1 };
+int max = nums[0];   // empezamos suponiendo que nums[0] es el mayor
+for (int i = 1; i &lt; nums.Length; i++)
+{
+    if (nums[i] &gt; max)   // si encontramos uno mayor...
+    {
+        max = nums[i];   // ...lo actualizamos
+    }
+}
+Console.WriteLine("Máximo: " + max);   // 9</pre>
+  </div>
+
+  <h3>🔎 Encontrar el valor más bajo</h3>
+  <p>El mismo patrón, pero con <code>&lt;</code> en vez de <code>&gt;</code>:</p>
+
+  <div class="bloque-codigo">
+<pre>int min = nums[0];
+for (int i = 1; i &lt; nums.Length; i++)
+{
+    if (nums[i] &lt; min) min = nums[i];
+}
+Console.WriteLine("Mínimo: " + min);   // 1</pre>
+  </div>
+
+  <h3>🔍 Buscar un valor</h3>
+  <p>Recorremos el arreglo hasta encontrar lo que buscamos. Si lo hallamos, guardamos su posición:</p>
+
+  <div class="bloque-codigo">
+<pre>string[] nombres = { "Ana", "Luis", "Sofía", "Mateo" };
+string buscado = "Sofía";
+
+int posicion = -1;   // -1 significa "no lo encontré"
+for (int i = 0; i &lt; nombres.Length; i++)
+{
+    if (nombres[i] == buscado)
+    {
+        posicion = i;
+        break;   // ya lo encontramos, salimos del bucle
+    }
+}
+
+if (posicion == -1)
+    Console.WriteLine("No se encontró a " + buscado);
+else
+    Console.WriteLine(buscado + " está en la posición " + posicion);</pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>💡 Por qué empezar con -1</h4>
+    <p>Si el valor buscado no está en el arreglo, no se actualiza la variable, que sigue valiendo <code>-1</code>. Como <code>-1</code> no es un índice válido, nos sirve como "señal" de que no lo encontramos.</p>
+  </div>
+
+  <h3>🔢 Contar cuántos cumplen una condición</h3>
+  <p>Un contador que solo se incrementa cuando se cumple la condición que nos interesa:</p>
+
+  <div class="bloque-codigo">
+<pre>double[] notas = { 4.5, 3.8, 4.9, 2.7, 1.8, 3.0 };
+int aprobados = 0;
+for (int i = 0; i &lt; notas.Length; i++)
+{
+    if (notas[i] &gt;= 3.0) aprobados++;
+}
+Console.WriteLine("Aprobados: " + aprobados);   // 4</pre>
+  </div>
+
+  <h3>📋 El patrón "reportero"</h3>
+  <p>Una operación muy común: recorrer el arreglo y, al final, mostrar un resumen con los resultados de las cuentas anteriores.</p>
+
+  <div class="bloque-codigo">
+<pre>using System;
+
+class Reporte
+{
+    public static void Main()
+    {
+        double[] notas = { 4.5, 3.8, 4.9, 2.7, 1.8, 3.0 };
+        int n = notas.Length;
+
+        double suma = 0, max = notas[0], min = notas[0];
+        int aprobados = 0;
+
+        for (int i = 0; i &lt; n; i++)
+        {
+            suma += notas[i];
+            if (notas[i] &gt; max) max = notas[i];
+            if (notas[i] &lt; min) min = notas[i];
+            if (notas[i] &gt;= 3.0) aprobados++;
+        }
+
+        Console.WriteLine("=== REPORTE ===");
+        Console.WriteLine("Cantidad:    " + n);
+        Console.WriteLine("Suma:        " + suma);
+        Console.WriteLine("Promedio:    " + (suma / n).ToString("F2"));
+        Console.WriteLine("Máximo:      " + max);
+        Console.WriteLine("Mínimo:      " + min);
+        Console.WriteLine("Aprobados:   " + aprobados);
+    }
+}</pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco de eficiencia</h4>
+    <p>Fíjate que en el código de arriba hicimos <strong>un solo <code>for</code></strong> para calcular <em>todas</em> las estadísticas. Podrías hacer un bucle por cada cuenta, pero sería menos elegante y más lento. Cuando puedas, <strong>recorre una sola vez</strong> y haz todas las cuentas ahí mismo. 💚</p>
+  </div>
+
+  <h3>🏋️ Practica</h3>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 7.1:</strong> Dado <code>int[] nums = { 3, 8, 2, 9, 1, 7, 4 };</code>, escribe el código que cuente <strong>cuántos números son pares</strong>. Pista: un número es par si <code>nums[i] % 2 == 0</code>.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-7-1')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-7-1">
+<pre>int[] nums = { 3, 8, 2, 9, 1, 7, 4 };
+int pares = 0;
+for (int i = 0; i &lt; nums.Length; i++)
+{
+    if (nums[i] % 2 == 0) pares++;
+}
+Console.WriteLine("Pares: " + pares);   // imprime 3 (8, 2, 4)</pre>
+    </div>
+  </div>
+
+  <div class="ejercicio">
+    <p><strong>Ejercicio 7.2:</strong> Escribe un programa que, dado un arreglo de 5 edades, determine si <strong>todas</strong> son mayores de edad (≥ 18). Si lo son, imprime "Todos son mayores"; si no, imprime "Hay menores".</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-7-2')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-7-2">
+<pre>int[] edades = { 18, 22, 17, 30, 19 };
+bool todosMayores = true;
+
+for (int i = 0; i &lt; edades.Length; i++)
+{
+    if (edades[i] &lt; 18)
+    {
+        todosMayores = false;
+        break;   // ya sabemos que NO todos son mayores
+    }
+}
+
+if (todosMayores)
+    Console.WriteLine("Todos son mayores");
+else
+    Console.WriteLine("Hay menores");</pre>
+      <p>Salida: <code>Hay menores</code> (por el 17).</p>
+    </div>
+  </div>
+
+  <div class="ejercicio caja-desafio">
+    <p><strong>🏆 Ejercicio 7.3 (Desafío):</strong> Dado el arreglo de notas <code>{ 4.5, 3.8, 4.9, 2.7, 3.0 }</code>, encuentra la <strong>posición</strong> de la nota más alta y muéstrala. No es lo mismo que la nota más alta: ahora queremos la <em>posición</em> dentro del arreglo.</p>
+    <button class="btn-toggle-sol" onclick="toggleSolucion('sol-7-3')">👁️ Ver solución</button>
+    <div class="solucion" id="sol-7-3">
+<pre>double[] notas = { 4.5, 3.8, 4.9, 2.7, 3.0 };
+int indiceMax = 0;   // empezamos suponiendo que la posición 0 es la mayor
+
+for (int i = 1; i &lt; notas.Length; i++)
+{
+    if (notas[i] &gt; notas[indiceMax])
+    {
+        indiceMax = i;
+    }
+}
+
+Console.WriteLine("La nota más alta está en la posición "
+                  + indiceMax + " y vale " + notas[indiceMax]);</pre>
+      <p>Salida: <code>La nota más alta está en la posición 2 y vale 4.9</code></p>
+    </div>
+  </div>
+
+  <!-- QUIZ MÓDULO 7 -->
+  <div class="quiz" data-quiz="7">
+    <h3>🎯 Mini-quiz del Módulo 7</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> Para encontrar el <strong>valor más alto</strong> de un arreglo, ¿qué patrón usamos?</p>
+      <button class="opcion" data-op="a">Empezamos en 0 y sumamos</button>
+      <button class="opcion" data-op="b">Recorremos y mostramos cada uno</button>
+      <button class="opcion" data-op="c">Suponemos que el primero es el mayor y comparamos con los demás</button>
+      <button class="opcion" data-op="d">Tomamos el último elemento</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué es eficiente hacer todas las cuentas (suma, máximo, etc.) en un <em>solo</em> <code>for</code>?</p>
+      <button class="opcion" data-op="a">Porque recorremos el arreglo una sola vez en vez de N veces</button>
+      <button class="opcion" data-op="b">Porque el programa se ve más bonito</button>
+      <button class="opcion" data-op="c">Porque es obligatorio en C#</button>
+      <button class="opcion" data-op="d">No hay diferencia real</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> Si inicializo <code>int pos = -1;</code> en una búsqueda y al final <code>pos</code> sigue valiendo <code>-1</code>, significa que:</p>
+      <button class="opcion" data-op="a">Encontramos el valor buscado</button>
+      <button class="opcion" data-op="b">No encontramos el valor buscado</button>
+      <button class="opcion" data-op="c">Hubo un error de compilación</button>
+      <button class="opcion" data-op="d">El arreglo está vacío</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Anterior</button>
+    <button class="btn-siguiente" data-ir="8">Siguiente: 🏆 Final →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 8 — QUIZ FINAL Y CIERRE
+============================================================ -->
+<section class="modulo" data-modulo="8">
+  <h2>8️⃣ 🏆 Quiz final y cierre</h2>
+  <p class="meta-modulo">⏱️ 20 minutos · 🎓 Lo que aprendiste, en 6 preguntas</p>
+
+  <div class="hero">
+    <h2>🎉 ¡Lo lograste!</h2>
+    <p class="lead">Recorriste <strong>3 horas y 45 minutos</strong> aprendiendo una de las herramientas más importantes de la programación. Los arreglos están en <em>todos</em> los programas reales. Ahora tienes la base para entender bases de datos, listas, y mucho más. 💪</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">📦</span>
+      <h3>Por qué existen</h3>
+      <p>Sabes cuándo un problema pide un arreglo en vez de variables sueltas.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🛠️</span>
+      <h3>Crearlos</h3>
+      <p>Dominas la sintaxis <code>tipo[] nombre = new tipo[tamaño];</code>.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🔢</span>
+      <h3>Los índices</h3>
+      <p>Accedes a cualquier cajón y entiendes por qué empiezan en 0.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🔁</span>
+      <h3>El <code>for</code></h3>
+      <p>Recorres arreglos completos usando <code>Length</code> correctamente.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🔂</span>
+      <h3>El <code>foreach</code></h3>
+      <p>Sabes cuándo conviene usarlo y cuándo necesitas el <code>for</code>.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🧮</span>
+      <h3>Operaciones</h3>
+      <p>Calculas suma, promedio, máximo, mínimo, búsquedas y conteos.</p>
+    </div>
+  </div>
+
+  <h3>🎯 Quiz final: 6 preguntas para sellar tu aprendizaje</h3>
+  <div class="quiz quiz-final" data-quiz="final">
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es el <em>primer</em> índice de un arreglo de 8 elementos?</p>
+      <button class="opcion" data-op="a">1</button>
+      <button class="opcion" data-op="b">0</button>
+      <button class="opcion" data-op="c">8</button>
+      <button class="opcion" data-op="d">-1</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> Si <code>int[] nums = new int[6];</code>, ¿qué pasa con <code>nums[6] = 99;</code>?</p>
+      <button class="opcion" data-op="a">El programa se cae con un error de índice fuera de rango</button>
+      <button class="opcion" data-op="b">Se crea un cajón 6 automáticamente</button>
+      <button class="opcion" data-op="c">nums[6] vale 99 sin problema</button>
+      <button class="opcion" data-op="d">El arreglo se redimensiona</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué bucle conviene si solo quieres <strong>leer</strong> los valores de un arreglo sin modificarlos?</p>
+      <button class="opcion" data-op="a"><code>while</code></button>
+      <button class="opcion" data-op="b"><code>do-while</code></button>
+      <button class="opcion" data-op="c"><code>foreach</code></button>
+      <button class="opcion" data-op="d">Ninguno, siempre hay que usar <code>for</code></button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Qué condición del <code>for</code> recorre <em>todo</em> un arreglo de tamaño 5?</p>
+      <button class="opcion" data-op="a"><code>i &lt;= 5</code></button>
+      <button class="opcion" data-op="b"><code>i &lt; 5</code></button>
+      <button class="opcion" data-op="c"><code>i &lt;= 4</code></button>
+      <button class="opcion" data-op="d">Tanto la <code>b</code> como la <code>c</code> funcionan</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>5.</strong> Para guardar el nombre, edad y nota de 30 estudiantes con arreglos paralelos, ¿cuántos arreglos creas?</p>
+      <button class="opcion" data-op="a">3 arreglos (uno por cada tipo de dato)</button>
+      <button class="opcion" data-op="b">1 solo arreglo gigante</button>
+      <button class="opcion" data-op="c">30 arreglos</button>
+      <button class="opcion" data-op="d">Ninguno, no se puede hacer</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>6.</strong> Para encontrar el número más grande de un arreglo, ¿cuál es la idea?</p>
+      <button class="opcion" data-op="a">Tomar el último elemento</button>
+      <button class="opcion" data-op="b">Sumar todos y dividir</button>
+      <button class="opcion" data-op="c">Empezar suponiendo que el primero es el mayor y comparar con cada uno de los demás</button>
+      <button class="opcion" data-op="d">Ordenar el arreglo y tomar el primero</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <h3>🚀 Tu misión final</h3>
+  <div class="caja-desafio">
+    <p><strong>🏆 Reto integrador: "La lista definitiva".</strong></p>
+    <p>Construye un programa que pida al usuario los nombres y notas de N estudiantes (N lo decide el usuario), y al final muestre:</p>
+    <ol>
+      <li>📋 La tabla completa con todos los datos</li>
+      <li>📊 El promedio general del curso</li>
+      <li>🏅 El nombre del estudiante con la nota más alta</li>
+      <li>❌ La cantidad de estudiantes que reprobaron (nota &lt; 3.0)</li>
+    </ol>
+    <p><strong>Requisitos:</strong> usar al menos <strong>dos arreglos paralelos</strong>, al menos <strong>tres <code>for</code></strong>, y al menos <strong>un <code>if</code></strong> dentro de un bucle.</p>
+  </div>
+
+  <h3>📚 Para seguir aprendiendo</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🌐</span>
+      <h3>Microsoft Learn</h3>
+      <p>Documentación oficial de C#, en español.</p>
+      <a href="https://learn.microsoft.com/es-es/dotnet/csharp/" target="_blank">Visitar →</a>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🧪</span>
+      <h3>dotnetfiddle.net</h3>
+      <p>Ejecuta C# en el navegador, sin instalar nada.</p>
+      <a href="https://dotnetfiddle.net" target="_blank">Visitar →</a>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎯</span>
+      <h3>Próximo tema</h3>
+      <p>Arreglos multidimensionales (matrices), listas dinámicas, algoritmos de búsqueda y ordenamiento.</p>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💭 Reflexión final</h4>
+    <p>Los arreglos son la <strong>primera estructura de datos</strong> que conoces. Es la base de casi todo lo que viene después. Cada vez que veas una lista, una tabla o una colección, recuerda: <em>"una hilera de cajones numerados"</em>. Esa imagen vale más que mil líneas de código. 💚</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🚀 ¡Felicitaciones!</h2>
+    <p>Ya dominas los arreglos unidimensionales en C#. Sigue practicando: cada programa que escribas te va a salir más rápido y con menos errores.</p>
+    <button class="btn-final" onclick="reiniciarCurso()">🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="7">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <p>📚 Clase 11 · Arreglos unidimensionales en C# · Hecho con 💚 para jóvenes programadores · 2026</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -51,7 +51,9 @@ Run these whenever you modify an HTML/CSS/JS file in any course. Each course was
 once/
 ├── index.html, estilos.css, app.js     ← Hub (curriculum landing page)
 ├── Algoritmos con C#/
-│   └── doce-curso-funciones-csharp/    ← Class 12 of the C# course
+│   ├── siete-curso-funciones-csharp/   ← Class 7
+│   ├── diez-curso-poo-csharp/          ← Class 10
+│   └── doce-curso-funciones-csharp/    ← Class 12
 └── analisis-diseno/
     ├── uno-curso-analisis-diseno/      ← Class 1
     ├── dos-curso-requerimientos/       ← Class 2
@@ -89,15 +91,17 @@ const estado = {
 
 State is persisted to `localStorage` under a course-specific key:
 
-| Course                                                    | `localStorage` key         |
-| --------------------------------------------------------- | -------------------------- |
-| `Algoritmos con C#/doce-curso-funciones-csharp/`          | `curso-csharp-funciones`   |
-| `analisis-diseno/uno-curso-analisis-diseno/`              | `curso-analisis-diseno`    |
-| `analisis-diseno/dos-curso-requerimientos/`               | `curso-requerimientos`     |
-| `analisis-diseno/tres-curso-elicitacion/`                 | `curso-elicitacion`        |
-| `analisis-diseno/cuatro-curso-documentacion/`             | `curso-documentacion`      |
+| Course                                                    | `localStorage` key           |
+| --------------------------------------------------------- | ---------------------------- |
+| `Algoritmos con C#/siete-curso-funciones-csharp/`         | `curso-csharp-funciones-7`   |
+| `Algoritmos con C#/diez-curso-poo-csharp/`                | `curso-csharp-poo-10`        |
+| `Algoritmos con C#/doce-curso-funciones-csharp/`         | `curso-csharp-funciones`     |
+| `analisis-diseno/uno-curso-analisis-diseno/`              | `curso-analisis-diseno`      |
+| `analisis-diseno/dos-curso-requerimientos/`               | `curso-requerimientos`       |
+| `analisis-diseno/tres-curso-elicitacion/`                 | `curso-elicitacion`          |
+| `analisis-diseno/cuatro-curso-documentacion/`             | `curso-documentacion`        |
 
-The hub's `app.js` reads all five keys to compute global progress — **if you add a new course or change a key, update the `TOTALES_MODULOS` map in `/app.js`**.
+A course's `TOTAL_MODULOS` counts *all* `<section class="modulo">` blocks 0-indexed; the last index is conventionally the optional/final-review module, and completion logic uses `TOTAL_MODULOS - 1` as the "last required" module. The hub's `app.js` reads every key above to compute global progress — **if you add a new course or change a key, update the `TOTALES_MODULOS` map in `/app.js`**.
 
 ### Shared functions across all courses
 
@@ -114,9 +118,32 @@ Every course implements the same core functions with identical signatures: `irAM
 
 Custom interactive activities (role-play in class 3, SRS review in class 4, etc.) add their own `data-*` attributes, all read by functions inside that course's `app.js`.
 
+### Hub integration (the cards on `/index.html`)
+
+Every class card on the hub is a plain `<a>` with two extra hooks:
+
+```html
+<a href="Algoritmos%20con%20C%23/siete-curso-funciones-csharp/index.html"
+   class="clase-card csharp" data-storage="curso-csharp-funciones-7">
+```
+
+- The card **class** picks the color theme. `csharp` covers all three C# classes; the AD course uses `ad-1` … `ad-4` (one per class). When adding a course, choose a fresh single class (or a numbered family) and define the corresponding palette variables in `estilos.css`.
+- The `data-storage` attribute **must match the course's `localStorage` key exactly** — the hub reads `card.dataset.storage` to look up progress in `TOTALES_MODULOS`.
+
+The hub renders four animated stat counters. When you add a class you must also update any that change:
+
+| Counter         | Element id            | What it counts                          |
+| --------------- | --------------------- | --------------------------------------- |
+| Minicursos      | `stat-cursos`         | number of distinct course roots         |
+| Clases          | `stat-clases`         | number of available `clase-card`s       |
+| Horas           | `stat-horas`          | total estimated hours                   |
+| Tu progreso     | `stat-progreso`       | computed live from `localStorage`       |
+
+The hub also binds number-key shortcuts (`1`…`7`) that open the matching class — add a new branch to its `keydown` handler alongside the existing ones.
+
 ### Visual identity per course
 
-Each course has a deliberately distinct color theme so students can tell them apart at a glance. The hub's CSS preserves each course's accent colors via class names (`csharp`, `ad-1`, `ad-2`, `ad-3`, `ad-4`) on its course cards. **When adding a new course, pick a fresh palette** and reflect it in the hub's tarjeta classes.
+Each course has a deliberately distinct color theme so students can tell them apart at a glance. **When adding a new course, pick a fresh palette** and add the corresponding `--<theme>-a` / `--<theme>-b` variables to `/estilos.css` (and per-course CSS files where needed) so the hub card and the course itself stay visually consistent.
 
 ## Audience constraints (drive every design decision)
 
@@ -131,8 +158,8 @@ Each course has a deliberately distinct color theme so students can tell them ap
 1. Create folder `analisis-diseno/<numero>-curso-<tema>/` (or under a new course root).
 2. Copy `index.html`, `estilos.css`, `app.js` from the most recent similar class as a starting point.
 3. Adjust `TOTAL_MODULOS`, the `localStorage` key, the badge names, and the color palette.
-4. Add a `<a class="clase-card ...">` entry to `/index.html` (the hub) with the correct URL-encoded path.
-5. Update the hub's `TOTALES_MODULOS` map in `/app.js` and bump the `stat-clases` counter in `/index.html`.
+4. Add a `<a class="clase-card ...">` entry to `/index.html` (the hub) with the correct URL-encoded path, theme class, and matching `data-storage` attribute.
+5. Update the hub's `TOTALES_MODULOS` map in `/app.js` and bump any of the stat counters (`stat-cursos`, `stat-clases`, `stat-horas`) whose values changed in `/index.html`. If you added the 8th class, also wire its keyboard shortcut in the hub's `keydown` handler.
 6. Run the three sanity checks above on the new files.
 
 ## Known gotcha

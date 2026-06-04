@@ -31,13 +31,14 @@ function mostrarFecha() {
 function cargarProgresoPorClase() {
   // Total de módulos por clase (para calcular porcentaje correctamente)
   const TOTALES_MODULOS = {
-    'curso-csharp-funciones':  7,   // 0..6 (m7 es opcional/final)
-    'curso-csharp-funciones-7': 8,  // 0..7 (m8 es opcional/final)
-    'curso-csharp-poo-10':     9,   // 0..8 (m9 es opcional/final)
-    'curso-analisis-diseno':   7,
-    'curso-requerimientos':    7,
-    'curso-elicitacion':       8,
-    'curso-documentacion':     8
+    'curso-csharp-funciones':   7,   // 0..6 (m7 es opcional/final)
+    'curso-csharp-funciones-7': 8,   // 0..7 (m8 es opcional/final)
+    'curso-csharp-poo-10':      9,   // 0..8 (m9 es opcional/final)
+    'curso-csharp-arreglos-11': 8,   // 0..7 (m8 es opcional/final)
+    'curso-analisis-diseno':    7,
+    'curso-requerimientos':     7,
+    'curso-elicitacion':        8,
+    'curso-documentacion':      8
   };
 
   let totalGlobal = 0;
@@ -154,18 +155,21 @@ document.addEventListener('keydown', (e) => {
     const card = document.querySelector('a.clase-card[data-storage="curso-csharp-poo-10"]');
     if (card) card.click();
   } else if (e.key === '3') {
-    const card = document.querySelector('a.clase-card[data-storage="curso-csharp-funciones"]');
+    const card = document.querySelector('a.clase-card[data-storage="curso-csharp-arreglos-11"]');
     if (card) card.click();
   } else if (e.key === '4') {
-    const card = document.querySelector('.clase-card.ad-1');
+    const card = document.querySelector('a.clase-card[data-storage="curso-csharp-funciones"]');
     if (card) card.click();
   } else if (e.key === '5') {
-    const card = document.querySelector('.clase-card.ad-2');
+    const card = document.querySelector('.clase-card.ad-1');
     if (card) card.click();
   } else if (e.key === '6') {
-    const card = document.querySelector('.clase-card.ad-3');
+    const card = document.querySelector('.clase-card.ad-2');
     if (card) card.click();
   } else if (e.key === '7') {
+    const card = document.querySelector('.clase-card.ad-3');
+    if (card) card.click();
+  } else if (e.key === '8') {
     const card = document.querySelector('.clase-card.ad-4');
     if (card) card.click();
   }
@@ -174,8 +178,9 @@ document.addEventListener('keydown', (e) => {
 /* ---------- TOAST DE BIENVENIDA SI HAY PROGRESO ---------- */
 window.addEventListener('load', () => {
   // Verifica si el usuario ha avanzado en alguna clase
-  const keys = ['curso-csharp-funciones-7', 'curso-csharp-poo-10', 'curso-csharp-funciones',
-                'curso-analisis-diseno', 'curso-requerimientos', 'curso-elicitacion', 'curso-documentacion'];
+  const keys = ['curso-csharp-funciones-7', 'curso-csharp-poo-10', 'curso-csharp-arreglos-11',
+                'curso-csharp-funciones', 'curso-analisis-diseno', 'curso-requerimientos',
+                'curso-elicitacion', 'curso-documentacion'];
 
   let tienePrograma = false;
   let ultimaClase = null;
@@ -196,7 +201,7 @@ window.addEventListener('load', () => {
     }, 600);
   } else {
     setTimeout(() => {
-      mostrarToast('💡 Tip: usa las teclas 1-7 para saltar rápido a una clase.');
+      mostrarToast('💡 Tip: usa las teclas 1-8 para saltar rápido a una clase.');
     }, 1200);
   }
 });
