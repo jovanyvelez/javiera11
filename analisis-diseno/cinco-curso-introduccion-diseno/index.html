@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✏️ Introducción al Diseño — Clase 5</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- =================== HEADER + PROGRESO =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">✏️</span>
+    <div>
+      <h1>Introducción al Diseño</h1>
+      <p class="subtitulo">Clase 5 · Pensar antes de dibujar</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span id="porcentaje">0%</span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">1️⃣ Pensar</button>
+  <button class="btn-modulo" data-modulo="2">2️⃣ Boceto</button>
+  <button class="btn-modulo" data-modulo="3">3️⃣ Digital</button>
+  <button class="btn-modulo" data-modulo="4">4️⃣ Modelo</button>
+  <button class="btn-modulo" data-modulo="5">5️⃣ Prototipo</button>
+  <button class="btn-modulo" data-modulo="6">🏁 Cierre</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>✏️ ¡Bienvenid@ a la Clase 5!</h2>
+    <p class="lead">Ya sabes qué construir (Clase 2), elicitarlo (Clase 3) y documentarlo (Clase 4). Ahora toca <strong>decidir cómo se va a ver y cómo se va a usar</strong>. Diseño no es decorar: es <strong>pensar antes de dibujar</strong>.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">⏱️</span>
+      <h3>Duración</h3>
+      <p>3 horas y 45 minutos en 7 módulos.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Que diseñes interfaces usables, primero en papel, después en herramientas digitales, hasta llegar a un prototipo navegable.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🏆</span>
+      <h3>Resultado</h3>
+      <p>Saldrás con la disciplina de preguntar antes de dibujar, y con un prototipo rápido listo para probar con usuarios.</p>
+    </div>
+  </div>
+
+  <div class="caja-destacada">
+    <h3>🗺️ Ruta de la clase</h3>
+    <ol class="ruta">
+      <li><strong>Bienvenida (10 min):</strong> por qué el diseño importa.</li>
+      <li><strong>Módulo 1 (30 min):</strong> 🧠 Pensar antes de dibujar — el momento wow vive aquí.</li>
+      <li><strong>Módulo 2 (45 min):</strong> ✏️ Boceto en papel — el arma secreta del principiante.</li>
+      <li><strong>Módulo 3 (45 min):</strong> 🛠️ Herramientas digitales — Excalidraw, FigJam y compañía.</li>
+      <li><strong>Módulo 4 (45 min):</strong> 🏗️ Arquitectura y modelado — cajas, flechas y decisiones.</li>
+      <li><strong>Módulo 5 (45 min):</strong> 📱 Prototipado rápido — clics que cuentan una historia.</li>
+      <li><strong>Cierre (5 min):</strong> 🏆 resumen + 3 ideas para llevarte.</li>
+    </ol>
+  </div>
+
+  <div class="caja-recordatorio">
+    <h4>🔁 Lo que ya sabes (y vamos a usar)</h4>
+    <ul>
+      <li><strong>Clase 1:</strong> el software se piensa antes de programarse. Ahora lo vamos a hacer visible.</li>
+      <li><strong>Clase 2:</strong> hay requerimientos que vienen del usuario. El diseño responde a <em>esos</em>.</li>
+      <li><strong>Clase 3:</strong> elicitar = preguntar, observar, escuchar. El diseño empieza con buenas preguntas.</li>
+      <li><strong>Clase 4:</strong> documentar es plasmar. Hoy vas a plasmar decisiones visuales.</li>
+    </ul>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Una idea para que te quede</h4>
+    <p>Si las clases anteriores eran <em>escribir sobre el problema</em>, esta es <em>dibujar la solución</em>. Cambias de herramienta, no de mentalidad: sigues pensando antes de actuar.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1 →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — PENSAR ANTES DE DIBUJAR (REFERENCIA)
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>1️⃣ 🧠 Pensar antes de dibujar</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 🎨 La disciplina que separa un buen diseño de un desastre bonito</p>
+
+  <div class="hero">
+    <h2>El diseño no es decorar, es decidir.</h2>
+    <p class="lead">Cada línea, color y botón que pongas en una pantalla <strong>comunica algo</strong>. Si no lo decidiste tú, lo decidió el azar — y el azar no es buen diseñador.</p>
+  </div>
+
+  <h3>🏛️ La analogía del arquitecto</h3>
+  <div class="caja-concepto">
+    <p>Imagina que te piden una casa. ¿Qué harías primero?</p>
+    <p>¿Salir corriendo a poner ladrillos? <strong>No.</strong> Contratarías un arquitecto. Alguien que, antes de mover un solo ladrillo, te hace <em>preguntas incómodas</em>:</p>
+    <ul>
+      <li>¿Cuántas personas van a vivir aquí?</li>
+      <li>¿Cuántos baños necesitas?</li>
+      <li>¿Dónde da el sol por la mañana?</li>
+      <li>¿Cuánto puedes gastar?</li>
+    </ul>
+    <p>Y solo después de responder, dibuja planos. No por capricho: porque un error en los planos se multiplica por cada ladrillo mal puesto. <strong>El software es igual.</strong></p>
+    <p>Un error de diseño se multiplica por cada pantalla mal construida, por cada usuario frustrado, por cada hora extra de un programador rehaciendo algo que no se pensó. Por eso diseñamos <em>antes</em>, no <em>después</em>.</p>
+  </div>
+
+  <h3>🪜 Los 5 niveles del diseño</h3>
+  <p>No todo "diseño" es igual. Hay cinco niveles, del más rápido y descartable al más pulido y costoso. <strong>Empieza siempre por el primero.</strong></p>
+
+  <div class="niveles-diseno">
+    <div class="nivel" data-nivel="1">
+      <span class="nivel-num">1</span>
+      <h4>✏️ Sketch (boceto)</h4>
+      <p>Un garabato en una servilleta. Sirve para <em>tirar ideas</em>, no para presumir. 30 segundos por dibujo.</p>
+    </div>
+    <div class="nivel" data-nivel="2">
+      <span class="nivel-num">2</span>
+      <h4>📐 Wireframe (boceto estructurado)</h4>
+      <p>El mismo sketch pero con proporciones. Cajas y líneas, sin colores. "Aquí va el menú. Aquí va el botón."</p>
+    </div>
+    <div class="nivel" data-nivel="3">
+      <h4>🎨 Mockup (visual)</h4>
+      <p>Ahora sí: colores, tipografías, imágenes. Como una foto del producto terminado. <em>Pero todavía no se mueve.</em></p>
+    </div>
+    <div class="nivel" data-nivel="4">
+      <h4>📱 Prototipo (interactivo)</h4>
+      <p>Se puede hacer clic. Tiene transiciones, animaciones, varios botones que llevan a otros sitios. <em>Casi real.</em></p>
+    </div>
+    <div class="nivel" data-nivel="5">
+      <h4>🚀 Producto final (hi-fi)</h4>
+      <p>El código real que el usuario final toca. Lento y caro: solo se hace cuando todo lo anterior está validado.</p>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>👀 La trampa mortal</h4>
+    <p>Muchos diseñadores saltan directo al nivel 3 (mockup bonito) sin pasar por el 1 y el 2. Resultado: gastan 8 horas en algo que va a cambiar 5 veces. <strong>Empieza siempre en papel.</strong></p>
+  </div>
+
+  <h3>❓ Las 3 preguntas obligatorias</h3>
+  <p>Antes de abrir Figma, anota en un papel las respuestas a estas tres preguntas. Sin ellas, estás diseñando a ciegas:</p>
+
+  <div class="tres-preguntas">
+    <div class="preg-col">
+      <span class="preg-emoji">👤</span>
+      <h4>1. ¿Quién lo va a usar?</h4>
+      <p>No "todo el mundo". Una persona concreta: <em>"María, 16 años, estudiante de grado 11, usa el celular con datos limitados, le molestan los menús largos".</em></p>
+    </div>
+    <div class="preg-col">
+      <span class="preg-emoji">🎯</span>
+      <h4>2. ¿Qué intenta lograr?</h4>
+      <p>Cuál es la <em>una cosa</em> que vino a hacer. Si tuvieras que poner UN solo botón en la pantalla, ¿cuál sería?</p>
+    </div>
+    <div class="preg-col">
+      <span class="preg-emoji">🚧</span>
+      <h4>3. ¿Qué se lo impide?</h4>
+      <p>¿Qué le molesta hoy? ¿Qué le da miedo? ¿Qué lo confunde? <em>El diseño bueno quita obstáculos, no agrega funciones.</em></p>
+    </div>
+  </div>
+
+  <!-- ===================================================
+       ⚡ MOMENTO WOW: SLIDER ANTES / DESPUÉS
+  =================================================== -->
+  <h3>⚡ Momento wow: Mira la diferencia</h3>
+  <div class="caja-wow">
+    <p>Arrastra el control naranja y observa. Misma idea. Dos diseños opuestos.</p>
+
+    <div class="slider-app" id="slider-app">
+      <div class="slider-lado slider-mal">
+        <div class="telefono">
+          <div class="tel-status">9:41 · 🔋 87% · 📶 3G</div>
+          <h4 class="tel-titulo">TIENDA ESCOLAR ONLINE!!!</h4>
+          <p class="tel-sub">¡BIENVENID@! Compra aquí todo lo que quieras y más</p>
+          <div class="tel-tags">
+            <span class="tag tag-r">OFERTA</span>
+            <span class="tag tag-a">NUEVO</span>
+            <span class="tag tag-v">POPULAR</span>
+            <span class="tag tag-c">HOT</span>
+            <span class="tag tag-m">-50%</span>
+          </div>
+          <div class="tel-grid">
+            <div class="tel-card tel-card-raro"><b>Cuaderno</b><br><span class="precio-viejo">$8.000</span> <span class="precio-nuevo">$7.999</span><br><button class="btn-tel-r">COMPRAR YA!!!</button></div>
+            <div class="tel-card tel-card-raro"><b>Lápiz</b><br><span class="precio-viejo">$1.200</span> <span class="precio-nuevo">$1.199</span><br><button class="btn-tel-r">OBTENER</button></div>
+            <div class="tel-card tel-card-raro"><b>Borrador</b><br><span class="precio-viejo">$500</span> <span class="precio-nuevo">$499</span><br><button class="btn-tel-r">LO QUIERO</button></div>
+            <div class="tel-card tel-card-raro"><b>Regla</b><br><span class="precio-viejo">$2.000</span> <span class="precio-nuevo">$1.999</span><br><button class="btn-tel-r">CLICK AQUÍ</button></div>
+          </div>
+          <p class="tel-pie">★★★★☆ "Bueno" — 2.847 reseñas · 23 preguntas</p>
+          <div class="tel-multibtn">
+            <button class="btn-tel-r2">💬</button>
+            <button class="btn-tel-r2">🔔</button>
+            <button class="btn-tel-r2">❤️</button>
+            <button class="btn-tel-r2">🛒</button>
+            <button class="btn-tel-r2">📤</button>
+            <button class="btn-tel-r2">⚙️</button>
+          </div>
+        </div>
+        <span class="slider-label label-mal">❌ Mal diseñado</span>
+      </div>
+
+      <div class="slider-lado slider-bien">
+        <div class="telefono tel-bien">
+          <div class="tel-status tel-status-b">9:41</div>
+          <h4 class="tel-titulo-b">Tienda escolar</h4>
+          <input class="tel-search" placeholder="Buscar producto…" disabled>
+          <div class="tel-cards-b">
+            <div class="tel-card-b">
+              <div class="tel-card-b-emoji">📓</div>
+              <div>
+                <div class="tel-card-b-nombre">Cuaderno</div>
+                <div class="tel-card-b-precio">$8.000</div>
+              </div>
+            </div>
+            <div class="tel-card-b">
+              <div class="tel-card-b-emoji">✏️</div>
+              <div>
+                <div class="tel-card-b-nombre">Lápiz</div>
+                <div class="tel-card-b-precio">$1.200</div>
+              </div>
+            </div>
+            <div class="tel-card-b">
+              <div class="tel-card-b-emoji">📏</div>
+              <div>
+                <div class="tel-card-b-nombre">Regla 30cm</div>
+                <div class="tel-card-b-precio">$2.000</div>
+              </div>
+            </div>
+          </div>
+          <button class="btn-tel-b">Ver catálogo completo</button>
+        </div>
+        <span class="slider-label label-bien">✅ Bien pensado</span>
+      </div>
+
+      <div class="slider-divider" id="slider-divider">
+        <div class="slider-handle" id="slider-handle" aria-label="Arrastra para comparar">
+          <span>⇆</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="slider-tip" id="slider-tip">Pista: arrastra varias veces. Fíjate en los colores, los botones y el espacio en blanco.</p>
+  </div>
+
+  <h3>📝 Actividad: Las 3 preguntas sobre un brief real</h3>
+  <div class="caja-concepto">
+    <h4>📋 Brief del proyecto</h4>
+    <p class="brief-texto">
+      <em>"Necesito una app para que los estudiantes del colegio pidan el almuerzo desde el celular, sin hacer cola. Tiene que ser rápida y bonita. Para todos los cursos. La quiero para el lunes."</em>
+    </p>
+    <p>Arrastra cada <strong>nota adhesiva</strong> al lugar del brief donde mejor responda la pregunta. Si aciertas, la nota se ilumina. Si fallas, se ilumina en otro color y aprendes por qué.</p>
+  </div>
+
+  <div class="sticky-game" id="sticky-game">
+    <div class="sticky-tray">
+      <div class="sticky" data-preg="quien" draggable="true">👤 ¿Quién lo va a usar?</div>
+      <div class="sticky" data-preg="que" draggable="true">🎯 ¿Qué intenta lograr?</div>
+      <div class="sticky" data-preg="imped" draggable="true">🚧 ¿Qué se lo impide?</div>
+    </div>
+    <div class="sticky-board">
+      <div class="dropzone" data-acepta="quien">
+        <span class="dz-label">Suelta aquí: ¿Quién lo va a usar?</span>
+        <p class="dz-clue">Busca una pista sobre <em>qué personas</em> son los usuarios.</p>
+      </div>
+      <div class="dropzone" data-acepta="que">
+        <span class="dz-label">Suelta aquí: ¿Qué intenta lograr?</span>
+        <p class="dz-clue">Busca la <em>acción principal</em> que el usuario quiere hacer.</p>
+      </div>
+      <div class="dropzone" data-acepta="imped">
+        <span class="dz-label">Suelta aquí: ¿Qué se lo impide?</span>
+        <p class="dz-clue">Busca el <em>problema o restricción</em> actual.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>💸 El costo de NO diseñar</h3>
+
+  <div class="caja-historia">
+    <h4>🚨 Caso 1: la app de delivery que nadie entendía</h4>
+    <p>Una pizzería local lanzó una app para pedir a domicilio. Sin diseño previo, el botón de "confirmar pedido" estaba en la parte de arriba, mientras que el menú ocupaba toda la pantalla. <strong>3 de cada 5 usuarios</strong> abandonaban antes de pedir. Solución: rediseñar tomó 3 semanas; un boceto en papel hubiera tomado 30 minutos.</p>
+  </div>
+
+  <div class="caja-historia">
+    <h4>🚨 Caso 2: el botón equivocado en el lugar correcto</h4>
+    <p>Una app de banco tenía "Transferir" y "Eliminar cuenta" uno al lado del otro, en rojo. <strong>El 8% de los usuarios en su primer mes</strong> tocó "Eliminar" por error. Costó挽回 la confianza de miles de clientes. Un prototipo de papel con 3 usuarios reales lo habría detectado en una tarde.</p>
+  </div>
+
+  <div class="caja-historia">
+    <h4>🚨 Caso 3: la función oculta en el menú equivocado</h4>
+    <p>Un equipo construyó una función increíble de búsqueda con filtros. La puso en el menú lateral, en el tercer subnivel. <strong>Nadie la encontró en 6 meses</strong>. La habían diseñado sin probar con usuarios reales: asumieron que la encontrarían.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>🎯 Si solo te llevas UNA idea de este módulo</h4>
+    <p>Diseñar es <strong>preguntar antes de dibujar</strong>. Las 3 preguntas (¿quién? / ¿qué intenta? / ¿qué lo impide?) son tu seguro contra el caos. Empieza siempre en papel. Confirma con usuarios reales antes de codificar.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 1 -->
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Por qué la analogía del "diseño es como construir una casa" funciona?</p>
+      <button class="opcion" data-op="a">Porque los dos se hacen con planos</button>
+      <button class="opcion" data-op="b">Porque en ambos pintamos paredes</button>
+      <button class="opcion" data-op="c">Porque un error de planificación se multiplica en costos al construir</button>
+      <button class="opcion" data-op="d">Porque los arquitectos son más listos que los programadores</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿En qué nivel de diseño estás cuando haces un garabato en una servilleta?</p>
+      <button class="opcion" data-op="a">Sketch (boceto rápido)</button>
+      <button class="opcion" data-op="b">Wireframe estructurado</button>
+      <button class="opcion" data-op="c">Mockup visual</button>
+      <button class="opcion" data-op="d">Producto final</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Cuál de estas NO es una de las 3 preguntas obligatorias?</p>
+      <button class="opcion" data-op="a">¿Quién lo va a usar?</button>
+      <button class="opcion" data-op="b">¿Qué intenta lograr?</button>
+      <button class="opcion" data-op="c">¿Qué se lo impide?</button>
+      <button class="opcion" data-op="d">¿Cuánto va a costar producirlo?</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Boceto en papel →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — BOCETO EN PAPEL
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>2️⃣ ✏️ Boceto en papel</h2>
+  <p class="meta-modulo">⏱️ 45 minutos · 📝 El arma secreta del principiante (y del experto)</p>
+
+  <div class="hero">
+    <h2>Antes de tocar un mouse, toca un lápiz.</h2>
+    <p class="lead">El papel es rápido, barato, y se rompe sin consecuencias. Aquí aprendes por qué <strong>todos los grandes diseñadores</strong> empiezan dibujando, y cómo hacerlo bien.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Por qué papel y no pantalla?</h3>
+    <p>Porque el papel tiene tres ventajas imposibles de igualar en digital:</p>
+    <ul>
+      <li>⚡ <strong>Velocidad:</strong> un boceto en servilleta toma 30 segundos; un wireframe en Figma toma 10 minutos.</li>
+      <li>🗑️ <strong>Permiso para fallar:</strong> nadie siente culpa de romper un papel. Un archivo en Figma se siente "terminado" demasiado pronto.</li>
+      <li>👥 <strong>Lenguaje universal:</strong> cualquiera puede ver un garabato y opinar. Un mockup en Figma intimida.</li>
+    </ul>
+  </div>
+
+  <h3>📐 Tres tipos de boceto, según el momento</h3>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">⚡</span>
+      <h3>Thumbnail</h3>
+      <p>Boceto de 2×3 cm, menos de 30 segundos. Sirve para <em>explorar muchas ideas</em> antes de elegir una.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">📝</span>
+      <h3>Rough sketch</h3>
+      <p>Boceto más grande (media carta), 5-10 minutos. La idea elegida, refinada. Se muestra al equipo.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎯</span>
+      <h3>Polished wireframe</h3>
+      <p>Boceto limpio, con etiquetas y medidas. Sirve para entregar a desarrolladores o para testear con usuarios.</p>
+    </div>
+  </div>
+
+  <h3>⏱️ Actividad: Dibuja esto en 60 segundos</h3>
+  <div class="caja-desafio">
+    <p>Vas a tener 60 segundos por challenge. <em>No importa que quede feo</em> — lo que importa es la decisión, no el dibujo. Presiona "Empezar", toma tu lápiz, y dibuja en una hoja de papel.</p>
+    <p>Cuando termines, presiona "Listo".</p>
+  </div>
+
+  <div class="challenge-timer">
+    <div class="challenge-pantalla" id="challenge-pantalla">
+      <span class="challenge-num" id="challenge-num">1 / 3</span>
+      <h4 id="challenge-titulo">Pantalla de inicio de sesión</h4>
+      <p id="challenge-desc">Una pantalla donde un usuario ingresa su usuario y contraseña para entrar a la app del colegio.</p>
+    </div>
+    <div class="challenge-controles">
+      <button class="btn-timer" id="btn-empezar">▶ Empezar (60s)</button>
+      <button class="btn-timer" id="btn-listo" disabled>✓ Listo</button>
+      <button class="btn-timer btn-timer-sec" id="btn-siguiente-ch" disabled>Siguiente →</button>
+    </div>
+    <p class="challenge-feedback" id="challenge-feedback"></p>
+    <div class="challenge-derrota" id="challenge-derrota"></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: caja-marco</h4>
+    <p>Antes de empezar a dibujar nada, traza el <strong>marco de la pantalla</strong>: un rectángulo que represente el celular. Todo lo que dibujes adentro pertenece a la pantalla. Esto evita que tus bocetos se "salgan" y te obliga a pensar en el espacio limitado.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 2 -->
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la principal ventaja del papel sobre la pantalla al inicio?</p>
+      <button class="opcion" data-op="a">Se ve más bonito</button>
+      <button class="opcion" data-op="b">Es más rápido e invita a equivocarse sin miedo</button>
+      <button class="opcion" data-op="c">Ocupa menos espacio</button>
+      <button class="opcion" data-op="d">No se puede borrar</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cuándo conviene hacer un "thumbnail"?</p>
+      <button class="opcion" data-op="a">Cuando quieres explorar muchas ideas en poco tiempo</button>
+      <button class="opcion" data-op="b">Cuando vas a presentar al cliente</button>
+      <button class="opcion" data-op="c">Cuando el código ya está escrito</button>
+      <button class="opcion" data-op="d">Cuando quieres presumir tu dibujo</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Herramientas digitales →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — HERRAMIENTAS DIGITALES
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>3️⃣ 🛠️ Herramientas digitales</h2>
+  <p class="meta-modulo">⏱️ 45 minutos · 💻 Del papel a la pantalla (pero no antes de tiempo)</p>
+
+  <div class="hero">
+    <h2>El papel no se jubila. Solo le sumas herramientas.</h2>
+    <p class="lead">Hay un momento para cada cosa. Cuando tu boceto en papel ya está validado, pasas a una herramienta digital. Pero solo <em>después</em>.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧰 Las 4 herramientas que importan</h3>
+    <p>No necesitas aprender 20. Con estas 4 cubres el 95% de los casos:</p>
+  </div>
+
+  <div class="cuadricula-2">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">✏️</span>
+      <h3>Excalidraw</h3>
+      <p><strong>Para:</strong> bocetos digitales rápidos, diagramas, arquitectura de sistemas. Estilo "dibujado a mano" pero en digital. <em>Gratis, sin cuenta, sin instalación.</em></p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎨</span>
+      <h3>FigJam / Figma</h3>
+      <p><strong>Para:</strong> mockups profesionales y prototipos interactivos. La industria los usa. Tiene curva de aprendizaje, pero vale la pena para el colegio.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">📊</span>
+      <h3>Whimsical</h3>
+      <p><strong>Para:</strong> diagramas de flujo, mapas mentales, wireframes rápidos. Muy visual, menos flexible que Figma pero más rápido para ciertas cosas.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">📝</span>
+      <h3>Papel (siempre)</h3>
+      <p><strong>Para:</strong> thumbnails y exploración de ideas. Sí, sigue siendo relevante. No lo abandones nunca.</p>
+    </div>
+  </div>
+
+  <h3>🎯 Actividad: ¿Qué herramienta uso para…?</h3>
+  <div class="caja-desafio">
+    <p>Lee cada situación y haz clic en la herramienta que mejor encaje. Solo una es correcta por caso.</p>
+  </div>
+
+  <div class="tool-match" id="tool-match">
+    <div class="tool-caso" data-correcta="excalidraw">
+      <p><strong>Caso 1.</strong> Tengo que explicarle a mi equipo cómo se conectan la app, la base de datos y el servicio de autenticación. Quiero algo rápido y con aspecto informal.</p>
+      <div class="tool-opciones">
+        <button class="tool-btn" data-rta="excalidraw">✏️ Excalidraw</button>
+        <button class="tool-btn" data-rta="figjam">🎨 FigJam</button>
+        <button class="tool-btn" data-rta="whimsical">📊 Whimsical</button>
+        <button class="tool-btn" data-rta="papel">📝 Papel</button>
+      </div>
+    </div>
+
+    <div class="tool-caso" data-correcta="figjam">
+      <p><strong>Caso 2.</strong> Voy a presentar mi app al cliente la próxima semana. Necesito mockups con colores, tipografía profesional, y que el cliente pueda hacer clic entre pantallas.</p>
+      <div class="tool-opciones">
+        <button class="tool-btn" data-rta="excalidraw">✏️ Excalidraw</button>
+        <button class="tool-btn" data-rta="figjam">🎨 FigJam</button>
+        <button class="tool-btn" data-rta="whimsical">📊 Whimsical</button>
+        <button class="tool-btn" data-rta="papel">📝 Papel</button>
+      </div>
+    </div>
+
+    <div class="tool-caso" data-correcta="whimsical">
+      <p><strong>Caso 3.</strong> Mi app tiene 8 pasos desde que el usuario abre hasta que compra. Necesito un diagrama de flujo claro para que los desarrolladores entiendan la lógica.</p>
+      <div class="tool-opciones">
+        <button class="tool-btn" data-rta="excalidraw">✏️ Excalidraw</button>
+        <button class="tool-btn" data-rta="figjam">🎨 FigJam</button>
+        <button class="tool-btn" data-rta="whimsical">📊 Whimsical</button>
+        <button class="tool-btn" data-rta="papel">📝 Papel</button>
+      </div>
+    </div>
+
+    <div class="tool-caso" data-correcta="papel">
+      <p><strong>Caso 4.</strong> Estoy en una reunión con un cliente y me pide 3 ideas diferentes de cómo podría verse el home. Necesito explorar rápido, descartar 2 y quedarme con 1.</p>
+      <div class="tool-opciones">
+        <button class="tool-btn" data-rta="excalidraw">✏️ Excalidraw</button>
+        <button class="tool-btn" data-rta="figjam">🎨 FigJam</button>
+        <button class="tool-btn" data-rta="whimsical">📊 Whimsical</button>
+        <button class="tool-btn" data-rta="papel">📝 Papel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Regla de oro</h4>
+    <p>Si dudas, <strong>usa la herramienta más simple que resuelva el problema</strong>. Un martillo es mejor que un destornillador eléctrico para clavar un clavo.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 3 -->
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Cuándo es correcto saltar del papel directo a FigJam?</p>
+      <button class="opcion" data-op="a">Nunca — siempre valida en papel primero</button>
+      <button class="opcion" data-op="b">Cuando ya tienes experiencia</button>
+      <button class="opcion" data-op="c">Cuando el cliente tiene prisa</button>
+      <button class="opcion" data-op="d">Cuando el proyecto es grande</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Para qué sirve principalmente Whimsical?</p>
+      <button class="opcion" data-op="a">Para hacer mockups con colores</button>
+      <button class="opcion" data-op="b">Para programar la app</button>
+      <button class="opcion" data-op="c">Para diagramas de flujo y mapas visuales</button>
+      <button class="opcion" data-op="d">Para escribir documentación</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: Arquitectura →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — ARQUITECTURA Y MODELADO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <h2>4️⃣ 🏗️ Arquitectura y modelado</h2>
+  <p class="meta-modulo">⏱️ 45 minutos · 🧩 Cajas, flechas y decisiones que importan</p>
+
+  <div class="hero">
+    <h2>Antes de diseñar la pantalla, diseña el sistema.</h2>
+    <p class="lead">Una app no es solo lo que el usuario ve. Hay un sistema detrás con datos, servicios y reglas. Si no lo modelas, vas a descubrir problemas a mitad del proyecto — cuando ya es tarde.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧩 ¿Qué es la arquitectura de software?</h3>
+    <p>Es el mapa de las <strong>piezas grandes</strong> de un sistema y cómo se conectan. No te dice cómo se ve la pantalla, te dice <em>qué hay detrás</em>:</p>
+    <ul>
+      <li>📦 Dónde se guardan los datos (bases de datos, archivos, servicios externos).</li>
+      <li>⚙️ Qué hace la app "internamente" cuando el usuario toca un botón.</li>
+      <li>🔌 Con qué otros sistemas se comunica (pagos, autenticación, notificaciones).</li>
+      <li>🛡️ Qué partes son seguras y cuáles no.</li>
+    </ul>
+  </div>
+
+  <h3>🗂️ Los 4 diagramas que te salvarán</h3>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">📦</span>
+      <h3>Cajas y flechas</h3>
+      <p>El más simple. Una caja por cada componente, una flecha por cada conexión. Sirve para explicarle la app a <em>cualquier persona</em>.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🔄</span>
+      <h3>Flujo de datos</h3>
+      <p>Muestra cómo viaja la información. Quién se la envía a quién, en qué orden, con qué formato.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🧱</span>
+      <h3>Diagrama de clases</h3>
+      <p>Detalla las "cosas" del sistema (Usuario, Pedido, Producto) y cómo se relacionan. Más técnico.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🔁</span>
+      <h3>Diagrama de secuencia</h3>
+      <p>Cuenta una historia paso a paso: "El usuario hace clic → la app valida → el servidor responde → la pantalla muestra…"</p>
+    </div>
+  </div>
+
+  <h3>🧩 Actividad: Ordena el diagrama de la app del colegio</h3>
+  <div class="caja-desafio">
+    <p>Tienes 6 piezas sueltas. Arrastra cada una al lugar correcto para que el sistema funcione. <strong>Solo hay un orden válido.</strong></p>
+  </div>
+
+  <div class="diagram-game" id="diagram-game">
+    <p class="diagram-brief">📋 <em>"Una app donde los estudiantes ven las notas. El usuario entra con usuario y contraseña, ve una lista de materias con su calificación, y puede filtrar por trimestre."</em></p>
+    <div class="diagram-tray">
+      <span class="diagram-piece" draggable="true" data-id="app">📱 App móvil</span>
+      <span class="diagram-piece" draggable="true" data-id="auth">🔐 Servicio de login</span>
+      <span class="diagram-piece" draggable="true" data-id="api">🛣️ API REST</span>
+      <span class="diagram-piece" draggable="true" data-id="bd">🗄️ Base de datos</span>
+      <span class="diagram-piece" draggable="true" data-id="notif">🔔 Notificaciones</span>
+      <span class="diagram-piece" draggable="true" data-id="cache">⚡ Caché</span>
+    </div>
+    <div class="diagram-slots">
+      <div class="diagram-slot" data-espera="app" data-pos="1"><span class="slot-num">1</span><span class="slot-label">Punto de entrada</span></div>
+      <div class="diagram-slot" data-espera="auth" data-pos="2"><span class="slot-num">2</span><span class="slot-label">¿Quién eres?</span></div>
+      <div class="diagram-slot" data-espera="api" data-pos="3"><span class="slot-num">3</span><span class="slot-label">El "cerebro"</span></div>
+      <div class="diagram-slot" data-espera="bd" data-pos="4"><span class="slot-num">4</span><span class="slot-label">La "memoria"</span></div>
+      <div class="diagram-slot" data-espera="cache" data-pos="5"><span class="slot-num">5</span><span class="slot-label">Lo "rápido"</span></div>
+      <div class="diagram-slot" data-espera="notif" data-pos="6"><span class="slot-num">6</span><span class="slot-label">Lo "automático"</span></div>
+    </div>
+    <button class="btn-timer" id="btn-validar-diagrama">✓ Validar diagrama</button>
+    <p class="diagram-feedback" id="diagram-feedback"></p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Un buen diagrama se entiende en 30 segundos</h4>
+    <p>Si alguien necesita más de 30 segundos para entender tu diagrama, probablemente tiene demasiadas cajas. Divide en varios diagramas más simples en lugar de uno gigante.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 4 -->
+  <div class="quiz" data-quiz="4">
+    <h3>🎯 Mini-Quiz del Módulo 4</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Cuál es la función principal de un diagrama de arquitectura?</p>
+      <button class="opcion" data-op="a">Decidir los colores de la app</button>
+      <button class="opcion" data-op="b">Elegir el lenguaje de programación</button>
+      <button class="opcion" data-op="c">Mostrar las piezas del sistema y cómo se conectan</button>
+      <button class="opcion" data-op="d">Reemplazar al programador</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Cuántas cajas debería tener idealmente un buen diagrama?</p>
+      <button class="opcion" data-op="a">Las más que se pueda, para que se vea completo</button>
+      <button class="opcion" data-op="b">Las mínimas para que se entienda en 30 segundos</button>
+      <button class="opcion" data-op="c">Exactamente 5</button>
+      <button class="opcion" data-op="d">Una sola caja que diga "la app"</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Prototipado →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — PROTOTIPADO RÁPIDO
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>5️⃣ 📱 Prototipado rápido</h2>
+  <p class="meta-modulo">⏱️ 45 minutos · 🖱️ Clics que cuentan una historia</p>
+
+  <div class="hero">
+    <h2>Un buen prototipo cabe en 3 clics.</h2>
+    <p class="lead">Un prototipo es una simulación interactiva. No es código. No es bonito. <strong>Cuenta una historia</strong>: el usuario hace esto, ve esto otro, llega a un resultado.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🎬 ¿Qué es un prototipo navegable?</h3>
+    <p>Es una serie de pantallas conectadas. El usuario hace clic en un botón y la app "salta" a otra pantalla. Así de simple. <strong>No hay base de datos, no hay servidor, no hay código real</strong>. Solo clics que llevan a otros clics.</p>
+    <p>Sirve para tres cosas:</p>
+    <ul>
+      <li>🧪 <strong>Probar con usuarios reales</strong> antes de codificar (te ahorra meses).</li>
+      <li>🤝 <strong>Comunicar la visión</strong> al equipo y al cliente (todos ven lo mismo).</li>
+      <li>🔁 <strong>Iterar rápido</strong>: cambiar una pantalla toma 5 minutos, no 5 días.</li>
+    </ul>
+  </div>
+
+  <h3>📐 Lo-fi vs Hi-fi: cuándo usar cada uno</h3>
+
+  <div class="cuadricula-2">
+    <div class="comp-lado bueno">
+      <h4>📝 Lo-fi (baja fidelidad)</h4>
+      <ul>
+        <li>✅ Hecho en papel o wireframes.</li>
+        <li>✅ Rápido de cambiar.</li>
+        <li>✅ Ideal para <em>explorar</em> ideas.</li>
+        <li>❌ Menos "creíble" para un cliente.</li>
+      </ul>
+    </div>
+    <div class="comp-lado malo">
+      <h4>🎨 Hi-fi (alta fidelidad)</h4>
+      <ul>
+        <li>✅ Colores, tipografía, imágenes reales.</li>
+        <li>✅ Se siente "terminado".</li>
+        <li>✅ Bueno para <em>presentar</em> al cliente.</li>
+        <li>❌ Tarda más en cambiarse.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>🖱️ Actividad: Recorre el prototipo de "Notas del Colegio"</h3>
+  <div class="caja-desafio">
+    <p>Haz clic en cada zona activa (<span class="hot-cursor">🟧 naranja</span>) para navegar. Llega a la pantalla final para ganar la insignia.</p>
+  </div>
+
+  <div class="proto-wrap">
+    <div class="proto-phone" id="proto-phone">
+      <div class="proto-status">9:41 · 🏫 Colegio</div>
+      <div class="proto-screen activo" data-pantalla="1">
+        <h4>Mis notas</h4>
+        <p class="proto-sub">Trimestre 2 · 2026</p>
+        <div class="proto-card">📐 Matemáticas <span class="proto-num">4.5</span></div>
+        <div class="proto-card">📚 Español <span class="proto-num">3.8</span></div>
+        <div class="proto-card">🧪 Química <span class="proto-num">4.2</span></div>
+        <div class="proto-card">🌍 Sociales <span class="proto-num">3.5</span></div>
+        <button class="proto-hot" data-ir="2">🔍 Ver detalle de una materia</button>
+      </div>
+      <div class="proto-screen" data-pantalla="2">
+        <button class="proto-back" data-ir="1">← Volver</button>
+        <h4>📐 Matemáticas</h4>
+        <p class="proto-sub">Detalle del trimestre</p>
+        <div class="proto-card">Parcial 1 <span class="proto-num">4.0</span></div>
+        <div class="proto-card">Parcial 2 <span class="proto-num">4.5</span></div>
+        <div class="proto-card">Talleres <span class="proto-num">5.0</span></div>
+        <div class="proto-final">📊 Nota final: <strong>4.5</strong></div>
+        <button class="proto-hot" data-ir="3">📈 Ver gráfica de evolución</button>
+      </div>
+      <div class="proto-screen" data-pantalla="3">
+        <button class="proto-back" data-ir="2">← Volver</button>
+        <h4>📈 Evolución</h4>
+        <p class="proto-sub">Cómo han cambiado tus notas</p>
+        <div class="proto-chart">
+          <div class="chart-bar" style="--h: 60%"><span>3.0</span></div>
+          <div class="chart-bar" style="--h: 80%"><span>4.0</span></div>
+          <div class="chart-bar" style="--h: 90%"><span>4.5</span></div>
+          <div class="chart-bar chart-actual" style="--h: 90%"><span>4.5</span></div>
+        </div>
+        <p class="proto-tip">📈 ¡Has mejorado 1.5 puntos este trimestre!</p>
+        <div class="proto-win">🎉 ¡Recorriste el prototipo completo!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>🎯 Regla de los 3 clics</h4>
+    <p>Si un usuario no llega a su objetivo principal en máximo 3 clics, tu diseño probablemente tiene pantallas de más o información oculta. Simplifica antes de añadir.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 5 -->
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la diferencia principal entre un prototipo y el producto final?</p>
+      <button class="opcion" data-op="a">El prototipo es más bonito</button>
+      <button class="opcion" data-op="b">El prototipo es una simulación sin código real, el producto final sí es código</button>
+      <button class="opcion" data-op="c">No hay diferencia</button>
+      <button class="opcion" data-op="d">El producto final se ve peor</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cuándo conviene hacer un prototipo <em>lo-fi</em>?</p>
+      <button class="opcion" data-op="a">Cuando todavía estás explorando ideas</button>
+      <button class="opcion" data-op="b">Cuando vas a presentarlo al cliente final</button>
+      <button class="opcion" data-op="c">Cuando ya tienes el código listo</button>
+      <button class="opcion" data-op="d">Cuando el proyecto es pequeño</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Ir al cierre →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — CIERRE
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>6️⃣ 🏆 Cierre</h2>
+  <p class="meta-modulo">⏱️ 5 minutos · 🎉 Lo que aprendiste, lo que sigue</p>
+
+  <div class="hero">
+    <h2>✏️ ¡Lo lograste!</h2>
+    <p class="lead">Acabas de recorrer el camino completo del diseño: de la pregunta en blanco al prototipo navegable. Pocos estudiantes de tu edad han llegado tan lejos.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🧠</span>
+      <h3>Pensar antes de dibujar</h3>
+      <p>Ya sabes que el diseño empieza con preguntas, no con pixels.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">✏️</span>
+      <h3>Boceto en papel</h3>
+      <p>Dominas el arma más rápida y honesta del diseñador.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🛠️</span>
+      <h3>Herramientas digitales</h3>
+      <p>Sabes cuándo saltar del papel a Excalidraw, FigJam o Whimsical.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🏗️</span>
+      <h3>Arquitectura y modelado</h3>
+      <p>Puedes dibujar el sistema completo, no solo la pantalla.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">📱</span>
+      <h3>Prototipado rápido</h3>
+      <p>Construyes historias interactivas que se pueden probar con usuarios.</p>
+    </div>
+  </div>
+
+  <h3>🎯 3 ideas para llevarte</h3>
+  <div class="caja-destacada">
+    <ol>
+      <li><strong>Diseñar es decidir.</strong> Cada línea, color y botón comunica algo. Si no lo decidiste tú, lo decidió el azar.</li>
+      <li><strong>Empieza en papel.</strong> Es más rápido, más honesto y te permite fallar sin culpa.</li>
+      <li><strong>Un buen prototipo cabe en 3 clics.</strong> Si tu usuario se pierde, el problema no es él: es tu diseño.</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💭 Reflexión final</h4>
+    <p>Diseñar bien no es un talento con el que se nace: es una <strong>disciplina que se entrena</strong>. Cada vez que te detienes a preguntar <em>¿quién? / ¿qué intenta? / ¿qué lo impide?</em>, estás un poco más cerca de crear algo que la gente realmente quiera usar.</p>
+  </div>
+
+  <h3>🚀 ¿Qué sigue?</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎓</span>
+      <h3>Clase 6 — Prototipado avanzado</h3>
+      <p>Componentes interactivos, animaciones y pruebas con usuarios reales.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">💻</span>
+      <h3>Vuelve al curso de C#</h3>
+      <p>Ya sabes diseñar — ahora vas a programar tus propios prototipos con código real.</p>
+    </div>
+  </div>
+
+  <div class="cierre">
+    <h2>✏️ ¡Lo lograste!</h2>
+    <p>Tienes las bases para diseñar productos que la gente quiera usar. El siguiente paso es practicar — y equivocarte — una y otra vez.</p>
+    <button class="btn-final" onclick="reiniciarCurso()">🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <p>✏️ Clase 5: Introducción al Diseño · Curso de Análisis y Diseño de Software · 2026</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

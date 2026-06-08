@@ -53,6 +53,7 @@ once/
 ├── Algoritmos con C#/
 │   ├── siete-curso-funciones-csharp/   ← Class 7
 │   ├── diez-curso-poo-csharp/          ← Class 10
+│   ├── once-curso-arreglos-csharp/     ← Class 11
 │   └── doce-curso-funciones-csharp/    ← Class 12
 └── analisis-diseno/
     ├── uno-curso-analisis-diseno/      ← Class 1
@@ -95,6 +96,7 @@ State is persisted to `localStorage` under a course-specific key:
 | --------------------------------------------------------- | ---------------------------- |
 | `Algoritmos con C#/siete-curso-funciones-csharp/`         | `curso-csharp-funciones-7`   |
 | `Algoritmos con C#/diez-curso-poo-csharp/`                | `curso-csharp-poo-10`        |
+| `Algoritmos con C#/once-curso-arreglos-csharp/`           | `curso-csharp-arreglos-11`   |
 | `Algoritmos con C#/doce-curso-funciones-csharp/`         | `curso-csharp-funciones`     |
 | `analisis-diseno/uno-curso-analisis-diseno/`              | `curso-analisis-diseno`      |
 | `analisis-diseno/dos-curso-requerimientos/`               | `curso-requerimientos`       |
@@ -139,7 +141,7 @@ The hub renders four animated stat counters. When you add a class you must also 
 | Horas           | `stat-horas`          | total estimated hours                   |
 | Tu progreso     | `stat-progreso`       | computed live from `localStorage`       |
 
-The hub also binds number-key shortcuts (`1`…`7`) that open the matching class — add a new branch to its `keydown` handler alongside the existing ones.
+The hub also binds number-key shortcuts (`1`…`8` and counting) that open the matching class — add a new branch to its `keydown` handler alongside the existing ones. Note the existing handler uses two selector styles: csharp cards are looked up by `[data-storage="…"]`, while AD cards are looked up by class (`.clase-card.ad-1`, etc.). Match whichever pattern your new card's siblings use, or standardize on one if you're adding a fresh family.
 
 ### Visual identity per course
 
@@ -159,7 +161,7 @@ Each course has a deliberately distinct color theme so students can tell them ap
 2. Copy `index.html`, `estilos.css`, `app.js` from the most recent similar class as a starting point.
 3. Adjust `TOTAL_MODULOS`, the `localStorage` key, the badge names, and the color palette.
 4. Add a `<a class="clase-card ...">` entry to `/index.html` (the hub) with the correct URL-encoded path, theme class, and matching `data-storage` attribute.
-5. Update the hub's `TOTALES_MODULOS` map in `/app.js` and bump any of the stat counters (`stat-cursos`, `stat-clases`, `stat-horas`) whose values changed in `/index.html`. If you added the 8th class, also wire its keyboard shortcut in the hub's `keydown` handler.
+5. Update the hub's `TOTALES_MODULOS` map in `/app.js` and bump any of the stat counters (`stat-cursos`, `stat-clases`, `stat-horas`) whose values changed in `/index.html`. Wire the new class's keyboard shortcut in the hub's `keydown` handler. Also add the new key to the `keys` array used by the welcome-back toast handler (it has to be kept in sync with `TOTALES_MODULOS` separately — both lists currently duplicate the full set of course keys).
 6. Run the three sanity checks above on the new files.
 
 ## Known gotcha
