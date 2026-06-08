@@ -39,7 +39,8 @@ function cargarProgresoPorClase() {
     'curso-requerimientos':     7,
     'curso-elicitacion':        8,
     'curso-documentacion':      8,
-    'curso-introduccion-diseno': 6   // 0..5 (m6 es opcional/final)
+    'curso-introduccion-diseno': 6,   // 0..5 (m6 es opcional/final)
+    'curso-integrador':          6    // 0..5 (m6 es opcional/final)
   };
 
   let totalGlobal = 0;
@@ -101,11 +102,11 @@ function actualizarBarraClase(card, pct) {
 function animarStats() {
   // Los 3 primeros son fijos
   animarNumero(document.getElementById('stat-cursos'),  0, 4,  800);
-  animarNumero(document.getElementById('stat-clases'),  0, 6,  900);
+  animarNumero(document.getElementById('stat-clases'),  0, 7,  900);
   // El cuarto (horas) tiene "+" al final
   const elHoras = document.getElementById('stat-horas');
   if (elHoras) {
-    animarNumero(elHoras, 0, 22, 1000, valor => valor + '+');
+    animarNumero(elHoras, 0, 26, 1000, valor => valor + '+');
   }
   // El de progreso ya se actualiza en cargarProgresoPorClase
 }
@@ -176,6 +177,9 @@ document.addEventListener('keydown', (e) => {
   } else if (e.key === '9') {
     const card = document.querySelector('.clase-card.ad-5');
     if (card) card.click();
+  } else if (e.key === '0') {
+    const card = document.querySelector('.clase-card.ad-6');
+    if (card) card.click();
   }
 });
 
@@ -184,7 +188,8 @@ window.addEventListener('load', () => {
   // Verifica si el usuario ha avanzado en alguna clase
   const keys = ['curso-csharp-funciones-7', 'curso-csharp-poo-10', 'curso-csharp-arreglos-11',
                 'curso-csharp-funciones', 'curso-analisis-diseno', 'curso-requerimientos',
-                'curso-elicitacion', 'curso-documentacion', 'curso-introduccion-diseno'];
+                'curso-elicitacion', 'curso-documentacion', 'curso-introduccion-diseno',
+                'curso-integrador'];
 
   let tienePrograma = false;
   let ultimaClase = null;
@@ -205,7 +210,7 @@ window.addEventListener('load', () => {
     }, 600);
   } else {
     setTimeout(() => {
-      mostrarToast('💡 Tip: usa las teclas 1-9 para saltar rápido a una clase.');
+      mostrarToast('💡 Tip: usa las teclas 1-9 y 0 para saltar rápido a una clase.');
     }, 1200);
   }
 });

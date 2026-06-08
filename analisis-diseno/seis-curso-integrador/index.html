@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧩 El Caso Completo — Clase 6</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- =================== HEADER + PROGRESO =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🧩</span>
+    <div>
+      <h1>El Caso Completo</h1>
+      <p class="subtitulo">Clase 6 · De la idea al proyecto en equipo</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span id="porcentaje">0%</span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">1️⃣ Caso</button>
+  <button class="btn-modulo" data-modulo="2">2️⃣ Decisiones</button>
+  <button class="btn-modulo" data-modulo="3">3️⃣ Equipo</button>
+  <button class="btn-modulo" data-modulo="4">4️⃣ Plantillas</button>
+  <button class="btn-modulo" data-modulo="5">5️⃣ Sustentación</button>
+  <button class="btn-modulo" data-modulo="6">🏁 Cierre</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🧩 ¡Bienvenid@ a la Clase 6!</h2>
+    <p class="lead">Recorriste 5 clases separadas: análisis, requerimientos, elicitación, documentación, diseño. Hoy las <strong>juntamos todas</strong> en un solo proyecto. Y al final, armas tu propio equipo para hacer el tuyo.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">⏱️</span>
+      <h3>Duración</h3>
+      <p>3 horas y 45 minutos en 7 módulos.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Ver cómo las 5 clases se conectan en un proyecto real y salir listo para hacer el tuyo con tu equipo.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🏆</span>
+      <h3>Resultado</h3>
+      <p>Vas a tener un mini-portafolio conceptual: caso visto, equipo armado, checklist listo, presentación ensayada.</p>
+    </div>
+  </div>
+
+  <div class="caja-destacada">
+    <h3>🗺️ Ruta de la clase</h3>
+    <ol class="ruta">
+      <li><strong>Bienvenida (10 min):</strong> cómo se conecta todo.</li>
+      <li><strong>Módulo 1 (60 min):</strong> 🧩 <strong>El caso completo</strong> — un proyecto, las 5 fases, paso a paso. <em>El más importante.</em></li>
+      <li><strong>Módulo 2 (30 min):</strong> 🤔 Las decisiones detrás del ejemplo: por qué esto y no aquello.</li>
+      <li><strong>Módulo 3 (45 min):</strong> 👥 Tu proyecto en equipo: arma tu grupo, elige tema.</li>
+      <li><strong>Módulo 4 (45 min):</strong> 📋 Plantillas y checklist: todo lo que tienes que entregar.</li>
+      <li><strong>Módulo 5 (25 min):</strong> 🎤 Cómo hacer una buena sustentación.</li>
+      <li><strong>Cierre (10 min):</strong> 🏆 Lo que te llevas, lo que sigue.</li>
+    </ol>
+  </div>
+
+  <div class="caja-recordatorio">
+    <h4>🔁 Lo que ya sabes (y se conecta HOY)</h4>
+    <ul>
+      <li><strong>Clase 1:</strong> el ciclo de vida y las metodologías. Hoy eliges una para el caso.</li>
+      <li><strong>Clase 2:</strong> requisitos funcionales y no funcionales. Hoy los escribes para la cancha.</li>
+      <li><strong>Clase 3:</strong> elicitar con entrevistas, encuestas y observación. Hoy las aplicas a un proyecto real.</li>
+      <li><strong>Clase 4:</strong> documentar con casos de uso y SRS. Hoy produces un mini-SRS.</li>
+      <li><strong>Clase 5:</strong> diseñar en papel, después digital, después prototipo. Hoy haces un wireframe.</li>
+    </ul>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Una idea para que te quede</h4>
+    <p>Las 5 clases no son 5 materias: son <strong>5 vistas del mismo proyecto</strong>. Un buen analista no piensa "ahora hago análisis, después hago diseño". Piensa el proyecto entero, todo el tiempo, desde cada ángulo a la vez.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1 →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — EL CASO COMPLETO (REFERENCIA, 60 min)
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>1️⃣ 🧩 El caso completo: paso a paso</h2>
+  <p class="meta-modulo">⏱️ 60 minutos · 🎯 Un proyecto visto desde 5 ángulos</p>
+
+  <!-- ⚡ MOMENTO WOW: Línea del tiempo -->
+  <div class="timeline-sticky" id="timeline-sticky">
+    <div class="timeline-track">
+      <div class="timeline-progress" id="timeline-progress"></div>
+      <div class="timeline-node" data-fase="1">
+        <span class="tl-num">1</span>
+        <span class="tl-label">🔍 Análisis</span>
+      </div>
+      <div class="timeline-node" data-fase="2">
+        <span class="tl-num">2</span>
+        <span class="tl-label">📋 Requerimientos</span>
+      </div>
+      <div class="timeline-node" data-fase="3">
+        <span class="tl-num">3</span>
+        <span class="tl-label">💬 Elicitación</span>
+      </div>
+      <div class="timeline-node" data-fase="4">
+        <span class="tl-num">4</span>
+        <span class="tl-label">📜 Documentación</span>
+      </div>
+      <div class="timeline-node" data-fase="5">
+        <span class="tl-num">5</span>
+        <span class="tl-label">🎨 Diseño</span>
+      </div>
+    </div>
+    <p class="timeline-hint" id="timeline-hint">Desplázate. Cada fase se ilumina al entrar en pantalla.</p>
+  </div>
+
+  <div class="hero">
+    <h2>Una sola idea, vista desde 5 ángulos.</h2>
+    <p class="lead">Vamos a tomar un proyecto real — reservar la cancha del colegio — y recorrerlo por las 5 fases que aprendiste. Misma idea, distinta lente en cada paso.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>📋 El brief</h3>
+    <p class="brief-texto">
+      <em>"Los estudiantes del colegio quieren reservar la cancha del colegio para jugar fútbol o basketball. Hoy se pelea por los turnos en una hoja pegada en la puerta. El profe de educación física y el coordinador quieren que esto se ordene. La idea: una app donde el estudiante ve la cancha en tiempo real, reserva su franja, y recibe confirmación."</em>
+    </p>
+  </div>
+
+  <h3>🔍 Fase 1 — Análisis (Clase 1)</h3>
+  <div class="fase-bloque" data-fase-bloque="1">
+    <p><strong>Pregunta de esta fase:</strong> ¿qué tipo de proyecto es esto y cómo lo vamos a organizar?</p>
+    <p>Antes de escribir una línea de código, hay que decidir cosas que parecen abstractas pero que después afectan todo:</p>
+    <ul>
+      <li>¿Es un proyecto nuevo o un reemplazo? <em>Es nuevo</em>: no existe un sistema actual formal.</li>
+      <li>¿Qué metodología nos sirve? Acá no hay un cliente corporativo con contratos firmados, somos estudiantes del colegio. <strong>Scrum</strong> es perfecto: sprints cortos (1 semana), revisión con usuarios reales, requisitos que se pueden ajustar.</li>
+      <li>¿Cuántos sprints? 4: 1) entender el problema, 2) construir el primer prototipo, 3) probar con usuarios, 4) pulir y entregar.</li>
+    </ul>
+    <div class="caja-tip">
+      <h4>💡 Por qué Scrum y no cascada</h4>
+      <p>Porque aquí los requisitos <em>van a cambiar</em>. Los estudiantes van a decir "yo también quiero reservar la sala de música", o "necesito invitar a un amigo". Cascada asume que el plan inicial es perfecto. Scrum dice "vamos ajustando sobre la marcha". Para un proyecto de colegio, Scrum gana siempre.</p>
+    </div>
+  </div>
+
+  <h3>📋 Fase 2 — Requerimientos (Clase 2)</h3>
+  <div class="fase-bloque" data-fase-bloque="2">
+    <p><strong>Pregunta de esta fase:</strong> ¿qué tiene que hacer el sistema y qué tan bien lo tiene que hacer?</p>
+    <p>No es "todo lo que se nos ocurra". Es <em>lo mínimo que resuelve el dolor principal</em>:</p>
+    <div class="cuadricula-2">
+      <div class="req-col">
+        <h4>🎯 Requisitos Funcionales (RF)</h4>
+        <ul>
+          <li><strong>RF-01:</strong> El sistema debe permitir al estudiante reservar una franja horaria disponible.</li>
+          <li><strong>RF-02:</strong> El sistema debe permitir al estudiante cancelar una reserva propia.</li>
+          <li><strong>RF-03:</strong> El sistema debe mostrar la disponibilidad de la cancha en tiempo real.</li>
+          <li><strong>RF-04:</strong> El sistema debe enviar una notificación al estudiante cuando su reserva se confirma.</li>
+        </ul>
+      </div>
+      <div class="req-col">
+        <h4>⚙️ Requisitos No Funcionales (RNF)</h4>
+        <ul>
+          <li><strong>RNF-01:</strong> Un usuario no puede tener más de 2 reservas activas simultáneamente.</li>
+          <li><strong>RNF-02:</strong> El sistema debe estar disponible 24/7 desde cualquier celular con internet.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>💬 Fase 3 — Elicitación (Clase 3)</h3>
+  <div class="fase-bloque" data-fase-bloque="3">
+    <p><strong>Pregunta de esta fase:</strong> ¿cómo sabemos que esos requisitos son los correctos?</p>
+    <p>No los inventamos: los <em>encontramos</em>. Tres técnicas, en este orden:</p>
+    <div class="cuadricula">
+      <div class="elic-tarjeta">
+        <span class="elic-num">1</span>
+        <h4>🎤 Entrevista al profe de ed. física</h4>
+        <p>3 preguntas clave:</p>
+        <ul>
+          <li>"¿Cuál es el mayor dolor con el sistema actual?"</li>
+          <li>"¿Quiénes usan la cancha y en qué horarios?"</li>
+          <li>"¿Qué reglas informales tienen?"</li>
+        </ul>
+      </div>
+      <div class="elic-tarjeta">
+        <span class="elic-num">2</span>
+        <h4>📊 Encuesta a estudiantes</h4>
+        <p>4 preguntas en Google Forms, enviada al WhatsApp del curso. Preguntamos: ¿a qué hora juegas? ¿qué tan seguido peleas por un turno? ¿usarías una app? ¿qué falta hoy?</p>
+      </div>
+      <div class="elic-tarjeta">
+        <span class="elic-num">3</span>
+        <h4>👀 Observación directa</h4>
+        <p>2 horas en la cancha un martes a las 4pm. Contamos: cuántos llegaron, cuánto esperaron, qué dijeron, qué conflictos hubo.</p>
+      </div>
+    </div>
+    <p>Lo que aprendimos: la pelea más común es entre los de 10° y los de 11° por la franja de 5pm. La observación destapó que a veces la hoja de papel se perdía y el último que la tenía "ganaba". <em>Eso no salió en la entrevista ni en la encuesta</em>. Por eso se usan las 3 técnicas.</p>
+  </div>
+
+  <h3>📜 Fase 4 — Documentación (Clase 4)</h3>
+  <div class="fase-bloque" data-fase-bloque="4">
+    <p><strong>Pregunta de esta fase:</strong> ¿cómo dejamos todo esto por escrito de manera profesional?</p>
+    <p>Dos casos de uso clave (versión abreviada):</p>
+
+    <div class="cu-doc">
+      <h4>📋 CU-01: Reservar Cancha</h4>
+      <ul>
+        <li><strong>Actor:</strong> Estudiante</li>
+        <li><strong>Precondiciones:</strong> el estudiante está autenticado, la franja está disponible, no tiene ya 2 reservas activas.</li>
+        <li><strong>Flujo principal:</strong> 1) El estudiante abre la app. 2) Selecciona fecha y hora. 3) El sistema muestra canchas y franjas disponibles. 4) El estudiante elige una franja. 5) El sistema valida y registra. 6) El sistema envía confirmación.</li>
+        <li><strong>Excepciones:</strong> E1) Si la franja ya está ocupada, el sistema sugiere la siguiente disponible. E2) Si el estudiante ya tiene 2 reservas, el sistema le pide cancelar una primero.</li>
+      </ul>
+    </div>
+
+    <div class="cu-doc">
+      <h4>📋 CU-02: Cancelar Reserva</h4>
+      <ul>
+        <li><strong>Actor:</strong> Estudiante</li>
+        <li><strong>Precondiciones:</strong> el estudiante tiene al menos 1 reserva activa.</li>
+        <li><strong>Flujo principal:</strong> 1) El estudiante abre "Mis reservas". 2) Selecciona la reserva a cancelar. 3) Confirma la cancelación. 4) El sistema libera la franja y notifica.</li>
+        <li><strong>Excepciones:</strong> E1) Si la cancelación ocurre con menos de 30 min de anticipación, el sistema pide confirmación adicional.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>🎨 Fase 5 — Diseño (Clase 5)</h3>
+  <div class="fase-bloque" data-fase-bloque="5">
+    <p><strong>Pregunta de esta fase:</strong> ¿cómo se ve y cómo se siente usar la app?</p>
+    <p>Tres wireframes de baja fidelidad (hechos a mano en clase 5; aquí digitalizados):</p>
+
+    <div class="wire-grid">
+      <div class="wire-card">
+        <h4>📱 Home — selector</h4>
+        <div class="wire-mock">
+          <div class="wm-status">9:41</div>
+          <div class="wm-title">Reservar cancha</div>
+          <div class="wm-day">📅 Martes 10 jun</div>
+          <div class="wm-slots">
+            <div class="wm-slot wm-slot-on">3pm</div>
+            <div class="wm-slot wm-slot-off">4pm</div>
+            <div class="wm-slot wm-slot-on">5pm</div>
+            <div class="wm-slot wm-slot-off">6pm</div>
+          </div>
+          <div class="wm-cta">Reservar 5pm</div>
+        </div>
+      </div>
+      <div class="wire-card">
+        <h4>📱 Confirmación</h4>
+        <div class="wire-mock">
+          <div class="wm-status">9:41</div>
+          <div class="wm-title wm-tick">✓ ¡Listo!</div>
+          <div class="wm-info">Cancha reservada</div>
+          <div class="wm-big">Martes 10 jun · 5pm</div>
+          <div class="wm-sub">Te enviamos un recordatorio 1h antes</div>
+          <div class="wm-cta">Volver al inicio</div>
+        </div>
+      </div>
+      <div class="wire-card">
+        <h4>📱 Mis reservas</h4>
+        <div class="wire-mock">
+          <div class="wm-status">9:41</div>
+          <div class="wm-title">Mis reservas (1)</div>
+          <div class="wm-res">
+            <div class="wm-res-info">📅 Mar 10 jun<br>⏰ 5pm</div>
+            <div class="wm-cancel">Cancelar</div>
+          </div>
+          <div class="wm-res">
+            <div class="wm-res-info">📅 Jue 12 jun<br>⏰ 4pm</div>
+            <div class="wm-cancel">Cancelar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="caja-tip">
+      <h4>🎯 Después del wireframe viene el prototipo navegable</h4>
+      <p>En el proyecto real de tu equipo, este wireframe se convierte en un prototipo en Figma/Excalidraw donde se puede hacer clic entre pantallas. Luego se prueba con 3-5 usuarios reales. Y solo entonces, se programa.</p>
+    </div>
+  </div>
+
+  <!-- Síntesis visual: drag-game -->
+  <h3>🧩 Síntesis visual: conecta cada artefacto con su fase</h3>
+  <div class="caja-desafio">
+    <p>Arrastra cada artefacto a la fase del proceso donde se produce. Si aciertas, el slot se ilumina en verde. Si fallas, se ilumina en rojo y el artefacto vuelve a la bandeja.</p>
+  </div>
+
+  <div class="sintesis-game" id="sintesis-game">
+    <div class="sintesis-tray">
+      <div class="sintesis-card" draggable="true" data-artefacto="rf">📋 Lista de RF y RNF</div>
+      <div class="sintesis-card" draggable="true" data-artefacto="entrevista">🎤 Notas de entrevista</div>
+      <div class="sintesis-card" draggable="true" data-artefacto="srs">📜 Mini-SRS con casos de uso</div>
+      <div class="sintesis-card" draggable="true" data-artefacto="wireframe">🎨 Wireframe navegable</div>
+      <div class="sintesis-card" draggable="true" data-artefacto="metodologia">🧭 Decisión: Scrum + 4 sprints</div>
+    </div>
+    <div class="sintesis-board">
+      <div class="sintesis-slot" data-espera="metodologia">
+        <span class="ss-num">1</span>
+        <span class="ss-label">🔍 Análisis</span>
+        <p class="ss-hint">¿Qué metodología y plan de trabajo?</p>
+      </div>
+      <div class="sintesis-slot" data-espera="entrevista">
+        <span class="ss-num">2</span>
+        <span class="ss-label">💬 Elicitación</span>
+        <p class="ss-hint">¿Qué dicen los usuarios?</p>
+      </div>
+      <div class="sintesis-slot" data-espera="rf">
+        <span class="ss-num">3</span>
+        <span class="ss-label">📋 Requerimientos</span>
+        <p class="ss-hint">¿Qué debe hacer el sistema?</p>
+      </div>
+      <div class="sintesis-slot" data-espera="srs">
+        <span class="ss-num">4</span>
+        <span class="ss-label">📜 Documentación</span>
+        <p class="ss-hint">¿Cómo lo escribimos formalmente?</p>
+      </div>
+      <div class="sintesis-slot" data-espera="wireframe">
+        <span class="ss-num">5</span>
+        <span class="ss-label">🎨 Diseño</span>
+        <p class="ss-hint">¿Cómo se ve y se usa?</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="caja-destacada">
+    <h3>🎯 La gran conclusión del Módulo 1</h3>
+    <p>Mira la línea del tiempo arriba. <strong>5 clases, 1 sola idea</strong>. Eso es lo que vas a hacer en equipo: aplicar las 5 fases a un proyecto que elijas tú.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 1 -->
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿En qué orden recorriste las fases del caso?</p>
+      <button class="opcion" data-op="a">Análisis → Elicitación → Requerimientos → Documentación → Diseño</button>
+      <button class="opcion" data-op="b">Diseño → Análisis → Elicitación → Requerimientos → Documentación</button>
+      <button class="opcion" data-op="c">Documentación → Análisis → Diseño → Elicitación → Requerimientos</button>
+      <button class="opcion" data-op="d">El orden da igual, todo se hace al tiempo</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Qué artefacto NO produce la fase de Documentación?</p>
+      <button class="opcion" data-op="a">Casos de uso</button>
+      <button class="opcion" data-op="b">Wireframe navegable</button>
+      <button class="opcion" data-op="c">Mini-SRS</button>
+      <button class="opcion" data-op="d">Plantilla IEEE 830</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué técnica de elicitación usamos para saber qué pasaba en la cancha un martes a las 4pm?</p>
+      <button class="opcion" data-op="a">Entrevista al profe</button>
+      <button class="opcion" data-op="b">Encuesta en Google Forms</button>
+      <button class="opcion" data-op="c">Observación directa</button>
+      <button class="opcion" data-op="d">Lectura del reglamento</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Decisiones →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — DECISIONES Y POR QUÉ (30 min)
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>2️⃣ 🤔 Las decisiones detrás del ejemplo</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 🧠 Por qué esto y no aquello</p>
+
+  <div class="hero">
+    <h2>Toda decisión es una renuncia.</h2>
+    <p class="lead">Elegir una cosa siempre significa dejar otras fuera. Un buen analista sabe <em>defender</em> por qué eligió lo que eligió.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🤔 ¿Por qué…?</h3>
+    <p>Las 4 decisiones más discutibles del caso. Para cada una, una respuesta rápida y un criterio que te sirve para siempre.</p>
+  </div>
+
+  <div class="decision-grid">
+    <div class="dec-card">
+      <span class="dec-emoji">🧭</span>
+      <h4>¿Por qué Scrum y no cascada?</h4>
+      <p>Porque los requisitos van a cambiar. Scrum te obliga a mostrar el proyecto cada semana a usuarios reales, y a ajustar según lo que digan. Cascada asume que el primer plan es perfecto — cosa que casi nunca es.</p>
+      <p class="dec-criterio"><strong>Criterio general:</strong> si los requisitos van a cambiar, Scrum. Si están grabados en piedra (software de un satélite), cascada.</p>
+    </div>
+
+    <div class="dec-card">
+      <span class="dec-emoji">📋</span>
+      <h4>¿Por qué estos 4 RFs y no otros?</h4>
+      <p>El criterio que usamos fue: <em>¿resuelve el dolor principal del usuario?</em> El dolor principal es "peleo por un turno". Si una función no ataca eso directamente, no entra.</p>
+      <p class="dec-criterio"><strong>Criterio general:</strong> cada RF debe responder a un dolor concreto. Si no puedes decir qué dolor resuelve, probablemente no debería ser RF.</p>
+    </div>
+
+    <div class="dec-card">
+      <span class="dec-emoji">🚧</span>
+      <h4>¿Por qué "máx 2 reservas por usuario"?</h4>
+      <p>Porque en la observación descubrimos que 2 estudiantes acaparaban 5 franjas seguidas, lo que generaba las peleas. La regla es una <strong>regla de negocio</strong>: protege la equidad sin restringir demasiado.</p>
+      <p class="dec-criterio"><strong>Criterio general:</strong> las reglas de negocio surgen de lo que viste, no de lo que asumiste. La observación gana.</p>
+    </div>
+
+    <div class="dec-card">
+      <span class="dec-emoji">✏️</span>
+      <h4>¿Por qué wireframe antes que mockup?</h4>
+      <p>Porque al inicio lo que importa es <em>la estructura</em> (qué botones van dónde), no el color o la tipografía. Hacer un wireframe toma 10 minutos; un mockup, 1 hora. Y probablemente cambies la estructura 5 veces antes de quedar conforme.</p>
+      <p class="dec-criterio"><strong>Criterio general:</strong> estructura primero, decoración después. Los wireframes son baratos; los mockups caros.</p>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Cómo defender tus decisiones en la sustentación</h4>
+    <p>Si alguien te pregunta "¿por qué X?", responde con 3 partes: <strong>1) el criterio</strong> que usaste, <strong>2) la evidencia</strong> que lo soporta, <strong>3) la alternativa</strong> que descartaste y por qué. Eso es responder como un profesional, no como un alumno adivinando.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 2 -->
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Por qué elegimos Scrum para el caso de la cancha?</p>
+      <button class="opcion" data-op="a">Porque los requisitos van a cambiar y Scrum permite ajustar cada semana</button>
+      <button class="opcion" data-op="b">Porque es la metodología más popular del mercado</button>
+      <button class="opcion" data-op="c">Porque el profe lo pidió</button>
+      <button class="opcion" data-op="d">Porque Scrum es para proyectos cortos y la cancha es un proyecto corto</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿De dónde salió la regla de "máx 2 reservas por usuario"?</p>
+      <button class="opcion" data-op="a">De la entrevista al profe</button>
+      <button class="opcion" data-op="b">De la observación directa en la cancha</button>
+      <button class="opcion" data-op="c">De la encuesta a estudiantes</button>
+      <button class="opcion" data-op="d">De un manual de buenas prácticas</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Tu proyecto →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — TU PROYECTO EN EQUIPO (45 min)
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>3️⃣ 👥 Tu proyecto en equipo</h2>
+  <p class="meta-modulo">⏱️ 45 minutos · 🤝 De 1 a 5: cómo trabajar con otros</p>
+
+  <div class="hero">
+    <h2>Ya viste el caso. Ahora hazlo tuyo.</h2>
+    <p class="lead">En la próxima clase, tú y tu equipo presentan su proyecto. Hoy armas el equipo, eligen tema, y se reparten el trabajo.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🤝 Cómo formar el equipo</h3>
+    <ul>
+      <li>👥 <strong>Tamaño ideal:</strong> 3-5 personas. Menos de 3 se queda corto; más de 5 se vuelve un caos logístico.</li>
+      <li>🎯 <strong>Criterio de elección:</strong> que al menos 1 persona sepa escuchar (analista), 1 sepa dibujar (diseñador), y 1 sepa hablar en público (presentador).</li>
+      <li>📅 <strong>Regla de oro:</strong> agendar al menos 1 reunión antes de la próxima clase. Sin reunión, no hay proyecto.</li>
+    </ul>
+  </div>
+
+  <h3>📚 5 opciones de proyecto (elige 1)</h3>
+  <p>Estas opciones están pensadas para aplicarse al colegio. Si tu equipo tiene otra idea, también vale — pero <em>consúltala con el profe</em> antes de arrancar.</p>
+
+  <div class="cuadricula">
+    <div class="opcion-proy">
+      <span class="op-emoji">📅</span>
+      <h4>Opción A: Reservar la cancha</h4>
+      <p>El mismo ejemplo del Módulo 1. Útil si quieres replicar la estructura ya vista. 3-5 sprints, 5+ RF, 3+ RNF.</p>
+    </div>
+    <div class="opcion-proy">
+      <span class="op-emoji">🍽️</span>
+      <h4>Opción B: Pedidos del almuerzo</h4>
+      <p>App para pedir el almuerzo desde el salón. El problema actual: cola de 20 min, productos agotados. Actores: estudiante, personal de cafetería, admin.</p>
+    </div>
+    <div class="opcion-proy">
+      <span class="op-emoji">💻</span>
+      <h4>Opción C: Préstamo de tablets</h4>
+      <p>Sistema para llevar control de las tablets del colegio. El problema: registro en Excel, 0 trazabilidad. Reglas: multas, devoluciones, reportes.</p>
+    </div>
+    <div class="opcion-proy">
+      <span class="op-emoji">🏆</span>
+      <h4>Opción D: Inscripción a torneos</h4>
+      <p>App para inscribirse a torneos deportivos del colegio. El problema: inscripción manual, validación de requisitos complicada. Actores: estudiante, coordinador.</p>
+    </div>
+    <div class="opcion-proy">
+      <span class="op-emoji">🏥</span>
+      <h4>Opción E: Turnos para enfermería</h4>
+      <p>Sistema para pedir turno en la enfermería del colegio. Problema: estudiantes llegan y la enfermera no sabe a quién atender primero. Reglas: prioridad por urgencia.</p>
+    </div>
+  </div>
+
+  <h3>🛠️ Team builder: arma tu equipo ideal</h3>
+  <div class="caja-desafio">
+    <p>Haz clic en los roles para agregarlos a tu equipo. Necesitas entre 3 y 5 miembros, y al menos un <strong>Analista</strong> y un <strong>Diseñador</strong>.</p>
+  </div>
+
+  <div class="team-builder" id="team-builder">
+    <div class="roles-disponibles">
+      <h4>🎯 Roles disponibles (haz clic para agregar)</h4>
+      <div class="roles-botones" id="roles-botones">
+        <button class="rol-btn" data-rol="analista" data-nombre="Analista">🔍 Analista</button>
+        <button class="rol-btn" data-rol="disenador" data-nombre="Diseñador">🎨 Diseñador</button>
+        <button class="rol-btn" data-rol="documentador" data-nombre="Documentador">📜 Documentador</button>
+        <button class="rol-btn" data-rol="presentador" data-nombre="Presentador">🎤 Presentador</button>
+        <button class="rol-btn" data-rol="qa" data-nombre="QA / Tester">🧪 QA / Tester</button>
+      </div>
+    </div>
+    <div class="equipo-armado">
+      <h4>👥 Tu equipo (<span id="equipo-count">0</span>/5)</h4>
+      <div class="equipo-slots" id="equipo-slots">
+        <p class="equipo-vacio">Aún no agregaste a nadie. Haz clic en un rol para empezar.</p>
+      </div>
+    </div>
+    <div class="equipo-feedback" id="equipo-feedback"></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>📋 Lo que tiene que pasar esta semana</h4>
+    <ol>
+      <li>Reunirse (presencial o videollamada) y elegir UNA de las 5 opciones.</li>
+      <li>Asignar roles: ¿quién hace de analista, de diseñador, etc.?</li>
+      <li>Repartir los RFs: 1-2 RFs por persona.</li>
+      <li>Agendar una segunda reunión a mitad de semana para revisar avances.</li>
+      <li>Llegar a la próxima clase con todo listo para presentar.</li>
+    </ol>
+  </div>
+
+  <!-- QUIZ MÓDULO 3 -->
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Cuántas personas como mínimo debe tener un equipo?</p>
+      <button class="opcion" data-op="a">1 (puedes hacer todo solo)</button>
+      <button class="opcion" data-op="b">2 (con uno más es suficiente)</button>
+      <button class="opcion" data-op="c">3 (para tener roles diferenciados)</button>
+      <button class="opcion" data-op="d">6 o más (entre más, mejor)</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué rol se encarga de la elicitación (entrevistas, encuestas)?</p>
+      <button class="opcion" data-op="a">El Analista</button>
+      <button class="opcion" data-op="b">El Diseñador</button>
+      <button class="opcion" data-op="c">El Presentador</button>
+      <button class="opcion" data-op="d">El Documentador</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: Plantillas →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — PLANTILLAS Y CHECKLIST (45 min)
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <h2>4️⃣ 📋 Plantillas y checklist</h2>
+  <p class="meta-modulo">⏱️ 45 minutos · 📝 Todo lo que tienes que entregar</p>
+
+  <div class="hero">
+    <h2>Una checklist vale más que mil ideas.</h2>
+    <p class="lead">El día de la sustentación, una sola pregunta: ¿está todo lo que tiene que estar? Esta clase te da la lista exacta.</p>
+  </div>
+
+  <h3>📜 Plantilla SRS comprimida (mínimo viable)</h3>
+  <p>Tu equipo NO tiene que llenar las 30 secciones del IEEE 830. Para un proyecto de clase, esto es suficiente:</p>
+
+  <div class="plantilla-srs">
+    <div class="plant-bloque">
+      <h4>📌 1. Introducción (3 párrafos)</h4>
+      <ul>
+        <li><strong>Propósito:</strong> para qué existe este documento.</li>
+        <li><strong>Alcance:</strong> qué hace el sistema y qué NO hace.</li>
+        <li><strong>Usuarios:</strong> quiénes lo van a usar.</li>
+      </ul>
+    </div>
+    <div class="plant-bloque">
+      <h4>📌 2. Requisitos Funcionales (mínimo 5)</h4>
+      <p>Cada RF con un ID (RF-01, RF-02…) y una frase clara. Ejemplo: <em>"RF-01: El sistema debe permitir al estudiante reservar una franja horaria disponible."</em></p>
+    </div>
+    <div class="plant-bloque">
+      <h4>📌 3. Requisitos No Funcionales (mínimo 3)</h4>
+      <p>Cada RNF medible. Ejemplo: <em>"RNF-01: Un usuario no puede tener más de 2 reservas activas simultáneamente."</em></p>
+    </div>
+    <div class="plant-bloque">
+      <h4>📌 4. Casos de uso (mínimo 2 detallados)</h4>
+      <p>Cada uno con: ID, nombre, actor, precondiciones, flujo principal, al menos 1 excepción.</p>
+    </div>
+    <div class="plant-bloque">
+      <h4>📌 5. Wireframes (mínimo 3)</h4>
+      <p>Hechos a mano o digitales. Las 3 pantallas más importantes del flujo principal.</p>
+    </div>
+  </div>
+
+  <h3>✅ Checklist del día de la sustentación</h3>
+  <p>Revisa esto antes de presentar. Si todo está en verde, vas bien.</p>
+
+  <div class="checklist">
+    <div class="check-item"><span class="check-box"></span> <span class="check-text">Documento SRS con 5+ RF y 3+ RNF</span></div>
+    <div class="check-item"><span class="check-box"></span> <span class="check-text">2+ casos de uso con excepciones</span></div>
+    <div class="check-item"><span class="check-box"></span> <span class="check-text">3+ wireframes (hechos a mano o digitales)</span></div>
+    <div class="check-item"><span class="check-box"></span> <span class="check-text">Roles del equipo asignados por escrito</span></div>
+    <div class="check-item"><span class="check-box"></span> <span class="check-text">1 prototipo navegable o demo en vivo</span></div>
+    <div class="check-item"><span class="check-box"></span> <span class="check-text">Presentación de 5 min ensayada 3 veces</span></div>
+    <div class="check-item"><span class="check-box"></span> <span class="check-text">Todos los miembros pueden explicar qué hicieron</span></div>
+  </div>
+
+  <h3>⚠️ 3 errores que te cuestan puntos</h3>
+
+  <div class="caja-historia">
+    <h4>❌ Error 1: Requisitos vagos</h4>
+    <p><em>"El sistema debe ser fácil de usar."</em> ¿Fácil para quién? ¿En qué pantalla? ¿Cuánto tiempo? <strong>Siempre medible.</strong> Mejor: <em>"El estudiante debe poder reservar la cancha en máximo 3 clics."</em></p>
+  </div>
+
+  <div class="caja-historia">
+    <h4>❌ Error 2: Omitir excepciones en casos de uso</h4>
+    <p>Si tu caso de uso CU-01 Reservar Cancha no dice qué pasa cuando la franja ya está ocupada, te van a preguntar en la sustentación. <strong>Siempre 1-2 excepciones por caso de uso.</strong></p>
+  </div>
+
+  <div class="caja-historia">
+    <h4>❌ Error 3: Saltar la elicitación</h4>
+    <p>"Hicimos el proyecto basados en lo que nos imaginamos." → <strong>Pierdes 2 puntos</strong>. La elicitación es lo que demuestra que tu solución viene de <em>escuchar</em>, no de asumir.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Bonus: 1 entregable que destaca</h4>
+    <p>Si quieres diferenciarte del resto, agrega UNA página a tu SRS llamada <strong>"Bitácora de cambios"</strong>: cada decisión que tomó tu equipo, con fecha, razón, y quién la sugirió. Eso demuestra pensamiento profesional y le da a tu proyecto una capa extra de seriedad.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 4 -->
+  <div class="quiz" data-quiz="4">
+    <h3>🎯 Mini-Quiz del Módulo 4</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuántos requisitos funcionales (RF) como mínimo debe tener tu SRS?</p>
+      <button class="opcion" data-op="a">2</button>
+      <button class="opcion" data-op="b">5</button>
+      <button class="opcion" data-op="c">10</button>
+      <button class="opcion" data-op="d">Los que alcancen a hacer</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Qué pasa si omites las excepciones en un caso de uso?</p>
+      <button class="opcion" data-op="a">No pasa nada, son opcionales</button>
+      <button class="opcion" data-op="b">El caso de uso queda más corto</button>
+      <button class="opcion" data-op="c">Te van a preguntar en la sustentación y se nota que falta análisis</button>
+      <button class="opcion" data-op="d">El sistema no compila</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Sustentación →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — CÓMO HACER UNA BUENA SUSTENTACIÓN (25 min)
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>5️⃣ 🎤 Cómo hacer una buena sustentación</h2>
+  <p class="meta-modulo">⏱️ 25 minutos · 🎬 5 minutos que importan</p>
+
+  <div class="hero">
+    <h2>Tienes 5 minutos. Ni uno más.</h2>
+    <p class="lead">El día de la presentación, todo se reduce a 5 minutos. Lo que dices, cómo lo dices, y cuánto demoras. Aquí la estructura probada.</p>
+  </div>
+
+  <h3>⏱️ La estructura 5-minuto</h3>
+  <p>Cada minuto tiene un trabajo específico. Memoriza esto antes que cualquier otra cosa.</p>
+
+  <div class="estructura-5">
+    <div class="est-bloque">
+      <span class="est-tiempo">0:00 - 0:30</span>
+      <h4>🎯 Hook</h4>
+      <p>Una pregunta o un dato que enganche. <em>"¿Cuántos de ustedes han perdido 20 minutos peleando por la cancha del colegio?"</em> Si logras que levanten la mano, ganaste al público.</p>
+    </div>
+    <div class="est-bloque">
+      <span class="est-tiempo">0:30 - 1:30</span>
+      <h4>😣 Problema</h4>
+      <p>Qué dolía, a quién. Sé concreto. <em>"Los estudiantes pierden tiempo. El profe pierde el control. La hoja de papel se pierde."</em></p>
+    </div>
+    <div class="est-bloque">
+      <span class="est-tiempo">1:30 - 2:30</span>
+      <h4>💡 Solución</h4>
+      <p>Qué decidieron construir. <em>"Una app de reservas con 3 pantallas. RF-01 reservar, RF-02 cancelar, RF-03 ver disponibilidad."</em> Una sola idea, bien dicha.</p>
+    </div>
+    <div class="est-bloque">
+      <span class="est-tiempo">2:30 - 4:00</span>
+      <h4>📱 Demo</h4>
+      <p>Tu momento estelar. Muestra el prototipo EN VIVO. <em>Si no funciona, también está bien: ya lo cubrimos en los tips.</em></p>
+    </div>
+    <div class="est-bloque">
+      <span class="est-tiempo">4:00 - 5:00</span>
+      <h4>🌱 Cierre</h4>
+      <p>Qué aprendieron. Qué harían distinto. <em>"Aprendimos que elicitar con observación muestra lo que las entrevistas no muestran."</em> Termina con una pregunta al público.</p>
+    </div>
+  </div>
+
+  <h3>✨ 5 tips de oro</h3>
+  <div class="cuadricula">
+    <div class="tip-card">
+      <span class="tip-num">1</span>
+      <h4>🎤 Practica 3 veces</h4>
+      <p>Una vez solo, una vez con tu equipo, una vez frente a un espejo o un amigo. Si no practicas, se nota.</p>
+    </div>
+    <div class="tip-card">
+      <span class="tip-num">2</span>
+      <h4>🗣️ Todos hablan</h4>
+      <p>Que cada miembro diga al menos 1 frase. Nadie se esconde. Si todos hablaron, el equipo se ve sólido.</p>
+    </div>
+    <div class="tip-card">
+      <span class="tip-num">3</span>
+      <h4>📱 Tu prototipo es tu mejor diapositiva</h4>
+      <p>PowerPoint mata presentaciones. Mejor: 1 slide de contexto + demo en vivo + 1 slide de cierre. Nada más.</p>
+    </div>
+    <div class="tip-card">
+      <span class="tip-num">4</span>
+      <h4>😰 Si falla la demo, no entres en pánico</h4>
+      <p>Tener un plan B (video grabado, capturas de pantalla) es señal de profesionalismo, no de improvisación.</p>
+    </div>
+    <div class="tip-card">
+      <span class="tip-num">5</span>
+      <h4>❓ Cierra con una pregunta</h4>
+      <p><em>"¿Alguien ha tenido un problema similar en otro contexto?"</em> Eso convierte tu presentación en una conversación.</p>
+    </div>
+  </div>
+
+  <div class="caja-recordatorio">
+    <h4>🚫 El anti-tip (el único que necesitas evitar)</h4>
+    <p><strong>No leas slides.</strong> Si vas a leer, ¿para qué viniste? Si tienes que leer, mejor cuelga el SRS completo y dile al público "léanlo en casa". Tu trabajo es <em>contar la historia</em>, no leer.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 5 -->
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuánto debe durar la demo en una presentación de 5 minutos?</p>
+      <button class="opcion" data-op="a">30 segundos (lo más corta posible)</button>
+      <button class="opcion" data-op="b">1.5 minutos (es el momento estelar)</button>
+      <button class="opcion" data-op="c">3 minutos (es lo más importante)</button>
+      <button class="opcion" data-op="d">5 minutos (toda la presentación)</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué haces si tu demo falla EN VIVO frente al público?</p>
+      <button class="opcion" data-op="a">Activas tu plan B: capturas, video, o narración del flujo</button>
+      <button class="opcion" data-op="b">Te quedas en silencio 30 segundos</button>
+      <button class="opcion" data-op="c">Le pides al público que se ría</button>
+      <button class="opcion" data-op="d">Terminas abruptamente la presentación</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Ir al cierre →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — CIERRE (10 min)
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>6️⃣ 🏆 Cierre</h2>
+  <p class="meta-modulo">⏱️ 10 minutos · 🎉 Lo que aprendiste, lo que sigue</p>
+
+  <div class="hero">
+    <h2>🧩 ¡Lo lograste!</h2>
+    <p class="lead">Empezaste este curso sin saber qué era análisis de software. Terminas con un proyecto listo para presentar. Pocos estudiantes de tu edad llegan tan lejos.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🔍</span>
+      <h3>Clase 1: Análisis</h3>
+      <p>Entendiste el ciclo de vida y elegiste Scrum como metodología para tu proyecto.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">📋</span>
+      <h3>Clase 2: Requerimientos</h3>
+      <p>Distingues RF de RNF y puedes escribirlos de forma medible y testeable.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">💬</span>
+      <h3>Clase 3: Elicitación</h3>
+      <p>Dominas 3 técnicas para descubrir qué necesitan los usuarios sin asumir.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">📜</span>
+      <h3>Clase 4: Documentación</h3>
+      <p>Escribes casos de uso completos con excepciones y produces un mini-SRS.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🎨</span>
+      <h3>Clase 5: Diseño</h3>
+      <p>Bocetas en papel, prototipo navegable, y sabes cuándo saltar a digital.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🧩</span>
+      <h3>Clase 6: Integración</h3>
+      <p>Las 5 clases son 1 sola cosa. Lo aplicas en equipo. Lo presentas en 5 minutos.</p>
+    </div>
+  </div>
+
+  <h3>🎯 3 ideas para llevarte a tu proyecto</h3>
+  <div class="caja-destacada">
+    <ol>
+      <li><strong>El software se piensa antes de hacerse.</strong> Las 5 fases existen porque saltarse una cuesta el doble después.</li>
+      <li><strong>Las 5 clases son una sola cosa.</strong> Un buen analista no piensa "ahora hago análisis, después hago diseño". Piensa el proyecto entero, todo el tiempo.</li>
+      <li><strong>El mejor proyecto cabe en 5 minutos de presentación.</strong> Si no puedes explicarlo en 5 minutos, probablemente no lo entiendes bien. Y al revés: si lo entiendes, lo cuentas en 5 minutos.</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💭 Reflexión final</h4>
+    <p>Lo que aprendiste en estas 6 clases no es solo "cómo hacer análisis y diseño de software". Es una <strong>manera de pensar</strong>: antes de actuar, preguntar; antes de construir, elicitar; antes de decidir, documentar. Eso te va a servir en cualquier proyecto, en cualquier carrera, en cualquier cosa que hagas en equipo.</p>
+  </div>
+
+  <h3>🚀 ¿Qué sigue?</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">📅</span>
+      <h3>La próxima clase (la 7)</h3>
+      <p>Tú y tu equipo presentan su proyecto frente al curso. 5 minutos por equipo. ¡Lo que preparaste esta semana!</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">💻</span>
+      <h3>Después de la presentación</h3>
+      <p>Podrás aplicar todo esto en tus próximos proyectos de programación, y mucho mejor que el 90% de los que lo intenten sin haberlo visto antes.</p>
+    </div>
+  </div>
+
+  <div class="cierre">
+    <h2>🧩 ¡Lo lograste!</h2>
+    <p>Ya tienes las bases para pensar, documentar y diseñar software como un profesional. El siguiente paso es hacerlo, equivocarte, y volver a empezar. Buena suerte con tu proyecto.</p>
+    <button class="btn-final" onclick="reiniciarCurso()">🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <p>🧩 Clase 6: El Caso Completo · Curso de Análisis y Diseño de Software · 2026</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
