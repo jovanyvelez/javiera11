@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧪 Prototipado y Usabilidad — Clase 7</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- =================== HEADER + PROGRESO =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🧪</span>
+    <div>
+      <h1>Prototipado y Usabilidad</h1>
+      <p class="subtitulo">Clase 7 · De la pantalla estática a la experiencia probada</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span id="porcentaje">0%</span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">1️⃣ Prototipos</button>
+  <button class="btn-modulo" data-modulo="2">2️⃣ Papel</button>
+  <button class="btn-modulo" data-modulo="3">3️⃣ Digital</button>
+  <button class="btn-modulo" data-modulo="4">4️⃣ Construye</button>
+  <button class="btn-modulo" data-modulo="5">5️⃣ Usabilidad</button>
+  <button class="btn-modulo" data-modulo="6">6️⃣ Feria</button>
+  <button class="btn-modulo" data-modulo="7">🏁 Cierre</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🧪 ¡Bienvenid@ a la Clase 7!</h2>
+    <p class="lead">En la Clase 5 aprendiste a <strong>hacer prototipos</strong>. Hoy vas a <strong>hacerlos cobrar vida</strong>: navegar entre pantallas como si fueran una app real, y luego <strong>ponerlos a prueba con usuarios reales</strong>. Cerramos con una <strong>feria de exposición</strong> donde tu equipo presenta y recibe feedback.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">⏱️</span>
+      <h3>Duración</h3>
+      <p>3 horas y 45 minutos en 8 módulos.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Construir un prototipo navegable funcional, probarlo con un usuario real usando el método de pensar en voz alta, y presentarlo en una feria recibiendo feedback de tus compañeros.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🏆</span>
+      <h3>Resultado</h3>
+      <p>Vas a salir con un prototipo de 4-5 pantallas conectado, una mini-sesión de usabilidad hecha, y feedback documentado de al menos 2 compañeros.</p>
+    </div>
+  </div>
+
+  <div class="caja-destacada">
+    <h3>🗺️ Ruta de la clase</h3>
+    <ol class="ruta">
+      <li><strong>Bienvenida (5 min):</strong> cómo se conecta con la Clase 5 y 6.</li>
+      <li><strong>Módulo 1 (30 min):</strong> 🧭 ¿Qué es un prototipo navegable? Niveles de fidelidad.</li>
+      <li><strong>Módulo 2 (40 min):</strong> ✂️ Taller de prototipado en papel: 4 tarjetas conectadas con flechas.</li>
+      <li><strong>Módulo 3 (35 min):</strong> 🛠️ Herramientas digitales: Excalidraw, Figma, Marvel, Proto.io.</li>
+      <li><strong>Módulo 4 (35 min):</strong> 📱 Construye tu primer prototipo navegable (5 pantallas).</li>
+      <li><strong>Módulo 5 (30 min):</strong> 🗣️ Pruebas de usabilidad: el método de pensar en voz alta.</li>
+      <li><strong>Módulo 6 (45 min):</strong> 🎪 Laboratorio en parejas (20 min) + Feria de exposición (25 min).</li>
+      <li><strong>Cierre (5 min):</strong> 🏆 Lo que aprendiste y lo que sigue.</li>
+    </ol>
+  </div>
+
+  <div class="caja-recordatorio">
+    <h4>🔁 Lo que ya sabes (y se conecta HOY)</h4>
+    <ul>
+      <li><strong>Clase 5 — Introducción al Diseño:</strong> boceto en papel, herramientas digitales, arquitectura, modelado, prototipo rápido. Hoy <em>profundizamos</em> en lo último.</li>
+      <li><strong>Clase 6 — Integrador:</strong> tomaste un caso y lo llevaste a un proyecto en equipo. Hoy <em>lo pruebas con usuarios</em> y lo presentas.</li>
+      <li><strong>De Clases 1-4:</strong> ya sabes elicitar requerimientos, escribir casos de uso, y documentar con IEEE 830. Esos son los flujos que hoy se vuelven clicables.</li>
+    </ul>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Una idea para que te quede</h4>
+    <p>Un prototipo navegable <strong>no es la app real</strong>: es una <em>simulación honesta</em> que te permite equivocarte barato. Si cometes un error de flujo en un prototipo, lo corriges con un click. Si lo comites en código, lo corriges en una semana.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1 →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — ¿QUÉ ES UN PROTOTIPO NAVEGABLE? (30 min)
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>1️⃣ 🧭 ¿Qué es un prototipo navegable?</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 🎯 La pieza que convierte ideas en experiencias probables</p>
+
+  <div class="hero">
+    <h2>📱 Un prototipo navegable es una app que se hace la que es.</h2>
+    <p class="lead">No es la app real, pero <strong>parece</strong> y <strong>se comporta</strong> como tal. Haces clic en un botón y te lleva a otra pantalla. Llenas un formulario y te lleva a la confirmación. Es lo más cerca que puedes estar del producto final sin escribir una línea de código.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🤔 Definición rápida</h3>
+    <p>Un <strong>prototipo navegable</strong> es un conjunto de pantallas conectadas por acciones del usuario (clics, scrolls, gestos) que simula el flujo completo de una aplicación. Cada botón lleva a algún lado, cada formulario tiene una respuesta, y el usuario siente que está usando la app real aunque detrás solo haya imágenes y enlaces.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h3>📊 Los 4 niveles de fidelidad</h3>
+    <p>No todos los prototipos son iguales. Existen en una escala de <em>fidelidad</em> (qué tan cerca están del producto final):</p>
+    <div class="cuadricula">
+      <div class="tarjeta tarjeta-info">
+        <span class="icono-grande">✏️</span>
+        <h3>1. Boceto</h3>
+        <p><strong>Baja fidelidad.</strong> Un dibujo a mano en una servilleta. Sirve para pensar, no para mostrar.</p>
+      </div>
+      <div class="tarjeta tarjeta-info">
+        <span class="icono-grande">📋</span>
+        <h3>2. Wireframe</h3>
+        <p><strong>Baja-media fidelidad.</strong> Cajas grises que muestran dónde va cada elemento. Sin colores ni imágenes reales.</p>
+      </div>
+      <div class="tarjeta tarjeta-info">
+        <span class="icono-grande">🎨</span>
+        <h3>3. Mockup</h3>
+        <p><strong>Media-alta fidelidad.</strong> Visualmente acabado: colores, tipografías, imágenes. Pero <em>estático</em>: no hace clics.</p>
+      </div>
+      <div class="tarjeta tarjeta-info">
+        <span class="icono-grande">📱</span>
+        <h3>4. Prototipo navegable</h3>
+        <p><strong>Alta fidelidad funcional.</strong> Mockups conectados. Haces clic y todo responde. <em>Esto es lo que hoy vas a hacer.</em></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El clic cuenta una historia</h4>
+    <p>Un buen prototipo navegable no es solo un collage de pantallas bonitas: es una <strong>historia contada en clics</strong>. El usuario llega, hace algo, ve un resultado, y siente que la app "responde". Si tu prototipo no cuenta una historia, no es navegable: es un álbum de fotos.</p>
+  </div>
+
+  <div class="caja-recordatorio">
+    <h4>🔁 Diferencia con un mockup</h4>
+    <p>En la Clase 5 aprendiste a hacer <strong>mockups</strong> (pantallas estáticas con buen diseño visual). Un prototipo navegable va un paso más allá: esas pantallas <em>están conectadas</em>. Si en el mockup el botón "Iniciar sesión" era solo un dibujo, en el prototipo ese botón <em>te lleva a la pantalla de inicio</em>.</p>
+  </div>
+
+  <div class="caja-historia">
+    <h4>📖 La historia de la panadería</h4>
+    <p>Imagina que tu profesor te pide una app para pedir pan por WhatsApp. Un <em>boceto</em> sería el dibujo en la servilleta del panadero. Un <em>wireframe</em> sería la lista de qué botones van dónde. Un <em>mockup</em> sería una foto del celular con el diseño final. Un <em>prototipo navegable</em> sería: tú abres el celular, tocas "pedir 3 croissants", ves la pantalla de confirmación, ves el repartidor en camino, recibes el pan. <strong>Todo simulado, nada real</strong> — pero la experiencia se siente real.</p>
+  </div>
+
+  <!-- QUIZ 1 -->
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué define a un prototipo navegable?</p>
+      <button class="opcion" data-op="a">Es una imagen estática de la app terminada.</button>
+      <button class="opcion" data-op="b">Permite hacer clics y simula la experiencia de uso real.</button>
+      <button class="opcion" data-op="c">Es el código fuente del producto final.</button>
+      <button class="opcion" data-op="d">Se imprime en papel obligatoriamente.</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Cuál es la principal ventaja de un prototipo navegable sobre un mockup estático?</p>
+      <button class="opcion" data-op="a">Se ve más bonito y profesional.</button>
+      <button class="opcion" data-op="b">Permite probar la experiencia completa: clics, flujos, retroalimentación.</button>
+      <button class="opcion" data-op="c">Es más barato de producir.</button>
+      <button class="opcion" data-op="d">No necesita conexión a internet para usarlo.</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿En qué nivel de fidelidad se ubica un prototipo navegable de baja-media fidelidad?</p>
+      <button class="opcion" data-op="a">Alta fidelidad con código incluido.</button>
+      <button class="opcion" data-op="b">Baja-media fidelidad con animaciones y transiciones.</button>
+      <button class="opcion" data-op="c">Baja-media fidelidad: mantiene la estructura y la navegación, sin detalles visuales pulidos.</button>
+      <button class="opcion" data-op="d">No es un nivel de fidelidad; es otra categoría aparte.</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Taller de papel →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — TALLER DE PAPEL (40 min)
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>2️⃣ ✂️ Taller: del boceto al prototipo en papel</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · ✋ El arma secreta del principiante (y de los expertos)</p>
+
+  <div class="hero">
+    <h2>📄 Antes del Photoshop, está el papel.</h2>
+    <p class="lead">Los mejores diseñadores del mundo (los de Apple, los de Google, los de tu profesor favorito) <strong>empiezan en papel</strong>. Un prototipo en papel se hace en 15 minutos y se mejora en 15 minutos más. Un prototipo en Figma toma 3 horas y un cambio te cuesta media hora.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🤔 ¿Por qué papel y no digital?</h3>
+    <ul>
+      <li><strong>Es barato equivocarse.</strong> Si te equivocas, borras y sigues. Si te equivocas en Figma, maldices 20 minutos.</li>
+      <li><strong>Es colaborativo.</strong> 4 personas pueden dibujar al tiempo y comparar. En Figma necesitas coordinar clics.</li>
+      <li><strong>Fuerza la simplicidad.</strong> No puedes hacer animaciones ni efectos, así que te concentras en el flujo.</li>
+      <li><strong>Se siente "real" en pruebas de usabilidad.</strong> Un usuario acepta más fácilmente que "es un prototipo" cuando ve algo dibujado a mano.</li>
+    </ul>
+  </div>
+
+  <div class="caja-destacada">
+    <h3>🛠️ Materiales que necesitas</h3>
+    <ul>
+      <li>4 hojas de papel tamaño carta (o tarjetas de cartulina de 12×12 cm — son aún mejores).</li>
+      <li>1 marcador negro grueso.</li>
+      <li>1 marcador de color (para destacar las cosas importantes).</li>
+      <li>Cinta adhesiva o pegante (para pegar las tarjetas en la pared).</li>
+      <li>Opcional: un celular para tomar una foto de tu prototipo al final.</li>
+    </ul>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Cómo dibujar una pantalla de app en papel</h4>
+    <ol>
+      <li>Dibuja un rectángulo que ocupe casi toda la tarjeta (simula la pantalla del celular).</li>
+      <li>En la parte de arriba, dibuja una línea horizontal: es la barra de estado (9:41, batería, señal).</li>
+      <li>En la parte de abajo, dibuja otra línea: es la barra de navegación del celular.</li>
+      <li>Llena el medio con cajas: la caja grande es la imagen principal, las chicas son botones.</li>
+      <li>Escribe <strong>qué dice</strong> cada caja en una palabra. No dibujes demasiado: el papel aguanta los detalles, pero tú no.</li>
+    </ol>
+  </div>
+
+  <h3>🎯 Tu turno: arma 4 pantallas</h3>
+  <p>En la tarjeta interactiva de abajo etiqueta cada una de las 4 pantallas y describe brevemente qué contendría. Si tienes papel a la mano, dibújalo al tiempo.</p>
+
+  <div class="taller-papel" id="taller-papel"></div>
+
+  <div class="caja-recordatorio">
+    <h4>🔁 La prueba del "clic en papel"</h4>
+    <p>Cuando tengas tus 4 pantallas dibujadas, hazte esta prueba: <strong>con el dedo índice, simula que haces clic en un botón de la pantalla 1</strong>. ¿A qué pantalla te lleva? ¿Está pegada en la pared cerca? Si no, agrega una flecha con el marcador. Esta es la versión más antigua de prototipo navegable: <em>clic + flecha + pantalla de destino</em>.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Herramientas digitales →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — HERRAMIENTAS DIGITALES (35 min)
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>3️⃣ 🛠️ Herramientas digitales para prototipar</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · 💻 Del papel a la pantalla sin perder la cabeza</p>
+
+  <div class="hero">
+    <h2>🖥️ Una vez que el prototipo en papel funciona, lo pasas a digital.</h2>
+    <p class="lead">No antes. Si pasas a Figma un mal flujo, Figma no lo arregla: lo hace <em>más bonito y rápido de equivocarse</em>. La buena noticia: hay herramientas para todos los presupuestos y todas las prisas.</p>
+  </div>
+
+  <div class="demo-digital" id="demo-digital"></div>
+
+  <div class="caja-destacada">
+    <h3>📊 Comparativa rápida</h3>
+    <div class="cuadricula">
+      <div class="tarjeta tarjeta-info">
+        <span class="icono-grande">✏️</span>
+        <h3>Excalidraw</h3>
+        <p><strong>Gratis, sin login.</strong> Estilo "dibujado a mano" pero en pantalla. Ideal para hacer un mapa de pantallas rápido con tu equipo.</p>
+      </div>
+      <div class="tarjeta tarjeta-info">
+        <span class="icono-grande">🎨</span>
+        <h3>Figma</h3>
+        <p><strong>Gratis con correo del colegio.</strong> El estándar de la industria. Hace mockups y prototipos navegables con hotspots. Curva de aprendizaje media.</p>
+      </div>
+      <div class="tarjeta tarjeta-info">
+        <span class="icono-grande">🚀</span>
+        <h3>Marvel / Proto.io</h3>
+        <p><strong>Gratis con limitaciones.</strong> Subes imágenes de tus pantallas, conectas hotspots, y te da un link compartible para probar desde el celular.</p>
+      </div>
+      <div class="tarjeta tarjeta-info">
+        <span class="icono-grande">📐</span>
+        <h3>Balsamiq</h3>
+        <p><strong>Pago (con versión de prueba).</strong> Wireframes de baja fidelidad súper rápido. Si quieres mostrar "la idea" sin distracciones visuales.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Cuál elegir?</h4>
+    <ul>
+      <li><strong>¿Tienes 15 min y un equipo?</strong> Excalidraw. Abran una pizarra, dibujen, listo.</li>
+      <li><strong>¿Quieres algo presentable para un cliente?</strong> Figma. Es el estándar.</li>
+      <li><strong>¿Necesitas que el profe lo abra en su celular?</strong> Marvel o Proto.io. Generan un link.</li>
+      <li><strong>¿Solo quieres validar la idea?</strong> Papel. Siempre papel primero.</li>
+    </ul>
+  </div>
+
+  <div class="caja-recordatorio">
+    <h4>🔁 De la Clase 5 a hoy</h4>
+    <p>En la Clase 5 viste M3 (Herramientas digitales) con 45 min. Hoy lo cubrimos en 35 min porque ya tienes el contexto. Las herramientas son las mismas, lo nuevo es que ahora <strong>vas a prototipar funcionalmente</strong>, no solo diseñar.</p>
+  </div>
+
+  <!-- QUIZ 2 -->
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál de estas herramientas es ideal para dibujar en colaboración y hacer un primer mapa navegable?</p>
+      <button class="opcion" data-op="a">Microsoft Word.</button>
+      <button class="opcion" data-op="b">Excalidraw.</button>
+      <button class="opcion" data-op="c">Adobe Photoshop.</button>
+      <button class="opcion" data-op="d">PowerPoint.</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Qué necesitas para usar Figma gratis como estudiante?</p>
+      <button class="opcion" data-op="a">Pagar una suscripción mensual.</button>
+      <button class="opcion" data-op="b">Registrarte con un correo institucional (como el del colegio).</button>
+      <button class="opcion" data-op="c">Una tarjeta de crédito internacional.</button>
+      <button class="opcion" data-op="d">Figma no es gratis, es pago siempre.</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Para qué sirven herramientas como Marvel o Proto.io?</p>
+      <button class="opcion" data-op="a">Para hacer la base de datos del proyecto.</button>
+      <button class="opcion" data-op="b">Para convertir imágenes de pantallas en un link navegable compartible.</button>
+      <button class="opcion" data-op="c">Para programar la app final en JavaScript.</button>
+      <button class="opcion" data-op="d">Para diseñar logos únicamente.</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: Construye tu prototipo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — CONSTRUYE TU PRIMER PROTOTIPO (35 min)
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <h2>4️⃣ 📱 Construye tu primer prototipo navegable</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · 🛠️ Un caso, 5 pantallas, conectado</p>
+
+  <div class="hero">
+    <h2>🏫 Hoy prototipamos una app para la biblioteca del colegio.</h2>
+    <p class="lead">No vamos a usar Figma (toma más tiempo del que tenemos). Vamos a usar <strong>el mismo principio de hotspots y pantallas</strong>, pero aplicado en esta misma página. Haces clic en los elementos marcados y la "app" reacciona.</p>
+  </div>
+
+  <div class="caja-desafio">
+    <h3>🎯 El caso</h3>
+    <p>La biblioteca del colegio quiere una app donde los estudiantes puedan:</p>
+    <ol>
+      <li>Ver los libros disponibles del día.</li>
+      <li>Buscar un libro por título o autor.</li>
+      <li>Ver los detalles de un libro (sinopsis, disponibilidad).</li>
+      <li>Reservar el libro (sin tener que ir a la biblioteca).</li>
+      <li>Recibir confirmación de la reserva.</li>
+    </ol>
+    <p>A continuación te mostramos el prototipo de 5 pantallas. <strong>Haz clic en las tarjetas, los botones y los enlaces</strong> para navegar.</p>
+  </div>
+
+  <div class="proto-app" id="proto-app">
+    <h4>📱 App "Biblioteca del Colegio" — Prototipo Navegable</h4>
+    <div class="proto-telefono">
+      <div class="proto-status">
+        <span>9:41</span>
+        <span>📶 🔋</span>
+      </div>
+
+      <!-- PANTALLA 1: Inicio -->
+      <div class="proto-screen activo" data-pantalla="1">
+        <div class="ps-status">
+          <span>📚 BiblioApp</span>
+          <span>👤</span>
+        </div>
+        <h3 class="ps-titulo">¡Hola! ¿Qué quieres leer hoy?</h3>
+        <p class="ps-sub">Explora los libros del día o busca algo específico.</p>
+        <div class="ps-search">🔍 Buscar libro, autor, tema…</div>
+        <button class="ps-cta" data-ir="2">📚 Ver libros del día</button>
+        <div style="margin-top: 1rem;">
+          <p style="font-size: 0.8rem; color: #888; margin-bottom: 0.3rem;">Géneros populares:</p>
+          <div class="ps-grid">
+            <div class="ps-dia" data-ir="2">📖 Novela</div>
+            <div class="ps-dia" data-ir="2">🔬 Ciencia</div>
+            <div class="ps-dia" data-ir="2">📜 Historia</div>
+            <div class="ps-dia" data-ir="2">🎨 Arte</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANTALLA 2: Catálogo -->
+      <div class="proto-screen" data-pantalla="2">
+        <div class="ps-status">
+          <span>← <span data-ir="1" style="cursor:pointer;">Atrás</span></span>
+          <span>📚 BiblioApp</span>
+        </div>
+        <h3 class="ps-titulo">📚 Libros del día</h3>
+        <p class="ps-sub">6 resultados · Ordenados por disponibilidad</p>
+        <div class="ps-card" data-ir="3">
+          <strong>El principito</strong>
+          <div class="ps-meta">Antoine de Saint-Exupéry · Novela · 3 disponibles</div>
+        </div>
+        <div class="ps-card" data-ir="3">
+          <strong>Cosmos</strong>
+          <div class="ps-meta">Carl Sagan · Ciencia · 1 disponible</div>
+        </div>
+        <div class="ps-card" data-ir="3">
+          <strong>Sapiens</strong>
+          <div class="ps-meta">Yuval Harari · Historia · 2 disponibles</div>
+        </div>
+        <div class="ps-card" data-ir="3">
+          <strong>Historia del arte</strong>
+          <div class="ps-meta">E. H. Gombrich · Arte · Agotado</div>
+        </div>
+      </div>
+
+      <!-- PANTALLA 3: Detalle -->
+      <div class="proto-screen" data-pantalla="3">
+        <div class="ps-status">
+          <span>← <span data-ir="2" style="cursor:pointer;">Atrás</span></span>
+          <span>📚 BiblioApp</span>
+        </div>
+        <h3 class="ps-titulo">El principito</h3>
+        <p class="ps-sub">Antoine de Saint-Exupéry · 1943</p>
+        <div class="ps-info">
+          <strong>📖 Sinopsis:</strong> Un piloto varado en el desierto conoce a un pequeño príncipe que viene de un asteroide. Una historia sobre la amistad, el amor y lo esencialmente importante.
+        </div>
+        <div class="ps-info">
+          <strong>📦 Disponibilidad:</strong> 3 copias disponibles
+        </div>
+        <button class="ps-cta" data-ir="4">📥 Reservar este libro</button>
+        <button class="ps-cta" data-ir="2" style="background: #94a3b8; margin-top: 0.5rem;">← Volver al catálogo</button>
+      </div>
+
+      <!-- PANTALLA 4: Formulario de reserva -->
+      <div class="proto-screen" data-pantalla="4">
+        <div class="ps-status">
+          <span>← <span data-ir="3" style="cursor:pointer;">Atrás</span></span>
+          <span>📚 BiblioApp</span>
+        </div>
+        <h3 class="ps-titulo">📥 Reservar libro</h3>
+        <p class="ps-sub">"El principito" — para recoger en la biblioteca</p>
+        <div class="ps-info">
+          <strong>👤 Nombre:</strong> [ Tu nombre ]
+        </div>
+        <div class="ps-info">
+          <strong>📅 Fecha de recogida:</strong> [ Hoy / Mañana ]
+        </div>
+        <div class="ps-info">
+          <strong>📧 Email de confirmación:</strong> [ tu@correo ]
+        </div>
+        <button class="ps-cta" data-ir="5">✅ Confirmar reserva</button>
+        <button class="ps-cta" data-ir="3" style="background: #94a3b8; margin-top: 0.5rem;">← Cancelar</button>
+      </div>
+
+      <!-- PANTALLA 5: Confirmación -->
+      <div class="proto-screen" data-pantalla="5">
+        <div class="ps-status">
+          <span>📚 BiblioApp</span>
+          <span>✓</span>
+        </div>
+        <div class="ps-check">✅</div>
+        <div class="ps-confirm">¡Reserva confirmada!</div>
+        <p style="text-align: center; color: #555; font-size: 0.9rem; padding: 0 0.5rem;">
+          Hemos enviado la confirmación a tu correo. Pasa por la biblioteca mañana a recoger <strong>"El principito"</strong>.
+        </p>
+        <button class="ps-cta" data-ir="1">🏠 Volver al inicio</button>
+        <button class="ps-cta" data-ir="2" style="background: #94a3b8; margin-top: 0.5rem;">📚 Ver más libros</button>
+      </div>
+    </div>
+    <p class="proto-tip">💡 Haz clic en cualquier zona con el puntero del mouse. Si llegas a la pantalla 4, habrás validado tu flujo completo.</p>
+  </div>
+
+  <div class="caja-recordatorio">
+    <h4>🔁 ¿Qué acabas de hacer?</h4>
+    <p>Acabas de <strong>experimentar lo mismo</strong> que experimentará un usuario real con tu futura app. Sentiste el flujo. Viste la confirmación. Si algo te confundió (un botón poco claro, un texto que no se entiende), anótalo: es exactamente lo que vas a buscar en el Módulo 5 cuando hagas pruebas de usabilidad.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Cómo iterar tu prototipo</h4>
+    <ol>
+      <li>En Figma o Marvel, exporta cada pantalla como imagen.</li>
+      <li>Identifica los <strong>hotspots</strong> (zonas clicables: botones, tarjetas, imágenes).</li>
+      <li>Conecta cada hotspot con la pantalla de destino.</li>
+      <li>Pídele a un amigo que lo pruebe <em>sin explicarle nada</em>. Si se traba, hay un problema de flujo.</li>
+    </ol>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Pruebas de usabilidad →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — PRUEBAS DE USABILIDAD (30 min)
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>5️⃣ 🗣️ Pruebas de usabilidad: pensar en voz alta</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · 🕵️ El método que separa las apps buenas de las geniales</p>
+
+  <div class="hero">
+    <h2>🕵️ Un buen prototipo en una mano. Un usuario real en la otra.</h2>
+    <p class="lead">Las pruebas de usabilidad son la <strong>puerta entre lo que crees que diseñaste y lo que el usuario realmente entendió</strong>. No necesitas un laboratorio: necesitas a alguien que use tu prototipo mientras tú observas y tomas notas.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🤔 ¿Qué son las pruebas de usabilidad?</h3>
+    <p>Es una técnica donde le pides a una persona (que <em>no</em> haya visto tu prototipo antes) que intente completar tareas específicas mientras <strong>piensa en voz alta</strong>. Tú observas, no ayudas. Tomas notas de dónde se traba, dónde se equivoca, dónde dice "ah, no entendí".</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h3>📋 El método "Think Aloud" en 5 pasos</h3>
+    <ol>
+      <li><strong>Prepara el ambiente.</strong> Siéntate con un compañero. Ten el prototipo abierto (en celular o computador). Cronómetro en mano.</li>
+      <li><strong>Explica el rol.</strong> "Tú vas a intentar hacer estas 3 tareas. Piensa en voz alta todo el tiempo: di lo que estás mirando, lo que esperas, lo que te confunde. Yo no voy a responder preguntas: solo observo."</li>
+      <li><strong>Dale las tareas, una por una.</strong> "Primero: busca el horario de tu día favorito. Avísame cuando termines o si te rindes."</li>
+      <li><strong>No intervengas.</strong> Aunque se trabe feo. El objetivo es ver <em>qué hace solo</em>, no ayudarlo.</li>
+      <li><strong>Toma notas de los hallazgos.</strong> "Donde se trabó", "qué dijo", "qué error cometió". Estos son los hallazgos que vas a usar para mejorar el prototipo.</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 3 de las 10 heurísticas de Nielsen (las más útiles para esta clase)</h4>
+    <ul>
+      <li><strong>1. Visibilidad del estado del sistema.</strong> El usuario siempre debe saber qué está pasando (cargando, error, éxito). Una pantalla de carga clara o un mensaje "Reserva confirmada" — nunca un silencio.</li>
+      <li><strong>2. Coherencia entre el sistema y el mundo real.</strong> Habla el idioma del usuario, no el del programador. "Borrar libro" no "DELETE FROM libros WHERE id=?".</li>
+      <li><strong>3. Libertad y control del usuario.</strong> Siempre debe haber un "atrás" o un "cancelar". Si el usuario siente que no puede salir, entra en pánico.</li>
+    </ul>
+  </div>
+
+  <div class="caja-historia">
+    <h4>📖 Caso real: el botón que nadie encontraba</h4>
+    <p>Una app de delivery famosa tenía un botón de "Confirmar pedido" en la esquina inferior derecha. El equipo de diseño lo veía obvio. En pruebas de usabilidad, <strong>7 de cada 10 usuarios no lo encontraban</strong> los primeros 30 segundos. Lo movieron a la esquina inferior central, centrado y grande. La tasa de conversión subió 23%. Mismo botón, distinto lugar.</p>
+  </div>
+
+  <div class="caja-recordatorio">
+    <h4>🔁 La regla de oro</h4>
+    <p><strong>Si 3 de 5 usuarios se traban en el mismo lugar, ese es un problema real</strong>, no un error del usuario. Tu diseño está mal. No le eches la culpa al usuario.</p>
+  </div>
+
+  <!-- QUIZ 3 -->
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es el método "think aloud" (pensar en voz alta)?</p>
+      <button class="opcion" data-op="a">Una técnica avanzada de programación en pareja.</button>
+      <button class="opcion" data-op="b">Pedirle al usuario que diga en voz alta lo que piensa mientras usa el prototipo.</button>
+      <button class="opcion" data-op="c">Un lenguaje de programación para prototipos.</button>
+      <button class="opcion" data-op="d">Una herramienta de diseño específica.</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Cuántas tareas es recomendable dar a un usuario en una sesión de prueba de 5-10 minutos?</p>
+      <button class="opcion" data-op="a">Una sola tarea, muy concreta.</button>
+      <button class="opcion" data-op="b">2-3 tareas concretas que cubran el flujo principal.</button>
+      <button class="opcion" data-op="c">Todas las tareas que se pueda en 10 minutos.</button>
+      <button class="opcion" data-op="d">Depende solo del tamaño de la app.</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Cuál de estas NO es una heurística de Nielsen?</p>
+      <button class="opcion" data-op="a">Visibilidad del estado del sistema.</button>
+      <button class="opcion" data-op="b">Coherencia entre el sistema y el mundo real.</button>
+      <button class="opcion" data-op="c">Usar interfaces muy bonitas con muchos colores saturados.</button>
+      <button class="opcion" data-op="d">Libertad y control del usuario.</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Laboratorio + Feria →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — LABORATORIO + FERIA (45 min)
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>6️⃣ 🎪 Laboratorio + Feria de exposición</h2>
+  <p class="meta-modulo">⏱️ 45 minutos · 🧪 Pon a prueba tu prototipo y presenta a tus compañeros</p>
+
+  <div class="hero">
+    <h2>🎬 Ahora tú eres el investigador. Y luego, el expositor.</h2>
+    <p class="lead">Dividimos el módulo en dos bloques: <strong>20 min de laboratorio en parejas</strong> (aplicas el método think aloud con un compañero) y <strong>25 min de feria de exposición</strong> (recorres 4 estaciones y das/recibes feedback).</p>
+  </div>
+
+  <h3>🧪 Bloque 1: Laboratorio en parejas (20 min)</h3>
+  <div class="caja-desafio">
+    <h3>🎯 Tu misión</h3>
+    <ol>
+      <li>Forma una pareja con un compañero.</li>
+      <li>Uno hace de <strong>diseñador (A)</strong>, otro de <strong>usuario (B)</strong>. El diseñador observa y anota; el usuario prueba el prototipo siguiendo las 3 tareas.</li>
+      <li>Cuando termine la ronda (8 min), <strong>rotan roles</strong> y repiten con el prototipo del otro.</li>
+      <li>En la herramienta de abajo, anota al menos 3 hallazgos de tu sesión.</li>
+    </ol>
+  </div>
+
+  <div class="laboratorio" id="laboratorio"></div>
+
+  <div class="caja-tip">
+    <h4>💡 Tipos de hallazgos que vale la pena anotar</h4>
+    <ul>
+      <li><strong>😕 Confusión:</strong> el usuario no entendió qué hacer o qué significaba un elemento.</li>
+      <li><strong>❌ Error/bug:</strong> el usuario hizo algo que el sistema no manejó bien (un clic que no llevaba a ningún lado).</li>
+      <li><strong>✅ Éxito:</strong> el usuario completó la tarea sin problema (anótalo también: es lo que NO debes cambiar).</li>
+      <li><strong>💡 Sugerencia:</strong> el usuario dijo "sería mejor si…" o "yo pondría…". Anótalo tal cual.</li>
+    </ul>
+  </div>
+
+  <h3>🎪 Bloque 2: Feria de exposición (25 min)</h3>
+  <div class="caja-desafio">
+    <h3>🎯 Tu misión</h3>
+    <ol>
+      <li>Imagina que hay 4 equipos exponiendo sus prototipos en la feria.</li>
+      <li>Tú <strong>recorres 4 estaciones</strong>, 5 min en cada una.</li>
+      <li>En cada estación, <strong>das feedback</strong> (qué te gustó, qué cambiarías, qué agregas) y <strong>recibes feedback</strong> de los demás.</li>
+      <li>Usa la herramienta de abajo para registrar al menos 1 feedback dado y 1 recibido.</li>
+    </ol>
+  </div>
+
+  <div class="feria" id="feria"></div>
+
+  <div class="caja-tip">
+    <h4>💡 Cómo dar feedback útil (no hiriente)</h4>
+    <p>El feedback que sirve no es "está feo" o "está mal". Es:</p>
+    <ul>
+      <li><strong>★ Lo que me gustó:</strong> "Me gusta que el botón de reservar sea grande y centrado, se ve claro qué hacer."</li>
+      <li><strong>⚠ Lo que cambiaría:</strong> "Me confundí con el menú: puse 'Mis reservas' arriba cuando esperaba verlo abajo."</li>
+      <li><strong>💡 Lo que agregaría:</strong> "Le agregaría un botón de 'Cancelar reserva' — si me equivoco, ¿cómo vuelvo atrás?"</li>
+    </ul>
+  </div>
+
+  <div class="caja-destacada">
+    <h3>🏆 Lo que aprendiste en este módulo</h3>
+    <ul>
+      <li><strong>El método "think aloud"</strong> te muestra lo que tu diseño no muestra de sí mismo.</li>
+      <li><strong>Los hallazgos se vuelven tu lista de mejoras</strong> para la siguiente versión del prototipo.</li>
+      <li><strong>El feedback de feria es un regalo</strong>: 4 ojos ven lo que 1 no veía.</li>
+      <li><strong>Iterar es el proceso natural</strong>: prototipo → prueba → feedback → mejora → otra prueba.</li>
+    </ul>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Cierre →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 7 — CIERRE (5 min)
+============================================================ -->
+<section class="modulo" data-modulo="7">
+  <h2>7️⃣ 🏆 Cierre</h2>
+  <p class="meta-modulo">⏱️ 5 minutos · 🎉 Lo que aprendiste, lo que sigue</p>
+
+  <div class="hero">
+    <h2>🧪 ¡Lo lograste!</h2>
+    <p class="lead">Empezaste esta clase con la idea de que un prototipo era "dibujar pantallas". Terminas con un prototipo navegable funcional, un método de pruebas de usabilidad, y feedback real de tus compañeros. <strong>Eso es el ciclo completo del diseño centrado en el usuario</strong>.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🧪</span>
+      <h3>Módulo 0: Inicio</h3>
+      <p>Entendiste la conexión con las Clases 5 y 6, y la ruta de hoy.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🧭</span>
+      <h3>M1: Prototipos navegables</h3>
+      <p>Diferencias boceto / wireframe / mockup / prototipo. El clic cuenta una historia.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">✂️</span>
+      <h3>M2: Taller de papel</h3>
+      <p>Armaste 4 pantallas-papel etiquetadas. El arma secreta del principiante.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🛠️</span>
+      <h3>M3: Herramientas digitales</h3>
+      <p>Excalidraw, Figma, Marvel. Cuándo usar cada una según el tiempo y el objetivo.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">📱</span>
+      <h3>M4: Construye tu prototipo</h3>
+      <p>Navegaste 5 pantallas conectadas. Un prototipo real, no un collage.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🗣️</span>
+      <h3>M5: Pruebas de usabilidad</h3>
+      <p>El método think aloud. 3 heurísticas de Nielsen. Observar sin intervenir.</p>
+    </div>
+    <div class="tarjeta tarjeta-logro">
+      <span class="icono-grande">🎪</span>
+      <h3>M6: Laboratorio + Feria</h3>
+      <p>Aplicaste el método con un compañero. Diste y recibiste feedback.</p>
+    </div>
+  </div>
+
+  <h3>🎯 3 ideas para llevarte a tus próximos proyectos</h3>
+  <div class="caja-destacada">
+    <ol>
+      <li><strong>Prototipo navegable = ensayo general.</strong> Es la forma más barata de equivocarte antes de escribir código. Si el flujo falla en el prototipo, también fallaría en la app real.</li>
+      <li><strong>Un usuario real vale más que 10 horas de diseño.</strong> 5 minutos de prueba con alguien que no vio tu prototipo te muestra más bugs que un día entero de revisión tuya.</li>
+      <li><strong>El feedback se recibe, no se defiende.</strong> Cuando alguien te da feedback, no discutas: anota, agradece, y decide después qué haces con él.</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💭 Reflexión final</h4>
+    <p>En estas 7 clases recorriste el camino completo: de no saber qué era análisis de software, a <strong>hacer un prototipo navegable, probarlo con usuarios, y presentarlo en una feria</strong>. Eso es pensamiento de diseñador: no diseñar para ti, diseñar <em>con y para</em> quien lo va a usar.</p>
+  </div>
+
+  <h3>🚀 ¿Qué sigue?</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">🔄</span>
+      <h3>Itera tu prototipo</h3>
+      <p>Toma los hallazgos del M6 y aplica los cambios. Vuelve a probar. Repite hasta que 5 de 5 usuarios completen las tareas sin ayuda.</p>
+    </div>
+    <div class="tarjeta tarjeta-info">
+      <span class="icono-grande">💻</span>
+      <h3>Pásalo a código (cuando estés list@)</h3>
+      <p>Un buen prototipo navegable es la mejor documentación que un programador puede recibir. Si sigues con cursos de programación, este es tu mapa.</p>
+    </div>
+  </div>
+
+  <div class="cierre">
+    <h2>🧪 ¡Lo lograste!</h2>
+    <p>Ya tienes las bases para diseñar software centrado en el usuario. El siguiente paso es hacerlo, equivocarte, y volver a empezar. Buena suerte con tus prototipos.</p>
+    <button class="btn-final" onclick="reiniciarCurso()">🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <p>🧪 Clase 7: Prototipado y Usabilidad · Curso de Análisis y Diseño de Software · 2026</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

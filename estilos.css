@@ -46,6 +46,9 @@
   --ad-6-a:          #16a34a;
   --ad-6-b:          #f97316;
 
+  --ad-7-a:          #0d9488;
+  --ad-7-b:          #ec4899;
+
   --bd-a:            #0ea5e9;
   --bd-b:            #14b8a6;
 
@@ -395,6 +398,7 @@ main {
 .clase-card.ad-4::before   { background: linear-gradient(90deg, var(--ad-4-a), var(--ad-4-b)); }
 .clase-card.ad-5::before   { background: linear-gradient(90deg, var(--ad-5-a), var(--ad-5-b)); }
 .clase-card.ad-6::before   { background: linear-gradient(90deg, var(--ad-6-a), var(--ad-6-b)); }
+.clase-card.ad-7::before   { background: linear-gradient(90deg, var(--ad-7-a), var(--ad-7-b)); }
 
 .clase-card:hover {
   transform: translateY(-6px) scale(1.01);
@@ -424,6 +428,7 @@ main {
 .clase-card.ad-4 .clase-badge   { background: linear-gradient(135deg, var(--ad-4-a), var(--ad-4-b));     color: #fff; }
 .clase-card.ad-5 .clase-badge   { background: linear-gradient(135deg, var(--ad-5-a), var(--ad-5-b));     color: #fff; }
 .clase-card.ad-6 .clase-badge   { background: linear-gradient(135deg, var(--ad-6-a), var(--ad-6-b));     color: #fff; }
+.clase-card.ad-7 .clase-badge   { background: linear-gradient(135deg, var(--ad-7-a), var(--ad-7-b));     color: #fff; }
 
 .clase-badge.gris {
   background: rgba(148, 163, 184, 0.2);
