@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🗄️ Bases de Datos · Clase 1 · Introducción</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- =================== HEADER + PROGRESO =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🗄️</span>
+    <div>
+      <h1>Bases de Datos · Clase 1</h1>
+      <p class="subtitulo">Introducción · Historia · Estructurar datos · Manuales vs BD</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">📦 ¿Qué es?</button>
+  <button class="btn-modulo" data-modulo="2">🧩 Estructurar</button>
+  <button class="btn-modulo" data-modulo="3">📜 Historia</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">⚖️ Manuales vs BD</button>
+  <button class="btn-modulo" data-modulo="6">🗃️ Tipos de BD</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🗄️ ¿Dónde están tus datos ahora mismo?</h2>
+    <p class="lead">Tu lista de contactos, las notas del colegio, los mensajes de WhatsApp, el historial de Netflix, el saldo de tu cuenta bancaria… <strong>todo es dato</strong>. Pero ¿dónde se guarda? ¿Cómo se encuentra tan rápido? La respuesta es una de las invenciones más importantes de la informática: la <strong>base de datos</strong>. En esta clase vas a descubrir qué es, de dónde viene y por qué cambió el mundo.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — dbadmin@bd</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">dbadmin@bd:~$</span> <span class="cmd">SELECT nombre FROM contactos WHERE ciudad='Cali';</span></div>
+        <div class="out">nombre</div>
+        <div class="out">--------</div>
+        <div class="out">María González</div>
+        <div class="out">Juan Pérez</div>
+        <div class="out">(2 filas en 0.003 s)</div>
+        <div><span class="prompt">dbadmin@bd:~$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>4 horas en 7 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Entender qué es una base de datos, su historia, por qué necesitamos estructurar los datos y sus beneficios frente a los sistemas manuales.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>Perder contactos al resetear el celular, Excel que se traba con miles de filas, la tienda que pierde tu pedido. La BD es quien los resuelve.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · ¿Qué es una BD?</td><td style="color:var(--esmeralda)">Definición</td><td style="color:var(--rosa)">Perder contactos</td><td>100 XP</td></tr>
+        <tr><td>02 · Estructurar datos</td><td style="color:var(--rosa)">Necesidad</td><td style="color:var(--rosa)">Pedido perdido</td><td>100 XP</td></tr>
+        <tr><td>03 · Historia</td><td style="color:var(--ambar)">Línea de tiempo</td><td>—</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · Manuales vs BD</td><td style="color:var(--verde)">Beneficios</td><td style="color:var(--rosa)">Biblioteca caótica</td><td>100 XP</td></tr>
+        <tr><td>05 · Tipos de BD</td><td style="color:var(--morado-claro)">Relacional/NoSQL</td><td>—</td><td>100 XP</td></tr>
+        <tr><td>06 · Taller</td><td style="color:var(--morado)">Diagnóstico</td><td style="color:var(--rosa)">Biblioteca pierde préstamos</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a, hagan una lista de <strong>5 datos sobre ustedes</strong> que están guardados en algún lado (nombre, edad, dirección, notas, contactos). ¿Dónde creen que está cada uno? ¿En papel, en Excel, en una base de datos? Lo confirmaremos al final.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: ¿Qué es una BD? →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — ¿QUÉ ES UNA BASE DE DATOS?
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>📦 ¿Qué es una base de datos?</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "La bóveda organizada" — datos que no se pierden</p>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "Perdí todos mis contactos"</h4>
+    <p>Tu celular se reinicia de fábrica por error y <strong>se borran todos tus contactos</strong>. 200 números, familiares, amigos, profes… desaparecidos. ¿Por qué? Porque estaban en la memoria volátil sin respaldo estructurado. Si hubieran estado en una <strong>base de datos</strong>, con un toque los recuperarías. Ese es el primer superpoder de una BD: <strong>persistencia</strong>.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Una <strong>base de datos (BD)</strong> es una <strong>colección organizada de datos</strong>, almacenada electrónicamente, que se puede <strong>consultar, actualizar y gestionar</strong> de forma eficiente. No es una libreta al azar: es un armario con cajones etiquetados, donde cada dato tiene su sitio y se encuentra en milisegundos.</p>
+    <p>La clave está en <strong>organizada</strong>. Un montón de archivos sueltos NO es una base de datos. Una BD tiene estructura: tablas, relaciones, reglas. Por eso encuentra rápido y no pierde datos.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: <strong>¿cuánto tardarían en encontrar el teléfono de "Juan Pérez"</strong> si tienen (a) una libreta de 200 contactos en papel, (b) un Excel, (c) una base de datos? Adivinen el orden. Luego compruébenlo en el simulador.</p>
+  </div>
+
+  <h3>🎮 Simulador: Busca el dato</h3>
+  <p>Presiona "Buscar" sobre cada método y observa cuánto tarda en encontrar "Teléfono de Juan Pérez" entre 50,000 registros. La diferencia es abismal.</p>
+
+  <div class="busca-sim">
+    <div class="sim-head">🔍 Busca el dato — libreta vs Excel vs Base de datos</div>
+
+    <div class="busca-columns">
+      <div class="busca-method" id="buscaLibreta" data-method="libreta">
+        <span class="bm-icon">📓</span>
+        <div class="bm-name">Libreta de papel</div>
+        <div class="bm-time" id="bmTimeLibreta">—</div>
+        <div class="bm-unit">segundos</div>
+        <div class="bm-status" id="bmStatusLibreta">Sin buscar</div>
+      </div>
+      <div class="busca-method" id="buscaExcel" data-method="excel">
+        <span class="bm-icon">📊</span>
+        <div class="bm-name">Hoja de Excel</div>
+        <div class="bm-time" id="bmTimeExcel">—</div>
+        <div class="bm-unit">segundos</div>
+        <div class="bm-status" id="bmStatusExcel">Sin buscar</div>
+      </div>
+      <div class="busca-method" id="buscaBD" data-method="bd">
+        <span class="bm-icon">🗄️</span>
+        <div class="bm-name">Base de datos</div>
+        <div class="bm-time" id="bmTimeBD">—</div>
+        <div class="bm-unit">milisegundos</div>
+        <div class="bm-status" id="bmStatusBD">Sin buscar</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn primary big" id="buscaRun">🔍 Buscar "Teléfono de Juan Pérez" en los 3</button>
+      <button class="btn ghost" id="buscaReset">🔄 Reiniciar</button>
+    </div>
+
+    <div class="busca-result" id="buscaResult"></div>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — Abran un Excel real</h4>
+    <p>El docente pide que cada pareja abra Excel (o Google Sheets) en su PC:</p>
+    <ol class="aula-steps">
+      <li>Escriban 10 filas de datos inventados (nombre, edad, ciudad).</li>
+      <li>Usen <strong>Ctrl+B</strong> (Buscar). ¿Cuánto tardan en encontrar una fila? Instantáneo.</li>
+      <li>Ahora imaginen <strong>50,000 filas</strong>. El Excel se pondría lento al abrir. Una BD no.</li>
+      <li>¿Qué pasa si dos personas editan el mismo Excel a la vez? Se pisan. Una BD permite <strong>varios usuarios a la vez sin conflictos</strong>.</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Datos vs base de datos</h4>
+    <p>Un <strong>dato</strong> es un hecho aislado (nombre, edad, color). Una <strong>base de datos</strong> es el sistema que organiza millones de datos para que se puedan guardar, buscar y actualizar sin perderse ni contradecirse.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>WhatsApp usa una BD para guardar tus mensajes. Netflix usa una BD para saber qué viste y recomendarte series. El banco usa una BD para tu saldo. El colegio usa una BD para tus notas. <strong>Cada app que guarda algo tiene una BD detrás</strong>. Sin BD, no habría internet como lo conocemos.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 1 -->
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace que una base de datos sea distinta de un montón de archivos sueltos?</p>
+      <button class="opcion" data-op="a">Nada, son lo mismo</button>
+      <button class="opcion" data-op="b">La BD tiene estructura y organización que permite buscar y actualizar eficiente</button>
+      <button class="opcion" data-op="c">La BD solo sirve para textos</button>
+      <button class="opcion" data-op="d">La BD es más cara y por eso es mejor</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué una BD encuentra un dato entre millones casi al instante?</p>
+      <button class="opcion" data-op="a">Porque los datos están estructurados e indexados para búsqueda</button>
+      <button class="opcion" data-op="b">Porque tiene un CPU más rápido</button>
+      <button class="opcion" data-op="c">Porque usa magia</button>
+      <button class="opcion" data-op="d">Porque borra los datos que no busca</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Necesidad de estructurar →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — NECESIDAD DE ESTRUCTURAR DATOS
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>🧩 La necesidad de estructurar datos</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Por qué el dato suelto no sirve"</p>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "La tienda perdió mi pedido"</h4>
+    <p>Pediste un producto online, pagaste, y dos días después te dicen que <strong>no tienen registro de tu pedido</strong>. Lo anotaron en un cuaderno, alguien lo traspapeló, y listo: te toca pelear por un reembolso. Eso pasa cuando los datos no están estructurados ni centralizados. Una BD habría guardado el pedido, el pago y el estado — sin pérdidas.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Cuando hay <strong>4 datos</strong>, una libreta basta. Cuando hay <strong>4 millones</strong>, necesitas estructura. La estructura resuelve 5 problemas que el dato suelto no puede:</p>
+  </div>
+
+  <h3>📊 Los 5 problemas que la estructura resuelve</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-verde"><span class="emoji">📦</span><h3>Volumen</h3><p>Millones de datos no caben en una hoja. La BD los organiza en tablas y filas.</p></div>
+    <div class="tarjeta"><span class="emoji">⚡</span><h3>Búsqueda</h3><p>Encontrar un dato entre millones en milisegundos. La libreta tarda horas.</p></div>
+    <div class="tarjeta tarjeta-ambar"><span class="emoji">🔒</span><h3>Integridad</h3><p>Que no haya contradicciones (dos notas distintas para el mismo estudiante).</p></div>
+    <div class="tarjeta tarjeta-magenta"><span class="emoji">👥</span><h3>Concurrencia</h3><p>Que varios usuarios lean y escriban a la vez sin pisarse.</p></div>
+    <div class="tarjeta tarjeta-warm"><span class="emoji">🛡️</span><h3>Seguridad</h3><p>Que cada usuario solo vea lo que tiene permiso de ver.</p></div>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Con su compañero/a, piensen en el <strong>colegio</strong>: ¿qué datos maneja? (estudiantes, notas, asistencia, matrícula, contactos de los padres). <strong>¿Qué pasaría si todo eso estuviera en cuadernos de papel?</strong> Escojan 2 de los 5 problemas y explíquenle al grupo cómo se manifestarían.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Integridad: el ejemplo de la nota contradictoria</h4>
+    <p>Imagina que el profesor García anota tu nota de matemáticas como 4.5 en su cuaderno, y el coordinador la anota como 3.5 en el suyo. ¿Cuál vale? Una BD con <strong>integridad</strong> evita eso: hay una sola fuente de verdad, y si alguien cambia la nota, queda registrado <em>quién</em> y <em>cuándo</em>.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>Una aerolínea vende el mismo asiento a dos personas al mismo tiempo. ¿Cómo lo evita? La BD tiene <strong>concurrencia controlada</strong>: cuando alguien reserva el asiento 12A, la BD lo bloquea por unos minutos para que nadie más pueda reservarlo. Sin BD, habría asientos vendidos dos veces en cada vuelo.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 2 -->
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Cuál de estos NO es un problema que resuelve una BD estructurada?</p>
+      <button class="opcion" data-op="a">Concurrencia (varios usuarios a la vez)</button>
+      <button class="opcion" data-op="b">Búsqueda rápida entre millones de datos</button>
+      <button class="opcion" data-op="c">Hacer que el CPU sea más rápido</button>
+      <button class="opcion" data-op="d">Integridad (sin contradicciones)</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Qué es la "integridad" en una BD?</p>
+      <button class="opcion" data-op="a">Que la BD no se apague</button>
+      <button class="opcion" data-op="b">Que los datos sean consistentes y no haya contradicciones</button>
+      <button class="opcion" data-op="c">Que la BD tenga contraseña</button>
+      <button class="opcion" data-op="d">Que la BD sea grande</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Historia y evolución →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — HISTORIA Y EVOLUCIÓN
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>📜 Historia y evolución</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "De fichas perforadas a la nube" — 130 años en 7 saltos</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>La BD no apareció de la nada: <strong>evolucionó</strong>. Al principio se guardaba en fichas perforadas de cartón. Luego en archivos de texto. Luego en estructuras jerárquicas. El gran salto fue el <strong>modelo relacional</strong> (1970), que es el que aún usamos hoy. Y más reciente, <strong>NoSQL</strong> y la <strong>nube</strong>. Cada salto resolvió un problema del anterior.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Antes de leer la línea de tiempo: con su compañero/a, adivinen. <strong>¿En qué año creen que apareció el modelo relacional</strong> (el de tablas que se usan hoy)? Apúntenlo y luego revisen.</p>
+  </div>
+
+  <h3>🕰️ Línea de tiempo interactiva</h3>
+  <p>Toca cada era para descubrir qué cambió.</p>
+
+  <div class="timeline" id="timeline">
+    <div class="tl-item" data-era="0">
+      <div class="tl-dot">⏪</div>
+      <div class="tl-card">
+        <span class="tl-era">1890 · Fichas perforadas</span>
+        <div class="tl-title">Herman Hollerith y el censo</div>
+        <div class="tl-body">
+          <p>Para el censo de EE.UU. de 1890, Herman Hollerith inventó una máquina que leía <strong>fichas perforadas de cartón</strong> para contar personas automáticamente. Antes el censo tardaba 8 años; con su máquina, meses. Nació la idea de "procesar datos automáticamente". Su empresa se convertiría en <strong>IBM</strong>.</p>
+          <span class="tl-changed">🔥 Cambió: el dato se procesa con máquina, no a mano.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item" data-era="1">
+      <div class="tl-dot">①</div>
+      <div class="tl-card">
+        <span class="tl-era">Años 50-60 · Archivos planos</span>
+        <div class="tl-title">El dato en archivos de texto</div>
+        <div class="tl-body">
+          <p>Los primeros computadores guardaban datos en <strong>archivos planos</strong> (texto separado por comas). Funcionaba para pocos registros, pero no había estructura: buscar era lento, actualizar era propenso a errores, y dos programas no podían compartir los mismos datos sin duplicarlos.</p>
+          <span class="tl-changed">🔥 Cambió: el dato pasó del cartón al disco magnético.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item" data-era="2">
+      <div class="tl-dot">②</div>
+      <div class="tl-card">
+        <span class="tl-era">Años 60 · BD jerárquicas y de red</span>
+        <div class="tl-title">Las primeras BD de verdad</div>
+        <div class="tl-body">
+          <p>Nacen las primeras bases de datos con estructura: <strong>jerárquica</strong> (datos en árbol, como carpetas dentro de carpetas) y <strong>de red</strong> (más flexible, con múltiples conexiones). IBM IMS (1966) fue de las primeras. El problema: eran rígidas y difíciles de consultar.</p>
+          <span class="tl-changed">🔥 Cambió: el dato se organiza en estructuras, no en archivos sueltos.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item" data-era="3">
+      <div class="tl-dot">③</div>
+      <div class="tl-card">
+        <span class="tl-era">1970 · Modelo relacional</span>
+        <div class="tl-title">El gran salto: Edgar F. Codd</div>
+        <div class="tl-body">
+          <p>Edgar F. Codd, investigador de IBM, publicó un paper donde proponía organizar los datos en <strong>tablas con filas y columnas</strong> que se relacionan entre sí. Nacía el <strong>modelo relacional</strong>. Era tan potente que sigue siendo el más usado hoy. De aquí salieron <strong>SQL</strong>, Oracle, MySQL, PostgreSQL. Codd cambió la informática con una idea: los datos como tablas.</p>
+          <span class="tl-changed">🔥 Cambió: nació el modelo de tablas que aún usamos. Aparece SQL.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item" data-era="4">
+      <div class="tl-dot">④</div>
+      <div class="tl-card">
+        <span class="tl-era">Años 80 · SQL y los SGBD comerciales</span>
+        <div class="tl-title">La BD llega a las empresas</div>
+        <div class="tl-body">
+          <p>El modelo relacional se vuelve comercial: nacen <strong>Oracle</strong>, <strong>DB2</strong> (IBM), y el lenguaje <strong>SQL</strong> (Structured Query Language) se convierte en el estándar para hablar con BD. Las empresas dejan los archivos planos y adoptan Sistemas de Gestión de Bases de Datos (SGBD). El dato se vuelve un activo empresarial.</p>
+          <span class="tl-changed">🔥 Cambió: SQL como lenguaje universal; la BD se vuelve producto.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item" data-era="5">
+      <div class="tl-dot">⑤</div>
+      <div class="tl-card">
+        <span class="tl-era">Años 2000 · NoSQL</span>
+        <div class="tl-title">La web necesita flexibilidad</div>
+        <div class="tl-body">
+          <p>Internet explota: Google, Facebook, Amazon manejan <strong>miles de millones de datos no estructurados</strong> (posts, imágenes, logs). Las BD relacionales no dan abasto en escala y flexibilidad. Nacen las <strong>BD NoSQL</strong> (MongoDB, Redis, Neo4j): documentos, clave-valor, grafos. No reemplazan a las relacionales, las <strong>complementan</strong>.</p>
+          <span class="tl-changed">🔥 Cambió: la BD deja de ser solo tablas; aparecen documentos, grafos, clave-valor.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item" data-era="6">
+      <div class="tl-dot">⑥</div>
+      <div class="tl-card">
+        <span class="tl-era">Años 2010+ · Nube y Big Data</span>
+        <div class="tl-title">La BD en la nube</div>
+        <div class="tl-body">
+          <p>Ya no necesitas comprar servidores: alquilas tu BD en la <strong>nube</strong> (AWS, Google Cloud, Azure). Aparecen los <strong>data warehouses</strong> (para analítica) y el <strong>Big Data</strong> (procesar petabytes). La BD se vuelve un servicio que escala solo, paga por uso, y está disponible desde cualquier dispositivo.</p>
+          <span class="tl-changed">🔥 Cambió: la BD vive en la nube y escala a petabytes.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="caja-historia">
+    <h4>📖 Dato curioso</h4>
+    <p>El paper de Codd de 1970 era tan revolucionario que IBM tardó años en adoptarlo porque ya tenía un producto jerárquico (IMS) vendiéndose bien. Mientras tanto, <strong>Larry Ellison</strong> leyó el paper, fundó <strong>Oracle</strong> en 1977, y se hizo multimillonario. A veces la mejor idea no la aprovecha quien la inventa, sino quien la ejecuta.</p>
+  </div>
+
+  <h3>⚡ La evolución en una tabla</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Época</th><th>Hito</th><th>Problema que resolvió</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1890</td><td>Fichas perforadas (Hollerith)</td><td>Contar a mano era lentísimo</td></tr>
+        <tr><td>50-60s</td><td>Archivos planos</td><td>El cartón se degradaba</td></tr>
+        <tr><td>60s</td><td>BD jerárquicas/de red</td><td>Archivos sueltos sin estructura</td></tr>
+        <tr><td>1970</td><td>Modelo relacional (Codd)</td><td>Las jerárquicas eran rígidas</td></tr>
+        <tr><td>80s</td><td>SQL + Oracle/DB2</td><td>No había lenguaje estándar</td></tr>
+        <tr><td>2000s</td><td>NoSQL (MongoDB, Redis)</td><td>La web generaba datos no estructurados masivos</td></tr>
+        <tr><td>2010+</td><td>Nube + Big Data</td><td>Comprar servidores era caro y no escalaba</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- QUIZ MÓDULO 3 -->
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Quién propuso el modelo relacional en 1970?</p>
+      <button class="opcion" data-op="a">Edgar F. Codd</button>
+      <button class="opcion" data-op="b">Herman Hollerith</button>
+      <button class="opcion" data-op="c">Larry Ellison</button>
+      <button class="opcion" data-op="d">Bill Gates</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Qué problema vino a resolver NoSQL en los 2000s?</p>
+      <button class="opcion" data-op="a">Que SQL era muy caro</button>
+      <button class="opcion" data-op="b">La web generaba datos masivos no estructurados que las relacionales no manejaban bien</button>
+      <button class="opcion" data-op="c">Que no existía internet</button>
+      <button class="opcion" data-op="d">Reemplazar definitivamente a las BD relacionales</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — DESCANSO ACTIVO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar. Tu cerebro aprende mejor después de una pausa.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card">
+      <span class="big-icon">👀</span>
+      <h3>Regla 20-20-20</h3>
+      <p>Mira a algo a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p>
+    </div>
+    <div class="descanso-card">
+      <span class="big-icon">🤸</span>
+      <h3>Estira el cuerpo</h3>
+      <p>Párate. Gira el cuello 5 veces a cada lado. Estira brazos al techo 10 s.</p>
+    </div>
+    <div class="descanso-card">
+      <span class="big-icon">💧</span>
+      <h3>Toma agua</h3>
+      <p>El cerebro es 73% agua. Un vaso mejora la concentración 30 min.</p>
+    </div>
+    <div class="descanso-card">
+      <span class="big-icon">🗣️</span>
+      <h3>Habla con alguien</h3>
+      <p>Coméntale a tu compañero/a cuál era de las 5 eras te pareció más sorprendente. 1 min.</p>
+    </div>
+  </div>
+
+  <div class="trivia-box">
+    <h3>🎲 Trivia de regreso — ¿cuántos mensajes se envían por WhatsApp por día?</h3>
+    <p>WhatsApp usa una BD para guardar cada mensaje. ¿Cuántos mensajes se envían al día en el mundo?</p>
+    <div class="trivia-opts" id="triviaOpts">
+      <button class="trivia-opt" data-tcorrecta="c" data-top="a">10 millones</button>
+      <button class="trivia-opt" data-top="b">1.000 millones</button>
+      <button class="trivia-opt" data-top="c">+100.000 millones</button>
+      <button class="trivia-opt" data-top="d">500</button>
+    </div>
+    <div class="trivia-result" id="triviaResult"></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>Google procesa <strong>20 petabytes</strong> de datos por día. Un petabyte son 1.000 terabytes. Si cada foto tuya pesa 3 MB, 20 petabytes caben <strong>6.6 billones de fotos</strong>. Y eso es <strong>cada día</strong>. Sin bases de datos, ese volumen sería imposible de manejar. 🤯</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Manuales vs BD →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — MANUALES VS BD (BENEFICIOS)
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>⚖️ Sistemas manuales vs BD</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El antes y el después" — por qué la BD gana</p>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "La biblioteca sin catalogar"</h4>
+    <p>Entras a una biblioteca con 10.000 libros <strong>sin orden</strong>. Tiras horas buscando uno. Pides otro y el bibliotecario dice "estaba aquí pero lo movieron". Anotan tu préstamo en un cuaderno que se mojó. <strong>Ese es un sistema manual</strong>. Funciona con 50 libros. Con 10.000, es una pesadilla. Veamos qué cambia con una BD.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Un <strong>sistema manual</strong> usa papel, cuadernos, libretas. Un <strong>sistema con BD</strong> usa una base de datos gestionada por software. La diferencia no es de moda: es de <strong>escala, velocidad y confiabilidad</strong>. Veamos 4 beneficios concretos comparando los dos.</p>
+  </div>
+
+  <h3>🎮 Simulador: 4 escenarios antes vs después</h3>
+
+  <div class="escenario-bd">
+    <div class="esc-head">⚖️ Comparación: sistema manual vs sistema con BD</div>
+
+    <div class="esc-compare" style="margin-bottom:1.5rem">
+      <div class="esc-side manual">
+        <div class="esc-label">📓 Sistema manual</div>
+        <p>Buscar un libro en 10.000 requiere recorrer los estantes. <strong>Tardas horas</strong>. A veces no lo encuentras.</p>
+      </div>
+      <div class="esc-side db">
+        <div class="esc-label">🗄️ Con BD</div>
+        <p>Escribes el título en una pantalla y la BD lo encuentra en <strong>0.003 segundos</strong>. Te dice en qué estante está.</p>
+        <div class="esc-benefit">⚡ Beneficio: velocidad de búsqueda</div>
+      </div>
+    </div>
+
+    <div class="esc-compare" style="margin-bottom:1.5rem">
+      <div class="esc-side manual">
+        <div class="esc-label">📓 Sistema manual</div>
+        <p>El cuaderno de préstamos se moja, se pierde una hoja, alguien anota mal el nombre. <strong>El registro se pierde</strong>.</p>
+      </div>
+      <div class="esc-side db">
+        <div class="esc-label">🗄️ Con BD</div>
+        <p>La BD guarda cada préstamo con fecha, libro y usuario. <strong>No se pierde ni se duplica</strong>. Hay una sola fuente de verdad.</p>
+        <div class="esc-benefit">🔒 Beneficio: integridad y persistencia</div>
+      </div>
+    </div>
+
+    <div class="esc-compare" style="margin-bottom:1.5rem">
+      <div class="esc-side manual">
+        <div class="esc-label">📓 Sistema manual</div>
+        <p>Si dos bibliotecarios anotan en el mismo cuaderno, se pisan. <strong>Uno solo puede usarlo a la vez</strong>.</p>
+      </div>
+      <div class="esc-side db">
+        <div class="esc-label">🗄️ Con BD</div>
+        <p>5 bibliotecarios consultan y actualizan <strong>a la vez</strong>. La BD bloquea el libro que alguien está prestando para que no se preste dos veces.</p>
+        <div class="esc-benefit">👥 Beneficio: concurrencia sin conflictos</div>
+      </div>
+    </div>
+
+    <div class="esc-compare">
+      <div class="esc-side manual">
+        <div class="esc-label">📓 Sistema manual</div>
+        <p>Cualquiera con acceso al cuaderno <strong>ve y cambia todo</strong>. No hay control de quién hizo qué.</p>
+      </div>
+      <div class="esc-side db">
+        <div class="esc-label">🗄️ Con BD</div>
+        <p>Cada usuario tiene permisos: el estudiante solo consulta, el bibliotecario presta, el director ve reportes. <strong>Todo queda auditado</strong>.</p>
+        <div class="esc-benefit">🛡️ Beneficio: seguridad y control de acceso</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Con su compañero/a: escojan un <strong>negocio del mundo real</strong> (panadería, barbería, farmacia). Describan cómo llevarían el inventario (a) en cuaderno, (b) con BD. ¿En cuál caso pierden menos productos y por qué? Escriban 2 frases.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>Antes, el banco guardaba los saldos en <strong>libros contables</strong>. Cobraban por "buscar tu cuenta". Hoy, ves tu saldo en el celular al instante: la BD del banco responde en milisegundos. Ese cambio, de papel a BD, es lo que hace posible la <strong>banca moderna</strong>.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 5 -->
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es una ventaja clara de una BD sobre un cuaderno de papel?</p>
+      <button class="opcion" data-op="a">La BD es más bonita</button>
+      <button class="opcion" data-op="b">Varios usuarios pueden consultar y actualizar a la vez sin pisarse</button>
+      <button class="opcion" data-op="c">La BD no necesita electricidad</button>
+      <button class="opcion" data-op="d">El cuaderno es más rápido</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué el sistema manual falla con 10.000 libros?</p>
+      <button class="opcion" data-op="a">Porque la búsqueda es lenta y los registros se pierden o duplican</button>
+      <button class="opcion" data-op="b">Porque los libros no caben</button>
+      <button class="opcion" data-op="c">Porque el papel es caro</button>
+      <button class="opcion" data-op="d">Porque los bibliotecarios son lentos por naturaleza</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Tipos de BD →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — TIPOS DE BD
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>🗃️ Tipos de bases de datos</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Relacional, NoSQL y más" — una BD para cada caso</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>No todas las BD son iguales. Hay <strong>distintos tipos</strong> según cómo organicen los datos. Las dos grandes familias son: <strong>relacionales</strong> (tablas con SQL) y <strong>NoSQL</strong> (documentos, clave-valor, grafos). Cada tipo sirve para un caso. Conocerlas te ayuda a elegir bien.</p>
+  </div>
+
+  <h3>📊 Las 4 familias principales</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-verde">
+      <span class="emoji">📐</span>
+      <h3>Relacional (SQL)</h3>
+      <p>Datos en <strong>tablas</strong> con filas y columnas que se relacionan. Lenguaje: SQL. Ejemplos: MySQL, PostgreSQL, Oracle. Para datos estructurados y con relaciones claras.</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">📄</span>
+      <h3>Documental (NoSQL)</h3>
+      <p>Datos en <strong>documentos</strong> (tipo JSON). Flexible, sin esquema rígido. Ejemplo: MongoDB. Para catálogos, posts, contenido variable.</p>
+    </div>
+    <div class="tarjeta tarjeta-ambar">
+      <span class="emoji">🔑</span>
+      <h3>Clave-valor (NoSQL)</h3>
+      <p>Cada dato tiene una <strong>clave</strong> y un <strong>valor</strong>. Ultrarrápida y simple. Ejemplo: Redis. Para cachés, sesiones, contadores.</p>
+    </div>
+    <div class="tarjeta tarjeta-warm">
+      <span class="emoji">🕸️</span>
+      <h3>Grafos (NoSQL)</h3>
+      <p>Datos como <strong>nodos y conexiones</strong>. Ejemplo: Neo4j. Para redes sociales, rutas, recomendaciones ("quién conoce a quién").</p>
+    </div>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿qué tipo de BD usarían para (a) los contactos de WhatsApp, (b) las rutas de Google Maps, (c) el catálogo de Netflix? Discutan y luego hagan el reto.</p>
+  </div>
+
+  <h3>🎮 Reto: Clasifica cada BD en su tipo</h3>
+  <p>Arrastra (o toca) cada sistema al tipo correcto. Hay 8 por clasificar.</p>
+
+  <div class="tipos-bd">
+    <div class="sim-head">🗃️ Clasificador de tipos de BD</div>
+
+    <div class="bd-bank" id="bdBank"></div>
+
+    <div class="tipos-grid" id="tiposGrid">
+      <div class="tipo-bucket rel" data-bucket="rel"><div class="bucket-title">📐 Relacional (SQL)</div><div class="bucket-items"></div></div>
+      <div class="tipo-bucket doc" data-bucket="doc"><div class="bucket-title">📄 Documental</div><div class="bucket-items"></div></div>
+      <div class="tipo-bucket kv" data-bucket="kv"><div class="bucket-title">🔑 Clave-valor</div><div class="bucket-items"></div></div>
+      <div class="tipo-bucket graph" data-bucket="graph"><div class="bucket-title">🕸️ Grafos</div><div class="bucket-items"></div></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn ghost" id="bdReset">🔄 Reiniciar clasificación</button>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Relacional o NoSQL? Depende</h4>
+    <p>No hay una "mejor": hay una <strong>más adecuada</strong>. Para un banco (transacciones, integridad estricta) → relacional. Para un feed de Instagram (contenido variable, escala masiva) → NoSQL documental. Muchas apps usan <strong>ambas</strong>: relacional para los pagos, NoSQL para los posts.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>Netflix usa BD relacionales para tus pagos y suscripción, y BD NoSQL para recomendaciones ("si viste X, te puede gustar Y"). Google Maps usa una BD de grafos para calcular rutas. Instagram usa documental para tus posts. <strong>Una app grande usa varios tipos a la vez</strong>.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 6 -->
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué tipo de BD usa tablas con filas y columnas relacionadas?</p>
+      <button class="opcion" data-op="a">Documental (MongoDB)</button>
+      <button class="opcion" data-op="b">Relacional (MySQL, PostgreSQL)</button>
+      <button class="opcion" data-op="c">Clave-valor (Redis)</button>
+      <button class="opcion" data-op="d">Grafos (Neo4j)</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Para qué sirve una BD de grafos como Neo4j?</p>
+      <button class="opcion" data-op="a">Para relaciones entre nodos (redes sociales, rutas, "quién conoce a quién")</button>
+      <button class="opcion" data-op="b">Para guardar documentos JSON</button>
+      <button class="opcion" data-op="c">Para cachés rápidas</button>
+      <button class="opcion" data-op="d">Para transacciones bancarias</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller final →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 7 — TALLER: DIAGNÓSTICO
+============================================================ -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: Diagnóstico</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Te convertirás en consultor de datos" — 3 retos + caso real</p>
+
+  <div class="caja-concepto">
+    <h3>🎯 Tu misión</h3>
+    <p>Tres retos calientan motores y el <strong>Jefe Final</strong> te pone en el rol de <strong>consultor</strong>: diagnosticar por qué el sistema manual de una biblioteca pierde préstamos y proponer una base de datos. Al superar todo, recibes la insignia <strong>BD Explorer</strong>.</p>
+  </div>
+
+  <!-- Reto 1: Matching — conceptos -->
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">Reto 1</span>
+      <span class="challenge-title">🧠 Empareja cada concepto con su definición</span>
+    </div>
+    <p>Toca un concepto de la izquierda y luego su definición. 4 parejas.</p>
+
+    <div class="ws-block" data-ws-match="1">
+      <div class="ws-options" data-role="left">
+        <button class="ws-chip" data-mid="1a">Base de datos</button>
+        <button class="ws-chip" data-mid="1b">Integridad</button>
+        <button class="ws-chip" data-mid="1c">Concurrencia</button>
+        <button class="ws-chip" data-mid="1d">Persistencia</button>
+      </div>
+      <div class="ws-options" data-role="right">
+        <button class="ws-chip" data-mid="1A">Los datos no se pierden al apagar el sistema</button>
+        <button class="ws-chip" data-mid="1B">Colección organizada de datos, consultable y gestionable</button>
+        <button class="ws-chip" data-mid="1C">Varios usuarios leen y escriben a la vez sin pisarse</button>
+        <button class="ws-chip" data-mid="1D">Los datos son consistentes, sin contradicciones</button>
+      </div>
+      <button class="btn primary" data-check-ws="1">✓ Validar Reto 1</button>
+      <div class="resultado-ws" id="ws-fb-1"></div>
+    </div>
+  </div>
+
+  <!-- Reto 2: Ordenar hitos históricos -->
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">Reto 2</span>
+      <span class="challenge-title">📜 Ordena los hitos de la historia (de más antiguo a más reciente)</span>
+    </div>
+    <p>Arrastra (o usa las flechas) para ordenar de más antiguo a más reciente.</p>
+
+    <div class="ws-block" data-ws-order="2">
+      <div class="ws-order" id="wsOrder2">
+        <div class="ws-order-item" data-oid="2nosql" draggable="true"><span class="ord-num">?</span> Nacen las BD NoSQL (MongoDB, Redis)</div>
+        <div class="ws-order-item" data-oid="2fichas" draggable="true"><span class="ord-num">?</span> Fichas perforadas de Hollerith</div>
+        <div class="ws-order-item" data-oid="2nube" draggable="true"><span class="ord-num">?</span> BD en la nube (AWS, Google Cloud)</div>
+        <div class="ws-order-item" data-oid="2rel" draggable="true"><span class="ord-num">?</span> Modelo relacional de Codd</div>
+        <div class="ws-order-item" data-oid="2sql" draggable="true"><span class="ord-num">?</span> SQL y Oracle se vuelven comerciales</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn" data-ws-up="2">⬆ Subir</button>
+        <button class="btn" data-ws-down="2">⬇ Bajar</button>
+      </div>
+      <button class="btn primary" data-check-ws="2">✓ Validar Reto 2</button>
+      <div class="resultado-ws" id="ws-fb-2"></div>
+    </div>
+  </div>
+
+  <!-- Reto 3: Emparejar tipo BD ↔ ejemplo -->
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">Reto 3</span>
+      <span class="challenge-title">🗃️ Empareja cada BD con su tipo</span>
+    </div>
+    <p>Toca una BD y luego su tipo. 4 parejas.</p>
+
+    <div class="ws-block" data-ws-match="3">
+      <div class="ws-options" data-role="left">
+        <button class="ws-chip" data-mid="3a">MySQL</button>
+        <button class="ws-chip" data-mid="3b">MongoDB</button>
+        <button class="ws-chip" data-mid="3c">Redis</button>
+        <button class="ws-chip" data-mid="3d">Neo4j</button>
+      </div>
+      <div class="ws-options" data-role="right">
+        <button class="ws-chip" data-mid="3A">Relacional (tablas, SQL)</button>
+        <button class="ws-chip" data-mid="3B">Documental (JSON)</button>
+        <button class="ws-chip" data-mid="3C">Clave-valor (ultrarrápida)</button>
+        <button class="ws-chip" data-mid="3D">Grafos (nodos y conexiones)</button>
+      </div>
+      <button class="btn primary" data-check-ws="3">✓ Validar Reto 3</button>
+      <div class="resultado-ws" id="ws-fb-3"></div>
+    </div>
+  </div>
+
+  <!-- Reto 4: Jefe Final — Diagnóstico biblioteca -->
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge adv">Jefe Final · Diagnóstico</span>
+      <span class="challenge-title">🏆 El caso de la biblioteca caótica</span>
+    </div>
+
+    <div class="caja-importante">
+      <h4>📋 El caso</h4>
+      <p>"La biblioteca del colegio tiene 8.000 libros. Llevan los préstamos en <strong>cuadernos de papel</strong>. Últimamente pierden préstamos, no saben quién tiene qué libro, y dos veces prestaron el mismo libro a dos estudiantes. El director quiere una solución. ¿Qué diagnosticas y qué propones?"</p>
+    </div>
+
+    <p>Como consultor, completa el ticket de diagnóstico:</p>
+
+    <div class="ticket">
+      <div class="ticket-head">
+        <span class="ticket-id">Ticket #BD-2026-001</span>
+        <span class="ticket-priority">⚡ PRIORIDAD ALTA</span>
+      </div>
+
+      <div class="ticket-field">
+        <label>1. ¿Cuál es la causa raíz del problema?</label>
+        <div class="ticket-opts" id="diagComp" data-correct="manual">
+          <button class="ticket-opt" data-dval="manual">El sistema manual en cuadernos no escala y pierde integridad/concurrencia</button>
+          <button class="ticket-opt" data-dval="libros">Hay demasiados libros y no caben</button>
+          <button class="ticket-opt" data-dval="estudiantes">Los estudiantes no devuelven a tiempo</button>
+          <button class="ticket-opt" data-dval="internet">Falta internet en la biblioteca</button>
+        </div>
+      </div>
+
+      <div class="ticket-field">
+        <label>2. ¿Qué beneficios traería una BD? (selecciona TODAS las correctas)</label>
+        <div class="ticket-opts" id="diagActions" data-correct="busqueda,concurrencia,integridad">
+          <button class="ticket-opt" data-aval="busqueda">⚡ Búsqueda instantánea de libros y préstamos</button>
+          <button class="ticket-opt" data-aval="concurrencia">👥 Varios bibliotecarios consultan y prestan a la vez sin pisarse</button>
+          <button class="ticket-opt" data-aval="integridad">🔒 No se pierden ni duplican préstamos (una sola fuente de verdad)</button>
+          <button class="ticket-opt" data-aval="comprar">🪑 Comprar más sillas para la biblioteca</button>
+          <button class="ticket-opt" data-aval="cuadernos">📓 Seguir usando cuadernos pero más grandes</button>
+        </div>
+      </div>
+
+      <div class="ticket-field">
+        <label>3. ¿Qué tipo de BD recomiendas y por qué? (2-3 frases)</label>
+        <textarea class="ticket-textarea" id="diagText" placeholder="Ej: Recomiendo una BD relacional (MySQL/PostgreSQL) porque los datos tienen estructura clara (libros, estudiantes, préstamos) y necesito integridad en las transacciones de préstamo. No usaría NoSQL porque no hay contenido variable."></textarea>
+      </div>
+
+      <div class="ticket-rubrica">
+        <h5>📋 Rúbrica del ticket</h5>
+        <ul>
+          <li>✔️ Identifica el <strong>sistema manual</strong> como causa raíz</li>
+          <li>✔️ Selecciona búsqueda + concurrencia + integridad (descarta "comprar sillas" y "cuadernos más grandes")</li>
+          <li>✔️ Recomienda <strong>relacional</strong> con justificación (estructura clara, integridad de préstamos)</li>
+          <li>✔️ El texto usa vocabulario técnico (BD relacional, integridad, concurrencia)</li>
+        </ul>
+      </div>
+
+      <button class="btn primary big" id="diagValidate" style="margin-top:1rem;">✓ Validar diagnóstico</button>
+      <div class="resultado-ws" id="ws-fb-4"></div>
+    </div>
+  </div>
+
+  <div class="cierre">
+    <h2>🏆 ¡Misión completada, BD Explorer!</h2>
+    <p class="lead">Ya sabes qué es una base de datos, de dónde viene, por qué necesitamos estructurar los datos, sus beneficios frente a los sistemas manuales y qué tipos existen. Has diagnosticado un caso real como un consultor. Eso es más de lo que sabe el 90% de las personas que usan apps todos los días.</p>
+    <p style="margin-top:1rem;font-size:1.05rem;color:var(--verde);font-weight:700;">En la próxima clase entraremos al modelo relacional y a SQL: el lenguaje para hablar con las BD. 🗄️</p>
+    <button class="btn-final" data-reiniciar>🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<!-- =================== FOOTER =================== -->
+<footer class="pie">
+  <div class="fb">🎓 Bases de Datos · Clase 1 · Plataforma interactiva</div>
+  <div>Introducción a las BD · Historia · Estructurar datos · Manuales vs BD · Tipos · 4 horas · Nivel Introductorio</div>
+  <div style="margin-top:.5rem;font-size:.78rem;">Hecho con 💜 para adolescentes que quieren entender dónde están sus datos.</div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

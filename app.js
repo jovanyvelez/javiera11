@@ -41,7 +41,8 @@ function cargarProgresoPorClase() {
     'curso-documentacion':      8,
     'curso-introduccion-diseno': 6,   // 0..5 (m6 es opcional/final)
     'curso-integrador':          6,   // 0..5 (m6 es opcional/final)
-    'curso-prototipado-usabilidad': 7  // 0..6 (m7 es opcional/final)
+    'curso-prototipado-usabilidad': 7,  // 0..6 (m7 es opcional/final)
+    'curso-bd-introduccion': 6          // 0..7 (m0 inicio y m4 descanso no cuentan; completables 1,2,3,5,6,7)
   };
 
   let totalGlobal = 0;
@@ -102,12 +103,12 @@ function actualizarBarraClase(card, pct) {
 /* ---------- ANIMACIÓN DE NÚMEROS EN STATS ---------- */
 function animarStats() {
   // Los 3 primeros son fijos
-  animarNumero(document.getElementById('stat-cursos'),  0, 4,  800);
-  animarNumero(document.getElementById('stat-clases'),  0, 11, 900);
+  animarNumero(document.getElementById('stat-cursos'),  0, 5,  800);
+  animarNumero(document.getElementById('stat-clases'),  0, 12, 900);
   // El cuarto (horas) tiene "+" al final
   const elHoras = document.getElementById('stat-horas');
   if (elHoras) {
-    animarNumero(elHoras, 0, 30, 1000, valor => valor + '+');
+    animarNumero(elHoras, 0, 34, 1000, valor => valor + '+');
   }
   // El de progreso ya se actualiza en cargarProgresoPorClase
 }
@@ -184,6 +185,9 @@ document.addEventListener('keydown', (e) => {
   } else if (e.key === 'p' || e.key === 'P') {
     const card = document.querySelector('.clase-card.ad-7');
     if (card) card.click();
+  } else if (e.key === 'b' || e.key === 'B') {
+    const card = document.querySelector('.clase-card.bd-1');
+    if (card) card.click();
   }
 });
 
@@ -193,7 +197,7 @@ window.addEventListener('load', () => {
   const keys = ['curso-csharp-funciones-7', 'curso-csharp-poo-10', 'curso-csharp-arreglos-11',
                 'curso-csharp-funciones', 'curso-analisis-diseno', 'curso-requerimientos',
                 'curso-elicitacion', 'curso-documentacion', 'curso-introduccion-diseno',
-                'curso-integrador', 'curso-prototipado-usabilidad'];
+                'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion'];
 
   let tienePrograma = false;
   let ultimaClase = null;
