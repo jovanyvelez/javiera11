@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🗄️ Bases de Datos · Clase 2 · Archivos vs BD</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- =================== HEADER + PROGRESO =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">⚖️</span>
+    <div>
+      <h1>Bases de Datos · Clase 2</h1>
+      <p class="subtitulo">Sistemas de archivos vs Sistemas de BD · Ventajas y desventajas</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">📁 Archivos</button>
+  <button class="btn-modulo" data-modulo="2">🗄️ SGBD</button>
+  <button class="btn-modulo" data-modulo="3">⚖️ Diferencias</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">✅ Ventajas</button>
+  <button class="btn-modulo" data-modulo="6">🎯 ¿Cuándo?</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>⚖️ ¿Por qué no guardamos todo en archivos?</h2>
+    <p class="lead">En la <strong>Clase 1</strong> vimos que una BD es mejor que un cuaderno. Pero alguien podría decir: "ya tengo Excel y archivos CSV, ¿para qué necesito una base de datos?". Hoy vamos a responder eso a fondo: cuáles son las <strong>diferencias reales</strong> entre guardar datos en archivos y guardarlos en una BD, y <strong>cuándo conviene cada uno</strong> (sí, a veces los archivos ganan).</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — dbadmin@bd</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">dbadmin@bd:~$</span> <span class="cmd">cat clientes.csv | grep "Juan"</span></div>
+        <div class="out">Juan Pérez,3156667788,Calle 45 #12-33</div>
+        <div><span class="prompt">dbadmin@bd:~$</span> <span class="cmd">SELECT * FROM clientes WHERE nombre='Juan Pérez';</span></div>
+        <div class="out">id: 42 | nombre: Juan Pérez | tel: 3156667788 | dir: Calle 45 #12-33</div>
+        <div><span class="prompt">dbadmin@bd:~$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>4 horas en 7 módulos, con descanso de 15 min. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Diferenciar sistemas de archivos de sistemas de bases de datos, e identificar ventajas y desventajas de cada enfoque.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>3 CSV que se desincronizan, 5 Excel desconectados en una clínica, el dato repetido en 4 archivos. La BD los resuelve… casi siempre.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · Sistemas de archivos</td><td style="color:var(--ambar)">CSV, JSON, Excel</td><td style="color:var(--rosa)">3 CSV desincronizados</td><td>100 XP</td></tr>
+        <tr><td>02 · Sistemas de BD (SGBD)</td><td style="color:var(--morado-claro)">MySQL, PostgreSQL</td><td>—</td><td>100 XP</td></tr>
+        <tr><td>03 · 6 diferencias clave</td><td style="color:var(--cian)">Comparativa</td><td>—</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · Ventajas/desventajas</td><td style="color:var(--verde)">Matriz</td><td>—</td><td>100 XP</td></tr>
+        <tr><td>05 · ¿Cuándo usar cada uno?</td><td style="color:var(--morado-claro)">Clasificador</td><td>—</td><td>100 XP</td></tr>
+        <tr><td>06 · Taller</td><td style="color:var(--morado)">Diagnóstico</td><td style="color:var(--rosa)">Clínica con 5 Excel</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a, piensen: si llevaran el inventario de una tienda, ¿lo harían en un Excel o en una base de datos? <strong>¿Por qué?</strong> Anoten una razón. Al final de la clase verán si su respuesta era la correcta o si hay matices.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: Sistemas de archivos →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — SISTEMAS DE ARCHIVOS
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>📁 Sistemas de archivos</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El dato suelto" — CSV, JSON, Excel y por qué fallan</p>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: 3 CSV que se desincronizan</h4>
+    <p>Una tienda lleva sus datos en tres archivos: <code>clientes.csv</code>, <code>productos.csv</code> y <code>ventas.csv</code>. María cambia su teléfono. Alguien actualiza <code>clientes.csv</code>… pero olvida actualizar <code>ventas.csv</code>, donde también está su teléfono. Ahora el sistema llama al número viejo. <strong>Redundancia + inconsistencia</strong>: el mismo dato en varios archivos, desincronizados. Ese es el problema #1 de los sistemas de archivos.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Un <strong>sistema de archivos</strong> (en el sentido de gestión de datos, no el filesystem del SO) guarda la información en <strong>archivos independientes</strong>: CSV, JSON, XML, hojas de cálculo, archivos de texto. Cada archivo es una isla: no "sabe" que los demás existen. Funciona para pocos datos y un solo usuario, pero <strong>se rompe</strong> cuando hay volumen, varios usuarios o datos relacionados.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Aclaración importante</h4>
+    <p>Aquí "sistema de archivos" NO significa el filesystem del SO (NTFS, ext4 que viste en la Clase 2 de Sistemas Operativos). Significa <strong>gestión de datos en archivos planos</strong>: guardar los datos de tu app en CSV, JSON o Excel, en lugar de en una base de datos. Es el enfoque anterior a los SGBD.</p>
+  </div>
+
+  <h3>📦 Formatos comunes de archivos de datos</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-ambar"><span class="emoji">📄</span><h3>CSV</h3><p>Valores separados por comas. Simple, universal. Sin estructura ni relaciones.</p></div>
+    <div class="tarjeta"><span class="emoji">📋</span><h3>JSON</h3><p>Jerárquico y flexible. Bueno para configuración, malo para consultar millones de registros.</p></div>
+    <div class="tarjeta"><span class="emoji">📊</span><h3>Excel</h3><p>Hojas de cálculo. Visual, pero sin concurrencia real y se traba con miles de filas.</p></div>
+    <div class="tarjeta tarjeta-magenta"><span class="emoji">🏷️</span><h3>XML</h3><p>Etiquetas anidadas. Verboso, fue popular antes de JSON.</p></div>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: abran un Excel (o imaginen uno) con tres columnas: <strong>nombre, edad, ciudad</strong>. Si dos personas quieren editar el mismo archivo a la vez en la red del colegio, <strong>¿qué pasa?</strong> Discutan. (Pista: uno sobrescribe al otro).</p>
+  </div>
+
+  <h3>🎮 Simulador: El inventario en archivos</h3>
+  <p>Una tienda guarda datos en 3 archivos CSV. Presiona "Cambiar teléfono de María" y observa qué archivos se actualizan y cuáles quedan <strong>desincronizados</strong>. Esa es la redundancia en acción.</p>
+
+  <div class="archivos-sim">
+    <div class="sim-head">📁 Inventario en 3 archivos CSV — el problema de la redundancia</div>
+
+    <div class="archivos-grid">
+      <div class="archivo-card fresh" id="archClientes">
+        <div class="archivo-head"><span class="af-icon">👥</span> clientes.csv <span class="archivo-status">actualizado</span></div>
+        <table class="archivo-table">
+          <thead><tr><th>id</th><th>nombre</th><th>teléfono</th></tr></thead>
+          <tbody id="archClientesBody">
+            <tr><td>1</td><td>María</td><td class="highlight" id="telCli1">3156667788</td></tr>
+            <tr><td>2</td><td>Juan</td><td>3001234567</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="archivo-card fresh" id="archProductos">
+        <div class="archivo-head"><span class="af-icon">📦</span> productos.csv <span class="archivo-status">sin cambios</span></div>
+        <table class="archivo-table">
+          <thead><tr><th>id</th><th>nombre</th><th>precio</th></tr></thead>
+          <tbody>
+            <tr><td>10</td><td>Pan</td><td>$2.000</td></tr>
+            <tr><td>11</td><td>Leche</td><td>$3.500</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="archivo-card fresh" id="archVentas">
+        <div class="archivo-head"><span class="af-icon">🧾</span> ventas.csv <span class="archivo-status">sin cambios</span></div>
+        <table class="archivo-table">
+          <thead><tr><th>venta</th><th>cliente</th><th>teléfono</th><th>producto</th></tr></thead>
+          <tbody id="archVentasBody">
+            <tr><td>V1</td><td>María</td><td class="highlight" id="telVent1">3156667788</td></tr>
+            <tr><td>V2</td><td>Juan</td><td>3001234567</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="archivos-log" id="archLog">
+      <div class="log-line"><span class="t">[sistema]</span> 3 archivos cargados. El teléfono de María aparece en clientes.csv Y en ventas.csv (redundancia).</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn primary big" id="archChange">✏️ Cambiar teléfono de María a 3120000000</button>
+      <button class="btn yellow" id="archUpdateAll">🔄 Actualizar los 3 archivos</button>
+      <button class="btn ghost" id="archReset">🔄 Reiniciar</button>
+    </div>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — Abran un CSV real</h4>
+    <p>El docente pide que cada pareja abra Excel o cree un <code>.csv</code> con 5 filas:</p>
+    <ol class="aula-steps">
+      <li>Guarden el archivo. Ahora <strong>duplíquenlo</strong> y cambien un dato en la copia.</li>
+      <li>¿Cómo saben cuál es la "versión correcta"? No pueden. <strong>Esa es la inconsistencia</strong>.</li>
+      <li>Imaginen 50 copias del mismo archivo entre 5 empleados. Un caos. Una BD lo evita: una sola fuente de verdad.</li>
+    </ol>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>Muchas pymes aún llevan su contabilidad en <strong>Excel</strong>. Funciona… hasta que dos contadores editan el mismo archivo a la vez y uno pierde sus cambios. O hasta que el archivo crece a 50.000 filas y se vuelve imposible de abrir. Ese es el límite natural de un sistema de archivos.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 1 -->
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es el problema #1 de guardar datos en archivos separados?</p>
+      <button class="opcion" data-op="a">Los archivos son muy caros</button>
+      <button class="opcion" data-op="b">La redundancia: el mismo dato en varios archivos se desincroniza</button>
+      <button class="opcion" data-op="c">No se puede usar una computadora</button>
+      <button class="opcion" data-op="d">Los archivos no admiten texto</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué pasa si dos personas editan el mismo Excel en red a la vez?</p>
+      <button class="opcion" data-op="a">Uno sobrescribe al otro y se pierden cambios</button>
+      <button class="opcion" data-op="b">Se fusionan automáticamente sin problemas</button>
+      <button class="opcion" data-op="c">El archivo se bloquea para siempre</button>
+      <button class="opcion" data-op="d">Excel avisa y evita la pérdida siempre</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Sistemas de BD →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — SISTEMAS DE BD (SGBD)
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>🗄️ Sistemas de bases de datos (SGBD)</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El gestor" — qué es un SGBD y sus componentes</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Un <strong>Sistema de Gestión de Bases de Datos (SGBD)</strong>, o DBMS en inglés, es el <strong>software</strong> que gestiona la base de datos: MySQL, PostgreSQL, MongoDB, Oracle. No es la base de datos en sí (los datos), sino el <strong>programa</strong> que la administra. El SGBD centraliza los datos, controla quién accede a qué, garantiza la integridad y responde consultas. Es lo que reemplaza al "cada quien con su archivo".</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ya usaron MySQL o PostgreSQL en alguna práctica. <strong>¿Qué es exactamente?</strong> ¿Son los datos, o el programa que los gestiona? Discutan 1 minuto. (Pista: es el programa; los datos viven dentro).</p>
+  </div>
+
+  <h3>🎮 Interactivo: Anatomía de un SGBD</h3>
+  <p>Un SGBD tiene 4 componentes principales. Toca cada capa para descubrir qué hace.</p>
+
+  <div class="sgbd-anatomy">
+    <div class="sim-head">🔧 Componentes de un SGBD</div>
+
+    <div class="sgbd-diagram" id="sgbdDiagram">
+      <div class="sgbd-layer" data-comp="motor">
+        <span class="sl-icon">⚙️</span><span class="sl-name">Motor</span>
+        <span class="sl-desc">El corazón que procesa consultas y las ejecuta.</span>
+        <span class="sl-pulse"></span>
+      </div>
+      <div class="sgbd-layer" data-comp="lenguaje">
+        <span class="sl-icon">💬</span><span class="sl-name">Lenguaje</span>
+        <span class="sl-desc">SQL: cómo le pides cosas al SGBD.</span>
+        <span class="sl-pulse"></span>
+      </div>
+      <div class="sgbd-layer" data-comp="diccionario">
+        <span class="sl-icon">📖</span><span class="sl-name">Diccionario de datos</span>
+        <span class="sl-desc">El catálogo: qué tablas existen, qué columnas, qué tipos.</span>
+        <span class="sl-pulse"></span>
+      </div>
+      <div class="sgbd-layer" data-comp="transacciones">
+        <span class="sl-icon">🔒</span><span class="sl-name">Gestor de transacciones</span>
+        <span class="sl-desc">Garantiza que las operaciones se completen o se cancelen, sin estados a medias.</span>
+        <span class="sl-pulse"></span>
+      </div>
+    </div>
+
+    <div class="sgbd-detail" id="sgbdDetail">
+      <h4>Toca una capa para ver su detalle</h4>
+      <p style="color:var(--texto-suave);">Cada componente tiene una función específica que un sistema de archivos no tiene.</p>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Qué es una transacción?</h4>
+    <p>Una <strong>transacción</strong> es una operación que <strong>se completa entera o no se hace nada</strong>. Ejemplo: transferir $100 de tu cuenta a la de un amigo. Si se cae el sistema a la mitad, el SGBD <strong>deshace</strong> todo: no pierdes el dinero. Un sistema de archivos no puede hacer esto.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>Cuando transfieres dinero por la app del banco, hay un SGBD detrás. El gestor de transacciones garantiza que <strong>o se completa la transferencia entera, o no se hace nada</strong>. Nunca quedas en un estado "se descontó de ti pero no llegó al otro". Esa garantía es imposible con archivos planos.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 2 -->
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es un SGBD (DBMS)?</p>
+      <button class="opcion" data-op="a">Los datos en sí</button>
+      <button class="opcion" data-op="b">El software que gestiona la base de datos</button>
+      <button class="opcion" data-op="c">Un tipo de archivo CSV</button>
+      <button class="opcion" data-op="d">Una hoja de Excel</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Para qué sirve el gestor de transacciones de un SGBD?</p>
+      <button class="opcion" data-op="a">Para que las operaciones se completen enteras o se cancelen, sin estados a medias</button>
+      <button class="opcion" data-op="b">Para que la pantalla se vea bonita</button>
+      <button class="opcion" data-op="c">Para apagar el servidor</button>
+      <button class="opcion" data-op="d">Para enviar correos</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Las 6 diferencias →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — LAS 6 DIFERENCIAS CLAVE
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>⚖️ Las 6 diferencias clave</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Archivos vs BD, cara a cara" — la comparativa definitiva</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Ya vimos qué son los sistemas de archivos y qué son los SGBD. Ahora los ponemos <strong>cara a cara</strong> en 6 criterios. En cada uno verás que el SGBD resuelve un problema que el sistema de archivos arrastra. Esto no es opinión: son diferencias técnicas concretas.</p>
+  </div>
+
+  <div class="diff-table-wrap">
+    <table class="diff-table">
+      <thead>
+        <tr><th>Criterio</th><th class="col-arch">📁 Sistema de archivos</th><th class="col-bd">🗄️ Sistema de BD (SGBD)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="crit">🔄 Redundancia</td><td class="arch">El mismo dato en varios archivos; se desincroniza.</td><td class="bd">El dato vive en un solo lugar; todos lo consultan de ahí.</td></tr>
+        <tr><td class="crit">⚡ Consulta</td><td class="arch">Buscar requiere leer el archivo entero (lento con millones de filas).</td><td class="bd">Consultas indexadas; encuentra en milisegundos con SQL.</td></tr>
+        <tr><td class="crit">👥 Concurrencia</td><td class="arch">Un usuario a la vez; el segundo sobrescribe al primero.</td><td class="bd">Cientos de usuarios a la vez sin pisarse (control de concurrencia).</td></tr>
+        <tr><td class="crit">🔒 Integridad</td><td class="arch">Nada impite datos contradictorios o inconsistentes.</td><td class="bd">Reglas y restricciones que garantizan consistencia.</td></tr>
+        <tr><td class="crit">🛡️ Seguridad</td><td class="arch">Quien tiene el archivo, tiene todo; sin control granular.</td><td class="bd">Permisos por usuario, por tabla, por columna; todo auditable.</td></tr>
+        <tr><td class="crit">📈 Escalabilidad</td><td class="arch">Se rompe con miles de filas o varios usuarios.</td><td class="bd">Maneja millones de registros y miles de usuarios.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Con su compañero/a, escojan <strong>2 de las 6 diferencias</strong> y piensen un ejemplo real donde un sistema de archivos fallaría. Compárenlo con cómo un SGBD lo resuelve. Escríbanlo en 2 frases y compártanlo con el grupo.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>⚠️ La diferencia raíz</h4>
+    <p>Todas las 6 diferencias se resumen en una: <strong>el sistema de archivos no sabe que los datos están relacionados</strong>. Cada archivo es una isla. El SGBD, en cambio, <strong>conoce las relaciones</strong> y por eso puede garantizar integridad, evitar redundancia y responder consultas complejas.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>Antes, las aerolíneas vendían asientos en archivos. Resultado: asientos vendidos dos veces. Hoy, un SGBD centralizado bloquea el asiento en cuanto alguien lo selecciona. Esa sola diferencia (concurrencia + integridad) es lo que hace posible la <strong>reserva de vuelos en tiempo real</strong>.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 3 -->
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Por qué un sistema de archivos produce redundancia?</p>
+      <button class="opcion" data-op="a">Porque los archivos son muy pequeños</button>
+      <button class="opcion" data-op="b">Porque el mismo dato se copia en varios archivos que luego se desincronizan</button>
+      <button class="opcion" data-op="c">Porque usa mucho disco</button>
+      <button class="opcion" data-op="d">Porque los archivos no admiten números</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cuál es la diferencia raíz entre archivos y SGBD?</p>
+      <button class="opcion" data-op="a">El SGBD conoce las relaciones entre datos; los archivos no</button>
+      <button class="opcion" data-op="b">El SGBD es más caro siempre</button>
+      <button class="opcion" data-op="c">Los archivos son más rápidos siempre</button>
+      <button class="opcion" data-op="d">No hay diferencia real</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — DESCANSO ACTIVO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73% agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Coméntale a tu compañero/a cuál de las 6 diferencias te sorprendió más. 1 min.</p></div>
+  </div>
+
+  <div class="trivia-box">
+    <h3>🎲 Trivia de regreso — ¿cuál NO es una ventaja de los archivos?</h3>
+    <div class="trivia-opts" id="triviaOpts">
+      <button class="trivia-opt" data-tcorrecta="c" data-top="a">Son simples y no requieren instalación</button>
+      <button class="trivia-opt" data-top="b">Son portátiles y baratos</button>
+      <button class="trivia-opt" data-top="c">Manejan miles de usuarios a la vez sin pisarse</button>
+      <button class="trivia-opt" data-top="d">Sirven para configuración y logs</button>
+    </div>
+    <div class="trivia-result" id="triviaResult"></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>El primer SGBD comercial, <strong>IMS de IBM</strong> (1966), se creó para la <strong>misión Apollo</strong> de la NASA: necesitaban gestionar millones de piezas del cohete Saturn V. Sin un SGBD, nunca hubieran llegado a la Luna. 🚀</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Ventajas y desventajas →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — VENTAJAS Y DESVENTAJAS
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>✅ Ventajas y desventajas</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Nada es perfecto" — cada enfoque tiene su lado B</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Es fácil pensar que las BD son "siempre mejores". <strong>Falso.</strong> Los sistemas de archivos tienen ventajas reales: son simples, no requieren instalación, son portátiles y baratos. La BD tiene ventajas enormes (integridad, concurrencia, escalabilidad), pero también tiene desventajas: cuesta, es compleja, requiere un administrador. La decisión depende del caso.</p>
+  </div>
+
+  <h3>📊 La matriz completa</h3>
+  <div class="ventajas-grid">
+    <div class="ventaja-col arch">
+      <h3>📁 Sistema de archivos</h3>
+      <ul class="ventaja-list">
+        <li><span class="v-pro">✓</span> Simple: lo abre cualquiera con un editor</li>
+        <li><span class="v-pro">✓</span> No requiere instalación ni servidor</li>
+        <li><span class="v-pro">✓</span> Portátil: se copia en un USB o se envía por correo</li>
+        <li><span class="v-pro">✓</span> Barato: gratis (Excel, Bloc de notas)</li>
+        <li><span class="v-pro">✓</span> Bueno para pocos datos y un solo usuario</li>
+        <li><span class="v-con">✗</span> Redundancia: mismo dato en varios archivos</li>
+        <li><span class="v-con">✗</span> Inconsistencia: los archivos se desincronizan</li>
+        <li><span class="v-con">✗</span> Sin concurrencia: un usuario a la vez</li>
+        <li><span class="v-con">✗</span> Sin integridad: nada impide datos contradictorios</li>
+        <li><span class="v-con">✗</span> Búsqueda lenta con miles de registros</li>
+        <li><span class="v-con">✗</span> Difícil de escalar</li>
+      </ul>
+    </div>
+    <div class="ventaja-col bd">
+      <h3>🗄️ Sistema de BD (SGBD)</h3>
+      <ul class="ventaja-list">
+        <li><span class="v-pro">✓</span> Sin redundancia: el dato vive en un solo lugar</li>
+        <li><span class="v-pro">✓</span> Integridad: reglas que garantizan consistencia</li>
+        <li><span class="v-pro">✓</span> Concurrencia: miles de usuarios a la vez</li>
+        <li><span class="v-pro">✓</span> Búsqueda ultrarrápida con índices y SQL</li>
+        <li><span class="v-pro">✓</span> Seguridad granular: permisos por usuario/tabla</li>
+        <li><span class="v-pro">✓</span> Escalable: millones de registros</li>
+        <li><span class="v-pro">✓</span> Transacciones: operaciones completas o canceladas</li>
+        <li><span class="v-con">✗</span> Complejidad: requiere aprender SQL y configurar</li>
+        <li><span class="v-con">✗</span> Necesita un servidor y mantenimiento</li>
+        <li><span class="v-con">✗</span> Costo: algunos SGBD son de pago (Oracle)</li>
+        <li><span class="v-con">✗</span> Requiere un administrador (DBA)</li>
+        <li><span class="v-con">✗</span> Overhead: más recursos para casos simples</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Con su compañero/a: imaginen que deben guardar la <strong>lista de compras del mercado</strong>. ¿Archivo o BD? ¿Por qué? Ahora imaginen que deben gestionar las <strong>cuentas bancarias de 10 millones de clientes</strong>. ¿Cambia la respuesta? Discutan dónde está la frontera.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 La regla práctica</h4>
+    <p><strong>Pocos datos + un usuario + sin relaciones complejas → archivo.</strong> <strong>Muchos datos + varios usuarios + integridad crítica → BD.</strong> La mayoría de apps reales cruzan la frontera rápido y necesitan BD. Pero tu archivo de configuración <code>.json</code> seguirá siendo un archivo, y eso está bien.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>Incluso las apps más grandes usan <strong>ambos</strong>. Spotify usa una BD para tus reproducciones y tu suscripción, pero guarda la <strong>configuración de la app</strong> (idioma, tema oscuro) en un archivo JSON. <strong>Nada es "todo BD" ni "todo archivo"</strong>: se elige según el caso.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 5 -->
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Cuál es una ventaja real de los sistemas de archivos?</p>
+      <button class="opcion" data-op="a">Simples, portátiles y no requieren instalación</button>
+      <button class="opcion" data-op="b">Manejan miles de usuarios a la vez</button>
+      <button class="opcion" data-op="c">Garantizan integridad automáticamente</button>
+      <button class="opcion" data-op="d">Escalan a millones de registros sin esfuerzo</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Cuál es una desventaja real de los SGBD?</p>
+      <button class="opcion" data-op="a">No pueden guardar datos</button>
+      <button class="opcion" data-op="b">Complejidad, costo y necesidad de un administrador</button>
+      <button class="opcion" data-op="c">Son imposibles de aprender</button>
+      <button class="opcion" data-op="d">No admiten varios usuarios</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: ¿Cuándo usar cada uno? →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — ¿CUÁNDO USAR CADA UNO?
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>🎯 ¿Cuándo usar cada uno?</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "La decisión" — archivo o BD, según el caso</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>No hay un "ganador absoluto". Hay un <strong>más adecuado para cada caso</strong>. Esta tabla te ayuda a decidir. La regla: si el caso tiene <strong>varios usuarios, muchos datos o integridad crítica</strong>, ve por BD. Si es <strong>configuración, un solo usuario o pocos datos</strong>, archivo basta.</p>
+  </div>
+
+  <h3>🎮 Reto: ¿Archivo o BD para cada caso?</h3>
+  <p>Toca un escenario y luego la opción correcta (archivo o BD). Hay 8 escenarios.</p>
+
+  <div class="match-bd-sim">
+    <div class="sim-head">🎯 Escenario → ¿Archivo o BD?</div>
+    <p id="matchInstr" style="font-size:0.88rem;color:var(--texto-suave);">Toca un escenario de la izquierda para seleccionarlo.</p>
+    <div class="match-bd-grid" id="matchGrid"></div>
+    <div class="match-bd-options" id="matchOptions"></div>
+    <div class="match-bd-feedback" id="matchFeedback"></div>
+    <div class="btn-row">
+      <button class="btn ghost" id="matchReset">🔄 Reiniciar reto</button>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 La frontera difusa</h4>
+    <p>Algunos casos no son obvios. ¿Una bitácora de logs? Aunque suena a "archivo", cuando necesitas <strong>buscar errores entre millones de logs</strong>, una BD (o un sistema tipo Elasticsearch) gana. La frontera se mueve según el <strong>volumen y la necesidad de consulta</strong>.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>Un prototipo de app empieza con <strong>un archivo JSON</strong> (rápido, sin setup). Cuando crece y tiene usuarios reales, se migra a una <strong>BD</strong>. Esa transición es tan común que se llama "de JSON a PostgreSQL" y casi todo desarrollador la ha vivido.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 6 -->
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> Para la configuración de una app (idioma, tema), ¿qué conviene?</p>
+      <button class="opcion" data-op="a">Una BD relacional con servidor</button>
+      <button class="opcion" data-op="b">Un archivo JSON (simple, sin servidor)</button>
+      <button class="opcion" data-op="c">Un SGBD en la nube</button>
+      <button class="opcion" data-op="d">Una hoja de Excel con macros</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> Para las cuentas bancarias de 10 millones de clientes, ¿qué conviene?</p>
+      <button class="opcion" data-op="a">Un SGBD con transacciones e integridad</button>
+      <button class="opcion" data-op="b">Un archivo CSV por cliente</button>
+      <button class="opcion" data-op="c">Un Excel compartido</button>
+      <button class="opcion" data-op="d">Un archivo de texto plano</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller final →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 7 — TALLER: DIAGNÓSTICO
+============================================================ -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: Diagnóstico</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Te convertirás en consultor de datos" — 3 retos + caso real</p>
+
+  <div class="caja-concepto">
+    <h3>🎯 Tu misión</h3>
+    <p>Tres retos calientan motores y el <strong>Jefe Final</strong> te pone en el rol de <strong>consultor</strong>: diagnosticar a una clínica que lleva sus datos en 5 Excel desconectados y proponer la solución. Al superar todo, recibes la insignia <strong>Archivos vs BD Master</strong>.</p>
+  </div>
+
+  <!-- Reto 1: Matching — ventaja/desventaja -->
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">Reto 1</span>
+      <span class="challenge-title">✅ Empareja cada característica con su enfoque</span>
+    </div>
+    <p>Toca una característica y luego el enfoque al que pertenece. 4 parejas.</p>
+
+    <div class="ws-block" data-ws-match="1">
+      <div class="ws-options" data-role="left">
+        <button class="ws-chip" data-mid="1a">No requiere instalación</button>
+        <button class="ws-chip" data-mid="1b">Concurrencia sin pisarse</button>
+        <button class="ws-chip" data-mid="1c">Portátil en un USB</button>
+        <button class="ws-chip" data-mid="1d">Transacciones (todo o nada)</button>
+      </div>
+      <div class="ws-options" data-role="right">
+        <button class="ws-chip" data-mid="1A">📁 Sistema de archivos</button>
+        <button class="ws-chip" data-mid="1B">🗄️ Sistema de BD (SGBD)</button>
+        <button class="ws-chip" data-mid="1C">📁 Sistema de archivos</button>
+        <button class="ws-chip" data-mid="1D">🗄️ Sistema de BD (SGBD)</button>
+      </div>
+      <button class="btn primary" data-check-ws="1">✓ Validar Reto 1</button>
+      <div class="resultado-ws" id="ws-fb-1"></div>
+    </div>
+  </div>
+
+  <!-- Reto 2: Ordenar componentes SGBD -->
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">Reto 2</span>
+      <span class="challenge-title">🔧 Ordena los componentes de un SGBD (de abajo hacia arriba)</span>
+    </div>
+    <p>Arrastra (o usa las flechas) para ordenar desde el nivel más bajo (datos) hasta el más alto (usuario).</p>
+
+    <div class="ws-block" data-ws-order="2">
+      <div class="ws-order" id="wsOrder2">
+        <div class="ws-order-item" data-oid="2datos" draggable="true"><span class="ord-num">?</span> Datos almacenados (tablas, documentos)</div>
+        <div class="ws-order-item" data-oid="2motor" draggable="true"><span class="ord-num">?</span> Motor del SGBD (procesa consultas)</div>
+        <div class="ws-order-item" data-oid="2sql" draggable="true"><span class="ord-num">?</span> Lenguaje SQL (le pides cosas al motor)</div>
+        <div class="ws-order-item" data-oid="2app" draggable="true"><span class="ord-num">?</span> Aplicación (interfaz para el usuario)</div>
+        <div class="ws-order-item" data-oid="2user" draggable="true"><span class="ord-num">?</span> Usuario final</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn" data-ws-up="2">⬆ Subir</button>
+        <button class="btn" data-ws-down="2">⬇ Bajar</button>
+      </div>
+      <button class="btn primary" data-check-ws="2">✓ Validar Reto 2</button>
+      <div class="resultado-ws" id="ws-fb-2"></div>
+    </div>
+  </div>
+
+  <!-- Reto 3: Emparejar diferencia ↔ explicación -->
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">Reto 3</span>
+      <span class="challenge-title">⚖️ Empareja cada diferencia con su explicación</span>
+    </div>
+    <p>Toca una diferencia y luego su explicación. 4 parejas.</p>
+
+    <div class="ws-block" data-ws-match="3">
+      <div class="ws-options" data-role="left">
+        <button class="ws-chip" data-mid="3a">Redundancia</button>
+        <button class="ws-chip" data-mid="3b">Concurrencia</button>
+        <button class="ws-chip" data-mid="3c">Integridad</button>
+        <button class="ws-chip" data-mid="3d">Escalabilidad</button>
+      </div>
+      <div class="ws-options" data-role="right">
+        <button class="ws-chip" data-mid="3A">Varios usuarios leen y escriben a la vez sin pisarse</button>
+        <button class="ws-chip" data-mid="3B">El mismo dato en varios archivos se desincroniza</button>
+        <button class="ws-chip" data-mid="3C">El SGBD maneja millones de registros sin romperse</button>
+        <button class="ws-chip" data-mid="3D">Reglas que garantizan datos consistentes</button>
+      </div>
+      <button class="btn primary" data-check-ws="3">✓ Validar Reto 3</button>
+      <div class="resultado-ws" id="ws-fb-3"></div>
+    </div>
+  </div>
+
+  <!-- Reto 4: Jefe Final — Diagnóstico clínica -->
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge adv">Jefe Final · Diagnóstico</span>
+      <span class="challenge-title">🏆 El caso de la clínica con 5 Excel</span>
+    </div>
+
+    <div class="caja-importante">
+      <h4>📋 El caso</h4>
+      <p>"Una clínica lleva sus datos en <strong>5 archivos Excel desconectados</strong>: pacientes, citas, tratamientos, facturación y medicamentos. Problemas: el teléfono de un paciente cambia y queda distinto en 3 archivos; dos doctores editan el mismo Excel y uno pierde sus cambios; a veces facturan un tratamiento que no se registró. El director quiere una solución. ¿Qué diagnosticas y qué propones?"</p>
+    </div>
+
+    <p>Como consultor, completa el ticket de diagnóstico:</p>
+
+    <div class="ticket">
+      <div class="ticket-head">
+        <span class="ticket-id">Ticket #BD-2026-002</span>
+        <span class="ticket-priority">⚡ PRIORIDAD ALTA</span>
+      </div>
+
+      <div class="ticket-field">
+        <label>1. ¿Cuál es la causa raíz de los 3 problemas?</label>
+        <div class="ticket-opts" id="diagComp" data-correct="archivos">
+          <button class="ticket-opt" data-dval="archivos">El sistema de archivos desconectados produce redundancia, sin concurrencia y sin integridad</button>
+          <button class="ticket-opt" data-dval="doctores">Los doctores son descuidados</button>
+          <button class="ticket-opt" data-dval="excel">Excel es un mal programa</button>
+          <button class="ticket-opt" data-dval="internet">Falta internet en la clínica</button>
+        </div>
+      </div>
+
+      <div class="ticket-field">
+        <label>2. ¿Qué debe migrar a una BD y qué puede quedarse como archivo? (selecciona TODAS las correctas)</label>
+        <div class="ticket-opts" id="diagActions" data-correct="pacientes,citas,facturacion">
+          <button class="ticket-opt" data-aval="pacientes">📊 Migrar pacientes, citas y tratamientos a una BD (datos relacionados y críticos)</button>
+          <button class="ticket-opt" data-aval="facturacion">📊 Migrar facturación a la BD (necesita integridad y concurrencia)</button>
+          <button class="ticket-opt" data-aval="config">📁 Dejar la configuración de la app como archivo JSON (simple, un usuario)</button>
+          <button class="ticket-opt" data-aval="medicamentos">📁 Dejar los medicamentos en un CSV suelto</button>
+          <button class="ticket-opt" data-aval="seguir">📁 Seguir con 5 Excel pero renombrarlos mejor</button>
+        </div>
+      </div>
+
+      <div class="ticket-field">
+        <label>3. ¿Qué tipo de BD recomiendas y por qué? (2-3 frases)</label>
+        <textarea class="ticket-textarea" id="diagText" placeholder="Ej: Recomiendo una BD relacional (PostgreSQL/MySQL) porque los datos están relacionados (pacientes→citas→tratamientos→facturación) y necesito integridad en la facturación y concurrencia para varios doctores a la vez."></textarea>
+      </div>
+
+      <div class="ticket-rubrica">
+        <h5>📋 Rúbrica del ticket</h5>
+        <ul>
+          <li>✔️ Identifica el <strong>sistema de archivos desconectado</strong> como causa raíz</li>
+          <li>✔️ Migra pacientes+citas+facturación a BD; deja config como archivo; descarta "CSV suelto" y "seguir con Excel"</li>
+          <li>✔️ Recomienda <strong>relacional</strong> con justificación (datos relacionados, integridad, concurrencia)</li>
+          <li>✔️ El texto usa vocabulario técnico (redundancia, concurrencia, integridad, relacional)</li>
+        </ul>
+      </div>
+
+      <button class="btn primary big" id="diagValidate" style="margin-top:1rem;">✓ Validar diagnóstico</button>
+      <div class="resultado-ws" id="ws-fb-4"></div>
+    </div>
+  </div>
+
+  <div class="cierre">
+    <h2>🏆 ¡Misión completada, Archivos vs BD Master!</h2>
+    <p class="lead">Ya sabes la diferencia entre sistemas de archivos y sistemas de bases de datos, sus ventajas y desventajas, y cuándo usar cada uno. Has diagnosticado un caso real como un consultor. Saber elegir es más valioso que saber usar uno solo.</p>
+    <p style="margin-top:1rem;font-size:1.05rem;color:var(--verde);font-weight:700;">En la próxima clase entraremos al modelo relacional y a SQL: el lenguaje para hablar con las BD. 🗄️</p>
+    <button class="btn-final" data-reiniciar>🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<!-- =================== FOOTER =================== -->
+<footer class="pie">
+  <div class="fb">🎓 Bases de Datos · Clase 2 · Plataforma interactiva</div>
+  <div>Archivos vs BD · SGBD · 6 diferencias · Ventajas/desventajas · 4 horas · Nivel Intermedio</div>
+  <div style="margin-top:.5rem;font-size:.78rem;">Hecho con 💜 para adolescentes que quieren saber cuándo usar archivo y cuándo BD.</div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
