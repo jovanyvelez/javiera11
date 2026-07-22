@@ -105,6 +105,27 @@
     <p>Con su compañero/a: si tuvieran que hacer que una app en Python lea 10 autores de una BD PostgreSQL, <strong>¿cuántas veces creen que se abre la conexión?</strong> ¿Una vez al arrancar la app, o una vez por cada usuario que entra? Adivinen y luego lo comprobamos con el simulador.</p>
   </div>
 
+  <h3>📂 Las fuentes del proyecto</h3>
+  <p>Toda esta clase se construye sobre <strong>tres archivos reales de Python</strong> que conforman un mini-backend funcional. Cada módulo explica una parte de uno de estos archivos. Al final serás capaz de leerlos y escribirlos tú mismo:</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Archivo</th><th>Rol</th><th>Qué contiene</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>database.py</code></td><td>Conexión</td><td>La URL de la BD, el pool de conexiones (<code>init_db_pool</code>, <code>close_db_pool</code>) y la dependencia <code>get_db</code> que presta una conexión a cada endpoint.</td></tr>
+        <tr><td><code>consultas.py</code></td><td>Lógica</td><td>Las consultas SQL y el <code>APIRouter</code> con el endpoint <code>/autores</code> que ejecuta <code>SELECT</code> y devuelve los registros como JSON.</td></tr>
+        <tr><td><code>main.py</code></td><td>Arranque</td><td>La app FastAPI con el <code>lifespan</code> que crea el pool al arrancar y lo cierra al apagar, y <code>include_router</code> para montar las rutas.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué tres archivos y no uno?</h4>
+    <p>Separar la conexión (database), la lógica (consultas) y el arranque (main) es una buena práctica de organización. Cada archivo tiene <strong>una sola responsabilidad</strong>. Si mañana añades más tablas (libros, usuarios), solo tocas <code>consultas.py</code>; si cambias de BD, solo tocas <code>database.py</code>. Así escala un proyecto real.</p>
+  </div>
+
   <div class="navegacion-modulo">
     <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: asyncpg →</button>
   </div>
