@@ -106,19 +106,148 @@
   </div>
 
   <h3>📂 Las fuentes del proyecto</h3>
-  <p>Toda esta clase se construye sobre <strong>tres archivos reales de Python</strong> que conforman un mini-backend funcional. Cada módulo explica una parte de uno de estos archivos. Al final serás capaz de leerlos y escribirlos tú mismo:</p>
+  <p>Toda esta clase se construye sobre <strong>tres archivos reales de Python</strong> que conforman una API funcional. Cada módulo explica una parte de uno de estos archivos. Abre cada uno para ver el código completo; al final serás capaz de leerlos y escribirlos tú mismo:</p>
 
-  <div class="contenedor-tabla">
-    <table class="tabla-compara">
-      <thead>
-        <tr><th>Archivo</th><th>Rol</th><th>Qué contiene</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><code>database.py</code></td><td>Conexión</td><td>La URL de la BD, el pool de conexiones (<code>init_db_pool</code>, <code>close_db_pool</code>) y la dependencia <code>get_db</code> que presta una conexión a cada endpoint.</td></tr>
-        <tr><td><code>consultas.py</code></td><td>Lógica</td><td>Las consultas SQL y el <code>APIRouter</code> con el endpoint <code>/autores</code> que ejecuta <code>SELECT</code> y devuelve los registros como JSON.</td></tr>
-        <tr><td><code>main.py</code></td><td>Arranque</td><td>La app FastAPI con el <code>lifespan</code> que crea el pool al arrancar y lo cierra al apagar, y <code>include_router</code> para montar las rutas.</td></tr>
-      </tbody>
-    </table>
+  <div class="fuentes-grid">
+    <details class="fuente-dropdown" data-fuente="database">
+      <summary><span class="fuente-emoji">🔌</span> <code>database.py</code> <span class="fuente-rol">· Conexión y pool</span> <span class="fuente-chevron">▶</span></summary>
+      <div class="fuente-desc">La URL de la BD, el pool de conexiones (<code>init_db_pool</code>, <code>close_db_pool</code>) y la dependencia <code>get_db</code> que presta una conexión a cada endpoint.</div>
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="code-header-left">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span>database.py — código completo</span>
+          </div>
+          <button class="copy-btn">📋 Copiar</button>
+        </div>
+<pre><code><span class="kw">from typing</span> <span class="kw">import</span> AsyncGenerator
+
+<span class="kw">import</span> asyncpg
+<span class="kw">from</span> loguru <span class="kw">import</span> logger
+
+DATABASE_URL = <span class="str">"postgresql://estudiantes:***@ep-withered-wind-apq7hmfj-pooler.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require"</span>
+
+_pool: asyncpg.Pool | <span class="kw">None</span> = <span class="kw">None</span>
+
+
+<span class="kw">async def</span> <span class="fn">init_db_pool</span>():
+    <span class="str">"""Inicializa el pool de conexiones."""</span>
+    <span class="kw">global</span> _pool
+    <span class="kw">if</span> _pool <span class="kw">is</span> <span class="kw">None</span>:
+        <span class="kw">try</span>:
+            _pool = <span class="kw">await</span> asyncpg.create_pool(
+                DATABASE_URL,
+                min_size=<span class="num">10</span>,      <span class="cm"># conexiones mínimas abiertas</span>
+                max_size=<span class="num">20</span>,      <span class="cm"># máx. conexiones simultáneas</span>
+                max_queries=<span class="num">50000</span>,  <span class="cm"># reinicia tras X consultas</span>
+                max_inactive_connection_lifetime=<span class="num">300.0</span>,
+            )
+            logger.info(<span class="str">"Connection pool con PostgreSQL creado exitosamente."</span>)
+        <span class="kw">except</span> Exception <span class="kw">as</span> e:
+            logger.error(<span class="str">f"Error al crear el connection pool: {e}"</span>)
+            <span class="kw">raise</span> e
+
+
+<span class="kw">async def</span> <span class="fn">close_db_pool</span>():
+    <span class="str">"""Cierra el pool de conexiones limpiamente."""</span>
+    <span class="kw">global</span> _pool
+    <span class="kw">if</span> _pool <span class="kw">is not</span> <span class="kw">None</span>:
+        <span class="kw">await</span> _pool.close()
+        logger.info(<span class="str">"Connection pool con PostgreSQL cerrado."</span>)
+
+
+<span class="kw">async def</span> <span class="fn">get_db</span>() -> AsyncGenerator[asyncpg.Connection, <span class="kw">None</span>]:
+    <span class="str">"""
+    Dependencia para FastAPI.
+    Adquiere una conexión del pool y la devuelve.
+    Garantiza que la conexión se libere al terminar el request.
+    """</span>
+    <span class="kw">if</span> _pool <span class="kw">is</span> <span class="kw">None</span>:
+        <span class="kw">raise</span> RuntimeError(<span class="str">"El pool de conexiones no ha sido inicializado."</span>)
+
+    <span class="kw">async with</span> _pool.acquire() <span class="kw">as</span> connection:
+        <span class="kw">yield</span> connection</code></pre>
+      </div>
+    </details>
+
+    <details class="fuente-dropdown" data-fuente="consultas">
+      <summary><span class="fuente-emoji">📖</span> <code>consultas.py</code> <span class="fuente-rol">· Lógica y consultas</span> <span class="fuente-chevron">▶</span></summary>
+      <div class="fuente-desc">Las consultas SQL y el endpoint <code>/autores</code> que ejecuta <code>SELECT</code> y devuelve los registros como JSON.</div>
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="code-header-left">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span>consultas.py — código completo</span>
+          </div>
+          <button class="copy-btn">📋 Copiar</button>
+        </div>
+<pre><code><span class="kw">import</span> asyncpg
+<span class="kw">from</span> fastapi <span class="kw">import</span> Depends, HTTPException
+<span class="kw">from</span> loguru <span class="kw">import</span> logger
+
+<span class="kw">from</span> database <span class="kw">import</span> get_db
+
+
+<span class="kw">async def</span> <span class="fn">autores</span>(db: asyncpg.Connection = Depends(get_db)):
+    <span class="str">"""
+    Endpoint concurrente. `db` es una conexión lista para usar
+    tomada eficientemente del pool.
+    """</span>
+    <span class="kw">try</span>:
+        query = <span class="str">"SELECT * FROM autores LIMIT 10;"</span>
+        rows = <span class="kw">await</span> db.fetch(query)
+        logger.info(<span class="str">"ingreso a consultas"</span>)
+        registros = [dict(row) <span class="kw">for</span> row <span class="kw">in</span> rows]
+        logger.debug(<span class="str">f"los usuarios son: {registros}"</span>)
+        <span class="kw">return</span> registros
+
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="kw">raise</span> HTTPException(
+            status_code=<span class="num">500</span>, detail=<span class="str">f"Error en la base de datos: {str(e)}"</span>
+        )</code></pre>
+      </div>
+    </details>
+
+    <details class="fuente-dropdown" data-fuente="main">
+      <summary><span class="fuente-emoji">🚀</span> <code>main.py</code> <span class="fuente-rol">· Arranque de la app</span> <span class="fuente-chevron">▶</span></summary>
+      <div class="fuente-desc">La app FastAPI con el <code>lifespan</code> que crea el pool al arrancar y lo cierra al apagar, y registra el endpoint <code>/usuarios</code>.</div>
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="code-header-left">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span>main.py — código completo</span>
+          </div>
+          <button class="copy-btn">📋 Copiar</button>
+        </div>
+<pre><code><span class="kw">from</span> contextlib <span class="kw">import</span> asynccontextmanager
+
+<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI, Depends
+
+<span class="kw">from</span> database <span class="kw">import</span> close_db_pool, get_db, init_db_pool
+<span class="kw">from</span> consultas <span class="kw">import</span> autores
+
+
+<span class="kw">@asynccontextmanager</span>
+<span class="kw">async def</span> <span class="fn">lifespan</span>(app: FastAPI):
+    <span class="cm"># Evento de inicio: creamos el pool</span>
+    <span class="kw">await</span> init_db_pool()
+    <span class="kw">yield</span>
+    <span class="cm"># Evento de apagado: cerramos el pool</span>
+    <span class="kw">await</span> close_db_pool()
+
+
+app = FastAPI(lifespan=lifespan)
+
+
+<span class="kw">@app.get</span>(<span class="str">"/usuarios"</span>)
+<span class="kw">async def</span> <span class="fn">listar_usuarios</span>(datos=Depends(autores)):
+    <span class="str">"""
+    Endpoint concurrente. `datos` proviene de una conexión lista
+    para usar tomada eficientemente del pool.
+    """</span>
+    <span class="kw">return</span> datos</code></pre>
+      </div>
+    </details>
   </div>
 
   <div class="caja-tip">
@@ -844,9 +973,41 @@ router = APIRouter(prefix=<span class="str">"/autores"</span>, tags=[<span class
     </div>
   </div>
 
+  <div class="caja-desafio">
+    <h3>🚀 Reto extra: lleva el código a las mejores prácticas de FastAPI</h3>
+    <p>El código que viste en los dropdowns del <strong>Módulo 0</strong> <em>funciona</em>, pero NO usa <code>Annotated</code>, que es la recomendación oficial actual de FastAPI para declarar dependencias y parámetros. FastAPI lo acepta por compatibilidad, pero la comunidad ya migró al estilo <code>Annotated</code>.</p>
+    <p><strong>Tu reto</strong>: consulta la documentación oficial de FastAPI y reescribe los tres archivos aplicando <code>Annotated</code>. Abre los dropdowns del inicio para ver el código original y compáralo con tu versión mejorada.</p>
+
+    <h4>📝 Qué debes cambiar en cada archivo</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <thead>
+          <tr><th>Archivo</th><th>Cambio</th><th>Pista</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>database.py</code></td><td>Crear un type alias <code>DbDep</code></td><td><code>DbDep = Annotated[asyncpg.Connection, Depends(get_db)]</code> y exportarlo para reutilizarlo.</td></tr>
+          <tr><td><code>consultas.py</code></td><td>Usar <code>DbDep</code> y <code>Annotated[int, Query(...)]</code></td><td>Importa <code>DbDep</code> desde <code>database</code>; reemplaza <code>db: asyncpg.Connection = Depends(get_db)</code> por <code>db: DbDep</code>. Añade <code>APIRouter</code> con <code>prefix="/autores"</code> y <code>response_model</code>.</td></tr>
+          <tr><td><code>main.py</code></td><td>Tipar el <code>lifespan</code> y usar <code>include_router</code></td><td>El return type del lifespan es <code>AsyncIterator[None]</code>. Sustituye el endpoint directo por <code>app.include_router(autores_router)</code>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>🔗 Documentación oficial para consultar</h4>
+    <ul>
+      <li><a href="https://fastapi.tiangolo.com/python-types/" target="_blank" rel="noopener">Tipos en Python y FastAPI</a> — por qué importan los tipos.</li>
+      <li><a href="https://fastapi.tiangolo.com/tutorial/dependencies/" target="_blank" rel="noopener">Dependencias con <code>Depends</code> y <code>Annotated</code></a> — el patrón que debes aplicar.</li>
+      <li><a href="https://fastapi.tiangolo.com/tutorial/bigger-applications/" target="_blank" rel="noopener">Aplicaciones más grandes con <code>APIRouter</code></a> — cómo organizar rutas.</li>
+    </ul>
+
+    <div class="caja-tip">
+      <h4>💡 Cómo saber si lo lograste</h4>
+      <p>Tu código está en buenas prácticas cuando: (1) <code>database.py</code> define y exporta <code>DbDep</code>; (2) <code>consultas.py</code> usa <code>db: DbDep</code> y <code>Annotated[int, Query(ge=1, le=100)]</code>, monta un <code>APIRouter(prefix="/autores")</code> y declara <code>response_model=list[Autor]</code>; (3) <code>main.py</code> solo hace <code>app.include_router(autores_router)</code> y el <code>lifespan</code> tiene return type <code>AsyncIterator[None]</code>. Si lo conseguiste, <strong>escribiste código profesional</strong>. 🔬</p>
+    </div>
+  </div>
+
   <div class="cierre">
     <h2>🏆 ¡Misión completada, Async PG Master!</h2>
-    <p class="lead">Ya sabes cómo conectar una app FastAPI a PostgreSQL de forma asíncrona con asyncpg, cómo funciona un pool de conexiones, cómo inyectar conexiones con Depends y yield, y cómo aplicar las buenas prácticas oficiales de FastAPI. Has diagnosticado un backend real como un detective. Eso es más de lo que sabe el 90% de quienes empiezan a programar APIs.</p>
+    <p class="lead">Ya sabes cómo conectar una app FastAPI a PostgreSQL de forma asíncrona con asyncpg, cómo funciona un pool de conexiones, cómo inyectar conexiones con Depends y yield, y cómo aplicar las buenas prácticas oficiales de FastAPI. Has diagnosticado un backend real como un detective y te retamos a llevar el código a las mejores prácticas con <code>Annotated</code>. Eso es más de lo que sabe el 90% de quienes empiezan a programar APIs.</p>
     <p style="margin-top:1rem;font-size:1.05rem;color:var(--verde);font-weight:700;">En la próxima clase entraremos al modelo relacional y a SQL: el lenguaje para hablar con las BD. 🗄️</p>
     <button class="btn-final" data-reiniciar>🔁 Volver al inicio</button>
   </div>
