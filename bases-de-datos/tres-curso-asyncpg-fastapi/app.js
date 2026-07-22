@@ -110,7 +110,7 @@ function marcarCompletado(n) {
     2: '🏊 Pool Master',
     3: '🔗 Domina get_db',
     4: '☕ Descansado',
-    5: '🚀 Lifespan Pro',
+    5: '🎛️ Lifespan Pro',
     6: '✨ Buenas Prácticas',
     7: '🛠️ Async PG Master'
   };
@@ -263,9 +263,10 @@ function configurarTrivia() {
   const result = document.getElementById('triviaResult');
   if (!opts.length || !result) return;
 
+  const correcta = opts[0].dataset.tcorrecta;
+
   opts.forEach(op => {
     op.addEventListener('click', () => {
-      const correcta = op.dataset.tcorrecta;
       const elegida = op.dataset.top;
       opts.forEach(o => { o.disabled = true; if (o.dataset.top === correcta) o.classList.add('correcta'); });
       if (elegida === correcta) {

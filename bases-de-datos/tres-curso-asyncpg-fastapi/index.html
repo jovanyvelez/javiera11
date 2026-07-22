@@ -49,7 +49,7 @@
 <section class="modulo activo" data-modulo="0">
   <div class="hero">
     <h2>🔌 ¿Cómo conecta una app a la base de datos?</h2>
-    <p class="lead">En la <strong>Clase 1</strong> vimos qué es una BD y en la <strong>Clase 2</strong> por qué un SGBD le gana a los archivos. Pero una app no habla SQL sola: necesita <strong>conectarse</strong> a la BD, enviarle consultas y recibir resultados. Hoy vamos a construir esa conexión con <strong>asyncpg</strong> (el driver asíncrono de PostgreSQL) dentro de <strong>FastAPI</strong> (un framework web moderno), usando un <strong>pool de conexiones</strong> para no abrir y cerrar una conexión por cada request. Al final podrás leer y escribir el código de un mini-backend real.</p>
+    <p class="lead">En la <strong>Clase 1</strong> vimos qué es una BD y en la <strong>Clase 2</strong> por qué un SGBD le gana a los archivos. Pero una app no habla SQL sola: necesita <strong>conectarse</strong> a la BD, enviarle consultas y recibir resultados. Hoy vamos a construir esa conexión con <strong>asyncpg</strong> (el driver asíncrono de PostgreSQL) dentro de <strong>FastAPI</strong> (un framework web moderno), usando un <strong>pool de conexiones</strong> para no abrir y cerrar una conexión por cada request. Al final podrás leer y escribir el código de una API real, pequeña pero funcional.</p>
 
     <div class="hero-terminal">
       <div class="hero-terminal-head">⌘ terminal — dev@app</div>
@@ -126,6 +126,26 @@
     <p>Separar la conexión (database), la lógica (consultas) y el arranque (main) es una buena práctica de organización. Cada archivo tiene <strong>una sola responsabilidad</strong>. Si mañana añades más tablas (libros, usuarios), solo tocas <code>consultas.py</code>; si cambias de BD, solo tocas <code>database.py</code>. Así escala un proyecto real.</p>
   </div>
 
+  <h3>📖 Glosario rápido</h3>
+  <p>Esta clase usa varios términos técnicos de desarrollo web. Aquí los tienes en una sola vista para consultar cuando lo necesites:</p>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Término</th><th>Qué significa</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>event loop</strong></td><td>El bucle central de FastAPI que atiende a muchos usuarios a la vez. Si una función se bloquea, todo se congela.</td></tr>
+        <tr><td><strong>endpoint</strong></td><td>Una ruta de la API que responde a una petición. Ej: <code>GET /usuarios</code> es un endpoint.</td></tr>
+        <tr><td><strong>request</strong></td><td>Una petición HTTP que llega a la API. Cada usuario que entra genera un request.</td></tr>
+        <tr><td><strong>async / await</strong></td><td>Palabras de Python para código asíncrono. <code>await</code> espera un resultado sin bloquear el event loop.</td></tr>
+        <tr><td><strong>yield</strong></td><td>Como <code>return</code> pero pausa la función y la retoma después. Sirve para "prestar y devolver" recursos.</td></tr>
+        <tr><td><strong>Depends</strong></td><td>Mecanismo de FastAPI para inyectar dependencias. Le dice a un endpoint "necesito una conexión" y FastAPI la consigue.</td></tr>
+        <tr><td><strong>driver</strong></td><td>Biblioteca que traduce entre Python y la BD. asyncpg es un driver; psycopg2 es otro.</td></tr>
+        <tr><td><strong>pool</strong></td><td>Conjunto de conexiones abiertas que se reutilizan, para no abrir y cerrar una por cada request.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <div class="navegacion-modulo">
     <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: asyncpg →</button>
   </div>
@@ -162,7 +182,7 @@
     <div class="tarjeta tarjeta-verde"><span class="emoji">⚡</span><h3>Asíncrono</h3><p>Usa <code>await</code> para no bloquear. FastAPI puede atender 1000 requests a la vez.</p></div>
     <div class="tarjeta"><span class="emoji">🐰</span><h3>Rápido</h3><p>Está escrito en Cython. Es ~3× más veloz que psycopg2 en pruebas de rendimiento.</p></div>
     <div class="tarjeta tarjeta-ambar"><span class="emoji">🐘</span><h3>PostgreSQL puro</h3><p>Habla el protocolo binario de Postgres. Soporta tipos, arrays, JSON, UUID.</p></div>
-    <div class="tarjeta tarjeta-magenta"><span class="emoji">🔧</span><h3>API simple</h3><p><code>fetch()</code>, <code>fetchrow()</code>, <code>execute()</code>. Directo, sin ORM obligatorio.</p></div>
+    <div class="tarjeta tarjeta-magenta"><span class="emoji">🔧</span><h3>API simple</h3><p><code>fetch()</code>, <code>fetchrow()</code>, <code>execute()</code>. Métodos directos para consultar, sin capas intermedias.</p></div>
   </div>
 
   <div class="caja-pareja">
@@ -496,6 +516,7 @@ app = FastAPI(lifespan=lifespan)
   </div>
 
   <h3>🔄 El flujo completo de un request</h3>
+  <p>En el código de arriba, <code>listar_usuarios</code> depende de <code>autores</code> (una función que vive en <code>consultas.py</code> y que a su vez depende de <code>get_db</code>). Cuando entra un request, FastAPI resuelve esa cadena de dependencias automáticamente. Veamos el viaje completo, paso a paso:</p>
   <div class="contenedor-tabla">
     <table class="tabla-compara">
       <thead>
@@ -611,6 +632,11 @@ router = APIRouter(prefix=<span class="str">"/autores"</span>, tags=[<span class
     limite: Annotated[<span class="ty">int</span>, Query(ge=<span class="num">1</span>, le=<span class="num">100</span>)] = <span class="num">10</span>,
 ):
     <span class="kw">return</span> <span class="kw">await</span> db.fetch(<span class="str">"SELECT * FROM autores LIMIT $1"</span>, limite)</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué <code>LIMIT $1</code> y no <code>LIMIT {limite}</code>?</h4>
+    <p>Escribir <code>f"SELECT ... LIMIT {limite}"</code> pegaría el valor directo en la consulta. Si un usuario malintencionado envía <code>limite = "10; DROP TABLE autores"</code>, la BD ejecutaría ambas sentencias y borraría la tabla. Eso se llama <strong>inyección SQL</strong>. En cambio, con <code>$1</code>, asyncpg envía el valor por separado y PostgreSQL lo trata como un número, no como código. <strong>Siempre parametriza</strong>: nunca pegues valores del usuario en una consulta con f-strings.</p>
   </div>
 
   <div class="caja-pareja">
