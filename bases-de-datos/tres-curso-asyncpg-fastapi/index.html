@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🗄️ Bases de Datos · Clase 3 · asyncpg + FastAPI</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- =================== HEADER + PROGRESO =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🔌</span>
+    <div>
+      <h1>Bases de Datos · Clase 3</h1>
+      <p class="subtitulo">Conexión asíncrona a PostgreSQL con asyncpg + FastAPI · Pool de conexiones</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">⚡ asyncpg</button>
+  <button class="btn-modulo" data-modulo="2">🏊 Pool</button>
+  <button class="btn-modulo" data-modulo="3">🔗 get_db</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🚀 FastAPI</button>
+  <button class="btn-modulo" data-modulo="6">✨ Buenas prácticas</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🔌 ¿Cómo conecta una app a la base de datos?</h2>
+    <p class="lead">En la <strong>Clase 1</strong> vimos qué es una BD y en la <strong>Clase 2</strong> por qué un SGBD le gana a los archivos. Pero una app no habla SQL sola: necesita <strong>conectarse</strong> a la BD, enviarle consultas y recibir resultados. Hoy vamos a construir esa conexión con <strong>asyncpg</strong> (el driver asíncrono de PostgreSQL) dentro de <strong>FastAPI</strong> (un framework web moderno), usando un <strong>pool de conexiones</strong> para no abrir y cerrar una conexión por cada request. Al final podrás leer y escribir el código de un mini-backend real.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — dev@app</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd">uvicorn main:app --reload</span></div>
+        <div class="out">INFO:     Uvicorn running on http://127.0.0.1:8000</div>
+        <div class="out">INFO:     Connection pool con PostgreSQL creado exitosamente.</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd">curl localhost:8000/usuarios</span></div>
+        <div class="out">[{"id":1,"nombre":"Gabriel García Márquez"}]</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>4 horas en 7 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Construir una conexión asíncrona a PostgreSQL con asyncpg integrada en FastAPI mediante un pool de conexiones, aplicando buenas prácticas del framework.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>La app que abre una conexión por request y colapsa, el endpoint que bloquea el event loop, la inyección SQL que filtra la BD. El pool y asyncpg los resuelven.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · asyncpg</td><td style="color:var(--lima)">Driver asíncrono</td><td style="color:var(--rosa)">Conexión síncrona que bloquea</td><td>100 XP</td></tr>
+        <tr><td>02 · Pool de conexiones</td><td style="color:var(--indigo)">create_pool</td><td style="color:var(--rosa)">Abrir 1 conexión por request</td><td>100 XP</td></tr>
+        <tr><td>03 · get_db con yield</td><td style="color:var(--cian)">Dependencia FastAPI</td><td>—</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · Lifespan + endpoint</td><td style="color:var(--verde)">Ciclo de vida</td><td style="color:var(--rosa)">Pool que nunca se cierra</td><td>100 XP</td></tr>
+        <tr><td>05 · Buenas prácticas FastAPI</td><td style="color:var(--morado-claro)">Annotated, Router</td><td>—</td><td>100 XP</td></tr>
+        <tr><td>06 · Taller</td><td style="color:var(--morado)">Diagnóstico</td><td style="color:var(--rosa)">Backend que colapsa en producción</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: si tuvieran que hacer que una app en Python lea 10 autores de una BD PostgreSQL, <strong>¿cuántas veces creen que se abre la conexión?</strong> ¿Una vez al arrancar la app, o una vez por cada usuario que entra? Adivinen y luego lo comprobamos con el simulador.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: asyncpg →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — ASYNCPG
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>⚡ asyncpg: el driver asíncrono</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Por qué no usamos psycopg2 a secas" — async/await para la BD</p>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el endpoint que bloquea el event loop</h4>
+    <p>Tu API recibe 100 requests por segundo. Cada uno abre una conexión con <code>psycopg2</code> (síncrono) y espera 50 ms a que la BD responda. Mientras espera, <strong>el hilo de FastAPI queda congelado</strong>: no puede atender a nadie más. Los usuarios ven la ruedita girar. La app "se cae" sin haberse caído. Ese es el problema de mezclar código síncrono con un framework asíncrono. La solución se llama <strong>asyncpg</strong>.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p><strong>asyncpg</strong> es una biblioteca de Python para hablar con PostgreSQL de forma <strong>asíncrona</strong>. Mientras la BD procesa la consulta, asyncpg <strong>cede el control</strong> al event loop con <code>await</code>, y FastAPI puede seguir atendiendo a otros usuarios. Es como un mesero que, en vez de quedarse parado esperando el plato, atiende a otras mesas y vuelve cuando la cocina está lista.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-verde"><span class="emoji">⚡</span><h3>Asíncrono</h3><p>Usa <code>await</code> para no bloquear. FastAPI puede atender 1000 requests a la vez.</p></div>
+    <div class="tarjeta"><span class="emoji">🐰</span><h3>Rápido</h3><p>Está escrito en Cython. Es ~3× más veloz que psycopg2 en benchmarks.</p></div>
+    <div class="tarjeta tarjeta-ambar"><span class="emoji">🐘</span><h3>PostgreSQL puro</h3><p>Habla el protocolo binario de Postgres. Soporta tipos, arrays, JSON, UUID.</p></div>
+    <div class="tarjeta tarjeta-magenta"><span class="emoji">🔧</span><h3>API simple</h3><p><code>fetch()</code>, <code>fetchrow()</code>, <code>execute()</code>. Directo, sin ORM obligatorio.</p></div>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: imaginen un restaurante con 1 mesero. ¿Atiende más mesas si (a) espera cada plato de pie antes de tomar el siguiente pedido, o (b) anota todos los pedidos y vuelve cuando cada plato está listo? <strong>¿Cuál corresponde a psycopg2 y cuál a asyncpg?</strong> Discutan 1 minuto.</p>
+  </div>
+
+  <h3>🎮 Simulador: ¿cuántos usuarios atienden?</h3>
+  <p>Presiona "Atender 20 requests" y observa cuántos usuarios logra responder cada driver en 2 segundos. La diferencia es el <strong>event loop</strong> en acción.</p>
+
+  <div class="driver-sim">
+    <div class="sim-head">⚡ psycopg2 (síncrono) vs asyncpg (asíncrono)</div>
+
+    <div class="driver-columns">
+      <div class="driver-method" id="driverSync" data-method="sync">
+        <span class="dm-icon">🐢</span>
+        <div class="dm-name">psycopg2 (síncrono)</div>
+        <div class="dm-time" id="dmTimeSync">—</div>
+        <div class="dm-unit">usuarios atendidos</div>
+        <div class="dm-status" id="dmStatusSync">En espera</div>
+      </div>
+      <div class="driver-method" id="driverAsync" data-method="async">
+        <span class="dm-icon">⚡</span>
+        <div class="dm-name">asyncpg (asíncrono)</div>
+        <div class="dm-time" id="dmTimeAsync">—</div>
+        <div class="dm-unit">usuarios atendidos</div>
+        <div class="dm-status" id="dmStatusAsync">En espera</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn primary big" id="driverRun">⚡ Atender 20 requests</button>
+      <button class="btn ghost" id="driverReset">🔄 Reiniciar</button>
+    </div>
+
+    <div class="driver-result" id="driverResult"></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Qué es exactamente "asíncrono"?</h4>
+    <p>Una función <code>async def</code> puede <strong>esperar</strong> con <code>await</code> sin congelar el programa. Mientras espera (a la BD, a la red, a un archivo), el event loop hace <strong>otras cosas</strong>. Es <strong>concurrencia</strong> sin hilos. FastAPI está construido sobre esto, y asyncpg encaja perfecto.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>Instagram, Netflix y cualquier API con miles de usuarios concurrentes usan drivers asíncronos. Si usaran psycopg2 síncrono en FastAPI, cada query de 50 ms bloquearía a todos los demás usuarios. Con asyncpg, ese tiempo se aprovecha para atender a los demás. <strong>Esa es la diferencia entre una app que aguanta y una que no.</strong></p>
+  </div>
+
+  <!-- QUIZ MÓDULO 1 -->
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Por qué usar asyncpg en vez de psycopg2 en FastAPI?</p>
+      <button class="opcion" data-op="a">Porque psycopg2 no conecta a PostgreSQL</button>
+      <button class="opcion" data-op="b">Porque asyncpg es asíncrono y no bloquea el event loop</button>
+      <button class="opcion" data-op="c">Porque asyncpg es más difícil de usar</button>
+      <button class="opcion" data-op="d">Porque psycopg2 solo funciona con MySQL</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué hace <code>await</code> en una consulta a la BD?</p>
+      <button class="opcion" data-op="a">Cede el control al event loop mientras espera el resultado</button>
+      <button class="opcion" data-op="b">Cancela la consulta si tarda mucho</button>
+      <button class="opcion" data-op="c">Abre una nueva conexión</button>
+      <button class="opcion" data-op="d">Cierra la BD</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Pool de conexiones →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — POOL DE CONEXIONES
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>🏊 Pool de conexiones</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "No abras una conexión por request" — el superpoder del pool</p>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: abrir 1 conexión por request</h4>
+    <p>Cada vez que entra un usuario, la app abre una conexión TCP a PostgreSQL, hace la query y la cierra. Abrir y cerrar una conexión cuesta <strong>~30 ms</strong>. Si tienes 100 usuarios por segundo, pierdes 3 segundos solo en conexiones. Y PostgreSQL se ahoga con tantas conexiones nuevas. La solución: un <strong>pool</strong> que mantiene conexiones abiertas y las reutiliza.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Un <strong>pool de conexiones</strong> es un conjunto de conexiones <strong>ya abiertas</strong> que se reutilizan. En vez de abrir y cerrar por cada request, la app <strong>pide prestada</strong> una conexión del pool, la usa y la <strong>devuelve</strong>. En asyncpg se crea con <code>asyncpg.create_pool()</code> y tiene parámetros clave que controlan cuántas conexiones hay.</p>
+  </div>
+
+  <h3>🎮 Interactivo: Anatomía de create_pool</h3>
+  <p>Toca cada parámetro para entender qué controla. Son los que aparecen en <code>database.py</code>.</p>
+
+  <div class="pool-anatomy">
+    <div class="sim-head">🏊 Parámetros de asyncpg.create_pool()</div>
+
+    <div class="pool-diagram" id="poolDiagram">
+      <div class="pool-layer" data-comp="min_size">
+        <span class="pl-icon">📉</span><span class="pl-name">min_size</span>
+        <span class="pl-desc">Conexiones mínimas abiertas desde el inicio.</span>
+        <span class="pl-pulse"></span>
+      </div>
+      <div class="pool-layer" data-comp="max_size">
+        <span class="pl-icon">📈</span><span class="pl-name">max_size</span>
+        <span class="pl-desc">Máximo de conexiones simultáneas permitidas.</span>
+        <span class="pl-pulse"></span>
+      </div>
+      <div class="pool-layer" data-comp="max_queries">
+        <span class="pl-icon">🔄</span><span class="pl-name">max_queries</span>
+        <span class="pl-desc">Reinicia la conexión tras X consultas (libera memoria).</span>
+        <span class="pl-pulse"></span>
+      </div>
+      <div class="pool-layer" data-comp="max_inactive">
+        <span class="pl-icon">⏲️</span><span class="pl-name">max_inactive_connection_lifetime</span>
+        <span class="pl-desc">Cierra conexiones inactivas tras X segundos.</span>
+        <span class="pl-pulse"></span>
+      </div>
+    </div>
+
+    <div class="pool-detail" id="poolDetail">
+      <h4>Toca un parámetro para ver su detalle</h4>
+      <p style="color:var(--texto-suave);">Cada parámetro controla un aspecto del ciclo de vida de las conexiones del pool.</p>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>database.py — init_db_pool()</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">async def</span> <span class="fn">init_db_pool</span>():
+    <span class="kw">global</span> _pool
+    <span class="kw">if</span> _pool <span class="kw">is</span> <span class="kw">None</span>:
+        _pool = <span class="kw">await</span> asyncpg.create_pool(
+            DATABASE_URL,
+            min_size=<span class="num">10</span>,                          <span class="cm"># mín. abiertas</span>
+            max_size=<span class="num">20</span>,                          <span class="cm"># máx. simultáneas</span>
+            max_queries=<span class="num">50000</span>,                   <span class="cm"># reinicia tras X consultas</span>
+            max_inactive_connection_lifetime=<span class="num">300.0</span>, <span class="cm"># cierra inactivas tras 300s</span>
+        )</code></pre>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Con su compañero/a: imaginen que el pool es el <strong>parqueadero de un restaurante</strong>. <code>min_size=10</code> son los carros siempre listos, <code>max_size=20</code> el tope del parqueadero. <strong>¿Qué pasaría si <code>max_size=1</code>?</strong> ¿Y si <code>min_size=1000</code>? Discutan qué se rompe en cada caso.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Las dos funciones que gestionan el ciclo de vida</h4>
+    <p>El pool se <strong>crea una sola vez</strong> al arrancar la app (<code>init_db_pool</code>) y se <strong>cierra una sola vez</strong> al apagarla (<code>close_db_pool</code>). Jamás se crea dentro de un endpoint. Si lo hicieras, abrirías un pool por cada request y volverías al problema del villano.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>Una app con 1000 usuarios concurrentes no necesita 1000 conexiones: con <code>max_size=20</code> suele bastar, porque cada request usa la conexión por milisegundos y la devuelve. El pool es como un <strong>parqueadero compartido</strong>: 20 carros alcanzan para 1000 viajes si cada uno dura poco.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 2 -->
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Para qué sirve un pool de conexiones?</p>
+      <button class="opcion" data-op="a">Para reutilizar conexiones abiertas y no abrir una por request</button>
+      <button class="opcion" data-op="b">Para que la BD corra más rápido</button>
+      <button class="opcion" data-op="c">Para cifrar los datos</button>
+      <button class="opcion" data-op="d">Para no usar PostgreSQL</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Qué significa <code>max_size=20</code> en create_pool?</p>
+      <button class="opcion" data-op="a">Tamaño máximo de cada consulta en bytes</button>
+      <button class="opcion" data-op="b">Número máximo de conexiones simultáneas permitidas</button>
+      <button class="opcion" data-op="c">Cantidad máxima de reintentos</button>
+      <button class="opcion" data-op="d">Tiempo máximo de espera</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: get_db con yield →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — GET_DB CON YIELD
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>🔗 get_db: la dependencia con yield</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Prestar y devolver" — cómo un endpoint obtiene una conexión sin preocuparse</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>FastAPI permite definir <strong>dependencias</strong>: funciones que preparan algo que el endpoint necesita. <code>get_db()</code> es una dependencia que <strong>adquiere</strong> una conexión del pool, la <strong>cede</strong> al endpoint con <code>yield</code> y, al terminar el request, la <strong>devuelve</strong> al pool automáticamente. El endpoint nunca abre ni cierra nada: solo recibe una conexión lista y la usa.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>database.py — get_db()</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">async def</span> <span class="fn">get_db</span>():
+    <span class="cm"># Adquiere una conexión del pool</span>
+    <span class="kw">async with</span> _pool.acquire() <span class="kw">as</span> connection:
+        <span class="kw">yield</span> connection  <span class="cm"># la cede al endpoint</span>
+    <span class="cm"># al terminar el request, la conexión regresa al pool</span></code></pre>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: <code>yield</code> es como <code>return</code> pero con un "regresa después". <strong>¿Qué creen que pasa si el endpoint lanza un error a mitad de la consulta?</strong> ¿Se devuelve la conexión al pool o se queda colgada? Adivinen (pista: <code>async with</code> la protege).</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 yield vs return</h4>
+    <p>Con <code>return</code> la función termina. Con <code>yield</code> la función <strong>se pausa</strong>, entrega el valor y, cuando el endpoint termina, <strong>retoma</strong> para ejecutar el código de limpieza (el bloque que sale del <code>async with</code>). Por eso es ideal para "pedir prestado y devolver".</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>El patrón "dependencia con <code>yield</code>" es tan útil que FastAPI lo usa para todo: conexiones de BD, sesiones de usuario, archivos abiertos, transacciones. Si el endpoint falla, el <code>async with</code> garantiza que la conexión <strong>siempre</strong> regresa al pool. No hay fugas de conexiones.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 3 -->
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace <code>get_db()</code> en FastAPI?</p>
+      <button class="opcion" data-op="a">Crea el pool de conexiones</button>
+      <button class="opcion" data-op="b">Adquiere una conexión del pool y la cede al endpoint, luego la devuelve</button>
+      <button class="opcion" data-op="c">Cierra todas las conexiones</button>
+      <button class="opcion" data-op="d">Ejecuta la consulta SQL</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué se usa <code>yield</code> y no <code>return</code> en <code>get_db</code>?</p>
+      <button class="opcion" data-op="a">Porque yield permite ejecutar limpieza (devolver la conexión) después de que el endpoint termine</button>
+      <button class="opcion" data-op="b">Porque return no funciona en async</button>
+      <button class="opcion" data-op="c">Porque yield es más rápido</button>
+      <button class="opcion" data-op="d">Porque return no devuelve conexiones</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — DESCANSO ACTIVO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73% agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Coméntale a tu compañero/a qué te costó más hasta ahora: el pool o el yield. 1 min.</p></div>
+  </div>
+
+  <div class="trivia-box">
+    <h3>🎲 Trivia de regreso — ¿cuántas conexiones abre el pool al arrancar?</h3>
+    <p>Si <code>min_size=10</code> y <code>max_size=20</code>, ¿cuántas conexiones hay abiertas nada más arrancar la app?</p>
+    <div class="trivia-opts" id="triviaOpts">
+      <button class="trivia-opt" data-tcorrecta="b" data-top="a">0</button>
+      <button class="trivia-opt" data-top="b">10</button>
+      <button class="trivia-opt" data-top="c">20</button>
+      <button class="trivia-opt" data-top="d">30</button>
+    </div>
+    <div class="trivia-result" id="triviaResult"></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>asyncpg fue creado por el equipo del framework <strong>Sanic</strong> en 2016 y adoptado rápido por FastAPI. Su nombre viene de <em>async PostgreSQL</em>. Hoy es el driver asíncrono de Postgres más usado en Python, con más de 4000 estrellas en GitHub. 🐍⚡</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Lifespan + endpoint →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — LIFESPAN + ENDPOINT
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>🚀 Lifespan + endpoint</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El ciclo de vida de la app" — arrancar, servir, apagar</p>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el pool que nunca se cierra</h4>
+    <p>La app crea el pool al arrancar… pero nunca lo cierra. Cada vez que reinicias el servidor, quedan conexiones <strong>zombis</strong> en PostgreSQL. Tras unos días, la BD se queda sin conexiones disponibles y nadie puede entrar. La solución es el patrón <strong>lifespan</strong>: un bloque que ejecuta algo al arrancar y algo al apagar.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>FastAPI usa <code>@asynccontextmanager</code> para definir un <strong>lifespan</strong>: código que corre <strong>antes</strong> de que la app empiece a recibir requests (abrir el pool) y <strong>después</strong> de que se apague (cerrar el pool). El endpoint solo declara que necesita una conexión con <code>Depends(get_db)</code> y FastAPI hace el resto.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — lifespan + endpoint</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">@asynccontextmanager</span>
+<span class="kw">async def</span> <span class="fn">lifespan</span>(app: FastAPI):
+    <span class="kw">await</span> init_db_pool()   <span class="cm"># arranque</span>
+    <span class="kw">yield</span>                   <span class="cm"># la app sirve aquí</span>
+    <span class="kw">await</span> close_db_pool()  <span class="cm"># apagado</span>
+
+app = FastAPI(lifespan=lifespan)
+
+<span class="kw">@app.get</span>(<span class="str">"/usuarios"</span>)
+<span class="kw">async def</span> <span class="fn">listar_usuarios</span>(datos=Depends(autores)):
+    <span class="kw">return</span> datos</code></pre>
+  </div>
+
+  <h3>🔄 El flujo completo de un request</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Paso</th><th>Quién</th><th>Qué hace</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Cliente</td><td>Envía GET /usuarios</td></tr>
+        <tr><td>2</td><td>FastAPI</td><td>Resuelve Depends(autores) → Depends(get_db)</td></tr>
+        <tr><td>3</td><td>get_db</td><td>Adquiere conexión del pool con async with</td></tr>
+        <tr><td>4</td><td>autores</td><td>Ejecuta db.fetch("SELECT * FROM autores LIMIT 10")</td></tr>
+        <tr><td>5</td><td>asyncpg</td><td>Envía la query a PostgreSQL y await el resultado</td></tr>
+        <tr><td>6</td><td>autores</td><td>Convierte rows a dict y devuelve</td></tr>
+        <tr><td>7</td><td>get_db</td><td>El async with termina y devuelve la conexión al pool</td></tr>
+        <tr><td>8</td><td>FastAPI</td><td>Responde JSON al cliente</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Con su compañero/a: sigan los 8 pasos de la tabla en orden. <strong>¿En qué paso se devuelve la conexión al pool?</strong> ¿Qué pasaría si el paso 4 (la consulta) fallara con un error? ¿Llegaría al paso 7? Discutan (pista: <code>async with</code> protege hasta en errores).</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué Depends y no importar get_db directo?</h4>
+    <p>Con <code>Depends(get_db)</code>, FastAPI se encarga de <strong>inyectar</strong> la conexión, de manejar el ciclo <code>yield</code> y de liberarla al final. Si la importaras y la llamaras a mano, tendrías que gestionar todo eso tú. <code>Depends</code> es el patrón oficial de FastAPI para dependencias con limpieza.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>Cada vez que entras a Netflix y ves tu perfil, un endpoint como este corre: el request entra, FastAPI pide una conexión del pool, asyncpg consulta tu usuario, la conexión regresa al pool y te llega el JSON. Todo en <strong>menos de 50 ms</strong>. Y el pool nunca se abre ni se cierra por request: vive desde que arranca el servidor.</p>
+  </div>
+
+  <!-- QUIZ MÓDULO 5 -->
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Para qué sirve el lifespan en FastAPI?</p>
+      <button class="opcion" data-op="a">Para definir las rutas</button>
+      <button class="opcion" data-op="b">Para ejecutar código al arrancar y al apagar la app</button>
+      <button class="opcion" data-op="c">Para validar los datos de entrada</button>
+      <button class="opcion" data-op="d">Para generar la documentación</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué hace <code>Depends(get_db)</code> en un endpoint?</p>
+      <button class="opcion" data-op="a">Inyecta una conexión del pool y la libera al terminar el request</button>
+      <button class="opcion" data-op="b">Cierra el pool</button>
+      <button class="opcion" data-op="c">Crea una nueva BD</button>
+      <button class="opcion" data-op="d">Ejecuta la consulta SQL</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Buenas prácticas →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — BUENAS PRÁCTICAS DE FASTAPI
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>✨ Buenas prácticas de FastAPI</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El código que se lee solo" — Annotated, APIRouter, response_model</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>FastAPI tiene convenciones oficiales que hacen el código <strong>reutilizable, tipado y documentado</strong>. Las cuatro que aplicamos en este proyecto: <strong>Annotated</strong> para dependencias, <strong>APIRouter</strong> para organizar rutas, <strong>response_model</strong> para validar la respuesta y <strong>type alias</strong> para reutilizar la dependencia de BD.</p>
+  </div>
+
+  <h3>📊 Las 4 prácticas clave</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-verde">
+      <span class="emoji">🏷️</span>
+      <h3>Annotated</h3>
+      <p>Declarar dependencias y parámetros con <code>Annotated[T, Depends(...)]</code> en vez de <code>T = Depends(...)</code>. Respeta los tipos y permite reutilizar.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🧩</span>
+      <h3>APIRouter</h3>
+      <p>Agrupar rutas en un router con <code>prefix</code> y <code>tags</code> propios. El router vive sus reglas, no <code>include_router</code>.</p>
+    </div>
+    <div class="tarjeta tarjeta-ambar">
+      <span class="emoji">🛡️</span>
+      <h3>response_model</h3>
+      <p>Declarar <code>response_model=MiModelo</code> valida, filtra y serializa la respuesta. No expone campos sensibles por accidente.</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">♻️</span>
+      <h3>Type alias</h3>
+      <p>Crear <code>DbDep = Annotated[Connection, Depends(get_db)]</code> y reutilizarlo en cualquier endpoint sin repetir.</p>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>consultas.py — con buenas prácticas</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">from typing</span> <span class="kw">import</span> Annotated
+<span class="kw">from</span> fastapi <span class="kw">import</span> APIRouter, Query
+<span class="kw">from</span> database <span class="kw">import</span> DbDep
+
+router = APIRouter(prefix=<span class="str">"/autores"</span>, tags=[<span class="str">"autores"</span>])
+
+<span class="kw">@router.get</span>(<span class="str">"/"</span>, response_model=<span class="ty">list</span>[Autor])
+<span class="kw">async def</span> <span class="fn">autores</span>(
+    db: DbDep,
+    limite: Annotated[<span class="ty">int</span>, Query(ge=<span class="num">1</span>, le=<span class="num">100</span>)] = <span class="num">10</span>,
+):
+    <span class="kw">return</span> <span class="kw">await</span> db.fetch(<span class="str">"SELECT * FROM autores LIMIT $1"</span>, limite)</code></pre>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Con su compañero/a: comparen el código de arriba con un endpoint que NO usa buenas prácticas (sin Annotated, sin Router, sin response_model). <strong>¿Cuál es más fácil de leer y reutilizar?</strong> Anoten 2 diferencias concretas.</p>
+  </div>
+
+  <h3>🎮 Reto: ¿Es buena práctica o no?</h3>
+  <p>Toca cada fragmento de código y marca si es buena práctica de FastAPI o no. Hay 8 fragmentos.</p>
+
+  <div class="match-bd-sim">
+    <div class="sim-head">✨ Clasificador de buenas prácticas</div>
+    <p id="matchInstr" style="font-size:0.88rem;color:var(--texto-suave);">Toca un fragmento de la izquierda para seleccionarlo.</p>
+    <div class="match-bd-grid" id="matchGrid"></div>
+    <div class="match-bd-options" id="matchOptions"></div>
+    <div class="match-bd-feedback" id="matchFeedback"></div>
+    <div class="btn-row">
+      <button class="btn ghost" id="matchReset">🔄 Reiniciar reto</button>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 La regla de oro</h4>
+    <p>Si una dependencia se usa en más de un endpoint, créale un <strong>type alias</strong> (<code>DbDep</code>) y reutilízalo. Si un grupo de rutas comparte un <strong>prefijo</strong> (como <code>/autores</code>), ponlas en un <strong>APIRouter</strong>. Si una respuesta tiene campos que no quieres exponer, usa <strong>response_model</strong>. Esas tres convierten un código funcional en un código <strong>profesional</strong>.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>En un backend real con 50 endpoints, sin APIRouter tendrías un <code>main.py</code> de 1000 líneas. Con routers separados (<code>autores.py</code>, <code>libros.py</code>, <code>usuarios.py</code>), cada archivo tiene 100 líneas y se puede mantener por separado. <strong>Esa es la diferencia entre un proyecto que escala y uno que se vuelve inmanejable.</strong></p>
+  </div>
+
+  <!-- QUIZ MÓDULO 6 -->
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Por qué usar <code>Annotated[T, Depends(...)]</code> en vez de <code>T = Depends(...)</code>?</p>
+      <button class="opcion" data-op="a">Porque es más corto</button>
+      <button class="opcion" data-op="b">Porque respeta los tipos, permite reutilizar y funciona en otros contextos</button>
+      <button class="opcion" data-op="c">Porque Annotated es obligatorio en Python</button>
+      <button class="opcion" data-op="d">Porque Depends no funciona sin Annotated</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Dónde deben vivir el prefix y los tags de un router?</p>
+      <button class="opcion" data-op="a">En el APIRouter mismo, no en include_router</button>
+      <button class="opcion" data-op="b">En include_router siempre</button>
+      <button class="opcion" data-op="c">No es necesario definirlos</button>
+      <button class="opcion" data-op="d">En el modelo Pydantic</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller final →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 7 — TALLER: DIAGNÓSTICO
+============================================================ -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: Diagnóstico</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Te convertirás en detective de backend" — 3 retos + caso real</p>
+
+  <div class="caja-concepto">
+    <h3>🎯 Tu misión</h3>
+    <p>Tres retos calientan motores y el <strong>Jefe Final</strong> te pone en el rol de <strong>detective de backend</strong>: diagnosticar por qué un endpoint que abre una conexión por request colapsa en producción y proponer la solución con pool + asyncpg + FastAPI. Al superar todo, recibes la insignia <strong>Async PG Master</strong>.</p>
+  </div>
+
+  <!-- Reto 1: Matching — concepto ↔ definición -->
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">Reto 1</span>
+      <span class="challenge-title">🧠 Empareja cada concepto con su definición</span>
+    </div>
+    <p>Toca un concepto de la izquierda y luego su definición. 4 parejas.</p>
+
+    <div class="ws-block" data-ws-match="1">
+      <div class="ws-options" data-role="left">
+        <button class="ws-chip" data-mid="1a">asyncpg</button>
+        <button class="ws-chip" data-mid="1b">Pool de conexiones</button>
+        <button class="ws-chip" data-mid="1c">get_db con yield</button>
+        <button class="ws-chip" data-mid="1d">Lifespan</button>
+      </div>
+      <div class="ws-options" data-role="right">
+        <button class="ws-chip" data-mid="1A">Conjunto de conexiones abiertas que se reutilizan</button>
+        <button class="ws-chip" data-mid="1B">Driver asíncrono de PostgreSQL para Python</button>
+        <button class="ws-chip" data-mid="1C">Código que corre al arrancar y al apagar la app</button>
+        <button class="ws-chip" data-mid="1D">Dependencia que adquiere y devuelve una conexión</button>
+      </div>
+      <button class="btn primary" data-check-ws="1">✓ Validar Reto 1</button>
+      <div class="resultado-ws" id="ws-fb-1"></div>
+    </div>
+  </div>
+
+  <!-- Reto 2: Ordenar el flujo de un request -->
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">Reto 2</span>
+      <span class="challenge-title">🔄 Ordena el flujo de un request (de entrada a respuesta)</span>
+    </div>
+    <p>Arrastra (o usa las flechas) para ordenar desde que entra el request hasta que la conexión regresa al pool.</p>
+
+    <div class="ws-block" data-ws-order="2">
+      <div class="ws-order" id="wsOrder2">
+        <div class="ws-order-item" data-oid="2cliente" draggable="true"><span class="ord-num">?</span> Cliente envía GET /usuarios</div>
+        <div class="ws-order-item" data-oid="2depends" draggable="true"><span class="ord-num">?</span> FastAPI resuelve Depends(get_db)</div>
+        <div class="ws-order-item" data-oid="2acquire" draggable="true"><span class="ord-num">?</span> get_db adquiere conexión del pool</div>
+        <div class="ws-order-item" data-oid="2fetch" draggable="true"><span class="ord-num">?</span> asyncpg ejecuta la consulta con await</div>
+        <div class="ws-order-item" data-oid="2release" draggable="true"><span class="ord-num">?</span> La conexión regresa al pool (async with termina)</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn" data-ws-up="2">⬆ Subir</button>
+        <button class="btn" data-ws-down="2">⬇ Bajar</button>
+      </div>
+      <button class="btn primary" data-check-ws="2">✓ Validar Reto 2</button>
+      <div class="resultado-ws" id="ws-fb-2"></div>
+    </div>
+  </div>
+
+  <!-- Reto 3: Emparejar buena práctica ↔ beneficio -->
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">Reto 3</span>
+      <span class="challenge-title">✨ Empareja cada buena práctica con su beneficio</span>
+    </div>
+    <p>Toca una práctica y luego su beneficio. 4 parejas.</p>
+
+    <div class="ws-block" data-ws-match="3">
+      <div class="ws-options" data-role="left">
+        <button class="ws-chip" data-mid="3a">Annotated</button>
+        <button class="ws-chip" data-mid="3b">APIRouter con prefix</button>
+        <button class="ws-chip" data-mid="3c">response_model</button>
+        <button class="ws-chip" data-mid="3d">Type alias DbDep</button>
+      </div>
+      <div class="ws-options" data-role="right">
+        <button class="ws-chip" data-mid="3A">Valida, filtra y documenta la respuesta</button>
+        <button class="ws-chip" data-mid="3B">Respeta los tipos y permite reutilizar la dependencia</button>
+        <button class="ws-chip" data-mid="3C">Reutilizar la inyección de BD sin repetir Depends</button>
+        <button class="ws-chip" data-mid="3D">Organiza rutas por grupo y mantiene main.py corto</button>
+      </div>
+      <button class="btn primary" data-check-ws="3">✓ Validar Reto 3</button>
+      <div class="resultado-ws" id="ws-fb-3"></div>
+    </div>
+  </div>
+
+  <!-- Reto 4: Jefe Final — Diagnóstico backend -->
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge adv">Jefe Final · Diagnóstico</span>
+      <span class="challenge-title">🏆 El caso del backend que colapsa</span>
+    </div>
+
+    <div class="caja-importante">
+      <h4>📋 El caso</h4>
+      <p>"Una startup lanzó su API con FastAPI y PostgreSQL. Funciona bien con 10 usuarios, pero cuando llegan 200 concurrentes, la app se <strong>queda congelada</strong>: los requests tardan 30 segundos o nunca responden. Revisan el servidor y la CPU está al 5%. <strong>No es el hardware.</strong> El código abre una conexión con psycopg2 (síncrono) en cada endpoint, hace la consulta y la cierra. ¿Qué diagnosticas y qué propones?"</p>
+    </div>
+
+    <p>Como detective de backend, completa el ticket de diagnóstico:</p>
+
+    <div class="ticket">
+      <div class="ticket-head">
+        <span class="ticket-id">Ticket #BD-2026-003</span>
+        <span class="ticket-priority">⚡ PRIORIDAD ALTA</span>
+      </div>
+
+      <div class="ticket-field">
+        <label>1. ¿Cuál es la causa raíz del colapso?</label>
+        <div class="ticket-opts" id="diagComp" data-correct="syncpool">
+          <button class="ticket-opt" data-dval="syncpool">Usar psycopg2 síncrono + abrir/cerrar conexión por request: bloquea el event loop y satura Postgres</button>
+          <button class="ticket-opt" data-dval="cpu">La CPU es muy lenta para 200 usuarios</button>
+          <button class="ticket-opt" data-dval="fastapi">FastAPI no soporta 200 usuarios</button>
+          <button class="ticket-opt" data-dval="postgres">PostgreSQL no aguanta 200 conexiones</button>
+        </div>
+      </div>
+
+      <div class="ticket-field">
+        <label>2. ¿Qué cambios propones? (selecciona TODAS las correctas)</label>
+        <div class="ticket-opts" id="diagActions" data-correct="asyncpg,pool,depends">
+          <button class="ticket-opt" data-aval="asyncpg">⚡ Cambiar a asyncpg (driver asíncrono) para no bloquear el event loop</button>
+          <button class="ticket-opt" data-aval="pool">🏊 Crear un pool de conexiones una sola vez al arrancar (init_db_pool)</button>
+          <button class="ticket-opt" data-aval="depends">🔗 Inyectar conexiones con Depends(get_db) que las devuelve al pool con yield</button>
+          <button class="ticket-opt" data-aval="comprar">💰 Comprar un servidor con más CPU</button>
+          <button class="ticket-opt" data-aval="dormir">😴 Reducir los usuarios a 10 y no tocar el código</button>
+        </div>
+      </div>
+
+      <div class="ticket-field">
+        <label>3. Explica en 2-3 frases por qué el pool resuelve el problema (mín. 20 caracteres).</label>
+        <textarea class="ticket-textarea" id="diagText" placeholder="Ej: El pool mantiene conexiones abiertas y las reutiliza, evitando abrir/cerrar por request. Con asyncpg el event loop no se bloquea y FastAPI puede atender 200 usuarios con solo max_size=20 conexiones, porque cada request usa la conexión por milisegundos y la devuelve."></textarea>
+      </div>
+
+      <div class="ticket-rubrica">
+        <h5>📋 Rúbrica del ticket</h5>
+        <ul>
+          <li>✔️ Identifica <strong>psycopg2 síncrono + conexión por request</strong> como causa raíz</li>
+          <li>✔️ Propone asyncpg + pool + Depends (descarta "comprar CPU" y "reducir usuarios")</li>
+          <li>✔️ Explica que el pool <strong>reutiliza conexiones</strong> y asyncpg <strong>no bloquea</strong></li>
+          <li>✔️ El texto usa vocabulario técnico (pool, async, event loop, Depends, yield)</li>
+        </ul>
+      </div>
+
+      <button class="btn primary big" id="diagValidate" style="margin-top:1rem;">✓ Validar diagnóstico</button>
+      <div class="resultado-ws" id="ws-fb-4"></div>
+    </div>
+  </div>
+
+  <div class="cierre">
+    <h2>🏆 ¡Misión completada, Async PG Master!</h2>
+    <p class="lead">Ya sabes cómo conectar una app FastAPI a PostgreSQL de forma asíncrona con asyncpg, cómo funciona un pool de conexiones, cómo inyectar conexiones con Depends y yield, y cómo aplicar las buenas prácticas oficiales de FastAPI. Has diagnosticado un backend real como un detective. Eso es más de lo que sabe el 90% de quienes empiezan a programar APIs.</p>
+    <p style="margin-top:1rem;font-size:1.05rem;color:var(--verde);font-weight:700;">En la próxima clase entraremos al modelo relacional y a SQL: el lenguaje para hablar con las BD. 🗄️</p>
+    <button class="btn-final" data-reiniciar>🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<!-- =================== FOOTER =================== -->
+<footer class="pie">
+  <div class="fb">🎓 Bases de Datos · Clase 3 · Plataforma interactiva</div>
+  <div>asyncpg · Pool de conexiones · FastAPI · Buenas prácticas · 4 horas · Nivel Avanzado</div>
+  <div style="margin-top:.5rem;font-size:.78rem;">Hecho con 💜 para adolescentes que quieren construir backends reales.</div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
