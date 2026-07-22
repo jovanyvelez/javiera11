@@ -94,7 +94,7 @@
         <tr><td>03 · get_db con yield</td><td style="color:var(--cian)">Dependencia FastAPI</td><td>—</td><td>100 XP</td></tr>
         <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
         <tr><td>04 · Lifespan + endpoint</td><td style="color:var(--verde)">Ciclo de vida</td><td style="color:var(--rosa)">Pool que nunca se cierra</td><td>100 XP</td></tr>
-        <tr><td>05 · Buenas prácticas FastAPI</td><td style="color:var(--morado-claro)">Annotated, Router</td><td>—</td><td>100 XP</td></tr>
+        <tr><td>05 · Buenas prácticas FastAPI</td><td style="color:var(--morado-claro)">Annotated, response_model</td><td>—</td><td>100 XP</td></tr>
         <tr><td>06 · Taller</td><td style="color:var(--morado)">Diagnóstico</td><td style="color:var(--rosa)">Backend que colapsa en producción</td><td>140 XP</td></tr>
       </tbody>
     </table>
@@ -710,57 +710,82 @@ app = FastAPI(lifespan=lifespan)
 ============================================================ -->
 <section class="modulo" data-modulo="6">
   <h2>✨ Buenas prácticas de FastAPI</h2>
-  <p class="meta-modulo">⏱️ 35 minutos · "El código que se lee solo" — Annotated, APIRouter, response_model</p>
+  <p class="meta-modulo">⏱️ 35 minutos · "El código que se lee solo" — Annotated, response_model, type alias</p>
 
   <div class="caja-concepto">
     <h3>🧠 La idea central</h3>
-    <p>FastAPI tiene convenciones oficiales que hacen el código <strong>reutilizable, tipado y documentado</strong>. Las cuatro que aplicamos en este proyecto: <strong>Annotated</strong> para dependencias, <strong>APIRouter</strong> para organizar rutas, <strong>response_model</strong> para validar la respuesta y <strong>type alias</strong> para reutilizar la dependencia de BD.</p>
+    <p>El código que escribimos hasta ahora <strong>funciona</strong>. Pero FastAPI tiene convenciones oficiales que lo hacen <strong>reutilizable, tipado y documentado</strong>. Hoy veremos tres que se aplican directamente a lo que ya construimos: <strong>Annotated</strong> para declarar la dependencia respetando los tipos, <strong>response_model</strong> para validar la respuesta y <strong>type alias</strong> para reutilizar la dependencia de BD sin repetir código.</p>
   </div>
 
-  <h3>📊 Las 4 prácticas clave</h3>
+  <h3>📊 Las 3 prácticas que aplicamos aquí</h3>
   <div class="cuadricula">
     <div class="tarjeta tarjeta-verde">
       <span class="emoji">🏷️</span>
       <h3>Annotated</h3>
-      <p>Declarar dependencias y parámetros con <code>Annotated[T, Depends(...)]</code> en vez de <code>T = Depends(...)</code>. Respeta los tipos y permite reutilizar.</p>
-    </div>
-    <div class="tarjeta">
-      <span class="emoji">🧩</span>
-      <h3>APIRouter</h3>
-      <p>Agrupar rutas en un router con <code>prefix</code> y <code>tags</code> propios. El router vive sus reglas, no <code>include_router</code>.</p>
+      <p>Declarar la dependencia con <code>Annotated[asyncpg.Connection, Depends(get_db)]</code> en vez de <code>asyncpg.Connection = Depends(get_db)</code>. Respeta los tipos, permite reutilizar y es la forma recomendada por FastAPI.</p>
     </div>
     <div class="tarjeta tarjeta-ambar">
       <span class="emoji">🛡️</span>
       <h3>response_model</h3>
-      <p>Declarar <code>response_model=MiModelo</code> valida, filtra y serializa la respuesta. No expone campos sensibles por accidente.</p>
+      <p>Declarar <code>response_model=list[Autor]</code> en el endpoint. FastAPI valida que la respuesta cumpla con el modelo, filtra campos de más y genera la documentación automática. No expone datos sensibles por accidente.</p>
     </div>
     <div class="tarjeta tarjeta-magenta">
       <span class="emoji">♻️</span>
       <h3>Type alias</h3>
-      <p>Crear <code>DbDep = Annotated[Connection, Depends(get_db)]</code> y reutilizarlo en cualquier endpoint sin repetir.</p>
+      <p>Crear <code>DbDep = Annotated[asyncpg.Connection, Depends(get_db)]</code> en <code>database.py</code> y reutilizarlo en cualquier endpoint con solo escribir <code>db: DbDep</code>. Sin repetir <code>Depends(get_db)</code> cada vez.</p>
     </div>
   </div>
+
+  <h3>📝 El modelo Pydantic: ¿qué devuelve la consulta?</h3>
+  <p>Antes mostrábamos <code>dict</code> sueltos. Una buena práctica es declarar <strong>qué forma tiene la respuesta</strong> con un modelo Pydantic. Así FastAPI sabe qué campos esperar y los valida:</p>
 
   <div class="code-wrap">
     <div class="code-header">
       <div class="code-header-left">
         <div class="code-dots"><span></span><span></span><span></span></div>
-        <span>consultas.py — con buenas prácticas</span>
+        <span>consultas.py — modelo de respuesta</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel
+
+<span class="kw">class</span> <span class="ty">Autor</span>(BaseModel):
+    <span class="str">"""Modelo de respuesta para un autor."""</span>
+    id: <span class="ty">int</span>
+    nombre: <span class="ty">str</span>
+    nacionalidad: <span class="ty">str</span> | <span class="kw">None</span> = <span class="kw">None</span></code></pre>
+  </div>
+
+  <h3>🔄 El endpoint con buenas prácticas</h3>
+  <p>Ahora veamos el endpoint <code>autores</code> aplicando las tres prácticas. Compáralo con el código del Módulo 3: hace lo mismo, pero está <strong>tipado, validado y reutilizable</strong>:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>consultas.py — endpoint con buenas prácticas</span>
       </div>
       <button class="copy-btn">📋 Copiar</button>
     </div>
 <pre><code><span class="kw">from typing</span> <span class="kw">import</span> Annotated
-<span class="kw">from</span> fastapi <span class="kw">import</span> APIRouter, Query
-<span class="kw">from</span> database <span class="kw">import</span> DbDep
+<span class="kw">from</span> fastapi <span class="kw">import</span> Depends, HTTPException, Query
 
-router = APIRouter(prefix=<span class="str">"/autores"</span>, tags=[<span class="str">"autores"</span>])
+<span class="kw">from</span> database <span class="kw">import</span> get_db  <span class="cm"># y el type alias DbDep cuando lo crees</span>
 
-<span class="kw">@router.get</span>(<span class="str">"/"</span>, response_model=<span class="ty">list</span>[Autor])
 <span class="kw">async def</span> <span class="fn">autores</span>(
-    db: DbDep,
+    db: Annotated[asyncpg.Connection, Depends(get_db)],  <span class="cm"># ← Annotated</span>
     limite: Annotated[<span class="ty">int</span>, Query(ge=<span class="num">1</span>, le=<span class="num">100</span>)] = <span class="num">10</span>,
-):
-    <span class="kw">return</span> <span class="kw">await</span> db.fetch(<span class="str">"SELECT * FROM autores LIMIT $1"</span>, limite)</code></pre>
+) -> <span class="ty">list</span>[Autor]:                                              <span class="cm"># ← return type + response_model</span>
+    <span class="kw">try</span>:
+        rows = <span class="kw">await</span> db.fetch(<span class="str">"SELECT * FROM autores LIMIT $1"</span>, limite)
+        <span class="kw">return</span> [Autor(**dict(row)) <span class="kw">for</span> row <span class="kw">in</span> rows]
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="kw">raise</span> HTTPException(status_code=<span class="num">500</span>, detail=<span class="str">f"Error: {e}"</span>)</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Qué cambió respecto al Módulo 3?</h4>
+    <p>Tres cosas: (1) la conexión se declara con <code>Annotated[asyncpg.Connection, Depends(get_db)]</code> en vez de <code>asyncpg.Connection = Depends(get_db)</code>; (2) el parámetro <code>limite</code> se valida con <code>Query(ge=1, le=100)</code> para que nadie pida un millón de registros; (3) la respuesta se tipa como <code>list[Autor]</code>, así FastAPI valida que cada registro tenga <code>id</code>, <code>nombre</code> y <code>nacionalidad</code>. <strong>El código hace lo mismo, pero ahora está protegido y documentado.</strong></p>
   </div>
 
   <div class="caja-tip">
@@ -770,7 +795,7 @@ router = APIRouter(prefix=<span class="str">"/autores"</span>, tags=[<span class
 
   <div class="caja-pareja">
     <h4>🔄 Actividad en pareja — 3 minutos</h4>
-    <p>Con su compañero/a: comparen el código de arriba con un endpoint que NO usa buenas prácticas (sin Annotated, sin Router, sin response_model). <strong>¿Cuál es más fácil de leer y reutilizar?</strong> Anoten 2 diferencias concretas.</p>
+    <p>Con su compañero/a: abran el dropdown de <code>consultas.py</code> en el Módulo 0 (el código original) y compárenlo con el de arriba. <strong>¿Qué cambió?</strong> Anoten 2 diferencias concretas. Una pista: miren cómo se declara <code>db</code> y cómo se valida <code>limite</code>.</p>
   </div>
 
   <h3>🎮 Reto: ¿Es buena práctica o no?</h3>
@@ -789,30 +814,30 @@ router = APIRouter(prefix=<span class="str">"/autores"</span>, tags=[<span class
 
   <div class="caja-tip">
     <h4>💡 La regla de oro</h4>
-    <p>Si una dependencia se usa en más de un endpoint, créale un <strong>type alias</strong> (<code>DbDep</code>) y reutilízalo. Si un grupo de rutas comparte un <strong>prefijo</strong> (como <code>/autores</code>), ponlas en un <strong>APIRouter</strong>. Si una respuesta tiene campos que no quieres exponer, usa <strong>response_model</strong>. Esas tres convierten un código funcional en un código <strong>profesional</strong>.</p>
+    <p>Si una dependencia se usa en más de un endpoint, créale un <strong>type alias</strong> (<code>DbDep</code>) en <code>database.py</code> y reutilízalo. Si una respuesta tiene una forma fija (como un autor con <code>id</code> y <code>nombre</code>), declara un <strong>modelo Pydantic</strong> y úsalo como <strong>return type</strong>. Esas dos convierten un código que funciona en un código <strong>profesional</strong>.</p>
   </div>
 
   <div class="caja-destacada">
     <h4>🔍 En la vida real</h4>
-    <p>En un backend real con 50 endpoints, sin APIRouter tendrías un <code>main.py</code> de 1000 líneas. Con routers separados (<code>autores.py</code>, <code>libros.py</code>, <code>usuarios.py</code>), cada archivo tiene 100 líneas y se puede mantener por separado. <strong>Esa es la diferencia entre un proyecto que escala y uno que se vuelve inmanejable.</strong></p>
+    <p>En un backend con 50 endpoints, tipar cada respuesta con un modelo Pydantic parece trabajo extra, pero paga solo: cuando alguien consulta la documentación automática de la API (FastAPI la genera sola en <code>/docs</code>), ve exactamente qué devuelve cada endpoint sin leer el código. Y si un endpoint devuelve un campo de más, <code>response_model</code> lo filtra. <strong>Esa es la diferencia entre una API que se puede mantener y una que no.</strong></p>
   </div>
 
   <!-- QUIZ MÓDULO 6 -->
   <div class="quiz" data-quiz="6">
     <h3>🎯 Mini-Quiz del Módulo 6</h3>
     <div class="pregunta" data-correcta="b">
-      <p><strong>1.</strong> ¿Por qué usar <code>Annotated[T, Depends(...)]</code> en vez de <code>T = Depends(...)</code>?</p>
-      <button class="opcion" data-op="a">Porque es más corto</button>
-      <button class="opcion" data-op="b">Porque respeta los tipos, permite reutilizar y funciona en otros contextos</button>
+      <p><strong>1.</strong> ¿Por qué usar <code>Annotated[asyncpg.Connection, Depends(get_db)]</code> en vez de <code>asyncpg.Connection = Depends(get_db)</code>?</p>
+      <button class="opcion" data-op="a">Porque es más corto de escribir</button>
+      <button class="opcion" data-op="b">Porque respeta los tipos, permite reutilizar como type alias y es la forma recomendada por FastAPI</button>
       <button class="opcion" data-op="c">Porque Annotated es obligatorio en Python</button>
       <button class="opcion" data-op="d">Porque Depends no funciona sin Annotated</button>
     </div>
     <div class="pregunta" data-correcta="a">
-      <p><strong>2.</strong> ¿Dónde deben vivir el prefix y los tags de un router?</p>
-      <button class="opcion" data-op="a">En el APIRouter mismo, no en include_router</button>
-      <button class="opcion" data-op="b">En include_router siempre</button>
-      <button class="opcion" data-op="c">No es necesario definirlos</button>
-      <button class="opcion" data-op="d">En el modelo Pydantic</button>
+      <p><strong>2.</strong> ¿Para qué sirve declarar <code>-> list[Autor]</code> y <code>response_model</code> en un endpoint?</p>
+      <button class="opcion" data-op="a">Para que FastAPI valide la respuesta, filtre campos de más y documente la API</button>
+      <button class="opcion" data-op="b">Para que la consulta SQL sea más rápida</button>
+      <button class="opcion" data-op="c">Para abrir más conexiones del pool</button>
+      <button class="opcion" data-op="d">Para cerrar el pool automáticamente</button>
     </div>
     <div class="resultado-quiz"></div>
   </div>
@@ -897,15 +922,15 @@ router = APIRouter(prefix=<span class="str">"/autores"</span>, tags=[<span class
     <div class="ws-block" data-ws-match="3">
       <div class="ws-options" data-role="left">
         <button class="ws-chip" data-mid="3a">Annotated</button>
-        <button class="ws-chip" data-mid="3b">APIRouter con prefix</button>
+        <button class="ws-chip" data-mid="3b">Query parametrizada ($1)</button>
         <button class="ws-chip" data-mid="3c">response_model</button>
         <button class="ws-chip" data-mid="3d">Type alias DbDep</button>
       </div>
       <div class="ws-options" data-role="right">
         <button class="ws-chip" data-mid="3A">Valida, filtra y documenta la respuesta</button>
-        <button class="ws-chip" data-mid="3B">Respeta los tipos y permite reutilizar la dependencia</button>
+        <button class="ws-chip" data-mid="3B">Evita inyección SQL enviando el valor por separado</button>
         <button class="ws-chip" data-mid="3C">Reutilizar la inyección de BD sin repetir Depends</button>
-        <button class="ws-chip" data-mid="3D">Organiza rutas por grupo y mantiene main.py corto</button>
+        <button class="ws-chip" data-mid="3D">Respeta los tipos y es la forma recomendada por FastAPI</button>
       </div>
       <button class="btn primary" data-check-ws="3">✓ Validar Reto 3</button>
       <div class="resultado-ws" id="ws-fb-3"></div>
@@ -975,7 +1000,7 @@ router = APIRouter(prefix=<span class="str">"/autores"</span>, tags=[<span class
 
   <div class="caja-desafio">
     <h3>🚀 Reto extra: lleva el código a las mejores prácticas de FastAPI</h3>
-    <p>El código que viste en los dropdowns del <strong>Módulo 0</strong> <em>funciona</em>, pero NO usa <code>Annotated</code>, que es la recomendación oficial actual de FastAPI para declarar dependencias y parámetros. FastAPI lo acepta por compatibilidad, pero la comunidad ya migró al estilo <code>Annotated</code>.</p>
+    <p>El código que viste en los dropdowns del <strong>Módulo 0</strong> <em>funciona</em>, pero no usa <code>Annotated</code>, que es la recomendación oficial actual de FastAPI para declarar dependencias y parámetros. FastAPI lo acepta por compatibilidad, pero la comunidad ya migró al estilo <code>Annotated</code>.</p>
     <p><strong>Tu reto</strong>: consulta la documentación oficial de FastAPI y reescribe los tres archivos aplicando <code>Annotated</code>. Abre los dropdowns del inicio para ver el código original y compáralo con tu versión mejorada.</p>
 
     <h4>📝 Qué debes cambiar en cada archivo</h4>
@@ -986,8 +1011,8 @@ router = APIRouter(prefix=<span class="str">"/autores"</span>, tags=[<span class
         </thead>
         <tbody>
           <tr><td><code>database.py</code></td><td>Crear un type alias <code>DbDep</code></td><td><code>DbDep = Annotated[asyncpg.Connection, Depends(get_db)]</code> y exportarlo para reutilizarlo.</td></tr>
-          <tr><td><code>consultas.py</code></td><td>Usar <code>DbDep</code> y <code>Annotated[int, Query(...)]</code></td><td>Importa <code>DbDep</code> desde <code>database</code>; reemplaza <code>db: asyncpg.Connection = Depends(get_db)</code> por <code>db: DbDep</code>. Añade <code>APIRouter</code> con <code>prefix="/autores"</code> y <code>response_model</code>.</td></tr>
-          <tr><td><code>main.py</code></td><td>Tipar el <code>lifespan</code> y usar <code>include_router</code></td><td>El return type del lifespan es <code>AsyncIterator[None]</code>. Sustituye el endpoint directo por <code>app.include_router(autores_router)</code>.</td></tr>
+          <tr><td><code>consultas.py</code></td><td>Usar <code>DbDep</code>, <code>Annotated[int, Query(...)]</code> y un modelo Pydantic como return type</td><td>Importa <code>DbDep</code> desde <code>database</code>; reemplaza <code>db: asyncpg.Connection = Depends(get_db)</code> por <code>db: DbDep</code>. Crea <code>class Autor(BaseModel)</code> y declara el return type como <code>list[Autor]</code>.</td></tr>
+          <tr><td><code>main.py</code></td><td>Tipar el <code>lifespan</code> con <code>AsyncIterator[None]</code></td><td>El return type del lifespan es <code>AsyncIterator[None]</code> (importa <code>AsyncIterator</code> de <code>collections.abc</code>).</td></tr>
         </tbody>
       </table>
     </div>
@@ -996,12 +1021,17 @@ router = APIRouter(prefix=<span class="str">"/autores"</span>, tags=[<span class
     <ul>
       <li><a href="https://fastapi.tiangolo.com/python-types/" target="_blank" rel="noopener">Tipos en Python y FastAPI</a> — por qué importan los tipos.</li>
       <li><a href="https://fastapi.tiangolo.com/tutorial/dependencies/" target="_blank" rel="noopener">Dependencias con <code>Depends</code> y <code>Annotated</code></a> — el patrón que debes aplicar.</li>
-      <li><a href="https://fastapi.tiangolo.com/tutorial/bigger-applications/" target="_blank" rel="noopener">Aplicaciones más grandes con <code>APIRouter</code></a> — cómo organizar rutas.</li>
+      <li><a href="https://fastapi.tiangolo.com/tutorial/response-model/" target="_blank" rel="noopener">Modelos de respuesta (<code>response_model</code>)</a> — cómo validar la respuesta.</li>
     </ul>
 
     <div class="caja-tip">
-      <h4>💡 Cómo saber si lo lograste</h4>
-      <p>Tu código está en buenas prácticas cuando: (1) <code>database.py</code> define y exporta <code>DbDep</code>; (2) <code>consultas.py</code> usa <code>db: DbDep</code> y <code>Annotated[int, Query(ge=1, le=100)]</code>, monta un <code>APIRouter(prefix="/autores")</code> y declara <code>response_model=list[Autor]</code>; (3) <code>main.py</code> solo hace <code>app.include_router(autores_router)</code> y el <code>lifespan</code> tiene return type <code>AsyncIterator[None]</code>. Si lo conseguiste, <strong>escribiste código profesional</strong>. 🔬</p>
+      <h4>💡 ¿Cómo saber si lo lograste?</h4>
+      <p>Tu código está en buenas prácticas cuando: (1) <code>database.py</code> define y exporta <code>DbDep</code>; (2) <code>consultas.py</code> usa <code>db: DbDep</code>, valida <code>limite</code> con <code>Annotated[int, Query(ge=1, le=100)]</code> y devuelve <code>list[Autor]</code> tipado; (3) <code>main.py</code> tiene el <code>lifespan</code> con return type <code>AsyncIterator[None]</code>. Si lo conseguiste, <strong>escribiste código profesional</strong>. 🔬</p>
+    </div>
+
+    <div class="caja-destacada">
+      <h4>🧩 ¿Y si la app crece? Investigación: <code>APIRouter</code></h4>
+      <p>Por ahora tenemos un solo endpoint en <code>main.py</code>. Pero imagina una app con 50 endpoints: <code>/autores</code>, <code>/libros</code>, <code>/usuarios</code>… Todos en <code>main.py</code> sería un caos. FastAPI resuelve esto con <strong>APIRouter</strong>: un objeto que agrupa endpoints con un <strong>prefijo</strong> (como <code>/autores</code>) y <strong>tags</strong> para la documentación. En lugar de definir el endpoint en <code>main.py</code>, lo defines en <code>consultas.py</code> dentro de un <code>APIRouter</code> y en <code>main.py</code> solo haces <code>app.include_router(autores_router)</code>. <strong>Esto es una práctica de organización, no de conexión ni de consultas</strong>, y por eso queda como investigación: consulta <a href="https://fastapi.tiangolo.com/tutorial/bigger-applications/" target="_blank" rel="noopener">Aplicaciones más grandes con APIRouter</a> y decide si lo aplicas a tu proyecto.</p>
     </div>
   </div>
 

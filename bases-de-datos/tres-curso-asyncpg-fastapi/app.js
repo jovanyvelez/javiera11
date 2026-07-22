@@ -286,7 +286,7 @@ function configurarTrivia() {
 /* ---------- TALLER (matching + order) ---------- */
 const TALLER_RESP = {
   1: { '1a': '1B', '1b': '1A', '1c': '1D', '1d': '1C' },
-  3: { '3a': '3B', '3b': '3D', '3c': '3A', '3d': '3C' }
+  3: { '3a': '3D', '3b': '3B', '3c': '3A', '3d': '3C' }
 };
 const TALLER_ORDER = { 2: ['2cliente', '2depends', '2acquire', '2fetch', '2release'] };
 
@@ -382,7 +382,7 @@ function validarReto(id) {
     const msgs = {
       1: '¡Perfecto! asyncpg=driver asíncrono; Pool=conexiones reutilizadas; get_db=dependencia con yield; Lifespan=arrancar/apagar.',
       2: '¡Excelente! Flujo: Cliente → Depends → acquire → fetch (await) → release al pool.',
-      3: '¡Muy bien! Annotated=tipos reutilizables; APIRouter=rutas organizadas; response_model=valida/filtra; DbDep=reutiliza Depends.'
+      3: '¡Muy bien! Annotated=tipos recomendados; Query parametrizada=evita inyección SQL; response_model=valida/filtra; DbDep=reutiliza Depends.'
     };
     const xpPorReto = { 1: 25, 2: 30, 3: 30 };
     fb.innerHTML = `✅ ${msgs[id]} <strong>+${xpPorReto[id]} XP</strong>`;
@@ -398,7 +398,7 @@ function validarReto(id) {
     const hints = {
       1: 'Pista: asyncpg=driver asíncrono; Pool=reutiliza conexiones; get_db=Depends con yield; Lifespan=ciclo de vida de la app.',
       2: 'Pista: del cliente al pool: Cliente → Depends → acquire → fetch → release.',
-      3: 'Pista: Annotated=tipos; APIRouter=organiza rutas; response_model=valida respuesta; DbDep=reutiliza la dependencia.'
+      3: 'Pista: Annotated=tipos recomendados; Query parametrizada=evita inyección SQL; response_model=valida respuesta; DbDep=reutiliza la dependencia.'
     };
     fb.innerHTML = `❌ Algunas respuestas son incorrectas. ${hints[id]}`;
   }
@@ -652,14 +652,14 @@ function inicializarMatchPractica() {
   if (!grid || !optsEl) return;
 
   const escenarios = [
-    { id: 'e1', icon: '🏷️', name: 'Annotated[T, Depends()]', so: 'buena', answer: '✅ Buena práctica' },
-    { id: 'e2', icon: '🔗', name: 'Depends sin Annotated', so: 'mala', answer: '❌ Evitar' },
-    { id: 'e3', icon: '🧩', name: 'APIRouter(prefix="/autores")', so: 'buena', answer: '✅ Buena práctica' },
-    { id: 'e4', icon: '📂', name: 'Todo en main.py de 1000 líneas', so: 'mala', answer: '❌ Evitar' },
-    { id: 'e5', icon: '🛡️', name: 'response_model=MiModelo', so: 'buena', answer: '✅ Buena práctica' },
-    { id: 'e6', icon: '🔓', name: 'Devolver dict sin validar', so: 'mala', answer: '❌ Evitar' },
-    { id: 'e7', icon: '♻️', name: 'DbDep = Annotated[Conn, Depends]', so: 'buena', answer: '✅ Buena práctica' },
-    { id: 'e8', icon: '🔁', name: 'Abrir pool dentro del endpoint', so: 'mala', answer: '❌ Evitar' }
+    { id: 'e1', icon: '🏷️', name: 'Annotated[Connection, Depends(get_db)]', so: 'buena', answer: '✅ Buena práctica' },
+    { id: 'e2', icon: '🔗', name: 'Connection = Depends(get_db) sin Annotated', so: 'mala', answer: '❌ Evitar' },
+    { id: 'e3', icon: '🛡️', name: 'response_model=list[Autor]', so: 'buena', answer: '✅ Buena práctica' },
+    { id: 'e4', icon: '🔓', name: 'Devolver dict sin validar ni tipar', so: 'mala', answer: '❌ Evitar' },
+    { id: 'e5', icon: '♻️', name: 'DbDep = Annotated[Connection, Depends]', so: 'buena', answer: '✅ Buena práctica' },
+    { id: 'e6', icon: '🔁', name: 'Repetir Depends(get_db) en cada endpoint', so: 'mala', answer: '❌ Evitar' },
+    { id: 'e7', icon: '💉', name: 'Query parametrizada: LIMIT $1', so: 'buena', answer: '✅ Buena práctica' },
+    { id: 'e8', icon: '💣', name: 'f"SELECT ... LIMIT {limite}"', so: 'mala', answer: '❌ Evitar (inyección SQL)' }
   ];
   const opciones = [
     { id: 'buena', label: '✅ Buena práctica' },
@@ -708,7 +708,7 @@ function inicializarMatchPractica() {
           fb.className = 'match-bd-feedback visible';
           fb.style.background = 'rgba(244, 63, 94, 0.12)';
           fb.style.color = 'var(--rosa)';
-          fb.textContent = '❌ Piensa: ¿respeta los tipos, organiza el código y valida la respuesta?';
+          fb.textContent = '❌ Piensa: ¿respeta los tipos, valida la respuesta y evita repetir código?';
           setTimeout(() => fb.classList.remove('visible'), 1500);
         }
         selected = null;
