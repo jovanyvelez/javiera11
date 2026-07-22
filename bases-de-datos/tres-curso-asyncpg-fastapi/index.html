@@ -115,11 +115,21 @@
 ============================================================ -->
 <section class="modulo" data-modulo="1">
   <h2>⚡ asyncpg: el driver asíncrono</h2>
-  <p class="meta-modulo">⏱️ 35 minutos · "Por qué no usamos psycopg2 a secas" — async/await para la BD</p>
+  <p class="meta-modulo">⏱️ 35 minutos · "El traductor entre Python y PostgreSQL" — async/await para la BD</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es un driver de base de datos?</h3>
+    <p>Python no sabe hablar con PostgreSQL por sí solo. Necesita un <strong>driver</strong>: una biblioteca que hace de <strong>traductor</strong> entre el código Python y el lenguaje de la BD. Existen varios drivers para PostgreSQL, y cada uno tiene sus características:</p>
+    <ul>
+      <li><strong>psycopg2</strong> — El más antiguo y usado. Es <strong>síncrono</strong>: cuando envía una consulta, se queda <em>esperando</em> la respuesta sin hacer nada más.</li>
+      <li><strong>asyncpg</strong> — Más moderno. Es <strong>asíncrono</strong>: mientras espera la respuesta, cede el control y deja que la app siga atendiendo a otros usuarios.</li>
+    </ul>
+    <p>Ambos conectan a la misma BD y hacen lo mismo (consultar, insertar, actualizar). La diferencia es <strong>cómo esperan</strong>: psycopg2 se queda quieto; asyncpg aprovecha ese tiempo. Por eso asyncpg es más rápido en apps con muchos usuarios concurrentes.</p>
+  </div>
 
   <div class="caja-importante">
     <h4>🦹 El villano: el endpoint que bloquea el event loop</h4>
-    <p>Tu API recibe 100 requests por segundo. Cada uno abre una conexión con <code>psycopg2</code> (síncrono) y espera 50 ms a que la BD responda. Mientras espera, <strong>el hilo de FastAPI queda congelado</strong>: no puede atender a nadie más. Los usuarios ven la ruedita girar. La app "se cae" sin haberse caído. Ese es el problema de mezclar código síncrono con un framework asíncrono. La solución se llama <strong>asyncpg</strong>.</p>
+    <p>Tu API recibe 100 requests por segundo. Cada uno abre una conexión con <code>psycopg2</code> (síncrono) y espera 50 ms a que la BD responda. Mientras espera, <strong>el hilo de FastAPI queda congelado</strong>: no puede atender a nadie más. Los usuarios ven la ruedita girar. La app "se cae" sin haberse caído. Ese es el problema de mezclar un driver síncrono con un framework asíncrono. La solución se llama <strong>asyncpg</strong>.</p>
   </div>
 
   <div class="caja-concepto">
@@ -129,14 +139,14 @@
 
   <div class="cuadricula">
     <div class="tarjeta tarjeta-verde"><span class="emoji">⚡</span><h3>Asíncrono</h3><p>Usa <code>await</code> para no bloquear. FastAPI puede atender 1000 requests a la vez.</p></div>
-    <div class="tarjeta"><span class="emoji">🐰</span><h3>Rápido</h3><p>Está escrito en Cython. Es ~3× más veloz que psycopg2 en benchmarks.</p></div>
+    <div class="tarjeta"><span class="emoji">🐰</span><h3>Rápido</h3><p>Está escrito en Cython. Es ~3× más veloz que psycopg2 en pruebas de rendimiento.</p></div>
     <div class="tarjeta tarjeta-ambar"><span class="emoji">🐘</span><h3>PostgreSQL puro</h3><p>Habla el protocolo binario de Postgres. Soporta tipos, arrays, JSON, UUID.</p></div>
     <div class="tarjeta tarjeta-magenta"><span class="emoji">🔧</span><h3>API simple</h3><p><code>fetch()</code>, <code>fetchrow()</code>, <code>execute()</code>. Directo, sin ORM obligatorio.</p></div>
   </div>
 
   <div class="caja-pareja">
     <h4>🔄 Actividad en pareja — 2 minutos</h4>
-    <p>Con su compañero/a: imaginen un restaurante con 1 mesero. ¿Atiende más mesas si (a) espera cada plato de pie antes de tomar el siguiente pedido, o (b) anota todos los pedidos y vuelve cuando cada plato está listo? <strong>¿Cuál corresponde a psycopg2 y cuál a asyncpg?</strong> Discutan 1 minuto.</p>
+    <p>Con su compañero/a: imaginen un restaurante con 1 mesero. ¿Atiende más mesas si (a) espera cada plato de pie antes de tomar el siguiente pedido, o (b) anota todos los pedidos y vuelve cuando cada plato está listo? <strong>¿Cuál corresponde a psycopg2 (síncrono) y cuál a asyncpg (asíncrono)?</strong> Discutan 1 minuto.</p>
   </div>
 
   <h3>🎮 Simulador: ¿cuántos usuarios atienden?</h3>
