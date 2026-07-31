@@ -214,6 +214,13 @@
     <p>Pida a las parejas que digan en voz alta <strong>dos ejemplos</strong> de cada cardinalidad que existan en su colegio. Ejemplos típicos: 1:1 <code>Estudiante↔Documento</code>; 1:N <code>Profesor↔Asignatura</code>; N:M <code>Estudiante↔Asignatura</code>. Escriba los mejores en el tablero para usarlos más adelante.</p>
   </div>
 
+  <div class="caja-destacada">
+    <h4>⚠️ Chen vs. Crow's Foot — dos notaciones para el mismo modelo</h4>
+    <p>Lo que acabamos de ver (rectángulos, óvalos, rombos) es la <strong>notación clásica de Peter Chen (1976)</strong>, la que se enseña en pizarra y en los libros. Pero cuando lleguemos al módulo 6 y dibujemos con <strong>Mermaid</strong>, no vas a encontrar rombos ni óvalos: Mermaid usa la <strong>notación Crow's Foot (patas de gallo)</strong>, inventada por Charles Bachman, donde las entidades son cajas rectangulares con sus atributos listados dentro, y la cardinalidad se indica con <strong>símbolos en las líneas</strong>: <code>||</code> = uno, <code>o{</code> = cero o muchos, <code>|{</code> = uno o muchos.</p>
+    <p style="margin-top:0.6rem;"><strong>¿Por qué dos notaciones?</strong> Chen es más expresiva para el pizarrón conceptual; Crow's Foot es más compacta y la que usan las herramientas modernas (Mermaid, dbdiagram.io, Lucidchart, DBeaver). Ambas describen <em>exactamente el mismo modelo ER</em>: los conceptos (entidad, atributo, relación, cardinalidad) no cambian, solo cambia cómo se dibujan.</p>
+    <p style="margin-top:0.6rem;"><strong>Regla mnemotécnica:</strong> en Chen, la relación tiene su propia "caja" (el rombo); en Crow's Foot, la relación es solo una línea con patas. En el modelo relacional final, <em>siempre</em> terminamos en tablas, así que la distinción visual desaparece.</p>
+  </div>
+
   <div class="caja-tip">
     <h4>💡 La cardinalidad se lee en ambos sentidos</h4>
     <p>Cuando decimos <code>Cliente 1:N Pedido</code>, también está implícito <code>Pedido N:1 Cliente</code>. El orden importa: <strong>lee siempre desde la entidad donde está el "1" hacia donde está el "N"</strong>. Así evitas confundir quién es el "padre" y quién el "hijo" al construir las tablas.</p>
@@ -239,7 +246,7 @@
     </div>
 
     <div class="pregunta" data-correcta="a">
-      <p>3. En el modelo ER clásico de Chen, ¿cómo se dibuja una <strong>relación</strong>?</p>
+      <p>3. En la <strong>notación clásica de Chen</strong>, ¿cómo se dibuja una <strong>relación</strong>? (Pista: en Mermaid/Crow's Foot en cambio se usa una línea con patas.)</p>
       <button class="opcion" data-op="a">a) Con un rombo</button>
       <button class="opcion" data-op="b">b) Con un rectángulo</button>
       <button class="opcion" data-op="c">c) Con un óvalo</button>
@@ -335,6 +342,68 @@
     <p>Imagina que una tabla <code>pedidos</code> guarda <code>cliente_id = 47</code>… pero el cliente 47 fue borrado. El pedido apunta a la nada. Sin integridad referencial, nadie se entera hasta que la app explota. Con <code>FOREIGN KEY</code>, el SGBD <strong>bloquea</strong> el borrado o lo propaga en cascada, según lo que decidamos.</p>
   </div>
 
+  <h3>🗑️ ¿Qué pasa cuando borrás o actualizás un registro referenciado?</h3>
+  <p>Por defecto, una FK <strong>bloquea</strong> cualquier <code>DELETE</code> o <code>UPDATE</code> que rompa la referencia: si intentas borrar un autor que tiene libros, PostgreSQL rechaza la operación con un error. Pero a veces quieres otro comportamiento. Para eso existen las cláusulas <code>ON DELETE</code> y <code>ON UPDATE</code>, que se declaran junto con la <code>FOREIGN KEY</code>.</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Cláusula</th><th>Comportamiento</th><th>Cuándo usarla</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>ON DELETE NO ACTION</code></td><td>(Por defecto) Bloquea el borrado del registro padre si tiene hijos. Es lo más seguro.</td><td>Cuando los hijos no deben quedar huérfanos bajo ninguna circunstancia.</td></tr>
+        <tr><td><code>ON DELETE RESTRICT</code></td><td>Igual que <code>NO ACTION</code>: prohíbe borrar el padre mientras tenga hijos.</td><td>Sinónimo explícito de "no borres nunca el padre".</td></tr>
+        <tr><td><code>ON DELETE CASCADE</code></td><td>Borra también los hijos automáticamente. Si borrás un autor, se borran todos sus libros.</td><td>Cuando los hijos no tienen sentido sin el padre (ej: <code>facturas</code> y <code>factura_items</code>).</td></tr>
+        <tr><td><code>ON DELETE SET NULL</code></td><td>Deja el hijo pero pone la FK en <code>NULL</code>. La columna debe admitir <code>NULL</code>.</td><td>Cuando el hijo sobrevive sin padre (ej: borrar un <code>departamento</code> deja a sus empleados sin departamento asignado).</td></tr>
+        <tr><td><code>ON DELETE SET DEFAULT</code></td><td>Deja el hijo y pone la FK al valor por defecto de la columna.</td><td>Cuando existe un "padre genérico" de respaldo (ej: categoría "Sin clasificar").</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — FK con comportamientos de borrado</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Caso 1: si borro un autor, se borran sus libros (CASCADE)</span>
+<span class="kw">CREATE TABLE</span> libros (
+    isbn     <span class="ty">VARCHAR</span>(<span class="num">13</span>) <span class="kw">PRIMARY KEY</span>,
+    titulo   <span class="ty">VARCHAR</span>(<span class="num">200</span>) <span class="kw">NOT NULL</span>,
+    autor_id <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> autores(id) <span class="kw">ON DELETE CASCADE</span>
+);
+
+<span class="cm">-- Caso 2: si borro un departamento, los empleados quedan sin depto (SET NULL)</span>
+<span class="kw">CREATE TABLE</span> empleados (
+    id        <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+    nombre    <span class="ty">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+    depto_id  <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> departamentos(id) <span class="kw">ON DELETE SET NULL</span>
+);
+
+<span class="cm">-- Caso 3 (por defecto): no deja borrar el padre si tiene hijos</span>
+<span class="kw">CREATE TABLE</span> pedidos (
+    id         <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+    cliente_id <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> clientes(id)   <span class="cm">-- = ON DELETE NO ACTION</span>
+);</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 <code>ON UPDATE</code> funciona igual</h4>
+    <p>Las mismas opciones (<code>CASCADE</code>, <code>SET NULL</code>, <code>NO ACTION</code>…) existen para <code>ON UPDATE</code>. Son útiles cuando <strong>la PK del padre puede cambiar</strong> (por ejemplo, si corregís un <code>isbn</code> mal digitado): con <code>ON UPDATE CASCADE</code> el SGBD propaga el cambio a todas las FK que lo referencian. Por eso insistíamos en clase 2 con que las PK deben ser <em>estables</em>: si son surrogate (<code>SERIAL</code>), nunca cambian y rara vez necesitas <code>ON UPDATE</code>.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "no puedo borrar porque hay una restricción"</h4>
+    <p>El error típico de principiante: <code>ERROR: update or delete on table "autores" violates foreign key constraint on table "libros"</code>. No es un bug, es la BD <strong>protegiéndote</strong>. Tienes dos opciones: (1) borrar primero los libros del autor y luego al autor, o (2) declarar la FK con <code>ON DELETE CASCADE</code> si quieres que borrar al autor arrastre sus libros. <strong>Piensa siempre el orden de borrado</strong> antes de escribir el <code>DELETE</code>.</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que, para el caso de la biblioteca, decidan qué cláusula <code>ON DELETE</code> pondrían en la FK de <code>prestamos</code> → <code>usuarios</code> y en <code>prestamos</code> → <code>libros</code>. ¿Qué pasa si borran un usuario que tiene préstamos registrados? ¿Quedan los préstamos como historial o se borran con él? La respuesta correcta es casi siempre <code>ON DELETE RESTRICT</code>: <strong>no se borra un usuario con historial</strong>, se marca como inactivo. Discutan 3 minutos y lo retomamos en el taller.</p>
+  </div>
+
   <h3>🧩 Claves compuestas</h3>
   <p>A veces una sola columna no basta para identificar una fila. Por ejemplo, una tabla <code>notas</code> que guarda la nota de cada estudiante en cada asignatura necesita <em>ambos</em> identificadores para ser única.</p>
 
@@ -394,6 +463,14 @@
       <button class="opcion" data-op="b">b) Que la nota sea menor que 0</button>
       <button class="opcion" data-op="c">c) Que <code>estudiante_id</code> sea NULL</button>
       <button class="opcion" data-op="d">d) Que un mismo estudiante tenga dos notas en la misma asignatura</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>5. Tienes una FK <code>factura_id</code> en <code>factura_items</code> y quieres que al borrar una factura se borren automáticamente sus ítems. ¿Qué cláusula usas?</p>
+      <button class="opcion" data-op="a">a) <code>ON DELETE NO ACTION</code></button>
+      <button class="opcion" data-op="b">b) <code>ON DELETE SET NULL</code></button>
+      <button class="opcion" data-op="c">c) <code>ON DELETE CASCADE</code></button>
+      <button class="opcion" data-op="d">d) <code>ON DELETE RESTRICT</code></button>
     </div>
 
     <div class="resultado-quiz"></div>
