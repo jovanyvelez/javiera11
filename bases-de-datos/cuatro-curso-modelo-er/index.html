@@ -770,6 +770,11 @@
 
   <p><strong>Mermaid</strong> es un lenguaje de texto a diagrama: escribes en un mini-lenguaje y se dibuja solo. Lo entienden GitHub (en los <code>.md</code>), Notion, Obsidian y ChatGPT. Para nosotros es la herramienta definitiva: el diagrama ER <em>y</em> el SQL viven juntos en texto.</p>
 
+  <div class="caja-destacada">
+    <h4>🔁 Conectando con el Módulo 1 — ahora veremos los símbolos en acción</h4>
+    <p>En el Módulo 1 vimos la caja <strong>"Chen vs. Crow's Foot"</strong> y dijimos que Mermaid usa la notación <strong>Crow's Foot (patas de gallo)</strong>, donde la cardinalidad se indica con <strong>símbolos en las líneas</strong>: <code>||</code> = uno, <code>o{</code> = cero o muchos, <code>|{</code> = uno o muchos. Ahora vamos a ver esos símbolos <em>escribiéndolos y renderizándolos</em>. Si tienes la tabla de cardinalidades del M1 a mano, mejor; si no, la repetimos aquí mismo abajo.</p>
+  </div>
+
   <h3>📐 Sintaxis básica de <code>erDiagram</code></h3>
   <p>Un diagrama ER en Mermaid se escribe así:</p>
 
@@ -798,23 +803,29 @@
   <p>Aquí la línea <code>LIBRO ||--o{ AUTOR : escribe</code> declara la relación con su cardinalidad. La notación <code>||--o{</code> es <strong>Crow's foot</strong>: <code>||</code> significa "exactly one" (1) y <code>o{</code> significa "zero or many" (0..N). Entre llaves se listan los atributos de cada entidad, marcando <code>PK</code> para la clave primaria.</p>
 
   <h3>🔤 Cardinalidades en Mermaid (Crow's foot)</h3>
+  <p>Esta es la tabla clave del módulo: memoriza estos cuatro símbolos y podrás leer cualquier diagrama ER moderno. La columna <strong>"Cómo se ve"</strong> describe lo que dibuja Mermaid en cada extremo de la línea.</p>
   <div class="contenedor-tabla">
     <table class="tabla-compara">
       <thead>
-        <tr><th>Notación</th><th>Significado</th><th>Cardinalidad</th></tr>
+        <tr><th>Notación</th><th>Cardinalidad</th><th>Cómo se ve (extremo derecho)</th><th>Significado</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>||--||</code></td><td>One to one</td><td>1 : 1</td></tr>
-        <tr><td><code>||--o{</code></td><td>One to zero-or-many</td><td>1 : N</td></tr>
-        <tr><td><code>}o--o{</code></td><td>Zero or many to zero or many</td><td>N : M</td></tr>
-        <tr><td><code>||--|{</code></td><td>One to one-or-many</td><td>1 : 1..N</td></tr>
+        <tr><td><code>||--||</code></td><td>1 : 1</td><td>Dos barritas verticales <code>││</code> en ambos lados — "exactamente uno".</td><td>One to one</td></tr>
+        <tr><td><code>||--o{</code></td><td>1 : N</td><td>Izq: dos barritas <code>││</code> (uno). Der: un círculo + tres patas <code>ο{</code> (cero o muchos).</td><td>One to zero-or-many</td></tr>
+        <tr><td><code>}o--o{</code></td><td>N : M</td><td>Ambos lados: círculo + tres patas <code>ο{</code> — "cero o muchos" en los dos extremos.</td><td>Zero or many ↔ zero or many</td></tr>
+        <tr><td><code>||--|{</code></td><td>1 : 1..N</td><td>Izq: dos barritas <code>││</code> (uno). Der: una barra + tres patas <code>│{</code> (uno o muchos, sin permitir cero).</td><td>One to one-or-many</td></tr>
       </tbody>
     </table>
   </div>
 
   <div class="caja-tip">
-    <h4>💡 Cómo leer la línea</h4>
-    <p>La relación <code>A ||--o{ B : escribe</code> se lee <strong>de izquierda a derecha</strong>: "un A tiene muchos B, y la relación se llama <code>escribe</code>". El lado izquierdo <code>||</code> es el "1"; el derecho <code>o{</code> es el "muchos". Si lo giras, sigue siendo válido: la flecha del pato (Crow's foot) siempre apunta al "muchos".</p>
+    <h4>💡 Cómo leer la línea — regla visual</h4>
+    <p>La relación <code>A ||--o{ B : escribe</code> se lee <strong>de izquierda a derecha</strong>: "un A tiene muchos B, y la relación se llama <code>escribe</code>". <strong>Regla visual:</strong> las <em>patas de gallo</em> (las tres rayitas que se abren <code>{</code>) siempre están en el lado "muchos"; las <em>barritas cerradas</em> (<code>||</code>) en el lado "uno". Si ves <code>o{</code> es que ese lado puede ser cero; si ves <code>|{</code> es que ese lado mínimo es uno. La flecha del pato (Crow's foot) siempre apunta al "muchos".</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h4>🧠 Lee el símbolo como "lo que permite"</h4>
+    <p>Para no confundirte, lee cada lado <strong>no como "cuántos hay"</strong> sino como <strong>"cuántos permite"</strong>: <code>||</code> = "permite exactamente uno", <code>o{</code> = "permite cero o muchos", <code>|{</code> = "permite uno o muchos". Así, <code>||--o{</code> se lee "uno permite (a su opuesto) cero o muchos" → 1:N. Es la misma regla que para la tabla de cardinalidades del Módulo 1.</p>
   </div>
 
   <h3>🧪 Constructor en vivo</h3>
@@ -851,6 +862,71 @@
         <div class="mermaid-preview" id="mermaidPreview"></div>
       </div>
     </div>
+  </div>
+
+  <h3>👁️ Ejemplo ya renderizado: cómo se ven los símbolos</h3>
+  <p>Antes de que tú mismo escribas código, mira este diagrama ya renderizado. Observa las <strong>patas de gallo</strong> (<code>{</code>) en el lado "muchos" y las <strong>barritas cerradas</strong> (<code>││</code>) en el lado "uno". Si tu navegador no muestra el dibujo (sin conexión), abajo tienes el código fuente.</p>
+
+  <div class="mermaid-sim">
+    <div class="sim-head">Ejemplo renderizado — biblioteca con 1:N y N:M</div>
+    <div class="mermaid-preview" style="text-align:center;min-height:auto;padding:1.5rem;">
+      <pre class="mermaid">
+erDiagram
+    AUTOR ||--o{ LIBRO : escribe
+    USUARIO ||--o{ PRESTAMO : realiza
+    LIBRO ||--o{ PRESTAMO : se_presta
+    AUTOR {
+        serial id PK
+        varchar nombre
+    }
+    LIBRO {
+        varchar isbn PK
+        varchar titulo
+    }
+    USUARIO {
+        varchar carnet PK
+        varchar nombre
+    }
+    PRESTAMO {
+        serial id PK
+        date fecha_prestamo
+    }
+      </pre>
+    </div>
+    <details style="margin-top:1rem;">
+      <summary style="cursor:pointer;color:var(--texto-suave);font-size:0.85rem;font-weight:700;">Ver el código fuente</summary>
+      <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;margin-top:0.6rem;">erDiagram
+    AUTOR ||--o{ LIBRO : escribe
+    USUARIO ||--o{ PRESTAMO : realiza
+    LIBRO ||--o{ PRESTAMO : se_presta
+    AUTOR {
+        serial id PK
+        varchar nombre
+    }
+    LIBRO {
+        varchar isbn PK
+        varchar titulo
+    }
+    USUARIO {
+        varchar carnet PK
+        varchar nombre
+    }
+    PRESTAMO {
+        serial id PK
+        date fecha_prestamo
+    }</pre>
+    </details>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🎯 Lee en voz alta cada línea del diagrama</h4>
+    <p>Con el diagrama renderizado arriba, practica leer cada relación siguiendo la <strong>regla visual</strong> de la caja-tip:</p>
+    <ul>
+      <li><code>AUTOR ||--o{ LIBRO</code> → "un autor tiene cero o muchos libros" (1:N) → ves las patas <code>{</code> del lado de <code>LIBRO</code>.</li>
+      <li><code>USUARIO ||--o{ PRESTAMO</code> → "un usuario realiza cero o muchos préstamos" (1:N) → patas del lado de <code>PRESTAMO</code>.</li>
+      <li><code>LIBRO ||--o{ PRESTAMO</code> → "un libro se presta cero o muchas veces" (1:N) → patas del lado de <code>PRESTAMO</code>.</li>
+    </ul>
+    <p style="margin-top:0.5rem;">Si las tres relaciones son <code>1:N</code>, ¿por qué no hay ninguna <code>N:M</code>? Porque <code>PRESTAMO</code> <strong>ya es la tabla puente</strong> materializada del M3: dos relaciones 1:N consecutivas equivalen a una N:M entre <code>USUARIO</code> y <code>LIBRO</code>. Ese es el puente entre el modelo conceptual (Chen, con un rombo N:M) y el lógico (relacional, con tabla puente). 🧠</p>
   </div>
 
   <div class="caja-aula">

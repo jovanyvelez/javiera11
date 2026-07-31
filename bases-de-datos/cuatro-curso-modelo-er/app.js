@@ -469,7 +469,6 @@ function inicializarMermaid() {
   const preview = document.getElementById('mermaidPreview');
   const renderBtn = document.getElementById('mermaidRender');
   const chips = document.querySelectorAll('.mermaid-chip');
-  if (!editor || !preview) return;
 
   if (window.mermaid) {
     try { window.mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' }); }
@@ -480,9 +479,10 @@ function inicializarMermaid() {
 
   function renderMermaid() {
     if (!window.mermaid) {
-      preview.innerHTML = '<div class="mermaid-err">⚠️ Mermaid no se cargó (revisa tu conexión).</div>';
+      if (preview) preview.innerHTML = '<div class="mermaid-err">⚠️ Mermaid no se cargó (revisa tu conexión).</div>';
       return;
     }
+    if (!editor || !preview) return;
     const code = editor.value.trim();
     if (!code) {
       preview.innerHTML = '<div class="mermaid-err">Ecribe código Mermaid en el cuadro izquierdo.</div>';
@@ -500,11 +500,31 @@ function inicializarMermaid() {
     }
   }
 
+  // Renderiza todos los bloques estáticos <pre class="mermaid"> ya presentes en el HTML
+  function renderBloquesEstaticos() {
+    if (!window.mermaid) return;
+    document.querySelectorAll('pre.mermaid').forEach((el, i) => {
+      const code = el.textContent.trim();
+      if (!code) return;
+      const id = 'mmd-static-' + i;
+      try {
+        window.mermaid.render(id, code).then(({ svg }) => {
+          el.innerHTML = svg;
+        }).catch(err => {
+          el.innerHTML = `<div class="mermaid-err">⚠️ Error: ${err.message || String(err)}</div>`;
+        });
+      } catch (err) {
+        el.innerHTML = `<div class="mermaid-err">⚠️ Error: ${err.message || String(err)}</div>`;
+      }
+    });
+  }
+
   if (renderBtn) renderBtn.addEventListener('click', renderMermaid);
 
   chips.forEach(chip => {
     chip.addEventListener('click', () => {
       const snippet = chip.dataset.snippet.replace(/&#10;/g, '\n');
+      if (!editor) return;
       const start = editor.selectionStart;
       const end = editor.selectionEnd;
       editor.value = editor.value.slice(0, start) + snippet + editor.value.slice(end);
@@ -513,8 +533,11 @@ function inicializarMermaid() {
     });
   });
 
-  // Render inicial tras un breve retardo para asegurar que mermaid cargó
-  setTimeout(renderMermaid, 300);
+  // Render inicial: bloques estáticos primero, luego el constructor, con retardo para asegurar que mermaid cargó
+  setTimeout(() => {
+    renderBloquesEstaticos();
+    renderMermaid();
+  }, 300);
 }
 
 /* ---------- TALLER (soluciones plegables) ---------- */
