@@ -380,18 +380,17 @@ function inicializarMatchTipos() {
   const tipos = [...new Set(columnas.map(c => c.tipo))];
   let selected = null;
 
-  // Restaurar estado si el match ya fue completado en sesiones previas
-  const completadoPrevio = estado.completados.has(5);
-  if (completadoPrevio) columnas.forEach(c => c.matched = true);
+  // Restaurar estado del match basándose en su propio progreso persistido
+  // (NO en estado.completados.has(5), porque el módulo puede marcarse por navegación)
+  const matchPersistido = estado.talleres['match-tipos'] || {};
+  columnas.forEach(c => { if (matchPersistido[c.id]) c.matched = true; });
   let aciertos = columnas.filter(c => c.matched).length;
 
-  function shuffle(arr) {
-    const a = [...arr];
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
+  function persistirMatch() {
+    const datos = {};
+    columnas.forEach(c => { if (c.matched) datos[c.id] = true; });
+    estado.talleres['match-tipos'] = datos;
+    guardarProgreso();
   }
 
   function renderGrid() {
@@ -430,6 +429,7 @@ function inicializarMatchTipos() {
         if (col.tipo === t) {
           col.matched = true;
           aciertos++;
+          persistirMatch();
           if (aciertos === columnas.length) {
             fb.className = 'match-tipos-feedback visible ok';
             fb.textContent = '🏆 ¡Perfecto! 8/8 columnas emparejadas. Sabes elegir el tipo correcto por dominio.';
@@ -553,7 +553,9 @@ function configurarTaller() {
         estado.talleres[id] = true;
         guardarProgreso();
       }
-      if (visible && Object.keys(estado.talleres).length >= 5 && !estado.completados.has(7)) {
+      // Solo cuentan las 5 soluciones del taller (claves con prefijo "sol-")
+      const solucionesAbiertas = Object.keys(estado.talleres).filter(k => k.startsWith('sol-')).length;
+      if (visible && solucionesAbiertas >= 5 && !estado.completados.has(7)) {
         marcarCompletado(7);
       }
     });
