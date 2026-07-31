@@ -61,6 +61,9 @@
   --bd-3-a:          #84cc16;   /* Clase 3 BD — lima/índigo */
   --bd-3-b:          #6366f1;
 
+  --bd-4-a:          #ec4899;   /* Clase 4 BD — fucsia/cian */
+  --bd-4-b:          #06b6d4;
+
   --herr-a:          #f43f5e;
   --herr-b:          #f97316;
 
@@ -416,6 +419,7 @@ main {
 .clase-card.bd-1::before   { background: linear-gradient(90deg, var(--bd-1-a), var(--bd-1-b)); }
 .clase-card.bd-2::before   { background: linear-gradient(90deg, var(--bd-2-a), var(--bd-2-b)); }
 .clase-card.bd-3::before   { background: linear-gradient(90deg, var(--bd-3-a), var(--bd-3-b)); }
+.clase-card.bd-4::before   { background: linear-gradient(90deg, var(--bd-4-a), var(--bd-4-b)); }
 
 .clase-card:hover {
   transform: translateY(-6px) scale(1.01);
@@ -449,6 +453,7 @@ main {
 .clase-card.bd-1 .clase-badge   { background: linear-gradient(135deg, var(--bd-1-a), var(--bd-1-b));     color: #000; }
 .clase-card.bd-2 .clase-badge   { background: linear-gradient(135deg, var(--bd-2-a), var(--bd-2-b));     color: #fff; }
 .clase-card.bd-3 .clase-badge   { background: linear-gradient(135deg, var(--bd-3-a), var(--bd-3-b));     color: #000; }
+.clase-card.bd-4 .clase-badge   { background: linear-gradient(135deg, var(--bd-4-a), var(--bd-4-b));     color: #fff; }
 
 .clase-badge.gris {
   background: rgba(148, 163, 184, 0.2);

@@ -44,7 +44,8 @@ function cargarProgresoPorClase() {
     'curso-prototipado-usabilidad': 7,  // 0..6 (m7 es opcional/final)
     'curso-bd-introduccion': 6,         // 0..7 (m0 inicio y m4 descanso no cuentan; completables 1,2,3,5,6,7)
     'curso-bd-archivos-vs-bd': 6,        // idem
-    'curso-bd-asyncpg-fastapi': 6        // idem
+    'curso-bd-asyncpg-fastapi': 6,       // idem
+    'curso-bd-modelo-er': 6              // idem (clase 4)
   };
 
   let totalGlobal = 0;
@@ -106,11 +107,11 @@ function actualizarBarraClase(card, pct) {
 function animarStats() {
   // Los 3 primeros son fijos
   animarNumero(document.getElementById('stat-cursos'),  0, 5,  800);
-  animarNumero(document.getElementById('stat-clases'),  0, 13, 900);
+  animarNumero(document.getElementById('stat-clases'), 0, 15, 900);
   // El cuarto (horas) tiene "+" al final
   const elHoras = document.getElementById('stat-horas');
   if (elHoras) {
-    animarNumero(elHoras, 0, 38, 1000, valor => valor + '+');
+    animarNumero(elHoras, 0, 42, 1000, valor => valor + '+');
   }
   // El de progreso ya se actualiza en cargarProgresoPorClase
 }
@@ -196,6 +197,9 @@ document.addEventListener('keydown', (e) => {
   } else if (e.key === 'm' || e.key === 'M') {
     const card = document.querySelector('.clase-card.bd-3');
     if (card) card.click();
+  } else if (e.key === 'j' || e.key === 'J') {
+    const card = document.querySelector('.clase-card.bd-4');
+    if (card) card.click();
   }
 });
 
@@ -205,7 +209,7 @@ window.addEventListener('load', () => {
   const keys = ['curso-csharp-funciones-7', 'curso-csharp-poo-10', 'curso-csharp-arreglos-11',
                 'curso-csharp-funciones', 'curso-analisis-diseno', 'curso-requerimientos',
                 'curso-elicitacion', 'curso-documentacion', 'curso-introduccion-diseno',
-                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi'];
+                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er'];
 
   let tienePrograma = false;
   let ultimaClase = null;

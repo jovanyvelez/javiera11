@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🗄️ Bases de Datos · Clase 4 · Modelo Entidad-Relación</title>
+<link rel="stylesheet" href="estilos.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+
+<!-- =================== HEADER + PROGRESO =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🔗</span>
+    <div>
+      <h1>Bases de Datos · Clase 4</h1>
+      <p class="subtitulo">Modelo Entidad-Relación · Transformación al modelo relacional · Diagramas con Mermaid</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 390 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">📐 Modelo ER</button>
+  <button class="btn-modulo" data-modulo="2">🔑 Claves</button>
+  <button class="btn-modulo" data-modulo="3">🔄 ER→Relacional</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🔢 Tipos de datos</button>
+  <button class="btn-modulo" data-modulo="6">✨ Mermaid</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🔗 ¿Cómo se diseña una base de datos antes de escribir SQL?</h2>
+    <p class="lead">En la <strong>Clase 1</strong> vimos qué es una BD, en la <strong>Clase 2</strong> por qué un SGBD le gana a los archivos, y en la <strong>Clase 3</strong> cómo conectar una app FastAPI con asyncpg. Pero… <em>¿de dónde salen las tablas?</em> Nadie empieza escribiendo <code>CREATE TABLE</code> a lo ciego: primero se <strong>modela</strong> el mundo real con un <strong>diagrama Entidad-Relación (ER)</strong>, luego se <strong>transforma</strong> ese diagrama en tablas con claves primarias y foráneas, y al final sí, se escribe el SQL. Hoy vamos a recorrer ese camino completo y a dibujar nuestros diagramas con <strong>Mermaid</strong>, el lenguaje de diagramas que entienden GitHub y ChatGPT.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ modelo conceptual</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">analista@mesa:~$</span> <span class="cmd">cat biblioteca.er</span></div>
+        <div class="out">LIBRO ‖ titulo, isbn, anio</div>
+        <div class="out">AUTOR ‖ nombre, nacionalidad</div>
+        <div class="out">[LIBRO]--escribe--{0..N}--[AUTOR]</div>
+        <div><span class="prompt">analista@mesa:~$</span> <span class="cmd">transformar biblioteca.er</span></div>
+        <div class="out">CREATE TABLE libros (... PRIMARY KEY (isbn) ...)</div>
+        <div class="out">CREATE TABLE autores (... PRIMARY KEY (id) ...)</div>
+        <div class="out">CREATE TABLE prestamos (... FOREIGN KEY (isbn) ...)</div>
+        <div><span class="prompt">analista@mesa:~$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>4 horas en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Diseñar un modelo Entidad-Relación, transformarlo al modelo relacional (tablas con PK y FK) y dibujar el diagrama con Mermaid.</p>
+    </div>
+    <div class="tarjeta tarjeta-warm">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>El mismo dato repetido en 10 tablas, un pedido sin cliente, un libro prestado a nadie. El modelado ER y las claves foráneas los resuelven.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · Modelo ER</td><td style="color:var(--lima)">Entidades, atributos, relaciones</td><td style="color:var(--rosa)">Datos sin estructura</td><td>100 XP</td></tr>
+        <tr><td>02 · Claves primarias y foráneas</td><td style="color:var(--indigo)">PK, FK, integridad referencial</td><td style="color:var(--rosa)">Pedidos huérfanos</td><td>100 XP</td></tr>
+        <tr><td>03 · Transformación ER→Relacional</td><td style="color:var(--cian)">Reglas a tablas</td><td style="color:var(--rosa)">Relaciones M:N mal resueltas</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · Tipos de datos SQL</td><td style="color:var(--lima-claro)">INT, VARCHAR, DATE…</td><td style="color:var(--rosa)">Edad en texto, precio en entero</td><td>100 XP</td></tr>
+        <tr><td>05 · Diagramas con Mermaid</td><td style="color:var(--indigo-claro)">erDiagram, cardinalidad</td><td>—</td><td>100 XP</td></tr>
+        <tr><td>06 · Taller Biblioteca</td><td style="color:var(--lima)">Caso end-to-end</td><td style="color:var(--rosa)">Sistema de préstamos caótico</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: imaginen una <strong>tienda de mascotas</strong>. <strong>¿Qué "cosas" tendrían que guardar?</strong> (clientes, mascotas, productos, facturas…). Anoten 4 o 5 en el cuaderno. Esas "cosas" son <strong>entidades</strong>, y las vamos a formalizar en el módulo 1.</p>
+  </div>
+
+  <h3>🧠 Lo que ya sabes (repaso rápido)</h3>
+  <p>Antes de avanzar, recordemos lo construido en las clases anteriores — hoy lo vamos a usar todo:</p>
+  <ul>
+    <li>Una <strong>base de datos relacional</strong> guarda la información en <strong>tablas</strong> (filas y columnas) y se accede vía SQL. (Clase 1)</li>
+    <li>Un <strong>SGBD</strong> como PostgreSQL garantiza que los datos queden <strong>consistentes</strong>, sin duplicados ni huérfanos. (Clase 2)</li>
+    <li>Una app <strong>no inventa</strong> las tablas: las lee y las escribe usando una conexión (asyncpg + pool). (Clase 3)</li>
+  </ul>
+
+  <div class="caja-destacada">
+    <h4>📌 La gran pregunta de hoy</h4>
+    <p>Si una BD relacional son tablas, <strong>¿por qué no empezamos dibujando tablas?</strong> Porque las tablas ya son una <em>solución técnica</em>: antes hay que entender el <em>problema del mundo real</em>. El modelo ER es ese puente: describe <strong>qué cosas existen y cómo se relacionan</strong>, sin pensar todavía en columnas ni tipos. Esa separación es la que distingue a un buen diseñador de alguien que "sólo hace tablas".</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Siguiente: Modelo ER →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — MODELO ENTIDAD-RELACIÓN
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>📐 El Modelo Entidad-Relación</h2>
+  <p class="meta-modulo">Misión 01 · Entidades, atributos, relaciones y cardinalidades · ~40 min</p>
+
+  <p>El <strong>modelo Entidad-Relación (ER)</strong>, propuesto por <strong>Peter Chen</strong> en 1976, es la forma más extendida de <strong>representar conceptualmente</strong> la información de un problema antes de pensar en tablas. No es SQL, no es código: es un <strong>dibujo</strong> con tres piezas.</p>
+
+  <h3>🧩 Las tres piezas del modelo ER</h3>
+  <div class="cuadricula-2">
+    <div class="tarjeta">
+      <span class="emoji">📦</span>
+      <h3>Entidad</h3>
+      <p>Una "cosa" del mundo real, distinguible de las demás, sobre la que queremos guardar información. Se dibuja como un <strong>rectángulo</strong>.</p>
+      <p><strong>Ejemplos:</strong> <code>Libro</code>, <code>Cliente</code>, <code>Préstamo</code>, <code>Profesor</code>.</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">🏷️</span>
+      <h3>Atributo</h3>
+      <p>Una propiedad de una entidad o de una relación. Se dibuja como un <strong>óvalo</strong> unido a su entidad.</p>
+      <p><strong>Ejemplos:</strong> <code>titulo</code>, <code>isbn</code>, <code>nombre</code>, <code>fecha_nacimiento</code>.</p>
+    </div>
+    <div class="tarjeta tarjeta-verde">
+      <span class="emoji">🔗</span>
+      <h3>Relación</h3>
+      <p>Un vínculo entre dos o más entidades. Se dibuja como un <strong>rombo</strong> conectado con líneas a las entidades.</p>
+      <p><strong>Ejemplos:</strong> <code>escribe</code> (Libro↔Autor), <code>presta</code> (Usuario↔Libro), <code>matricula</code> (Estudiante↔Curso).</p>
+    </div>
+  </div>
+
+  <div class="caja-concepto">
+    <h4>🧠 Definición formal (para el cuaderno)</h4>
+    <p><strong>Entidad:</strong> objeto o concepto del mundo real sobre el que se almacena información. Cada ocurrencia individual se llama <em>instancia</em>. <strong>Atributo:</strong> dato atómico que describe una entidad o relación. <strong>Relación:</strong> asociación entre entidades con un <em>significado</em> propio.</p>
+  </div>
+
+  <h3>🎨 Un primer diagrama (en texto)</h3>
+  <p>Para una pequeña biblioteca, el modelo ER conceptual sería:</p>
+
+  <div class="er-diagrama">
+    <div class="er-canvas">
+      <div class="er-entidad">
+        <div class="er-nombre">LIBRO</div>
+        <div class="er-attr"><span class="er-key">isbn</span></div>
+        <div class="er-attr">titulo</div>
+        <div class="er-attr">anio</div>
+      </div>
+      <div class="er-linea" data-card="1"></div>
+      <div class="er-relacion">escribe<span class="er-card">N : M</span></div>
+      <div class="er-linea" data-card="N"></div>
+      <div class="er-entidad">
+        <div class="er-nombre">AUTOR</div>
+        <div class="er-attr"><span class="er-key">id</span></div>
+        <div class="er-attr">nombre</div>
+        <div class="er-attr">nacionalidad</div>
+      </div>
+    </div>
+  </div>
+
+  <p>Aquí <code>LIBRO</code> y <code>AUTOR</code> son entidades; <code>isbn</code>, <code>titulo</code>, <code>nombre</code>… son atributos; <code>escribe</code> es la relación entre ambos. La notación <code>N : M</code> indica la <strong>cardinalidad</strong>, que veremos justo ahora.</p>
+
+  <h3>📊 Cardinalidad: cuántos con cuántos</h3>
+  <p>La <strong>cardinalidad</strong> indica cuántas instancias de una entidad pueden relacionarse con cuántas de la otra. Existen tres casos básicos:</p>
+
+  <div class="cuadricula-2">
+    <div class="compare-card a">
+      <h4>1 : 1 — Uno a uno</h4>
+      <p>Cada instancia de A se relaciona con <strong>una sola</strong> de B, y viceversa.</p>
+      <p><strong>Ej:</strong> <code>Usuario</code> ↔ <code>Carnet</code>. Cada usuario tiene un carnet único; cada carnet pertenece a un usuario.</p>
+    </div>
+    <div class="compare-card b">
+      <h4>1 : N — Uno a muchos</h4>
+      <p>Una instancia de A se relaciona con <strong>varias</strong> de B, pero cada B se relaciona con <strong>una sola</strong> A.</p>
+      <p><strong>Ej:</strong> <code>Cliente</code> ↔ <code>Pedido</code>. Un cliente hace muchos pedidos; cada pedido pertenece a un único cliente.</p>
+    </div>
+    <div class="compare-card c">
+      <h4>N : M — Muchos a muchos</h4>
+      <p>Una instancia de A puede relacionarse con <strong>varias</strong> de B, y una B con <strong>varias</strong> de A.</p>
+      <p><strong>Ej:</strong> <code>Estudiante</code> ↔ <code>Curso</code>. Un estudiante toma muchos cursos; un curso tiene muchos estudiantes.</p>
+    </div>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 3 minutos</h4>
+    <p>Pida a las parejas que digan en voz alta <strong>dos ejemplos</strong> de cada cardinalidad que existan en su colegio. Ejemplos típicos: 1:1 <code>Estudiante↔Documento</code>; 1:N <code>Profesor↔Asignatura</code>; N:M <code>Estudiante↔Asignatura</code>. Escriba los mejores en el tablero para usarlos más adelante.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 La cardinalidad se lee en ambos sentidos</h4>
+    <p>Cuando decimos <code>Cliente 1:N Pedido</code>, también está implícito <code>Pedido N:1 Cliente</code>. El orden importa: <strong>lee siempre desde la entidad donde está el "1" hacia donde está el "N"</strong>. Así evitas confundir quién es el "padre" y quién el "hijo" al construir las tablas.</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>📝 Quiz M1 · Modelos ER</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p>1. ¿Cuál de las siguientes es una <strong>entidad</strong> y no un atributo?</p>
+      <button class="opcion" data-op="a">a) fecha_nacimiento</button>
+      <button class="opcion" data-op="b">b) Paciente</button>
+      <button class="opcion" data-op="c">c) color</button>
+      <button class="opcion" data-op="d">d) precio</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>2. Un <strong>Cliente</strong> puede hacer muchos <strong>Pedidos</strong>, pero cada <strong>Pedido</strong> pertenece a un único <strong>Cliente</strong>. ¿Qué cardinalidad es?</p>
+      <button class="opcion" data-op="a">a) 1 : 1</button>
+      <button class="opcion" data-op="b">b) N : M</button>
+      <button class="opcion" data-op="c">c) 1 : N</button>
+      <button class="opcion" data-op="d">d) N : 1</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>3. En el modelo ER clásico de Chen, ¿cómo se dibuja una <strong>relación</strong>?</p>
+      <button class="opcion" data-op="a">a) Con un rombo</button>
+      <button class="opcion" data-op="b">b) Con un rectángulo</button>
+      <button class="opcion" data-op="c">c) Con un óvalo</button>
+      <button class="opcion" data-op="d">d) Con un círculo</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. Un <strong>Estudiante</strong> cursa muchas <strong>Asignaturas</strong>, y cada <strong>Asignatura</strong> la cursan muchos <strong>Estudiantes</strong>. ¿Qué cardinalidad es?</p>
+      <button class="opcion" data-op="a">a) 1 : 1</button>
+      <button class="opcion" data-op="b">b) 1 : N</button>
+      <button class="opcion" data-op="c">c) N : 1</button>
+      <button class="opcion" data-op="d">d) N : M</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Claves →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — CLAVES PRIMARIAS Y FORÁNEAS
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>🔑 Claves primarias y foráneas</h2>
+  <p class="meta-modulo">Misión 02 · PK, FK, integridad referencial y claves compuestas · ~40 min</p>
+
+  <p>Cuando empezamos a transformar el modelo ER en tablas, surge una pregunta inmediata: <strong>¿cómo identifico unívocamente cada fila?</strong> Y otra: <strong>¿cómo连接o una tabla con otra sin equivocarme?</strong> Las respuestas son, respectivamente, la <strong>clave primaria</strong> y la <strong>clave foránea</strong>.</p>
+
+  <h3>🗝️ Clave primaria (PK — Primary Key)</h3>
+  <div class="caja-concepto">
+    <h4>Definición</h4>
+    <p>Una <strong>clave primaria</strong> es una columna (o combinación de columnas) cuyos valores <strong>identifican unívocamente</strong> cada fila de la tabla. Debe cumplir tres reglas:</p>
+    <ul>
+      <li><strong>No nula</strong> — ningún valor puede ser <code>NULL</code>.</li>
+      <li><strong>Única</strong> — no se repite entre filas.</li>
+      <li><strong>Estable</strong> — no cambia con el tiempo.</li>
+    </ul>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — crear tabla con PK</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">CREATE TABLE</span> autores (
+    id        <span class="ty">SERIAL</span>      <span class="kw">PRIMARY KEY</span>,
+    nombre    <span class="ty">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+    pais      <span class="ty">VARCHAR</span>(<span class="num">50</span>)
+);</code></pre>
+  </div>
+
+  <p>Aquí <code>id</code> es la PK. El tipo <code>SERIAL</code> de PostgreSQL es un entero que <strong>se autoincrementa</strong> (cada insert recibe un número nuevo). Así garantizamos unicidad sin pensarla.</p>
+
+  <h3>🔗 Clave foránea (FK — Foreign Key)</h3>
+  <div class="caja-concepto">
+    <h4>Definición</h4>
+    <p>Una <strong>clave foránea</strong> es una columna (o conjunto) de una tabla cuyos valores <strong>hacen referencia</strong> a la clave primaria de <em>otra</em> tabla. Es el "puente" entre dos tablas: dice "esta fila pertenece a aquella".</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — FK que conecta libros con autores</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">CREATE TABLE</span> libros (
+    isbn       <span class="ty">VARCHAR</span>(<span class="num">13</span>) <span class="kw">PRIMARY KEY</span>,
+    titulo     <span class="ty">VARCHAR</span>(<span class="num">200</span>) <span class="kw">NOT NULL</span>,
+    autor_id   <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> autores(id),
+    anio       <span class="ty">INTEGER</span>
+);</code></pre>
+  </div>
+
+  <p>La columna <code>autor_id</code> es una FK que apunta a <code>autores.id</code>. Cada libro "sabe" quién es su autor sin repetir el nombre del autor. La BD se encarga de que la conexión sea válida.</p>
+
+  <h3>🛡️ Integridad referencial</h3>
+  <div class="caja-destacada">
+    <h4>¿Qué garantiza una FK?</h4>
+    <p>Cuando declaras una <code>FOREIGN KEY</code>, el SGBD <strong>no permite</strong> insertar un libro cuyo <code>autor_id</code> no exista en <code>autores</code>. Tampoco permite (por defecto) borrar un autor que tiene libros asociados. A esta garantía se le llama <strong>integridad referencial</strong>, y es la que <em>mata al villano</em> "pedido huérfano".</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el pedido huérfano</h4>
+    <p>Imagina que una tabla <code>pedidos</code> guarda <code>cliente_id = 47</code>… pero el cliente 47 fue borrado. El pedido apunta a la nada. Sin integridad referencial, nadie se entera hasta que la app explota. Con <code>FOREIGN KEY</code>, el SGBD <strong>bloquea</strong> el borrado o lo propaga en cascada, según lo que decidamos.</p>
+  </div>
+
+  <h3>🧩 Claves compuestas</h3>
+  <p>A veces una sola columna no basta para identificar una fila. Por ejemplo, una tabla <code>notas</code> que guarda la nota de cada estudiante en cada asignatura necesita <em>ambos</em> identificadores para ser única.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — PK compuesta</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">CREATE TABLE</span> notas (
+    estudiante_id  <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> estudiantes(id),
+    asignatura_id  <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> asignaturas(id),
+    nota           <span class="ty">DECIMAL</span>(<span class="num">4</span>,<span class="num">2</span>),
+    <span class="kw">PRIMARY KEY</span> (estudiante_id, asignatura_id)
+);</code></pre>
+  </div>
+
+  <p>Aquí <strong>ningún estudiante puede tener dos notas para la misma asignatura</strong> en la misma tabla. La PK compuesta lo impide.</p>
+
+  <div class="caja-tip">
+    <h4>💡 PK natural vs surrogate</h4>
+    <p>Una <strong>PK natural</strong> usa datos reales (el <code>isbn</code> de un libro, el <code>nif</code> de una persona). Una <strong>PK surrogate</strong> usa un número inventado (<code>SERIAL</code>, <code>id</code>). La surrogate es más segura: nunca cambia aunque el dato real sea corregido, y no reveala datos sensibles.</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>📝 Quiz M2 · Claves</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p>1. ¿Cuál es <strong>obligatorio</strong> para que una columna sea clave primaria?</p>
+      <button class="opcion" data-op="a">a) Ser un número entero</button>
+      <button class="opcion" data-op="b">b) No admitir NULL y ser única</button>
+      <button class="opcion" data-op="c">c) Llamarse <code>id</code></button>
+      <button class="opcion" data-op="d">d) Tener autoincremento</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>2. Una <strong>clave foránea</strong> apunta siempre a…</p>
+      <button class="opcion" data-op="a">a) la misma tabla</button>
+      <button class="opcion" data-op="b">b) un índice</button>
+      <button class="opcion" data-op="c">c) la PK de otra tabla</button>
+      <button class="opcion" data-op="d">d) un tipo de dato</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>3. La <strong>integridad referencial</strong> impide…</p>
+      <button class="opcion" data-op="a">a) Insertar un pedido con un <code>cliente_id</code> inexistente</button>
+      <button class="opcion" data-op="b">b) Repetir un <code>id</code> en la PK</button>
+      <button class="opcion" data-op="c">c) Que un campo <code>NOT NULL</code> quede vacío</button>
+      <button class="opcion" data-op="d">d) Borrar todas las filas de una tabla</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. En <code>notas (estudiante_id, asignatura_id, nota)</code> con <code>PRIMARY KEY (estudiante_id, asignatura_id)</code>, ¿qué impide la PK compuesta?</p>
+      <button class="opcion" data-op="a">a) Que dos estudiantes distintos cursen la misma asignatura</button>
+      <button class="opcion" data-op="b">b) Que la nota sea menor que 0</button>
+      <button class="opcion" data-op="c">c) Que <code>estudiante_id</code> sea NULL</button>
+      <button class="opcion" data-op="d">d) Que un mismo estudiante tenga dos notas en la misma asignatura</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: ER→Relacional →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — TRANSFORMACIÓN ER → RELACIONAL
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>🔄 Del modelo ER al modelo relacional</h2>
+  <p class="meta-modulo">Misión 03 · Reglas de transformación · simulador de cardinalidad · ~45 min</p>
+
+  <p>El modelo ER es <em>conceptual</em>: describe el problema. El <strong>modelo relacional</strong> es <em>lógico</em>: describe las tablas. El paso de uno a otro sigue <strong>reglas mecánicas</strong> que vamos a practicar ahora. Las dominas una vez y las aplicas a cualquier problema.</p>
+
+  <h3>📐 Reglas de transformación</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Elemento ER</th><th>Cómo se transforma</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Entidad fuerte</td><td>Una tabla. La PK de la entidad → PK de la tabla.</td><td><code>AUTOR</code> → <code>autores(id PK)</code></td></tr>
+        <tr><td>Atributo</td><td>Columna de la tabla de su entidad.</td><td><code>nombre</code> → columna <code>nombre</code></td></tr>
+        <tr><td>Relación 1:1</td><td>Se fusiona en una sola tabla o se pone la PK de una como FK en la otra (con <code>UNIQUE</code>).</td><td><code>Usuario</code>↔<code>Carnet</code></td></tr>
+        <tr><td>Relación 1:N</td><td>La PK del lado "1" se copia como FK en la tabla del lado "N".</td><td><code>cliente_id</code> FK en <code>pedidos</code></td></tr>
+        <tr><td>Relación N:M</td><td>Se crea una <strong>tabla puente</strong> con PK compuesta (las dos PK de las entidades).</td><td><code>estudiante_curso(estudiante_id, curso_id)</code></td></tr>
+        <tr><td>Atributo de relación</td><td>Columna de la tabla puente (N:M) o de la tabla donde fue la FK (1:N).</td><td><code>fecha_prestamo</code> en <code>prestamos</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 La regla de oro</h4>
+    <p>En una relación <strong>1:N</strong>, la <strong>FK siempre vive en la tabla del lado "N"</strong>. Jamás al revés. Si un cliente tiene muchos pedidos, <code>cliente_id</code> va en <code>pedidos</code>, no <code>pedido_id</code> en <code>clientes</code>. Pensa: si pusieras <code>pedido_id</code> en <code>clientes</code>, un cliente solo podría tener un pedido.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: la N:M mal resuelta</h4>
+    <p>El error clásico de principiantes es meter una relación N:M en una sola columna: "<code>Estudiante</code> tiene una columna <code>cursos</code> con <code>'1,4,7'</code>". Eso <strong>rompe el modelo relacional</strong>: no puedes hacer <code>JOIN</code> ni garantizar consistencia. La solución correcta es <strong>siempre</strong> crear una tabla puente.</p>
+  </div>
+
+  <h3>🧪 Simulador de cardinalidad</h3>
+  <p>Elige una cardinalidad y observa cómo se transforman las entidades <code>A</code> y <code>B</code> en tablas. El simulador te muestra <strong>dónde va la FK</strong> y si aparece una tabla puente.</p>
+
+  <div class="card-sim">
+    <div class="sim-head">Simulador: relación A ↔ B</div>
+    <div class="card-selector">
+      <button class="card-btn activa" data-card="1-1">1 : 1 (uno a uno)</button>
+      <button class="card-btn" data-card="1-N">1 : N (uno a muchos)</button>
+      <button class="card-btn" data-card="N-M">N : M (muchos a muchos)</button>
+    </div>
+    <div class="card-explicacion" id="cardExplicacion"></div>
+    <div class="card-tablas" id="cardTablas"></div>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 5 minutos</h4>
+    <p>Pida a las parejas que, con el simulador en la pantalla, predigan <strong>antes</strong> de pulsar el botón: "Si <code>A 1:N B</code>, ¿en qué tabla va la FK?". Luego pulsen y comprueben. Esta predicción mental es la que deben dominar antes del taller.</p>
+  </div>
+
+  <h3>📖 Ejemplo completo: la biblioteca</h3>
+  <p>Imagina la biblioteca del módulo 1: <code>LIBRO</code>, <code>AUTOR</code> y la relación <code>escribe</code> (N:M, porque un libro puede tener varios autores y un autor varios libros). Aplicamos las reglas:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — biblioteca básica (N:M entre Libro y Autor)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">CREATE TABLE</span> autores (
+    id        <span class="ty">SERIAL</span>       <span class="kw">PRIMARY KEY</span>,
+    nombre    <span class="ty">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+    pais      <span class="ty">VARCHAR</span>(<span class="num">50</span>)
+);
+
+<span class="kw">CREATE TABLE</span> libros (
+    isbn      <span class="ty">VARCHAR</span>(<span class="num">13</span>) <span class="kw">PRIMARY KEY</span>,
+    titulo    <span class="ty">VARCHAR</span>(<span class="num">200</span>) <span class="kw">NOT NULL</span>,
+    anio      <span class="ty">INTEGER</span>
+);
+
+<span class="cm">-- Tabla puente: la relación N:M "escribe" se materializa aquí</span>
+<span class="kw">CREATE TABLE</span> libro_autor (
+    isbn       <span class="ty">VARCHAR</span>(<span class="num">13</span>) <span class="kw">REFERENCES</span> libros(isbn),
+    autor_id   <span class="ty">INTEGER</span>     <span class="kw">REFERENCES</span> autores(id),
+    <span class="kw">PRIMARY KEY</span> (isbn, autor_id)
+);</code></pre>
+  </div>
+
+  <p>La tabla <code>libro_autor</code> es la <strong>tabla puente</strong>: su PK es compuesta (las dos PK de las entidades) y cada fila representa "el autor X coescribió el libro Y". Si la relación tuviera un atributo (por ejemplo <code>rol</code> para distinguir "autor principal" de "coautor"), sería una columna más de esta tabla puente.</p>
+
+  <div class="caja-tip">
+    <h4>💡 Nominar tablas puentes</h4>
+    <p>Las tablas puente suelen nombrarse con <strong>los dos entidades en minúsculas, separados por guion bajo</strong>: <code>libro_autor</code>, <code>estudiante_curso</code>, <code>usuario_rol</code>. Si la relación tiene un <em>nombre propio</em> más claro, úsalo: <code>prestamos</code> en vez de <code>usuario_libro</code>. La claridad le gana a la mecánica.</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>📝 Quiz M3 · Transformación</h3>
+
+    <div class="pregunta" data-correcta="c">
+      <p>1. En una relación <strong>1:N</strong> entre <code>A</code> y <code>B</code> (donde un <code>A</code> tiene muchos <code>B</code>), la FK va en…</p>
+      <button class="opcion" data-op="a">a) La tabla A</button>
+      <button class="opcion" data-op="b">b) Una tabla puente nueva</button>
+      <button class="opcion" data-op="c">c) La tabla B (el lado N)</button>
+      <button class="opcion" data-op="d">d) Ninguna de las dos</button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p>2. Para una relación <strong>N:M</strong> entre <code>Estudiante</code> y <code>Curso</code>, ¿qué se crea?</p>
+      <button class="opcion" data-op="a">a) Una columna <code>cursos</code> tipo texto en <code>estudiantes</code></button>
+      <button class="opcion" data-op="b">b) Una tabla puente con PK compuesta (estudiante_id, curso_id)</button>
+      <button class="opcion" data-op="c">c) Una FK <code>curso_id</code> en <code>estudiantes</code></button>
+      <button class="opcion" data-op="d">d) Una sola tabla <code>estudiante_curso_nota</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>3. Si la relación N:M <code>presta</code> tiene un atributo <code>fecha_prestamo</code>, ¿dónde va esa columna?</p>
+      <button class="opcion" data-op="a">a) En <code>libros</code></button>
+      <button class="opcion" data-op="b">b) En <code>usuarios</code></button>
+      <button class="opcion" data-op="c">c) En una columna <code>fecha_prestamo</code> de cada libro</button>
+      <button class="opcion" data-op="d">d) En la tabla puente <code>prestamos</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>4. ¿Por qué es error meter una lista <code>'1,4,7'</code> en una columna <code>cursos</code> de <code>estudiantes</code>?</p>
+      <button class="opcion" data-op="a">a) Porque rompe el modelo relacional: no se puede JOIN ni garantizar consistencia</button>
+      <button class="opcion" data-op="b">b) Porque ocupa demasiada memoria</button>
+      <button class="opcion" data-op="c">c) Porque PostgreSQL no soporta comas</button>
+      <button class="opcion" data-op="d">d) Porque es un tipo <code>INTEGER</code> y no <code>TEXT</code></button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: Descanso ☕ →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — DESCANSO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ Pausa de 15 minutos</h2>
+    <p class="lead">Ya modelaste entidades, claves y transformaciones. El cerebro necesita asentar. Levántate, estira, hidrátate, y vuelve con la trivia lista.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card">
+      <span class="big-icon">🧘</span>
+      <h3>Estira</h3>
+      <p>30 segundos mirando al horizonte más lejano que puedas. Los ojos también descansan.</p>
+    </div>
+    <div class="descanso-card">
+      <span class="big-icon">💧</span>
+      <h3>Hidrátate</h3>
+      <p>Un vaso de agua. El cerebro modela mejor hidratado.</p>
+    </div>
+    <div class="descanso-card">
+      <span class="big-icon">💬</span>
+      <h3>Cuenta a alguien</h3>
+      <p>En pareja, cuéntale a tu compañero/a en una frase qué es una clave foránea. Si lo explicas, lo entiendes.</p>
+    </div>
+  </div>
+
+  <div class="trivia-box">
+    <h3>🎲 Trivia de descanso</h3>
+    <p style="margin-bottom:1rem;color:var(--texto-suave);">En una relación <code>Cliente 1:N Pedido</code>, ¿en qué tabla va <code>cliente_id</code> como FK?</p>
+    <div class="trivia-opts" id="triviaOpts">
+      <button class="trivia-opt" data-top="a" data-tcorrecta="b">a) En clientes</button>
+      <button class="trivia-opt" data-top="b" data-tcorrecta="b">b) En pedidos</button>
+      <button class="trivia-opt" data-top="c" data-tcorrecta="b">c) En una tabla puente</button>
+      <button class="trivia-opt" data-top="d" data-tcorrecta="b">d) En ambos</button>
+    </div>
+    <div class="trivia-result" id="triviaResult"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Tipos de datos →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — TIPOS DE DATOS SQL
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>🔢 Tipos de datos en SQL</h2>
+  <p class="meta-modulo">Misión 04 · Elegir el tipo correcto por dominio · ~35 min</p>
+
+  <p>Antes de escribir el <code>CREATE TABLE</code> final, toca decidir <strong>qué tipo de dato</strong> va en cada columna. Elegir mal el tipo es un villano silencioso: una edad guardada como <code>TEXT</code> no se puede ordenar numéricamente; un precio guardado como <code>INTEGER</code> pierde los decimales.</p>
+
+  <h3>📋 Los tipos esenciales (PostgreSQL)</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Tipo</th><th>Uso</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>INTEGER</code> / <code>SERIAL</code></td><td>Números enteros. <code>SERIAL</code> se autoincrementa (ideal para PK).</td><td><code>cantidad INTEGER</code></td></tr>
+        <tr><td><code>DECIMAL(p,s)</code> / <code>NUMERIC</code></td><td>Números con decimales exactos (dinero, notas). <code>p</code>=precisión total, <code>s</code>=decimales.</td><td><code>precio DECIMAL(10,2)</code></td></tr>
+        <tr><td><code>VARCHAR(n)</code></td><td>Texto de longitud variable, hasta <code>n</code> caracteres.</td><td><code>titulo VARCHAR(200)</code></td></tr>
+        <tr><td><code>TEXT</code></td><td>Texto sin límite explícito. Útil para descripciones largas.</td><td><code>sinopsis TEXT</code></td></tr>
+        <tr><td><code>DATE</code></td><td>Solo fecha (año, mes, día).</td><td><code>fecha_nac DATE</code></td></tr>
+        <tr><td><code>TIMESTAMP</code></td><td>Fecha y hora.</td><td><code>creado_en TIMESTAMP</code></td></tr>
+        <tr><td><code>BOOLEAN</code></td><td>Verdadero / falso.</td><td><code>activo BOOLEAN</code></td></tr>
+        <tr><td><code>UUID</code></td><td>Identificador universal único. Útil para PK distribuidas.</td><td><code>id UUID</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: la edad en texto</h4>
+    <p>Si guardas <code>edad</code> como <code>VARCHAR(3)</code>, podrías escribir <code>'20'</code>, <code>'veinte'</code> y <code>' 20 '</code>. El SGBD no sabrá que son números y no podrás calcular promedios ni ordenar correctamente. La edad es un número: <code>edad INTEGER</code>.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El villano gemelo: el precio en entero</h4>
+    <p>Si guardas <code>precio</code> como <code>INTEGER</code>, un libro de $19.99 se convierte en $19 (truncado) o en $20 (redondeado). Pierdes precisión en cada operación. Usa <code>DECIMAL(10,2)</code>: 10 dígitos totales, 2 decimales. Para notas académicas basta con <code>DECIMAL(4,2)</code> (de 0.00 a 99.99).</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h4>¿Por qué no <code>FLOAT</code> para dinero?</h4>
+    <p>Los <code>FLOAT</code> / <code>REAL</code> usan aritmética de coma flotante binaria, que <strong>no es exacta</strong>: <code>0.1 + 0.2</code> puede dar <code>0.30000000000000004</code>. Para dinero, siempre <code>DECIMAL</code> / <code>NUMERIC</code>, que son exactos. Para cálculos científicos, sí, <code>FLOAT</code>.</p>
+  </div>
+
+  <h3>🧪 Empareja cada columna con su tipo correcto</h3>
+  <p>Pulsa una columna de la izquierda y luego el tipo que le corresponde a la derecha. Empareza todas para ganar 25 XP extra.</p>
+
+  <div class="match-tipos">
+    <div class="sim-head">Match: columna → tipo SQL</div>
+    <div class="match-tipos-grid" id="matchTiposGrid"></div>
+    <div class="match-tipos-opts" id="matchTiposOpts"></div>
+    <div class="match-tipos-feedback" id="matchTiposFeedback"></div>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>📝 Quiz M5 · Tipos de datos</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p>1. Para guardar el <strong>precio</strong> de un libro (con dos decimales), el tipo correcto es…</p>
+      <button class="opcion" data-op="a">a) <code>INTEGER</code></button>
+      <button class="opcion" data-op="b">b) <code>DECIMAL(10,2)</code></button>
+      <button class="opcion" data-op="c">c) <code>VARCHAR(10)</code></button>
+      <button class="opcion" data-op="d">d) <code>BOOLEAN</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>2. Para una columna <strong>"¿el usuario está activo?"</strong>, ¿qué tipo usas?</p>
+      <button class="opcion" data-op="a">a) <code>INTEGER</code></button>
+      <button class="opcion" data-op="b">b) <code>VARCHAR(5)</code></button>
+      <button class="opcion" data-op="c">c) <code>BOOLEAN</code></button>
+      <button class="opcion" data-op="d">d) <code>DATE</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>3. ¿Por qué <code>edad</code> debe ser <code>INTEGER</code> y no <code>VARCHAR</code>?</p>
+      <button class="opcion" data-op="a">a) Porque como texto no se puede ordenar ni calcular numéricamente de forma fiable</button>
+      <button class="opcion" data-op="b">b) Porque <code>VARCHAR</code> ocupa más bytes siempre</button>
+      <button class="opcion" data-op="c">c) Porque PostgreSQL no permite <code>VARCHAR</code> para números</button>
+      <button class="opcion" data-op="d">d) Porque <code>INTEGER</code> admite decimales ocultos</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. Para una columna <strong>identificador autoincremental</strong> que será PK, lo correcto en PostgreSQL es…</p>
+      <button class="opcion" data-op="a">a) <code>id VARCHAR(10) PRIMARY KEY</code></button>
+      <button class="opcion" data-op="b">b) <code>id DECIMAL(10,0) PRIMARY KEY</code></button>
+      <button class="opcion" data-op="c">c) <code>id FLOAT PRIMARY KEY</code></button>
+      <button class="opcion" data-op="d">d) <code>id SERIAL PRIMARY KEY</code></button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Mermaid →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — DIAGRAMAS ER CON MERMAID
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>✨ Diagramas ER con Mermaid</h2>
+  <p class="meta-modulo">Misión 05 · Sintaxis <code>erDiagram</code> y cardinalidad Crow's foot · ~45 min</p>
+
+  <p><strong>Mermaid</strong> es un lenguaje de texto a diagrama: escribes en un mini-lenguaje y se dibuja solo. Lo entienden GitHub (en los <code>.md</code>), Notion, Obsidian y ChatGPT. Para nosotros es la herramienta definitiva: el diagrama ER <em>y</em> el SQL viven juntos en texto.</p>
+
+  <h3>📐 Sintaxis básica de <code>erDiagram</code></h3>
+  <p>Un diagrama ER en Mermaid se escribe así:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>Mermaid — erDiagram básico</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code>erDiagram
+    LIBRO ||--o{ AUTOR : escribe
+    LIBRO {
+        varchar isbn PK
+        varchar titulo
+        integer anio
+    }
+    AUTOR {
+        serial id PK
+        varchar nombre
+        varchar nacionalidad
+    }</code></pre>
+  </div>
+
+  <p>Aquí la línea <code>LIBRO ||--o{ AUTOR : escribe</code> declara la relación con su cardinalidad. La notación <code>||--o{</code> es <strong>Crow's foot</strong>: <code>||</code> significa "exactly one" (1) y <code>o{</code> significa "zero or many" (0..N). Entre llaves se listan los atributos de cada entidad, marcando <code>PK</code> para la clave primaria.</p>
+
+  <h3>🔤 Cardinalidades en Mermaid (Crow's foot)</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Notación</th><th>Significado</th><th>Cardinalidad</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>||--||</code></td><td>One to one</td><td>1 : 1</td></tr>
+        <tr><td><code>||--o{</code></td><td>One to zero-or-many</td><td>1 : N</td></tr>
+        <tr><td><code>}o--o{</code></td><td>Zero or many to zero or many</td><td>N : M</td></tr>
+        <tr><td><code>||--|{</code></td><td>One to one-or-many</td><td>1 : 1..N</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Cómo leer la línea</h4>
+    <p>La relación <code>A ||--o{ B : escribe</code> se lee <strong>de izquierda a derecha</strong>: "un A tiene muchos B, y la relación se llama <code>escribe</code>". El lado izquierdo <code>||</code> es el "1"; el derecho <code>o{</code> es el "muchos". Si lo giras, sigue siendo válido: la flecha del pato (Crow's foot) siempre apunta al "muchos".</p>
+  </div>
+
+  <h3>🧪 Constructor en vivo</h3>
+  <p>Edita el código Mermaid del cuadro izquierdo y observa el diagrama renderizado a la derecha. Usa los chips rápidos para insertar snippets.</p>
+
+  <div class="mermaid-sim">
+    <div class="sim-head">Constructor Mermaid · live</div>
+    <div class="mermaid-chips" style="margin-bottom:1rem;">
+      <button class="mermaid-chip" data-snippet="erDiagram&#10;">Plantilla erDiagram</button>
+      <button class="mermaid-chip" data-snippet="    ENTIDAD ||--o{ OTRA : relacion&#10;">1:N</button>
+      <button class="mermaid-chip" data-snippet="    ENTIDAD }o--o{ OTRA : relacion&#10;">N:M</button>
+      <button class="mermaid-chip" data-snippet="    ENTIDAD ||--|| OTRA : relacion&#10;">1:1</button>
+      <button class="mermaid-chip" data-snippet="    TABLA {&#10;        serial id PK&#10;        varchar nombre&#10;    }&#10;">Bloque de entidad</button>
+    </div>
+    <div class="mermaid-layout">
+      <div class="mermaid-editor-wrap">
+        <label for="mermaidEditor" style="font-size:0.8rem;color:var(--texto-suave);">Código Mermaid:</label>
+        <textarea class="mermaid-editor" id="mermaidEditor" spellcheck="false">erDiagram
+    AUTOR ||--o{ LIBRO : escribe
+    AUTOR {
+        serial id PK
+        varchar nombre
+        varchar pais
+    }
+    LIBRO {
+        varchar isbn PK
+        varchar titulo
+        integer anio
+    }</textarea>
+        <button class="btn primary" id="mermaidRender" type="button">▶ Renderizar</button>
+      </div>
+      <div>
+        <div style="font-size:0.8rem;color:var(--texto-suave);margin-bottom:0.4rem;">Vista previa:</div>
+        <div class="mermaid-preview" id="mermaidPreview"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 10 minutos</h4>
+    <p>Pida a las parejas que, usando el constructor, dibujen el diagrama ER de <strong>la tienda de mascotas</strong> del módulo 0 (clientes, mascotas, productos, facturas). Deben decidir las cardinalidades. Camine entre las mesas y ayude con la lectura de la notación Crow's foot.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>📌 GitHub entiende Mermaid</h4>
+    <p>En cualquier archivo <code>.md</code> de GitHub puedes escribir un bloque así:</p>
+    <pre style="background:#0d1117;padding:0.8rem;border-radius:8px;color:#c9d1d9;font-size:0.82rem;overflow-x:auto;">```mermaid
+erDiagram
+    CLIENTE ||--o{ PEDIDO : hace
+```</pre>
+    <p>GitHub renderiza el diagrama automáticamente. Es la forma más profesional que existe hoy de documentar una BD en un repo.</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>📝 Quiz M6 · Mermaid</h3>
+
+    <div class="pregunta" data-correcta="c">
+      <p>1. En Mermaid, ¿qué palabra clave inicia un diagrama ER?</p>
+      <button class="opcion" data-op="a">a) <code>er</code></button>
+      <button class="opcion" data-op="b">b) <code>diagram</code></button>
+      <button class="opcion" data-op="c">c) <code>erDiagram</code></button>
+      <button class="opcion" data-op="d">d) <code>entity-relationship</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p>2. ¿Qué notación indica una relación <strong>1 : N</strong> en Mermaid (Crow's foot)?</p>
+      <button class="opcion" data-op="a">a) <code>||--||</code></button>
+      <button class="opcion" data-op="b">b) <code>||--o{</code></button>
+      <button class="opcion" data-op="c">c) <code>}o--o{</code></button>
+      <button class="opcion" data-op="d">d) <code>o--o</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>3. Dentro del bloque de una entidad, ¿cómo marcas la clave primaria?</p>
+      <button class="opcion" data-op="a">a) Añadiendo <code>PK</code> tras el nombre del atributo</button>
+      <button class="opcion" data-op="b">b) Añadiendo <code>FOREIGN</code></button>
+      <button class="opcion" data-op="c">c) Poniendo el atributo entre asteriscos <code>*id*</code></button>
+      <button class="opcion" data-op="d">d) No se marca, se infiere</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. La línea <code>AUTOR ||--o{ LIBRO : escribe</code> se lee como…</p>
+      <button class="opcion" data-op="a">a) Un autor escribe cero o un libro</button>
+      <button class="opcion" data-op="b">b) Un libro escribe muchos autores</button>
+      <button class="opcion" data-op="c">c) Muchos autores escriben un libro</button>
+      <button class="opcion" data-op="d">d) Un autor escribe cero o muchos libros</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 7 — TALLER INTEGRADOR (BIBLIOTECA)
+============================================================ -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: Biblioteca online</h2>
+  <p class="meta-modulo">Misión 06 · Caso end-to-end: diseño ER + transformación + diagrama Mermaid · ~50 min</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">Taller final</span>
+      <span class="challenge-title">Sistema de préstamos para la biblioteca del colegio</span>
+    </div>
+    <p>La biblioteca del colegio necesita una base de datos para gestionar <strong>libros, usuarios y préstamos</strong>. Tu misión es, en pareja:</p>
+    <ol>
+      <li>Identificar las <strong>entidades</strong> y sus atributos.</li>
+      <li>Detectar las <strong>relaciones</strong> y sus cardinalidades.</li>
+      <li>Diseñar el <strong>modelo ER</strong>.</li>
+      <li>Transformarlo al <strong>modelo relacional</strong> (tablas con PK y FK).</li>
+      <li>Dibujar el diagrama con <strong>Mermaid</strong>.</li>
+      <li>Escribir el <code>CREATE TABLE</code> en SQL.</li>
+    </ol>
+  </div>
+
+  <div class="caja-concepto">
+    <h4>📋 Enunciado</h4>
+    <p>La biblioteca tiene <strong>libros</strong> (cada uno con su ISBN, título y año de publicación) y <strong>usuarios</strong> (cada uno con su número de carnet, nombre y correo). Cada usuario puede pedir prestados varios libros a la vez, y cada libro puede ser prestado a un usuario a la vez (no hay dos préstamos activos del mismo ejemplar). Cada préstamo registra la <strong>fecha de préstamo</strong> y la <strong>fecha de devolución</strong> (que puede ser <code>NULL</code> mientras no se devuelva). Un libro puede tener varios <strong>autores</strong>, y un autor puede escribir varios libros. De cada autor guardamos nombre y nacionalidad.</p>
+  </div>
+
+  <div class="taller-er">
+    <div class="taller-er-step">
+      <h4><span class="step-num">1</span> Identifica las entidades</h4>
+      <p>En parejas: escriban en el cuaderno las entidades que ven en el enunciado y, junto a cada una, sus atributos. Marquen la PK de cada una con un asterisco.</p>
+      <button class="taller-sol-toggle" data-sol="sol-entidades">👁️ Ver solución</button>
+      <div class="taller-sol" id="sol-entidades">
+        <p>Entidades y atributos:</p>
+        <ul>
+          <li><strong>LIBRO</strong> — <code>isbn*</code> (PK), <code>titulo</code>, <code>anio</code></li>
+          <li><strong>AUTOR</strong> — <code>id*</code> (PK), <code>nombre</code>, <code>nacionalidad</code></li>
+          <li><strong>USUARIO</strong> — <code>carnet*</code> (PK), <code>nombre</code>, <code>correo</code></li>
+          <li><strong>PRESTAMO</strong> — es una <em>relación</em> entre USUARIO y LIBRO con atributos <code>fecha_prestamo</code> y <code>fecha_devolucion</code>. Al transformarla se convertirá en tabla.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">2</span> Detecta las relaciones y cardinalidades</h4>
+      <p>Para cada par de entidades que se relaciona, anota la cardinalidad (1:1, 1:N o N:M).</p>
+      <button class="taller-sol-toggle" data-sol="sol-relaciones">👁️ Ver solución</button>
+      <div class="taller-sol" id="sol-relaciones">
+        <ul>
+          <li><strong>AUTOR escribe LIBRO</strong> → N:M (un autor escribe varios libros; un libro puede tener varios autores).</li>
+          <li><strong>USUARIO pide LIBRO</strong> → N:M en lo conceptual, porque un usuario pide muchos libros y un libro es prestado a muchos usuarios a lo largo del tiempo. Pero ojo: <em>un préstamo activo</em> es 1:1 con el libro. La tabla puente <code>prestamos</code> llevará la fecha de préstamo y de devolución.</li>
+        </ul>
+        <p>En el modelo relacional, ambas se materializan como tablas puente.</p>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">3</span> Dibuja el diagrama en Mermaid</h4>
+      <p>En el constructor del módulo 6 (o en tu cuaderno con la notación Crow's foot), escribe el diagrama. Compara con la solución.</p>
+      <button class="taller-sol-toggle" data-sol="sol-mermaid">👁️ Ver diagrama</button>
+      <div class="taller-sol" id="sol-mermaid">
+        <p>Diagrama ER en Mermaid:</p>
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">erDiagram
+    AUTOR ||--o{ LIBRO : escribe
+    USUARIO ||--o{ PRESTAMO : realiza
+    LIBRO ||--o{ PRESTAMO : se_presta
+    AUTOR {
+        serial id PK
+        varchar nombre
+        varchar nacionalidad
+    }
+    LIBRO {
+        varchar isbn PK
+        varchar titulo
+        integer anio
+    }
+    USUARIO {
+        varchar carnet PK
+        varchar nombre
+        varchar correo
+    }
+    PRESTAMO {
+        serial id PK
+        varchar carnet FK
+        varchar isbn FK
+        date fecha_prestamo
+        date fecha_devolucion
+    }</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">4</span> Escribe el SQL completo</h4>
+      <p>Transforma el diagrama en sentencias <code>CREATE TABLE</code> con PK y FK. Recuerda el orden: primero las tablas sin FK, luego las que referencian.</p>
+      <button class="taller-sol-toggle" data-sol="sol-sql">👁️ Ver SQL</button>
+      <div class="taller-sol" id="sol-sql">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- 1. Tablas sin dependencias
+CREATE TABLE autores (
+    id           SERIAL PRIMARY KEY,
+    nombre       VARCHAR(100) NOT NULL,
+    nacionalidad VARCHAR(50)
+);
+
+CREATE TABLE libros (
+    isbn   VARCHAR(13) PRIMARY KEY,
+    titulo VARCHAR(200) NOT NULL,
+    anio   INTEGER
+);
+
+CREATE TABLE usuarios (
+    carnet VARCHAR(20) PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    correo VARCHAR(150) NOT NULL UNIQUE
+);
+
+-- 2. Tabla puente N:M autor-libro
+CREATE TABLE libro_autor (
+    isbn     VARCHAR(13) REFERENCES libros(isbn),
+    autor_id INTEGER     REFERENCES autores(id),
+    PRIMARY KEY (isbn, autor_id)
+);
+
+-- 3. Tabla de préstamos (atributos de la relación)
+CREATE TABLE prestamos (
+    id              SERIAL PRIMARY KEY,
+    carnet          VARCHAR(20)  REFERENCES usuarios(carnet),
+    isbn            VARCHAR(13)  REFERENCES libros(isbn),
+    fecha_prestamo  DATE NOT NULL,
+    fecha_devolucion DATE
+);</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">5</span> Reflexiona</h4>
+      <p>Contesta en pareja: <strong>¿por qué <code>fecha_devolucion</code> admite <code>NULL</code>?</strong> ¿Por qué <code>prestamos</code> tiene su propia PK <code>id SERIAL</code> en vez de una PK compuesta <code>(carnet, isbn)</code>? Discútanlo 2 minutos y luego lean la respuesta.</p>
+      <button class="taller-sol-toggle" data-sol="sol-reflex">👁️ Ver respuesta</button>
+      <div class="taller-sol" id="sol-reflex">
+        <p><code>fecha_devolucion</code> admite <code>NULL</code> porque el préstamo <em>está activo</em> mientras no se haya devuelto: no podemos inventar una fecha futura. Cuando el usuario devuelve el libro, ese campo se actualiza. Una PK compuesta <code>(carnet, isbn)</code> impediría que un mismo usuario pidiera prestado el mismo libro dos veces (hoy y dentro de un mes): la PK exigiría unicidad. Por eso usamos <code>id SERIAL</code> como PK surrogate, y dejamos que <code>(carnet, isbn, fecha_prestamo)</code> sea un <code>UNIQUE</code> si queremos impedir dos préstamos activos del mismo ejemplar.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 Cierre del aula — 5 minutos</h4>
+    <p>Cada pareja muestra su diagrama Mermaid en pantalla. La clase valida: ¿está bien la cardinalidad? ¿La FK está en la tabla correcta? El profesor refuerza la regla de oro: <strong>la FK vive en el lado N</strong>. El taller se da por completado cuando las parejas tienen las 5 tablas creadas en SQL.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🎯 ¿Cómo saber si lo lograste?</h4>
+    <p>Tu diseño está completo cuando: (1) tienes <strong>5 tablas</strong>: <code>autores</code>, <code>libros</code>, <code>usuarios</code>, <code>libro_autor</code>, <code>prestamos</code>; (2) cada tabla con PK tiene marcada su PK con <code>PRIMARY KEY</code>; (3) las relaciones N:M tienen tabla puente con PK compuesta; (4) los tipos de datos son correctos (no <code>VARCHAR</code> para fechas ni <code>INTEGER</code> para el ISBN); (5) el diagrama Mermaid se renderiza sin error. Si lo conseguiste, <strong>diseñaste una BD real</strong>. 🔬</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>🧩 Investigación: ¿y si un libro tiene ejemplares?</h4>
+    <p>En la vida real, una biblioteca tiene <strong>varios ejemplares</strong> del mismo libro. Nuestro modelo no contempla eso (cada ISBN es un único libro físico). ¿Cómo lo ampliarías? Pista: una nueva entidad <code>EJEMPLAR</code> con su propia PK, referenciando a <code>libros(isbn)</code>, y el préstamo apunta al ejemplar, no al libro. Discútanlo y propongan el SQL extra.</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🏆 ¡Misión completada, ER Master!</h2>
+    <p class="lead">Ya sabes qué es un modelo Entidad-Relación, cómo identificar entidades, atributos y relaciones, cómo transformar todo eso en tablas con claves primarias y foráneas, qué tipos de datos usar para cada columna, y cómo dibujar el diagrama con Mermaid. Has diseñado de punta a punta una BD para una biblioteca real. Eso es el <strong>corazón del análisis de datos</strong>: lo que separa a quien "hace tablas" de quien <em>diseña</em> bases de datos.</p>
+    <p style="margin-top:1rem;font-size:1.05rem;color:var(--verde);font-weight:700;">En la próxima clase entraremos a SQL: el lenguaje para hablar con las BD que acabas de modelar. 🗣️</p>
+    <button class="btn-final" data-reiniciar>🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<!-- =================== FOOTER =================== -->
+<footer class="pie">
+  <div class="fb">🎓 Bases de Datos · Clase 4 · Plataforma interactiva</div>
+  <div>Modelo ER · Claves PK/FK · Transformación relacional · Mermaid · 4 horas · Nivel Intermedio</div>
+  <div style="margin-top:.5rem;font-size:.78rem;">Hecho con 💜 para adolescentes que quieren diseñar bases de datos reales.</div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
