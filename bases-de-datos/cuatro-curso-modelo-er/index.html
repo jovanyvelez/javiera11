@@ -800,7 +800,7 @@
     }</code></pre>
   </div>
 
-  <p>Aquí la línea <code>LIBRO ||--o{ AUTOR : escribe</code> declara la relación con su cardinalidad. La notación <code>||--o{</code> es <strong>Crow's foot</strong>: <code>||</code> significa "exactly one" (1) y <code>o{</code> significa "zero or many" (0..N). Entre llaves se listan los atributos de cada entidad, marcando <code>PK</code> para la clave primaria.</p>
+  <p>Aquí la línea <code>LIBRO ||--o{ AUTOR : escribe</code> declara la relación con su cardinalidad. La notación <code>||--o{</code> es <strong>Crow's foot</strong>: <code>||</code> significa "exactamente uno" (1) y <code>o{</code> significa "cero o muchos" (0..N). Entre llaves se listan los atributos de cada entidad, marcando <code>PK</code> para la clave primaria.</p>
 
   <h3>🔤 Cardinalidades en Mermaid (Crow's foot)</h3>
   <p>Esta es la tabla clave del módulo: memoriza estos cuatro símbolos y podrás leer cualquier diagrama ER moderno. La columna <strong>"Cómo se ve"</strong> describe lo que dibuja Mermaid en cada extremo de la línea.</p>
@@ -810,10 +810,10 @@
         <tr><th>Notación</th><th>Cardinalidad</th><th>Cómo se ve (extremo derecho)</th><th>Significado</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>||--||</code></td><td>1 : 1</td><td>Dos barritas verticales <code>││</code> en ambos lados — "exactamente uno".</td><td>One to one</td></tr>
-        <tr><td><code>||--o{</code></td><td>1 : N</td><td>Izq: dos barritas <code>││</code> (uno). Der: un círculo + tres patas <code>ο{</code> (cero o muchos).</td><td>One to zero-or-many</td></tr>
-        <tr><td><code>}o--o{</code></td><td>N : M</td><td>Ambos lados: círculo + tres patas <code>ο{</code> — "cero o muchos" en los dos extremos.</td><td>Zero or many ↔ zero or many</td></tr>
-        <tr><td><code>||--|{</code></td><td>1 : 1..N</td><td>Izq: dos barritas <code>││</code> (uno). Der: una barra + tres patas <code>│{</code> (uno o muchos, sin permitir cero).</td><td>One to one-or-many</td></tr>
+        <tr><td><code>||--||</code></td><td>1 : 1</td><td>Dos barritas verticales <code>││</code> en ambos lados — "exactamente uno".</td><td>Uno a uno</td></tr>
+        <tr><td><code>||--o{</code></td><td>1 : N</td><td>Izq: dos barritas <code>││</code> (uno). Der: un círculo + tres patas <code>ο{</code> (cero o muchos).</td><td>Uno a cero o muchos</td></tr>
+        <tr><td><code>}o--o{</code></td><td>N : M</td><td>Ambos lados: círculo + tres patas <code>ο{</code> — "cero o muchos" en los dos extremos.</td><td>Cero o muchos ↔ cero o muchos</td></tr>
+        <tr><td><code>||--|{</code></td><td>1 : 1..N</td><td>Izq: dos barritas <code>││</code> (uno). Der: una barra + tres patas <code>│{</code> (uno o muchos, sin permitir cero).</td><td>Uno a uno o muchos</td></tr>
       </tbody>
     </table>
   </div>
