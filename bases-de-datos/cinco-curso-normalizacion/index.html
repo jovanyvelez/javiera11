@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🗄️ Bases de Datos · Clase 5 · Normalización</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- =================== HEADER + PROGRESO =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🧹</span>
+    <div>
+      <h1>Bases de Datos · Clase 5</h1>
+      <p class="subtitulo">Normalización · Formas normales 1FN, 2FN y 3FN · Anomalías y dependencias funcionales</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 390 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">🦹 Anomalías</button>
+  <button class="btn-modulo" data-modulo="2">1️⃣ 1FN</button>
+  <button class="btn-modulo" data-modulo="3">2️⃣ 2FN</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">3️⃣ 3FN</button>
+  <button class="btn-modulo" data-modulo="6">🧪 Normalizador</button>
+  <button class="btn-modulo" data-modulo="7">📦 Taller</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🧹 ¿Por qué una tabla "bien hecha" evita pesadillas?</h2>
+    <p class="lead">En la <strong>Clase 4</strong> modelamos entidades y relaciones, y aprendimos a poner claves primarias y foráneas. Pero… <em>¿qué pasa si metemos todo en una sola tabla?</em> Te lo imaginas: un cliente repetido 50 veces, un pedido sin saber su ciudad, actualizar un precio en 12 filas y olvidarte de una. A ese desastre lo llaman <strong>anomalías</strong>, y la cura se llama <strong>normalización</strong>: un conjunto de reglas (las <strong>formas normales</strong>) que aplicó Edgar F. Codd en 1971 para que las tablas queden limpias, sin repetir datos y sin perder información. Hoy vamos a aprender las tres primeras formas normales —<strong>1FN, 2FN y 3FN</strong>— y a aplicarlas como quien dobla la ropa: cada cosa en su cajón.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ diagnóstico de un consultor</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">dba@colegio:~$</span> <span class="cmd">psql -c "\d pedidos"</span></div>
+        <div class="out">id | cliente | correo | ciudad | producto | precio | cantidad | total</div>
+        <div class="out">⚠️  anomalías de inserción, actualización y borrado detectadas</div>
+        <div><span class="prompt">dba@colegio:~$</span> <span class="cmd">normalizar pedidos --hasta=3FN</span></div>
+        <div class="out">→ clientes (id PK, nombre, correo, ciudad_id FK)</div>
+        <div class="out">→ ciudades (id PK, nombre)</div>
+        <div class="out">→ productos (id PK, nombre, precio)</div>
+        <div class="out">→ pedidos (id PK, cliente_id FK, fecha)</div>
+        <div class="out">→ pedidos_items (pedido_id FK, producto_id FK, cantidad)</div>
+        <div class="out">✓ 0 redundancias · 0 anomalías · 3FN alcanzada</div>
+        <div><span class="prompt">dba@colegio:~$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>4 horas en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Reconocer las anomalías que aparecen al meter todo en una tabla, y aplicar las tres primeras formas normales (1FN, 2FN, 3FN) para eliminarlas.</p>
+    </div>
+    <div class="tarjeta tarjeta-warm">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>El mismo dato repetido en 50 filas, el cliente que no se puede registrar "porque todavía no compró", el precio que cambia en 12 lugares a la vez. La normalización los derrota.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · Anomalías</td><td style="color:var(--lima)">Inserción, actualización, borrado</td><td style="color:var(--rosa)">El cliente fantasma</td><td>100 XP</td></tr>
+        <tr><td>02 · Primera Forma Normal (1FN)</td><td style="color:var(--indigo)">Atomicidad de columnas</td><td style="color:var(--rosa)">La celda con lista "A,B,C"</td><td>100 XP</td></tr>
+        <tr><td>03 · Segunda Forma Normal (2FN)</td><td style="color:var(--cian)">Dependencia parcial de la PK</td><td style="color:var(--rosa)">El precio que depende a medias</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · Tercera Forma Normal (3FN)</td><td style="color:var(--lima-claro)">Dependencia transitiva</td><td style="color:var(--rosa)">Ciudad metida en la factura</td><td>100 XP</td></tr>
+        <tr><td>05 · Normalizador interactivo</td><td style="color:var(--indigo-claro)">Diagnostica y repara</td><td>—</td><td>125 XP</td></tr>
+        <tr><td>06 · Taller entregable</td><td style="color:var(--lima)">Caso "Tienda Gamer"</td><td style="color:var(--rosa)">Tabla <code>ventas</code> en crisis</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: imaginen que tienen una hoja de cálculo <strong>para llevar el inventario de la tienda del colegio</strong>. Escriban <strong>todo</strong> lo que pondrían en una sola fila: producto, precio, proveedor, teléfono del proveedor, cantidad, fecha… anótenlo. Esa "mega-fila" es justo lo que <strong>NO</strong> deberíamos guardar así en una BD. En el módulo 1 veremos por qué.</p>
+  </div>
+
+  <h3>🧠 Lo que ya sabes (repaso rápido)</h3>
+  <p>Antes de avanzar, recordemos lo construido en las clases anteriores — hoy lo vamos a usar todo:</p>
+  <ul>
+    <li>Una <strong>base de datos relacional</strong> guarda la información en <strong>tablas</strong> (filas y columnas) y se accede vía SQL. (Clase 1)</li>
+    <li>Cada tabla tiene una <strong>clave primaria (PK)</strong> que identifica unívocamente cada fila, y <strong>claves foráneas (FK)</strong> que conectan tablas. (Clase 4)</li>
+    <li>Las relaciones <strong>N:M</strong> se materializan con una <strong>tabla puente</strong> de PK compuesta. (Clase 4)</li>
+  </ul>
+
+  <div class="caja-destacada">
+    <h4>📌 La gran pregunta de hoy</h4>
+    <p>Si ya sabemos dividir el mundo en entidades y tablas, <strong>¿por qué hace falta una "normalización" aparte?</strong> Porque el modelo ER describe <em>qué cosas existen</em>, pero no te garantiza que cada dato viva en <em>un solo lugar</em>. La normalización es un <strong>auditor</strong> que revisa tus tablas y te dice: "este atributo depende de otro que no es la clave" o "esta celda tiene tres valores". Son reglas <strong>de higiene</strong>, y se aplican <em>después</em> de tener el primer borrón de tablas.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Siguiente: Anomalías →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — ANOMALÍAS
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>🦹 Anomalías: cuando una tabla se rebela</h2>
+  <p class="meta-modulo">Misión 01 · Anomalías de inserción, actualización y borrado · ~30 min</p>
+
+  <p>Imagina que el colegio lleva las matrículas en una sola tabla <code>matriculas</code>, con una fila por estudiante <em>y</em> por asignatura, y mezclando además los datos del estudiante, su acudiente y la asignatura. Veamos qué sale mal.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — una tabla que mezcla todo (¡mal!)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">CREATE TABLE</span> matriculas (
+    estudiante_id   <span class="ty">INTEGER</span>,
+    nombre_est       <span class="ty">VARCHAR</span>(<span class="num">100</span>),
+    correo_est       <span class="ty">VARCHAR</span>(<span class="num">150</span>),
+    acudiente        <span class="ty">VARCHAR</span>(<span class="num">100</span>),
+    telefono_acud    <span class="ty">VARCHAR</span>(<span class="num">20</span>),
+    asignatura_id    <span class="ty">INTEGER</span>,
+    nombre_asig      <span class="ty">VARCHAR</span>(<span class="num">80</span>),
+    intensividad     <span class="ty">INTEGER</span>,
+    nota             <span class="ty">DECIMAL</span>(<span class="num">4</span>,<span class="num">2</span>),
+    <span class="kw">PRIMARY KEY</span> (estudiante_id, asignatura_id)
+);</code></pre>
+  </div>
+
+  <p>Y unos datos de ejemplo:</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>est_id</th><th>nombre_est</th><th>correo</th><th>acudiente</th><th>tel_acud</th><th>asig_id</th><th>asignatura</th><th>intens.</th><th>nota</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Ana Torres</td><td>ana@x.co</td><td>Luis Torres</td><td>300…</td><td>101</td><td>Matemáticas</td><td>4</td><td>4.5</td></tr>
+        <tr><td>1</td><td>Ana Torres</td><td>ana@x.co</td><td>Luis Torres</td><td>300…</td><td>102</td><td>Física</td><td>3</td><td>3.8</td></tr>
+        <tr><td>2</td><td>Beto Ruiz</td><td>beto@x.co</td><td>Marta Díaz</td><td>301…</td><td>101</td><td>Matemáticas</td><td>4</td><td>3.2</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>¿Ves los problemas? El nombre de Ana se repite dos veces. El teléfono del acudiente también. Y la intensividad de Matemáticas (4 h) se repite en cada fila donde alguien la cursa. Eso son <strong>redundancias</strong>, y de ellas nacen las tres grandes anomalías.</p>
+
+  <h3>🩺 Las tres anomalías clásicas</h3>
+  <div class="cuadricula-2">
+    <div class="compare-card a">
+      <h4>➕ Anomalía de inserción</h4>
+      <p>No puedes insertar un dato porque "le falta compañía". <strong>Ej:</strong> si llega un estudiante nuevo que <em>aún no</em> tiene asignaturas, no puedes crearlo: la PK compuesta exige <code>(estudiante_id, asignatura_id)</code>, y <code>asignatura_id</code> sería <code>NULL</code>. El estudiante queda "fantasma": existe, pero la BD no lo registra.</p>
+    </div>
+    <div class="compare-card b">
+      <h4>✏️ Anomalía de actualización</h4>
+      <p>Cambias un dato en una fila y se te olvidan las demás. <strong>Ej:</strong> si Ana cambia de correo, tienes que actualizar <em>todas</em> sus filas. Si fallas en una, Ana tendrá dos correos distintos en la BD. La redundancia te obliga a tocar muchas filas por una sola realidad.</p>
+    </div>
+    <div class="compare-card c">
+      <h4>🗑️ Anomalía de borrado</h4>
+      <p>Borres algo y te llevas de paso otra cosa que no querías borrar. <strong>Ej:</strong> si el único estudiante que cursaba <code>Física</code> se retira y borras su fila, <em>borras también la asignatura Física</em> (su nombre e intensividad desaparecen). Borraste un dato de la realidad sin querer.</p>
+    </div>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: la "tabla universal"</h4>
+    <p>El error más común de principiantes: <strong>meter todo en una sola tabla</strong> "para no complicarse". Parece simple al principio, pero pronto esa tabla tiene 20 columnas, 500 filas y los tres tipos de anomalías a la vez. La normalización es el antidoto: divide y vencerás.</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que, con la tabla <code>matriculas</code> de arriba, identifiquen <strong>al menos un ejemplo concreto</strong> de cada anomalía. Anótenlo en el cuaderno. Luego compártanlo en voz alta. La idea es que <em>sientan</em> el problema antes de ver la solución.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔁 La raíz del problema: las <em>dependencias</em></h4>
+    <p>Todas las anomalías nacen del mismo sitio: <strong>hay columnas que dependen de "la mitad" de la clave o de otra columna que no es la clave</strong>. El correo de Ana depende del <code>estudiante_id</code>, <em>no</em> de <code>asignatura_id</code>. La intensividad de Matemáticas depende de <code>asignatura_id</code>, <em>no</em> de <code>estudiante_id</code>. El teléfono del acudiente depende del acudiente, que <em>no es la clave</em>. Cuando una columna depende de algo distinto a la PK completa, aparece la redundancia. Las formas normales son, literalmente, reglas que <strong>obligan a que cada columna dependa sí o sí de la PK completa y sólo de la PK</strong>.</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>📝 Quiz M1 · Anomalías</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p>1. Un estudiante nuevo llega pero no se puede registrar porque la PK es <code>(estudiante_id, asignatura_id)</code> y aún no tiene asignatura. ¿Qué anomalía es?</p>
+      <button class="opcion" data-op="a">a) De actualización</button>
+      <button class="opcion" data-op="b">b) De inserción</button>
+      <button class="opcion" data-op="c">c) De borrado</button>
+      <button class="opcion" data-op="d">d) De redundancia</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>2. El correo de Ana se repite en 2 filas. Si se cambia y sólo se actualiza una, Ana tendrá dos correos. ¿Qué anomalía es?</p>
+      <button class="opcion" data-op="a">a) De actualización</button>
+      <button class="opcion" data-op="b">b) De inserción</button>
+      <button class="opcion" data-op="c">c) De borrado</button>
+      <button class="opcion" data-op="d">d) De integridad referencial</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>3. Si el único estudiante que cursaba Física se retira y borras su fila, <em>también</em> desaparece la asignatura Física. ¿Qué anomalía es?</p>
+      <button class="opcion" data-op="a">a) De inserción</button>
+      <button class="opcion" data-op="b">b) De actualización</button>
+      <button class="opcion" data-op="c">c) De borrado</button>
+      <button class="opcion" data-op="d">d) De clave primaria</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. ¿Cuál es la <strong>causa raíz</strong> de las tres anomalías?</p>
+      <button class="opcion" data-op="a">a) Usar <code>SERIAL</code> como PK</button>
+      <button class="opcion" data-op="b">b) Tener muchas filas</button>
+      <button class="opcion" data-op="c">c) Mezclar tipos de datos</button>
+      <button class="opcion" data-op="d">d) Columnas que no dependen de la PK completa (o dependen de otra columna)</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: 1FN →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — PRIMERA FORMA NORMAL (1FN)
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>1️⃣ Primera Forma Normal (1FN)</h2>
+  <p class="meta-modulo">Misión 02 · Atomicidad: cada celda, un solo valor · ~35 min</p>
+
+  <p>La <strong>Primera Forma Normal (1FN)</strong> es la regla más básica y la primera que aplicamos. Su definición es corta pero poderosa:</p>
+
+  <div class="caja-concepto">
+    <h4>📖 1FN — Definición formal</h4>
+    <p>Una relación está en <strong>1FN</strong> si <strong>todas sus columnas contienen valores atómicos</strong> (un solo valor por celda) y <strong>no hay grupos repetitivos</strong>. Cada fila debe tener una clave primaria que la identifique.</p>
+  </div>
+
+  <p>En criollo: <strong>una celda = un valor</strong>. Nada de listas, ni comas separando varios ítems, ni "sub-columnas" escondidas.</p>
+
+  <h3>🦹 El villano que 1FN derrota: la celda con lista</h3>
+  <p>Imagina una tabla <code>pedidos</code> que guarda el carrito del cliente en una sola celda:</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>pedido_id</th><th>cliente</th><th>productos</th><th>fecha</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Ana</td><td>"Teclado, Mouse, Monitor"</td><td>2026-08-04</td></tr>
+        <tr><td>2</td><td>Beto</td><td>"Audífonos"</td><td>2026-08-04</td></tr>
+        <tr><td>3</td><td>Carla</td><td>"Mouse, USB-C, Hub, Webcam"</td><td>2026-08-05</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>¿Qué pasa si quieres <strong>contar cuántos teclados se vendieron</strong>? No puedes: tendrías que partir la cadena <code>productos</code> por coma en cada fila, y rezar que nadie escribió "teclado" con minúscula o "Teclado " con un espacio. Eso <strong>rompe el modelo relacional</strong>: SQL no sabe hacer <code>JOIN</code> sobre una lista dentro de una celda.</p>
+
+  <h3>🧹 La solución: una fila por ítem</h3>
+  <p>Aplicamos 1FN <strong>dividiendo la lista</strong>: cada producto del carrito pasa a su propia fila. La PK ya no es sólo <code>pedido_id</code>, sino <code>(pedido_id, producto)</code>.</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>pedido_id</th><th>producto</th><th>cliente</th><th>fecha</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Teclado</td><td>Ana</td><td>2026-08-04</td></tr>
+        <tr><td>1</td><td>Mouse</td><td>Ana</td><td>2026-08-04</td></tr>
+        <tr><td>1</td><td>Monitor</td><td>Ana</td><td>2026-08-04</td></tr>
+        <tr><td>2</td><td>Audífonos</td><td>Beto</td><td>2026-08-04</td></tr>
+        <tr><td>3</td><td>Mouse</td><td>Carla</td><td>2026-08-05</td></tr>
+        <tr><td>3</td><td>USB-C</td><td>Carla</td><td>2026-08-05</td></tr>
+        <tr><td>3</td><td>Hub</td><td>Carla</td><td>2026-08-05</td></tr>
+        <tr><td>3</td><td>Webcam</td><td>Carla</td><td>2026-08-05</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Ahora sí puedes contar teclados: <code>SELECT COUNT(*) FROM pedidos WHERE producto = 'Teclado';</code>. Pero ojo: <strong>1FN no resuelve todo</strong>. Ahora el <code>cliente</code> y la <code>fecha</code> se repiten en cada ítem del mismo pedido. Esa redundancia la curará 2FN en el siguiente módulo.</p>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Cómo detectar que violas 1FN?</h4>
+    <p>Pregúntate: <strong>"¿Alguna columna tiene valores separados por comas, puntos y comas, saltos de línea o guiones?"</strong>. Si la respuesta es sí, violas 1FN. Ejemplos típicos: <code>telefonos = "3001234567, 3019876543"</code>, <code>etiquetas = "php;sql;css"</code>, <code>items = "A,B,C"</code>. La solución siempre es <strong>separar en filas</strong> (para 1FN) o en otra tabla (para 2FN+).</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>⚠️ Otros casos de violación de 1FN</h4>
+    <ul>
+      <li><strong>Sub-columnas</strong> escondidas: <code>direccion</code> que en realidad es "calle # nro" (debería ser <code>calle</code>, <code>numero</code>).</li>
+      <li><strong>Columnas repetidas</strong>: <code>tel1</code>, <code>tel2</code>, <code>tel3</code> (grupo repetitivo). La solución es una tabla <code>telefonos(entity_id, tipo, numero)</code>.</li>
+      <li><strong>Valores compuestos</strong>: <code>nombre_completo</code> que guarda "Ana María Torres" (debería ser <code>nombre</code>, <code>apellido</code>).</li>
+    </ul>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — antes (violación 1FN) y después (1FN)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- ❌ ANTES: violación de 1FN (lista dentro de una celda)</span>
+<span class="kw">CREATE TABLE</span> pedidos_mal (
+    pedido_id <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+    cliente   <span class="ty">VARCHAR</span>(<span class="num">100</span>),
+    productos <span class="ty">TEXT</span>,            <span class="cm">-- "Teclado, Mouse, Monitor" ← ¡mal!</span>
+    fecha     <span class="ty">DATE</span>
+);
+
+<span class="cm">-- ✅ DESPUÉS: 1FN aplicada — una fila por producto</span>
+<span class="kw">CREATE TABLE</span> pedidos_1fn (
+    pedido_id <span class="ty">INTEGER</span>,
+    producto  <span class="ty">VARCHAR</span>(<span class="num">80</span>),
+    cliente   <span class="ty">VARCHAR</span>(<span class="num">100</span>),
+    fecha     <span class="ty">DATE</span>,
+    <span class="kw">PRIMARY KEY</span> (pedido_id, producto)
+);</code></pre>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 3 minutos</h4>
+    <p>Pida a las parejas que escriban <strong>un ejemplo propio</strong> de violación de 1FN: una tabla cualquiera (inventario, Playlist, equipo deportivo) con una columna-lista. Luego la "curan": la pasan a 1FN. Compártanlo en voz alta.</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>📝 Quiz M2 · Primera Forma Normal</h3>
+
+    <div class="pregunta" data-correcta="a">
+      <p>1. ¿Cuál es la regla principal de la <strong>1FN</strong>?</p>
+      <button class="opcion" data-op="a">a) Cada celda debe contener un solo valor atómico</button>
+      <button class="opcion" data-op="b">b) Cada tabla debe tener una FK</button>
+      <button class="opcion" data-op="c">c) No puede haber dos PK en una tabla</button>
+      <button class="opcion" data-op="d">d) Todos los datos deben ser numéricos</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>2. Una columna <code>telefonos</code> guarda <code>"300123, 301987"</code>. ¿Qué violates?</p>
+      <button class="opcion" data-op="a">a) 3FN</button>
+      <button class="opcion" data-op="b">b) 2FN</button>
+      <button class="opcion" data-op="c">c) 1FN</button>
+      <button class="opcion" data-op="d">d) Integridad referencial</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>3. Tienes <code>tel1</code>, <code>tel2</code>, <code>tel3</code> como tres columnas de <code>clientes</code>. ¿Qué solución propones para cumplir 1FN?</p>
+      <button class="opcion" data-op="a">a) Combinarlas en un <code>telefonos TEXT</code> con comas</button>
+      <button class="opcion" data-op="b">b) Dejarlas así, porque ya son atómicas</button>
+      <button class="opcion" data-op="c">c) Poner todas las filas en una sola celda</button>
+      <button class="opcion" data-op="d">d) Crear una tabla <code>telefonos(cliente_id, numero)</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p>4. Al aplicar 1FN a la tabla <code>pedidos</code> con <code>productos="A,B,C"</code>, ¿qué pasa con la PK?</p>
+      <button class="opcion" data-op="a">a) Se elimina por completo</button>
+      <button class="opcion" data-op="b">b) Se vuelve compuesta: <code>(pedido_id, producto)</code></button>
+      <button class="opcion" data-op="c">c) Pasa a ser <code>producto</code> únicamente</button>
+      <button class="opcion" data-op="d">d) No cambia</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: 2FN →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — SEGUNDA FORMA NORMAL (2FN)
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>2️⃣ Segunda Forma Normal (2FN)</h2>
+  <p class="meta-modulo">Misión 03 · Eliminar dependencias parciales de la PK · ~35 min</p>
+
+  <p>Para aplicar 2FN primero necesitas cumplir 1FN. Y además necesitas un concepto clave: la <strong>dependencia funcional</strong>.</p>
+
+  <div class="caja-concepto">
+    <h4>📖 Dependencia funcional (DF)</h4>
+    <p>Se dice que la columna <strong>B depende funcionalmente de A</strong> (se anota <code>A → B</code>) si, conocido el valor de <code>A</code>, el valor de <code>B</code> queda determinado. <strong>Ej:</strong> <code>estudiante_id → nombre</code> (conociendo el id, conoces el nombre). Es la manera formal de decir "el nombre <em>pertenece</em> al estudiante, no al préstamo ni al curso".</p>
+  </div>
+
+  <h3>📐 La regla de 2FN</h3>
+  <div class="caja-concepto">
+    <h4>📖 2FN — Definición formal</h4>
+    <p>Una relación está en <strong>2FN</strong> si está en 1FN y <strong>ningún atributo que no sea parte de la PK depende sólo de una parte de la PK</strong>. En otras palabras: <strong>toda columna no-clave debe depender de la PK completa</strong>, no de un pedazo de ella.</p>
+  </div>
+
+  <p>Esto solo tiene sentido cuando la PK es <strong>compuesta</strong>. Si tu PK es una sola columna (por ejemplo <code>id SERIAL</code>), <em>ya cumples 2FN automáticamente</em>: no hay "parte" de la PK de la que un atributo pueda depender.</p>
+
+  <h3>🦹 El villano que 2FN derrota: la dependencia parcial</h3>
+  <p>Tomemos la tabla <code>pedidos_1fn</code> del módulo anterior, en 1FN:</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>pedido_id</th><th>producto</th><th>cliente</th><th>fecha</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Teclado</td><td>Ana</td><td>2026-08-04</td></tr>
+        <tr><td>1</td><td>Mouse</td><td>Ana</td><td>2026-08-04</td></tr>
+        <tr><td>2</td><td>Audífonos</td><td>Beto</td><td>2026-08-04</td></tr>
+        <tr><td>3</td><td>Mouse</td><td>Carla</td><td>2026-08-05</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>La PK es <code>(pedido_id, producto)</code>. Pero observa:</p>
+  <ul>
+    <li><code>cliente</code> depende de <code>pedido_id</code> <strong>solamente</strong>: si te dicen el pedido 1, ya sabes que el cliente es Ana, no hace falta saber el producto.</li>
+    <li><code>fecha</code> también depende de <code>pedido_id</code> solamente.</li>
+  </ul>
+  <p>Esas son <strong>dependencias parciales</strong>: la columna depende de una <em>parte</em> de la PK, no de toda. Por eso <code>cliente</code> y <code>fecha</code> se repiten en cada ítem del mismo pedido. <strong>Ana aparece 2 veces</strong>, <code>2026-08-04</code> aparece 3 veces.</p>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "el precio que depende a medias"</h4>
+    <p>Imagina que añadimos <code>precio_unitario</code> a la tabla. ¿De qué depende ese precio? Del <strong>producto</strong>, no del pedido. Si sube el precio del "Mouse", tendrías que actualizar <em>todas</em> las filas donde aparece "Mouse" para que reflejen el nuevo precio. Eso es anomalía de actualización, hija directa de una dependencia parcial.</p>
+  </div>
+
+  <h3>🧹 La solución: separar tablas</h3>
+  <p>2FN dice: <strong>saca los atributos que dependen parcialmente y ponlos en su propia tabla</strong>. En el ejemplo:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — aplicar 2FN: separar pedidos de items</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Pedidos: la PK es ahora una sola columna (id)</span>
+<span class="kw">CREATE TABLE</span> pedidos (
+    id         <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+    cliente    <span class="ty">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+    fecha      <span class="ty">DATE</span> <span class="kw">NOT NULL</span>
+);
+
+<span class="cm">-- Items: la PK es compuesta (pedido_id, producto_id)</span>
+<span class="kw">CREATE TABLE</span> pedidos_items (
+    pedido_id    <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> pedidos(id),
+    producto_id  <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> productos(id),
+    cantidad     <span class="ty">INTEGER</span> <span class="kw">NOT NULL</span>,
+    <span class="kw">PRIMARY KEY</span> (pedido_id, producto_id)
+);</code></pre>
+  </div>
+
+  <p>Ahora <code>cliente</code> y <code>fecha</code> viven <strong>una sola vez</strong> en <code>pedidos</code>, y cada ítem de un pedido apunta a su cabecera por medio de <code>pedido_id</code> (FK). El precio vive en <code>productos</code> (que veremos abajo), no en cada ítem. <strong>Ana ya no se repite</strong>.</p>
+
+  <div class="caja-tip">
+    <h4>💡 Truco para detectar dependencias parciales</h4>
+    <p>Escribe tu PK compuesta y, debajo, cada columna no-clave. Para cada una pregúntate: <strong>"¿Depende de toda la PK o sólo de una parte?"</strong>. Si depende de parte (por ejemplo de <code>pedido_id</code>), <em>sácala</em> a su propia tabla donde esa parte sea la PK. Esta es la mecánica exacta de 2FN.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🧠 ¿Y la <code>cantidad</code> en <code>pedidos_items</code>?</h4>
+    <p>La <code>cantidad</code> <em>sí</em> depende de la PK completa <code>(pedido_id, producto_id)</code>: necesitas saber <strong>qué pedido</strong> y <strong>qué producto</strong> para saber cuántos pidió. Por eso <code>cantidad</code> <strong>se queda</strong> en <code>pedidos_items</code>. Es el ejemplo perfecto de un atributo que <em>no</em> es dependencia parcial: es dependencia completa.</p>
+  </div>
+
+  <h3>📋 Resumen de 2FN en tres pasos</h3>
+  <ol>
+    <li>Verifica que ya estás en <strong>1FN</strong> (todas las celdas atómicas).</li>
+    <li>Identifica la <strong>PK</strong>. Si es de <strong>una sola columna</strong>, ya cumples 2FN: no hagas nada.</li>
+    <li>Si la PK es <strong>compuesta</strong>, busca columnas que dependan de <em>una parte</em> de la PK. <strong>Sácalas</strong> a su propia tabla donde esa parte sea la PK. Repite hasta que toda columna dependa de la PK completa.</li>
+  </ol>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 5 minutos</h4>
+    <p>Pida a las parejas que dibujen la tabla <code>pedidos_1fn</code> en el cuaderno y, con flechas, indiquen de qué depende cada columna (<code>cliente → pedido_id</code>, <code>fecha → pedido_id</code>, <code>cantidad → (pedido_id, producto)</code>). Luego, en una segunda iteración, dibujen las dos tablas resultantes. La visualización de las flechas es la mejor manera de "ver" 2FN.</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>📝 Quiz M3 · Segunda Forma Normal</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p>1. ¿Qué requiere 2FN además de estar en 1FN?</p>
+      <button class="opcion" data-op="a">a) Que la PK sea numérica</button>
+      <button class="opcion" data-op="b">b) Que toda columna no-clave dependa de la PK completa</button>
+      <button class="opcion" data-op="c">c) Que no haya claves foráneas</button>
+      <button class="opcion" data-op="d">d) Que todas las columnas sean <code>NOT NULL</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>2. Si tu PK es <code>id SERIAL</code> (una sola columna), ¿cumples 2FN automáticamente?</p>
+      <button class="opcion" data-op="a">a) No, hay que dividir la tabla igual</button>
+      <button class="opcion" data-op="b">b) Sólo si también cumples 3FN</button>
+      <button class="opcion" data-op="c">c) Sí, porque no hay "parte" de la PK de la que un atributo pueda depender</button>
+      <button class="opcion" data-op="d">d) Sólo si todas las columnas son <code>VARCHAR</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>3. En <code>pedidos_items(pedido_id, producto_id, cantidad)</code> con PK <code>(pedido_id, producto_id)</code>, ¿qué columna NO es dependencia parcial?</p>
+      <button class="opcion" data-op="a">a) <code>cantidad</code> (depende de las dos)</button>
+      <button class="opcion" data-op="b">b) <code>pedido_id</code> (es parte de la PK)</button>
+      <button class="opcion" data-op="c">c) <code>producto_id</code> (es parte de la PK)</button>
+      <button class="opcion" data-op="d">d) Ninguna, todas son parciales</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. Tienes <code>detalle_factura(factura_id, producto_id, nombre_producto, cantidad)</code> con PK <code>(factura_id, producto_id)</code>. ¿Qué dependencia parcial rompe 2FN?</p>
+      <button class="opcion" data-op="a">a) <code>cantidad → (factura_id, producto_id)</code></button>
+      <button class="opcion" data-op="b">b) <code>factura_id → factura_id</code></button>
+      <button class="opcion" data-op="c">c) <code>producto_id → producto_id</code></button>
+      <button class="opcion" data-op="d">d) <code>nombre_producto → producto_id</code> (sólo depende de una parte de la PK)</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: Descanso ☕ →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — DESCANSO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ Pausa de 15 minutos</h2>
+    <p class="lead">Ya dominas 1FN (atomicidad) y 2FN (dependencia de la PK completa). El cerebro necesita asentar. Levántate, estira, hidrátate, y vuelve con la trivia lista para 3FN.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card">
+      <span class="big-icon">🧘</span>
+      <h3>Estira</h3>
+      <p>30 segundos mirando al horizonte más lejano que puedas. Los ojos también descansan de la pantalla.</p>
+    </div>
+    <div class="descanso-card">
+      <span class="big-icon">💧</span>
+      <h3>Hidrátate</h3>
+      <p>Un vaso de agua. La normalización es pura lógica: el cerebro modela mejor hidratado.</p>
+    </div>
+    <div class="descanso-card">
+      <span class="big-icon">💬</span>
+      <h3>Cuenta a alguien</h3>
+      <p>En pareja, cuéntale a tu compañero/a en una frase qué es una "dependencia parcial". Si lo explicas, lo entiendes.</p>
+    </div>
+  </div>
+
+  <div class="trivia-box">
+    <h3>🎲 Trivia de descanso</h3>
+    <p style="margin-bottom:1rem;color:var(--texto-suave);">En <code>pedidos_1fn(pedido_id, producto, cliente, fecha)</code> con PK <code>(pedido_id, producto)</code>, ¿qué columna es una dependencia parcial?</p>
+    <div class="trivia-opts" id="triviaOpts">
+      <button class="trivia-opt" data-top="a" data-tcorrecta="c">a) <code>producto</code></button>
+      <button class="trivia-opt" data-top="b" data-tcorrecta="c">b) <code>pedido_id</code></button>
+      <button class="trivia-opt" data-top="c" data-tcorrecta="c">c) <code>cliente</code> y <code>fecha</code></button>
+      <button class="trivia-opt" data-top="d" data-tcorrecta="c">d) Ninguna</button>
+    </div>
+    <div class="trivia-result" id="triviaResult"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: 3FN →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — TERCERA FORMA NORMAL (3FN)
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>3️⃣ Tercera Forma Normal (3FN)</h2>
+  <p class="meta-modulo">Misión 04 · Eliminar dependencias transitivas · ~35 min</p>
+
+  <p>2FN resolvió que las columnas dependieran de "la mitad" de la PK. Pero todavía queda un villano: columnas que <strong>no dependen de la PK… sino de otra columna que no es la PK</strong>. Ese fenómeno se llama <strong>dependencia transitiva</strong>, y 3FN lo prohíbe.</p>
+
+  <div class="caja-concepto">
+    <h4>📖 3FN — Definición formal</h4>
+    <p>Una relación está en <strong>3FN</strong> si está en 2FN y <strong>ningún atributo no-clave depende transitivamente de la PK</strong>. En criollo: ninguna columna debe depender de <em>otra</em> columna que no sea la PK. <strong>Todo depende de la PK, y sólo de la PK</strong>.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔁 El lema de Codd</h4>
+    <p style="font-style:italic;font-size:1.05rem;">"Cada atributo no-clave debe depender de la clave, de la clave completa y de nada más que de la clave."</p>
+    <p style="margin-top:0.4rem;">Esa frase resume 1FN + 2FN + 3FN. <strong>1FN</strong> = depende de algo identificable (PK). <strong>2FN</strong> = depende de la PK <em>completa</em>. <strong>3FN</strong> = depende <em>sólo</em> de la PK.</p>
+  </div>
+
+  <h3>🦹 El villano que 3FN derrota: la dependencia transitiva</h3>
+  <p>Imagina la tabla <code>empleados</code> así:</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>id (PK)</th><th>nombre</th><th>depto_id</th><th>nombre_depto</th><th>jefe_depto</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Ana</td><td>10</td><td>Ventas</td><td>Luis</td></tr>
+        <tr><td>2</td><td>Beto</td><td>10</td><td>Ventas</td><td>Luis</td></tr>
+        <tr><td>3</td><td>Carla</td><td>20</td><td>IT</td><td>Marta</td></tr>
+        <tr><td>4</td><td>Dani</td><td>10</td><td>Ventas</td><td>Luis</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>La PK es <code>id</code> (una sola columna, así que 2FN se cumple automáticamente). Pero miremos las dependencias:</p>
+  <ul>
+    <li><code>id → nombre</code> ✓ (depende de la PK).</li>
+    <li><code>id → depto_id</code> ✓ (depende de la PK).</li>
+    <li><code>depto_id → nombre_depto, jefe_depto</code> ✗ (¡<code>nombre_depto</code> y <code>jefe_depto</code> no dependen de la PK <code>id</code>, sino de <code>depto_id</code>!).</li>
+  </ul>
+  <p>Hay una <strong>cadena</strong>: <code>id → depto_id → nombre_depto</code>. Esa cadena se llama <strong>dependencia transitiva</strong>: la PK llega a <code>nombre_depto</code> <em>a través de</em> <code>depto_id</code>. Y trae las anomalías de siempre:</p>
+  <ul>
+    <li><strong>Actualización:</strong> si Luis deja de ser jefe de Ventas, hay que actualizar 3 filas. Si fallas en una, hay dos jefes.</li>
+    <li><strong>Inserción:</strong> no puedes registrar el departamento "Marketing" hasta que alguien sea contratado en él.</li>
+    <li><strong>Borrado:</strong> si despides a todos los de IT, <em>borras</em> la información de que Marta es la jefa de IT.</li>
+  </ul>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "la ciudad metida en la factura"</h4>
+    <p>Otro caso típico: <code>clientes(id, nombre, ciudad, codigo_postal)</code>. <code>codigo_postal</code> no depende de <code>id</code>, sino de <code>ciudad</code>. Cada vez que un cliente de Medellín cambia de código postal (improbable, pero imaginemos un cambio de zona), hay que tocar todas las filas de Medellín. La solución es <strong>sacar ciudad + codigo_postal</strong> a su tabla.</p>
+  </div>
+
+  <h3>🧹 La solución: separar la cadena transitiva</h3>
+  <p>3FN dice: <strong>saca los atributos que dependen de otro no-clave y ponlos en su propia tabla</strong>, donde ese no-clave sea la PK.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — aplicar 3FN: separar empleados y departamentos</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Departamentos: ahora viven una sola vez</span>
+<span class="kw">CREATE TABLE</span> departamentos (
+    id          <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+    nombre      <span class="ty">VARCHAR</span>(<span class="num">80</span>) <span class="kw">NOT NULL</span>,
+    jefe        <span class="ty">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>
+);
+
+<span class="cm">-- Empleados: sólo referencian al departamento por su id (FK)</span>
+<span class="kw">CREATE TABLE</span> empleados (
+    id          <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+    nombre      <span class="ty">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+    depto_id    <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> departamentos(id)
+);</code></pre>
+  </div>
+
+  <p>Ahora <code>Ventas</code> y <code>Luis</code> viven <strong>una sola vez</strong> en <code>departamentos</code>. Cada empleado apunta a su departamento por <code>depto_id</code> (FK). Luis puede cambiar de cargo: actualizas <em>una</em> fila. Si llegara un departamento nuevo sin empleados, lo puedes registrar igual. ¡Tres anomalías eliminadas de un tajo!</p>
+
+  <div class="caja-tip">
+    <h4>💡 Truco para detectar dependencias transitivas</h4>
+    <p>Para cada columna no-clave, pregúntate: <strong>"¿Depende de la PK, o depende de otra columna que <em>ella sí</em> depende de la PK?"</strong>. Si es lo segundo, es transitiva. La metáfora: la información "viaja" en dos saltos (PK → X → Y); 3FN exige que viaje en un solo salto (PK → Y).</p>
+  </div>
+
+  <h3>📋 Resumen de 3FN en tres pasos</h3>
+  <ol>
+    <li>Verifica que ya estás en <strong>2FN</strong>.</li>
+    <li>Para cada columna no-clave, busca si depende de <strong>otra columna no-clave</strong> (y no de la PK directamente).</li>
+    <li>Si la hallas, <strong>sácala</strong> junto con su "padre" a una nueva tabla donde ese padre sea la PK. En la tabla original deja una FK.</li>
+  </ol>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 5 minutos</h4>
+    <p>Pida a las parejas que, con la tabla <code>clientes(id, nombre, ciudad, codigo_postal)</code>, identifiquen la dependencia transitiva y dibujen el diagrama de flechas <code>id → ciudad → codigo_postal</code>. Luego diseñen las dos tablas resultantes. La idea es que "vean" la cadena antes de partirla.</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>📝 Quiz M5 · Tercera Forma Normal</h3>
+
+    <div class="pregunta" data-correcta="c">
+      <p>1. ¿Qué prohíbe la 3FN además de lo que ya prohíben 1FN y 2FN?</p>
+      <button class="opcion" data-op="a">a) Las claves foráneas</button>
+      <button class="opcion" data-op="b">b) Los <code>NULL</code></button>
+      <button class="opcion" data-op="c">c) Las dependencias transitivas (columnas que dependen de otra columna no-clave)</button>
+      <button class="opcion" data-op="d">d) Las PK compuestas</button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p>2. En <code>empleados(id, nombre, depto_id, nombre_depto, jefe_depto)</code>, ¿cuál es la dependencia transitiva?</p>
+      <button class="opcion" data-op="a">a) <code>id → nombre</code></button>
+      <button class="opcion" data-op="b">b) <code>id → depto_id → nombre_depto, jefe_depto</code></button>
+      <button class="opcion" data-op="c">c) <code>nombre → id</code></button>
+      <button class="opcion" data-op="d">d) <code>depto_id → id</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>3. Al aplicar 3FN a <code>empleados</code>, ¿qué tablas resultan?</p>
+      <button class="opcion" data-op="a">a) <code>departamentos(id, nombre, jefe)</code> y <code>empleados(id, nombre, depto_id FK)</code></button>
+      <button class="opcion" data-op="b">b) <code>empleados(id, nombre)</code> y <code>deptos(nombre, jefe)</code> sin FK</button>
+      <button class="opcion" data-op="c">c) Una sola tabla <code>empleados</code> con todo</button>
+      <button class="opcion" data-op="d">d) <code>jefes(id, nombre)</code> y <code>empleados(id, nombre)</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. El lema "depende de la clave, de la clave completa y de nada más que de la clave" resume…</p>
+      <button class="opcion" data-op="a">a) Sólo 1FN</button>
+      <button class="opcion" data-op="b">b) Sólo 2FN</button>
+      <button class="opcion" data-op="c">c) Sólo 3FN</button>
+      <button class="opcion" data-op="d">d) 1FN + 2FN + 3FN juntas</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Normalizador →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — NORMALIZADOR INTERACTIVO
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>🧪 Normalizador interactivo</h2>
+  <p class="meta-modulo">Misión 05 · Diagnostica problemas y elige la forma normal que los resuelve · ~35 min</p>
+
+  <p>Antes de lanzarte al taller, practiquemos. Te mostraremos <strong>escenarios</strong> con tablas desnormalizadas; tu misión es <strong>identificar qué forma normal</strong> aplica a cada caso y, en algunos, qué tabla(s) resultante(s) genera. Pulsa un caso y luego la respuesta correcta.</p>
+
+  <h3>🩺 Caso 1 — ¿Qué forma normal resuelve esto?</h3>
+  <div class="card-sim">
+    <div class="sim-head">Caso 1: una tabla con listas en celdas</div>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <thead><tr><th>estudiante_id</th><th>nombre</th><th>asignaturas</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Ana</td><td>"Matemáticas, Física, Química"</td></tr>
+          <tr><td>2</td><td>Beto</td><td>"Matemáticas"</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-selector">
+      <button class="card-btn" data-card="1fn">1FN</button>
+      <button class="card-btn" data-card="2fn">2FN</button>
+      <button class="card-btn" data-card="3fn">3FN</button>
+    </div>
+    <div class="card-explicacion" id="cardExplicacion1"></div>
+    <div class="card-tablas" id="cardTablas1"></div>
+  </div>
+
+  <h3>🩺 Caso 2 — ¿Qué forma normal resuelve esto?</h3>
+  <div class="card-sim">
+    <div class="sim-head">Caso 2: una PK compuesta con un atributo que depende a medias</div>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <thead><tr><th>pedido_id</th><th>producto_id</th><th>cliente</th><th>fecha</th><th>nombre_producto</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>100</td><td>Ana</td><td>2026-08-04</td><td>Teclado</td></tr>
+          <tr><td>1</td><td>101</td><td>Ana</td><td>2026-08-04</td><td>Mouse</td></tr>
+          <tr><td>2</td><td>100</td><td>Beto</td><td>2026-08-05</td><td>Teclado</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-selector">
+      <button class="card-btn" data-card="1fn">1FN</button>
+      <button class="card-btn" data-card="2fn">2FN</button>
+      <button class="card-btn" data-card="3fn">3FN</button>
+    </div>
+    <div class="card-explicacion" id="cardExplicacion2"></div>
+    <div class="card-tablas" id="cardTablas2"></div>
+  </div>
+
+  <h3>🩺 Caso 3 — ¿Qué forma normal resuelve esto?</h3>
+  <div class="card-sim">
+    <div class="sim-head">Caso 3: una PK simple con un atributo que depende de otro atributo</div>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <thead><tr><th>cliente_id (PK)</th><th>nombre</th><th>ciudad</th><th>codigo_postal</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Ana</td><td>Medellín</td><td>050001</td></tr>
+          <tr><td>2</td><td>Beto</td><td>Medellín</td><td>050001</td></tr>
+          <tr><td>3</td><td>Carla</td><td>Bogotá</td><td>110111</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-selector">
+      <button class="card-btn" data-card="1fn">1FN</button>
+      <button class="card-btn" data-card="2fn">2FN</button>
+      <button class="card-btn" data-card="3fn">3FN</button>
+    </div>
+    <div class="card-explicacion" id="cardExplicacion3"></div>
+    <div class="card-tablas" id="cardTablas3"></div>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🎯 Repaso de las tres formas normales</h4>
+    <div class="contenedor-tabla" style="margin-top:0.6rem;">
+      <table class="tabla-compara">
+        <thead><tr><th>Forma</th><th>Regla</th><th>Villano que derrota</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1FN</strong></td><td>Cada celda es atómica (un solo valor)</td><td>La celda con lista "A,B,C"</td></tr>
+          <tr><td><strong>2FN</strong></td><td>Estando en 1FN, cada atributo no-clave depende de la PK completa</td><td>Dependencia parcial de PK compuesta</td></tr>
+          <tr><td><strong>3FN</strong></td><td>Estando en 2FN, ningún atributo no-clave depende de otro no-clave</td><td>Dependencia transitiva</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que, antes de pulsar los botones, <strong>predigan en voz alta</strong> qué forma normal aplica a cada caso y por qué. Luego pulsen y comparen. La predicción mental es la que consolida el aprendizaje para el taller.</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>📝 Quiz M6 · Normalizador</h3>
+
+    <div class="pregunta" data-correcta="a">
+      <p>1. Tienes <code>ventas(cliente, productos="A,B,C", total)</code>. ¿Qué forma normal aplicas <em>primero</em>?</p>
+      <button class="opcion" data-op="a">a) 1FN — separar la lista en filas</button>
+      <button class="opcion" data-op="b">b) 2FN — separar clientes</button>
+      <button class="opcion" data-op="c">c) 3FN — separar ciudad</button>
+      <button class="opcion" data-op="d">d) Ninguna, ya está bien</button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p>2. Tienes <code>factura_detalle(factura_id, producto_id, nombre_producto, cantidad)</code> con PK <code>(factura_id, producto_id)</code>. ¿Qué forma normal falta para corregir <code>nombre_producto</code>?</p>
+      <button class="opcion" data-op="a">a) 1FN</button>
+      <button class="opcion" data-op="b">b) 2FN — porque <code>nombre_producto</code> depende sólo de <code>producto_id</code></button>
+      <button class="opcion" data-op="c">c) 3FN</button>
+      <button class="opcion" data-op="d">d) Ninguna, ya cumple 3FN</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>3. Tienes <code>alumnos(id, nombre, curso_id, nombre_curso, profesor_curso)</code> con PK <code>id</code>. ¿Qué forma normal falta para corregir <code>nombre_curso</code> y <code>profesor_curso</code>?</p>
+      <button class="opcion" data-op="a">a) 1FN</button>
+      <button class="opcion" data-op="b">b) 2FN</button>
+      <button class="opcion" data-op="c">c) 3FN — porque dependen de <code>curso_id</code>, no de <code>id</code></button>
+      <button class="opcion" data-op="d">d) Ninguna, ya cumple 3FN</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. El orden correcto al normalizar es…</p>
+      <button class="opcion" data-op="a">a) 3FN → 2FN → 1FN</button>
+      <button class="opcion" data-op="b">b) 2FN → 1FN → 3FN</button>
+      <button class="opcion" data-op="c">c) 1FN → 3FN → 2FN</button>
+      <button class="opcion" data-op="d">d) 1FN → 2FN → 3FN (cada una presupone la anterior)</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 7 — TALLER ENTREGABLE
+============================================================ -->
+<section class="modulo" data-modulo="7">
+  <h2>📦 Taller entregable: "Tienda Gamer"</h2>
+  <p class="meta-modulo">Misión 06 · Caso end-to-end: normaliza hasta 3FN y entrega el SQL + rúbrica · ~50 min</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">Taller final · Entregable</span>
+      <span class="challenge-title">Sistema de ventas para la Tienda Gamer del centro comercial</span>
+    </div>
+    <p>La <strong>Tienda Gamer</strong> lleva sus ventas en una sola tabla <code>ventas</code> que el dueño creció "a lo empírico" en una hoja de cálculo. Ahora las anomalías le explotan: precios desactualizados, clientes repetidos, productos que desaparecen cuando se cancela una venta. Tu misión, en pareja, es <strong>normalizar hasta 3FN</strong> y entregar el SQL resultante + un documento de reflexión.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h4>📋 Enunciado — la tabla <code>ventas</code> desnormalizada</h4>
+    <p>La tienda vende <strong>productos</strong> (cada uno con nombre, categoría y precio) a <strong>clientes</strong> (cada uno con nombre, correo y ciudad). Cada <strong>venta</strong> tiene un número, una fecha y un cliente; y puede llevar varios productos, cada uno con una cantidad. La tabla actual, <strong>en crisis</strong>, es:</p>
+
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <thead>
+          <tr>
+            <th>venta_id</th><th>fecha</th><th>cliente</th><th>correo_cliente</th><th>ciudad_cliente</th>
+            <th>productos</th><th>cantidades</th><th>categoria</th><th>precios_unit</th><th>total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>2026-08-01</td><td>Ana Torres</td><td>ana@x.co</td><td>Medellín</td><td>"Teclado, Mouse"</td><td>"1, 2"</td><td>"Periféricos, Periféricos"</td><td>"45000, 18000"</td><td>81000</td></tr>
+          <tr><td>2</td><td>2026-08-02</td><td>Beto Ruiz</td><td>beto@x.co</td><td>Medellín</td><td>"Monitor"</td><td>"1"</td><td>"Pantallas"</td><td>"320000"</td><td>320000</td></tr>
+          <tr><td>3</td><td>2026-08-03</td><td>Ana Torres</td><td>ana@x.co</td><td>Medellín</td><td>"Teclado, Webcam"</td><td>"1, 1"</td><td>"Periféricos, Cámaras"</td><td>"45000, 60000"</td><td>105000</td></tr>
+          <tr><td>4</td><td>2026-08-04</td><td>Carla Díaz</td><td>carla@x.co</td><td>Bogotá</td><td>"Mouse, Hub, USB-C"</td><td>"3, 1, 2"</td><td>"Periféricos, Conectividad, Conectividad"</td><td>"18000, 25000, 12000"</td><td>109000</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:0.6rem;">Observa los villanos: la celda con listas (<strong>1FN</strong>), <code>cliente</code>, <code>correo</code> y <code>ciudad</code> repetidos en cada venta (<strong>2FN</strong> si la PK fuera compuesta, o <strong>3FN</strong> si es simple), y <code>categoria</code> depende del producto, no de la venta (<strong>3FN</strong>). Tienes chófer para rato.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🎯 Objetivos del entregable</h4>
+    <p>Tu entrega, en pareja, debe contener <strong>cinco partes</strong>:</p>
+    <ol>
+      <li><strong>Diagnóstico</strong>: enumerar las anomalías concretas (inserción, actualización, borrado) que sufre la tabla <code>ventas</code> tal como está.</li>
+      <li><strong>Aplicación de 1FN</strong>: mostrar cómo queda la tabla al separar las listas, indicando la nueva PK.</li>
+      <li><strong>Aplicación de 2FN</strong>: identificar dependencias parciales (si las hay) y mostrar las tablas resultantes.</li>
+      <li><strong>Aplicación de 3FN</strong>: identificar dependencias transitivas (cliente↔ciudad↔correo, producto↔categoría↔precio) y mostrar las tablas resultantes.</li>
+      <li><strong>SQL final</strong>: las sentencias <code>CREATE TABLE</code> con PK y FK, en el orden correcto (primero tablas sin FK, luego las que referencian).</li>
+    </ol>
+  </div>
+
+  <div class="taller-er">
+    <div class="taller-er-step">
+      <h4><span class="step-num">1</span> Diagnóstico de anomalías</h4>
+      <p>En pareja, revisen la tabla <code>ventas</code> y enumeren <strong>al menos una anomalía de cada tipo</strong> (inserción, actualización, borrado) que sufra la tabla tal como está. Anótenlo en el documento de entrega.</p>
+      <button class="taller-sol-toggle" data-sol="sol-anom">👁️ Ver pista</button>
+      <div class="taller-sol" id="sol-anom">
+        <p>Pistas de anomalías (anótalas con tus palabras en el entregable):</p>
+        <ul>
+          <li><strong>Inserción:</strong> no puedes registrar un cliente nuevo que aún no ha comprado, ni un producto que aún no se ha vendido.</li>
+          <li><strong>Actualización:</strong> si Ana cambia de correo, hay que actualizar 2 filas; si el precio del Teclado cambia, hay que tocar 2 filas; la categoría del Mouse aparece en 2 filas.</li>
+          <li><strong>Borrado:</strong> si borras la venta 2 (la única con "Monitor"), pierdes el dato de que existe el producto "Monitor" y la categoría "Pantallas".</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">2</span> Aplica 1FN — separa las listas</h4>
+      <p>Transforma la tabla <code>ventas</code> para que <code>productos</code>, <code>cantidades</code>, <code>categoria</code> y <code>precios_unit</code> dejen de ser listas separadas por comas. Indica cuál es la nueva PK. Dibuja la tabla resultante en tu cuaderno o en Mermaid.</p>
+      <button class="taller-sol-toggle" data-sol="sol-1fn">👁️ Ver solución 1FN</button>
+      <div class="taller-sol" id="sol-1fn">
+        <p>Tras 1FN, cada venta tiene <strong>una fila por producto</strong>. La PK se vuelve compuesta: <code>(venta_id, producto_id)</code> (o <code>(venta_id, producto)</code> mientras no crees la tabla de productos). Una vista parcial:</p>
+        <div class="contenedor-tabla">
+          <table class="tabla-compara">
+            <thead><tr><th>venta_id</th><th>producto</th><th>cantidad</th><th>categoria</th><th>precio_unit</th><th>fecha</th><th>cliente</th><th>correo</th><th>ciudad</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Teclado</td><td>1</td><td>Periféricos</td><td>45000</td><td>2026-08-01</td><td>Ana Torres</td><td>ana@x.co</td><td>Medellín</td></tr>
+              <tr><td>1</td><td>Mouse</td><td>2</td><td>Periféricos</td><td>18000</td><td>2026-08-01</td><td>Ana Torres</td><td>ana@x.co</td><td>Medellín</td></tr>
+              <tr><td>2</td><td>Monitor</td><td>1</td><td>Pantallas</td><td>320000</td><td>2026-08-02</td><td>Beto Ruiz</td><td>beto@x.co</td><td>Medellín</td></tr>
+              <tr><td>3</td><td>Teclado</td><td>1</td><td>Periféricos</td><td>45000</td><td>2026-08-03</td><td>Ana Torres</td><td>ana@x.co</td><td>Medellín</td></tr>
+              <tr><td>3</td><td>Webcam</td><td>1</td><td>Cámaras</td><td>60000</td><td>2026-08-03</td><td>Ana Torres</td><td>ana@x.co</td><td>Medellín</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top:0.4rem;"><strong>PK compuesta:</strong> <code>(venta_id, producto)</code>. Ya no hay listas en celdas, pero el cliente, el correo, la fecha, la categoría y el precio se repiten. Esas redundancias las curan 2FN y 3FN.</p>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">3</span> Aplica 2FN — quita dependencias parciales</h4>
+      <p>Con la PK compuesta <code>(venta_id, producto)</code>, busca columnas que dependan sólo de <code>venta_id</code> (la "cabecera" de la venta) o sólo de <code>producto</code>. Sácalas a tablas separadas.</p>
+      <button class="taller-sol-toggle" data-sol="sol-2fn">👁️ Ver solución 2FN</button>
+      <div class="taller-sol" id="sol-2fn">
+        <p>Dependencias parciales:</p>
+        <ul>
+          <li><code>fecha, cliente, correo, ciudad → venta_id</code> (cabecera de venta)</li>
+          <li><code>categoria, precio_unit → producto</code> (atributos del producto)</li>
+          <li><code>cantidad → (venta_id, producto)</code> (depende de la PK completa → <strong>se queda</strong>)</li>
+        </ul>
+        <p>Tablas resultantes:</p>
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- Cabecera de venta
+ventas(id PK, fecha, cliente, correo, ciudad)
+-- Detalle (la PK sigue compuesta)
+ventas_items(venta_id FK, producto, cantidad, PRIMARY KEY (venta_id, producto))
+-- (producto todavía "de gratis": más adelante será FK a productos)</pre>
+        <p style="margin-top:0.4rem;">El <code>cliente</code>, <code>correo</code>, <code>ciudad</code> ya no se repiten por cada ítem, sólo por venta. Pero <code>correo</code> y <code>ciudad</code> todavía dependen de <code>cliente</code>, no de <code>ventas.id</code>. Eso es 3FN.</p>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">4</span> Aplica 3FN — quita dependencias transitivas</h4>
+      <p>Detecta las cadenas <code>venta_id → cliente → correo, ciudad</code> y <code>(producto) → producto_id → categoria, precio</code>. Sácalas a tablas propias.</p>
+      <button class="taller-sol-toggle" data-sol="sol-3fn">👁️ Ver solución 3FN</button>
+      <div class="taller-sol" id="sol-3fn">
+        <p>Cadenas transitivas:</p>
+        <ul>
+          <li><code>venta_id → cliente → correo, ciudad</code> → crea <code>clientes(id PK, nombre, correo, ciudad_id FK)</code> y opcionalmente <code>ciudades(id PK, nombre, codigo_postal)</code>.</li>
+          <li><code>ventas_items.producto → categoria, precio_unit</code> → crea <code>productos(id PK, nombre, categoria_id FK, precio)</code> y <code>categorias(id PK, nombre)</code>.</li>
+        </ul>
+        <p>Modelo relacional final (5–6 tablas):</p>
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">ciudades(id PK, nombre)
+clientes(id PK, nombre, correo, ciudad_id FK → ciudades)
+categorias(id PK, nombre)
+productos(id PK, nombre, categoria_id FK → categorias, precio)
+ventas(id PK, fecha, cliente_id FK → clientes)
+ventas_items(venta_id FK → ventas, producto_id FK → productos, cantidad,
+             PRIMARY KEY (venta_id, producto_id))</pre>
+        <p style="margin-top:0.4rem;">¡Y así queda! Cero redundancias, cero anomalías. El precio del Mouse vive en una fila; la categoría "Periféricos" una sola vez; el correo de Ana una sola vez.</p>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">5</span> Escribe el SQL final</h4>
+      <p>Convierte el modelo relacional anterior en sentencias <code>CREATE TABLE</code> con PK y FK, <strong>en el orden correcto</strong>: primero las tablas sin FK (ciudades, categorias), luego las que las referencian, y al final las puentes.</p>
+      <button class="taller-sol-toggle" data-sol="sol-sql">👁️ Ver SQL</button>
+      <div class="taller-sol" id="sol-sql">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- 1. Tablas sin dependencias
+CREATE TABLE ciudades (
+    id      SERIAL PRIMARY KEY,
+    nombre  VARCHAR(80) NOT NULL UNIQUE
+);
+
+CREATE TABLE categorias (
+    id      SERIAL PRIMARY KEY,
+    nombre  VARCHAR(60) NOT NULL UNIQUE
+);
+
+-- 2. Tablas que referencian a las anteriores
+CREATE TABLE clientes (
+    id         SERIAL PRIMARY KEY,
+    nombre     VARCHAR(100) NOT NULL,
+    correo     VARCHAR(150) NOT NULL UNIQUE,
+    ciudad_id  INTEGER REFERENCES ciudades(id)
+);
+
+CREATE TABLE productos (
+    id            SERIAL PRIMARY KEY,
+    nombre        VARCHAR(100) NOT NULL,
+    categoria_id  INTEGER REFERENCES categorias(id),
+    precio        DECIMAL(10,2) NOT NULL
+);
+
+-- 3. Cabecera de venta
+CREATE TABLE ventas (
+    id          SERIAL PRIMARY KEY,
+    fecha       DATE NOT NULL,
+    cliente_id  INTEGER REFERENCES clientes(id)
+);
+
+-- 4. Detalle puente N:M entre ventas y productos
+CREATE TABLE ventas_items (
+    venta_id     INTEGER REFERENCES ventas(id) ON DELETE CASCADE,
+    producto_id  INTEGER REFERENCES productos(id),
+    cantidad     INTEGER NOT NULL CHECK (cantidad > 0),
+    PRIMARY KEY (venta_id, producto_id)
+);</pre>
+        <p style="margin-top:0.4rem;">Detalles a notar: <code>correo</code> es <code>UNIQUE</code> (no se repite entre clientes), <code>cantidad</code> lleva <code>CHECK &gt; 0</code> (no se vende cero ni negativos), <code>ON DELETE CASCADE</code> en <code>ventas_items.venta_id</code> para que al borrar una venta se borren sus ítems.</p>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">6</span> Reflexiona y entrega</h4>
+      <p>Con tu pareja, redacta un párrafo de <strong>reflexión</strong> respondiendo: ¿qué anomalía les pareció la más dañina para la Tienda Gamer y por qué? ¿En qué caso de la vida real volverían a aplicar normalización? Inclúyanlo en el documento final.</p>
+      <button class="taller-sol-toggle" data-sol="sol-reflex">👁️ Ver ejemplo de reflexión</button>
+      <div class="taller-sol" id="sol-reflex">
+        <p>Ejemplo (escrito por ustedes, no lo copien):</p>
+        <p style="font-style:italic;color:var(--texto-suave);">"La anomalía que más nos impactó fue la de <strong>actualización del precio</strong>: como el precio del Teclado vivía en cada fila de venta, si el dueño subía el precio, tenía que actualizar todas las ventas antiguas, lo que falsea el histórico. Al aplicar 3FN y crear la tabla <code>productos</code>, el precio vive una sola vez. Si quisiéramos guardar el precio <em>que tenía</em> en cada venta, agregaríamos <code>precio_unit_snapshot DECIMAL(10,2)</code> en <code>ventas_items</code>, pero eso ya no es una dependencia: es una captura histórica. Volveríamos a aplicar normalización siempre que el dueño quiera integrar proveedores, stock o devoluciones."</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 Cierre del aula — 5 minutos</h4>
+    <p>Cada pareja exporta su documento final (Markdown, PDF o foto del cuaderno) y lo entrega por el canal definido por el profesor. La entrega completa incluye: <strong>diagnóstico, 3 pasos de normalización (1FN/2FN/3FN) con tablas o diagramas, el SQL final y el párrafo de reflexión</strong>. El profesor valida dos entregas al azar: ¿están las 6 tablas? ¿Las FK apuntan bien? ¿No quedó ninguna dependencia parcial o transitiva?</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>📋 Rúbrica de evaluación (100 pts)</h4>
+    <div class="contenedor-tabla" style="margin-top:0.6rem;">
+      <table class="tabla-compara">
+        <thead><tr><th>Criterio</th><th>Pts</th><th>Indicador</th></tr></thead>
+        <tbody>
+          <tr><td>Diagnóstico de anomalías</td><td>15</td><td>Identifica al menos 1 de cada tipo (inserción, actualización, borrado) con ejemplo concreto.</td></tr>
+          <tr><td>Aplicación de 1FN</td><td>15</td><td>Tabla sin listas en celdas; PK compuesta correcta.</td></tr>
+          <tr><td>Aplicación de 2FN</td><td>20</td><td>Identifica dependencias parciales y separa cabecera de detalle.</td></tr>
+          <tr><td>Aplicación de 3FN</td><td>20</td><td>Saca clientes, productos y categorías a tablas propias; FK correctas.</td></tr>
+          <tr><td>SQL final</td><td>20</td><td>6 <code>CREATE TABLE</code> con PK y FK en orden correcto; tipos adecuados.</td></tr>
+          <tr><td>Reflexión</td><td>10</td><td>Párrafo que argumenta qué anomalía fue la más dañina y por qué.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:0.6rem;font-size:0.9rem;"><strong>Entrega:</strong> un solo archivo por pareja, en formato <code>.md</code> o <code>.pdf</code>, nombrado <code>taller5-tienda-gamer-&lt;integrante1&gt;-&lt;integrante2&gt;.md</code>.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>🧩 Investigación (punto extra, 10 pts)</h4>
+    <p>¿Qué pasa si la tienda quiere guardar el <strong>precio que tenía</strong> cada producto <em>en el momento de la venta</em> (para no falsear el histórico al actualizar el precio actual)? Propongan la modificación al SQL y justifiquen por qué eso <strong>no</strong> es una violación de 3FN. Pista: es una <em>captura histórica</em>, no una dependencia.</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🏆 ¡Misión completada, Normalizador!</h2>
+    <p class="lead">Ya sabes qué son las anomalías de inserción, actualización y borrado, cómo aplicar las tres primeras formas normales (1FN, 2FN, 3FN) para eliminarlas, y cómo entregar un diseño relacional completo y limpio. Has normalizado de punta a punta el sistema de ventas de una tienda real. Eso es, literalmente, lo que hace un <strong>diseñador de bases de datos</strong> en la industria.</p>
+    <p style="margin-top:1rem;font-size:1.05rem;color:var(--verde);font-weight:700;">En la próxima clase entraremos a SQL: el lenguaje para consultar y manipular las tablas que ya sabes normalizar. 🗣️</p>
+    <button class="btn-final" data-reiniciar>🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<!-- =================== FOOTER =================== -->
+<footer class="pie">
+  <div class="fb">🎓 Bases de Datos · Clase 5 · Plataforma interactiva</div>
+  <div>Anomalías · 1FN · 2FN · 3FN · Normalización aplicada · 4 horas · Nivel Intermedio</div>
+  <div style="margin-top:.5rem;font-size:.78rem;">Hecho con 💜 para adolescentes que quieren diseñar bases de datos sin rebeldías.</div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

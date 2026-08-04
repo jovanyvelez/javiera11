@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🗄️ Bases de Datos · Clase 6 · SQL Básico (DDL + DML)</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- =================== HEADER + PROGRESO =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🗣️</span>
+    <div>
+      <h1>Bases de Datos · Clase 6</h1>
+      <p class="subtitulo">SQL · Lenguaje de consulta estructurado · DDL (CREATE/DROP/ALTER) · DML (INSERT/SELECT/UPDATE/DELETE)</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 390 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">📜 SQL</button>
+  <button class="btn-modulo" data-modulo="2">🏗️ DDL</button>
+  <button class="btn-modulo" data-modulo="3">📋 CREATE</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">📝 DML</button>
+  <button class="btn-modulo" data-modulo="6">🧪 Playground</button>
+  <button class="btn-modulo" data-modulo="7">📦 Taller</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🗣️ ¿Cómo le hablas a una base de datos?</h2>
+    <p class="lead">En la <strong>Clase 4</strong> modelamos entidades y relaciones, y en la <strong>Clase 5</strong> normalizamos hasta 3FN. Sabemos <em>qué</em> tablas debe tener una BD. Pero… <em>¿cómo le decimos a PostgreSQL que las cree?</em> ¿Cómo le pedimos que inserte un cliente, que muestre todos los libros de 2024, que actualice un precio o que borre un préstamo? La respuesta es <strong>SQL</strong>, el <em>Structured Query Language</em>: un lenguaje inglés-like que inventó IBM en los 70 y que hoy hablan todas las bases de datos del planeta. Hoy vamos a aprender su <strong>estructura general</strong> y los dos sub-lenguajes que abren todas las puertas: <strong>DDL</strong> (para <em>construir</em> la BD) y <strong>DML</strong> (para <em>manejar</em> sus datos).</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ sesión SQL en PostgreSQL</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">estudiante@bd:~$</span> <span class="cmd">psql -U postgres -d tienda</span></div>
+        <div class="out">psql (16.0) —Digite «help» para ayuda.</div>
+        <div><span class="prompt">tienda=#</span> <span class="cmd">CREATE DATABASE tienda_gamer;</span></div>
+        <div class="out">CREATE DATABASE</div>
+        <div><span class="prompt">tienda=#</span> <span class="cmd">\c tienda_gamer</span></div>
+        <div class="out">Ahora estás conectado a la base de datos «tienda_gamer».</div>
+        <div><span class="prompt">tienda_gamer=#</span> <span class="cmd">CREATE TABLE clientes (id SERIAL PRIMARY KEY, nombre VARCHAR(100));</span></div>
+        <div class="out">CREATE TABLE</div>
+        <div><span class="prompt">tienda_gamer=#</span> <span class="cmd">INSERT INTO clientes (nombre) VALUES ('Ana Torres');</span></div>
+        <div class="out">INSERT 0 1</div>
+        <div><span class="prompt">tienda_gamer=#</span> <span class="cmd">SELECT * FROM clientes;</span></div>
+        <div class="out"> id |   nombre</div>
+        <div class="out">----+-----------</div>
+        <div class="out">  1 | Ana Torres</div>
+        <div><span class="prompt">tienda_gamer=#</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>4 horas en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Comprender la estructura general de SQL y usar comandos DDL (CREATE/DROP/ALTER) y DML (INSERT/SELECT/UPDATE/DELETE) para crear y manipular tablas en PostgreSQL.</p>
+    </div>
+    <div class="tarjeta tarjeta-warm">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>El <code>INSERT</code> sin columnas que mete el dato en el lugar equivocado, el <code>DELETE</code> sin <code>WHERE</code> que borra toda la tabla, el <code>VARCHAR</code> sin tamaño. SQL te da poder… con grandes cuchillos.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · ¿Qué es SQL?</td><td style="color:var(--lima)">Historia, sub-lenguajes, sintaxis</td><td style="color:var(--rosa)">Creer que SQL es "solo SELECT"</td><td>30 XP</td></tr>
+        <tr><td>02 · DDL — Construir la BD</td><td style="color:var(--indigo)">CREATE/DROP DATABASE, ALTER</td><td style="color:var(--rosa)">Borrar la BD equivocada</td><td>30 XP</td></tr>
+        <tr><td>03 · CREATE TABLE a fondo</td><td style="color:var(--cian)">Columnas, PK, FK, restricciones</td><td style="color:var(--rosa)">La tabla sin PRIMARY KEY</td><td>30 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · DML — Manipular datos</td><td style="color:var(--lima-claro)">INSERT/SELECT/UPDATE/DELETE</td><td style="color:var(--rosa)">El DELETE sin WHERE</td><td>30 XP</td></tr>
+        <tr><td>05 · Playground en vivo</td><td style="color:var(--indigo-claro)">Ejecuta SQL en el navegador</td><td>—</td><td>55 XP</td></tr>
+        <tr><td>06 · Taller entregable</td><td style="color:var(--lima)">Caso "Mascotitas"</td><td style="color:var(--rosa)">Tienda de mascotas sin BD</td><td>30 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:0.6rem;font-size:0.85rem;color:var(--texto-suave);">Cada módulo completado da 30 XP; el Playground suma 25 XP extra por sus 5 retos. Los quizzes perfectos dan +25 XP cada uno. Máximo de la clase: <strong>390 XP</strong>.</p>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: adivinen <strong>qué significa cada una</strong> de estas siglas en inglés, antes de leer el siguiente módulo: <code>CREATE</code>, <code>INSERT</code>, <code>SELECT</code>, <code>UPDATE</code>, <code>DELETE</code>. ¿Suena a qué acción en español? Anótenlo. Son las 5 palabras que dominaremos hoy.</p>
+  </div>
+
+  <h3>🧠 Lo que ya sabes (repaso rápido)</h3>
+  <p>Antes de avanzar, recordemos lo construido en las clases anteriores — hoy lo vamos a usar todo:</p>
+  <ul>
+    <li>Una <strong>base de datos relacional</strong> guarda la información en <strong>tablas</strong> y se accede vía <strong>SQL</strong>. (Clase 1)</li>
+    <li>Cada tabla tiene una <strong>clave primaria (PK)</strong> y puede tener <strong>claves foráneas (FK)</strong> que conectan con otras tablas. (Clase 4)</li>
+    <li>Un modelo bien normalizado (1FN, 2FN, 3FN) dice <strong>qué tablas y columnas</strong> debe haber. Hoy le pediremos a PostgreSQL que las cree. (Clase 5)</li>
+  </ul>
+
+  <div class="caja-destacada">
+    <h4>📌 La gran pregunta de hoy</h4>
+    <p>Si el modelo ER + normalización dicen <em>qué</em> tablas debe tener la BD, <strong>¿con qué se las pedimos al SGBD?</strong> Con <strong>SQL</strong>: un lenguaje declarativo (le dices <em>qué</em> quieres, no <em>cómo</em> hacerlo). Es como pedir un café: «quiero un capuchino con leche de avena» — el barista (PostgreSQL) se encarga del proceso. Tú no le explicas cómo calentar la leche; le dices el resultado. Esa es la filosofía de SQL, y por eso ha sobrevivido 50 años.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Siguiente: ¿Qué es SQL? →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — ¿QUÉ ES SQL?
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>📜 ¿Qué es SQL?</h2>
+  <p class="meta-modulo">Misión 01 · Historia, sub-lenguajes y sintaxis general · ~30 min</p>
+
+  <p><strong>SQL</strong> (<em>Structured Query Language</em>, lenguaje de consulta estructurado) es el lenguaje que usamos para hablar con las bases de datos relacionales. Lo inventaron <strong>Donald Chamberlin</strong> y <strong>Raymond Boyce</strong> en IBM en 1974, basándose en las ideas de Edgar F. Codd (el mismo Codd de la normalización de la Clase 5). Hoy lo hablan <strong>PostgreSQL, MySQL, SQLite, Oracle, SQL Server</strong> y hasta motores NoSQL como Cassandra con un dialecto parecido. Es, sin exagerar, el <strong>segundo lenguaje más útil del mundo</strong> después del inglés.</p>
+
+  <div class="caja-concepto">
+    <h4>📖 Definición formal</h4>
+    <p>SQL es un <strong>lenguaje declarativo</strong> de acceso a bases de datos relacionales. «Declarativo» significa que describes <em>el resultado</em> que quieres, no la secuencia de pasos para obtenerlo. El SGBD (PostgreSQL) traduce tu sentencia a un plan de ejecución interno, optimiza índices y devuelve el resultado.</p>
+  </div>
+
+  <h3>🧩 SQL no es un solo lenguaje: es una familia</h3>
+  <p>SQL se divide en <strong>sub-lenguajes</strong>, cada uno con un trabajo distinto. Conocer esta división es lo que distingue a quien "sabe SQL" de quien "sólo hace SELECT". Hoy cubriremos los dos primeros; los demás los verás en clases siguientes.</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Sub-lenguaje</th><th>Sigla</th><th>Para qué sirve</th><th>Comandos estrella</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Data Definition Language</strong></td><td><strong>DDL</strong></td><td>Definir la <em>estructura</em>: crear, modificar y destruir bases de datos y tablas.</td><td><code>CREATE</code>, <code>DROP</code>, <code>ALTER</code></td></tr>
+        <tr><td><strong>Data Manipulation Language</strong></td><td><strong>DML</strong></td><td>Manipular los <em>datos</em>: insertar, consultar, actualizar y borrar filas.</td><td><code>INSERT</code>, <code>SELECT</code>, <code>UPDATE</code>, <code>DELETE</code></td></tr>
+        <tr><td>Data Query Language</td><td>DQL</td><td>Consultar datos (técnicamente <code>SELECT</code> solo). Muchos lo incluyen en DML.</td><td><code>SELECT</code></td></tr>
+        <tr><td>Data Control Language</td><td>DCL</td><td>Permisos: quién puede hacer qué.</td><td><code>GRANT</code>, <code>REVOKE</code></td></tr>
+        <tr><td>Transaction Control Language</td><td>TCL</td><td>Transacciones: agrupar operaciones que se hacen todas o ninguna.</td><td><code>BEGIN</code>, <code>COMMIT</code>, <code>ROLLBACK</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🧠 ¿Por qué SQL se parece al inglés?</h4>
+    <p>Porque fue diseñado para que <strong>personas no programadoras</strong> pudieran consultar datos sin aprender un lenguaje de programación. Por eso las sentencias se leen casi como oraciones: <code>SELECT nombre FROM clientes WHERE ciudad = 'Medellín';</code> → «Selecciona el nombre de los clientes donde la ciudad sea Medellín». Esa fue la idea original, y aunque hoy lo usamos sobre todo programadores, la filosofía sigue: <strong>claridad primero</strong>.</p>
+  </div>
+
+  <h3>📐 Estructura general de una sentencia SQL</h3>
+  <p>Toda sentencia SQL se compone de <strong>cláusulas</strong>: palabras clave seguidas de argumentos. El orden importa. Aquí van las más comunes, en el orden en que las escribes:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — anatomía de un SELECT</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">SELECT</span> nombre, correo              <span class="cm">-- 1. QUÉ columnas quieres ver</span>
+<span class="kw">FROM</span>   clientes                    <span class="cm">-- 2. DE QUÉ tabla</span>
+<span class="kw">WHERE</span>  ciudad = <span class="str">'Medellín'</span>        <span class="cm">-- 3. QUÉ filas (filtro)</span>
+<span class="kw">ORDER BY</span> nombre <span class="kw">ASC</span>;               <span class="cm">-- 4. CÓMO ordenarlas</span></code></pre>
+  </div>
+
+  <p>Las cláusulas <code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>, <code>ORDER BY</code> van <strong>siempre en ese orden</strong>. Olvidarlo es el error #1 de principiantes. PostgreSQL te dará un error de sintaxis y no te dejará avanzar.</p>
+
+  <h3>📏 Convenciones de sintaxis (para el cuaderno)</h3>
+  <ul>
+    <li><strong>Mayúsculas y minúsculas no importan</strong> para las palabras clave: <code>select</code> = <code>SELECT</code> = <code>Select</code>. Pero <em>sí</em> importan para los valores: <code>'Medellín'</code> ≠ <code>'medellín'</code>.</li>
+    <li><strong>Cada sentencia termina en punto y coma</strong> <code>;</code>. Sin él, psql espera que sigas escribiendo.</li>
+    <li><strong>Las cadenas van entre comillas simples</strong>: <code>'Ana Torres'</code>. Las dobles <code>"..."</code> se usan para identificadores (nombres de columnas con espacios), y casi nunca las necesitas.</li>
+    <li><strong>Los comentarios</strong> se escriben con <code>--</code> (una línea) o <code>/* ... */</code> (varias líneas).</li>
+    <li><strong>Los identificadores</strong> (nombres de tablas, columnas) van en <em>minúsculas</em> por defecto. Si los escribes en mayúsculas, PostgreSQL los convierte a minúsculas. Por convención, en este curso usaremos <code>snake_case</code>: <code>clientes</code>, <code>fecha_nacimiento</code>.</li>
+  </ul>
+
+  <div class="caja-tip">
+    <h4>💡 Mayúsculas para keywords, minúsculas para identificadores</h4>
+    <p>Por legibilidad, escribiremos las palabras clave en <strong>MAYÚSCULAS</strong> (<code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>) y los nombres de tablas/columnas en <strong>minúsculas</strong> (<code>clientes</code>, <code>nombre</code>). PostgreSQL no distingue, pero tu cerebro sí: así se lee mucho mejor.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "SQL es solo SELECT"</h4>
+    <p>Muchos creen que SQL es únicamente <code>SELECT</code> para consultar. ¡Falso! Hoy verás que <strong>CREATE</strong>, <code>INSERT</code>, <code>UPDATE</code> y <code>DELETE</code> son igual de importantes. Un backend sin DDL no crea tablas, y sin DML no inserta nada. <strong>SQL es el lenguaje completo</strong>; <code>SELECT</code> es sólo su palabra más famosa.</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 3 minutos</h4>
+    <p>Pida a las parejas que, con la tabla de sub-lenguajes, digan <strong>a qué sub-lenguaje</strong> pertenece cada uno de estos comandos: <code>CREATE TABLE</code>, <code>INSERT INTO</code>, <code>GRANT</code>, <code>SELECT</code>, <code>DROP DATABASE</code>. La idea es que memoricen la tabla para los próximos módulos.</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>📝 Quiz M1 · ¿Qué es SQL?</h3>
+
+    <div class="pregunta" data-correcta="c">
+      <p>1. SQL es un lenguaje…</p>
+      <button class="opcion" data-op="a">a) Imperativo: describes los pasos exactos</button>
+      <button class="opcion" data-op="b">b) Orientado a objetos</button>
+      <button class="opcion" data-op="c">c) Declarativo: describes el resultado que quieres</button>
+      <button class="opcion" data-op="d">d) Funcional puro</button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p>2. ¿Qué sub-lenguaje se usa para <strong>crear la estructura</strong> de la BD (tablas, columnas)?</p>
+      <button class="opcion" data-op="a">a) DML</button>
+      <button class="opcion" data-op="b">b) DDL</button>
+      <button class="opcion" data-op="c">c) DCL</button>
+      <button class="opcion" data-op="d">d) TCL</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>3. ¿Qué sub-lenguaje se usa para <strong>insertar, consultar, actualizar y borrar filas</strong>?</p>
+      <button class="opcion" data-op="a">a) DML</button>
+      <button class="opcion" data-op="b">b) DDL</button>
+      <button class="opcion" data-op="c">c) DCL</button>
+      <button class="opcion" data-op="d">d) DQL</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. ¿Cuál es el <strong>orden correcto</strong> de las cláusulas en un <code>SELECT</code>?</p>
+      <button class="opcion" data-op="a">a) <code>FROM → SELECT → WHERE → ORDER BY</code></button>
+      <button class="opcion" data-op="b">b) <code>WHERE → SELECT → FROM → ORDER BY</code></button>
+      <button class="opcion" data-op="c">c) <code>ORDER BY → WHERE → FROM → SELECT</code></button>
+      <button class="opcion" data-op="d">d) <code>SELECT → FROM → WHERE → ORDER BY</code></button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: DDL →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — DDL
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>🏗️ DDL: construir la base de datos</h2>
+  <p class="meta-modulo">Misión 02 · CREATE / DROP / ALTER DATABASE · ~35 min</p>
+
+  <p>El <strong>Data Definition Language (DDL)</strong> es el sub-lenguaje que <strong>construye y destruye la estructura</strong> de la BD: las bases de datos mismas, las tablas, las columnas, las restricciones. Sus tres comandos estrella son <code>CREATE</code> (crear), <code>DROP</code> (destruir) y <code>ALTER</code> (modificar). Hoy trabajaremos los dos primeros; <code>ALTER</code> lo mencionamos para que sepas que existe.</p>
+
+  <h3>🗄️ Bases de datos vs esquemas vs tablas</h3>
+  <p>PostgreSQL tiene una jerarquía que conviene entender antes de escribir nada:</p>
+  <ul>
+    <li>Un <strong>servidor PostgreSQL</strong> puede tener muchas <strong>bases de datos</strong>.</li>
+    <li>Una <strong>base de datos</strong> tiene por defecto un <em>esquema</em> llamado <code>public</code>, y dentro de él viven las <strong>tablas</strong>.</li>
+    <li>Una <strong>tabla</strong> tiene <strong>columnas</strong> y <strong>filas</strong>.</li>
+  </ul>
+  <p>En este curso nos basta con: <em>una base de datos → varias tablas</em>. No tocaremos esquemas personalizados.</p>
+
+  <h3>➕ CREATE DATABASE</h3>
+  <p>Para crear una base de datos nueva, el comando es directísimo:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — crear una base de datos</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">CREATE DATABASE</span> tienda_gamer;</code></pre>
+  </div>
+
+  <p>Tras ejecutarlo, PostgreSQL responde <code>CREATE DATABASE</code> (en mayúsculas, así confirma). A partir de ese momento, <code>tienda_gamer</code> existe y puede tener tablas. Para <em>empezar a usarla</em>, te conectas a ella con <code>\c tienda_gamer</code> en psql, o la seleccionas al arrancar la conexión.</p>
+
+  <div class="caja-tip">
+    <h4>💡 Reglas para nombrar bases de datos</h4>
+    <ul>
+      <li>Minúsculas, sin espacios, sin tildes: <code>tienda_gamer</code> ✓ · <code>Tienda Gamer</code> ✗.</li>
+      <li>Usa <code>snake_case</code> con guion bajo: <code>colegio_db</code>, <code>biblioteca_2026</code>.</li>
+      <li>El nombre debe describir el proyecto: evita <code>bd1</code>, <code>mibase</code>, <code>test</code>.</li>
+      <li>No uses palabras reservadas de SQL (<code>select</code>, <code>table</code>, <code>order</code>...) como nombre.</li>
+    </ul>
+  </div>
+
+  <h3>🗑️ DROP DATABASE</h3>
+  <p>Para <strong>borrar</strong> una base de datos entera —con todas sus tablas y datos— el comando es:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — borrar una base de datos</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">DROP DATABASE</span> tienda_gamer;</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "borrar la BD equivocada"</h4>
+    <p><code>DROP DATABASE</code> es <strong>irreversible</strong>: borra <em>todo</em> sin pedir confirmación. No hay papelera de reciclaje. Si lo ejecutas sobre la BD de producción por error, pierdes el trabajo de años. <strong>Reglas de oro:</strong> (1) nunca ejecutes <code>DROP</code> el lunes por la mañana; (2) antes de un <code>DROP DATABASE</code>, haz un <code>pg_dump</code> (backup); (3) si tienes dudas, añade <code>IF EXISTS</code> para que no falle si la BD no existe: <code>DROP DATABASE IF EXISTS tienda_gamer;</code>.</p>
+  </div>
+
+  <h3>🔧 ALTER DATABASE</h3>
+  <p>Para <strong>modificar propiedades</strong> de una BD existente (renombrarla, cambiar su dueño, configurar parámetros). No lo usaremos hoy, pero conviene conocerlo:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — renombrar una base de datos</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">ALTER DATABASE</span> tienda_gamer <span class="kw">RENAME TO</span> tienda_gamer_v2;</code></pre>
+  </div>
+
+  <h3>🧪 Flujo típico de trabajo</h3>
+  <p>El ciclo normal al empezar un proyecto nuevo es:</p>
+  <ol>
+    <li><code>CREATE DATABASE tienda_gamer;</code></li>
+    <li>Conectarte a ella (<code>\c tienda_gamer</code> en psql).</li>
+    <li><code>CREATE TABLE clientes (...);</code> — lo veremos en el módulo 3.</li>
+    <li><code>CREATE TABLE productos (...);</code></li>
+    <li>… y así con todas las tablas del modelo.</li>
+  </ol>
+
+  <div class="caja-destacada">
+    <h4>🔁 Conectando con la Clase 5</h4>
+    <p>En la Clase 5 normalizamos la Tienda Gamer hasta 3FN y obtuvimos 6 tablas: <code>ciudades</code>, <code>categorias</code>, <code>clientes</code>, <code>productos</code>, <code>ventas</code>, <code>ventas_items</code>. <strong>Hoy vamos a crear la BD y esas tablas con SQL real</strong>, usando <code>CREATE DATABASE</code> (este módulo) y <code>CREATE TABLE</code> (el siguiente). El modelo ER + normalización fue el <em>plano</em>; SQL es el <em>cemento</em>.</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que, en el cuaderno, escriban el flujo de comandos SQL para: (1) crear la BD <code>mascotitas</code>, (2) conectarse a ella, (3) borrarla al final. Practiquen el <code>IF EXISTS</code> para evitar errores. Discutan: ¿por qué <code>DROP DATABASE</code> no se usa en producción?</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>📝 Quiz M2 · DDL</h3>
+
+    <div class="pregunta" data-correcta="a">
+      <p>1. ¿Qué comando DDL <strong>crea</strong> una base de datos nueva?</p>
+      <button class="opcion" data-op="a">a) <code>CREATE DATABASE</code></button>
+      <button class="opcion" data-op="b">b) <code>NEW DATABASE</code></button>
+      <button class="opcion" data-op="c">c) <code>MAKE DATABASE</code></button>
+      <button class="opcion" data-op="d">d) <code>INIT DATABASE</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>2. ¿Qué hace <code>DROP DATABASE IF EXISTS tienda;</code>?</p>
+      <button class="opcion" data-op="a">a) Borra la BD sólo si está vacía</button>
+      <button class="opcion" data-op="b">b) Crea la BD si no existe</button>
+      <button class="opcion" data-op="c">c) Borra la BD si existe, y si no existe no falla</button>
+      <button class="opcion" data-op="d">d) Renombra la BD</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>3. ¿Cuál de estos <strong>NO</strong> es un nombre válido para una BD en PostgreSQL?</p>
+      <button class="opcion" data-op="a">a) <code>tienda_gamer</code></button>
+      <button class="opcion" data-op="b">b) <code>biblioteca2026</code></button>
+      <button class="opcion" data-op="c">c) <code>colegio_db</code></button>
+      <button class="opcion" data-op="d">d) <code>Tienda Gamer</code> (con espacio y mayúsculas)</button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p>4. ¿Por qué <code>DROP DATABASE</code> se considera peligroso?</p>
+      <button class="opcion" data-op="a">a) Porque pide confirmación y eso es lento</button>
+      <button class="opcion" data-op="b">b) Porque borra todo sin papelera de reciclaje y es irreversible</button>
+      <button class="opcion" data-op="c">c) Porque sólo funciona si la BD está vacía</button>
+      <button class="opcion" data-op="d">d) Porque necesita permisos de root</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: CREATE TABLE →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — CREATE TABLE A FONDO
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>📋 CREATE TABLE a fondo</h2>
+  <p class="meta-modulo">Misión 03 · Columnas, tipos, PK, FK y restricciones · ~40 min</p>
+
+  <p>Una vez creada la base de datos, el siguiente paso es <strong>crear las tablas</strong>. El comando <code>CREATE TABLE</code> es el más rico de DDL: define columnas, tipos de datos, claves primarias, claves foráneas y restricciones. Es el momento en el que tu modelo normalizado (Clase 5) se vuelve <em>real</em>.</p>
+
+  <h3>🧩 Anatomía de un CREATE TABLE</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — anatomía de CREATE TABLE</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">CREATE TABLE</span> clientes (
+    id         <span class="ty">SERIAL</span>       <span class="kw">PRIMARY KEY</span>,         <span class="cm">-- columna 1</span>
+    nombre     <span class="ty">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,           <span class="cm">-- columna 2</span>
+    correo     <span class="ty">VARCHAR</span>(<span class="num">150</span>) <span class="kw">UNIQUE</span>,              <span class="cm">-- columna 3</span>
+    ciudad_id  <span class="ty">INTEGER</span>      <span class="kw">REFERENCES</span> ciudades(id), <span class="cm">-- columna 4 (FK)</span>
+    activo     <span class="ty">BOOLEAN</span>      <span class="kw">DEFAULT</span> <span class="kw">TRUE</span>            <span class="cm">-- columna 5</span>
+);</code></pre>
+  </div>
+
+  <p>Entre paréntesis van las <strong>columnas</strong>, separadas por comas. Cada columna tiene:</p>
+  <ul>
+    <li><strong>Nombre</strong>: <code>id</code>, <code>nombre</code>, <code>correo</code>… en <code>snake_case</code>.</li>
+    <li><strong>Tipo de dato</strong>: <code>SERIAL</code>, <code>VARCHAR(n)</code>, <code>INTEGER</code>, <code>DECIMAL(p,s)</code>, <code>DATE</code>, <code>BOOLEAN</code>… (los vimos en la Clase 4).</li>
+    <li><strong>Restricciones</strong> (opcionales): <code>PRIMARY KEY</code>, <code>NOT NULL</code>, <code>UNIQUE</code>, <code>DEFAULT</code>, <code>REFERENCES</code> (FK), <code>CHECK</code>.</li>
+  </ul>
+
+  <h3>🔑 Restricciones de columna (las más comunes)</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Restricción</th><th>Qué garantiza</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>PRIMARY KEY</code></td><td>La columna es la clave primaria: única y no nula.</td><td><code>id SERIAL PRIMARY KEY</code></td></tr>
+        <tr><td><code>NOT NULL</code></td><td>La columna no admite <code>NULL</code>: obligatoria en cada fila.</td><td><code>nombre VARCHAR(100) NOT NULL</code></td></tr>
+        <tr><td><code>UNIQUE</code></td><td>No se pueden repetir valores en la columna.</td><td><code>correo VARCHAR(150) UNIQUE</code></td></tr>
+        <tr><td><code>DEFAULT</code></td><td>Valor por defecto si no se especifica al insertar.</td><td><code>activo BOOLEAN DEFAULT TRUE</code></td></tr>
+        <tr><td><code>REFERENCES</code> (FK)</td><td>La columna es clave foránea: debe existir en la tabla referenciada.</td><td><code>ciudad_id INTEGER REFERENCES ciudades(id)</code></td></tr>
+        <tr><td><code>CHECK</code></td><td>Una condición que toda fila debe cumplir.</td><td><code>edad INTEGER CHECK (edad &gt;= 0)</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 La diferencia entre PRIMARY KEY y UNIQUE</h4>
+    <p>A simple vista parecen lo mismo (ambos impiden duplicados), pero <strong>PRIMARY KEY</strong> implica además <code>NOT NULL</code> automáticamente y <strong>sólo puede haber una</strong> por tabla. <code>UNIQUE</code> admite <code>NULL</code> (sí, raro pero cierto) y puedes tener varias columnas <code>UNIQUE</code> en la misma tabla. La PK es el "DNI" de la fila; <code>UNIQUE</code> es un "alias obligatorio pero no identificativo".</p>
+  </div>
+
+  <h3>🔗 Claves foráneas (repaso activo)</h3>
+  <p>Recordatorio de la Clase 4: una <strong>clave foránea</strong> conecta una tabla con otra. Al declarar <code>ciudad_id INTEGER REFERENCES ciudades(id)</code>, PostgreSQL <strong>no permite</strong> insertar un cliente cuyo <code>ciudad_id</code> no exista en <code>ciudades.id</code>. Es la <strong>integridad referencial</strong> que ya conocemos, ahora escrita en SQL.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — FK con comportamiento ON DELETE</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">CREATE TABLE</span> ventas_items (
+    venta_id     <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> ventas(id) <span class="kw">ON DELETE CASCADE</span>,
+    producto_id  <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> productos(id),
+    cantidad     <span class="ty">INTEGER</span> <span class="kw">NOT NULL</span> <span class="kw">CHECK</span> (cantidad &gt; <span class="num">0</span>),
+    <span class="kw">PRIMARY KEY</span> (venta_id, producto_id)
+);</code></pre>
+  </div>
+
+  <p>Aquí tenemos una <strong>PK compuesta</strong> <code>(venta_id, producto_id)</code> (recordando la Clase 4: las N:M necesitan tabla puente con PK compuesta), una <strong>FK con <code>ON DELETE CASCADE</code></strong> (si se borra una venta, se borran sus ítems automáticamente), y una <strong>restricción <code>CHECK</code></strong> que prohíbe cantidades negativas o cero.</p>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "la tabla sin PRIMARY KEY"</h4>
+    <p>Si creas una tabla <em>sin</em> PK, PostgreSQL te lo permite (a diferencia de otros motores), pero es un error grave: nada garantiza que no haya filas duplicadas idénticas, y las relaciones <code>FK</code> no tienen a dónde apuntar. <strong>Siempre, siempre, siempre</strong> define una PK al crear una tabla. Si no se te ocurre una natural, usa <code>id SERIAL PRIMARY KEY</code>.</p>
+  </div>
+
+  <h3>📏 El orden importa: tablas sin FK primero</h3>
+  <p>Cuando tengas varias tablas con FK entre ellas, <strong>crea primero las que no dependen de nadie</strong>, y luego las que las referencian. Si intentas crear <code>clientes</code> (con FK a <code>ciudades</code>) antes que <code>ciudades</code>, PostgreSQL te dará el error <code>relation "ciudades" does not exist</code>.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — orden correcto de creación (Tienda Gamer)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- 1. Tablas sin dependencias</span>
+<span class="kw">CREATE TABLE</span> ciudades (
+    id      <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+    nombre  <span class="ty">VARCHAR</span>(<span class="num">80</span>) <span class="kw">NOT NULL</span> <span class="kw">UNIQUE</span>
+);
+
+<span class="kw">CREATE TABLE</span> categorias (
+    id      <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+    nombre  <span class="ty">VARCHAR</span>(<span class="num">60</span>) <span class="kw">NOT NULL</span> <span class="kw">UNIQUE</span>
+);
+
+<span class="cm">-- 2. Tablas que referencian a las anteriores</span>
+<span class="kw">CREATE TABLE</span> clientes (
+    id         <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+    nombre     <span class="ty">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+    correo     <span class="ty">VARCHAR</span>(<span class="num">150</span>) <span class="kw">UNIQUE</span>,
+    ciudad_id  <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> ciudades(id)
+);
+
+<span class="kw">CREATE TABLE</span> productos (
+    id            <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+    nombre        <span class="ty">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+    categoria_id  <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> categorias(id),
+    precio        <span class="ty">DECIMAL</span>(<span class="num">10</span>,<span class="num">2</span>) <span class="kw">NOT NULL</span> <span class="kw">CHECK</span> (precio &gt; <span class="num">0</span>)
+);</code></pre>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>📌 DROP TABLE también existe (y también es peligroso)</h4>
+    <p>Para borrar una tabla entera con todos sus datos: <code>DROP TABLE clientes;</code>. Mismas reglas que <code>DROP DATABASE</code>: es irreversible, usa <code>IF EXISTS</code> para evitar errores, y respeta el orden inverso al de creación (primero borra las que tienen FK, luego las referenciadas). <strong>Nunca</strong> uses <code>DROP TABLE</code> en producción sin un backup.</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 5 minutos</h4>
+    <p>Pida a las parejas que, en el cuaderno, completen el SQL del taller de la Clase 5 agregando <code>ventas</code> y <code>ventas_items</code> con sus FK. Verifiquen el orden de creación. La idea es que al llegar al taller de hoy (módulo 7) ya tengan el SQL completo listo para ejecutarlo en el playground.</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>📝 Quiz M3 · CREATE TABLE</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p>1. ¿Qué restricción implica automáticamente <code>NOT NULL</code> y permite sólo una por tabla?</p>
+      <button class="opcion" data-op="a">a) <code>UNIQUE</code></button>
+      <button class="opcion" data-op="b">b) <code>PRIMARY KEY</code></button>
+      <button class="opcion" data-op="c">c) <code>CHECK</code></button>
+      <button class="opcion" data-op="d">d) <code>DEFAULT</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>2. En <code>ciudad_id INTEGER REFERENCES ciudades(id)</code>, ¿qué garantiza la cláusula <code>REFERENCES</code>?</p>
+      <button class="opcion" data-op="a">a) Que <code>ciudad_id</code> sea único</button>
+      <button class="opcion" data-op="b">b) Que <code>ciudad_id</code> no sea nulo</button>
+      <button class="opcion" data-op="c">c) Integridad referencial: no se puede insertar un <code>ciudad_id</code> que no exista en <code>ciudades.id</code></button>
+      <button class="opcion" data-op="d">d) Que <code>ciudad_id</code> se autoincremente</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>3. Tienes <code>pedidos(cliente_id FK)</code> y <code>clientes(id PK)</code>. ¿En qué orden debes crearlas?</p>
+      <button class="opcion" data-op="a">a) Primero <code>clientes</code>, luego <code>pedidos</code></button>
+      <button class="opcion" data-op="b">b) Primero <code>pedidos</code>, luego <code>clientes</code></button>
+      <button class="opcion" data-op="c">c) En cualquier orden, no importa</button>
+      <button class="opcion" data-op="d">d) Al mismo tiempo, en una sola sentencia</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. ¿Qué hace <code>cantidad INTEGER NOT NULL CHECK (cantidad &gt; 0)</code>?</p>
+      <button class="opcion" data-op="a">a) Impide <code>NULL</code> pero permite ceros y negativos</button>
+      <button class="opcion" data-op="b">b) Permite <code>NULL</code> pero no negativos</button>
+      <button class="opcion" data-op="c">c) Autoincrementa <code>cantidad</code></button>
+      <button class="opcion" data-op="d">d) Impide <code>NULL</code> y cualquier valor &le; 0 (cero o negativos)</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: Descanso ☕ →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — DESCANSO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ Pausa de 15 minutos</h2>
+    <p class="lead">Ya dominas la estructura de SQL y el DDL (crear bases de datos y tablas con PK, FK y restricciones). El cerebro necesita asentar. Levántate, estira, hidrátate, y vuelve con la trivia lista para el DML.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card">
+      <span class="big-icon">🧘</span>
+      <h3>Estira</h3>
+      <p>30 segundos mirando al horizonte más lejano que puedas. Las sentencias se escriben mejor con la vista descansada.</p>
+    </div>
+    <div class="descanso-card">
+      <span class="big-icon">💧</span>
+      <h3>Hidrátate</h3>
+      <p>Un vaso de agua. Escribir SQL es pensar con claridad: el cerebro lo hace mejor hidratado.</p>
+    </div>
+    <div class="descanso-card">
+      <span class="big-icon">💬</span>
+      <h3>Cuenta a alguien</h3>
+      <p>En pareja, cuéntele a tu compañero/a en una frase qué diferencia hay entre DDL y DML. Si lo explicas, lo entiendes.</p>
+    </div>
+  </div>
+
+  <div class="trivia-box">
+    <h3>🎲 Trivia de descanso</h3>
+    <p style="margin-bottom:1rem;color:var(--texto-suave);">¿A qué sub-lenguaje pertenece <code>INSERT INTO clientes VALUES (...)</code>?</p>
+    <div class="trivia-opts" id="triviaOpts">
+      <button class="trivia-opt" data-top="a" data-tcorrecta="c">a) DDL</button>
+      <button class="trivia-opt" data-top="b" data-tcorrecta="c">b) DCL</button>
+      <button class="trivia-opt" data-top="c" data-tcorrecta="c">c) DML</button>
+      <button class="trivia-opt" data-top="d" data-tcorrecta="c">d) TCL</button>
+    </div>
+    <div class="trivia-result" id="triviaResult"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: DML →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — DML
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>📝 DML: manipular los datos</h2>
+  <p class="meta-modulo">Misión 04 · INSERT / SELECT / UPDATE / DELETE · ~40 min</p>
+
+  <p>El <strong>Data Manipulation Language (DML)</strong> es el sub-lenguaje que <strong>trabaja con las filas</strong> de las tablas: las inserta, las consulta, las actualiza y las borra. Sus cuatro comandos estrella son las <strong>operaciones CRUD</strong> (Create, Read, Update, Delete) que toda app hace contra una BD. Aprenderlos es el 80% de usar SQL.</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead><tr><th>Operación CRUD</th><th>Comando SQL</th><th>Qué hace</th></tr></thead>
+      <tbody>
+        <tr><td><strong>C</strong>reate</td><td><code>INSERT</code></td><td>Añade filas nuevas a una tabla.</td></tr>
+        <tr><td><strong>R</strong>ead</td><td><code>SELECT</code></td><td>Consulta filas (con filtros, orden, etc.).</td></tr>
+        <tr><td><strong>U</strong>pdate</td><td><code>UPDATE</code></td><td>Modifica filas existentes.</td></tr>
+        <tr><td><strong>D</strong>elete</td><td><code>DELETE</code></td><td>Borra filas existentes.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>➕ INSERT — añadir filas</h3>
+  <p>Hay dos formas. La <strong>buena</strong> (explicitando columnas) y la <strong>peligrosa</strong> (sin columnas).</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — INSERT (forma recomendada)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- ✅ Forma buena: explicita las columnas a llenar</span>
+<span class="kw">INSERT INTO</span> clientes (nombre, correo, ciudad_id)
+<span class="kw">VALUES</span> (<span class="str">'Ana Torres'</span>, <span class="str">'ana@x.co'</span>, <span class="num">1</span>);
+
+<span class="cm">-- Se pueden insertar varias filas a la vez</span>
+<span class="kw">INSERT INTO</span> clientes (nombre, correo, ciudad_id)
+<span class="kw">VALUES</span>
+    (<span class="str">'Beto Ruiz'</span>,  <span class="str">'beto@x.co'</span>,  <span class="num">1</span>),
+    (<span class="str">'Carla Díaz'</span>, <span class="str">'carla@x.co'</span>, <span class="num">2</span>);</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "INSERT sin columnas"</h4>
+    <p><code>INSERT INTO clientes VALUES (1, 'Ana', 'ana@x.co', 1, TRUE);</code> parece corto y cómodo, pero <strong>depende del orden exacto de las columnas</strong> en la tabla. Si mañana alguien añade una columna nueva con <code>ALTER TABLE</code>, tu INSERT se rompe silenciosamente: el valor que creías mandar a <code>correo</code> podría ir a otra columna. <strong>Siempre explicita las columnas:</strong> <code>INSERT INTO clientes (nombre, correo) VALUES (...)</code>. Es más largo pero inmune a cambios.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 <code>SERIAL</code> no se inserta</h4>
+    <p>Si la PK es <code>id SERIAL</code>, <strong>no la incluyas en el INSERT</strong>: PostgreSQL le asigna automáticamente el siguiente número. Por eso omitimos <code>id</code> en los ejemplos de arriba. Si quisieras saber qué <code>id</code> se asignó, usa <code>INSERT ... RETURNING id;</code>.</p>
+  </div>
+
+  <h3>🔎 SELECT — consultar filas</h3>
+  <p>El comando más usado de SQL. Su estructura es la que vimos en el Módulo 1: <code>SELECT ... FROM ... WHERE ... ORDER BY ...</code>.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — SELECT en sus variantes</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Todos los clientes</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> clientes;
+
+<span class="cm">-- Sólo nombre y correo de los de Medellín (ciudad_id = 1)</span>
+<span class="kw">SELECT</span> nombre, correo <span class="kw">FROM</span> clientes <span class="kw">WHERE</span> ciudad_id = <span class="num">1</span>;
+
+<span class="cm">-- Ordenados por nombre descendente, sólo los 3 primeros</span>
+<span class="kw">SELECT</span> nombre, correo <span class="kw">FROM</span> clientes
+<span class="kw">ORDER BY</span> nombre <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="num">3</span>;
+
+<span class="cm">-- Contar cuántos clientes hay por ciudad</span>
+<span class="kw">SELECT</span> ciudad_id, <span class="kw">COUNT</span>(*) <span class="kw">FROM</span> clientes <span class="kw">GROUP BY</span> ciudad_id;</code></pre>
+  </div>
+
+  <p>El asterisco <code>*</code> significa "todas las columnas". Es útil para explorar, pero en producción conviene listar las columnas que necesitas (por rendimiento y claridad).</p>
+
+  <div class="caja-destacada">
+    <h4>🧠 <code>WHERE</code> con operadores</h4>
+    <p>El <code>WHERE</code> acepta muchos operadores: <code>=</code>, <code>&lt;&gt;</code> (distinto), <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>BETWEEN ... AND ...</code>, <code>IN (...)</code>, <code>LIKE '%ana%'</code> (patrón), <code>IS NULL</code>, <code>AND</code>, <code>OR</code>, <code>NOT</code>. Por ejemplo: <code>WHERE nombre LIKE 'A%'</code> filtra los que empiezan por A. <code>WHERE edad BETWEEN 15 AND 17</code> filtra por rango. Los veremos con más profundidad en la próxima clase.</p>
+  </div>
+
+  <h3>✏️ UPDATE — modificar filas</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — UPDATE con WHERE</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Cambiar el correo de Ana (id = 1)</span>
+<span class="kw">UPDATE</span> clientes
+<span class="kw">SET</span>    correo = <span class="str">'ana.nuevo@x.co'</span>
+<span class="kw">WHERE</span>  id = <span class="num">1</span>;</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "UPDATE sin WHERE"</h4>
+    <p>Si escribes <code>UPDATE clientes SET correo = 'x@x.co';</code> <strong>sin <code>WHERE</code></strong>, PostgreSQL cambiará el correo de <em>todas</em> las filas de la tabla. Sin confirmación. Sin papelera. Es el error más caro del mundo SQL. <strong>Regla de oro:</strong> antes de ejecutar un <code>UPDATE</code>, ejecuta el <code>SELECT</code> equivalente (<code>SELECT * FROM clientes WHERE id = 1;</code>) para confirmar que el filtro apunta a las filas correctas.</p>
+  </div>
+
+  <h3>🗑️ DELETE — borrar filas</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — DELETE con WHERE</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Borrar el cliente con id = 5</span>
+<span class="kw">DELETE FROM</span> clientes <span class="kw">WHERE</span> id = <span class="num">5</span>;
+
+<span class="cm">-- Borrar todos los clientes inactivos</span>
+<span class="kw">DELETE FROM</span> clientes <span class="kw">WHERE</span> activo = <span class="kw">FALSE</span>;</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano gemelo: "DELETE sin WHERE"</h4>
+    <p>Igual que <code>UPDATE</code>, un <code>DELETE FROM clientes;</code> sin <code>WHERE</code> <strong>borra todas las filas</strong> de la tabla. Es el "DROP TABLE" silencioso: la tabla sigue existiendo, pero vacía. <strong>Siempre</strong> escribe el <code>WHERE</code> primero en el cuaderno, antes de la sentencia. Y si quieres vaciar una tabla entera a propósito, usa <code>TRUNCATE TABLE clientes;</code> (más rápido, pero igual de irreversible).</p>
+  </div>
+
+  <h3>📋 Resumen del DML</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead><tr><th>Comando</th><th>Estructura</th><th>Cuidado con</th></tr></thead>
+      <tbody>
+        <tr><td><code>INSERT</code></td><td><code>INSERT INTO tabla (col1, col2) VALUES (v1, v2);</code></td><td>No omitir las columnas</td></tr>
+        <tr><td><code>SELECT</code></td><td><code>SELECT cols FROM tabla WHERE cond ORDER BY col;</code></td><td>El orden de cláusulas</td></tr>
+        <tr><td><code>UPDATE</code></td><td><code>UPDATE tabla SET col = val WHERE cond;</code></td><td><strong>Nunca</strong> sin <code>WHERE</code></td></tr>
+        <tr><td><code>DELETE</code></td><td><code>DELETE FROM tabla WHERE cond;</code></td><td><strong>Nunca</strong> sin <code>WHERE</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 5 minutos</h4>
+    <p>Pida a las parejas que, con la tabla <code>clientes</code> imaginaria, escriban en el cuaderno: (1) un <code>INSERT</code> para un cliente nuevo, (2) un <code>SELECT</code> para listar los de Medellín, (3) un <code>UPDATE</code> para cambiar el correo de un cliente por su <code>id</code>, (4) un <code>DELETE</code> para borrar un cliente inactivo. Comprueben que en (3) y (4) sí escribieron el <code>WHERE</code>.</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>📝 Quiz M5 · DML</h3>
+
+    <div class="pregunta" data-correcta="c">
+      <p>1. ¿Cuál es la forma <strong>recomendada</strong> de hacer un INSERT?</p>
+      <button class="opcion" data-op="a">a) <code>INSERT INTO clientes VALUES (1,'Ana');</code></button>
+      <button class="opcion" data-op="b">b) <code>INSERT clientes (nombre) VALUES ('Ana');</code></button>
+      <button class="opcion" data-op="c">c) <code>INSERT INTO clientes (nombre) VALUES ('Ana');</code></button>
+      <button class="opcion" data-op="d">d) <code>ADD INTO clientes (nombre) 'Ana';</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>2. Si una PK es <code>id SERIAL</code>, ¿debes incluirla en el INSERT?</p>
+      <button class="opcion" data-op="a">a) No, PostgreSQL le asigna automáticamente el siguiente número</button>
+      <button class="opcion" data-op="b">b) Sí, siempre</button>
+      <button class="opcion" data-op="c">c) Sólo si es obligatorio</button>
+      <button class="opcion" data-op="d">d) Sí, pero con valor <code>NULL</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>3. ¿Qué pasa si ejecutas <code>UPDATE clientes SET correo = 'x@x.co';</code> sin <code>WHERE</code>?</p>
+      <button class="opcion" data-op="a">a) No pasa nada, PostgreSQL pide confirmación</button>
+      <button class="opcion" data-op="b">b) Sólo actualiza la primera fila</button>
+      <button class="opcion" data-op="c">c) Falla con error de sintaxis</button>
+      <button class="opcion" data-op="d">d) Actualiza el correo de <strong>todas</strong> las filas de la tabla</button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p>4. ¿Cuál es la regla de oro antes de un <code>DELETE</code> o <code>UPDATE</code>?</p>
+      <button class="opcion" data-op="a">a) Hacer un <code>DROP TABLE</code> de respaldo</button>
+      <button class="opcion" data-op="b">b) Ejecutar antes el <code>SELECT</code> equivalente con el mismo <code>WHERE</code> para verificar las filas</button>
+      <button class="opcion" data-op="c">c) Usar <code>DELETE</code> sin <code>FROM</code></button>
+      <button class="opcion" data-op="d">d) Reiniciar el servidor PostgreSQL</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Playground →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — PLAYGROUND SQL EN VIVO
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>🧪 Playground SQL en vivo</h2>
+  <p class="meta-modulo">Misión 05 · Escribe SQL y mira el resultado en una BD simulada en el navegador · ~35 min</p>
+
+  <p>Antes de lanzarte al taller final, practiquemos. Aquí abajo tienes un <strong>mini-motor SQL en JavaScript</strong> que simula una BD con dos tablas (<code>ciudades</code> y <code>clientes</code>) ya creadas. Escribe sentencias <code>INSERT</code>, <code>SELECT</code>, <code>UPDATE</code> o <code>DELETE</code> y pulsa <strong>Ejecutar</strong>. El motor te muestra el resultado (o el error) como lo haría PostgreSQL.</p>
+
+  <div class="caja-destacada">
+    <h4>📋 Estado inicial de la BD</h4>
+    <p>La BD ya contiene:</p>
+    <ul>
+      <li><code>ciudades(id PK, nombre)</code> — con 3 filas: 1 Medellín, 2 Bogotá, 3 Cali.</li>
+      <li><code>clientes(id PK, nombre, correo, ciudad_id FK → ciudades.id)</code> — <strong>vacía</strong>.</li>
+    </ul>
+    <p>Tu misión: <strong>inserta 3 clientes</strong>, <strong>consúltalos</strong>, <strong>actualiza uno</strong> y <strong>borra otro</strong>. Las pistas de abajo te dan las sentencias.</p>
+  </div>
+
+  <div class="mermaid-sim">
+    <div class="sim-head">Playground SQL · motor en JavaScript</div>
+    <div class="mermaid-chips" style="margin-bottom:1rem;">
+      <button class="mermaid-chip" data-snippet="INSERT INTO clientes (nombre, correo, ciudad_id) VALUES ('Ana Torres', 'ana@x.co', 1);&#10;">INSERT un cliente</button>
+      <button class="mermaid-chip" data-snippet="SELECT * FROM clientes;&#10;">SELECT *</button>
+      <button class="mermaid-chip" data-snippet="SELECT nombre, correo FROM clientes WHERE ciudad_id = 1;&#10;">SELECT con WHERE</button>
+      <button class="mermaid-chip" data-snippet="UPDATE clientes SET correo = 'nuevo@x.co' WHERE id = 1;&#10;">UPDATE</button>
+      <button class="mermaid-chip" data-snippet="DELETE FROM clientes WHERE id = 2;&#10;">DELETE</button>
+      <button class="mermaid-chip" data-snippet="SELECT ciudad_id, COUNT(*) FROM clientes GROUP BY ciudad_id;&#10;">SELECT con COUNT</button>
+    </div>
+    <div class="mermaid-layout">
+      <div class="mermaid-editor-wrap">
+        <label for="sqlEditor" style="font-size:0.8rem;color:var(--texto-suave);">Escribe tu SQL (una sentencia por línea, termina con ;):</label>
+        <textarea class="mermaid-editor" id="sqlEditor" spellcheck="false">INSERT INTO clientes (nombre, correo, ciudad_id) VALUES ('Ana Torres', 'ana@x.co', 1);
+INSERT INTO clientes (nombre, correo, ciudad_id) VALUES ('Beto Ruiz', 'beto@x.co', 2);
+SELECT * FROM clientes;</textarea>
+        <button class="btn primary" id="sqlRun" type="button">▶ Ejecutar</button>
+        <button class="btn" id="sqlReset" type="button" style="margin-left:0.5rem;">↺ Reiniciar BD</button>
+      </div>
+      <div>
+        <div style="font-size:0.8rem;color:var(--texto-suave);margin-bottom:0.4rem;">Resultado:</div>
+        <div class="mermaid-preview" id="sqlOutput" style="text-align:left;min-height:220px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Retos para ganar el bonus de XP</h4>
+    <p>En orden, intenta ejecutar (una por una) estas 5 sentencias. Si todas funcionan, ganarás <strong>+25 XP</strong>:</p>
+    <ol>
+      <li>Inserta 3 clientes: Ana (ciudad 1), Beto (ciudad 1), Carla (ciudad 2).</li>
+      <li>Haz un <code>SELECT * FROM clientes;</code> y confirma que hay 3 filas.</li>
+      <li>Actualiza el correo de Ana (<code>id = 1</code>) a <code>'ana.nueva@x.co'</code>.</li>
+      <li>Borra a Beto (<code>id = 2</code>) con <code>DELETE FROM clientes WHERE id = 2;</code>.</li>
+      <li>Vuelve a hacer <code>SELECT * FROM clientes;</code> — debe haber 2 filas: Ana y Carla.</li>
+    </ol>
+    <p>Cuando completes los 5 retos, aparecerá un mensaje de éxito. ¡Tú puedes!</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🎯 Lo que estás practicando</h4>
+    <p>Este playground es <strong>una réplica simplificada</strong> de lo que harías en psql. Las sentencias que funcionan aquí funcionarán también en PostgreSQL real (con pequeñas diferencias de mensajes de error). La idea es que <strong>tóques</strong> SQL antes del taller: escribir, fallar, corregir, aprender. Ese es el ciclo.</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que, antes de pulsar Ejecutar, <strong>predigan</strong> en voz alta qué van a ver. Luego pulsen y comparen. La predicción mental es lo que consolida la sintaxis.</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>📝 Quiz M6 · Playground</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p>1. En el playground, ¿qué pasa si haces <code>INSERT INTO clientes (nombre) VALUES ('Ana');</code> sin <code>correo</code> ni <code>ciudad_id</code>?</p>
+      <button class="opcion" data-op="a">a) Falla, porque todas las columnas son obligatorias</button>
+      <button class="opcion" data-op="b">b) Se inserta la fila con <code>correo = NULL</code> y <code>ciudad_id = NULL</code> (si admiten NULL)</button>
+      <button class="opcion" data-op="c">c) Se inserta con valores aleatorios</button>
+      <button class="opcion" data-op="d">d) Se borra la tabla</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>2. ¿Qué sentencia cuenta cuántos clientes hay por ciudad?</p>
+      <button class="opcion" data-op="a">a) <code>SELECT ciudad_id, COUNT(*) FROM clientes GROUP BY ciudad_id;</code></button>
+      <button class="opcion" data-op="b">b) <code>COUNT clientes BY ciudad_id;</code></button>
+      <button class="opcion" data-op="c">c) <code>SELECT SUM(*) FROM clientes;</code></button>
+      <button class="opcion" data-op="d">d) <code>SELECT ciudad_id, TOTAL(*) FROM clientes;</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>3. ¿Qué obtienes con <code>SELECT nombre, correo FROM clientes WHERE ciudad_id = 1 ORDER BY nombre DESC;</code>?</p>
+      <button class="opcion" data-op="a">a) Todos los clientes, ordenados por nombre ascendente</button>
+      <button class="opcion" data-op="b">b) Sólo los de ciudad 1, ordenados por correo</button>
+      <button class="opcion" data-op="c">c) Los clientes de ciudad 1, mostrando nombre y correo, ordenados por nombre descendente (Z→A)</button>
+      <button class="opcion" data-op="d">d) Sólo el cliente con id = 1</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. Tras <code>DELETE FROM clientes WHERE id = 2;</code>, si haces <code>SELECT * FROM clientes;</code>, ¿qué ves?</p>
+      <button class="opcion" data-op="a">a) Todas las filas, incluyendo la 2 marcada como borrada</button>
+      <button class="opcion" data-op="b">b) Sólo la fila con id = 2</button>
+      <button class="opcion" data-op="c">c) Un error, porque la tabla está vacía</button>
+      <button class="opcion" data-op="d">d) Todas las filas excepto la que tenía id = 2</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 7 — TALLER ENTREGABLE
+============================================================ -->
+<section class="modulo" data-modulo="7">
+  <h2>📦 Taller entregable: "Mascotitas"</h2>
+  <p class="meta-modulo">Misión 06 · Caso end-to-end: crea la BD, las tablas y manipula datos · ~50 min</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">Taller final · Entregable</span>
+      <span class="challenge-title">Sistema de inventario y clientes para la tienda de mascotas "Mascotitas"</span>
+    </div>
+    <p>La tienda de mascotas <strong>Mascotitas</strong> quiere digitalizar su inventario y sus clientes. Tu misión, en pareja, es <strong>crear la BD y las tablas con DDL</strong>, <strong>insertar datos con DML</strong>, y <strong>consultarlos y actualizarlos</strong>. La entrega es un archivo SQL <code>.sql</code> que tu profe podrá ejecutar en PostgreSQL sin errores.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h4>📋 Enunciado</h4>
+    <p><strong>Mascotitas</strong> vende <strong>productos</strong> (con nombre, precio y categoría) a <strong>clientes</strong> (con nombre, correo y teléfono). Cada producto pertenece a una <strong>categoría</strong> (Alimentos, Accesorios, Higiene, Juguetes). Cada cliente puede tener varias mascotas registradas (con nombre y especie: perro, gato, conejo, etc.). Necesitan:</p>
+    <ol>
+      <li>Una base de datos llamada <code>mascotitas</code>.</li>
+      <li>Las tablas necesarias (modelo ya normalizado): <code>categorias</code>, <code>productos</code>, <code>clientes</code>, <code>mascotas</code>.</li>
+      <li>Datos de ejemplo: 4 categorías, 6 productos, 4 clientes, 5 mascotas.</li>
+      <li>Consultas que respondan preguntas del dueño.</li>
+    </ol>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🎯 Objetivos del entregable</h4>
+    <p>Tu entrega, en pareja, debe contener <strong>seis partes</strong> dentro de un único archivo <code>.sql</code>:</p>
+    <ol>
+      <li><strong>Creación de la BD</strong>: <code>CREATE DATABASE</code> + conectarse.</li>
+      <li><strong>DDL — creación de tablas</strong>: <code>CREATE TABLE</code> con PK, FK, <code>NOT NULL</code>, <code>UNIQUE</code> y <code>CHECK</code>, en el orden correcto.</li>
+      <li><strong>DML — inserciones</strong>: <code>INSERT</code> para las 4 categorías, 6 productos, 4 clientes y 5 mascotas.</li>
+      <li><strong>DML — consultas</strong>: 4 <code>SELECT</code> que respondan las preguntas del dueño (ver abajo).</li>
+      <li><strong>DML — una actualización y un borrado</strong>: un <code>UPDATE</code> y un <code>DELETE</code> con <code>WHERE</code>.</li>
+      <li><strong>Reflexión</strong> (en un bloque de comentarios al final): ¿qué comando te costó más escribir y por qué.</li>
+    </ol>
+  </div>
+
+  <div class="taller-er">
+    <div class="taller-er-step">
+      <h4><span class="step-num">1</span> Crea la base de datos</h4>
+      <p>Escribe la sentencia DDL para crear la BD <code>mascotitas</code>. Recuerda que en psql luego te conectas con <code>\c mascotitas</code>.</p>
+      <button class="taller-sol-toggle" data-sol="sol-bd">👁️ Ver pista</button>
+      <div class="taller-sol" id="sol-bd">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">CREATE DATABASE mascotitas;
+\c mascotitas
+-- A partir de aquí, todas las sentencias se ejecutan dentro de mascotitas</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">2</span> Crea las tablas (DDL)</h4>
+      <p>Modelo relacional normalizado:</p>
+      <ul>
+        <li><code>categorias(id PK, nombre UNIQUE)</code></li>
+        <li><code>productos(id PK, nombre, precio DECIMAL(10,2) CHECK &gt; 0, categoria_id FK → categorias)</code></li>
+        <li><code>clientes(id PK, nombre, correo UNIQUE, telefono)</code></li>
+        <li><code>mascotas(id PK, nombre, especie, cliente_id FK → clientes)</code></li>
+      </ul>
+      <p>Escribe los 4 <code>CREATE TABLE</code> en el orden correcto (¡primero las que no tienen FK!).</p>
+      <button class="taller-sol-toggle" data-sol="sol-tablas">👁️ Ver solución DDL</button>
+      <div class="taller-sol" id="sol-tablas">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- 1. Tablas sin dependencias
+CREATE TABLE categorias (
+    id      SERIAL PRIMARY KEY,
+    nombre  VARCHAR(60) NOT NULL UNIQUE
+);
+
+-- 2. Tabla que referencia categorias
+CREATE TABLE productos (
+    id            SERIAL PRIMARY KEY,
+    nombre        VARCHAR(100) NOT NULL,
+    precio        DECIMAL(10,2) NOT NULL CHECK (precio > 0),
+    categoria_id  INTEGER REFERENCES categorias(id)
+);
+
+-- 3. Tabla sin dependencias (clientes)
+CREATE TABLE clientes (
+    id        SERIAL PRIMARY KEY,
+    nombre    VARCHAR(100) NOT NULL,
+    correo    VARCHAR(150) UNIQUE,
+    telefono  VARCHAR(20)
+);
+
+-- 4. Mascotas referencia clientes
+CREATE TABLE mascotas (
+    id          SERIAL PRIMARY KEY,
+    nombre      VARCHAR(80) NOT NULL,
+    especie     VARCHAR(40) NOT NULL,
+    cliente_id  INTEGER REFERENCES clientes(id)
+);</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">3</span> Inserta datos de ejemplo (DML)</h4>
+      <p>Inserta con <code>INSERT INTO ... (cols) VALUES (...)</code>: 4 categorías (Alimentos, Accesorios, Higiene, Juguetes), 6 productos (2 por categoría, con precios reales), 4 clientes (con correos únicos) y 5 mascotas (repartidas entre los clientes, especies variadas). Recuerda: <strong>no insertes el <code>id SERIAL</code></strong>.</p>
+      <button class="taller-sol-toggle" data-sol="sol-inserts">👁️ Ver solución INSERT</button>
+      <div class="taller-sol" id="sol-inserts">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- Categorías
+INSERT INTO categorias (nombre) VALUES
+    ('Alimentos'), ('Accesorios'), ('Higiene'), ('Juguetes');
+
+-- Productos (categoria_id: 1=Alimentos, 2=Accesorios, 3=Higiene, 4=Juguetes)
+INSERT INTO productos (nombre, precio, categoria_id) VALUES
+    ('Croquetas Perro 3kg',   45000, 1),
+    ('Comida Gato 1.5kg',     32000, 1),
+    ('Collar Antipulgas',     18000, 2),
+    ('Correa Retráctil',      28000, 2),
+    ('Champú Mascota 500ml',  22000, 3),
+    ('Pelota de Goma',         9000, 4);
+
+-- Clientes
+INSERT INTO clientes (nombre, correo, telefono) VALUES
+    ('Ana Torres',   'ana@x.co',   '3001234567'),
+    ('Beto Ruiz',    'beto@x.co',  '3019876543'),
+    ('Carla Díaz',   'carla@x.co', '3105551212'),
+    ('Dani Lozano',  'dani@x.co',  NULL);
+
+-- Mascotas (cliente_id: 1=Ana, 2=Beto, 3=Carla, 4=Dani)
+INSERT INTO mascotas (nombre, especie, cliente_id) VALUES
+    ('Max',    'Perro',   1),
+    ('Michi',  'Gato',    1),
+    ('Rocky',  'Perro',   2),
+    ('Bola',   'Conejo',  3),
+    ('Luna',   'Gato',    4);</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">4</span> Escribe 4 consultas (DML)</h4>
+      <p>El dueño necesita responder estas preguntas con <code>SELECT</code>:</p>
+      <ol>
+        <li>¿Qué productos cuestan más de $20.000?</li>
+        <li>¿Cuántas mascotas hay por especie?</li>
+        <li>¿Qué clientes no tienen teléfono registrado?</li>
+        <li>Lista los productos de la categoría "Alimentos" ordenados por precio descendente.</li>
+      </ol>
+      <button class="taller-sol-toggle" data-sol="sol-selects">👁️ Ver solución SELECT</button>
+      <div class="taller-sol" id="sol-selects">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- 1. Productos que cuestan más de $20.000
+SELECT nombre, precio FROM productos WHERE precio > 20000;
+
+-- 2. Cuántas mascotas hay por especie
+SELECT especie, COUNT(*) FROM mascotas GROUP BY especie;
+
+-- 3. Clientes sin teléfono
+SELECT nombre, correo FROM clientes WHERE telefono IS NULL;
+
+-- 4. Productos de Alimentos ordenados por precio descendente
+SELECT nombre, precio FROM productos
+WHERE categoria_id = 1
+ORDER BY precio DESC;</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">5</span> Una actualización y un borrado</h4>
+      <p>Escribe:</p>
+      <ul>
+        <li>Un <code>UPDATE</code> que cambie el teléfono del cliente "Dani Lozano" (que estaba vacío) a <code>'3154445555'</code>.</li>
+        <li>Un <code>DELETE</code> que borre la mascota "Bola" (la del cliente Carla).</li>
+      </ul>
+      <p><strong>Recuerda:</strong> ambos deben llevar <code>WHERE</code>. Antes de ejecutarlos, escribe en un comentario el <code>SELECT</code> de verificación.</p>
+      <button class="taller-sol-toggle" data-sol="sol-upddel">👁️ Ver solución UPDATE/DELETE</button>
+      <div class="taller-sol" id="sol-upddel">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- Verificación previa al UPDATE
+SELECT id, nombre, telefono FROM clientes WHERE nombre = 'Dani Lozano';
+-- UPDATE: asignar teléfono a Dani
+UPDATE clientes SET telefono = '3154445555' WHERE nombre = 'Dani Lozano';
+
+-- Verificación previa al DELETE
+SELECT id, nombre, especie FROM mascotas WHERE nombre = 'Bola';
+-- DELETE: borrar a Bola
+DELETE FROM mascotas WHERE nombre = 'Bola' AND cliente_id = 3;</pre>
+        <p style="margin-top:0.4rem;">Nota: usar <code>nombre</code> en el <code>WHERE</code> es correcto aquí porque los nombres son únicos en los datos de ejemplo; en una BD real usarías el <code>id</code> para evitar borrar varias "Bola" si las hubiera.</p>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">6</span> Reflexiona y entrega</h4>
+      <p>Al final del archivo <code>.sql</code>, en un bloque de comentarios (<code>/* ... */</code>), responde en pareja: <strong>¿qué comando SQL te costó más escribir y por qué?</strong> ¿Qué aprendiste sobre el orden de las cláusulas o el riesgo del <code>UPDATE</code>/<code>DELETE</code> sin <code>WHERE</code>?</p>
+      <button class="taller-sol-toggle" data-sol="sol-reflex">👁️ Ver ejemplo de reflexión</button>
+      <div class="taller-sol" id="sol-reflex">
+        <p>Ejemplo (escríbanlo con sus palabras, no lo copien):</p>
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">/*
+  Reflexión:
+  El comando que más nos costó fue SELECT con GROUP BY, porque al
+  principio pusimos COUNT(*) antes de la columna y no entendíamos por
+  qué fallaba. Aprendimos que el orden de las cláusulas es fijo:
+  SELECT → FROM → WHERE → GROUP BY → ORDER BY. También nos dimos
+  cuenta de que un DELETE sin WHERE habría borrado todas las mascotas
+  de una vez: por suerte escribimos el WHERE primero en el cuaderno.
+  La lección: SQL te da mucho poder, pero con grandes cuchillos.
+*/</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 Cierre del aula — 5 minutos</h4>
+    <p>Cada pareja entrega un único archivo <code>taller6-mascotitas-&lt;integrante1&gt;-&lt;integrante2&gt;.sql</code>. El profesor lo ejecuta en PostgreSQL (o lo revisa con <code>psql -f archivo.sql</code>) y valida: (1) la BD se crea, (2) las 4 tablas existen con sus PK/FK, (3) los <code>INSERT</code> no fallan, (4) los 4 <code>SELECT</code> devuelven resultados correctos, (5) el <code>UPDATE</code> y el <code>DELETE</code> tienen <code>WHERE</code>, (6) la reflexión está presente.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>📋 Rúbrica de evaluación (100 pts)</h4>
+    <div class="contenedor-tabla" style="margin-top:0.6rem;">
+      <table class="tabla-compara">
+        <thead><tr><th>Criterio</th><th>Pts</th><th>Indicador</th></tr></thead>
+        <tbody>
+          <tr><td>CREATE DATABASE</td><td>10</td><td>La BD <code>mascotitas</code> se crea sin error y se conecta a ella.</td></tr>
+          <tr><td>CREATE TABLE × 4</td><td>25</td><td>4 tablas con PK, FK, <code>NOT NULL</code>, <code>UNIQUE</code> y <code>CHECK</code>; orden correcto.</td></tr>
+          <tr><td>INSERT (datos)</td><td>20</td><td>4 categorías, 6 productos, 4 clientes, 5 mascotas. Sin <code>id SERIAL</code> en los VALUES.</td></tr>
+          <tr><td>SELECT × 4</td><td>25</td><td>Las 4 consultas devuelven los resultados esperados por el dueño.</td></tr>
+          <tr><td>UPDATE y DELETE</td><td>10</td><td>Ambos con <code>WHERE</code>; verificación previa con <code>SELECT</code> en comentario.</td></tr>
+          <tr><td>Reflexión</td><td>10</td><td>Bloque de comentario con reflexión sobre el comando más difícil.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:0.6rem;font-size:0.9rem;"><strong>Entrega:</strong> un solo archivo <code>.sql</code> por pareja, nombrado <code>taller6-mascotitas-&lt;integrante1&gt;-&lt;integrante2&gt;.sql</code>.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>🧩 Investigación (punto extra, 10 pts)</h4>
+    <p>Investiga y agrega al final del archivo: ¿qué hace <code>TRUNCATE TABLE mascotas;</code> y en qué se diferencia de <code>DELETE FROM mascotas;</code>? Escribe la respuesta en un comentario y menciona <strong>dos diferencias</strong> concretas (rendimiento y reinicio del <code>SERIAL</code>).</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🏆 ¡Misión completada, SQL Master!</h2>
+    <p class="lead">Ya sabes qué es SQL, cómo se divide en sub-lenguajes, cómo construir la estructura de una BD con DDL (<code>CREATE DATABASE</code>, <code>CREATE TABLE</code> con PK/FK/restricciones) y cómo manipular sus datos con DML (<code>INSERT</code>, <code>SELECT</code>, <code>UPDATE</code>, <code>DELETE</code>). Has creado de punta a punta el sistema de una tienda de mascotas real, en SQL ejecutable. Eso es, literalmente, lo que hace un <strong>desarrollador backend</strong> el primer día de trabajo.</p>
+    <p style="margin-top:1rem;font-size:1.05rem;color:var(--verde);font-weight:700;">En la próxima clase entraremos a las consultas avanzadas: <code>JOIN</code>, <code>GROUP BY</code>, <code>HAVING</code> y subconsultas. 🚀</p>
+    <button class="btn-final" data-reiniciar>🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<!-- =================== FOOTER =================== -->
+<footer class="pie">
+  <div class="fb">🎓 Bases de Datos · Clase 6 · Plataforma interactiva</div>
+  <div>SQL · DDL (CREATE/DROP/ALTER) · DML (INSERT/SELECT/UPDATE/DELETE) · Playground · 4 horas · Nivel Intermedio</div>
+  <div style="margin-top:.5rem;font-size:.78rem;">Hecho con 💜 para adolescentes que quieren hablar con bases de datos reales.</div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -45,7 +45,9 @@ function cargarProgresoPorClase() {
     'curso-bd-introduccion': 6,         // 0..7 (m0 inicio y m4 descanso no cuentan; completables 1,2,3,5,6,7)
     'curso-bd-archivos-vs-bd': 6,        // idem
     'curso-bd-asyncpg-fastapi': 6,       // idem
-    'curso-bd-modelo-er': 6              // idem (clase 4)
+    'curso-bd-modelo-er': 6,              // idem (clase 4)
+    'curso-bd-normalizacion': 6,          // idem (clase 5)
+    'curso-bd-sql-basico': 6              // idem (clase 6)
   };
 
   let totalGlobal = 0;
@@ -75,8 +77,13 @@ function calcularProgresoCurso(key, totalMods) {
     const datos = JSON.parse(localStorage.getItem(key));
     if (!datos || !datos.completados) return 0;
 
-    const completados = (datos.completados || []).filter(m => m <= totalMods - 1).length;
-    return Math.round((completados / totalMods) * 100);
+    // Cursos de Bases de Datos: m0 (inicio) y m4 (descanso) no cuentan;
+    // sólo suman los módulos de contenido completables 1,2,3,5,6,7.
+    const completablesBD = [1, 2, 3, 5, 6, 7];
+    const completados = key.startsWith('curso-bd-')
+      ? (datos.completados || []).filter(m => completablesBD.includes(m))
+      : (datos.completados || []).filter(m => m <= totalMods - 1);
+    return Math.round((completados.length / totalMods) * 100);
   } catch (e) {
     return 0;
   }
@@ -107,11 +114,11 @@ function actualizarBarraClase(card, pct) {
 function animarStats() {
   // Los 3 primeros son fijos
   animarNumero(document.getElementById('stat-cursos'),  0, 5,  800);
-  animarNumero(document.getElementById('stat-clases'), 0, 15, 900);
+  animarNumero(document.getElementById('stat-clases'), 0, 17, 900);
   // El cuarto (horas) tiene "+" al final
   const elHoras = document.getElementById('stat-horas');
   if (elHoras) {
-    animarNumero(elHoras, 0, 42, 1000, valor => valor + '+');
+    animarNumero(elHoras, 0, 50, 1000, valor => valor + '+');
   }
   // El de progreso ya se actualiza en cargarProgresoPorClase
 }
@@ -200,6 +207,12 @@ document.addEventListener('keydown', (e) => {
   } else if (e.key === 'j' || e.key === 'J') {
     const card = document.querySelector('.clase-card.bd-4');
     if (card) card.click();
+  } else if (e.key === 'v' || e.key === 'V') {
+    const card = document.querySelector('.clase-card.bd-5');
+    if (card) card.click();
+  } else if (e.key === 'x' || e.key === 'X') {
+    const card = document.querySelector('.clase-card.bd-6');
+    if (card) card.click();
   }
 });
 
@@ -209,7 +222,7 @@ window.addEventListener('load', () => {
   const keys = ['curso-csharp-funciones-7', 'curso-csharp-poo-10', 'curso-csharp-arreglos-11',
                 'curso-csharp-funciones', 'curso-analisis-diseno', 'curso-requerimientos',
                 'curso-elicitacion', 'curso-documentacion', 'curso-introduccion-diseno',
-                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er'];
+                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico'];
 
   let tienePrograma = false;
   let ultimaClase = null;
