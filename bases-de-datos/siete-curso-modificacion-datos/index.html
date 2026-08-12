@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🗄️ Bases de Datos · Clase 7 · Inserción, modificación y eliminación (DML a fondo)</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- =================== HEADER + PROGRESO =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">✏️</span>
+    <div>
+      <h1>Bases de Datos · Clase 7</h1>
+      <p class="subtitulo">DML a fondo · INSERT (multi-fila, RETURNING, ON CONFLICT) · UPDATE · DELETE · Transacciones (TCL)</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 390 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">➕ INSERT</button>
+  <button class="btn-modulo" data-modulo="2">✏️ UPDATE</button>
+  <button class="btn-modulo" data-modulo="3">🗑️ DELETE</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🛡️ TCL</button>
+  <button class="btn-modulo" data-modulo="6">🧪 Playground</button>
+  <button class="btn-modulo" data-modulo="7">📦 Taller</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>✏️ ¿Y ahora cómo metemos, cambiamos y borramos datos?</h2>
+    <p class="lead">En la <strong>Clase 6</strong> aprendiste SQL y sus sub-lenguajes: con <strong>DDL</strong> creaste bases de datos y tablas, y con <strong>DML</strong> diste tus primeros pasos con <code>INSERT</code>, <code>SELECT</code>, <code>UPDATE</code> y <code>DELETE</code>. Hoy vamos a <strong>a fondo</strong> con la parte más poderosa (y peligrosa) del DML: cómo <strong>insertar</strong> bien (multi-fila, <code>RETURNING</code>, <code>ON CONFLICT</code>), cómo <strong>modificar</strong> sin destruir nada, cómo <strong>borrar</strong> con cabeza, y cómo <strong>deshacer los errores</strong> con transacciones (<code>BEGIN</code> / <code>COMMIT</code> / <code>ROLLBACK</code>). Porque SQL te da poder… y con grandes poderes vienen grandes responsabilidades.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ sesión SQL en PostgreSQL</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">estudiante@bd:~$</span> <span class="cmd">psql -U postgres -d mascotitas</span></div>
+        <div class="out">psql (16.0) —Digite «help» para ayuda.</div>
+        <div><span class="prompt">mascotitas=#</span> <span class="cmd">INSERT INTO productos (nombre, precio, stock, categoria_id) VALUES ('Croquetas', 45000, 12, 1) RETURNING id;</span></div>
+        <div class="out"> id</div>
+        <div class="out">----</div>
+        <div class="out">  1</div>
+        <div class="out">(1 fila)</div>
+        <div><span class="prompt">mascotitas=#</span> <span class="cmd">UPDATE productos SET precio = precio * 1.1 WHERE id = 1 RETURNING nombre, precio;</span></div>
+        <div class="out">      nombre       |  precio</div>
+        <div class="out">------------------+---------</div>
+        <div class="out"> Croquetas       | 49500.0</div>
+        <div class="out">(1 fila)</div>
+        <div><span class="prompt">mascotitas=#</span> <span class="cmd">DELETE FROM productos WHERE id = 3;</span></div>
+        <div class="out">DELETE 1</div>
+        <div><span class="prompt">mascotitas=#</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>4 horas en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Dominar las sentencias de manipulación de datos: <code>INSERT</code> (multi-fila, <code>RETURNING</code>, <code>ON CONFLICT</code>), <code>UPDATE</code> y <code>DELETE</code> con filtros seguros, y las <strong>transacciones</strong> <code>BEGIN</code>/<code>COMMIT</code>/<code>ROLLBACK</code> para deshacer errores.</p>
+    </div>
+    <div class="tarjeta tarjeta-warm">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>El <code>INSERT</code> sin columnas que mete el dato en el lugar equivocado, el <code>UPDATE</code> sin <code>WHERE</code> que recorre toda la tabla, el <code>DELETE</code> sin filtro que vacía todo… y la falta de transacciones que hace que un error sea irreversible.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · INSERT a fondo</td><td style="color:var(--lima)">Multi-fila, RETURNING, ON CONFLICT</td><td style="color:var(--rosa)">Insertar sin columnas</td><td>30 XP</td></tr>
+        <tr><td>02 · UPDATE a fondo</td><td style="color:var(--indigo)">WHERE, expresiones, varias columnas</td><td style="color:var(--rosa)">El UPDATE sin WHERE</td><td>30 XP</td></tr>
+        <tr><td>03 · DELETE a fondo</td><td style="color:var(--cian)">Filtros seguros, TRUNCATE, CASCADE</td><td style="color:var(--rosa)">El DELETE sin filtro</td><td>30 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · Transacciones TCL</td><td style="color:var(--lima-claro)">BEGIN / COMMIT / ROLLBACK</td><td style="color:var(--rosa)">El error sin red de seguridad</td><td>30 XP</td></tr>
+        <tr><td>05 · Playground en vivo</td><td style="color:var(--indigo-claro)">Ejecuta DML en el navegador</td><td>—</td><td>55 XP</td></tr>
+        <tr><td>06 · Taller entregable</td><td style="color:var(--lima)">Caso "Mascotitas: inventario"</td><td style="color:var(--rosa)">Modificar datos a ciegas</td><td>30 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:0.6rem;font-size:0.85rem;color:var(--texto-suave);">Cada módulo completado da 30 XP; el Playground suma 25 XP extra por sus 5 retos. Los quizzes perfectos dan +25 XP cada uno. Máximo de la clase: <strong>390 XP</strong>.</p>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a, discutan: si en una tabla de productos el <code>id</code> se autoincrementa (<code>SERIAL</code>), ¿cómo sabe el sistema <em>qué id</em> le tocó al producto recién insertado? Escriban 2 ideas. Vamos a responderlas en el módulo 1 con <code>RETURNING</code>.</p>
+  </div>
+
+  <h3>🧠 Lo que ya sabes (repaso rápido)</h3>
+  <p>Antes de avanzar, recordemos lo construido en las clases anteriores — hoy lo vamos a usar todo:</p>
+  <ul>
+    <li>SQL se divide en sub-lenguajes: <strong>DDL</strong> (estructura) y <strong>DML</strong> (datos). (Clase 6)</li>
+    <li>Con <strong>DDL</strong> creamos tablas con PK, FK y restricciones: <code>SERIAL</code>, <code>NOT NULL</code>, <code>UNIQUE</code>, <code>CHECK</code>, <code>REFERENCES</code>. (Clase 6)</li>
+    <li>Las <strong>FK</strong> garantizan integridad referencial: no se puede insertar un valor que no exista en la tabla referenciada. (Clases 4 y 6)</li>
+    <li>La forma correcta del <code>INSERT</code> explícita las <strong>columnas</strong>: <code>INSERT INTO tabla (col1, col2) VALUES (...)</code>. (Clase 6)</li>
+  </ul>
+
+  <div class="caja-destacada">
+    <h4>📌 La gran pregunta de hoy</h4>
+    <p>Una app real no solo <em>muestra</em> datos: los <strong>crea</strong> (registro de usuario), los <strong>cambia</strong> (editar perfil, reajustar precio) y los <strong>borra</strong> (eliminar cuenta). Cada una de esas acciones es un <code>INSERT</code>, un <code>UPDATE</code> o un <code>DELETE</code>. Hoy aprenderás a escribirlos <strong>bien</strong>: con filtros precisos, con <code>RETURNING</code> para leer lo que cambiaste, con <code>ON CONFLICT</code> para no duplicar, y con transacciones para poder <em>volver atrás</em> cuando algo sale mal. Al final, sabrás modificar datos como un profesional… sin asustar a tu jefe.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Siguiente: INSERT a fondo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — INSERT A FONDO
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>➕ INSERT a fondo</h2>
+  <p class="meta-modulo">Misión 01 · Multi-fila · RETURNING · ON CONFLICT · ~35 min</p>
+
+  <p>En la Clase 6 viste el <code>INSERT</code> básico. Hoy lo llevamos a nivel profesional con tres trucos que usas todos los días en un backend real: insertar <strong>varias filas a la vez</strong>, <strong>recuperar lo que se insertó</strong> (incluido el <code>id</code> generado) y <strong>evitar duplicados</strong> con <code>ON CONFLICT</code>.</p>
+
+  <h3>🧩 Recordatorio: la forma correcta</h3>
+  <p>La base de todo sigue siendo la misma — siempre con <strong>columnas explícitas</strong> y <strong>sin el <code>id SERIAL</code></strong>:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — INSERT de una fila</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">INSERT INTO</span> productos (nombre, precio, stock, categoria_id)
+<span class="kw">VALUES</span> (<span class="str">'Croquetas'</span>, <span class="num">45000</span>, <span class="num">12</span>, <span class="num">1</span>);</code></pre>
+  </div>
+
+  <h3>📚 Multi-fila: un INSERT, muchas filas</h3>
+  <p>Cuando hay que cargar varios registros (los datos de ejemplo, un lote de importación…), no ejecutes un <code>INSERT</code> por fila: <strong>separe con comas los grupos de valores</strong> en un solo <code>INSERT</code>. Menos viajes a la BD, más rápido, y si una fila falla sabes exactamente dónde.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — INSERT multi-fila (3 filas de una vez)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">INSERT INTO</span> productos (nombre, precio, stock, categoria_id)
+<span class="kw">VALUES</span>
+    (<span class="str">'Croquetas'</span>, <span class="num">45000</span>, <span class="num">12</span>, <span class="num">1</span>),
+    (<span class="str">'Collar Antipulgas'</span>,  <span class="num">18000</span>, <span class="num">30</span>, <span class="num">2</span>),
+    (<span class="str">'Champú Mascota 500ml'</span>, <span class="num">22000</span>, <span class="num">8</span>, <span class="num">3</span>);</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El orden de los valores importa</h4>
+    <p>Cada <code>(valor1, valor2, ...)</code> debe coincidir <strong>columna por columna</strong> con la lista entre paréntesis del <code>INSERT INTO</code>: el primer valor va a la primera columna, el segundo a la segunda, y así. Si los cambias de orden, el dato queda en la columna equivocada y PostgreSQL no te avisará si los tipos coinciden. ¡Silencio peligroso!</p>
+  </div>
+
+  <h3>🔙 RETURNING: lee lo que acabas de insertar</h3>
+  <p>Problema clásico: insertas un producto y <strong>necesitas su <code>id</code></strong> para usarlo en la siguiente operación (por ejemplo, en una venta). La solución se llama <code>RETURNING</code>: le pides a PostgreSQL que te devuelva las columnas de la fila recién insertada, ¡en la misma sentencia!</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — INSERT ... RETURNING id</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">INSERT INTO</span> productos (nombre, precio, stock, categoria_id)
+<span class="kw">VALUES</span> (<span class="str">'Correa Retráctil'</span>, <span class="num">28000</span>, <span class="num">15</span>, <span class="num">2</span>)
+<span class="kw">RETURNING</span> id, nombre;</code></pre>
+  </div>
+
+  <p>PostgreSQL responde algo así:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — respuesta del motor</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code> id |      nombre
+----+------------------
+  4 | Correa Retráctil
+(1 fila)</code></pre>
+  </div>
+
+  <p>Con <code>RETURNING *</code> te devuelve <em>todas</em> las columnas de la fila insertada. Es la forma profesional de confirmar que el dato quedó exactamente como esperabas.</p>
+
+  <h3>⚔️ ON CONFLICT: inserta sin duplicar (upsert)</h3>
+  <p>¿Qué pasa si intentas insertar un correo que ya existe (columna <code>UNIQUE</code>)? PostgreSQL lanza un error y la sentencia falla. Con <code>ON CONFLICT</code> decides <strong>qué hacer</strong> cuando hay choque:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — ON CONFLICT DO NOTHING vs DO UPDATE</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- 1. Si el nombre ya existe, ignora el INSERT sin error</span>
+<span class="kw">INSERT INTO</span> productos (nombre, precio, stock, categoria_id)
+<span class="kw">VALUES</span> (<span class="str">'Croquetas'</span>, <span class="num">45000</span>, <span class="num">12</span>, <span class="num">1</span>)
+<span class="kw">ON CONFLICT</span> (nombre) <span class="kw">DO NOTHING</span>;
+
+<span class="cm">-- 2. Si el nombre ya existe, actualiza el precio (UPSERT)</span>
+<span class="kw">INSERT INTO</span> productos (nombre, precio, stock, categoria_id)
+<span class="kw">VALUES</span> (<span class="str">'Croquetas'</span>, <span class="num">47000</span>, <span class="num">12</span>, <span class="num">1</span>)
+<span class="kw">ON CONFLICT</span> (nombre)
+<span class="kw">DO UPDATE SET</span> precio = <span class="kw">excluded</span>.precio
+<span class="kw">RETURNING</span> id, nombre, precio;</code></pre>
+  </div>
+
+  <div class="caja-concepto">
+    <h4>📖 ¿Qué es <code>excluded</code>?</h4>
+    <p>Dentro de <code>DO UPDATE SET</code>, la palabra <code>excluded</code> se refiere a <strong>los valores que intentabas insertar</strong> (los del <code>VALUES</code>). Así puedes escribir cosas como <code>precio = excluded.precio</code> («toma el precio nuevo») o <code>stock = productos.stock + excluded.stock</code> («suma el stock nuevo al que ya había»). Es como comparar el «antes» (la fila existente) con el «intento» (excluded).</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🛡️ ¿Dónde se usa esto en la vida real?</h4>
+    <p>El <strong>upsert</strong> (insertar-o-actualizar) es pan de cada día: sincronizar un catálogo, importar datos de otro sistema, registrar eventos que pueden repetirse… En vez de hacer un <code>SELECT</code> para ver si existe y luego decidir entre <code>INSERT</code> o <code>UPDATE</code> (dos viajes a la BD), haces <em>una sola sentencia</em> que se encarga de todo. Así trabajan los backends de verdad.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "INSERT sin columnas"</h4>
+    <p><code>INSERT INTO productos VALUES (1, 'Croquetas', 45000, ...);</code> depende del <strong>orden exacto de las columnas</strong> de la tabla. Si mañana alguien añade una columna con <code>ALTER TABLE</code>, el valor que iba al <code>precio</code> puede terminar en otra parte <em>sin que nadie se dé cuenta</em>. Regla inquebrantable: <strong>siempre explícita las columnas</strong>.</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que escriban en el cuaderno: (1) un <code>INSERT</code> multi-fila de 3 clientes, (2) el mismo <code>INSERT</code> con <code>RETURNING id</code>, (3) una variante con <code>ON CONFLICT (correo) DO NOTHING</code>. Discutan: ¿por qué <code>ON CONFLICT</code> necesita una columna <code>UNIQUE</code> o la PK para funcionar?</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>📝 Quiz M1 · INSERT a fondo</h3>
+
+    <div class="pregunta" data-correcta="c">
+      <p>1. ¿Cuál es la forma <strong>recomendada</strong> de insertar un producto?</p>
+      <button class="opcion" data-op="a">a) <code>INSERT INTO productos VALUES (1, 'Croquetas', 45000);</code></button>
+      <button class="opcion" data-op="b">b) <code>ADD productos (nombre, precio) 'Croquetas', 45000;</code></button>
+      <button class="opcion" data-op="c">c) <code>INSERT INTO productos (nombre, precio) VALUES ('Croquetas', 45000);</code></button>
+      <button class="opcion" data-op="d">d) <code>INSERT productos VALUES ('Croquetas', 45000);</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p>2. Después de <code>INSERT INTO productos (nombre) VALUES ('Croquetas') RETURNING id;</code>, ¿qué obtienes?</p>
+      <button class="opcion" data-op="a">a) Un error, porque falta el precio</button>
+      <button class="opcion" data-op="b">b) La fila insertada con su <code>id</code> generado automáticamente</button>
+      <button class="opcion" data-op="c">c) El número total de productos de la tabla</button>
+      <button class="opcion" data-op="d">d) Nada, el <code>id</code> no se puede conocer</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>3. Quieres insertar un correo que ya existe (la columna es <code>UNIQUE</code>) y que <strong>no falle</strong> ni duplique. ¿Qué usas?</p>
+      <button class="opcion" data-op="a">a) <code>ON CONFLICT (correo) DO NOTHING</code></button>
+      <button class="opcion" data-op="b">b) <code>IGNORE DUPLICATES</code></button>
+      <button class="opcion" data-op="c">c) <code>INSERT IF NOT EXISTS</code></button>
+      <button class="opcion" data-op="d">d) <code>RETURNING FALSE</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. En <code>DO UPDATE SET precio = excluded.precio</code>, ¿qué significa <code>excluded.precio</code>?</p>
+      <button class="opcion" data-op="a">a) El precio antiguo que había en la tabla</button>
+      <button class="opcion" data-op="b">b) El precio promedio de todos los productos</button>
+      <button class="opcion" data-op="c">c) Un error, <code>excluded</code> no existe</button>
+      <button class="opcion" data-op="d">d) El precio de la fila que se intentaba insertar (el del <code>VALUES</code>)</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: UPDATE →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — UPDATE A FONDO
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>✏️ UPDATE a fondo</h2>
+  <p class="meta-modulo">Misión 02 · WHERE · Varias columnas · Expresiones · RETURNING · ~35 min</p>
+
+  <p>El <code>UPDATE</code> modifica filas <strong>existentes</strong>. Su estructura es: <code>UPDATE tabla SET columna = valor WHERE condición</code>. Lo que hace profesional el <code>UPDATE</code> no es la sintaxis: es el <strong>filtro</strong>. Hoy veremos cómo escribir condiciones precisas, actualizar varias columnas de una vez, usar expresiones sobre las columnas (¡aumentar precios sin sacar la calculadora!) y verificar siempre antes de tocar.</p>
+
+  <h3>🎯 El WHERE: tu único seguro de vida</h3>
+  <p>Todo el poder (y todo el peligro) del <code>UPDATE</code> está en el <code>WHERE</code>. Sin él, la sentencia afecta <strong>todas</strong> las filas de la tabla. Con un buen <code>WHERE</code>, afecta exactamente las que quieres:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — UPDATE con filtro por id</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Cambia el precio SOLO del producto con id = 1</span>
+<span class="kw">UPDATE</span> productos
+<span class="kw">SET</span>    precio = <span class="num">48000</span>
+<span class="kw">WHERE</span>  id = <span class="num">1</span>;</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Filtrar por <code>id</code> cuando sea posible</h4>
+    <p>El <code>id</code> es la PK: única e intocable. Cuando la app conoce el id (lo sacó de un <code>RETURNING</code> o de la URL), <strong>filtra por <code>id</code></strong>: es la condición más precisa que existe. Filtrar por otros campos (<code>nombre</code>, <code>correo</code>) funciona, pero si hay dos «Ana Torres» cambiarás las dos.</p>
+  </div>
+
+  <h3>🧬 Actualizar varias columnas a la vez</h3>
+  <p>Si la edición toca varios campos (piensa en «editar perfil»), sepáralos con comas en el <code>SET</code> — una sola sentencia, un solo viaje a la BD:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — UPDATE de varias columnas</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">UPDATE</span> productos
+<span class="kw">SET</span>    nombre = <span class="str">'Croquetas Premium'</span>,
+        precio = <span class="num">52000</span>,
+        stock  = <span class="num">25</span>
+<span class="kw">WHERE</span>  id = <span class="num">1</span>;</code></pre>
+  </div>
+
+  <h3>🧮 Expresiones: que la BD haga la cuenta</h3>
+  <p>El <code>SET</code> no acepta solo valores fijos: acepta <strong>expresiones</strong> que usan el valor actual de la columna. El caso estrella: aumentar un 10% el precio de un producto. La fórmula <code>precio = precio * 1.1</code> lee el valor viejo, lo multiplica y lo guarda:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — UPDATE con expresión sobre la misma columna</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Sube un 10% el precio del producto id = 1</span>
+<span class="kw">UPDATE</span> productos
+<span class="kw">SET</span>    precio = precio * <span class="num">1.1</span>
+<span class="kw">WHERE</span>  id = <span class="num">1</span>
+<span class="kw">RETURNING</span> id, nombre, precio;</code></pre>
+  </div>
+
+  <p>También puedes combinar texto y columnas (<code>SET nombre = UPPER(nombre)</code> para poner el nombre en mayúsculas), sumar stock (<code>stock = stock + 10</code>) o combinar columnas con <code>COALESCE</code>. La BD hace el cálculo; tú solo describes el resultado.</p>
+
+  <div class="caja-destacada">
+    <h4>🛡️ WHERE con condiciones compuestas</h4>
+    <p>El <code>WHERE</code> del <code>UPDATE</code> acepta lo mismo que el del <code>SELECT</code>: <code>AND</code>, <code>OR</code>, <code>NOT</code>, <code>IS NULL</code>, <code>IN (...)</code>, <code>BETWEEN</code>… Ejemplo: <code>UPDATE productos SET activo = FALSE WHERE stock = 0 AND categoria_id = 3;</code> — desactiva en una sola pasada todos los productos sin existencias de la categoría 3.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "UPDATE sin WHERE"</h4>
+    <p><code>UPDATE productos SET precio = 1000;</code> <strong>sin <code>WHERE</code></strong> cambiará el precio de <em>todas</em> las filas de la tabla. Sin confirmación, sin papelera, sin «¿estás seguro?». Es uno de los errores más caros de la historia de SQL. <strong>La regla de oro:</strong> antes de ejecutar un <code>UPDATE</code>, ejecuta el <code>SELECT</code> equivalente con el mismo <code>WHERE</code>: <code>SELECT * FROM productos WHERE id = 1;</code>. Si el SELECT muestra exactamente las filas que quieres tocar, recién ahí ejecutas el UPDATE. (En el módulo 5 verás la red de seguridad definitiva: las transacciones.)</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que escriban: (1) un <code>UPDATE</code> que cambie <code>nombre</code> y <code>correo</code> del cliente id = 3, (2) un <code>UPDATE</code> que aumente el stock de un producto en 5 unidades usando expresión, (3) el <code>SELECT</code> de verificación que harían antes de cada uno. Comprueben que en (1) y (2) sí está el <code>WHERE</code>.</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>📝 Quiz M2 · UPDATE a fondo</h3>
+
+    <div class="pregunta" data-correcta="d">
+      <p>1. ¿Qué hace <code>UPDATE productos SET precio = precio * 1.1 WHERE id = 1;</code>?</p>
+      <button class="opcion" data-op="a">a) Duplica el precio de todos los productos</button>
+      <button class="opcion" data-op="b">b) Pone el precio del producto 1 en <code>1.1</code></button>
+      <button class="opcion" data-op="c">c) Falla, no se puede multiplicar en un <code>SET</code></button>
+      <button class="opcion" data-op="d">d) Sube un 10% el precio solo del producto con id = 1</button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p>2. ¿Qué pasa si ejecutas <code>UPDATE productos SET precio = 1000;</code> sin <code>WHERE</code>?</p>
+      <button class="opcion" data-op="a">a) PostgreSQL pide confirmación antes de continuar</button>
+      <button class="opcion" data-op="b">b) Cambia el precio de <strong>todas</strong> las filas de la tabla</button>
+      <button class="opcion" data-op="c">c) Solo cambia la primera fila</button>
+      <button class="opcion" data-op="d">d) Falla con un error de sintaxis</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>3. ¿Cuál es la <strong>regla de oro</strong> antes de ejecutar un <code>UPDATE</code>?</p>
+      <button class="opcion" data-op="a">a) Ejecutar antes el <code>SELECT</code> con el mismo <code>WHERE</code> para ver las filas que se van a tocar</button>
+      <button class="opcion" data-op="b">b) Reiniciar el servidor de PostgreSQL</button>
+      <button class="opcion" data-op="c">c) Borrar la tabla para que no estorbe</button>
+      <button class="opcion" data-op="d">d) Usar <code>SET</code> sin <code>WHERE</code> porque es más rápido</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>4. ¿Cuál de estas sentencias actualiza <strong>dos columnas</strong> a la vez?</p>
+      <button class="opcion" data-op="a">a) <code>UPDATE productos SET (nombre, stock) = ('X', 5) WHERE id = 1;</code></button>
+      <button class="opcion" data-op="b">b) <code>UPDATE productos SET nombre = 'X' SET stock = 5 WHERE id = 1;</code></button>
+      <button class="opcion" data-op="c">c) <code>UPDATE productos SET nombre = 'X', stock = 5 WHERE id = 1;</code></button>
+      <button class="opcion" data-op="d">d) <code>UPDATE productos SET nombre, stock VALUES ('X', 5) WHERE id = 1;</code></button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: DELETE →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — DELETE A FONDO
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>🗑️ DELETE a fondo</h2>
+  <p class="meta-modulo">Misión 03 · Filtros seguros · DELETE vs TRUNCATE · FK y CASCADE · ~35 min</p>
+
+  <p>El <code>DELETE</code> borra filas <strong>para siempre</strong>. Es el comando con menos sintaxis y más responsabilidad: <code>DELETE FROM tabla WHERE condición</code>. Hoy verás cómo filtrar con precisión, qué pasa con las tablas relacionadas (FK), y cuándo conviene <code>TRUNCATE</code> en lugar de <code>DELETE</code>.</p>
+
+  <h3>🎯 DELETE con filtro: borra solo lo que toca</h3>
+  <p>La receta es idéntica a la del <code>UPDATE</code>: condición precisa + verificación previa.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — DELETE con filtro</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Borra SOLO el producto con id = 3</span>
+<span class="kw">DELETE FROM</span> productos <span class="kw">WHERE</span> id = <span class="num">3</span>;
+
+<span class="cm">-- Borra todos los productos sin existencias de la categoría 1</span>
+<span class="kw">DELETE FROM</span> productos <span class="kw">WHERE</span> stock = <span class="num">0</span> <span class="kw">AND</span> categoria_id = <span class="num">1</span>;</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 DELETE también tiene RETURNING</h4>
+    <p>Igual que <code>INSERT</code> y <code>UPDATE</code>, el <code>DELETE</code> acepta <code>RETURNING</code> para ver <strong>qué filas</strong> se borraron: <code>DELETE FROM productos WHERE id = 3 RETURNING id, nombre;</code>. Útil para confirmar que el filtro apuntaba a la fila correcta (y para auditar).</p>
+  </div>
+
+  <h3>🔗 ¿Qué pasa con las FK? CASCADE vs RESTRICT</h3>
+  <p>Cuando borras una fila que <strong>otras tablas referencian</strong> (una FK), PostgreSQL aplica la regla que definiste al crear la tabla (Clase 6):</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead><tr><th>Regla de la FK</th><th>Qué pasa al borrar la fila padre</th></tr></thead>
+      <tbody>
+        <tr><td><code>ON DELETE RESTRICT</code> (por defecto)</td><td>PostgreSQL <strong>bloquea el borrado</strong> con un error si existen filas que la referencian. Seguro, pero a veces frustrante.</td></tr>
+        <tr><td><code>ON DELETE CASCADE</code></td><td>Borra <strong>automáticamente</strong> las filas hijas junto con la madre. Práctico… y peligroso si no lo tenías en mente.</td></tr>
+        <tr><td><code>ON DELETE SET NULL</code></td><td>Deja en <code>NULL</code> el valor de la FK en las filas hijas (la relación «se olvida»).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — el error clásico de FK</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code>mascotitas=# <span class="kw">DELETE FROM</span> categorias <span class="kw">WHERE</span> id = <span class="num">1</span>;
+<span class="cm">-- ERROR:  update or delete on table "categorias" violates foreign key</span>
+<span class="cm">-- constraint "productos_categoria_id_fkey" on table "productos"</span>
+<span class="cm">-- DETAIL:  Key (id)=(1) is still referenced from table "productos".</span></code></pre>
+  </div>
+
+  <p>Ese error es <strong>buena señal</strong>: PostgreSQL acaba de evitar que rompas la integridad de tus datos (Clase 4). La solución correcta casi siempre es borrar <em>primero</em> lo que referencia, y <em>después</em> lo referenciado:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — borrar en orden (hijos primero)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- 1. Borra los productos que apuntan a la categoría 1</span>
+<span class="kw">DELETE FROM</span> productos <span class="kw">WHERE</span> categoria_id = <span class="num">1</span>;
+
+<span class="cm">-- 2. Ahora sí, borra la categoría</span>
+<span class="kw">DELETE FROM</span> categorias <span class="kw">WHERE</span> id = <span class="num">1</span>;</code></pre>
+  </div>
+
+  <h3>⚖️ DELETE vs TRUNCATE: ¿cuándo vaciar?</h3>
+  <p>A veces quieres vaciar una tabla entera a propósito (datos de prueba, limpieza total). Hay dos caminos, y no son lo mismo:</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead><tr><th></th><th><code>DELETE FROM productos;</code></th><th><code>TRUNCATE TABLE productos;</code></th></tr></thead>
+      <tbody>
+        <tr><td>¿Puede llevar <code>WHERE</code>?</td><td>✅ Sí (borrado selectivo)</td><td>❌ No (vacía todo)</td></tr>
+        <tr><td>Velocidad con muchas filas</td><td>Lenta (borra fila por fila)</td><td>Rapidísima (libera bloques)</td></tr>
+        <tr><td>¿Reinicia el <code>SERIAL</code>?</td><td>❌ No, sigue desde el último id</td><td>✅ Sí, vuelve a 1</td></tr>
+        <tr><td>¿Se puede usar <code>RETURNING</code>?</td><td>✅ Sí</td><td>❌ No</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano gemelo: "DELETE sin WHERE"</h4>
+    <p><code>DELETE FROM productos;</code> sin <code>WHERE</code> <strong>vacía la tabla completa</strong>, fila por fila, sin pedir nada. Es el «DROP TABLE» silencioso: la tabla existe, pero quedó en cero. Igual que con el <code>UPDATE</code>: <strong>primero el <code>SELECT</code> de verificación, después el <code>DELETE</code></strong>. Y si de verdad quieres vaciarla a propósito, piénsalo dos veces y usa <code>TRUNCATE</code> — al menos queda claro (para quien lea tu código) que la intención era borrar todo.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🗂️ Borrado lógico: la alternativa profesional</h4>
+    <p>En sistemas reales casi nunca se borra de verdad: se <strong>desactiva</strong> con una columna <code>activo BOOLEAN DEFAULT TRUE</code> y se hace <code>UPDATE productos SET activo = FALSE WHERE id = 3;</code>. Se llama <strong>borrado lógico (soft delete)</strong>: los datos se conservan por si se necesitan después (historial, facturas, auditoría). El <code>DELETE</code> duro se reserva para datos realmente inservibles. Los dos enfoques conviven en el mundo real.</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que respondan en el cuaderno: (1) ¿qué error lanza PostgreSQL si borran una categoría que tiene productos? (2) ¿qué harían primero para poder borrarla? (3) ¿por qué <code>TRUNCATE</code> reinicia el <code>SERIAL</code> y <code>DELETE</code> no? Luego compartan con la clase.</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>📝 Quiz M3 · DELETE a fondo</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p>1. ¿Qué hace <code>DELETE FROM productos;</code> (sin <code>WHERE</code>)?</p>
+      <button class="opcion" data-op="a">a) Nada, PostgreSQL pide confirmación</button>
+      <button class="opcion" data-op="b">b) Borra <strong>todas</strong> las filas de la tabla, dejándola vacía</button>
+      <button class="opcion" data-op="c">c) Borra solo la primera fila</button>
+      <button class="opcion" data-op="d">d) Borra la tabla entera (equivale a <code>DROP TABLE</code>)</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>2. Intentas borrar una categoría con <code>DELETE FROM categorias WHERE id = 1;</code> y PostgreSQL responde con un error de <em>foreign key constraint</em>. ¿Qué significa?</p>
+      <button class="opcion" data-op="a">a) Que tu contraseña de PostgreSQL es incorrecta</button>
+      <button class="opcion" data-op="b">b) Que la categoría no existe</button>
+      <button class="opcion" data-op="c">c) Que hay productos que referencian esa categoría y la BD protege su integridad referencial</button>
+      <button class="opcion" data-op="d">d) Que debes usar <code>TRUNCATE</code> en su lugar</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>3. ¿Cuál es una diferencia entre <code>DELETE FROM productos;</code> y <code>TRUNCATE TABLE productos;</code>?</p>
+      <button class="opcion" data-op="a">a) Ambos pueden llevar <code>WHERE</code></button>
+      <button class="opcion" data-op="b">b) <code>TRUNCATE</code> es más lento</button>
+      <button class="opcion" data-op="c">c) <code>DELETE</code> reinicia el <code>SERIAL</code></button>
+      <button class="opcion" data-op="d">d) <code>TRUNCATE</code> es más rápido y reinicia el <code>SERIAL</code> a 1</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>4. ¿Qué práctica protege tus datos antes de un <code>DELETE</code>?</p>
+      <button class="opcion" data-op="a">a) Ejecutar primero el <code>SELECT</code> con el mismo <code>WHERE</code> y revisar las filas que aparecen</button>
+      <button class="opcion" data-op="b">b) Ejecutar el <code>DELETE</code> dos veces por si acaso</button>
+      <button class="opcion" data-op="c">c) Usar <code>WHERE</code> con un valor al azar</button>
+      <button class="opcion" data-op="d">d) No hace falta proteger nada, el <code>DELETE</code> es reversible</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: Descanso ☕ →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — DESCANSO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ Pausa de 15 minutos</h2>
+    <p class="lead">Ya dominas las tres sentencias que modifican datos: <code>INSERT</code>, <code>UPDATE</code> y <code>DELETE</code>. El cerebro necesita asentar. Levántate, estira, hidrátate, y vuelve para conocer la red de seguridad que salva a los profesionales: las transacciones.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card">
+      <span class="big-icon">🧘</span>
+      <h3>Estira</h3>
+      <p>30 segundos mirando al horizonte más lejano que puedas. Un <code>UPDATE</code> destructivo se escribe mejor con la vista descansada.</p>
+    </div>
+    <div class="descanso-card">
+      <span class="big-icon">💧</span>
+      <h3>Hidrátate</h3>
+      <p>Un vaso de agua. Mantener la cabeza fría frente a un <code>DELETE</code> sin <code>WHERE</code> es cuestión de reflejos… y de hidratación.</p>
+    </div>
+    <div class="descanso-card">
+      <span class="big-icon">💬</span>
+      <h3>Cuenta a alguien</h3>
+      <p>En pareja, explícale a tu compañero/a en una frase por qué el <code>WHERE</code> es lo más importante del <code>UPDATE</code> y del <code>DELETE</code>. Si lo explicas, lo entiendes.</p>
+    </div>
+  </div>
+
+  <div class="trivia-box">
+    <h3>🎲 Trivia de descanso</h3>
+    <p style="margin-bottom:1rem;color:var(--texto-suave);">Hiciste <code>BEGIN</code>, ejecutaste un <code>DELETE</code> destructivo por error, y ahora ejecutas <code>ROLLBACK</code>. ¿Qué pasa?</p>
+    <div class="trivia-opts" id="triviaOpts">
+      <button class="trivia-opt" data-top="a" data-tcorrecta="c">a) Los cambios se guardan para siempre</button>
+      <button class="trivia-opt" data-top="b" data-tcorrecta="c">b) La sesión se cierra</button>
+      <button class="trivia-opt" data-top="c" data-tcorrecta="c">c) Los cambios se descartan y la BD queda como estaba antes del BEGIN</button>
+      <button class="trivia-opt" data-top="d" data-tcorrecta="c">d) Se borra la tabla completa</button>
+    </div>
+    <div class="trivia-result" id="triviaResult"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Transacciones →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — TRANSACCIONES (TCL)
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>🛡️ Transacciones: el "deshacer" de la BD</h2>
+  <p class="meta-modulo">Misión 04 · BEGIN / COMMIT / ROLLBACK · Atomicidad · ~30 min</p>
+
+  <p>Ya sabes insertar, actualizar y borrar. Pero ¿qué pasa si en medio de la operación te das cuenta de que el <code>DELETE</code> no tenía <code>WHERE</code>? Hasta ahora, la respuesta era «malas noticias». Hoy cambia todo: con el <strong>TCL</strong> (Transaction Control Language) puedes <strong>deshacer</strong>. Es la diferencia entre manejar un cuchillo sin mango y con mango.</p>
+
+  <h3>🧱 ¿Qué es una transacción?</h3>
+  <p>Una <strong>transacción</strong> es un grupo de sentencias SQL que se ejecutan <strong>todas o ninguna</strong> (atomicidad). Puedes encadenar varios <code>INSERT</code>, <code>UPDATE</code> y <code>DELETE</code>, revisar el resultado, y recién entonces decidir: <strong>lo confirmo</strong> (<code>COMMIT</code>) o <strong>lo tiro a la basura</strong> (<code>ROLLBACK</code>). Mientras la transacción está abierta, <em>solo tú</em> ves los cambios.</p>
+
+  <div class="caja-concepto">
+    <h4>📖 Definición formal</h4>
+    <p>Una transacción es una <strong>unidad lógica de trabajo</strong>: un conjunto de operaciones que el SGBD ejecuta de forma <strong>atómica</strong> (todo o nada), <strong>consistente</strong> (la BD pasa de un estado válido a otro), <strong>aislada</strong> (los cambios intermedios no se ven desde fuera) y <strong>duradera</strong> (una vez confirmada, sobrevive a cualquier fallo). Son las siglas <strong>ACID</strong>: Atomicity, Consistency, Isolation, Durability.</p>
+  </div>
+
+  <h3>🎮 Los tres comandos del TCL</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead><tr><th>Comando</th><th>Qué hace</th></tr></thead>
+      <tbody>
+        <tr><td><code>BEGIN</code></td><td>Abre una transacción. Desde aquí, tus cambios están «en el aire».</td></tr>
+        <tr><td><code>COMMIT</code></td><td>Confirma (guarda) todos los cambios de la transacción para siempre.</td></tr>
+        <tr><td><code>ROLLBACK</code></td><td>Descarta todos los cambios y deja la BD como estaba antes del <code>BEGIN</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🛠️ El caso que nos salva el día</h3>
+  <p>Operación típica de un backend: cobrar una venta significa <em>varias</em> cosas a la vez (crear la venta, descontar stock, actualizar el total del cliente). Si la primera funciona y la segunda falla, quedarías con datos a medias. La transacción lo arregla:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — transacción completa</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">BEGIN</span>;
+
+<span class="kw">INSERT INTO</span> ventas (cliente_id, total) <span class="kw">VALUES</span> (<span class="num">2</span>, <span class="num">18000</span>) <span class="kw">RETURNING</span> id;
+<span class="kw">UPDATE</span> productos <span class="kw">SET</span> stock = stock - <span class="num">1</span> <span class="kw">WHERE</span> id = <span class="num">4</span>;
+<span class="kw">UPDATE</span> clientes <span class="kw">SET</span> total_gastado = total_gastado + <span class="num">18000</span> <span class="kw">WHERE</span> id = <span class="num">2</span>;
+
+<span class="cm">-- ¿Todo salió bien? Revisemos…</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> productos <span class="kw">WHERE</span> id = <span class="num">4</span>;
+
+<span class="kw">COMMIT</span>;  <span class="cm">-- ✅ Todo bien: guardo los 3 cambios juntos</span></code></pre>
+  </div>
+
+  <p>Y si algo se ve mal en la revisión, en vez de <code>COMMIT</code> ejecutas <code>ROLLBACK</code> y <strong>nada</strong> de lo anterior ocurrió:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — deshacer con ROLLBACK</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">BEGIN</span>;
+<span class="kw">DELETE FROM</span> productos <span class="kw">WHERE</span> stock = <span class="num">0</span>;   <span class="cm">-- ¡Uy! No era mi intención</span>
+<span class="kw">SELECT</span> COUNT(*) <span class="kw">FROM</span> productos;             <span class="cm">-- ¡No, espera!</span>
+<span class="kw">ROLLBACK</span>;                                 <span class="cm">-- 😮‍💨 Los datos volvieron</span>
+
+<span class="cm">-- Verificamos: todo sigue donde estaba</span>
+<span class="kw">SELECT</span> COUNT(*) <span class="kw">FROM</span> productos;</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El hábito profesional: todo cambio riesgoso va en transacción</h4>
+    <p>Los desarrolladores serios envuelven <strong>toda operación que modifica datos</strong> en un <code>BEGIN</code> … <code>COMMIT</code> (o <code>ROLLBACK</code> si algo falla). No solo te salva del error humano: si una de las sentencias falla a la mitad, la BD queda intacta en vez de a medias. <strong>Transacción = red de seguridad.</strong></p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "el error sin red de seguridad"</h4>
+    <p>Ejecutar <code>DELETE</code>/<code>UPDATE</code> directamente, sin <code>BEGIN</code>, es jugar a la ruleta rusa: en PostgreSQL cada sentencia <em>se autoconfirma</em> al instante (autocommit). Si sale mal, ya no hay vuelta atrás. Con <code>BEGIN</code> primero, ganas <strong>la libertad de equivocarte</strong> y corregir antes de <code>COMMIT</code>. Por eso decimos: el <code>WHERE</code> evita el error, y la transacción lo <em>perdona</em>.</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que escriban en el cuaderno una transacción que: (1) abra con <code>BEGIN</code>, (2) haga un <code>UPDATE</code> de stock, (3) haga un <code>SELECT</code> de verificación, (4) confirme con <code>COMMIT</code>. Luego, una segunda versión donde el paso (2) esté mal y termine con <code>ROLLBACK</code>. Discutan: ¿qué pasa con la transacción si el programa se corta la luz antes del <code>COMMIT</code>?</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>📝 Quiz M5 · Transacciones</h3>
+
+    <div class="pregunta" data-correcta="a">
+      <p>1. ¿Qué comando <strong>inicia</strong> una transacción?</p>
+      <button class="opcion" data-op="a">a) <code>BEGIN</code></button>
+      <button class="opcion" data-op="b">b) <code>START SAVE</code></button>
+      <button class="opcion" data-op="c">c) <code>UNDO</code></button>
+      <button class="opcion" data-op="d">d) <code>NEW SESSION</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>2. Después de <code>BEGIN</code> y varios <code>UPDATE</code>, ¿qué hace <code>COMMIT</code>?</p>
+      <button class="opcion" data-op="a">a) Descarta los cambios</button>
+      <button class="opcion" data-op="b">b) Cierra la conexión a la BD</button>
+      <button class="opcion" data-op="c">c) Guarda los cambios de forma definitiva</button>
+      <button class="opcion" data-op="d">d) Abre otra transacción</button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p>3. Ejecutaste <code>DELETE FROM productos WHERE stock = 0;</code> dentro de una transacción y te arrepientes. ¿Qué haces?</p>
+      <button class="opcion" data-op="a">a) <code>COMMIT</code>, y pedir un milagro</button>
+      <button class="opcion" data-op="b">b) <code>ROLLBACK</code>, y la BD queda como estaba antes del <code>BEGIN</code></button>
+      <button class="opcion" data-op="c">c) <code>INSERT</code> los datos de nuevo de memoria</button>
+      <button class="opcion" data-op="d">d) Nada: ya es tarde, <code>DELETE</code> no se puede deshacer nunca</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. ¿Qué significa que una transacción sea <strong>atómica</strong>?</p>
+      <button class="opcion" data-op="a">a) Que es muy pequeña</button>
+      <button class="opcion" data-op="b">b) Que solo admite una sentencia</button>
+      <button class="opcion" data-op="c">c) Que se guarda automáticamente cada sentencia</button>
+      <button class="opcion" data-op="d">d) Que las operaciones se ejecutan todas juntas o ninguna (todo o nada)</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Playground →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — PLAYGROUND DML EN VIVO
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>🧪 Playground DML en vivo</h2>
+  <p class="meta-modulo">Misión 05 · Escribe DML y míralo correr en una BD simulada en el navegador · ~35 min</p>
+
+  <p>Es hora de tocar teclas. Aquí abajo tienes un <strong>mini-motor SQL en JavaScript</strong> que simula una BD con dos tablas ya creadas. Escribe sentencias <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, <code>SELECT</code> y transacciones (<code>BEGIN</code>/<code>COMMIT</code>/<code>ROLLBACK</code>) y pulsa <strong>Ejecutar</strong>. El motor responde con el resultado o el error, como lo haría PostgreSQL.</p>
+
+  <div class="caja-destacada">
+    <h4>📋 Estado inicial de la BD</h4>
+    <ul>
+      <li><code>categorias(id PK, nombre)</code> — con 3 filas: 1 Alimentos, 2 Accesorios, 3 Higiene.</li>
+      <li><code>productos(id PK, nombre, precio, stock, categoria_id FK → categorias.id, activo)</code> — <strong>vacía</strong>.</li>
+    </ul>
+    <p>Tu misión: llena la tabla con productos, confirma con <code>RETURNING</code>, reajusta precios con expresiones, prueba un <code>ON CONFLICT</code> y salva un día de caos con <code>ROLLBACK</code>. Los 5 retos de abajo te guían paso a paso.</p>
+  </div>
+
+  <div class="mermaid-sim">
+    <div class="sim-head">Playground DML · motor en JavaScript</div>
+    <div class="mermaid-chips" style="margin-bottom:1rem;">
+      <button class="mermaid-chip" data-snippet="INSERT INTO productos (nombre, precio, stock, categoria_id) VALUES ('Croquetas', 45000, 12, 1), ('Collar Antipulgas', 18000, 30, 2), ('Champú Mascota 500ml', 22000, 8, 3);&#10;">INSERT multi-fila</button>
+      <button class="mermaid-chip" data-snippet="INSERT INTO productos (nombre, precio, stock, categoria_id) VALUES ('Correa Retráctil', 28000, 15, 2) RETURNING id, nombre;&#10;">INSERT ... RETURNING</button>
+      <button class="mermaid-chip" data-snippet="UPDATE productos SET precio = precio * 1.1 WHERE id = 1 RETURNING id, nombre, precio;&#10;">UPDATE con expresión</button>
+      <button class="mermaid-chip" data-snippet="INSERT INTO productos (nombre, precio, stock, categoria_id) VALUES ('Croquetas', 47000, 12, 1) ON CONFLICT (nombre) DO UPDATE SET precio = excluded.precio RETURNING id, nombre, precio;&#10;">ON CONFLICT (upsert)</button>
+      <button class="mermaid-chip" data-snippet="BEGIN;&#10;DELETE FROM productos WHERE id = 3;&#10;SELECT * FROM productos;&#10;ROLLBACK;&#10;SELECT * FROM productos;&#10;">BEGIN + ROLLBACK</button>
+      <button class="mermaid-chip" data-snippet="SELECT * FROM productos;&#10;">SELECT *</button>
+    </div>
+    <div class="mermaid-layout">
+      <div class="mermaid-editor-wrap">
+        <label for="sqlEditor" style="font-size:0.8rem;color:var(--texto-suave);">Escribe tu SQL (una sentencia por línea, termina con ;):</label>
+        <textarea class="mermaid-editor" id="sqlEditor" spellcheck="false">INSERT INTO productos (nombre, precio, stock, categoria_id) VALUES
+    ('Croquetas', 45000, 12, 1),
+    ('Collar Antipulgas', 18000, 30, 2),
+    ('Champú Mascota 500ml', 22000, 8, 3);
+SELECT * FROM productos;</textarea>
+        <button class="btn primary" id="sqlRun" type="button">▶ Ejecutar</button>
+        <button class="btn" id="sqlReset" type="button" style="margin-left:0.5rem;">↺ Reiniciar BD</button>
+      </div>
+      <div>
+        <div style="font-size:0.8rem;color:var(--texto-suave);margin-bottom:0.4rem;">Resultado:</div>
+        <div class="mermaid-preview" id="sqlOutput" style="text-align:left;min-height:220px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Retos para ganar el bonus de XP</h4>
+    <p>En orden, intenta ejecutar estas 5 misiones. Si todas se cumplen, ganarás <strong>+25 XP</strong>:</p>
+    <ol>
+      <li><strong>Inserta 3 productos</strong> en un solo <code>INSERT</code> multi-fila (p. ej. Croquetas, Collar y Champú, con su <code>categoria_id</code>).</li>
+      <li>Usa <code>RETURNING id</code> en un <code>INSERT</code> para ver el <code>id</code> que se asignó.</li>
+      <li><strong>Sube un 10%</strong> el precio del producto id = 1 con <code>UPDATE productos SET precio = precio * 1.1 WHERE id = 1;</code> (si insertaste Croquetas con 45000, debe quedar en 49500).</li>
+      <li>Re-inserta <code>'Croquetas'</code> con <code>ON CONFLICT (nombre) DO UPDATE SET precio = excluded.precio</code> — no debe quedar duplicada.</li>
+      <li>Haz <code>BEGIN</code>, un <code>DELETE</code> o <code>UPDATE</code> destructivo, y <code>ROLLBACK</code>: el producto id = 1 debe seguir existiendo.</li>
+    </ol>
+    <p>Cuando completes los 5 retos, aparecerá un mensaje de éxito. ¡Tú puedes!</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🎯 Lo que estás practicando</h4>
+    <p>Este playground es <strong>una réplica simplificada</strong> de PostgreSQL: las mismas sentencias (multi-fila, <code>RETURNING</code>, <code>ON CONFLICT</code>, transacciones) funcionarán en una BD real con pequeñas diferencias de mensajes. La idea es que <strong>toques</strong> el DML antes del taller: escribir, fallar, corregir, aprender. Ese es el ciclo.</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que, antes de pulsar Ejecutar, <strong>predigan</strong> en voz alta qué van a ver con el reto 5 (BEGIN → DELETE → ROLLBACK). La predicción mental es lo que consolida el concepto de transacción.</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>📝 Quiz M6 · Playground</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p>1. ¿Cómo sabes qué <code>id</code> le tocó al producto recién insertado en el playground?</p>
+      <button class="opcion" data-op="a">a) No se puede saber nunca</button>
+      <button class="opcion" data-op="b">b) Añadiendo <code>RETURNING id</code> al final del <code>INSERT</code></button>
+      <button class="opcion" data-op="c">c) Con un <code>DELETE</code> y un <code>SELECT</code></button>
+      <button class="opcion" data-op="d">d) Pidiéndoselo a PostgreSQL con <code>SHOW ID</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>2. ¿Qué pasa en el playground si haces <code>ROLLBACK</code> sin haber hecho <code>BEGIN</code>?</p>
+      <button class="opcion" data-op="a">a) Se borra toda la tabla</button>
+      <button class="opcion" data-op="b">b) Se confirman los cambios pendientes</button>
+      <button class="opcion" data-op="c">c) Aparece un error: no hay transacción en curso</button>
+      <button class="opcion" data-op="d">d) No pasa nada, se ignora</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>3. Insertas <code>'Croquetas'</code> dos veces con <code>ON CONFLICT (nombre) DO UPDATE SET precio = excluded.precio</code>. ¿Cuántas filas quedan en la tabla?</p>
+      <button class="opcion" data-op="a">a) Una sola, con el precio actualizado (upsert)</button>
+      <button class="opcion" data-op="b">b) Dos filas con el mismo nombre</button>
+      <button class="opcion" data-op="c">c) Cero, se borra la original</button>
+      <button class="opcion" data-op="d">d) Un error, porque <code>ON CONFLICT</code> no existe</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. En el reto del <code>ROLLBACK</code>, ¿qué verías al final si haces <code>SELECT * FROM productos</code> después del <code>ROLLBACK</code>?</p>
+      <button class="opcion" data-op="a">a) La tabla vacía</button>
+      <button class="opcion" data-op="b">b) Un error de sintaxis</button>
+      <button class="opcion" data-op="c">c) Solo los productos que no se borraron</button>
+      <button class="opcion" data-op="d">d) La tabla exactamente como estaba antes del <code>BEGIN</code>, incluido el producto id = 1</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 7 — TALLER ENTREGABLE
+============================================================ -->
+<section class="modulo" data-modulo="7">
+  <h2>📦 Taller entregable: "Mascotitas: operaciones de inventario"</h2>
+  <p class="meta-modulo">Misión 06 · Caso end-to-end: modificar y proteger los datos de una BD real · ~50 min</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">Taller final · Entregable</span>
+      <span class="challenge-title">Operaciones DML seguras para la tienda de mascotas "Mascotitas"</span>
+    </div>
+    <p>La tienda <strong>Mascotitas</strong> ya tiene su BD montada (la creaste en la Clase 6 con <code>categorias</code>, <code>productos</code>, <code>clientes</code> y <code>mascotas</code>, llena de datos). Hoy el dueño te pide <strong>operaciones sobre esos datos</strong>: cargar inventario nuevo, reajustar precios, retirar productos descontinuados y hacer una operación riesgosa protegida con transacciones. La entrega es un archivo SQL <code>.sql</code> ejecutable en PostgreSQL sin errores.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h4>📋 Enunciado</h4>
+    <p><strong>Mascotitas</strong> terminó diciembre con las tablas llenas. En enero el dueño necesita:</p>
+    <ol>
+      <li>Verificar qué hay en la BD <strong>antes</strong> de tocar nada (regla de oro del curso).</li>
+      <li>Cargar <strong>4 productos nuevos</strong> en un solo <code>INSERT</code> multi-fila.</li>
+      <li>Reajustar <strong>precios y stock</strong> con <code>UPDATE</code>: un aumento del 10% y un reposición de stock, cada uno con su verificación previa.</li>
+      <li>Retirar <strong>2 productos descontinuados</strong> con <code>DELETE</code> + <code>WHERE</code>.</li>
+      <li>Realizar una <strong>operación riesgosa dentro de una transacción</strong>: si algo se ve mal, <code>ROLLBACK</code> y listo.</li>
+    </ol>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🎯 Objetivos del entregable</h4>
+    <p>Tu entrega, en pareja, debe contener <strong>seis partes</strong> dentro de un único archivo <code>.sql</code>:</p>
+    <ol>
+      <li><strong>Verificación inicial</strong>: <code>SELECT</code> para conocer los datos actuales.</li>
+      <li><strong>INSERT multi-fila</strong>: los 4 productos nuevos, con <code>RETURNING id</code>.</li>
+      <li><strong>UPDATEs</strong>: aumento del 10% de precio y reposición de stock, cada uno precedido de su <code>SELECT</code> de verificación.</li>
+      <li><strong>DELETEs</strong>: retirar 2 productos con <code>WHERE</code> preciso y <code>RETURNING</code>.</li>
+      <li><strong>Transacción</strong>: <code>BEGIN</code> + operación destructiva + decisión <code>COMMIT</code>/<code>ROLLBACK</code>.</li>
+      <li><strong>Reflexión</strong> (en un bloque de comentarios al final): el comando que más te costó y por qué.</li>
+    </ol>
+  </div>
+
+  <div class="taller-er">
+    <div class="taller-er-step">
+      <h4><span class="step-num">1</span> Verifica el estado actual</h4>
+      <p>Antes de tocar nada, escribe los <code>SELECT</code> que le muestren al dueño (y a ti) qué hay hoy: listar todos los productos con su categoría, y contar cuántos hay por categoría. Guarda esos resultados: te servirán para comparar al final.</p>
+      <button class="taller-sol-toggle" data-sol="sol-verificar">👁️ Ver pista</button>
+      <div class="taller-sol" id="sol-verificar">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- Estado inicial: todos los productos
+SELECT id, nombre, precio, stock, categoria_id FROM productos ORDER BY id;
+
+-- Cuántos productos hay por categoría
+SELECT categoria_id, COUNT(*) FROM productos GROUP BY categoria_id;</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">2</span> Carga 4 productos nuevos (INSERT multi-fila)</h4>
+      <p>El dueño trajo 4 productos de la distribuidora: <em>Croquetas Gato 1.5kg</em> ($32.000, 20 uds, Alimentos), <em>Correa Retráctil</em> ($28.000, 15 uds, Accesorios), <em>Champú Mascota 500ml</em> ($22.000, 10 uds, Higiene) y <em>Pelota de Goma</em> ($9.000, 40 uds, Juguetes… crea la categoría Juguetes con id 4 si no existe). Escríbelo en un solo <code>INSERT</code> con <code>RETURNING id, nombre</code>. Recuerda: <strong>no insertes el <code>id SERIAL</code></strong>.</p>
+      <button class="taller-sol-toggle" data-sol="sol-insert">👁️ Ver solución INSERT</button>
+      <div class="taller-sol" id="sol-insert">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- Si no existe la categoría Juguetes (id 4 en el taller de la Clase 6)
+INSERT INTO categorias (nombre) VALUES ('Juguetes');
+
+-- Los 4 productos nuevos en un solo INSERT multi-fila
+INSERT INTO productos (nombre, precio, stock, categoria_id) VALUES
+    ('Croquetas Gato 1.5kg',   32000, 20, 1),
+    ('Correa Retráctil',       28000, 15, 2),
+    ('Champú Mascota 500ml',   22000, 10, 3),
+    ('Pelota de Goma',          9000, 40, 4)
+RETURNING id, nombre;
+
+-- Si tu BD ya tiene esos productos, cambia los nombres
+-- o usa ON CONFLICT (nombre) DO NOTHING para no duplicar.</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">3</span> Reajusta precios y stock (UPDATE)</h4>
+      <p>El dueño quiere dos cambios: <strong>aumentar un 10%</strong> el precio de todos los productos de la categoría Alimentos (id 1), y <strong>reponer +5 unidades de stock</strong> al producto <em>Correa Retráctil</em>. Para cada uno: primero el <code>SELECT</code> de verificación con el mismo <code>WHERE</code>, luego el <code>UPDATE</code>, y termina con <code>RETURNING</code> para confirmar. Usa <strong>expresiones</strong> (<code>precio = precio * 1.1</code>, <code>stock = stock + 5</code>), no valores calculados a mano.</p>
+      <button class="taller-sol-toggle" data-sol="sol-update">👁️ Ver solución UPDATE</button>
+      <div class="taller-sol" id="sol-update">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- VERIFICACIÓN 1: qué productos de Alimentos hay hoy
+SELECT id, nombre, precio FROM productos WHERE categoria_id = 1;
+
+-- UPDATE 1: +10% a todos los de Alimentos (expresión sobre la columna)
+UPDATE productos SET precio = precio * 1.1
+WHERE categoria_id = 1
+RETURNING id, nombre, precio;
+
+-- VERIFICACIÓN 2: el stock actual de la Correa Retráctil
+SELECT id, nombre, stock FROM productos WHERE nombre = 'Correa Retráctil';
+
+-- UPDATE 2: reponer 5 unidades (stock = stock + 5)
+UPDATE productos SET stock = stock + 5
+WHERE nombre = 'Correa Retráctil'
+RETURNING id, nombre, stock;</pre>
+        <p style="margin-top:0.4rem;">Nota: usar <code>nombre</code> en el <code>WHERE</code> funciona aquí por los datos de ejemplo; en una BD real filtrarías por <code>id</code>.</p>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">4</span> Retira productos descontinuados (DELETE)</h4>
+      <p>La distribuidora dejó de producir <em>Champú Mascota 500ml</em> y <em>Pelota de Goma</em>. Bórralos <strong>con <code>WHERE</code> preciso</strong>: verificación previa, <code>DELETE</code> con <code>RETURNING</code> para confirmar qué se borró, y una verificación final de que ya no están.</p>
+      <button class="taller-sol-toggle" data-sol="sol-delete">👁️ Ver solución DELETE</button>
+      <div class="taller-sol" id="sol-delete">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- VERIFICACIÓN: ¿existen esos productos hoy?
+SELECT id, nombre FROM productos WHERE nombre IN ('Champú Mascota 500ml', 'Pelota de Goma');
+
+-- DELETE con WHERE preciso + RETURNING para confirmar
+DELETE FROM productos
+WHERE nombre IN ('Champú Mascota 500ml', 'Pelota de Goma')
+RETURNING id, nombre;
+
+-- VERIFICACIÓN FINAL: ya no deben aparecer
+SELECT id, nombre FROM productos WHERE nombre IN ('Champú Mascota 500ml', 'Pelota de Goma');</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">5</span> Operación riesgosa en transacción</h4>
+      <p>El dueño quiere <strong>vaciar el stock de una categoría entera</strong> (borrar los productos sin existencias)… pero dudó y quiere que lo hagas <em>a salvo</em>. Escríbelo así: <code>BEGIN</code>, el <code>UPDATE</code> o <code>DELETE</code> destructivo, un <code>SELECT</code> de revisión, y la decisión final. Si al revisar todo se ve bien → <code>COMMIT</code>; si el filtro borró de más → <code>ROLLBACK</code>. Explica en un comentario tu decisión.</p>
+      <button class="taller-sol-toggle" data-sol="sol-trans">👁️ Ver solución transacción</button>
+      <div class="taller-sol" id="sol-trans">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">BEGIN;
+
+-- Operación destructiva: borrar productos sin existencias de Higiene (categoria_id = 3)
+DELETE FROM productos WHERE stock = 0 AND categoria_id = 3;
+
+-- Revisión: ¿qué productos quedan en Higiene?
+SELECT id, nombre, stock FROM productos WHERE categoria_id = 3;
+
+-- Decisión (escríbanla en su archivo):
+-- Si la revisión muestra lo esperado -> COMMIT;
+-- Si el filtro tocó de más             -> ROLLBACK;
+COMMIT;
+
+-- Verificación final tras el commit
+SELECT COUNT(*) FROM productos;</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">6</span> Reflexiona y entrega</h4>
+      <p>Al final del archivo <code>.sql</code>, en un bloque de comentarios (<code>/* ... */</code>), respondan en pareja: <strong>¿qué comando te costó más escribir y por qué?</strong> ¿Cuándo usaste <code>RETURNING</code> y qué te devolvió? ¿Qué papel jugó la transacción en el paso 5?</p>
+      <button class="taller-sol-toggle" data-sol="sol-reflex">👁️ Ver ejemplo de reflexión</button>
+      <div class="taller-sol" id="sol-reflex">
+        <p>Ejemplo (escríbanlo con sus palabras, no lo copien):</p>
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">/*
+  Reflexión:
+  Lo que más nos costó fue el UPDATE con expresión: al principio
+  escribimos SET precio = 49500 (calculado a mano) en vez de
+  SET precio = precio * 1.1. La profe nos hizo ver que a mano
+  se equivoca uno y además hay que repetirlo por cada fila;
+  con la expresión PostgreSQL hace la cuenta solo y en todas
+  las filas del filtro. RETURNING nos sirvió para confirmar
+  el id y el valor nuevo sin hacer un SELECT aparte.
+  Y la transacción nos salvó: nuestro DELETE borró de más y
+  con ROLLBACK todo volvió. Lección: WHERE + transacción = paz.
+*/</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 Cierre del aula — 5 minutos</h4>
+    <p>Cada pareja entrega un único archivo <code>taller7-dml-&lt;integrante1&gt;-&lt;integrante2&gt;.sql</code>. El profesor lo ejecuta en PostgreSQL (o lo revisa con <code>psql -f archivo.sql</code>) y valida: (1) las verificaciones están antes de cada cambio, (2) el <code>INSERT</code> multi-fila no falla y usa <code>RETURNING</code>, (3) los <code>UPDATE</code> usan expresiones y tienen <code>WHERE</code>, (4) los <code>DELETE</code> tienen <code>WHERE</code> + <code>RETURNING</code>, (5) la transacción existe y tiene su <code>COMMIT</code>/<code>ROLLBACK</code> explicado, (6) la reflexión está presente.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>📋 Rúbrica de evaluación (100 pts)</h4>
+    <div class="contenedor-tabla" style="margin-top:0.6rem;">
+      <table class="tabla-compara">
+        <thead><tr><th>Criterio</th><th>Pts</th><th>Indicador</th></tr></thead>
+        <tbody>
+          <tr><td>Verificaciones previas</td><td>20</td><td><code>SELECT</code> de verificación con el mismo <code>WHERE</code> antes de cada <code>UPDATE</code>/<code>DELETE</code>.</td></tr>
+          <tr><td>INSERT multi-fila</td><td>15</td><td>4 productos en un solo <code>INSERT</code>, con columnas explícitas y <code>RETURNING id</code>.</td></tr>
+          <tr><td>UPDATE con expresión</td><td>20</td><td>+10% con <code>precio = precio * 1.1</code> y reposición con <code>stock = stock + 5</code>, ambos con <code>WHERE</code>.</td></tr>
+          <tr><td>DELETE con WHERE</td><td>15</td><td>Retiro de los 2 productos con <code>WHERE</code> + <code>RETURNING</code> y verificación final.</td></tr>
+          <tr><td>Transacción</td><td>20</td><td><code>BEGIN</code>, operación destructiva, revisión y decisión <code>COMMIT</code>/<code>ROLLBACK</code> comentada.</td></tr>
+          <tr><td>Reflexión</td><td>10</td><td>Bloque de comentario con reflexión sobre el comando más difícil.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:0.6rem;font-size:0.9rem;"><strong>Entrega:</strong> un solo archivo <code>.sql</code> por pareja, nombrado <code>taller7-dml-&lt;integrante1&gt;-&lt;integrante2&gt;.sql</code>.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>🧩 Investigación (punto extra, 10 pts)</h4>
+    <p>Investiga y agrega al final del archivo: ¿qué es un <strong>upsert</strong> (<code>INSERT ... ON CONFLICT ... DO UPDATE</code>) y menciona <strong>dos situaciones reales</strong> en las que evitaría un error o un duplicado en una app (p. ej., registrar un usuario con correo repetido, sincronizar un catálogo). Escribe la respuesta en un comentario con un ejemplo de sentencia.</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🏆 ¡Misión completada, DML Master!</h2>
+    <p class="lead">Ya sabes insertar como un profesional (multi-fila, <code>RETURNING</code>, <code>ON CONFLICT</code>), modificar con filtros seguros y expresiones, borrar con precisión y respetando las FK, y —lo más valioso— <strong>deshacer tus errores con transacciones</strong>. Ese combo de «WHERE + verificación + transacción» es exactamente lo que separa al que escribe SQL en producción del que rompe una BD un lunes por la mañana.</p>
+    <p style="margin-top:1rem;font-size:1.05rem;color:var(--verde);font-weight:700;">En la próxima clase entraremos a las consultas avanzadas: <code>JOIN</code>, <code>GROUP BY</code>, <code>HAVING</code> y subconsultas. 🚀</p>
+    <button class="btn-final" data-reiniciar>🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<!-- =================== FOOTER =================== -->
+<footer class="pie">
+  <div class="fb">🎓 Bases de Datos · Clase 7 · Plataforma interactiva</div>
+  <div>DML a fondo · INSERT / UPDATE / DELETE · Transacciones (TCL) · Playground · 4 horas · Nivel Intermedio</div>
+  <div style="margin-top:.5rem;font-size:.78rem;">Hecho con 💜 para adolescentes que quieren modificar datos… con cuidado.</div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
