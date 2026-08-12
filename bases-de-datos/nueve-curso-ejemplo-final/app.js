@@ -104,6 +104,26 @@ function irAModulo(n) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   actualizarUI();
   guardarProgreso();
+  // Re-renderizar diagramas Mermaid del módulo recién visible.
+  // Mermaid no puede medir elementos con display:none, así que si el
+  // diagrama estaba oculto al cargar la página, sus coordenadas SVG
+  // quedan en NaN. Re-ejecutamos el render cuando el módulo es visible.
+  if (mod && mod.querySelector('.mermaid') && window.mermaid) {
+    setTimeout(() => {
+      const mermaidDivs = mod.querySelectorAll('.mermaid');
+      mermaidDivs.forEach(div => {
+        const src = div.getAttribute('data-diagram');
+        if (!src) return;
+        // Si el SVG tiene NaN o no hay SVG, re-renderizar desde la fuente original
+        if (div.innerHTML.includes('NaN') || !div.innerHTML.includes('<svg') || div.innerHTML.includes('aria-roledescription="error"')) {
+          div.removeAttribute('data-processed');
+          div.innerHTML = src;
+          try { window.mermaid.run({ nodes: [div] }); }
+          catch (e) {}
+        }
+      });
+    }, 100);
+  }
 }
 
 function marcarCompletado(n) {

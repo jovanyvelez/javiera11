@@ -238,7 +238,7 @@ partidos(
   <h3>📊 Diagrama Mermaid del modelo</h3>
   <p>Visualicemos el modelo con un diagrama. En la Clase 4 vimos Mermaid; aquí está el diagrama completo del proyecto, renderizado en vivo con el CDN de Mermaid.js:</p>
 
-  <div class="mermaid" style="background:var(--fondo-claro);border:1px solid var(--tarjeta-borde);border-radius:var(--radio);padding:1.5rem;overflow-x:auto;text-align:center;">
+  <div class="mermaid" data-diagram="erDiagram&#10;    DEPORTES ||--o{ TORNEOS : &quot;tiene&quot;&#10;    TORNEOS ||--o{ EQUIPOS : &quot;inscribe&quot;&#10;    EQUIPOS ||--o{ JUGADORES : &quot;posee&quot;&#10;    TORNEOS ||--o{ PARTIDOS : &quot;programa&quot;&#10;    EQUIPOS ||--o{ PARTIDOS : &quot;equipo_a&quot;&#10;    EQUIPOS ||--o{ PARTIDOS : &quot;equipo_b&quot;&#10;&#10;    DEPORTES { int id PK string nombre }&#10;    TORNEOS { int id PK string nombre int deporteId FK string categoria }&#10;    EQUIPOS { int id PK string nombre int torneoId FK }&#10;    JUGADORES { int id PK string nombre date fechaNac int equipoId FK }&#10;    PARTIDOS { int id PK int torneoId FK date fecha string hora int equipoAId FK int equipoBId FK int golesA int golesB string estado }" style="background:var(--fondo-claro);border:1px solid var(--tarjeta-borde);border-radius:var(--radio);padding:1.5rem;overflow-x:auto;text-align:center;">
 erDiagram
     DEPORTES ||--o{ TORNEOS : "tiene"
     TORNEOS ||--o{ EQUIPOS : "inscribe"
@@ -1244,6 +1244,7 @@ ORDER BY p.fecha DESC;</pre>
 
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.8/dist/mermaid.esm.min.mjs';
+  window.mermaid = mermaid;
   mermaid.initialize({ startOnLoad: true, theme: 'dark' });
 </script>
 <script src="app.js"></script>
