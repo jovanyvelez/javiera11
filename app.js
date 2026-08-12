@@ -48,7 +48,8 @@ function cargarProgresoPorClase() {
     'curso-bd-modelo-er': 6,              // idem (clase 4)
     'curso-bd-normalizacion': 6,          // idem (clase 5)
     'curso-bd-sql-basico': 6,              // idem (clase 6)
-    'curso-bd-modificacion-datos': 6       // idem (clase 7)
+    'curso-bd-modificacion-datos': 6,       // idem (clase 7)
+    'curso-bd-consultas-basicas': 6         // idem (clase 8)
   };
 
   let totalGlobal = 0;
@@ -115,11 +116,11 @@ function actualizarBarraClase(card, pct) {
 function animarStats() {
   // Los 3 primeros son fijos
   animarNumero(document.getElementById('stat-cursos'),  0, 5,  800);
-  animarNumero(document.getElementById('stat-clases'), 0, 18, 900);
+  animarNumero(document.getElementById('stat-clases'), 0, 19, 900);
   // El cuarto (horas) tiene "+" al final
   const elHoras = document.getElementById('stat-horas');
   if (elHoras) {
-    animarNumero(elHoras, 0, 54, 1000, valor => valor + '+');
+    animarNumero(elHoras, 0, 58, 1000, valor => valor + '+');
   }
   // El de progreso ya se actualiza en cargarProgresoPorClase
 }
@@ -217,6 +218,9 @@ document.addEventListener('keydown', (e) => {
   } else if (e.key === 'c' || e.key === 'C') {
     const card = document.querySelector('.clase-card.bd-7');
     if (card) card.click();
+  } else if (e.key === 'g' || e.key === 'G') {
+    const card = document.querySelector('.clase-card.bd-8');
+    if (card) card.click();
   }
 });
 
@@ -226,7 +230,7 @@ window.addEventListener('load', () => {
   const keys = ['curso-csharp-funciones-7', 'curso-csharp-poo-10', 'curso-csharp-arreglos-11',
                 'curso-csharp-funciones', 'curso-analisis-diseno', 'curso-requerimientos',
                 'curso-elicitacion', 'curso-documentacion', 'curso-introduccion-diseno',
-                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos'];
+                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas'];
 
   let tienePrograma = false;
   let ultimaClase = null;

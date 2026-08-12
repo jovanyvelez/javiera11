@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🗄️ Bases de Datos · Clase 8 · Consultas básicas (SELECT, WHERE, ORDER BY)</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- =================== HEADER + PROGRESO =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🔍</span>
+    <div>
+      <h1>Bases de Datos · Clase 8</h1>
+      <p class="subtitulo">Consultas básicas · SELECT · WHERE · Operadores (LIKE, BETWEEN, IN, IS NULL) · ORDER BY · LIMIT</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 390 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">📊 SELECT</button>
+  <button class="btn-modulo" data-modulo="2">🎯 WHERE</button>
+  <button class="btn-modulo" data-modulo="3">🧮 Operadores</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">↕️ ORDER BY</button>
+  <button class="btn-modulo" data-modulo="6">🧪 Playground</button>
+  <button class="btn-modulo" data-modulo="7">📦 Taller</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🔍 ¿Cómo le pides a una BD que te muestre lo que necesitas?</h2>
+    <p class="lead">En la <strong>Clase 6</strong> conociste SQL y diste tus primeros pasos con <code>SELECT</code>. En la <strong>Clase 7</strong> dominaste <code>INSERT</code>, <code>UPDATE</code> y <code>DELETE</code>. Hoy nos concentramos en la operación más usada de todas: <strong>consultar datos</strong>. Aprenderás a pedir exactamente las columnas que quieres, a <strong>filtrar</strong> filas con <code>WHERE</code> y operadores como <code>LIKE</code>, <code>BETWEEN</code> e <code>IN</code>, y a <strong>ordenar</strong> los resultados con <code>ORDER BY</code>. El 80% del trabajo con una BD es leer datos — y hoy vas a hacerlo como un profesional.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ sesión SQL en PostgreSQL</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">estudiante@bd:~$</span> <span class="cmd">psql -U postgres -d mascotitas</span></div>
+        <div class="out">psql (16.0) —Digite «help» para ayuda.</div>
+        <div><span class="prompt">mascotitas=#</span> <span class="cmd">SELECT nombre, precio FROM productos WHERE precio &gt; 30000 ORDER BY precio DESC;</span></div>
+        <div class="out">      nombre       | precio</div>
+        <div class="out">------------------+--------</div>
+        <div class="out"> Cama Perro Mediana |  75000</div>
+        <div class="out"> Croquetas Gato 5kg |  68000</div>
+        <div class="out"> Croquetas Perro 3kg|  45000</div>
+        <div class="out">(3 filas)</div>
+        <div><span class="prompt">mascotitas=#</span> <span class="cmd">SELECT COUNT(*) FROM productos WHERE nombre LIKE '%Gato%';</span></div>
+        <div class="out"> count</div>
+        <div class="out">-------</div>
+        <div class="out">     2</div>
+        <div><span class="prompt">mascotitas=#</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>4 horas en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Dominar las consultas básicas: <code>SELECT</code> con columnas específicas, <code>COUNT(*)</code> y <code>DISTINCT</code>; filtros con <code>WHERE</code> y operadores (<code>=</code>, <code>&lt;&gt;</code>, <code>&gt;</code>, <code>LIKE</code>, <code>BETWEEN</code>, <code>IN</code>, <code>IS NULL</code>); y ordenación con <code>ORDER BY</code> y <code>LIMIT</code>.</p>
+    </div>
+    <div class="tarjeta tarjeta-warm">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>El <code>SELECT *</code> que trae columnas de más, el <code>WHERE</code> con tipos que no coinciden, el <code>LIKE</code> sin <code>%</code> que no encuentra nada, y el <code>ORDER BY</code> olvidado que deja los resultados en orden impredecible.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · SELECT</td><td style="color:var(--lima)">Columnas, *, COUNT, DISTINCT</td><td style="color:var(--rosa)">El SELECT * en producción</td><td>30 XP</td></tr>
+        <tr><td>02 · WHERE</td><td style="color:var(--indigo)">Filtros con operadores de comparación</td><td style="color:var(--rosa)">El WHERE con tipos que no coinciden</td><td>30 XP</td></tr>
+        <tr><td>03 · Operadores avanzados</td><td style="color:var(--cian)">LIKE, BETWEEN, IN, IS NULL</td><td style="color:var(--rosa)">El LIKE sin %</td><td>30 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · ORDER BY</td><td style="color:var(--lima-claro)">ASC, DESC, multicolumna, LIMIT</td><td style="color:var(--rosa)">Resultados en orden aleatorio</td><td>30 XP</td></tr>
+        <tr><td>05 · Playground en vivo</td><td style="color:var(--indigo-claro)">Ejecuta SELECT en el navegador</td><td>—</td><td>55 XP</td></tr>
+        <tr><td>06 · Taller entregable</td><td style="color:var(--lima)">Caso "Biblioteca online"</td><td style="color:var(--rosa)">Consultas a ciegas</td><td>30 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:0.6rem;font-size:0.85rem;color:var(--texto-suave);">Cada módulo completado da 30 XP; el Playground suma 25 XP extra por sus 5 retos. Los quizzes perfectos dan +25 XP cada uno. Máximo de la clase: <strong>390 XP</strong>.</p>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a, adivinen qué hace cada una de estas consultas antes de leer el módulo 1: <code>SELECT * FROM productos;</code>, <code>SELECT nombre FROM productos WHERE precio &gt; 50000;</code>, <code>SELECT COUNT(*) FROM productos;</code>. Escriban su predicción. Al final del módulo 1 sabrán si acertaron.</p>
+  </div>
+
+  <h3>🧠 Lo que ya sabes (repaso rápido)</h3>
+  <p>Antes de avanzar, recordemos lo construido en las clases anteriores — hoy lo vamos a usar todo:</p>
+  <ul>
+    <li>SQL se divide en sub-lenguajes; <code>SELECT</code> es el comando estrella del <strong>DML</strong>. (Clase 6)</li>
+    <li>La estructura general de un <code>SELECT</code> es <code>SELECT ... FROM ... WHERE ... ORDER BY ...</code> en ese orden fijo. (Clase 6)</li>
+    <li>Las tablas tienen <strong>columnas con tipos</strong> (<code>INTEGER</code>, <code>VARCHAR</code>, <code>DECIMAL</code>, <code>BOOLEAN</code>, <code>DATE</code>) y <strong>filas</strong>. (Clases 4 y 6)</li>
+    <li>Ya sabemos insertar (<code>INSERT</code>), modificar (<code>UPDATE</code>) y borrar (<code>DELETE</code>) datos. Hoy nos enfocamos en <strong>leerlos</strong>. (Clase 7)</li>
+  </ul>
+
+  <div class="caja-destacada">
+    <h4>📌 La gran pregunta de hoy</h4>
+    <p>Una base de datos puede tener millones de filas. Si necesitas «los 5 productos más caros de la categoría Alimentos», no puedes traerlos todos y ordenarlos en tu app: sería lentísimo. La BD tiene que <strong>hacer el trabajo por ti</strong>: filtrar, ordenar y limitar. Para eso existen <code>WHERE</code>, <code>ORDER BY</code> y <code>LIMIT</code>. Hoy aprenderás a pedirle exactamente lo que necesitas — ni una fila de más, ni una de menos.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Siguiente: SELECT →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — SELECT
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>📊 SELECT: pidiendo datos a la BD</h2>
+  <p class="meta-modulo">Misión 01 · Columnas, asterisco, COUNT, DISTINCT · ~35 min</p>
+
+  <p>El <code>SELECT</code> es el comando más usado de SQL — y el más versátil. Su trabajo es <strong>leer</strong> datos: decirle a la BD qué columnas quieres, de qué tabla, y (con <code>WHERE</code>) qué filas. Hoy lo llevamos a fondo: qué columnas pedir, cómo contar, cómo evitar duplicados.</p>
+
+  <h3>🧩 Anatomía de un SELECT</h3>
+  <p>La estructura del <code>SELECT</code> ya la vimos en la Clase 6, pero la repaso porque es <strong>el orden fijo</strong> que debes memorizar:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — anatomía de un SELECT</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">SELECT</span> nombre, precio              <span class="cm">-- 1. QUÉ columnas quieres ver</span>
+<span class="kw">FROM</span>   productos                    <span class="cm">-- 2. DE QUÉ tabla</span>
+<span class="kw">WHERE</span>  precio &gt; <span class="num">30000</span>               <span class="cm">-- 3. QUÉ filas (filtro)</span>
+<span class="kw">ORDER BY</span> precio <span class="kw">DESC</span>;               <span class="cm">-- 4. CÓMO ordenarlas</span></code></pre>
+  </div>
+
+  <p>Las cláusulas van <strong>siempre en ese orden</strong>: <code>SELECT → FROM → WHERE → ORDER BY → LIMIT</code>. Olvidarlo es el error #1 de principiantes.</p>
+
+  <h3>🌟 El asterisco: todas las columnas a la vez</h3>
+  <p>El <code>*</code> significa «todas las columnas». Es útil para <strong>explorar</strong> una tabla que no conoces, pero en producción conviene listar las columnas que necesitas:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — SELECT * vs SELECT columnas</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- ✅ Explorar: trae todas las columnas (útil al principio)</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> productos;
+
+<span class="cm">-- ✅ Producción: pide sólo lo que necesitas (más rápido y claro)</span>
+<span class="kw">SELECT</span> nombre, precio <span class="kw">FROM</span> productos;</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "SELECT * en producción"</h4>
+    <p><code>SELECT *</code> trae <em>todas</em> las columnas, incluyendo las que no necesitas (fechas internas, IDs de auditoría, blobs grandes…). En una tabla con millones de filas, eso es <strong>ancho de banda y memoria desperdiciados</strong>. Regla: en código real, <strong>lista las columnas</strong>. <code>SELECT *</code> se reserva para explorar a mano en psql.</p>
+  </div>
+
+  <h3>🔢 COUNT: contar filas sin traerlas</h3>
+  <p>Una de las consultas más comunes: «¿cuántos productos hay?». No necesitas traerlos todos — le pides a la BD que los <strong>cuente</strong> y te devuelva un solo número:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — COUNT(*)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- ¿Cuántos productos hay en total?</span>
+<span class="kw">SELECT</span> <span class="kw">COUNT</span>(*) <span class="kw">FROM</span> productos;
+
+<span class="cm">-- ¿Cuántos productos tienen precio mayor a 30000?</span>
+<span class="kw">SELECT</span> <span class="kw">COUNT</span>(*) <span class="kw">FROM</span> productos <span class="kw">WHERE</span> precio &gt; <span class="num">30000</span>;</code></pre>
+  </div>
+
+  <p>El <code>COUNT(*)</code> cuenta <strong>todas las filas</strong> (incluyendo las que tienen <code>NULL</code>). Si quieres contar sólo los no-nulos de una columna: <code>COUNT(correo)</code> cuenta cuántas filas tienen un correo registrado (no <code>NULL</code>).</p>
+
+  <h3>🔀 DISTINCT: elimina duplicados</h3>
+  <p>A veces quieres saber <strong>qué valores distintos</strong> hay en una columna, sin repetidos. Por ejemplo: ¿qué categorías tienen productos en stock?</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — DISTINCT</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- ¿Qué categorías (sin repetir) tienen productos?</span>
+<span class="kw">SELECT DISTINCT</span> categoria_id <span class="kw">FROM</span> productos;
+
+<span class="cm">-- Combina con WHERE: categorías de productos activos</span>
+<span class="kw">SELECT DISTINCT</span> categoria_id <span class="kw">FROM</span> productos <span class="kw">WHERE</span> activo = <span class="kw">TRUE</span>;</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 DISTINCT vs COUNT</h4>
+    <p><code>SELECT DISTINCT categoria_id</code> te muestra <em>los valores distintos</em> (1, 2, 3, 4). <code>SELECT COUNT(DISTINCT categoria_id)</code> te dice <em>cuántos valores distintos hay</em> (4). El primero lista; el segundo cuenta. Elige según lo que necesites.</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que escriban: (1) un <code>SELECT *</code> para explorar la tabla <code>productos</code>, (2) un <code>SELECT</code> con sólo <code>nombre</code> y <code>precio</code>, (3) un <code>SELECT COUNT(*)</code> para saber cuántos productos hay, (4) un <code>SELECT DISTINCT categoria_id</code> para ver las categorías representadas. Discutan: ¿cuál enviarían a producción y cuál usarían sólo para explorar?</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>📝 Quiz M1 · SELECT</h3>
+
+    <div class="pregunta" data-correcta="c">
+      <p>1. ¿Cuál es el <strong>orden correcto</strong> de las cláusulas en un <code>SELECT</code>?</p>
+      <button class="opcion" data-op="a">a) <code>FROM → SELECT → WHERE → ORDER BY</code></button>
+      <button class="opcion" data-op="b">b) <code>WHERE → SELECT → FROM → ORDER BY</code></button>
+      <button class="opcion" data-op="c">c) <code>SELECT → FROM → WHERE → ORDER BY</code></button>
+      <button class="opcion" data-op="d">d) <code>ORDER BY → WHERE → FROM → SELECT</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p>2. ¿Qué hace <code>SELECT COUNT(*) FROM productos;</code>?</p>
+      <button class="opcion" data-op="a">a) Trae todas las filas de productos</button>
+      <button class="opcion" data-op="b">b) Devuelve un solo número: cuántas filas hay en la tabla</button>
+      <button class="opcion" data-op="c">c) Cuenta sólo las columnas, no las filas</button>
+      <button class="opcion" data-op="d">d) Borra los productos duplicados</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>3. ¿Para qué sirve <code>SELECT DISTINCT categoria_id FROM productos;</code>?</p>
+      <button class="opcion" data-op="a">a) Muestra los valores distintos de <code>categoria_id</code>, sin repetir</button>
+      <button class="opcion" data-op="b">b) Borra las filas con categorías duplicadas</button>
+      <button class="opcion" data-op="c">c) Cuenta cuántas categorías hay</button>
+      <button class="opcion" data-op="d">d) Ordena las categorías alfabéticamente</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. ¿Por qué se desaconseja <code>SELECT *</code> en código de producción?</p>
+      <button class="opcion" data-op="a">a) Porque PostgreSQL no lo soporta</button>
+      <button class="opcion" data-op="b">b) Porque sólo trae la primera fila</button>
+      <button class="opcion" data-op="c">c) Porque ordena los resultados al azar</button>
+      <button class="opcion" data-op="d">d) Porque trae columnas innecesarias, gastando ancho de banda y memoria</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: WHERE →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — WHERE
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>🎯 WHERE: filtrando filas</h2>
+  <p class="meta-modulo">Misión 02 · Operadores de comparación · AND / OR / NOT · ~35 min</p>
+
+  <p>El <code>WHERE</code> es el <strong>filtro</strong> del <code>SELECT</code>: le dice a la BD qué filas quieres, descartando las que no cumplen la condición. Sin <code>WHERE</code>, <code>SELECT</code> trae <em>todas</em> las filas de la tabla. Con <code>WHERE</code>, trae sólo las que te interesan. Es la diferencia entre leer 10 productos y leer 10 millones.</p>
+
+  <h3>⚖️ Operadores de comparación</h3>
+  <p>Los operadores básicos comparan una columna con un valor. Son los mismos que en cualquier lenguaje:</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead><tr><th>Operador</th><th>Significado</th><th>Ejemplo</th></tr></thead>
+      <tbody>
+        <tr><td><code>=</code></td><td>Igual a</td><td><code>WHERE categoria_id = 1</code></td></tr>
+        <tr><td><code>&lt;&gt;</code> o <code>!=</code></td><td>Distinto de</td><td><code>WHERE precio &lt;&gt; 45000</code></td></tr>
+        <tr><td><code>&gt;</code></td><td>Mayor que</td><td><code>WHERE precio &gt; 30000</code></td></tr>
+        <tr><td><code>&lt;</code></td><td>Menor que</td><td><code>WHERE stock &lt; 10</code></td></tr>
+        <tr><td><code>&gt;=</code></td><td>Mayor o igual que</td><td><code>WHERE precio &gt;= 20000</code></td></tr>
+        <tr><td><code>&lt;=</code></td><td>Menor o igual que</td><td><code>WHERE stock &lt;= 5</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — WHERE con operadores</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Productos que cuestan más de 30000</span>
+<span class="kw">SELECT</span> nombre, precio <span class="kw">FROM</span> productos <span class="kw">WHERE</span> precio &gt; <span class="num">30000</span>;
+
+<span class="cm">-- Productos de la categoría 1 (Alimentos)</span>
+<span class="kw">SELECT</span> nombre <span class="kw">FROM</span> productos <span class="kw">WHERE</span> categoria_id = <span class="num">1</span>;
+
+<span class="cm">-- Productos inactivos (activo = FALSE)</span>
+<span class="kw">SELECT</span> nombre <span class="kw">FROM</span> productos <span class="kw">WHERE</span> activo = <span class="kw">FALSE</span>;</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Los strings van entre comillas simples</h4>
+    <p>Los valores numéricos van <em>sin comillas</em> (<code>WHERE precio = 45000</code>), pero las cadenas van <strong>entre comillas simples</strong> (<code>WHERE nombre = 'Croquetas'</code>). Las comillas dobles son para identificadores, no para valores. Y cuidado: <code>'45000'</code> (con comillas) es un string, no un número — la comparación puede dar resultados raros.</p>
+  </div>
+
+  <h3>🔗 Combinando condiciones: AND, OR, NOT</h3>
+  <p>Rara vez filtrarás por una sola condición. <code>AND</code> exige que <strong>ambas</strong> se cumplan; <code>OR</code> basta con que se cumpla <strong>cualquiera</strong>; <code>NOT</code> <strong>niega</strong> la condición:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — AND, OR, NOT</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- AND: productos de Alimentos (cat 1) Y con precio mayor a 40000</span>
+<span class="kw">SELECT</span> nombre <span class="kw">FROM</span> productos
+<span class="kw">WHERE</span> categoria_id = <span class="num">1</span> <span class="kw">AND</span> precio &gt; <span class="num">40000</span>;
+
+<span class="cm">-- OR: productos de Higiene (cat 3) O Juguetes (cat 4)</span>
+<span class="kw">SELECT</span> nombre <span class="kw">FROM</span> productos
+<span class="kw">WHERE</span> categoria_id = <span class="num">3</span> <span class="kw">OR</span> categoria_id = <span class="num">4</span>;
+
+<span class="cm">-- NOT: productos que NO son de la categoría 1</span>
+<span class="kw">SELECT</span> nombre <span class="kw">FROM</span> productos
+<span class="kw">WHERE NOT</span> categoria_id = <span class="num">1</span>;</code></pre>
+  </div>
+
+  <h3>📐 Precedencia: AND tiene más prioridad que OR</h3>
+  <p>SQL evalúa <code>NOT</code> primero, luego <code>AND</code>, y por último <code>OR</code>. Esto significa que <code>A OR B AND C</code> se lee como <code>A OR (B AND C)</code>, no como <code>(A OR B) AND C</code>. Si quieres forzar el otro orden, usa <strong>paréntesis</strong>:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — paréntesis para forzar agrupación</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Sin paréntesis: AND se evalúa primero</span>
+<span class="cm">-- categoria_id = 1 OR (categoria_id = 2 AND precio &gt; 40000)</span>
+<span class="kw">SELECT</span> nombre <span class="kw">FROM</span> productos
+<span class="kw">WHERE</span> categoria_id = <span class="num">1</span> <span class="kw">OR</span> categoria_id = <span class="num">2</span> <span class="kw">AND</span> precio &gt; <span class="num">40000</span>;
+
+<span class="cm">-- Con paréntesis: (categoria_id = 1 OR categoria_id = 2) AND precio &gt; 40000</span>
+<span class="kw">SELECT</span> nombre <span class="kw">FROM</span> productos
+<span class="kw">WHERE</span> (categoria_id = <span class="num">1</span> <span class="kw">OR</span> categoria_id = <span class="num">2</span>) <span class="kw">AND</span> precio &gt; <span class="num">40000</span>;</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "WHERE con tipos que no coinciden"</h4>
+    <p>Si comparas un string con un número (<code>WHERE precio = '45000'</code>), PostgreSQL puede hacer una conversión implícita y funcionar… o no. La regla: <strong>compara números con números</strong> y <strong>strings con strings</strong>. <code>WHERE precio = 45000</code> (sin comillas) es correcto; <code>WHERE nombre = 45000</code> fallará porque <code>nombre</code> es texto. Conocer los tipos de tus columnas (Clase 6) te ahorra errores misteriosos.</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que escriban: (1) un <code>SELECT</code> de productos con <code>stock &lt; 10</code>, (2) uno con <code>categoria_id = 1 AND activo = TRUE</code>, (3) uno con <code>(categoria_id = 3 OR categoria_id = 4) AND precio &lt; 20000</code>. Predigan cuántas filas devolverá cada uno, luego comparen en el playground.</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>📝 Quiz M2 · WHERE</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p>1. ¿Qué hace <code>SELECT nombre FROM productos WHERE precio &gt; 30000;</code>?</p>
+      <button class="opcion" data-op="a">a) Muestra todos los productos</button>
+      <button class="opcion" data-op="b">b) Muestra el nombre de los productos cuyo precio es mayor a 30000</button>
+      <button class="opcion" data-op="c">c) Actualiza el precio a 30000</button>
+      <button class="opcion" data-op="d">d) Borra los productos baratos</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>2. ¿Cuál es la forma correcta de comparar un <strong>string</strong>?</p>
+      <button class="opcion" data-op="a">a) <code>WHERE nombre = 'Croquetas'</code> (comillas simples)</button>
+      <button class="opcion" data-op="b">b) <code>WHERE nombre = Croquetas</code> (sin comillas)</button>
+      <button class="opcion" data-op="c">c) <code>WHERE nombre = "Croquetas"</code> (comillas dobles)</button>
+      <button class="opcion" data-op="d">d) <code>WHERE nombre = [Croquetas]</code> (corchetes)</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>3. ¿Cómo se evalúa <code>categoria_id = 1 OR categoria_id = 2 AND precio &gt; 40000</code>?</p>
+      <button class="opcion" data-op="a">a) <code>(categoria_id = 1 OR categoria_id = 2) AND precio &gt; 40000</code></button>
+      <button class="opcion" data-op="b">b) De izquierda a derecha, sin precedencia</button>
+      <button class="opcion" data-op="c">c) <code>categoria_id = 1 OR (categoria_id = 2 AND precio &gt; 40000)</code> (AND tiene prioridad sobre OR)</button>
+      <button class="opcion" data-op="d">d) Falla con error de sintaxis</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. ¿Qué hace <code>WHERE NOT activo = TRUE;</code>?</p>
+      <button class="opcion" data-op="a">a) Marca todas las filas como activas</button>
+      <button class="opcion" data-op="b">b) Falla porque <code>NOT</code> no existe en SQL</button>
+      <button class="opcion" data-op="c">c) Selecciona sólo las filas activas</button>
+      <button class="opcion" data-op="d">d) Selecciona las filas donde <code>activo</code> NO es <code>TRUE</code> (los inactivos)</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Operadores avanzados →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — OPERADORES AVANZADOS (LIKE, BETWEEN, IN, IS NULL)
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>🧮 Operadores avanzados del WHERE</h2>
+  <p class="meta-modulo">Misión 03 · LIKE · BETWEEN · IN · IS NULL · ~40 min</p>
+
+  <p>Los operadores de comparación (<code>=</code>, <code>&gt;</code>, <code>&lt;</code>…) son útiles, pero a veces necesitas filtros más expresivos: «productos cuyo nombre <em>contiene</em> "Gato"», «productos con precio <em>entre</em> 10000 y 30000», «productos de las categorías 3 <em>o</em> 4 <em>o</em> 5». Para eso existen <code>LIKE</code>, <code>BETWEEN</code>, <code>IN</code> e <code>IS NULL</code>.</p>
+
+  <h3>🔍 LIKE: patrones de texto</h3>
+  <p><code>LIKE</code> compara strings con un <strong>patrón</strong> que usa dos comodines:</p>
+  <ul>
+    <li><code>%</code> — secuencia de <strong>cero o más</strong> caracteres (como <code>*</code> en glob).</li>
+    <li><code>_</code> — <strong>exactamente un</strong> carácter (como <code>?</code> en glob).</li>
+  </ul>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — LIKE con patrones</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Nombres que EMPIEZAN por 'C' (Croquetas, Comida, Collar, Cama, Cepillo...)</span>
+<span class="kw">SELECT</span> nombre <span class="kw">FROM</span> productos <span class="kw">WHERE</span> nombre <span class="kw">LIKE</span> <span class="str">'C%'</span>;
+
+<span class="cm">-- Nombres que CONTIENEN 'Gato' (Comida Gato, Croquetas Gato)</span>
+<span class="kw">SELECT</span> nombre <span class="kw">FROM</span> productos <span class="kw">WHERE</span> nombre <span class="kw">LIKE</span> <span class="str">'%Gato%'</span>;
+
+<span class="cm">-- Nombres que TERMINAN por 'Goma'</span>
+<span class="kw">SELECT</span> nombre <span class="kw">FROM</span> productos <span class="kw">WHERE</span> nombre <span class="kw">LIKE</span> <span class="str">'%Goma'</span>;
+
+<span class="cm">-- Nombres de exactamente 5 letras que empiezan por 'C' (C_+_+_+_+_: no aplica aquí)</span>
+<span class="kw">SELECT</span> nombre <span class="kw">FROM</span> categorias <span class="kw">WHERE</span> nombre <span class="kw">LIKE</span> <span class="str">'A_c_s%'</span>; <span class="cm">-- Accesorios</span></code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 LIKE es case-insensitive en el playground (pero no siempre)</h4>
+    <p>En el playground de esta clase, <code>LIKE</code> es <strong>insensible a mayúsculas/minúsculas</strong> (como en PostgreSQL por defecto con acentos). En algunas BD (MySQL con collation binario) <code>LIKE</code> sí distingue. Si necesitas una búsqueda sin distinguir mayúsculas en un motor estricto, usa <code>ILIKE</code> (PostgreSQL) o <code>LOWER(col) LIKE '%gato%'</code>.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "LIKE sin %"</h4>
+    <p><code>WHERE nombre LIKE 'Gato'</code> (sin <code>%</code>) sólo coincide con el nombre <em>exactamente</em> igual a «Gato». Olvidar el <code>%</code> es el error #1 de <code>LIKE</code>: pensabas buscar «los que contienen Gato» y no te devuelve nada porque ningún producto se llama sólo «Gato». Si quieres <em>contener</em>, usa <code>'%Gato%'</code>; si quieres <em>empezar por</em>, <code>'Gato%'</code>.</p>
+  </div>
+
+  <h3>📏 BETWEEN: filtrar por rango</h3>
+  <p><code>BETWEEN</code> es un atajo para «mayor o igual que X <strong>AND</strong> menor o igual que Y». Incluye los dos extremos:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — BETWEEN</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Productos con precio entre 10000 y 30000 (inclusive)</span>
+<span class="kw">SELECT</span> nombre, precio <span class="kw">FROM</span> productos
+<span class="kw">WHERE</span> precio <span class="kw">BETWEEN</span> <span class="num">10000</span> <span class="kw">AND</span> <span class="num">30000</span>;
+
+<span class="cm">-- Equivale a:</span>
+<span class="kw">SELECT</span> nombre, precio <span class="kw">FROM</span> productos
+<span class="kw">WHERE</span> precio &gt;= <span class="num">10000</span> <span class="kw">AND</span> precio &lt;= <span class="num">30000</span>;</code></pre>
+  </div>
+
+  <p><code>BETWEEN</code> también funciona con fechas: <code>WHERE fecha BETWEEN '2026-01-01' AND '2026-12-31'</code>.</p>
+
+  <h3>📋 IN: comparar contra una lista</h3>
+  <p><code>IN</code> verifica si el valor está <strong>en una lista</strong>. Es un atajo para varios <code>OR</code>:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — IN</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Productos de las categorías 3 o 4 (Higiene o Juguetes)</span>
+<span class="kw">SELECT</span> nombre <span class="kw">FROM</span> productos
+<span class="kw">WHERE</span> categoria_id <span class="kw">IN</span> (<span class="num">3</span>, <span class="num">4</span>);
+
+<span class="cm">-- Equivale a:</span>
+<span class="kw">SELECT</span> nombre <span class="kw">FROM</span> productos
+<span class="kw">WHERE</span> categoria_id = <span class="num">3</span> <span class="kw">OR</span> categoria_id = <span class="num">4</span>;
+
+<span class="cm">-- IN con strings: productos con estos nombres exactos</span>
+<span class="kw">SELECT</span> nombre <span class="kw">FROM</span> productos
+<span class="kw">WHERE</span> nombre <span class="kw">IN</span> (<span class="str">'Pelota de Goma'</span>, <span class="str">'Ratón de Juguete'</span>);</code></pre>
+  </div>
+
+  <h3>🌑 IS NULL: trabajar con ausencia</h3>
+  <p><code>NULL</code> significa «<strong>sin valor</strong>» o «desconocido» (Clase 6). No es lo mismo que <code>0</code> ni que <code>''</code> (string vacío). Para filtrar por <code>NULL</code> no puedes usar <code>=</code> — tienes que usar <code>IS NULL</code> o <code>IS NOT NULL</code>:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — IS NULL / IS NOT NULL</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Clientes que NO tienen teléfono registrado (NULL)</span>
+<span class="kw">SELECT</span> nombre <span class="kw">FROM</span> clientes <span class="kw">WHERE</span> telefono <span class="kw">IS NULL</span>;
+
+<span class="cm">-- Clientes que SÍ tienen teléfono</span>
+<span class="kw">SELECT</span> nombre <span class="kw">FROM</span> clientes <span class="kw">WHERE</span> telefono <span class="kw">IS NOT NULL</span>;
+
+<span class="cm">-- ⚠️ Esto NO funciona (NULL no se compara con =)</span>
+<span class="kw">SELECT</span> nombre <span class="kw">FROM</span> clientes <span class="kw">WHERE</span> telefono = <span class="kw">NULL</span>; <span class="cm">-- devuelve 0 filas</span></code></pre>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🧠 ¿Por qué NULL no se compara con =?</h4>
+    <p>Porque <code>NULL</code> no es un valor: es la <strong>ausencia</strong> de valor. Decir <code>telefono = NULL</code> es como preguntar «¿es la nada igual a la nada?» — la respuesta no es «sí» ni «no», es «no se sabe». SQL lo trata como <code>NULL</code> (que no es <code>TRUE</code>), así que la fila no pasa el filtro. Por eso existe <code>IS NULL</code>: es la forma correcta de preguntar «¿este valor es nulo?».</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que escriban: (1) un <code>LIKE</code> para productos cuyo nombre contiene «Perro», (2) un <code>BETWEEN</code> para precios entre 5000 y 20000, (3) un <code>IN</code> para categorías 1 y 2, (4) un <code>IS NULL</code> para productos sin stock (en una BD con NULLs). Discutan por qué <code>WHERE stock = NULL</code> no funciona.</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>📝 Quiz M3 · Operadores avanzados</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p>1. ¿Qué patrón de <code>LIKE</code> encuentra nombres que <strong>contienen</strong> "Gato"?</p>
+      <button class="opcion" data-op="a">a) <code>LIKE 'Gato'</code></button>
+      <button class="opcion" data-op="b">b) <code>LIKE '%Gato%'</code></button>
+      <button class="opcion" data-op="c">c) <code>LIKE 'Gato%'</code></button>
+      <button class="opcion" data-op="d">d) <code>LIKE '*Gato*'</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>2. ¿Qué hace <code>WHERE precio BETWEEN 10000 AND 30000;</code>?</p>
+      <button class="opcion" data-op="a">a) Filtra los productos con precio entre 10000 y 30000 (inclusive ambos extremos)</button>
+      <button class="opcion" data-op="b">b) Filtra los productos con precio estrictamente mayor a 10000 y menor a 30000</button>
+      <button class="opcion" data-op="c">c) Filtra los productos con precio igual a 10000 o a 30000</button>
+      <button class="opcion" data-op="d">d) Filtra los productos con precio menor que 10000</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>3. ¿Cuál es la forma correcta de filtrar filas donde <code>telefono</code> es <code>NULL</code>?</p>
+      <button class="opcion" data-op="a">a) <code>WHERE telefono = NULL</code></button>
+      <button class="opcion" data-op="b">b) <code>WHERE telefono = ''</code></button>
+      <button class="opcion" data-op="c">c) <code>WHERE telefono IS NULL</code></button>
+      <button class="opcion" data-op="d">d) <code>WHERE telefono = 0</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. <code>WHERE categoria_id IN (3, 4)</code> equivale a…</p>
+      <button class="opcion" data-op="a">a) <code>WHERE categoria_id = 3 AND categoria_id = 4</code></button>
+      <button class="opcion" data-op="b">b) <code>WHERE categoria_id BETWEEN 3 AND 4</code></button>
+      <button class="opcion" data-op="c">c) <code>WHERE categoria_id = 3 * 4</code></button>
+      <button class="opcion" data-op="d">d) <code>WHERE categoria_id = 3 OR categoria_id = 4</code></button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: Descanso ☕ →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — DESCANSO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ Pausa de 15 minutos</h2>
+    <p class="lead">Ya dominas <code>SELECT</code>, <code>WHERE</code> con todos sus operadores y las combinaciones con <code>AND</code>/<code>OR</code>/<code>NOT</code>. El cerebro necesita asentar. Levántate, estira, hidrátate, y vuelve para el último ingrediente de las consultas: <code>ORDER BY</code> y <code>LIMIT</code>.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card">
+      <span class="big-icon">🧘</span>
+      <h3>Estira</h3>
+      <p>30 segundos mirando al horizonte más lejano que puedas. Los filtros se escriben mejor con la vista descansada.</p>
+    </div>
+    <div class="descanso-card">
+      <span class="big-icon">💧</span>
+      <h3>Hidrátate</h3>
+      <p>Un vaso de agua. Pensar en <code>LIKE '%Gato%'</code> vs <code>LIKE 'Gato%'</code> es más fácil con el cerebro hidratado.</p>
+    </div>
+    <div class="descanso-card">
+      <span class="big-icon">💬</span>
+      <h3>Cuenta a alguien</h3>
+      <p>En pareja, explícale a tu compañero/a en una frase la diferencia entre <code>IS NULL</code> y <code>= NULL</code>. Si lo explicas, lo entiendes.</p>
+    </div>
+  </div>
+
+  <div class="trivia-box">
+    <h3>🎲 Trivia de descanso</h3>
+    <p style="margin-bottom:1rem;color:var(--texto-suave);">¿Cómo muestras los productos <strong>del más caro al más barato</strong>?</p>
+    <div class="trivia-opts" id="triviaOpts">
+      <button class="trivia-opt" data-top="a" data-tcorrecta="c">a) <code>ORDER BY precio ASC</code></button>
+      <button class="trivia-opt" data-top="b" data-tcorrecta="c">b) <code>ORDER BY precio</code> (sin dirección)</button>
+      <button class="trivia-opt" data-top="c" data-tcorrecta="c">c) <code>ORDER BY precio DESC</code></button>
+      <button class="trivia-opt" data-top="d" data-tcorrecta="c">d) <code>SORT precio DESC</code></button>
+    </div>
+    <div class="trivia-result" id="triviaResult"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: ORDER BY →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — ORDER BY
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>↕️ ORDER BY: ordenando los resultados</h2>
+  <p class="meta-modulo">Misión 04 · ASC / DESC · Multicolumna · LIMIT · ~30 min</p>
+
+  <p>Por defecto, las filas que devuelve un <code>SELECT</code> vienen en un <strong>orden impredecible</strong> (el que PostgreSQL decida según sus índices). Si necesitas un orden garantizado — los más caros primero, alfabético, por fecha — tienes que pedirlo explícitamente con <code>ORDER BY</code>. Y si sólo quieres los primeros N, usas <code>LIMIT</code>.</p>
+
+  <h3>🔼🔽 ASC y DESC</h3>
+  <p><code>ORDER BY columna ASC</code> ordena de <strong>menor a mayor</strong> (ascendente). <code>ORDER BY columna DESC</code> ordena de <strong>mayor a menor</strong> (descendente). Si omites la dirección, el default es <code>ASC</code>:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — ORDER BY ASC / DESC</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Los 3 productos más caros (mayor a menor)</span>
+<span class="kw">SELECT</span> nombre, precio <span class="kw">FROM</span> productos
+<span class="kw">ORDER BY</span> precio <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="num">3</span>;
+
+<span class="cm">-- Los productos por nombre, alfabético (A a Z)</span>
+<span class="kw">SELECT</span> nombre <span class="kw">FROM</span> productos
+<span class="kw">ORDER BY</span> nombre <span class="kw">ASC</span>;  <span class="cm">-- ASC es el default, se puede omitir</span></code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 LIMIT va siempre después de ORDER BY</h4>
+    <p>El orden de cláusulas es <code>SELECT → FROM → WHERE → ORDER BY → LIMIT</code>. Si pones <code>LIMIT</code> antes de <code>ORDER BY</code>, PostgreSQL te dará un error de sintaxis. <code>LIMIT</code> recorta las filas <em>ya ordenadas</em>: por eso «los 3 más caros» funciona — primero ordenas por precio descendente, y luego tomas los primeros 3.</p>
+  </div>
+
+  <h3>🔀 ORDER BY multicolumna</h3>
+  <p>Puedes ordenar por <strong>varias columnas</strong>: la primera es el criterio principal, la segunda es el desempate, y así sucesivamente. Cada columna puede tener su propia dirección:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — ORDER BY multicolumna</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Ordena por categoría (ASC) y, dentro de cada categoría, por precio (DESC)</span>
+<span class="kw">SELECT</span> nombre, categoria_id, precio <span class="kw">FROM</span> productos
+<span class="kw">ORDER BY</span> categoria_id <span class="kw">ASC</span>, precio <span class="kw">DESC</span>;</code></pre>
+  </div>
+
+  <p>Así obtienes los productos agrupados por categoría (1, 2, 3, 4) y, dentro de cada grupo, del más caro al más barato. Es como ordenar una biblioteca: primero por sección (ASC), luego por autor (ASC), luego por año (DESC).</p>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "resultados en orden aleatorio"</h4>
+    <p>Sin <code>ORDER BY</code>, <strong>no hay garantía</strong> sobre el orden de las filas. Puede parecer que vienen ordenadas por <code>id</code> (porque PostgreSQL las lee en ese orden), pero eso es coincidencia: si se borra una fila y se reinserta, el orden puede cambiar. Si tu app <em>depende</em> del orden (una lista paginada, un top 10, un ranking), <strong>siempre</strong> escribe <code>ORDER BY</code>. Dejarlo al azar es un bug invisible que estalla en producción.</p>
+  </div>
+
+  <h3>✂️ LIMIT: sólo los primeros N</h3>
+  <p><code>LIMIT</code> recorta el resultado a un número máximo de filas. Combinado con <code>ORDER BY</code>, es la forma de hacer «top N» y «últimos N»:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — LIMIT para top N</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Los 5 productos más baratos</span>
+<span class="kw">SELECT</span> nombre, precio <span class="kw">FROM</span> productos
+<span class="kw">ORDER BY</span> precio <span class="kw">ASC</span>
+<span class="kw">LIMIT</span> <span class="num">5</span>;
+
+<span class="cm">-- El producto más caro (top 1)</span>
+<span class="kw">SELECT</span> nombre, precio <span class="kw">FROM</span> productos
+<span class="kw">ORDER BY</span> precio <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="num">1</span>;</code></pre>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🛡️ ¿Dónde se usa esto en la vida real?</h4>
+    <p>«Los 10 productos más vendidos», «los 5 clientes con más compras», «las últimas 20 órdenes», «el top 3 de cada categoría» — todos son <code>ORDER BY ... DESC LIMIT N</code>. Las apps de redes sociales (feed), e-commerce (recomendaciones) y dashboards (métricas) viven de este patrón. Es, literalmente, una de las consultas más útiles que existen.</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que escriban: (1) los 3 productos más caros con <code>ORDER BY precio DESC LIMIT 3</code>, (2) todos los productos ordenados por <code>categoria_id ASC</code> y luego por <code>precio DESC</code>, (3) el producto más barato. Predigan qué producto aparecerá primero en cada caso.</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>📝 Quiz M5 · ORDER BY</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p>1. ¿Cómo muestras los productos <strong>del más caro al más barato</strong>?</p>
+      <button class="opcion" data-op="a">a) <code>ORDER BY precio ASC</code></button>
+      <button class="opcion" data-op="b">b) <code>ORDER BY precio DESC</code></button>
+      <button class="opcion" data-op="c">c) <code>ORDER BY precio</code> (sin dirección)</button>
+      <button class="opcion" data-op="d">d) <code>SORT precio DESC</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>2. ¿Cuál es el <strong>orden correcto</strong> de las cláusulas?</p>
+      <button class="opcion" data-op="a">a) <code>SELECT → FROM → LIMIT → WHERE → ORDER BY</code></button>
+      <button class="opcion" data-op="b">b) <code>SELECT → FROM → ORDER BY → WHERE → LIMIT</code></button>
+      <button class="opcion" data-op="c">c) <code>SELECT → FROM → LIMIT → ORDER BY → WHERE</code></button>
+      <button class="opcion" data-op="d">d) <code>SELECT → FROM → WHERE → ORDER BY → LIMIT</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>3. ¿Qué hace <code>ORDER BY categoria_id ASC, precio DESC</code>?</p>
+      <button class="opcion" data-op="a">a) Ordena sólo por <code>categoria_id</code> ascendente</button>
+      <button class="opcion" data-op="b">b) Ordena sólo por <code>precio</code> descendente</button>
+      <button class="opcion" data-op="c">c) Ordena por categoría ascendente y, dentro de cada categoría, por precio descendente</button>
+      <button class="opcion" data-op="d">d) Mezcla las dos columnas al azar</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>4. Sin <code>ORDER BY</code>, ¿qué puedes decir del orden de las filas que devuelve un <code>SELECT</code>?</p>
+      <button class="opcion" data-op="a">a) No hay garantía: el orden es impredecible y puede cambiar</button>
+      <button class="opcion" data-op="b">b) Siempre vienen ordenadas por <code>id</code></button>
+      <button class="opcion" data-op="c">c) Siempre vienen en el orden en que se insertaron</button>
+      <button class="opcion" data-op="d">d) Siempre vienen ordenadas alfabéticamente por la primera columna</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Playground →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — PLAYGROUND SQL EN VIVO
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>🧪 Playground de consultas en vivo</h2>
+  <p class="meta-modulo">Misión 05 · Escribe SELECT y míralo correr en una BD con 10 productos · ~35 min</p>
+
+  <p>Es hora de tocar teclas. Aquí abajo tienes un <strong>mini-motor SQL en JavaScript</strong> con una BD de dos tablas ya cargadas con datos reales. Escribe sentencias <code>SELECT</code> con <code>WHERE</code>, <code>LIKE</code>, <code>BETWEEN</code>, <code>IN</code>, <code>ORDER BY</code> y <code>LIMIT</code>, y pulsa <strong>Ejecutar</strong>. El motor responde como lo haría PostgreSQL.</p>
+
+  <div class="caja-destacada">
+    <h4>📋 Estado inicial de la BD</h4>
+    <ul>
+      <li><code>categorias(id PK, nombre)</code> — 4 filas: 1 Alimentos, 2 Accesorios, 3 Higiene, 4 Juguetes.</li>
+      <li><code>productos(id PK, nombre, precio, stock, categoria_id, activo)</code> — <strong>10 filas</strong> pre-cargadas (Croquetas, Comida Gato, Collar, Correa, Champú, Pelota, Cama, Croquetas Gato 5kg, Ratón, Cepillo).</li>
+    </ul>
+    <p>Tu misión: domina los 5 retos de abajo. Cada uno practica un operador distinto. ¡A consultar!</p>
+  </div>
+
+  <div class="mermaid-sim">
+    <div class="sim-head">Playground SQL · motor en JavaScript</div>
+    <div class="mermaid-chips" style="margin-bottom:1rem;">
+      <button class="mermaid-chip" data-snippet="SELECT COUNT(*) FROM productos;&#10;">COUNT(*)</button>
+      <button class="mermaid-chip" data-snippet="SELECT nombre, precio FROM productos WHERE nombre LIKE '%Gato%';&#10;">LIKE '%Gato%'</button>
+      <button class="mermaid-chip" data-snippet="SELECT nombre, precio FROM productos WHERE precio BETWEEN 10000 AND 30000;&#10;">BETWEEN</button>
+      <button class="mermaid-chip" data-snippet="SELECT nombre, precio FROM productos WHERE categoria_id IN (3, 4);&#10;">IN (3, 4)</button>
+      <button class="mermaid-chip" data-snippet="SELECT nombre, precio FROM productos ORDER BY precio DESC LIMIT 3;&#10;">ORDER BY DESC + LIMIT</button>
+      <button class="mermaid-chip" data-snippet="SELECT nombre FROM productos WHERE categoria_id = 1 AND precio &gt; 40000;&#10;">AND combinado</button>
+    </div>
+    <div class="mermaid-layout">
+      <div class="mermaid-editor-wrap">
+        <label for="sqlEditor" style="font-size:0.8rem;color:var(--texto-suave);">Escribe tu SQL (una sentencia por línea, termina con ;):</label>
+        <textarea class="mermaid-editor" id="sqlEditor" spellcheck="false">SELECT nombre, precio FROM productos
+WHERE precio > 30000
+ORDER BY precio DESC;</textarea>
+        <button class="btn primary" id="sqlRun" type="button">▶ Ejecutar</button>
+        <button class="btn" id="sqlReset" type="button" style="margin-left:0.5rem;">↺ Reiniciar BD</button>
+      </div>
+      <div>
+        <div style="font-size:0.8rem;color:var(--texto-suave);margin-bottom:0.4rem;">Resultado:</div>
+        <div class="mermaid-preview" id="sqlOutput" style="text-align:left;min-height:220px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Retos para ganar el bonus de XP</h4>
+    <p>En orden, intenta ejecutar estas 5 misiones. Si todas se cumplen, ganarás <strong>+25 XP</strong>:</p>
+    <ol>
+      <li><strong>Cuenta</strong> cuántos productos hay: <code>SELECT COUNT(*) FROM productos;</code></li>
+      <li><strong>Busca con LIKE</strong>: productos cuyo nombre contiene «Gato» (<code>WHERE nombre LIKE '%Gato%'</code>).</li>
+      <li><strong>Filtra por rango</strong>: productos con precio <code>BETWEEN 10000 AND 30000</code>.</li>
+      <li><strong>Ordena</strong>: los 3 productos más caros con <code>ORDER BY precio DESC LIMIT 3</code>.</li>
+      <li><strong>Combina condiciones</strong>: productos de la categoría 1 con precio mayor a 40000 (<code>WHERE categoria_id = 1 AND precio &gt; 40000</code>).</li>
+    </ol>
+    <p>Cuando completes los 5 retos, aparecerá un mensaje de éxito. ¡Tú puedes!</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🎯 Lo que estás practicando</h4>
+    <p>Este playground es <strong>una réplica simplificada</strong> de PostgreSQL: las mismas sentencias (<code>SELECT</code>, <code>WHERE</code> con <code>LIKE</code>/<code>BETWEEN</code>/<code>IN</code>, <code>ORDER BY</code>, <code>LIMIT</code>) funcionarán en una BD real. La idea es que <strong>toques</strong> las consultas antes del taller: escribir, fallar, corregir, aprender. Ese es el ciclo.</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que, antes de pulsar Ejecutar, <strong>predigan</strong> en voz alta cuántas filas verán y cuáles serán las primeras. Luego pulsen y comparen. La predicción mental es lo que consolida la sintaxis.</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>📝 Quiz M6 · Playground</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p>1. En el playground, ¿qué devuelve <code>SELECT COUNT(*) FROM productos;</code>?</p>
+      <button class="opcion" data-op="a">a) La lista de todos los productos</button>
+      <button class="opcion" data-op="b">b) Un solo número: 10 (el total de filas)</button>
+      <button class="opcion" data-op="c">c) Un error, porque <code>COUNT</code> no existe</button>
+      <button class="opcion" data-op="d">d) El precio promedio</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>2. ¿Cuántas filas devuelve <code>SELECT nombre FROM productos WHERE nombre LIKE '%Gato%';</code>?</p>
+      <button class="opcion" data-op="a">a) 0 (ningún producto contiene "Gato")</button>
+      <button class="opcion" data-op="b">b) 1 (sólo "Comida Gato 1.5kg")</button>
+      <button class="opcion" data-op="c">c) 2 ("Comida Gato 1.5kg" y "Croquetas Gato 5kg")</button>
+      <button class="opcion" data-op="d">d) 10 (todos, porque <code>LIKE</code> no filtra)</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>3. ¿Qué obtienes con <code>SELECT nombre, precio FROM productos ORDER BY precio DESC LIMIT 3;</code>?</p>
+      <button class="opcion" data-op="a">a) Los 3 productos más caros (Cama 75000, Croquetas Gato 5kg 68000, Croquetas Perro 3kg 45000)</button>
+      <button class="opcion" data-op="b">b) Los 3 productos más baratos</button>
+      <button class="opcion" data-op="c">c) Todos los productos ordenados alfabéticamente</button>
+      <button class="opcion" data-op="d">d) Un error, porque <code>LIMIT</code> va antes de <code>ORDER BY</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. ¿Qué pasa si escribes <code>SELECT nombre FROM productos WHERE precio = NULL;</code> (en lugar de <code>IS NULL</code>)?</p>
+      <button class="opcion" data-op="a">a) Devuelve las filas donde <code>precio</code> es <code>NULL</code></button>
+      <button class="opcion" data-op="b">b) Devuelve todas las filas</button>
+      <button class="opcion" data-op="c">c) Devuelve un error de sintaxis</button>
+      <button class="opcion" data-op="d">d) Devuelve 0 filas, porque <code>NULL</code> no se compara con <code>=</code> (hay que usar <code>IS NULL</code>)</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 7 — TALLER ENTREGABLE
+============================================================ -->
+<section class="modulo" data-modulo="7">
+  <h2>📦 Taller entregable: "Biblioteca online"</h2>
+  <p class="meta-modulo">Misión 06 · Caso end-to-end: consulta los datos de una biblioteca · ~50 min</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">Taller final · Entregable</span>
+      <span class="challenge-title">Sistema de consultas para la biblioteca "Letras Voladoras"</span>
+    </div>
+    <p>La biblioteca <strong>Letras Voladoras</strong> ya tiene su BD montada con <code>libros</code>, <code>autores</code> y <code>prestamos</code>. El bibliotecario te pide <strong>consultas</strong> para responder las preguntas que le hacen los estudiantes todos los días. La entrega es un archivo SQL <code>.sql</code> con 6 consultas que respondan cada pregunta, ejecutable en PostgreSQL sin errores.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h4>📋 Enunciado</h4>
+    <p><strong>Letras Voladoras</strong> tiene tres tablas:</p>
+    <ul>
+      <li><code>autores(id PK, nombre, pais)</code></li>
+      <li><code>libros(id PK, titulo, autor_id FK → autores.id, anio, categoria, prestado BOOLEAN)</code></li>
+      <li><code>prestamos(id PK, libro_id FK → libros.id, lector, fecha_prestamo, fecha_devolucion)</code></li>
+    </ul>
+    <p>El bibliotecario necesita responder estas 6 preguntas con <code>SELECT</code>:</p>
+    <ol>
+      <li>¿Cuántos libros hay en total?</li>
+      <li>¿Qué libros contienen la palabra "SQL" en el título?</li>
+      <li>¿Qué libros fueron publicados entre 2010 y 2020?</li>
+      <li>¿Cuáles son los 5 libros más antiguos?</li>
+      <li>¿Qué libros están en la categoría "Programación" o "Bases de Datos"?</li>
+      <li>¿Qué libros no están prestados (<code>prestado = FALSE</code>) y están en "Programación"?</li>
+    </ol>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🎯 Objetivos del entregable</h4>
+    <p>Tu entrega, en pareja, debe contener <strong>seis consultas</strong> dentro de un único archivo <code>.sql</code>, una por pregunta. Cada consulta debe usar <strong>al menos uno</strong> de los operadores de hoy (<code>WHERE</code>, <code>LIKE</code>, <code>BETWEEN</code>, <code>IN</code>, <code>ORDER BY</code>, <code>LIMIT</code>, <code>COUNT</code>). Al final, una <strong>reflexión</strong> en un bloque de comentarios.</p>
+  </div>
+
+  <div class="taller-er">
+    <div class="taller-er-step">
+      <h4><span class="step-num">1</span> ¿Cuántos libros hay? (COUNT)</h4>
+      <p>Escribe un <code>SELECT COUNT(*)</code> para saber cuántos libros tiene la biblioteca. No necesitas <code>WHERE</code>.</p>
+      <button class="taller-sol-toggle" data-sol="sol-count">👁️ Ver solución</button>
+      <div class="taller-sol" id="sol-count">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- Pregunta 1: ¿Cuántos libros hay en total?
+SELECT COUNT(*) FROM libros;</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">2</span> Libros con "SQL" en el título (LIKE)</h4>
+      <p>Usa <code>LIKE '%SQL%'</code> para encontrar los libros que contienen la palabra "SQL" en el título (sin importar mayúsculas/minúsculas).</p>
+      <button class="taller-sol-toggle" data-sol="sol-like">👁️ Ver solución</button>
+      <div class="taller-sol" id="sol-like">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- Pregunta 2: Libros con "SQL" en el título
+SELECT titulo, anio FROM libros
+WHERE titulo LIKE '%SQL%';</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">3</span> Libros entre 2010 y 2020 (BETWEEN)</h4>
+      <p>Usa <code>BETWEEN 2010 AND 2020</code> sobre la columna <code>anio</code>. Ordena por <code>anio DESC</code> para ver los más recientes primero.</p>
+      <button class="taller-sol-toggle" data-sol="sol-between">👁️ Ver solución</button>
+      <div class="taller-sol" id="sol-between">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- Pregunta 3: Libros publicados entre 2010 y 2020
+SELECT titulo, anio FROM libros
+WHERE anio BETWEEN 2010 AND 2020
+ORDER BY anio DESC;</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">4</span> Los 5 libros más antiguos (ORDER BY + LIMIT)</h4>
+      <p>Ordena por <code>anio ASC</code> (de menor a mayor) y limita a 5. Los más antiguos son los de menor año.</p>
+      <button class="taller-sol-toggle" data-sol="sol-limit">👁️ Ver solución</button>
+      <div class="taller-sol" id="sol-limit">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- Pregunta 4: Los 5 libros más antiguos
+SELECT titulo, anio FROM libros
+ORDER BY anio ASC
+LIMIT 5;</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">5</span> Libros de Programación o Bases de Datos (IN)</h4>
+      <p>Usa <code>IN ('Programación', 'Bases de Datos')</code> sobre la columna <code>categoria</code> (recuerda: strings entre comillas simples).</p>
+      <button class="taller-sol-toggle" data-sol="sol-in">👁️ Ver solución</button>
+      <div class="taller-sol" id="sol-in">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- Pregunta 5: Libros de Programación o Bases de Datos
+SELECT titulo, categoria FROM libros
+WHERE categoria IN ('Programación', 'Bases de Datos');</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">6</span> Libros no prestados de Programación (AND)</h4>
+      <p>Combina dos condiciones con <code>AND</code>: <code>prestado = FALSE</code> Y <code>categoria = 'Programación'</code>. Ordena por <code>titulo ASC</code>.</p>
+      <button class="taller-sol-toggle" data-sol="sol-and">👁️ Ver solución</button>
+      <div class="taller-sol" id="sol-and">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- Pregunta 6: Libros no prestados de Programación
+SELECT titulo FROM libros
+WHERE prestado = FALSE AND categoria = 'Programación'
+ORDER BY titulo ASC;</pre>
+        <p style="margin-top:0.4rem;">Nota: <code>prestado = FALSE</code> también se puede escribir <code>NOT prestado</code> o <code>prestado IS FALSE</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 Cierre del aula — 5 minutos</h4>
+    <p>Cada pareja entrega un único archivo <code>taller8-consultas-&lt;integrante1&gt;-&lt;integrante2&gt;.sql</code>. El profesor lo ejecuta en PostgreSQL y valida: (1) las 6 consultas devuelven resultados correctos, (2) cada una usa al menos un operador de los vistos, (3) las cadenas van entre comillas simples, (4) los rangos usan <code>BETWEEN</code>, (5) el orden usa <code>ORDER BY</code>, (6) la reflexión está presente.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>📋 Rúbrica de evaluación (100 pts)</h4>
+    <div class="contenedor-tabla" style="margin-top:0.6rem;">
+      <table class="tabla-compara">
+        <thead><tr><th>Criterio</th><th>Pts</th><th>Indicador</th></tr></thead>
+        <tbody>
+          <tr><td>COUNT (P1)</td><td>15</td><td>Consulta correcta que devuelve el total de libros.</td></tr>
+          <tr><td>LIKE (P2)</td><td>15</td><td>Uso correcto de <code>LIKE '%SQL%'</code> con comillas simples.</td></tr>
+          <tr><td>BETWEEN (P3)</td><td>15</td><td>Rango correcto <code>BETWEEN 2010 AND 2020</code> con <code>ORDER BY</code>.</td></tr>
+          <tr><td>ORDER BY + LIMIT (P4)</td><td>20</td><td>Los 5 más antiguos con <code>ORDER BY anio ASC LIMIT 5</code>.</td></tr>
+          <tr><td>IN (P5)</td><td>15</td><td><code>IN ('Programación', 'Bases de Datos')</code> con strings entre comillas.</td></tr>
+          <tr><td>AND (P6) + Reflexión</td><td>20</td><td>Combinación <code>prestado = FALSE AND categoria = ...</code> + reflexión final.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:0.6rem;font-size:0.9rem;"><strong>Entrega:</strong> un solo archivo <code>.sql</code> por pareja, nombrado <code>taller8-consultas-&lt;integrante1&gt;-&lt;integrante2&gt;.sql</code>.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>🧩 Investigación (punto extra, 10 pts)</h4>
+    <p>Investiga y agrega al final del archivo: ¿qué hace <code>ILIKE</code> en PostgreSQL y en qué se diferencia de <code>LIKE</code>? Da un ejemplo donde <code>LIKE</code> no encuentra un resultado pero <code>ILIKE</code> sí. Escribe la respuesta en un comentario con la sentencia de ejemplo.</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🏆 ¡Misión completada, Consultor Master!</h2>
+    <p class="lead">Ya sabes pedirle a una BD exactamente lo que necesitas: las <strong>columnas</strong> que quieres con <code>SELECT</code>, las <strong>filas</strong> que cumplen tus condiciones con <code>WHERE</code> (usando <code>=</code>, <code>&lt;&gt;</code>, <code>&gt;</code>, <code>LIKE</code>, <code>BETWEEN</code>, <code>IN</code>, <code>IS NULL</code>, <code>AND</code>, <code>OR</code>, <code>NOT</code>), y el <strong>orden</strong> con <code>ORDER BY</code> y <code>LIMIT</code>. Ese combo es el 80% del trabajo diario con bases de datos — y lo acabas de dominar.</p>
+    <p style="margin-top:1rem;font-size:1.05rem;color:var(--verde);font-weight:700;">En la próxima clase entraremos a las consultas avanzadas: <code>JOIN</code> (cruzar tablas), <code>GROUP BY</code> (agrupar) y <code>HAVING</code>. 🚀</p>
+    <button class="btn-final" data-reiniciar>🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<!-- =================== FOOTER =================== -->
+<footer class="pie">
+  <div class="fb">🎓 Bases de Datos · Clase 8 · Plataforma interactiva</div>
+  <div>Consultas básicas · SELECT · WHERE · LIKE / BETWEEN / IN / IS NULL · ORDER BY · LIMIT · 4 horas · Nivel Intermedio</div>
+  <div style="margin-top:.5rem;font-size:.78rem;">Hecho con 💜 para adolescentes que quieren preguntarle a sus datos… y obtener respuestas.</div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

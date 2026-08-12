@@ -73,6 +73,9 @@
   --bd-7-a:          #ef4444;   /* Clase 7 BD — rojo/teal (peligro + transacciones) */
   --bd-7-b:          #14b8a6;
 
+  --bd-8-a:          #06b6d4;   /* Clase 8 BD — cian/dorado (consultas / exploración) */
+  --bd-8-b:          #f59e0b;
+
   --herr-a:          #f43f5e;
   --herr-b:          #f97316;
 
@@ -432,6 +435,7 @@ main {
 .clase-card.bd-5::before   { background: linear-gradient(90deg, var(--bd-5-a), var(--bd-5-b)); }
 .clase-card.bd-6::before   { background: linear-gradient(90deg, var(--bd-6-a), var(--bd-6-b)); }
 .clase-card.bd-7::before   { background: linear-gradient(90deg, var(--bd-7-a), var(--bd-7-b)); }
+.clase-card.bd-8::before   { background: linear-gradient(90deg, var(--bd-8-a), var(--bd-8-b)); }
 
 .clase-card:hover {
   transform: translateY(-6px) scale(1.01);
@@ -469,6 +473,7 @@ main {
 .clase-card.bd-5 .clase-badge   { background: linear-gradient(135deg, var(--bd-5-a), var(--bd-5-b));     color: #fff; }
 .clase-card.bd-6 .clase-badge   { background: linear-gradient(135deg, var(--bd-6-a), var(--bd-6-b));     color: #000; }
 .clase-card.bd-7 .clase-badge   { background: linear-gradient(135deg, var(--bd-7-a), var(--bd-7-b));     color: #fff; }
+.clase-card.bd-8 .clase-badge   { background: linear-gradient(135deg, var(--bd-8-a), var(--bd-8-b));     color: #000; }
 
 .clase-badge.gris {
   background: rgba(148, 163, 184, 0.2);
