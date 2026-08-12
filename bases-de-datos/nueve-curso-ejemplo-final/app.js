@@ -279,7 +279,7 @@ function configurarTrivia() {
       opts.forEach(o => { o.disabled = true; if (o.dataset.top === correcta) o.classList.add('correcta'); });
       if (elegida === correcta) {
         result.className = 'trivia-result visible ok';
-        result.textContent = '✅ ¡Correcto! Un partido finalizado tiene marcador (goles_local, goles_visitante) y estado "finalizado"; uno programado tiene estado "programado" y los goles van en NULL.';
+        result.textContent = '✅ ¡Correcto! Un partido finalizado tiene marcador (goles_a, goles_b) y estado "finalizado"; uno programado tiene estado "programado" y los goles van en NULL.';
       } else {
         op.classList.add('incorrecta');
         result.className = 'trivia-result visible';
@@ -311,8 +311,8 @@ function inicializarChips() {
    Simula la BD de torneos deportivos del colegio con 5 tablas:
    deportes(id, nombre), torneos(id, nombre, deporte_id, categoria),
    equipos(id, nombre, torneo_id), jugadores(id, nombre, fecha_nac, equipo_id),
-   partidos(id, torneo_id, fecha, hora, cancha, local_id, visitante_id,
-            goles_local, goles_visitante, estado).
+   partidos(id, torneo_id, fecha, hora, equipo_a_id, equipo_b_id,
+            goles_a, goles_b, estado).
    Soporta SELECT con JOIN (INNER JOIN ... ON), WHERE completo
    (parser recursivo), ORDER BY, LIMIT, COUNT(*).
    Es intencionalmente minimalista; su único objetivo es pedagógico.
@@ -365,14 +365,16 @@ function inicializarPlayground() {
         { id: 15, nombre: 'Isabela Múnera', fecha_nac: '2013-08-28', equipo_id: 6 }
       ],
       partidos: [
-        { id: 1, torneo_id: 1, fecha: '2026-09-15', hora: '15:00', cancha: 'Cancha 1', local_id: 1, visitante_id: 2, goles_local: 3, goles_visitante: 1, estado: 'finalizado' },
-        { id: 2, torneo_id: 1, fecha: '2026-09-22', hora: '15:00', cancha: 'Cancha 2', local_id: 3, visitante_id: 1, goles_local: 2, goles_visitante: 2, estado: 'finalizado' },
-        { id: 3, torneo_id: 1, fecha: '2026-09-29', hora: '15:00', cancha: 'Cancha 1', local_id: 2, visitante_id: 3, goles_local: 1, goles_visitante: 4, estado: 'finalizado' },
-        { id: 4, torneo_id: 1, fecha: '2026-10-06', hora: '15:00', cancha: 'Cancha 2', local_id: 1, visitante_id: 3, goles_local: null, goles_visitante: null, estado: 'programado' },
-        { id: 5, torneo_id: 2, fecha: '2026-09-18', hora: '16:00', cancha: 'Cancha 3', local_id: 4, visitante_id: 5, goles_local: 2, goles_visitante: 0, estado: 'finalizado' },
-        { id: 6, torneo_id: 2, fecha: '2026-09-25', hora: '16:00', cancha: 'Cancha 3', local_id: 5, visitante_id: 4, goles_local: 1, goles_visitante: 1, estado: 'finalizado' },
-        { id: 7, torneo_id: 2, fecha: '2026-10-09', hora: '16:00', cancha: 'Cancha 3', local_id: 4, visitante_id: 5, goles_local: null, goles_visitante: null, estado: 'programado' },
-        { id: 8, torneo_id: 3, fecha: '2026-09-20', hora: '14:00', cancha: 'Coliseo',  local_id: 6, visitante_id: 6, goles_local: null, goles_visitante: null, estado: 'programado' }
+        // Partidos intra-colegio: dos equipos del colegio se enfrentan.
+        // No hay local/visitante: todos juegan en el mismo escenario.
+        { id: 1, torneo_id: 1, fecha: '2026-09-15', hora: '15:00', equipo_a_id: 1, equipo_b_id: 2, goles_a: 3, goles_b: 1, estado: 'finalizado' },
+        { id: 2, torneo_id: 1, fecha: '2026-09-22', hora: '15:00', equipo_a_id: 3, equipo_b_id: 1, goles_a: 2, goles_b: 2, estado: 'finalizado' },
+        { id: 3, torneo_id: 1, fecha: '2026-09-29', hora: '15:00', equipo_a_id: 2, equipo_b_id: 3, goles_a: 1, goles_b: 4, estado: 'finalizado' },
+        { id: 4, torneo_id: 1, fecha: '2026-10-06', hora: '15:00', equipo_a_id: 1, equipo_b_id: 3, goles_a: null, goles_b: null, estado: 'programado' },
+        { id: 5, torneo_id: 2, fecha: '2026-09-18', hora: '16:00', equipo_a_id: 4, equipo_b_id: 5, goles_a: 2, goles_b: 0, estado: 'finalizado' },
+        { id: 6, torneo_id: 2, fecha: '2026-09-25', hora: '16:00', equipo_a_id: 5, equipo_b_id: 4, goles_a: 1, goles_b: 1, estado: 'finalizado' },
+        { id: 7, torneo_id: 2, fecha: '2026-10-09', hora: '16:00', equipo_a_id: 4, equipo_b_id: 5, goles_a: null, goles_b: null, estado: 'programado' },
+        { id: 8, torneo_id: 3, fecha: '2026-10-13', hora: '14:00', equipo_a_id: 6, equipo_b_id: 6, goles_a: null, goles_b: null, estado: 'programado' }
       ]
     };
   }
@@ -384,7 +386,7 @@ function inicializarPlayground() {
     torneos: ['id', 'nombre', 'deporte_id', 'categoria'],
     equipos: ['id', 'nombre', 'torneo_id'],
     jugadores: ['id', 'nombre', 'fecha_nac', 'equipo_id'],
-    partidos: ['id', 'torneo_id', 'fecha', 'hora', 'cancha', 'local_id', 'visitante_id', 'goles_local', 'goles_visitante', 'estado']
+    partidos: ['id', 'torneo_id', 'fecha', 'hora', 'equipo_a_id', 'equipo_b_id', 'goles_a', 'goles_b', 'estado']
   };
 
   // Trackeo de hitos

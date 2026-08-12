@@ -56,14 +56,14 @@
       <div class="hero-terminal-body">
         <div><span class="prompt">estudiante@bd:~$</span> <span class="cmd">psql -U postgres -d torneos_colegio</span></div>
         <div class="out">psql (16.0) —Digite «help» para ayuda.</div>
-        <div><span class="prompt">torneos_colegio=#</span> <span class="cmd">SELECT p.fecha, l.nombre AS local, v.nombre AS visitante, p.goles_local, p.goles_visitante</span></div>
-        <div><span class="prompt">torneos_colegio-#</span> <span class="cmd">FROM partidos p JOIN equipos l ON p.local_id = l.id JOIN equipos v ON p.visitante_id = v.id</span></div>
+        <div><span class="prompt">torneos_colegio=#</span> <span class="cmd">SELECT p.fecha, a.nombre AS equipo_a, b.nombre AS equipo_b, p.goles_a, p.goles_b</span></div>
+        <div><span class="prompt">torneos_colegio-#</span> <span class="cmd">FROM partidos p JOIN equipos a ON p.equipo_a_id = a.id JOIN equipos b ON p.equipo_b_id = b.id</span></div>
         <div><span class="prompt">torneos_colegio-#</span> <span class="cmd">WHERE p.estado = 'finalizado' ORDER BY p.fecha DESC LIMIT 3;</span></div>
-        <div class="out">   fecha   |    local    |  visitante  | goles_local | goles_visitante</div>
-        <div class="out">-----------+-------------+-------------+-------------+-----------------</div>
-        <div class="out"> 2026-09-29 | Las Águilas | Los Leones  |           1 |               4</div>
-        <div class="out"> 2026-09-25 | Las Panteras| Los Halcones|           1 |               1</div>
-        <div class="out"> 2026-09-22 | Los Leones  | Los Tigres  |           2 |               2</div>
+        <div class="out">   fecha   |  equipo_a  |  equipo_b  | goles_a | goles_b</div>
+        <div class="out">-----------+------------+------------+---------+---------</div>
+        <div class="out"> 2026-09-29 | Las Águilas| Los Leones |       1 |       4</div>
+        <div class="out"> 2026-09-25 | Las Panter.| Los Halc.  |       1 |       1</div>
+        <div class="out"> 2026-09-22 | Los Leones | Los Tigres |       2 |       2</div>
         <div class="out">(3 filas)</div>
         <div><span class="prompt">torneos_colegio=#</span> <span class="cursor"></span></div>
       </div>
@@ -105,7 +105,7 @@
       </ul>
     </li>
     <li><strong>Equipos y Jugadores:</strong> Un jugador pertenece a un equipo. La <strong>fecha de nacimiento</strong> del jugador debe validar a qué categoría pertenece.</li>
-    <li><strong>Partidos y Programación:</strong> Se registran <strong>partidos programados</strong> (fecha, hora, cancha, equipo local, equipo visitante) y <strong>partidos finalizados</strong> con sus marcadores (goles/puntos).</li>
+    <li><strong>Partidos y Programación:</strong> Se registran <strong>partidos programados</strong> (fecha, hora, dos equipos que se enfrentan) y <strong>partidos finalizados</strong> con sus marcadores (goles/puntos). Todos los partidos son intra-colegio y se juegan en el <strong>único escenario deportivo</strong> del colegio, por lo que no hay local ni visitante.</li>
   </ul>
 
   <h3>🗺️ Tu ruta de misiones</h3>
@@ -216,24 +216,23 @@ jugadores(
   equipo_id   <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> equipos(id)   <span class="cm">-- FK → equipos</span>
 )
 
-<span class="cm">-- partidos (local vs visitante, programados o finalizados)</span>
+<span class="cm">-- partidos (dos equipos del colegio, sin local/visitante)</span>
 partidos(
   id              <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
   torneo_id       <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> torneos(id),
   fecha           <span class="ty">DATE</span> <span class="kw">NOT NULL</span>,
   hora            <span class="ty">VARCHAR</span>(<span class="num">5</span>) <span class="kw">NOT NULL</span>,         <span class="cm">-- "15:00"</span>
-  cancha          <span class="ty">VARCHAR</span>(<span class="num">60</span>) <span class="kw">NOT NULL</span>,
-  local_id        <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> equipos(id),  <span class="cm">-- FK → equipos</span>
-  visitante_id    <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> equipos(id),  <span class="cm">-- FK → equipos</span>
-  goles_local     <span class="ty">INTEGER</span>,                       <span class="cm">-- NULL si no se ha jugado</span>
-  goles_visitante <span class="ty">INTEGER</span>,                       <span class="cm">-- NULL si no se ha jugado</span>
+  equipo_a_id     <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> equipos(id),  <span class="cm">-- FK → equipos</span>
+  equipo_b_id     <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> equipos(id),  <span class="cm">-- FK → equipos</span>
+  goles_a         <span class="ty">INTEGER</span>,                       <span class="cm">-- NULL si no se ha jugado</span>
+  goles_b         <span class="ty">INTEGER</span>,                       <span class="cm">-- NULL si no se ha jugado</span>
   estado          <span class="ty">VARCHAR</span>(<span class="num">15</span>) <span class="kw">NOT NULL</span>        <span class="cm">-- "programado" | "finalizado"</span>
 )</code></pre>
   </div>
 
   <div class="caja-tip">
     <h4>💡 Una FK puede apuntar a la misma tabla</h4>
-    <p>En <code>partidos</code>, tanto <code>local_id</code> como <code>visitante_id</code> apuntan a <code>equipos(id)</code>. Es una <strong>relación recursiva</strong>: un equipo es local en algunos partidos y visitante en otros. Esto es perfectamente válido en SQL — una tabla puede tener varias FK hacia la misma tabla destino.</p>
+    <p>En <code>partidos</code>, tanto <code>equipo_a_id</code> como <code>equipo_b_id</code> apuntan a <code>equipos(id)</code>. Es una <strong>relación recursiva</strong>: un equipo es el equipo A en algunos partidos y el equipo B en otros. Esto es perfectamente válido en SQL — una tabla puede tener varias FK hacia la misma tabla destino.</p>
   </div>
 
   <h3>📊 Diagrama Mermaid del modelo</h3>
@@ -252,8 +251,8 @@ partidos(
     TORNEOS  ||--o{ EQUIPOS  : "inscribe"
     EQUIPOS  ||--o{ JUGADORES : "posee"
     TORNEOS  ||--o{ PARTIDOS  : "programa"
-    EQUIPOS  ||--o{ PARTIDOS  : "local"
-    EQUIPOS  ||--o{ PARTIDOS  : "visitante"
+    EQUIPOS  ||--o{ PARTIDOS  : "equipo_a"
+    EQUIPOS  ||--o{ PARTIDOS  : "equipo_b"
 
     DEPORTES {
         int id PK
@@ -281,11 +280,10 @@ partidos(
         int torneo_id FK
         date fecha
         string hora
-        string cancha
-        int local_id FK
-        int visitante_id FK
-        int goles_local
-        int goles_visitante
+        int equipo_a_id FK
+        int equipo_b_id FK
+        int goles_a
+        int goles_b
         string estado
     }</code></pre>
   </div>
@@ -297,13 +295,13 @@ partidos(
       <li><strong>Torneos → Equipos</strong> (1:N): un torneo inscribe muchos equipos; un equipo pertenece a un torneo.</li>
       <li><strong>Equipos → Jugadores</strong> (1:N): un equipo tiene muchos jugadores; un jugador pertenece a un equipo.</li>
       <li><strong>Torneos → Partidos</strong> (1:N): un torneo programa muchos partidos; un partido pertenece a un torneo.</li>
-      <li><strong>Equipos → Partidos</strong> (1:N, dos veces): un equipo es local en muchos partidos y visitante en muchos otros.</li>
+      <li><strong>Equipos → Partidos</strong> (1:N, dos veces): un equipo aparece como equipo A en algunos partidos y como equipo B en otros.</li>
     </ul>
   </div>
 
   <div class="caja-aula">
     <h4>👨‍🏫 En el aula — 4 minutos</h4>
-    <p>Pida a las parejas que, con el diagrama Mermaid, identifuen: (1) ¿qué tabla no tiene FK? (Respuesta: <code>deportes</code>, es la raíz), (2) ¿qué tabla tiene <em>dos</em> FK hacia la misma tabla? (Respuesta: <code>partidos</code> → <code>equipos</code>), (3) ¿por qué <code>goles_local</code> y <code>goles_visitante</code> <em>no</em> tienen <code>NOT NULL</code>? (Respuesta: porque un partido programado aún no tiene marcador).</p>
+    <p>Pida a las parejas que, con el diagrama Mermaid, identifuen: (1) ¿qué tabla no tiene FK? (Respuesta: <code>deportes</code>, es la raíz), (2) ¿qué tabla tiene <em>dos</em> FK hacia la misma tabla? (Respuesta: <code>partidos</code> → <code>equipos</code>), (3) ¿por qué <code>goles_a</code> y <code>goles_b</code> <em>no</em> tienen <code>NOT NULL</code>? (Respuesta: porque un partido programado aún no tiene marcador).</p>
   </div>
 
   <div class="quiz" data-quiz="1">
@@ -326,15 +324,15 @@ partidos(
     </div>
 
     <div class="pregunta" data-correcta="c">
-      <p>3. En <code>partidos</code>, ¿a qué apuntan <code>local_id</code> y <code>visitante_id</code>?</p>
+      <p>3. En <code>partidos</code>, ¿a qué apuntan <code>equipo_a_id</code> y <code>equipo_b_id</code>?</p>
       <button class="opcion" data-op="a">a) A <code>torneos(id)</code></button>
       <button class="opcion" data-op="b">b) A <code>jugadores(id)</code></button>
-      <button class="opcion" data-op="c">c) Ambos a <code>equipos(id)</code> — un equipo es local o visitante</button>
+      <button class="opcion" data-op="c">c) Ambos a <code>equipos(id)</code> — dos equipos del colegio se enfrentan</button>
       <button class="opcion" data-op="d">d) A <code>deportes(id)</code></button>
     </div>
 
     <div class="pregunta" data-correcta="d">
-      <p>4. ¿Por qué <code>goles_local</code> y <code>goles_visitante</code> <strong>no</strong> llevan <code>NOT NULL</code>?</p>
+      <p>4. ¿Por qué <code>goles_a</code> y <code>goles_b</code> <strong>no</strong> llevan <code>NOT NULL</code>?</p>
       <button class="opcion" data-op="a">a) Porque PostgreSQL no permite <code>NOT NULL</code> en <code>INTEGER</code></button>
       <button class="opcion" data-op="b">b) Porque siempre son cero</button>
       <button class="opcion" data-op="c">c) Porque es un error del modelo</button>
@@ -406,11 +404,10 @@ partidos(
     torneo_id       <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> torneos(id),
     fecha           <span class="ty">DATE</span> <span class="kw">NOT NULL</span>,
     hora            <span class="ty">VARCHAR</span>(<span class="num">5</span>) <span class="kw">NOT NULL</span>,
-    cancha          <span class="ty">VARCHAR</span>(<span class="num">60</span>) <span class="kw">NOT NULL</span>,
-    local_id        <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> equipos(id),
-    visitante_id    <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> equipos(id),
-    goles_local     <span class="ty">INTEGER</span>,
-    goles_visitante <span class="ty">INTEGER</span>,
+    equipo_a_id        <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> equipos(id),
+    equipo_b_id    <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> equipos(id),
+    goles_a     <span class="ty">INTEGER</span>,
+    goles_b <span class="ty">INTEGER</span>,
     estado          <span class="ty">VARCHAR</span>(<span class="num">15</span>) <span class="kw">NOT NULL</span>
                     <span class="kw">CHECK</span> (estado <span class="kw">IN</span> (<span class="str">'programado'</span>, <span class="str">'finalizado'</span>))
 );</code></pre>
@@ -472,7 +469,7 @@ partidos(
     </div>
 
     <div class="pregunta" data-correcta="d">
-      <p>4. ¿Por qué <code>goles_local</code> y <code>goles_visitante</code> no llevan <code>NOT NULL</code>?</p>
+      <p>4. ¿Por qué <code>goles_a</code> y <code>goles_b</code> no llevan <code>NOT NULL</code>?</p>
       <button class="opcion" data-op="a">a) Porque <code>INTEGER</code> no permite <code>NOT NULL</code></button>
       <button class="opcion" data-op="b">b) Porque es un error del DDL</button>
       <button class="opcion" data-op="c">c) Porque los goles siempre son cero</button>
@@ -495,7 +492,7 @@ partidos(
   <h2>📝 Entregable C: Script DML (datos de prueba)</h2>
   <p class="meta-modulo">Misión 03 · INSERT con datos contextualizados en Medellín · ~35 min</p>
 
-  <p>Las tablas están creadas pero vacías. El siguiente paso es <strong>poblarlas</strong> con datos de prueba que representen el escenario real del colegio: nombres de equipos locales, jugadores con fechas de nacimiento válidas para cada categoría, y partidos programados y finalizados. Estos datos nos servirán para probar las consultas del módulo 5.</p>
+  <p>Las tablas están creadas pero vacías. El siguiente paso es <strong>poblarlas</strong> con datos de prueba que representen el escenario real del colegio: nombres de equipos del colegio, jugadores con fechas de nacimiento válidas para cada categoría, y partidos programados y finalizados. Estos datos nos servirán para probar las consultas del módulo 5.</p>
 
   <div class="caja-destacada">
     <h4>📋 Cantidad mínima de datos (según el enunciado)</h4>
@@ -504,7 +501,7 @@ partidos(
       <li><strong>2 Torneos</strong> mínimo (aquí pondremos 3)</li>
       <li><strong>6 Equipos</strong></li>
       <li><strong>18 Jugadores</strong> (aquí pondremos 15 por simplicidad del playground)</li>
-      <li><strong>4 Partidos Programados</strong> y <strong>6 Partidos Finalizados</strong> con resultados</li>
+      <li><strong>3 Partidos Programados</strong> y <strong>5 Partidos Finalizados</strong> con resultados</li>
     </ul>
   </div>
 
@@ -530,7 +527,7 @@ partidos(
     (<span class="str">'Torneo Baloncesto Junior'</span>, <span class="num">2</span>, <span class="str">'Junior'</span>);</code></pre>
   </div>
 
-  <h3>➕ INSERT: equipos (nombres locales de Medellín)</h3>
+  <h3>➕ INSERT: equipos (nombres de equipos del colegio)</h3>
 
   <div class="code-wrap">
     <div class="code-header">
@@ -598,20 +595,20 @@ partidos(
       <button class="copy-btn">📋 Copiar</button>
     </div>
     <pre><code><span class="cm">-- Partidos finalizados (con marcador)</span>
-<span class="kw">INSERT INTO</span> partidos (torneo_id, fecha, hora, cancha, local_id, visitante_id, goles_local, goles_visitante, estado) <span class="kw">VALUES</span>
-    (<span class="num">1</span>, <span class="str">'2026-09-15'</span>, <span class="str">'15:00'</span>, <span class="str">'Cancha 1'</span>, <span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">1</span>, <span class="str">'finalizado'</span>),
-    (<span class="num">1</span>, <span class="str">'2026-09-22'</span>, <span class="str">'15:00'</span>, <span class="str">'Cancha 2'</span>, <span class="num">3</span>, <span class="num">1</span>, <span class="num">2</span>, <span class="num">2</span>, <span class="str">'finalizado'</span>),
-    (<span class="num">1</span>, <span class="str">'2026-09-29'</span>, <span class="str">'15:00'</span>, <span class="str">'Cancha 1'</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">1</span>, <span class="num">4</span>, <span class="str">'finalizado'</span>),
-    (<span class="num">2</span>, <span class="str">'2026-09-18'</span>, <span class="str">'16:00'</span>, <span class="str">'Cancha 3'</span>, <span class="num">4</span>, <span class="num">5</span>, <span class="num">2</span>, <span class="num">0</span>, <span class="str">'finalizado'</span>),
-    (<span class="num">2</span>, <span class="str">'2026-09-25'</span>, <span class="str">'16:00'</span>, <span class="str">'Cancha 3'</span>, <span class="num">5</span>, <span class="num">4</span>, <span class="num">1</span>, <span class="num">1</span>, <span class="str">'finalizado'</span>),
-    (<span class="num">3</span>, <span class="str">'2026-09-20'</span>, <span class="str">'14:00'</span>, <span class="str">'Coliseo'</span>, <span class="num">6</span>, <span class="num">6</span>, <span class="num">0</span>, <span class="num">0</span>, <span class="str">'finalizado'</span>);
+<span class="kw">INSERT INTO</span> partidos (torneo_id, fecha, hora, equipo_a_id, equipo_b_id, goles_a, goles_b, estado) <span class="kw">VALUES</span>
+    (<span class="num">1</span>, <span class="str">'2026-09-15'</span>, <span class="str">'15:00'</span>, <span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">1</span>, <span class="str">'finalizado'</span>),
+    (<span class="num">1</span>, <span class="str">'2026-09-22'</span>, <span class="str">'15:00'</span>, <span class="num">3</span>, <span class="num">1</span>, <span class="num">2</span>, <span class="num">2</span>, <span class="str">'finalizado'</span>),
+    (<span class="num">1</span>, <span class="str">'2026-09-29'</span>, <span class="str">'15:00'</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">1</span>, <span class="num">4</span>, <span class="str">'finalizado'</span>),
+    (<span class="num">2</span>, <span class="str">'2026-09-18'</span>, <span class="str">'16:00'</span>, <span class="num">4</span>, <span class="num">5</span>, <span class="num">2</span>, <span class="num">0</span>, <span class="str">'finalizado'</span>),
+    (<span class="num">2</span>, <span class="str">'2026-09-25'</span>, <span class="str">'16:00'</span>, <span class="num">5</span>, <span class="num">4</span>, <span class="num">1</span>, <span class="num">1</span>, <span class="str">'finalizado'</span>),
+    (<span class="num">3</span>, <span class="str">'2026-09-20'</span>, <span class="str">'14:00'</span>, <span class="num">6</span>, <span class="num">6</span>, <span class="num">0</span>, <span class="num">0</span>, <span class="str">'finalizado'</span>);
 
 <span class="cm">-- Partidos programados (sin marcador — goles en NULL)</span>
-<span class="kw">INSERT INTO</span> partidos (torneo_id, fecha, hora, cancha, local_id, visitante_id, goles_local, goles_visitante, estado) <span class="kw">VALUES</span>
-    (<span class="num">1</span>, <span class="str">'2026-10-06'</span>, <span class="str">'15:00'</span>, <span class="str">'Cancha 2'</span>, <span class="num">1</span>, <span class="num">3</span>, <span class="kw">NULL</span>, <span class="kw">NULL</span>, <span class="str">'programado'</span>),
-    (<span class="num">2</span>, <span class="str">'2026-10-09'</span>, <span class="str">'16:00'</span>, <span class="str">'Cancha 3'</span>, <span class="num">4</span>, <span class="num">5</span>, <span class="kw">NULL</span>, <span class="kw">NULL</span>, <span class="str">'programado'</span>),
-    (<span class="num">3</span>, <span class="str">'2026-10-13'</span>, <span class="str">'14:00'</span>, <span class="str">'Coliseo'</span>, <span class="num">6</span>, <span class="num">6</span>, <span class="kw">NULL</span>, <span class="kw">NULL</span>, <span class="str">'programado'</span>),
-    (<span class="num">1</span>, <span class="str">'2026-10-20'</span>, <span class="str">'15:00'</span>, <span class="str">'Cancha 1'</span>, <span class="num">2</span>, <span class="num">1</span>, <span class="kw">NULL</span>, <span class="kw">NULL</span>, <span class="str">'programado'</span>);</code></pre>
+<span class="kw">INSERT INTO</span> partidos (torneo_id, fecha, hora, equipo_a_id, equipo_b_id, goles_a, goles_b, estado) <span class="kw">VALUES</span>
+    (<span class="num">1</span>, <span class="str">'2026-10-06'</span>, <span class="str">'15:00'</span>, <span class="num">1</span>, <span class="num">3</span>, <span class="kw">NULL</span>, <span class="kw">NULL</span>, <span class="str">'programado'</span>),
+    (<span class="num">2</span>, <span class="str">'2026-10-09'</span>, <span class="str">'16:00'</span>, <span class="num">4</span>, <span class="num">5</span>, <span class="kw">NULL</span>, <span class="kw">NULL</span>, <span class="str">'programado'</span>),
+    (<span class="num">3</span>, <span class="str">'2026-10-13'</span>, <span class="str">'14:00'</span>, <span class="num">6</span>, <span class="num">6</span>, <span class="kw">NULL</span>, <span class="kw">NULL</span>, <span class="str">'programado'</span>),
+    (<span class="num">1</span>, <span class="str">'2026-10-20'</span>, <span class="str">'15:00'</span>, <span class="num">2</span>, <span class="num">1</span>, <span class="kw">NULL</span>, <span class="kw">NULL</span>, <span class="str">'programado'</span>);</code></pre>
   </div>
 
   <div class="caja-tip">
@@ -621,14 +618,14 @@ partidos(
 
   <div class="caja-aula">
     <h4>👨‍🏫 En el aula — 4 minutos</h4>
-    <p>Pida a las parejas que verifiquen: (1) ¿los jugadores de Veteranos nacieron antes de 2011? (2) ¿los goles de los partidos programados están en <code>NULL</code>? (3) ¿los <code>local_id</code> y <code>visitante_id</code> apuntan a equipos que existen? Discutan qué pasaría si un <code>local_id</code> apuntara a un equipo inexistente.</p>
+    <p>Pida a las parejas que verifiquen: (1) ¿los jugadores de Veteranos nacieron antes de 2011? (2) ¿los goles de los partidos programados están en <code>NULL</code>? (3) ¿los <code>equipo_a_id</code> y <code>equipo_b_id</code> apuntan a equipos que existen? Discutan qué pasaría si un <code>equipo_a_id</code> apuntara a un equipo inexistente.</p>
   </div>
 
   <div class="quiz" data-quiz="3">
     <h3>📝 Quiz M3 · DML</h3>
 
     <div class="pregunta" data-correcta="b">
-      <p>1. En el INSERT de partidos programados, ¿qué lleva en <code>goles_local</code> y <code>goles_visitante</code>?</p>
+      <p>1. En el INSERT de partidos programados, ¿qué lleva en <code>goles_a</code> y <code>goles_b</code>?</p>
       <button class="opcion" data-op="a">a) <code>0, 0</code> (cero goles)</button>
       <button class="opcion" data-op="b">b) <code>NULL, NULL</code> (sin marcador todavía)</button>
       <button class="opcion" data-op="c">c) <code>'TBD', 'TBD'</code></button>
@@ -652,9 +649,9 @@ partidos(
     </div>
 
     <div class="pregunta" data-correcta="d">
-      <p>4. Si intentas insertar un partido con <code>local_id = 999</code> (un equipo que no existe), ¿qué pasa?</p>
-      <button class="opcion" data-op="a">a) Se inserta con <code>local_id = 999</code></button>
-      <button class="opcion" data-op="b">b) Se inserta con <code>local_id = NULL</code></button>
+      <p>4. Si intentas insertar un partido con <code>equipo_a_id = 999</code> (un equipo que no existe), ¿qué pasa?</p>
+      <button class="opcion" data-op="a">a) Se inserta con <code>equipo_a_id = 999</code></button>
+      <button class="opcion" data-op="b">b) Se inserta con <code>equipo_a_id = NULL</code></button>
       <button class="opcion" data-op="c">c) Se inserta en la tabla <code>equipos</code> automáticamente</button>
       <button class="opcion" data-op="d">d) PostgreSQL rechaza la inserción por violación de FK (integridad referencial)</button>
     </div>
@@ -701,7 +698,7 @@ partidos(
     <div class="trivia-opts" id="triviaOpts">
       <button class="trivia-opt" data-top="a" data-tcorrecta="c">a) El finalizado tiene <code>fecha</code>; el programado no</button>
       <button class="trivia-opt" data-top="b" data-tcorrecta="c">b) El programado tiene <code>hora</code>; el finalizado no</button>
-      <button class="trivia-opt" data-top="c" data-tcorrecta="c">c) El finalizado tiene marcador (<code>goles_local</code>, <code>goles_visitante</code>); el programado los tiene en <code>NULL</code></button>
+      <button class="trivia-opt" data-top="c" data-tcorrecta="c">c) El finalizado tiene marcador (<code>goles_a</code>, <code>goles_b</code>); el programado los tiene en <code>NULL</code></button>
       <button class="trivia-opt" data-top="d" data-tcorrecta="c">d) No hay diferencia, ambos son iguales</button>
     </div>
     <div class="trivia-result" id="triviaResult"></div>
@@ -752,7 +749,7 @@ partidos(
   </div>
 
   <h3>2️⃣ Próximos partidos programados</h3>
-  <p>La app muestra a los estudiantes qué partidos vienen. Esta consulta cruza <code>partidos</code> con <code>equipos</code> (dos veces: local y visitante) y <code>torneos</code> para mostrar nombres legibles:</p>
+  <p>La app muestra a los estudiantes qué partidos vienen. Esta consulta cruza <code>partidos</code> con <code>equipos</code> (dos veces: equipo A y equipo B) y <code>torneos</code> para mostrar nombres legibles:</p>
 
   <div class="code-wrap">
     <div class="code-header">
@@ -762,21 +759,21 @@ partidos(
       </div>
       <button class="copy-btn">📋 Copiar</button>
     </div>
-    <pre><code><span class="kw">SELECT</span>  p.fecha, p.hora, p.cancha,
+    <pre><code><span class="kw">SELECT</span>  p.fecha, p.hora,
         t.nombre <span class="kw">AS</span> torneo,
-        l.nombre <span class="kw">AS</span> local,
-        v.nombre <span class="kw">AS</span> visitante
+        a.nombre <span class="kw">AS</span> equipo_a,
+        b.nombre <span class="kw">AS</span> equipo_b
 <span class="kw">FROM</span> partidos p
 <span class="kw">JOIN</span> torneos t <span class="kw">ON</span> p.torneo_id = t.id
-<span class="kw">JOIN</span> equipos l <span class="kw">ON</span> p.local_id = l.id
-<span class="kw">JOIN</span> equipos v <span class="kw">ON</span> p.visitante_id = v.id
+<span class="kw">JOIN</span> equipos a <span class="kw">ON</span> p.equipo_a_id = a.id
+<span class="kw">JOIN</span> equipos b <span class="kw">ON</span> p.equipo_b_id = b.id
 <span class="kw">WHERE</span> p.estado = <span class="str">'programado'</span>
 <span class="kw">ORDER BY</span> p.fecha <span class="kw">ASC</span>;</code></pre>
   </div>
 
   <div class="caja-tip">
     <h4>💡 El mismo JOIN dos veces con aliases diferentes</h4>
-    <p>Para traer el nombre del equipo <strong>local</strong> y del <strong>visitante</strong> en la misma fila, hacemos <code>JOIN equipos</code> <em>dos veces</em>, una con alias <code>l</code> (local) y otra con <code>v</code> (visitante). Cada JOIN conecta <code>local_id</code> o <code>visitante_id</code> con <code>equipos.id</code>. Así, en una sola fila, tienes ambos nombres. Es el patrón más útil de los JOINs.</p>
+    <p>Para traer el nombre del <strong>equipo A</strong> y del <strong>equipo B</strong> en la misma fila, hacemos <code>JOIN equipos</code> <em>dos veces</em>, una con alias <code>a</code> (equipo A) y otra con <code>b</code> (equipo B). Cada JOIN conecta <code>equipo_a_id</code> o <code>equipo_b_id</code> con <code>equipos.id</code>. Así, en una sola fila, tienes ambos nombres. Es el patrón más útil de los JOINs.</p>
   </div>
 
   <h3>3️⃣ Histórico de resultados</h3>
@@ -791,13 +788,13 @@ partidos(
       <button class="copy-btn">📋 Copiar</button>
     </div>
     <pre><code><span class="kw">SELECT</span>  p.fecha,
-        l.nombre <span class="kw">AS</span> local,
-        v.nombre <span class="kw">AS</span> visitante,
-        p.goles_local,
-        p.goles_visitante
+        a.nombre <span class="kw">AS</span> equipo_a,
+        b.nombre <span class="kw">AS</span> equipo_b,
+        p.goles_a,
+        p.goles_b
 <span class="kw">FROM</span> partidos p
-<span class="kw">JOIN</span> equipos l <span class="kw">ON</span> p.local_id = l.id
-<span class="kw">JOIN</span> equipos v <span class="kw">ON</span> p.visitante_id = v.id
+<span class="kw">JOIN</span> equipos a <span class="kw">ON</span> p.equipo_a_id = a.id
+<span class="kw">JOIN</span> equipos b <span class="kw">ON</span> p.equipo_b_id = b.id
 <span class="kw">WHERE</span> p.estado = <span class="str">'finalizado'</span>
 <span class="kw">ORDER BY</span> p.fecha <span class="kw">DESC</span>;</code></pre>
   </div>
@@ -816,17 +813,17 @@ partidos(
     <pre><code><span class="kw">SELECT</span>
     e.nombre <span class="kw">AS</span> equipo,
     <span class="kw">COUNT</span>(*) <span class="kw">AS</span> PJ,
-    <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> p.goles_local &gt; p.goles_visitante <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> PG,
-    <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> p.goles_local = p.goles_visitante <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> PE,
-    <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> p.goles_local &lt; p.goles_visitante <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> PP,
-    <span class="kw">SUM</span>(p.goles_local) <span class="kw">AS</span> GF,
-    <span class="kw">SUM</span>(p.goles_visitante) <span class="kw">AS</span> GC,
-    <span class="kw">SUM</span>(p.goles_local) - <span class="kw">SUM</span>(p.goles_visitante) <span class="kw">AS</span> DG,
-    <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> p.goles_local &gt; p.goles_visitante <span class="kw">THEN</span> <span class="num">3</span>
-              <span class="kw">WHEN</span> p.goles_local = p.goles_visitante <span class="kw">THEN</span> <span class="num">1</span>
+    <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> p.goles_a &gt; p.goles_b <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> PG,
+    <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> p.goles_a = p.goles_b <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> PE,
+    <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> p.goles_a &lt; p.goles_b <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> PP,
+    <span class="kw">SUM</span>(p.goles_a) <span class="kw">AS</span> GF,
+    <span class="kw">SUM</span>(p.goles_b) <span class="kw">AS</span> GC,
+    <span class="kw">SUM</span>(p.goles_a) - <span class="kw">SUM</span>(p.goles_b) <span class="kw">AS</span> DG,
+    <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> p.goles_a &gt; p.goles_b <span class="kw">THEN</span> <span class="num">3</span>
+              <span class="kw">WHEN</span> p.goles_a = p.goles_b <span class="kw">THEN</span> <span class="num">1</span>
               <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> puntos
 <span class="kw">FROM</span> partidos p
-<span class="kw">JOIN</span> equipos e <span class="kw">ON</span> p.local_id = e.id
+<span class="kw">JOIN</span> equipos e <span class="kw">ON</span> p.equipo_a_id = e.id
 <span class="kw">WHERE</span> p.estado = <span class="str">'finalizado'</span>
 <span class="kw">GROUP BY</span> e.nombre
 <span class="kw">ORDER BY</span> puntos <span class="kw">DESC</span>;</code></pre>
@@ -834,12 +831,12 @@ partidos(
 
   <div class="caja-destacada">
     <h4>🧠 ¿Qué hace <code>CASE WHEN ... THEN ... ELSE ... END</code>?</h4>
-    <p>Es el <strong>if-then-else</strong> de SQL. Dentro de un <code>SUM</code>, cuenta cuántas filas cumplen la condición. Por ejemplo, <code>SUM(CASE WHEN goles_local &gt; goles_visitante THEN 1 ELSE 0 END)</code> suma 1 por cada partido ganado como local y 0 por los demás — el resultado es el número de partidos ganados (PG). Es la forma de calcular estadísticas sin escribir código procedural.</p>
+    <p>Es el <strong>if-then-else</strong> de SQL. Dentro de un <code>SUM</code>, cuenta cuántas filas cumplen la condición. Por ejemplo, <code>SUM(CASE WHEN goles_a &gt; goles_b THEN 1 ELSE 0 END)</code> suma 1 por cada partido ganado como equipo A y 0 por los demás — el resultado es el número de partidos ganados (PG). Es la forma de calcular estadísticas sin escribir código procedural.</p>
   </div>
 
   <div class="caja-aula">
     <h4>👨‍🏫 En el aula — 5 minutos</h4>
-    <p>Pida a las parejas que, con la consulta de próximos partidos, predigan cuántas filas devolverá y cuáles serán las primeras tres. Luego ejecútenla en el playground (módulo 6) y comparen. Discutan: ¿por qué la tabla de posiciones sólo cuenta partidos donde el equipo fue <strong>local</strong>? (Nota: una versión completa incluiría también los partidos como visitante — eso queda para la próxima clase con UNION).</p>
+    <p>Pida a las parejas que, con la consulta de próximos partidos, predigan cuántas filas devolverá y cuáles serán las primeras tres. Luego ejecútenla en el playground (módulo 6) y comparen. Discutan: ¿por qué la tabla de posiciones sólo cuenta partidos donde el equipo fue <strong>equipo A</strong>? (Nota: una versión completa incluiría también los partidos como equipo B — eso queda para la próxima clase con UNION).</p>
   </div>
 
   <div class="quiz" data-quiz="5">
@@ -848,7 +845,7 @@ partidos(
     <div class="pregunta" data-correcta="b">
       <p>1. En la consulta de próximos partidos, ¿por qué se hace <code>JOIN equipos</code> <strong>dos veces</strong>?</p>
       <button class="opcion" data-op="a">a) Porque es más rápido</button>
-      <button class="opcion" data-op="b">b) Para traer el nombre del equipo local (alias <code>l</code>) y del visitante (alias <code>v</code>) en la misma fila</button>
+      <button class="opcion" data-op="b">b) Para traer el nombre del equipo A (alias <code>a</code>) y del equipo B (alias <code>b</code>) en la misma fila</button>
       <button class="opcion" data-op="c">c) Porque PostgreSQL lo exige</button>
       <button class="opcion" data-op="d">d) Por error, una vez basta</button>
     </div>
@@ -862,10 +859,10 @@ partidos(
     </div>
 
     <div class="pregunta" data-correcta="c">
-      <p>3. En la tabla de posiciones, ¿qué hace <code>SUM(CASE WHEN goles_local &gt; goles_visitante THEN 1 ELSE 0 END)</code>?</p>
+      <p>3. En la tabla de posiciones, ¿qué hace <code>SUM(CASE WHEN goles_a &gt; goles_b THEN 1 ELSE 0 END)</code>?</p>
       <button class="opcion" data-op="a">a) Suma los goles a favor</button>
       <button class="opcion" data-op="b">b) Cuenta los partidos empatados</button>
-      <button class="opcion" data-op="c">c) Cuenta los partidos ganados como local (PG)</button>
+      <button class="opcion" data-op="c">c) Cuenta los partidos ganados como equipo A (PG)</button>
       <button class="opcion" data-op="d">d) Cuenta los partidos perdidos</button>
     </div>
 
@@ -912,8 +909,8 @@ partidos(
       <button class="mermaid-chip" data-snippet="SELECT * FROM equipos;&#10;">SELECT equipos</button>
       <button class="mermaid-chip" data-snippet="SELECT COUNT(*) FROM partidos;&#10;">COUNT partidos</button>
       <button class="mermaid-chip" data-snippet="SELECT t.nombre AS torneo, d.nombre AS deporte FROM torneos t JOIN deportes d ON t.deporte_id = d.id;&#10;">JOIN torneos+deportes</button>
-      <button class="mermaid-chip" data-snippet="SELECT p.fecha, l.nombre AS local, v.nombre AS visitante FROM partidos p JOIN equipos l ON p.local_id = l.id JOIN equipos v ON p.visitante_id = v.id WHERE p.estado = 'programado' ORDER BY p.fecha ASC;&#10;">Próximos partidos</button>
-      <button class="mermaid-chip" data-snippet="SELECT p.fecha, l.nombre AS local, v.nombre AS visitante, p.goles_local, p.goles_visitante FROM partidos p JOIN equipos l ON p.local_id = l.id JOIN equipos v ON p.visitante_id = v.id WHERE p.estado = 'finalizado' ORDER BY p.fecha DESC;&#10;">Histórico resultados</button>
+      <button class="mermaid-chip" data-snippet="SELECT p.fecha, a.nombre AS equipo_a, b.nombre AS equipo_b FROM partidos p JOIN equipos a ON p.equipo_a_id = a.id JOIN equipos b ON p.equipo_b_id = b.id WHERE p.estado = 'programado' ORDER BY p.fecha ASC;&#10;">Próximos partidos</button>
+      <button class="mermaid-chip" data-snippet="SELECT p.fecha, a.nombre AS equipo_a, b.nombre AS equipo_b, p.goles_a, p.goles_b FROM partidos p JOIN equipos a ON p.equipo_a_id = a.id JOIN equipos b ON p.equipo_b_id = b.id WHERE p.estado = 'finalizado' ORDER BY p.fecha DESC;&#10;">Histórico resultados</button>
       <button class="mermaid-chip" data-snippet="SELECT j.nombre AS jugador, e.nombre AS equipo FROM jugadores j JOIN equipos e ON j.equipo_id = e.id;&#10;">Jugadores + equipos</button>
     </div>
     <div class="mermaid-layout">
@@ -937,7 +934,7 @@ JOIN deportes d ON t.deporte_id = d.id;</textarea>
     <p>En orden, intenta ejecutar estas 5 misiones. Si todas se cumplen, ganarás <strong>+25 XP</strong>:</p>
     <ol>
       <li><strong>Explora</strong>: <code>SELECT * FROM equipos;</code></li>
-      <li><strong>Usa JOIN</strong>: lista partidos con nombres de equipos local y visitante.</li>
+      <li><strong>Usa JOIN</strong>: lista partidos con nombres de equipos equipo A y equipo B.</li>
       <li><strong>Cuenta</strong>: <code>SELECT COUNT(*) FROM partidos;</code></li>
       <li><strong>Filtra</strong>: partidos con <code>WHERE estado = 'programado'</code>.</li>
       <li><strong>Ordena</strong>: partidos finalizados con <code>ORDER BY fecha DESC</code>.</li>
@@ -972,16 +969,16 @@ JOIN deportes d ON t.deporte_id = d.id;</textarea>
       <p>3. Para listar los partidos con <strong>nombres de equipos</strong>, necesitas…</p>
       <button class="opcion" data-op="a">a) Un <code>SELECT *</code> de partidos</button>
       <button class="opcion" data-op="b">b) Un <code>WHERE</code> sobre equipos</button>
-      <button class="opcion" data-op="c">c) Un <code>JOIN</code> entre partidos y equipos (dos veces: local y visitante)</button>
+      <button class="opcion" data-op="c">c) Un <code>JOIN</code> entre partidos y equipos (dos veces: equipo A y equipo B)</button>
       <button class="opcion" data-op="d">d) Un <code>ORDER BY</code> sobre partidos</button>
     </div>
 
     <div class="pregunta" data-correcta="d">
-      <p>4. ¿Qué hace <code>SELECT p.fecha, l.nombre AS local FROM partidos p JOIN equipos l ON p.local_id = l.id;</code>?</p>
-      <button class="opcion" data-op="a">a) Lista sólo los partidos sin equipo local</button>
+      <p>4. ¿Qué hace <code>SELECT p.fecha, a.nombre AS equipo_a FROM partidos p JOIN equipos a ON p.equipo_a_id = a.id;</code>?</p>
+      <button class="opcion" data-op="a">a) Lista sólo los partidos sin equipo A</button>
       <button class="opcion" data-op="b">b) Cuenta los partidos por fecha</button>
       <button class="opcion" data-op="c">c) Borra los partidos antiguos</button>
-      <button class="opcion" data-op="d">d) Lista la fecha y el nombre del equipo local de cada partido (cruzando partidos con equipos por <code>local_id</code>)</button>
+      <button class="opcion" data-op="d">d) Lista la fecha y el nombre del equipo A de cada partido (cruzando partidos con equipos por <code>equipo_a_id</code>)</button>
     </div>
 
     <div class="resultado-quiz"></div>
@@ -1015,7 +1012,7 @@ JOIN deportes d ON t.deporte_id = d.id;</textarea>
       <li><strong>MER (comentarios)</strong>: descripción de entidades, atributos, PK/FK en un bloque de comentarios al inicio.</li>
       <li><strong>DDL</strong>: los 5 <code>CREATE TABLE</code> con PK, FK, <code>NOT NULL</code> y <code>CHECK</code>.</li>
       <li><strong>DML</strong>: <code>INSERT</code> de 2 deportes, 3 torneos, 6 equipos, 15 jugadores y 8 partidos (5 finalizados + 3 programados).</li>
-      <li><strong>DQL — Próximos partidos</strong>: <code>SELECT</code> con 3 JOINs (torneos + equipos local + equipos visitante) y <code>WHERE estado = 'programado'</code>.</li>
+      <li><strong>DQL — Próximos partidos</strong>: <code>SELECT</code> con 3 JOINs (torneos + equipos A + equipos B) y <code>WHERE estado = 'programado'</code>.</li>
       <li><strong>DQL — Histórico</strong>: <code>SELECT</code> con 2 JOINs y <code>WHERE estado = 'finalizado' ORDER BY fecha DESC</code>.</li>
       <li><strong>Reflexión</strong>: bloque de comentarios al final con lo que más te costó y lo que aprendiste.</li>
     </ol>
@@ -1038,9 +1035,9 @@ JOIN deportes d ON t.deporte_id = d.id;</textarea>
   - torneos(id PK, nombre, deporte_id FK→deportes, categoria CHECK IN)
   - equipos(id PK, nombre, torneo_id FK→torneos)
   - jugadores(id PK, nombre, fecha_nac, equipo_id FK→equipos)
-  - partidos(id PK, torneo_id FK→torneos, fecha, hora, cancha,
-             local_id FK→equipos, visitante_id FK→equipos,
-             goles_local, goles_visitante, estado CHECK IN)
+  - partidos(id PK, torneo_id FK→torneos, fecha, hora,
+             equipo_a_id FK→equipos, equipo_b_id FK→equipos,
+             goles_a, goles_b, estado CHECK IN)
 */</pre>
       </div>
     </div>
@@ -1081,11 +1078,10 @@ CREATE TABLE partidos (
     torneo_id       INTEGER REFERENCES torneos(id),
     fecha           DATE NOT NULL,
     hora            VARCHAR(5) NOT NULL,
-    cancha          VARCHAR(60) NOT NULL,
-    local_id        INTEGER REFERENCES equipos(id),
-    visitante_id    INTEGER REFERENCES equipos(id),
-    goles_local     INTEGER,
-    goles_visitante INTEGER,
+    equipo_a_id        INTEGER REFERENCES equipos(id),
+    equipo_b_id    INTEGER REFERENCES equipos(id),
+    goles_a     INTEGER,
+    goles_b INTEGER,
     estado          VARCHAR(15) NOT NULL
                     CHECK (estado IN ('programado', 'finalizado'))
 );</pre>
@@ -1124,35 +1120,35 @@ INSERT INTO jugadores (nombre, fecha_nac, equipo_id) VALUES
     ('Isabela Múnera', '2013-08-28', 6);
 
 -- Partidos finalizados (5)
-INSERT INTO partidos (torneo_id, fecha, hora, cancha, local_id, visitante_id, goles_local, goles_visitante, estado) VALUES
-    (1, '2026-09-15', '15:00', 'Cancha 1', 1, 2, 3, 1, 'finalizado'),
-    (1, '2026-09-22', '15:00', 'Cancha 2', 3, 1, 2, 2, 'finalizado'),
-    (1, '2026-09-29', '15:00', 'Cancha 1', 2, 3, 1, 4, 'finalizado'),
-    (2, '2026-09-18', '16:00', 'Cancha 3', 4, 5, 2, 0, 'finalizado'),
-    (2, '2026-09-25', '16:00', 'Cancha 3', 5, 4, 1, 1, 'finalizado');
+INSERT INTO partidos (torneo_id, fecha, hora, equipo_a_id, equipo_b_id, goles_a, goles_b, estado) VALUES
+    (1, '2026-09-15', '15:00', 1, 2, 3, 1, 'finalizado'),
+    (1, '2026-09-22', '15:00', 3, 1, 2, 2, 'finalizado'),
+    (1, '2026-09-29', '15:00', 2, 3, 1, 4, 'finalizado'),
+    (2, '2026-09-18', '16:00', 4, 5, 2, 0, 'finalizado'),
+    (2, '2026-09-25', '16:00', 5, 4, 1, 1, 'finalizado');
 
 -- Partidos programados (3)
-INSERT INTO partidos (torneo_id, fecha, hora, cancha, local_id, visitante_id, goles_local, goles_visitante, estado) VALUES
-    (1, '2026-10-06', '15:00', 'Cancha 2', 1, 3, NULL, NULL, 'programado'),
-    (2, '2026-10-09', '16:00', 'Cancha 3', 4, 5, NULL, NULL, 'programado'),
-    (1, '2026-10-20', '15:00', 'Cancha 1', 2, 1, NULL, NULL, 'programado');</pre>
+INSERT INTO partidos (torneo_id, fecha, hora, equipo_a_id, equipo_b_id, goles_a, goles_b, estado) VALUES
+    (1, '2026-10-06', '15:00', 1, 3, NULL, NULL, 'programado'),
+    (2, '2026-10-09', '16:00', 4, 5, NULL, NULL, 'programado'),
+    (1, '2026-10-20', '15:00', 2, 1, NULL, NULL, 'programado');</pre>
       </div>
     </div>
 
     <div class="taller-er-step">
       <h4><span class="step-num">4</span> DQL — Próximos partidos</h4>
-      <p>Escribe la consulta que lista los partidos <code>programados</code> con fecha, hora, cancha, nombre del torneo y nombres de los equipos local y visitante. Usa 3 JOINs y <code>ORDER BY fecha ASC</code>.</p>
+      <p>Escribe la consulta que lista los partidos <code>programados</code> con fecha, hora, nombre del torneo y nombres de los equipos equipo A y equipo B. Usa 3 JOINs y <code>ORDER BY fecha ASC</code>.</p>
       <button class="taller-sol-toggle" data-sol="sol-proximos">👁️ Ver solución</button>
       <div class="taller-sol" id="sol-proximos">
         <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- Próximos partidos programados
-SELECT  p.fecha, p.hora, p.cancha,
+SELECT  p.fecha, p.hora,
         t.nombre AS torneo,
-        l.nombre AS local,
-        v.nombre AS visitante
+        a.nombre AS equipo_a,
+        b.nombre AS equipo_b
 FROM partidos p
 JOIN torneos t ON p.torneo_id = t.id
-JOIN equipos l ON p.local_id = l.id
-JOIN equipos v ON p.visitante_id = v.id
+JOIN equipos a ON p.equipo_a_id = a.id
+JOIN equipos b ON p.equipo_b_id = b.id
 WHERE p.estado = 'programado'
 ORDER BY p.fecha ASC;</pre>
       </div>
@@ -1165,13 +1161,13 @@ ORDER BY p.fecha ASC;</pre>
       <div class="taller-sol" id="sol-historico">
         <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- Histórico de resultados
 SELECT  p.fecha,
-        l.nombre AS local,
-        v.nombre AS visitante,
-        p.goles_local,
-        p.goles_visitante
+        a.nombre AS equipo_a,
+        b.nombre AS equipo_b,
+        p.goles_a,
+        p.goles_b
 FROM partidos p
-JOIN equipos l ON p.local_id = l.id
-JOIN equipos v ON p.visitante_id = v.id
+JOIN equipos a ON p.equipo_a_id = a.id
+JOIN equipos b ON p.equipo_b_id = b.id
 WHERE p.estado = 'finalizado'
 ORDER BY p.fecha DESC;</pre>
       </div>
@@ -1185,9 +1181,9 @@ ORDER BY p.fecha DESC;</pre>
         <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">/*
   Reflexión final:
   Lo más difícil fue el modelo de partidos: al principio no
-  entendíamos cómo un partido podía tener dos equipos (local y
-  visitante) apuntando a la misma tabla. Lo resolvimos con dos
-  FK diferentes (local_id y visitante_id) y aprendimos que una
+  entendíamos cómo un partido podía tener dos equipos (equipo A y
+  equipo B) apuntando a la misma tabla. Lo resolvimos con dos
+  FK diferentes (equipo_a_id y equipo_b_id) y aprendimos que una
   tabla puede tener varias FK hacia la misma tabla destino.
 
   La consulta que más nos costó fue la de próximos partidos,
