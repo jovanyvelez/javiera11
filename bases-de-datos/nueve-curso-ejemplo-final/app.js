@@ -649,7 +649,7 @@ function inicializarPlayground() {
     const up = s.toUpperCase();
 
     if (!up.startsWith('SELECT')) {
-      throw new Error(`Comando no soportado: "${s.slice(0, 40)}...". Este playground sólo admite SELECT.`);
+      throw new Error(`Comando no soportado: "${s.slice(0, 40)}...". Este playground solo admite SELECT.`);
     }
 
     // indexOfKw: encuentra palabra clave top-level (respeta strings y paréntesis)

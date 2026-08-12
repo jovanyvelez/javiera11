@@ -59,11 +59,11 @@
         <div><span class="prompt">torneos_colegio=#</span> <span class="cmd">SELECT p.fecha, a.nombre AS equipo_a, b.nombre AS equipo_b, p.goles_a, p.goles_b</span></div>
         <div><span class="prompt">torneos_colegio-#</span> <span class="cmd">FROM partidos p JOIN equipos a ON p.equipo_a_id = a.id JOIN equipos b ON p.equipo_b_id = b.id</span></div>
         <div><span class="prompt">torneos_colegio-#</span> <span class="cmd">WHERE p.estado = 'finalizado' ORDER BY p.fecha DESC LIMIT 3;</span></div>
-        <div class="out">   fecha   |  equipo_a  |  equipo_b  | goles_a | goles_b</div>
-        <div class="out">-----------+------------+------------+---------+---------</div>
-        <div class="out"> 2026-09-29 | Las Águilas| Los Leones |       1 |       4</div>
-        <div class="out"> 2026-09-25 | Las Panter.| Los Halc.  |       1 |       1</div>
-        <div class="out"> 2026-09-22 | Los Leones | Los Tigres |       2 |       2</div>
+        <div class="out">   fecha   |  equipo_a    |  equipo_b    | goles_a | goles_b</div>
+        <div class="out">-----------+--------------+--------------+---------+---------</div>
+        <div class="out"> 2026-09-29 | Las Águilas | Los Leones  |       1 |       4</div>
+        <div class="out"> 2026-09-25 | Las Panteras | Los Halcones|       1 |       1</div>
+        <div class="out"> 2026-09-22 | Los Leones   | Los Tigres   |       2 |       2</div>
         <div class="out">(3 filas)</div>
         <div><span class="prompt">torneos_colegio=#</span> <span class="cursor"></span></div>
       </div>
@@ -96,16 +96,16 @@
 
   <h3>📌 Reglas de negocio específicas</h3>
   <ul>
-    <li><strong>Deportes y Torneos:</strong> Se pueden crear múltiples torneos para diferentes deportes.</li>
-    <li><strong>Categorías:</strong> Cada torneo maneja <strong>exactamente tres</strong> categorías de edad:
+    <li><strong>Deportes y Torneos:</strong> se pueden crear múltiples torneos para diferentes deportes.</li>
+    <li><strong>Categorías:</strong> cada torneo maneja <strong>exactamente tres</strong> categorías de edad:
       <ul>
         <li><strong>Infantil</strong>: 9 a 12 años.</li>
         <li><strong>Junior</strong>: 13 a 14 años.</li>
         <li><strong>Veteranos</strong>: Mayores de 15 años (&ge; 15).</li>
       </ul>
     </li>
-    <li><strong>Equipos y Jugadores:</strong> Un jugador pertenece a un equipo. La <strong>fecha de nacimiento</strong> del jugador debe validar a qué categoría pertenece.</li>
-    <li><strong>Partidos y Programación:</strong> Se registran <strong>partidos programados</strong> (fecha, hora, dos equipos que se enfrentan) y <strong>partidos finalizados</strong> con sus marcadores (goles/puntos). Todos los partidos son intra-colegio y se juegan en el <strong>único escenario deportivo</strong> del colegio, por lo que no hay local ni visitante.</li>
+    <li><strong>Equipos y Jugadores:</strong> un jugador pertenece a un equipo. La <strong>fecha de nacimiento</strong> del jugador debe validar a qué categoría pertenece.</li>
+    <li><strong>Partidos y Programación:</strong> se registran <strong>partidos programados</strong> (fecha, hora, dos equipos que se enfrentan) y <strong>partidos finalizados</strong> con sus marcadores (goles/puntos). Todos los partidos son intra-colegio y se juegan en el <strong>único escenario deportivo</strong> del colegio, por lo que no hay local ni visitante.</li>
   </ul>
 
   <h3>🗺️ Tu ruta de misiones</h3>
@@ -294,7 +294,7 @@ erDiagram
 
   <div class="caja-aula">
     <h4>👨‍🏫 En el aula — 4 minutos</h4>
-    <p>Pida a las parejas que, con el diagrama Mermaid, identifuen: (1) ¿qué tabla no tiene FK? (Respuesta: <code>deportes</code>, es la raíz), (2) ¿qué tabla tiene <em>dos</em> FK hacia la misma tabla? (Respuesta: <code>partidos</code> → <code>equipos</code>), (3) ¿por qué <code>goles_a</code> y <code>goles_b</code> <em>no</em> tienen <code>NOT NULL</code>? (Respuesta: porque un partido programado aún no tiene marcador).</p>
+    <p>Pida a las parejas que, con el diagrama Mermaid, identifiquen: (1) ¿qué tabla no tiene FK? (Respuesta: <code>deportes</code>, es la raíz), (2) ¿qué tabla tiene <em>dos</em> FK hacia la misma tabla? (Respuesta: <code>partidos</code> → <code>equipos</code>), (3) ¿por qué <code>goles_a</code> y <code>goles_b</code> <em>no</em> tienen <code>NOT NULL</code>? (Respuesta: porque un partido programado aún no tiene marcador).</p>
   </div>
 
   <div class="quiz" data-quiz="1">
@@ -414,14 +414,14 @@ erDiagram
       <thead><tr><th>Restricción</th><th>Tabla</th><th>Qué garantiza</th></tr></thead>
       <tbody>
         <tr><td><code>CHECK (categoria IN ('Infantil', 'Junior', 'Veteranos'))</code></td><td><code>torneos</code></td><td>Sólo se permiten las 3 categorías oficiales. Cualquier otro valor es rechazado.</td></tr>
-        <tr><td><code>CHECK (estado IN ('programado', 'finalizado'))</code></td><td><code>partidos</code></td><td>Un partido sólo puede estar programado o finalizado (no "en juego", "cancelado", etc.).</td></tr>
+        <tr><td><code>CHECK (estado IN ('programado', 'finalizado'))</code></td><td><code>partidos</code></td><td>Un partido solo puede estar programado o finalizado (no "en juego", "cancelado", etc.).</td></tr>
       </tbody>
     </table>
   </div>
 
   <div class="caja-tip">
     <h4>💡 CHECK con fechas para validar categorías</h4>
-    <p>La regla de negocio dice que la <strong>fecha de nacimiento</strong> del jugador debe validar a qué categoría pertenece. En una BD real, esto se validaría con un <code>CHECK</code> más complejo o con un <code>TRIGGER</code> que compare <code>fecha_nac</code> con la categoría del torneo del equipo. Por simplicidad, aquí sólo garantizamos que <code>fecha_nac</code> no sea <code>NULL</code>; la validación de categoría se hace en la capa de la app. Pero el concepto es el mismo: <strong>la BD protege sus propios datos</strong>.</p>
+    <p>La regla de negocio dice que la <strong>fecha de nacimiento</strong> del jugador debe validar a qué categoría pertenece. En una BD real, esto se validaría con un <code>CHECK</code> más complejo o con un <code>TRIGGER</code> que compare <code>fecha_nac</code> con la categoría del torneo del equipo. Por simplicidad, aquí solo garantizamos que <code>fecha_nac</code> no sea <code>NULL</code>; la validación de categoría se hace en la capa de la app. Pero el concepto es el mismo: <strong>la BD protege sus propios datos</strong>.</p>
   </div>
 
   <div class="caja-importante">
@@ -606,7 +606,7 @@ erDiagram
 
   <div class="caja-tip">
     <h4>💡 <code>NULL</code> explícito en INSERT</h4>
-    <p>Para insertar un valor <code>NULL</code> explícitamente (como en los goles de un partido programado), se escribe la palabra <code>NULL</code> en el <code>VALUES</code>: <code>NULL, NULL, 'programado'</code>. PostgreSQL lo interpreta como «sin valor». Esto es distinto de omitir la columna (que sólo funciona si la columna admite <code>NULL</code> por defecto).</p>
+    <p>Para insertar un valor <code>NULL</code> explícitamente (como en los goles de un partido programado), se escribe la palabra <code>NULL</code> en el <code>VALUES</code>: <code>NULL, NULL, 'programado'</code>. PostgreSQL lo interpreta como «sin valor». Esto es distinto de omitir la columna (que solo funciona si la columna admite <code>NULL</code> por defecto).</p>
   </div>
 
   <div class="caja-aula">
@@ -664,7 +664,7 @@ erDiagram
 <section class="modulo" data-modulo="4">
   <div class="descanso-hero">
     <h2>☕ Pausa de 15 minutos</h2>
-    <p class="lead">Ya tienes el modelo (MER), las tablas (DDL) y los datos (DML). La BD está completa. El cerebro necesita asentar antes de las consultas. Levántate, estira, hidrátate, y vuelve para el entregable D: las consultas que usaría la app del colegio.</p>
+    <p class="lead">Ya tienes el modelo (MER), las tablas (DDL) y los datos (DML). La BD está completa. El cerebro necesita asentarlo antes de las consultas. Levántate, estira, hidrátate, y vuelve para el entregable D: las consultas que usaría la app del colegio.</p>
   </div>
 
   <div class="descanso-grid">
@@ -829,7 +829,7 @@ erDiagram
 
   <div class="caja-aula">
     <h4>👨‍🏫 En el aula — 5 minutos</h4>
-    <p>Pida a las parejas que, con la consulta de próximos partidos, predigan cuántas filas devolverá y cuáles serán las primeras tres. Luego ejecútenla en el playground (módulo 6) y comparen. Discutan: ¿por qué la tabla de posiciones sólo cuenta partidos donde el equipo fue <strong>equipo A</strong>? (Nota: una versión completa incluiría también los partidos como equipo B — eso queda para la próxima clase con UNION).</p>
+    <p>Pida a las parejas que, con la consulta de próximos partidos, predigan cuántas filas devolverá y cuáles serán las primeras tres. Luego ejecútenla en el playground (módulo 6) y comparen. Discutan: ¿por qué la tabla de posiciones solo cuenta partidos donde el equipo fue <strong>equipo A</strong>? (Nota: una versión completa incluiría también los partidos como equipo B — eso queda para la próxima clase con UNION).</p>
   </div>
 
   <div class="quiz" data-quiz="5">
@@ -845,7 +845,7 @@ erDiagram
 
     <div class="pregunta" data-correcta="a">
       <p>2. ¿Qué hace <code>WHERE p.estado = 'programado'</code> en la consulta de próximos partidos?</p>
-      <button class="opcion" data-op="a">a) Filtra sólo los partidos que aún no se han jugado</button>
+      <button class="opcion" data-op="a">a) Filtra solo los partidos que aún no se han jugado</button>
       <button class="opcion" data-op="b">b) Filtra los partidos finalizados</button>
       <button class="opcion" data-op="c">c) Ordena por fecha</button>
       <button class="opcion" data-op="d">d) Cuenta los partidos</button>
@@ -927,7 +927,7 @@ JOIN deportes d ON t.deporte_id = d.id;</textarea>
     <p>En orden, intenta ejecutar estas 5 misiones. Si todas se cumplen, ganarás <strong>+25 XP</strong>:</p>
     <ol>
       <li><strong>Explora</strong>: <code>SELECT * FROM equipos;</code></li>
-      <li><strong>Usa JOIN</strong>: lista partidos con nombres de equipos equipo A y equipo B.</li>
+      <li><strong>Usa JOIN</strong>: lista partidos con nombres del equipo A y del equipo B.</li>
       <li><strong>Cuenta</strong>: <code>SELECT COUNT(*) FROM partidos;</code></li>
       <li><strong>Filtra</strong>: partidos con <code>WHERE estado = 'programado'</code>.</li>
       <li><strong>Ordena</strong>: partidos finalizados con <code>ORDER BY fecha DESC</code>.</li>
@@ -968,7 +968,7 @@ JOIN deportes d ON t.deporte_id = d.id;</textarea>
 
     <div class="pregunta" data-correcta="d">
       <p>4. ¿Qué hace <code>SELECT p.fecha, a.nombre AS equipo_a FROM partidos p JOIN equipos a ON p.equipo_a_id = a.id;</code>?</p>
-      <button class="opcion" data-op="a">a) Lista sólo los partidos sin equipo A</button>
+      <button class="opcion" data-op="a">a) Lista solo los partidos sin equipo A</button>
       <button class="opcion" data-op="b">b) Cuenta los partidos por fecha</button>
       <button class="opcion" data-op="c">c) Borra los partidos antiguos</button>
       <button class="opcion" data-op="d">d) Lista la fecha y el nombre del equipo A de cada partido (cruzando partidos con equipos por <code>equipo_a_id</code>)</button>
@@ -1130,7 +1130,7 @@ INSERT INTO partidos (torneo_id, fecha, hora, equipo_a_id, equipo_b_id, goles_a,
 
     <div class="taller-er-step">
       <h4><span class="step-num">4</span> DQL — Próximos partidos</h4>
-      <p>Escribe la consulta que lista los partidos <code>programados</code> con fecha, hora, nombre del torneo y nombres de los equipos equipo A y equipo B. Usa 3 JOINs y <code>ORDER BY fecha ASC</code>.</p>
+      <p>Escribe la consulta que lista los partidos <code>programados</code> con fecha, hora, nombre del torneo y nombres del equipo A y del equipo B. Usa 3 JOINs y <code>ORDER BY fecha ASC</code>.</p>
       <button class="taller-sol-toggle" data-sol="sol-proximos">👁️ Ver solución</button>
       <div class="taller-sol" id="sol-proximos">
         <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- Próximos partidos programados
@@ -1183,7 +1183,7 @@ ORDER BY p.fecha DESC;</pre>
   porque requiere 3 JOINs en una sola sentencia (torneos + 2x
   equipos). Al principio repetíamos el alias "equipos" dos veces
   y PostgreSQL daba error. Aprendimos que cada JOIN necesita su
-  propio alias (l y v) para distinguirlos.
+   propio alias (a y b) para distinguirlos.
 
   La gran lección: el MER es el plano, el DDL es el cemento, el
   DML son los muebles y el DQL es usar la casa. Sin plano, todo
