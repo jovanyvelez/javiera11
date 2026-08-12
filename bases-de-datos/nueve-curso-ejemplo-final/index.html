@@ -236,17 +236,10 @@ partidos(
   </div>
 
   <h3>📊 Diagrama Mermaid del modelo</h3>
-  <p>Visualicemos el modelo con un diagrama. En la Clase 4 vimos Mermaid; aquí está el diagrama completo de nuestro proyecto:</p>
+  <p>Visualicemos el modelo con un diagrama. En la Clase 4 vimos Mermaid; aquí está el diagrama completo del proyecto, renderizado en vivo con el CDN de Mermaid.js:</p>
 
-  <div class="code-wrap">
-    <div class="code-header">
-      <div class="code-header-left">
-        <div class="code-dots"><span></span><span></span><span></span></div>
-        <span>Mermaid — diagrama ER de torneos deportivos</span>
-      </div>
-      <button class="copy-btn">📋 Copiar</button>
-    </div>
-    <pre><code>erDiagram
+  <div class="mermaid" style="background:var(--fondo-claro);border:1px solid var(--tarjeta-borde);border-radius:var(--radio);padding:1.5rem;overflow-x:auto;text-align:center;">
+erDiagram
     DEPORTES ||--o{ TORNEOS : "tiene"
     TORNEOS  ||--o{ EQUIPOS  : "inscribe"
     EQUIPOS  ||--o{ JUGADORES : "posee"
@@ -285,7 +278,7 @@ partidos(
         int goles_a
         int goles_b
         string estado
-    }</code></pre>
+    }
   </div>
 
   <div class="caja-destacada">
@@ -1249,6 +1242,10 @@ ORDER BY p.fecha DESC;</pre>
   <div style="margin-top:.5rem;font-size:.78rem;">Hecho con 💜 para adolescentes que construyeron su primera BD real.</div>
 </footer>
 
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+</script>
 <script src="app.js"></script>
 </body>
 </html>
