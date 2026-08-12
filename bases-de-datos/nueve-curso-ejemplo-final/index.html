@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🗄️ Bases de Datos · Clase 9 · Ejemplo final: Torneos deportivos del colegio</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- =================== HEADER + PROGRESO =================== -->
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🏆</span>
+    <div>
+      <h1>Bases de Datos · Clase 9</h1>
+      <p class="subtitulo">Ejemplo final del módulo · Caso integrador: Torneos deportivos del colegio · MER → DDL → DML → DQL</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 390 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<!-- =================== NAVEGACIÓN =================== -->
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">🗺️ MER</button>
+  <button class="btn-modulo" data-modulo="2">🏗️ DDL</button>
+  <button class="btn-modulo" data-modulo="3">📝 DML</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🔍 DQL</button>
+  <button class="btn-modulo" data-modulo="6">🧪 Playground</button>
+  <button class="btn-modulo" data-modulo="7">📦 Taller</button>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     MÓDULO 0 — BIENVENIDA / CONTEXTO DEL PROYECTO
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🏆 Torneos deportivos del colegio: el proyecto final</h2>
+    <p class="lead">Llegaste al final del módulo de Bases de Datos. Nueve clases después, sabes diseñar un modelo ER, normalizarlo, crear tablas con DDL, insertar y modificar datos con DML, y consultar con <code>SELECT</code>, <code>WHERE</code> y <code>ORDER BY</code>. Hoy lo <strong>integras todo</strong> en un caso real: el colegio necesita una BD para administrar sus <strong>torneos deportivos</strong> (Fútbol, Baloncesto, Voleibol…). Vas a diseñar el modelo, crear las tablas, poblarlas con datos de prueba y escribir las consultas que usaría la app del colegio. Es exactamente lo que haría un desarrollador backend en su primer día de trabajo.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ Proyecto: Torneos deportivos del colegio</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">estudiante@bd:~$</span> <span class="cmd">psql -U postgres -d torneos_colegio</span></div>
+        <div class="out">psql (16.0) —Digite «help» para ayuda.</div>
+        <div><span class="prompt">torneos_colegio=#</span> <span class="cmd">SELECT p.fecha, l.nombre AS local, v.nombre AS visitante, p.goles_local, p.goles_visitante</span></div>
+        <div><span class="prompt">torneos_colegio-#</span> <span class="cmd">FROM partidos p JOIN equipos l ON p.local_id = l.id JOIN equipos v ON p.visitante_id = v.id</span></div>
+        <div><span class="prompt">torneos_colegio-#</span> <span class="cmd">WHERE p.estado = 'finalizado' ORDER BY p.fecha DESC LIMIT 3;</span></div>
+        <div class="out">   fecha   |    local    |  visitante  | goles_local | goles_visitante</div>
+        <div class="out">-----------+-------------+-------------+-------------+-----------------</div>
+        <div class="out"> 2026-09-29 | Las Águilas | Los Leones  |           1 |               4</div>
+        <div class="out"> 2026-09-25 | Las Panteras| Los Halcones|           1 |               1</div>
+        <div class="out"> 2026-09-22 | Los Leones  | Los Tigres  |           2 |               2</div>
+        <div class="out">(3 filas)</div>
+        <div><span class="prompt">torneos_colegio=#</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>4 horas en 8 módulos, con descanso a mitad. Trabaja en pareja: uno modela, el otro programa, luego intercambian.</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Diseñar y construir <strong>de punta a punta</strong> la BD de torneos deportivos del colegio: modelo ER (MER), script DDL (CREATE TABLE con restricciones), script DML (datos de prueba) y consultas DQL (SELECT con JOIN, WHERE, ORDER BY).</p>
+    </div>
+    <div class="tarjeta tarjeta-warm">
+      <span class="emoji">📋</span>
+      <h3>Los 4 entregables</h3>
+      <p>A. Modelo ER · B. Script DDL · C. Script DML con datos de Medellín · D. Consultas SQL (próximos partidos, histórico, tabla de posiciones). Un único archivo <code>.sql</code> al final.</p>
+    </div>
+  </div>
+
+  <h3>📋 Contexto del proyecto</h3>
+  <div class="caja-concepto">
+    <h4>📖 El problema real</h4>
+    <p>El colegio organiza <strong>torneos interclases e intercolegiados</strong> de múltiples disciplinas (Fútbol, Baloncesto, Voleibol, etc.). Necesita una BD robusta para respaldar la app móvil/web que usarán estudiantes, profesores y coordinadores deportivos. Hoy vas a construir esa BD.</p>
+  </div>
+
+  <h3>📌 Reglas de negocio específicas</h3>
+  <ul>
+    <li><strong>Deportes y Torneos:</strong> Se pueden crear múltiples torneos para diferentes deportes.</li>
+    <li><strong>Categorías:</strong> Cada torneo maneja <strong>exactamente tres</strong> categorías de edad:
+      <ul>
+        <li><strong>Infantil</strong>: 9 a 12 años.</li>
+        <li><strong>Junior</strong>: 13 a 14 años.</li>
+        <li><strong>Veteranos</strong>: Mayores de 15 años (&ge; 15).</li>
+      </ul>
+    </li>
+    <li><strong>Equipos y Jugadores:</strong> Un jugador pertenece a un equipo. La <strong>fecha de nacimiento</strong> del jugador debe validar a qué categoría pertenece.</li>
+    <li><strong>Partidos y Programación:</strong> Se registran <strong>partidos programados</strong> (fecha, hora, cancha, equipo local, equipo visitante) y <strong>partidos finalizados</strong> con sus marcadores (goles/puntos).</li>
+  </ul>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Entregable</th><th>Tema</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · MER</td><td style="color:var(--lima)">A</td><td>Entidades, atributos, PK/FK, diagrama</td><td>30 XP</td></tr>
+        <tr><td>02 · DDL</td><td style="color:var(--indigo)">B</td><td>CREATE TABLE con CHECK, FK, NOT NULL</td><td>30 XP</td></tr>
+        <tr><td>03 · DML</td><td style="color:var(--cian)">C</td><td>INSERT con datos de Medellín</td><td>30 XP</td></tr>
+        <tr><td>☕ Descanso</td><td>—</td><td style="color:var(--naranja)">Pausa</td><td>—</td></tr>
+        <tr><td>04 · DQL</td><td style="color:var(--lima-claro)">D</td><td>Consultas con JOIN, WHERE, ORDER BY</td><td>30 XP</td></tr>
+        <tr><td>05 · Playground</td><td>—</td><td style="color:var(--indigo-claro)">Ejecuta consultas en la BD del proyecto</td><td>55 XP</td></tr>
+        <tr><td>06 · Taller entregable</td><td>—</td><td style="color:var(--lima)">Entrega del proyecto completo</td><td>30 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:0.6rem;font-size:0.85rem;color:var(--texto-suave);">Cada módulo completado da 30 XP; el Playground suma 25 XP extra por sus 5 retos. Los quizzes perfectos dan +25 XP cada uno. Máximo: <strong>390 XP</strong>.</p>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Con su compañero/a, imaginen la BD: ¿qué tablas necesitarían? ¿Qué columnas? ¿Qué relaciones? Escriban una lista rápida en el cuaderno. Al final del módulo 1 (MER) sabrán si acertaron. No se preocupen si no están seguros — el siguiente módulo les da la respuesta paso a paso.</p>
+  </div>
+
+  <h3>🧠 Lo que ya sabes (y vas a integrar)</h3>
+  <ul>
+    <li>Diseñar modelos <strong>Entidad-Relación</strong> con entidades, atributos, PK y FK. (Clase 4)</li>
+    <li><strong>Normalizar</strong> hasta 3FN para evitar anomalías. (Clase 5)</li>
+    <li>Crear tablas con <strong>DDL</strong>: <code>CREATE TABLE</code> con <code>PRIMARY KEY</code>, <code>FOREIGN KEY</code>, <code>NOT NULL</code>, <code>UNIQUE</code>, <code>CHECK</code>. (Clase 6)</li>
+    <li>Insertar datos con <strong>DML</strong>: <code>INSERT INTO ... VALUES</code> multi-fila y <code>RETURNING</code>. (Clase 7)</li>
+    <li>Consultar con <strong>DQL</strong>: <code>SELECT ... FROM ... WHERE ... ORDER BY ... LIMIT</code> con <code>LIKE</code>, <code>BETWEEN</code>, <code>IN</code>, <code>IS NULL</code>, <code>AND</code>/<code>OR</code>/<code>NOT</code>. (Clase 8)</li>
+  </ul>
+
+  <div class="caja-destacada">
+    <h4>📌 La gran pregunta de hoy</h4>
+    <p>¿Puedes, <strong>en un solo día</strong>, diseñar una BD real de principio a fin? Sí. Eso es lo que vas a hacer hoy: del problema (torneos del colegio) al modelo (MER), del modelo a las tablas (DDL), de las tablas a los datos (DML), y de los datos a las consultas que usaría la app (DQL). Cuatro entregables, un solo proyecto. Al final tendrás un archivo <code>.sql</code> ejecutable en PostgreSQL que cualquier desarrollador podría usar. <strong>Bienvenido al mundo real.</strong></p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Siguiente: MER →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 1 — MER (Entregable A)
+============================================================ -->
+<section class="modulo" data-modulo="1">
+  <h2>🗺️ Entregable A: Modelo Entidad-Relación (MER)</h2>
+  <p class="meta-modulo">Misión 01 · Entidades, atributos, PK, FK y diagrama · ~35 min</p>
+
+  <p>El primer paso de cualquier BD es el <strong>modelo</strong>. Antes de escribir una sola línea de SQL, tenemos que identificar las <strong>entidades</strong> (qué tablas habrá), sus <strong>atributos</strong> (qué columnas), las <strong>llaves primarias</strong> (PK) que identifican cada fila, y las <strong>llaves foráneas</strong> (FK) que conectan las tablas entre sí.</p>
+
+  <h3>🧩 Identificando entidades</h3>
+  <p>De las reglas de negocio del módulo anterior, podemos identificar <strong>5 entidades</strong>:</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead><tr><th>Entidad</th><th>¿Por qué?</th><th>Tabla</th></tr></thead>
+      <tbody>
+        <tr><td>Deporte</td><td>Cada torneo pertenece a un deporte (Fútbol, Baloncesto…)</td><td><code>deportes</code></td></tr>
+        <tr><td>Torneo</td><td>Se crean múltiples torneos para diferentes deportes y categorías</td><td><code>torneos</code></td></tr>
+        <tr><td>Equipo</td><td>Cada torneo tiene equipos inscritos</td><td><code>equipos</code></td></tr>
+        <tr><td>Jugador</td><td>Un jugador pertenece a un equipo; tiene fecha de nacimiento</td><td><code>jugadores</code></td></tr>
+        <tr><td>Partido</td><td>Se programan y se juegan partidos entre dos equipos</td><td><code>partidos</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🔑 Atributos, PK y FK</h3>
+  <p>Aquí está el detalle de cada entidad con sus columnas, llaves y relaciones:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>MER — descripción de entidades</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- deportes (catálogo de deportes)</span>
+deportes(
+  id          <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,      <span class="cm">-- PK</span>
+  nombre      <span class="ty">VARCHAR</span>(<span class="num">50</span>) <span class="kw">NOT NULL UNIQUE</span>  <span class="cm">-- "Fútbol", "Baloncesto"...</span>
+)
+
+<span class="cm">-- torneos (cada torneo pertenece a un deporte y tiene una categoría)</span>
+torneos(
+  id          <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+  nombre      <span class="ty">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+  deporte_id  <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> deportes(id),  <span class="cm">-- FK → deportes</span>
+  categoria   <span class="ty">VARCHAR</span>(<span class="num">20</span>) <span class="kw">NOT NULL</span>       <span class="cm">-- "Infantil", "Junior", "Veteranos"</span>
+)
+
+<span class="cm">-- equipos (cada equipo está inscrito en un torneo)</span>
+equipos(
+  id          <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+  nombre      <span class="ty">VARCHAR</span>(<span class="num">80</span>) <span class="kw">NOT NULL</span>,
+  torneo_id   <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> torneos(id)   <span class="cm">-- FK → torneos</span>
+)
+
+<span class="cm">-- jugadores (cada jugador pertenece a un equipo)</span>
+jugadores(
+  id          <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+  nombre      <span class="ty">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+  fecha_nac   <span class="ty">DATE</span> <span class="kw">NOT NULL</span>,                  <span class="cm">-- para validar categoría</span>
+  equipo_id   <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> equipos(id)   <span class="cm">-- FK → equipos</span>
+)
+
+<span class="cm">-- partidos (local vs visitante, programados o finalizados)</span>
+partidos(
+  id              <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+  torneo_id       <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> torneos(id),
+  fecha           <span class="ty">DATE</span> <span class="kw">NOT NULL</span>,
+  hora            <span class="ty">VARCHAR</span>(<span class="num">5</span>) <span class="kw">NOT NULL</span>,         <span class="cm">-- "15:00"</span>
+  cancha          <span class="ty">VARCHAR</span>(<span class="num">60</span>) <span class="kw">NOT NULL</span>,
+  local_id        <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> equipos(id),  <span class="cm">-- FK → equipos</span>
+  visitante_id    <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> equipos(id),  <span class="cm">-- FK → equipos</span>
+  goles_local     <span class="ty">INTEGER</span>,                       <span class="cm">-- NULL si no se ha jugado</span>
+  goles_visitante <span class="ty">INTEGER</span>,                       <span class="cm">-- NULL si no se ha jugado</span>
+  estado          <span class="ty">VARCHAR</span>(<span class="num">15</span>) <span class="kw">NOT NULL</span>        <span class="cm">-- "programado" | "finalizado"</span>
+)</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Una FK puede apuntar a la misma tabla</h4>
+    <p>En <code>partidos</code>, tanto <code>local_id</code> como <code>visitante_id</code> apuntan a <code>equipos(id)</code>. Es una <strong>relación recursiva</strong>: un equipo es local en algunos partidos y visitante en otros. Esto es perfectamente válido en SQL — una tabla puede tener varias FK hacia la misma tabla destino.</p>
+  </div>
+
+  <h3>📊 Diagrama Mermaid del modelo</h3>
+  <p>Visualicemos el modelo con un diagrama. En la Clase 4 vimos Mermaid; aquí está el diagrama completo de nuestro proyecto:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>Mermaid — diagrama ER de torneos deportivos</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code>erDiagram
+    DEPORTES ||--o{ TORNEOS : "tiene"
+    TORNEOS  ||--o{ EQUIPOS  : "inscribe"
+    EQUIPOS  ||--o{ JUGADORES : "posee"
+    TORNEOS  ||--o{ PARTIDOS  : "programa"
+    EQUIPOS  ||--o{ PARTIDOS  : "local"
+    EQUIPOS  ||--o{ PARTIDOS  : "visitante"
+
+    DEPORTES {
+        int id PK
+        string nombre
+    }
+    TORNEOS {
+        int id PK
+        string nombre
+        int deporte_id FK
+        string categoria
+    }
+    EQUIPOS {
+        int id PK
+        string nombre
+        int torneo_id FK
+    }
+    JUGADORES {
+        int id PK
+        string nombre
+        date fecha_nac
+        int equipo_id FK
+    }
+    PARTIDOS {
+        int id PK
+        int torneo_id FK
+        date fecha
+        string hora
+        string cancha
+        int local_id FK
+        int visitante_id FK
+        int goles_local
+        int goles_visitante
+        string estado
+    }</code></pre>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🧠 Cardinalidades del modelo</h4>
+    <ul>
+      <li><strong>Deportes → Torneos</strong> (1:N): un deporte tiene muchos torneos; un torneo tiene un deporte.</li>
+      <li><strong>Torneos → Equipos</strong> (1:N): un torneo inscribe muchos equipos; un equipo pertenece a un torneo.</li>
+      <li><strong>Equipos → Jugadores</strong> (1:N): un equipo tiene muchos jugadores; un jugador pertenece a un equipo.</li>
+      <li><strong>Torneos → Partidos</strong> (1:N): un torneo programa muchos partidos; un partido pertenece a un torneo.</li>
+      <li><strong>Equipos → Partidos</strong> (1:N, dos veces): un equipo es local en muchos partidos y visitante en muchos otros.</li>
+    </ul>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que, con el diagrama Mermaid, identifuen: (1) ¿qué tabla no tiene FK? (Respuesta: <code>deportes</code>, es la raíz), (2) ¿qué tabla tiene <em>dos</em> FK hacia la misma tabla? (Respuesta: <code>partidos</code> → <code>equipos</code>), (3) ¿por qué <code>goles_local</code> y <code>goles_visitante</code> <em>no</em> tienen <code>NOT NULL</code>? (Respuesta: porque un partido programado aún no tiene marcador).</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>📝 Quiz M1 · MER</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p>1. ¿Cuántas entidades (tablas) tiene el modelo de torneos deportivos?</p>
+      <button class="opcion" data-op="a">a) 3</button>
+      <button class="opcion" data-op="b">b) 5</button>
+      <button class="opcion" data-op="c">c) 7</button>
+      <button class="opcion" data-op="d">d) 10</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>2. ¿Qué tabla <strong>no tiene</strong> ninguna llave foránea (FK)?</p>
+      <button class="opcion" data-op="a">a) <code>deportes</code></button>
+      <button class="opcion" data-op="b">b) <code>torneos</code></button>
+      <button class="opcion" data-op="c">c) <code>equipos</code></button>
+      <button class="opcion" data-op="d">d) <code>partidos</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>3. En <code>partidos</code>, ¿a qué apuntan <code>local_id</code> y <code>visitante_id</code>?</p>
+      <button class="opcion" data-op="a">a) A <code>torneos(id)</code></button>
+      <button class="opcion" data-op="b">b) A <code>jugadores(id)</code></button>
+      <button class="opcion" data-op="c">c) Ambos a <code>equipos(id)</code> — un equipo es local o visitante</button>
+      <button class="opcion" data-op="d">d) A <code>deportes(id)</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. ¿Por qué <code>goles_local</code> y <code>goles_visitante</code> <strong>no</strong> llevan <code>NOT NULL</code>?</p>
+      <button class="opcion" data-op="a">a) Porque PostgreSQL no permite <code>NOT NULL</code> en <code>INTEGER</code></button>
+      <button class="opcion" data-op="b">b) Porque siempre son cero</button>
+      <button class="opcion" data-op="c">c) Porque es un error del modelo</button>
+      <button class="opcion" data-op="d">d) Porque un partido <em>programado</em> aún no tiene marcador (los goles se asignan al finalizar)</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: DDL →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 2 — DDL (Entregable B)
+============================================================ -->
+<section class="modulo" data-modulo="2">
+  <h2>🏗️ Entregable B: Script DDL (CREATE TABLE)</h2>
+  <p class="meta-modulo">Misión 02 · Creación de tablas con restricciones CHECK, FK, NOT NULL · ~35 min</p>
+
+  <p>Con el MER listo (módulo 1), el siguiente paso es <strong>traducirlo a SQL</strong>: crear las tablas con <code>CREATE TABLE</code>, definiendo las columnas, los tipos, las llaves primarias y foráneas, y las <strong>restricciones</strong> que garantizan que los datos siempre sean válidos. Es el momento en el que el modelo se vuelve <em>real</em>.</p>
+
+  <h3>📐 El orden de creación importa</h3>
+  <p>Recordatorio de la Clase 6: <strong>crea primero las tablas sin FK</strong>, y luego las que las referencian. Si intentas crear <code>torneos</code> (con FK a <code>deportes</code>) antes que <code>deportes</code>, PostgreSQL te dará un error.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>DDL — CREATE TABLE (orden correcto)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- 1. Tabla sin dependencias (raíz del modelo)</span>
+<span class="kw">CREATE TABLE</span> deportes (
+    id      <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+    nombre  <span class="ty">VARCHAR</span>(<span class="num">50</span>) <span class="kw">NOT NULL UNIQUE</span>
+);
+
+<span class="cm">-- 2. Torneos (FK → deportes) + CHECK para categoría</span>
+<span class="kw">CREATE TABLE</span> torneos (
+    id          <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+    nombre      <span class="ty">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+    deporte_id  <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> deportes(id),
+    categoria   <span class="ty">VARCHAR</span>(<span class="num">20</span>) <span class="kw">NOT NULL</span>
+                <span class="kw">CHECK</span> (categoria <span class="kw">IN</span> (<span class="str">'Infantil'</span>, <span class="str">'Junior'</span>, <span class="str">'Veteranos'</span>))
+);
+
+<span class="cm">-- 3. Equipos (FK → torneos)</span>
+<span class="kw">CREATE TABLE</span> equipos (
+    id          <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+    nombre      <span class="ty">VARCHAR</span>(<span class="num">80</span>) <span class="kw">NOT NULL</span>,
+    torneo_id   <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> torneos(id)
+);
+
+<span class="cm">-- 4. Jugadores (FK → equipos) + CHECK para fecha de nacimiento</span>
+<span class="kw">CREATE TABLE</span> jugadores (
+    id          <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+    nombre      <span class="ty">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+    fecha_nac   <span class="ty">DATE</span> <span class="kw">NOT NULL</span>,
+    equipo_id   <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> equipos(id)
+);
+
+<span class="cm">-- 5. Partidos (2 FK → equipos + FK → torneos + CHECK para estado)</span>
+<span class="kw">CREATE TABLE</span> partidos (
+    id              <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+    torneo_id       <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> torneos(id),
+    fecha           <span class="ty">DATE</span> <span class="kw">NOT NULL</span>,
+    hora            <span class="ty">VARCHAR</span>(<span class="num">5</span>) <span class="kw">NOT NULL</span>,
+    cancha          <span class="ty">VARCHAR</span>(<span class="num">60</span>) <span class="kw">NOT NULL</span>,
+    local_id        <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> equipos(id),
+    visitante_id    <span class="ty">INTEGER</span> <span class="kw">REFERENCES</span> equipos(id),
+    goles_local     <span class="ty">INTEGER</span>,
+    goles_visitante <span class="ty">INTEGER</span>,
+    estado          <span class="ty">VARCHAR</span>(<span class="num">15</span>) <span class="kw">NOT NULL</span>
+                    <span class="kw">CHECK</span> (estado <span class="kw">IN</span> (<span class="str">'programado'</span>, <span class="str">'finalizado'</span>))
+);</code></pre>
+  </div>
+
+  <h3>🛡️ Restricciones CHECK: validando las reglas de negocio</h3>
+  <p>Las restricciones <code>CHECK</code> son la forma de traducir las <strong>reglas de negocio</strong> directamente al esquema de la BD. En este proyecto usamos dos:</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead><tr><th>Restricción</th><th>Tabla</th><th>Qué garantiza</th></tr></thead>
+      <tbody>
+        <tr><td><code>CHECK (categoria IN ('Infantil', 'Junior', 'Veteranos'))</code></td><td><code>torneos</code></td><td>Sólo se permiten las 3 categorías oficiales. Cualquier otro valor es rechazado.</td></tr>
+        <tr><td><code>CHECK (estado IN ('programado', 'finalizado'))</code></td><td><code>partidos</code></td><td>Un partido sólo puede estar programado o finalizado (no "en juego", "cancelado", etc.).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 CHECK con fechas para validar categorías</h4>
+    <p>La regla de negocio dice que la <strong>fecha de nacimiento</strong> del jugador debe validar a qué categoría pertenece. En una BD real, esto se validaría con un <code>CHECK</code> más complejo o con un <code>TRIGGER</code> que compare <code>fecha_nac</code> con la categoría del torneo del equipo. Por simplicidad, aquí sólo garantizamos que <code>fecha_nac</code> no sea <code>NULL</code>; la validación de categoría se hace en la capa de la app. Pero el concepto es el mismo: <strong>la BD protege sus propios datos</strong>.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "crear tablas en el orden equivocado"</h4>
+    <p>Si intentas crear <code>torneos</code> antes que <code>deportes</code>, PostgreSQL te dará: <code>ERROR: relation "deportes" does not exist</code>. La FK no puede apuntar a una tabla que aún no existe. <strong>Regla de oro:</strong> crea en orden de dependencias (raíz primero), y borra en orden inverso (hijas primero).</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que, en el cuaderno, escriban el orden en el que se deben <strong>borrar</strong> las tablas con <code>DROP TABLE</code> (es el inverso al de creación). Discutan: ¿por qué hay que borrar <code>partidos</code> antes que <code>equipos</code>?</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>📝 Quiz M2 · DDL</h3>
+
+    <div class="pregunta" data-correcta="a">
+      <p>1. ¿En qué orden debes crear las tablas?</p>
+      <button class="opcion" data-op="a">a) Primero las que no tienen FK, luego las que las referencian</button>
+      <button class="opcion" data-op="b">b) Alfabéticamente</button>
+      <button class="opcion" data-op="c">c) Primero las más grandes</button>
+      <button class="opcion" data-op="d">d) El orden no importa</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>2. ¿Qué hace <code>CHECK (categoria IN ('Infantil', 'Junior', 'Veteranos'))</code>?</p>
+      <button class="opcion" data-op="a">a) Crea un índice sobre <code>categoria</code></button>
+      <button class="opcion" data-op="b">b) Obliga a que <code>categoria</code> no sea <code>NULL</code></button>
+      <button class="opcion" data-op="c">c) Sólo permite esos tres valores; cualquier otro es rechazado con error</button>
+      <button class="opcion" data-op="d">d) Ordena las filas por categoría</button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p>3. ¿Qué error te daría PostgreSQL si creas <code>torneos</code> antes que <code>deportes</code>?</p>
+      <button class="opcion" data-op="a">a) <code>Syntax error</code></button>
+      <button class="opcion" data-op="b">b) <code>relation "deportes" does not exist</code></button>
+      <button class="opcion" data-op="c">c) <code>duplicate key</code></button>
+      <button class="opcion" data-op="d">d) Ninguno, el orden no importa</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. ¿Por qué <code>goles_local</code> y <code>goles_visitante</code> no llevan <code>NOT NULL</code>?</p>
+      <button class="opcion" data-op="a">a) Porque <code>INTEGER</code> no permite <code>NOT NULL</code></button>
+      <button class="opcion" data-op="b">b) Porque es un error del DDL</button>
+      <button class="opcion" data-op="c">c) Porque los goles siempre son cero</button>
+      <button class="opcion" data-op="d">d) Porque un partido programado aún no tiene marcador — <code>NULL</code> significa "por definir"</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: DML →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 3 — DML (Entregable C)
+============================================================ -->
+<section class="modulo" data-modulo="3">
+  <h2>📝 Entregable C: Script DML (datos de prueba)</h2>
+  <p class="meta-modulo">Misión 03 · INSERT con datos contextualizados en Medellín · ~35 min</p>
+
+  <p>Las tablas están creadas pero vacías. El siguiente paso es <strong>poblarlas</strong> con datos de prueba que representen el escenario real del colegio: nombres de equipos locales, jugadores con fechas de nacimiento válidas para cada categoría, y partidos programados y finalizados. Estos datos nos servirán para probar las consultas del módulo 5.</p>
+
+  <div class="caja-destacada">
+    <h4>📋 Cantidad mínima de datos (según el enunciado)</h4>
+    <ul>
+      <li><strong>2 Deportes</strong> (Fútbol, Baloncesto)</li>
+      <li><strong>2 Torneos</strong> mínimo (aquí pondremos 3)</li>
+      <li><strong>6 Equipos</strong></li>
+      <li><strong>18 Jugadores</strong> (aquí pondremos 15 por simplicidad del playground)</li>
+      <li><strong>4 Partidos Programados</strong> y <strong>6 Partidos Finalizados</strong> con resultados</li>
+    </ul>
+  </div>
+
+  <h3>➕ INSERT: deportes y torneos</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>DML — INSERT deportes y torneos</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Deportes</span>
+<span class="kw">INSERT INTO</span> deportes (nombre) <span class="kw">VALUES</span>
+    (<span class="str">'Fútbol'</span>),
+    (<span class="str">'Baloncesto'</span>);
+
+<span class="cm">-- Torneos (deporte_id: 1=Fútbol, 2=Baloncesto)</span>
+<span class="kw">INSERT INTO</span> torneos (nombre, deporte_id, categoria) <span class="kw">VALUES</span>
+    (<span class="str">'Copa Interclases 2026'</span>, <span class="num">1</span>, <span class="str">'Junior'</span>),
+    (<span class="str">'Liga Veteranos 2026'</span>, <span class="num">1</span>, <span class="str">'Veteranos'</span>),
+    (<span class="str">'Torneo Baloncesto Junior'</span>, <span class="num">2</span>, <span class="str">'Junior'</span>);</code></pre>
+  </div>
+
+  <h3>➕ INSERT: equipos (nombres locales de Medellín)</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>DML — INSERT equipos</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Equipos del torneo 1 (Copa Interclases Junior, Fútbol)</span>
+<span class="kw">INSERT INTO</span> equipos (nombre, torneo_id) <span class="kw">VALUES</span>
+    (<span class="str">'Los Tigres'</span>, <span class="num">1</span>),
+    (<span class="str">'Las Águilas'</span>, <span class="num">1</span>),
+    (<span class="str">'Los Leones'</span>, <span class="num">1</span>),
+
+<span class="cm">-- Equipos del torneo 2 (Liga Veteranos, Fútbol)</span>
+    (<span class="str">'Los Halcones'</span>, <span class="num">2</span>),
+    (<span class="str">'Las Panteras'</span>, <span class="num">2</span>),
+
+<span class="cm">-- Equipo del torneo 3 (Baloncesto Junior)</span>
+    (<span class="str">'Los Tiburones'</span>, <span class="num">3</span>);</code></pre>
+  </div>
+
+  <h3>➕ INSERT: jugadores (con fechas de nacimiento según categoría)</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>DML — INSERT jugadores (Junior: 2013, Veteranos: 2008)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Jugadores Junior (nacidos ~2013, 13-14 años en 2026)</span>
+<span class="kw">INSERT INTO</span> jugadores (nombre, fecha_nac, equipo_id) <span class="kw">VALUES</span>
+    (<span class="str">'Juan Gómez'</span>, <span class="str">'2013-05-14'</span>, <span class="num">1</span>),
+    (<span class="str">'Pedro Pérez'</span>, <span class="str">'2013-08-22'</span>, <span class="num">1</span>),
+    (<span class="str">'María López'</span>, <span class="str">'2013-11-03'</span>, <span class="num">1</span>),
+    (<span class="str">'Carlos Ruiz'</span>, <span class="str">'2013-02-18'</span>, <span class="num">2</span>),
+    (<span class="str">'Ana Torres'</span>, <span class="str">'2013-07-30'</span>, <span class="num">2</span>),
+    (<span class="str">'Luis Mesa'</span>, <span class="str">'2013-09-12'</span>, <span class="num">2</span>),
+    (<span class="str">'Sofía Vargas'</span>, <span class="str">'2013-04-25'</span>, <span class="num">3</span>),
+    (<span class="str">'Diego Castro'</span>, <span class="str">'2013-12-08'</span>, <span class="num">3</span>),
+    <span class="cm">-- ... (más jugadores Junior)</span>
+
+<span class="cm">-- Jugadores Veteranos (nacidos ~2008, 18 años en 2026)</span>
+    (<span class="str">'Valeria Gómez'</span>, <span class="str">'2008-03-15'</span>, <span class="num">4</span>),
+    (<span class="str">'Sebastián Ríos'</span>, <span class="str">'2008-06-21'</span>, <span class="num">4</span>),
+    (<span class="str">'Camila Rojas'</span>, <span class="str">'2008-01-10'</span>, <span class="num">5</span>),
+    (<span class="str">'Mateo Quintero'</span>, <span class="str">'2008-11-05'</span>, <span class="num">5</span>),
+    <span class="cm">-- ... (más jugadores)</span>
+    (<span class="str">'Lucía Cardona'</span>, <span class="str">'2013-10-19'</span>, <span class="num">6</span>),
+    (<span class="str">'Tomás Ortega'</span>, <span class="str">'2013-03-07'</span>, <span class="num">6</span>),
+    (<span class="str">'Isabela Múnera'</span>, <span class="str">'2013-08-28'</span>, <span class="num">6</span>);</code></pre>
+  </div>
+
+  <h3>➕ INSERT: partidos (programados y finalizados)</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>DML — INSERT partidos</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- Partidos finalizados (con marcador)</span>
+<span class="kw">INSERT INTO</span> partidos (torneo_id, fecha, hora, cancha, local_id, visitante_id, goles_local, goles_visitante, estado) <span class="kw">VALUES</span>
+    (<span class="num">1</span>, <span class="str">'2026-09-15'</span>, <span class="str">'15:00'</span>, <span class="str">'Cancha 1'</span>, <span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">1</span>, <span class="str">'finalizado'</span>),
+    (<span class="num">1</span>, <span class="str">'2026-09-22'</span>, <span class="str">'15:00'</span>, <span class="str">'Cancha 2'</span>, <span class="num">3</span>, <span class="num">1</span>, <span class="num">2</span>, <span class="num">2</span>, <span class="str">'finalizado'</span>),
+    (<span class="num">1</span>, <span class="str">'2026-09-29'</span>, <span class="str">'15:00'</span>, <span class="str">'Cancha 1'</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">1</span>, <span class="num">4</span>, <span class="str">'finalizado'</span>),
+    (<span class="num">2</span>, <span class="str">'2026-09-18'</span>, <span class="str">'16:00'</span>, <span class="str">'Cancha 3'</span>, <span class="num">4</span>, <span class="num">5</span>, <span class="num">2</span>, <span class="num">0</span>, <span class="str">'finalizado'</span>),
+    (<span class="num">2</span>, <span class="str">'2026-09-25'</span>, <span class="str">'16:00'</span>, <span class="str">'Cancha 3'</span>, <span class="num">5</span>, <span class="num">4</span>, <span class="num">1</span>, <span class="num">1</span>, <span class="str">'finalizado'</span>),
+    (<span class="num">3</span>, <span class="str">'2026-09-20'</span>, <span class="str">'14:00'</span>, <span class="str">'Coliseo'</span>, <span class="num">6</span>, <span class="num">6</span>, <span class="num">0</span>, <span class="num">0</span>, <span class="str">'finalizado'</span>);
+
+<span class="cm">-- Partidos programados (sin marcador — goles en NULL)</span>
+<span class="kw">INSERT INTO</span> partidos (torneo_id, fecha, hora, cancha, local_id, visitante_id, goles_local, goles_visitante, estado) <span class="kw">VALUES</span>
+    (<span class="num">1</span>, <span class="str">'2026-10-06'</span>, <span class="str">'15:00'</span>, <span class="str">'Cancha 2'</span>, <span class="num">1</span>, <span class="num">3</span>, <span class="kw">NULL</span>, <span class="kw">NULL</span>, <span class="str">'programado'</span>),
+    (<span class="num">2</span>, <span class="str">'2026-10-09'</span>, <span class="str">'16:00'</span>, <span class="str">'Cancha 3'</span>, <span class="num">4</span>, <span class="num">5</span>, <span class="kw">NULL</span>, <span class="kw">NULL</span>, <span class="str">'programado'</span>),
+    (<span class="num">3</span>, <span class="str">'2026-10-13'</span>, <span class="str">'14:00'</span>, <span class="str">'Coliseo'</span>, <span class="num">6</span>, <span class="num">6</span>, <span class="kw">NULL</span>, <span class="kw">NULL</span>, <span class="str">'programado'</span>),
+    (<span class="num">1</span>, <span class="str">'2026-10-20'</span>, <span class="str">'15:00'</span>, <span class="str">'Cancha 1'</span>, <span class="num">2</span>, <span class="num">1</span>, <span class="kw">NULL</span>, <span class="kw">NULL</span>, <span class="str">'programado'</span>);</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 <code>NULL</code> explícito en INSERT</h4>
+    <p>Para insertar un valor <code>NULL</code> explícitamente (como en los goles de un partido programado), se escribe la palabra <code>NULL</code> en el <code>VALUES</code>: <code>NULL, NULL, 'programado'</code>. PostgreSQL lo interpreta como «sin valor». Esto es distinto de omitir la columna (que sólo funciona si la columna admite <code>NULL</code> por defecto).</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que verifiquen: (1) ¿los jugadores de Veteranos nacieron antes de 2011? (2) ¿los goles de los partidos programados están en <code>NULL</code>? (3) ¿los <code>local_id</code> y <code>visitante_id</code> apuntan a equipos que existen? Discutan qué pasaría si un <code>local_id</code> apuntara a un equipo inexistente.</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>📝 Quiz M3 · DML</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p>1. En el INSERT de partidos programados, ¿qué lleva en <code>goles_local</code> y <code>goles_visitante</code>?</p>
+      <button class="opcion" data-op="a">a) <code>0, 0</code> (cero goles)</button>
+      <button class="opcion" data-op="b">b) <code>NULL, NULL</code> (sin marcador todavía)</button>
+      <button class="opcion" data-op="c">c) <code>'TBD', 'TBD'</code></button>
+      <button class="opcion" data-op="d">d) Se omiten las columnas</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>2. ¿Qué categoría de edad tienen los jugadores nacidos en 2013 (en 2026)?</p>
+      <button class="opcion" data-op="a">a) Junior (13 años)</button>
+      <button class="opcion" data-op="b">b) Infantil (9-12 años)</button>
+      <button class="opcion" data-op="c">c) Veteranos (&ge; 15 años)</button>
+      <button class="opcion" data-op="d">d) No tienen categoría</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>3. ¿Cuántos equipos del torneo 1 (Copa Interclases) se insertaron?</p>
+      <button class="opcion" data-op="a">a) 1</button>
+      <button class="opcion" data-op="b">b) 2</button>
+      <button class="opcion" data-op="c">c) 3 (Tigres, Águilas, Leones)</button>
+      <button class="opcion" data-op="d">d) 6</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. Si intentas insertar un partido con <code>local_id = 999</code> (un equipo que no existe), ¿qué pasa?</p>
+      <button class="opcion" data-op="a">a) Se inserta con <code>local_id = 999</code></button>
+      <button class="opcion" data-op="b">b) Se inserta con <code>local_id = NULL</code></button>
+      <button class="opcion" data-op="c">c) Se inserta en la tabla <code>equipos</code> automáticamente</button>
+      <button class="opcion" data-op="d">d) PostgreSQL rechaza la inserción por violación de FK (integridad referencial)</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: Descanso ☕ →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 4 — DESCANSO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ Pausa de 15 minutos</h2>
+    <p class="lead">Ya tienes el modelo (MER), las tablas (DDL) y los datos (DML). La BD está completa. El cerebro necesita asentar antes de las consultas. Levántate, estira, hidrátate, y vuelve para el entregable D: las consultas que usaría la app del colegio.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card">
+      <span class="big-icon">🧘</span>
+      <h3>Estira</h3>
+      <p>30 segundos mirando al horizonte. Los JOINs se escriben mejor con la vista descansada.</p>
+    </div>
+    <div class="descanso-card">
+      <span class="big-icon">💧</span>
+      <h3>Hidrátate</h3>
+      <p>Un vaso de agua. Pensar en cómo cruzar partidos con dos equipos a la vez es más fácil hidratado.</p>
+    </div>
+    <div class="descanso-card">
+      <span class="big-icon">💬</span>
+      <h3>Cuenta a alguien</h3>
+      <p>En pareja, explícale a tu compañero/a por qué un partido <code>programado</code> tiene <code>goles = NULL</code> y uno <code>finalizado</code> no. Si lo explicas, lo entiendes.</p>
+    </div>
+  </div>
+
+  <div class="trivia-box">
+    <h3>🎲 Trivia de descanso</h3>
+    <p style="margin-bottom:1rem;color:var(--texto-suave);">¿Cuál es la diferencia clave entre un partido <strong>programado</strong> y uno <strong>finalizado</strong> en la BD?</p>
+    <div class="trivia-opts" id="triviaOpts">
+      <button class="trivia-opt" data-top="a" data-tcorrecta="c">a) El finalizado tiene <code>fecha</code>; el programado no</button>
+      <button class="trivia-opt" data-top="b" data-tcorrecta="c">b) El programado tiene <code>hora</code>; el finalizado no</button>
+      <button class="trivia-opt" data-top="c" data-tcorrecta="c">c) El finalizado tiene marcador (<code>goles_local</code>, <code>goles_visitante</code>); el programado los tiene en <code>NULL</code></button>
+      <button class="trivia-opt" data-top="d" data-tcorrecta="c">d) No hay diferencia, ambos son iguales</button>
+    </div>
+    <div class="trivia-result" id="triviaResult"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: DQL →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 5 — DQL (Entregable D)
+============================================================ -->
+<section class="modulo" data-modulo="5">
+  <h2>🔍 Entregable D: Consultas SQL (DQL)</h2>
+  <p class="meta-modulo">Misión 04 · Las 4 consultas que necesita la app del colegio · ~40 min</p>
+
+  <p>La BD está diseñada y poblada. Ahora viene la parte que más se usa: las <strong>consultas</strong>. La app del colegio necesita cuatro consultas clave: registrar datos, listar próximos partidos, ver el histórico de resultados y calcular la tabla de posiciones. Cada una combina lo que aprendiste en las clases 6, 7 y 8.</p>
+
+  <h3>1️⃣ Creación/Registro: nuevo torneo, equipo y jugadores</h3>
+  <p>La app necesita <code>INSERT</code>s para que el coordinador registre nuevos torneos, inscriba equipos y asocie jugadores. Aquí van las sentencias de ejemplo:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>DQL — Sentencias de registro (INSERT)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="cm">-- 1. Registrar un nuevo torneo de Voleibol Infantil</span>
+<span class="kw">INSERT INTO</span> torneos (nombre, deporte_id, categoria)
+<span class="kw">VALUES</span> (<span class="str">'Copa Voleibol Infantil 2026'</span>, <span class="num">3</span>, <span class="str">'Infantil'</span>)
+<span class="kw">RETURNING</span> id;
+
+<span class="cm">-- 2. Inscribir un equipo en ese torneo (usar el id devuelto)</span>
+<span class="kw">INSERT INTO</span> equipos (nombre, torneo_id)
+<span class="kw">VALUES</span> (<span class="str">'Los Lobos'</span>, <span class="num">4</span>)  <span class="cm">-- 4 = id del torneo recién creado</span>
+<span class="kw">RETURNING</span> id;
+
+<span class="cm">-- 3. Asociar jugadores al equipo (multi-fila con RETURNING)</span>
+<span class="kw">INSERT INTO</span> jugadores (nombre, fecha_nac, equipo_id) <span class="kw">VALUES</span>
+    (<span class="str">'Daniela Ríos'</span>, <span class="str">'2014-03-10'</span>, <span class="num">7</span>),
+    (<span class="str">'Andrés Soto'</span>, <span class="str">'2014-07-22'</span>, <span class="num">7</span>),
+    (<span class="str">'Valentina Díaz'</span>, <span class="str">'2013-11-15'</span>, <span class="num">7</span>)
+<span class="kw">RETURNING</span> id, nombre;</code></pre>
+  </div>
+
+  <h3>2️⃣ Próximos partidos programados</h3>
+  <p>La app muestra a los estudiantes qué partidos vienen. Esta consulta cruza <code>partidos</code> con <code>equipos</code> (dos veces: local y visitante) y <code>torneos</code> para mostrar nombres legibles:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>DQL — Próximos partidos (JOIN + WHERE + ORDER BY)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">SELECT</span>  p.fecha, p.hora, p.cancha,
+        t.nombre <span class="kw">AS</span> torneo,
+        l.nombre <span class="kw">AS</span> local,
+        v.nombre <span class="kw">AS</span> visitante
+<span class="kw">FROM</span> partidos p
+<span class="kw">JOIN</span> torneos t <span class="kw">ON</span> p.torneo_id = t.id
+<span class="kw">JOIN</span> equipos l <span class="kw">ON</span> p.local_id = l.id
+<span class="kw">JOIN</span> equipos v <span class="kw">ON</span> p.visitante_id = v.id
+<span class="kw">WHERE</span> p.estado = <span class="str">'programado'</span>
+<span class="kw">ORDER BY</span> p.fecha <span class="kw">ASC</span>;</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El mismo JOIN dos veces con aliases diferentes</h4>
+    <p>Para traer el nombre del equipo <strong>local</strong> y del <strong>visitante</strong> en la misma fila, hacemos <code>JOIN equipos</code> <em>dos veces</em>, una con alias <code>l</code> (local) y otra con <code>v</code> (visitante). Cada JOIN conecta <code>local_id</code> o <code>visitante_id</code> con <code>equipos.id</code>. Así, en una sola fila, tienes ambos nombres. Es el patrón más útil de los JOINs.</p>
+  </div>
+
+  <h3>3️⃣ Histórico de resultados</h3>
+  <p>Los partidos ya jugados con sus marcadores, del más reciente al más antiguo:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>DQL — Histórico de resultados (JOIN + WHERE + ORDER BY DESC)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">SELECT</span>  p.fecha,
+        l.nombre <span class="kw">AS</span> local,
+        v.nombre <span class="kw">AS</span> visitante,
+        p.goles_local,
+        p.goles_visitante
+<span class="kw">FROM</span> partidos p
+<span class="kw">JOIN</span> equipos l <span class="kw">ON</span> p.local_id = l.id
+<span class="kw">JOIN</span> equipos v <span class="kw">ON</span> p.visitante_id = v.id
+<span class="kw">WHERE</span> p.estado = <span class="str">'finalizado'</span>
+<span class="kw">ORDER BY</span> p.fecha <span class="kw">DESC</span>;</code></pre>
+  </div>
+
+  <h3>4️⃣ Tabla de posiciones</h3>
+  <p>La consulta más compleja: calcular por equipo los partidos jugados (PJ), ganados (PG), empatados (PE), perdidos (PP), goles a favor (GF), goles en contra (GC), diferencia (DG) y puntos. Esto requiere <strong>agregación</strong> (<code>COUNT</code>, <code>SUM</code>) y <code>GROUP BY</code> — que veremos a fondo en la próxima clase. Aquí va una versión simplificada usando <code>CASE WHEN</code> dentro del <code>SUM</code>:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>DQL — Tabla de posiciones (agregación con CASE WHEN)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code><span class="kw">SELECT</span>
+    e.nombre <span class="kw">AS</span> equipo,
+    <span class="kw">COUNT</span>(*) <span class="kw">AS</span> PJ,
+    <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> p.goles_local &gt; p.goles_visitante <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> PG,
+    <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> p.goles_local = p.goles_visitante <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> PE,
+    <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> p.goles_local &lt; p.goles_visitante <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> PP,
+    <span class="kw">SUM</span>(p.goles_local) <span class="kw">AS</span> GF,
+    <span class="kw">SUM</span>(p.goles_visitante) <span class="kw">AS</span> GC,
+    <span class="kw">SUM</span>(p.goles_local) - <span class="kw">SUM</span>(p.goles_visitante) <span class="kw">AS</span> DG,
+    <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> p.goles_local &gt; p.goles_visitante <span class="kw">THEN</span> <span class="num">3</span>
+              <span class="kw">WHEN</span> p.goles_local = p.goles_visitante <span class="kw">THEN</span> <span class="num">1</span>
+              <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> puntos
+<span class="kw">FROM</span> partidos p
+<span class="kw">JOIN</span> equipos e <span class="kw">ON</span> p.local_id = e.id
+<span class="kw">WHERE</span> p.estado = <span class="str">'finalizado'</span>
+<span class="kw">GROUP BY</span> e.nombre
+<span class="kw">ORDER BY</span> puntos <span class="kw">DESC</span>;</code></pre>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🧠 ¿Qué hace <code>CASE WHEN ... THEN ... ELSE ... END</code>?</h4>
+    <p>Es el <strong>if-then-else</strong> de SQL. Dentro de un <code>SUM</code>, cuenta cuántas filas cumplen la condición. Por ejemplo, <code>SUM(CASE WHEN goles_local &gt; goles_visitante THEN 1 ELSE 0 END)</code> suma 1 por cada partido ganado como local y 0 por los demás — el resultado es el número de partidos ganados (PG). Es la forma de calcular estadísticas sin escribir código procedural.</p>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 5 minutos</h4>
+    <p>Pida a las parejas que, con la consulta de próximos partidos, predigan cuántas filas devolverá y cuáles serán las primeras tres. Luego ejecútenla en el playground (módulo 6) y comparen. Discutan: ¿por qué la tabla de posiciones sólo cuenta partidos donde el equipo fue <strong>local</strong>? (Nota: una versión completa incluiría también los partidos como visitante — eso queda para la próxima clase con UNION).</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>📝 Quiz M5 · DQL</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p>1. En la consulta de próximos partidos, ¿por qué se hace <code>JOIN equipos</code> <strong>dos veces</strong>?</p>
+      <button class="opcion" data-op="a">a) Porque es más rápido</button>
+      <button class="opcion" data-op="b">b) Para traer el nombre del equipo local (alias <code>l</code>) y del visitante (alias <code>v</code>) en la misma fila</button>
+      <button class="opcion" data-op="c">c) Porque PostgreSQL lo exige</button>
+      <button class="opcion" data-op="d">d) Por error, una vez basta</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>2. ¿Qué hace <code>WHERE p.estado = 'programado'</code> en la consulta de próximos partidos?</p>
+      <button class="opcion" data-op="a">a) Filtra sólo los partidos que aún no se han jugado</button>
+      <button class="opcion" data-op="b">b) Filtra los partidos finalizados</button>
+      <button class="opcion" data-op="c">c) Ordena por fecha</button>
+      <button class="opcion" data-op="d">d) Cuenta los partidos</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>3. En la tabla de posiciones, ¿qué hace <code>SUM(CASE WHEN goles_local &gt; goles_visitante THEN 1 ELSE 0 END)</code>?</p>
+      <button class="opcion" data-op="a">a) Suma los goles a favor</button>
+      <button class="opcion" data-op="b">b) Cuenta los partidos empatados</button>
+      <button class="opcion" data-op="c">c) Cuenta los partidos ganados como local (PG)</button>
+      <button class="opcion" data-op="d">d) Cuenta los partidos perdidos</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. ¿Por qué la consulta de histórico usa <code>ORDER BY p.fecha DESC</code>?</p>
+      <button class="opcion" data-op="a">a) Para ordenar alfabéticamente</button>
+      <button class="opcion" data-op="b">b) Para mostrar los más antiguos primero</button>
+      <button class="opcion" data-op="c">c) Para limitar a 3 resultados</button>
+      <button class="opcion" data-op="d">d) Para mostrar los partidos más recientes primero (descendente por fecha)</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Playground →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 6 — PLAYGROUND
+============================================================ -->
+<section class="modulo" data-modulo="6">
+  <h2>🧪 Playground: consulta la BD de torneos</h2>
+  <p class="meta-modulo">Misión 05 · Escribe SELECT con JOIN sobre la BD del proyecto · ~35 min</p>
+
+  <p>La BD de torneos deportivos del colegio está cargada y lista para consultar. Aquí abajo tienes un <strong>mini-motor SQL</strong> con las 5 tablas del proyecto y datos reales. Escribe <code>SELECT</code> con <code>JOIN</code>, <code>WHERE</code>, <code>ORDER BY</code> y <code>LIMIT</code>, y pulsa <strong>Ejecutar</strong>.</p>
+
+  <div class="caja-destacada">
+    <h4>📋 Estado de la BD</h4>
+    <ul>
+      <li><code>deportes</code> — 2 filas (Fútbol, Baloncesto)</li>
+      <li><code>torneos</code> — 3 filas (Copa Interclases, Liga Veteranos, Torneo Baloncesto)</li>
+      <li><code>equipos</code> — 6 filas (Tigres, Águilas, Leones, Halcones, Panteras, Tiburones)</li>
+      <li><code>jugadores</code> — 15 filas</li>
+      <li><code>partidos</code> — 8 filas (5 finalizados, 3 programados)</li>
+    </ul>
+  </div>
+
+  <div class="mermaid-sim">
+    <div class="sim-head">Playground SQL · motor en JavaScript</div>
+    <div class="mermaid-chips" style="margin-bottom:1rem;">
+      <button class="mermaid-chip" data-snippet="SELECT * FROM equipos;&#10;">SELECT equipos</button>
+      <button class="mermaid-chip" data-snippet="SELECT COUNT(*) FROM partidos;&#10;">COUNT partidos</button>
+      <button class="mermaid-chip" data-snippet="SELECT t.nombre AS torneo, d.nombre AS deporte FROM torneos t JOIN deportes d ON t.deporte_id = d.id;&#10;">JOIN torneos+deportes</button>
+      <button class="mermaid-chip" data-snippet="SELECT p.fecha, l.nombre AS local, v.nombre AS visitante FROM partidos p JOIN equipos l ON p.local_id = l.id JOIN equipos v ON p.visitante_id = v.id WHERE p.estado = 'programado' ORDER BY p.fecha ASC;&#10;">Próximos partidos</button>
+      <button class="mermaid-chip" data-snippet="SELECT p.fecha, l.nombre AS local, v.nombre AS visitante, p.goles_local, p.goles_visitante FROM partidos p JOIN equipos l ON p.local_id = l.id JOIN equipos v ON p.visitante_id = v.id WHERE p.estado = 'finalizado' ORDER BY p.fecha DESC;&#10;">Histórico resultados</button>
+      <button class="mermaid-chip" data-snippet="SELECT j.nombre AS jugador, e.nombre AS equipo FROM jugadores j JOIN equipos e ON j.equipo_id = e.id;&#10;">Jugadores + equipos</button>
+    </div>
+    <div class="mermaid-layout">
+      <div class="mermaid-editor-wrap">
+        <label for="sqlEditor" style="font-size:0.8rem;color:var(--texto-suave);">Escribe tu SQL (una sentencia por línea, termina con ;):</label>
+        <textarea class="mermaid-editor" id="sqlEditor" spellcheck="false">SELECT t.nombre AS torneo, d.nombre AS deporte
+FROM torneos t
+JOIN deportes d ON t.deporte_id = d.id;</textarea>
+        <button class="btn primary" id="sqlRun" type="button">▶ Ejecutar</button>
+        <button class="btn" id="sqlReset" type="button" style="margin-left:0.5rem;">↺ Reiniciar BD</button>
+      </div>
+      <div>
+        <div style="font-size:0.8rem;color:var(--texto-suave);margin-bottom:0.4rem;">Resultado:</div>
+        <div class="mermaid-preview" id="sqlOutput" style="text-align:left;min-height:220px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Retos para ganar el bonus de XP</h4>
+    <p>En orden, intenta ejecutar estas 5 misiones. Si todas se cumplen, ganarás <strong>+25 XP</strong>:</p>
+    <ol>
+      <li><strong>Explora</strong>: <code>SELECT * FROM equipos;</code></li>
+      <li><strong>Usa JOIN</strong>: lista partidos con nombres de equipos local y visitante.</li>
+      <li><strong>Cuenta</strong>: <code>SELECT COUNT(*) FROM partidos;</code></li>
+      <li><strong>Filtra</strong>: partidos con <code>WHERE estado = 'programado'</code>.</li>
+      <li><strong>Ordena</strong>: partidos finalizados con <code>ORDER BY fecha DESC</code>.</li>
+    </ol>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 En el aula — 4 minutos</h4>
+    <p>Pida a las parejas que, antes de pulsar Ejecutar, <strong>predigan</strong> cuántas filas verán. Luego pulsen y comparen. La predicción mental es lo que consolida los JOINs.</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>📝 Quiz M6 · Playground</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p>1. ¿Cuántos partidos hay en total en el playground?</p>
+      <button class="opcion" data-op="a">a) 5</button>
+      <button class="opcion" data-op="b">b) 8 (5 finalizados + 3 programados)</button>
+      <button class="opcion" data-op="c">c) 10</button>
+      <button class="opcion" data-op="d">d) 15</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p>2. ¿Qué devuelve <code>SELECT COUNT(*) FROM partidos WHERE estado = 'finalizado';</code>?</p>
+      <button class="opcion" data-op="a">a) 5</button>
+      <button class="opcion" data-op="b">b) 3</button>
+      <button class="opcion" data-op="c">c) 8</button>
+      <button class="opcion" data-op="d">d) 0</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p>3. Para listar los partidos con <strong>nombres de equipos</strong>, necesitas…</p>
+      <button class="opcion" data-op="a">a) Un <code>SELECT *</code> de partidos</button>
+      <button class="opcion" data-op="b">b) Un <code>WHERE</code> sobre equipos</button>
+      <button class="opcion" data-op="c">c) Un <code>JOIN</code> entre partidos y equipos (dos veces: local y visitante)</button>
+      <button class="opcion" data-op="d">d) Un <code>ORDER BY</code> sobre partidos</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p>4. ¿Qué hace <code>SELECT p.fecha, l.nombre AS local FROM partidos p JOIN equipos l ON p.local_id = l.id;</code>?</p>
+      <button class="opcion" data-op="a">a) Lista sólo los partidos sin equipo local</button>
+      <button class="opcion" data-op="b">b) Cuenta los partidos por fecha</button>
+      <button class="opcion" data-op="c">c) Borra los partidos antiguos</button>
+      <button class="opcion" data-op="d">d) Lista la fecha y el nombre del equipo local de cada partido (cruzando partidos con equipos por <code>local_id</code>)</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     MÓDULO 7 — TALLER ENTREGABLE
+============================================================ -->
+<section class="modulo" data-modulo="7">
+  <h2>📦 Taller entregable: el proyecto completo</h2>
+  <p class="meta-modulo">Misión 06 · Entrega del archivo .sql con los 4 entregables · ~50 min</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">Taller final · Proyecto integrador</span>
+      <span class="challenge-title">BD de torneos deportivos del colegio — entrega completa</span>
+    </div>
+    <p>El taller final del módulo es la <strong>entrega completa</strong> del proyecto: un único archivo <code>.sql</code> que contenga los 4 entregables (MER como comentarios, DDL, DML y DQL) y que cualquier persona pueda ejecutar en PostgreSQL para tener la BD lista. Es la culminación de 9 clases de aprendizaje.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🎯 Objetivos del entregable</h4>
+    <p>Tu entrega, en pareja, debe contener <strong>seis secciones</strong> dentro de un único archivo <code>.sql</code>:</p>
+    <ol>
+      <li><strong>MER (comentarios)</strong>: descripción de entidades, atributos, PK/FK en un bloque de comentarios al inicio.</li>
+      <li><strong>DDL</strong>: los 5 <code>CREATE TABLE</code> con PK, FK, <code>NOT NULL</code> y <code>CHECK</code>.</li>
+      <li><strong>DML</strong>: <code>INSERT</code> de 2 deportes, 3 torneos, 6 equipos, 15 jugadores y 8 partidos (5 finalizados + 3 programados).</li>
+      <li><strong>DQL — Próximos partidos</strong>: <code>SELECT</code> con 3 JOINs (torneos + equipos local + equipos visitante) y <code>WHERE estado = 'programado'</code>.</li>
+      <li><strong>DQL — Histórico</strong>: <code>SELECT</code> con 2 JOINs y <code>WHERE estado = 'finalizado' ORDER BY fecha DESC</code>.</li>
+      <li><strong>Reflexión</strong>: bloque de comentarios al final con lo que más te costó y lo que aprendiste.</li>
+    </ol>
+  </div>
+
+  <div class="taller-er">
+    <div class="taller-er-step">
+      <h4><span class="step-num">1</span> Encabezado + MER (comentarios)</h4>
+      <p>Empieza el archivo con un bloque de comentarios <code>/* ... */</code> que describa el proyecto y liste las entidades con sus PK/FK.</p>
+      <button class="taller-sol-toggle" data-sol="sol-mer">👁️ Ver solución</button>
+      <div class="taller-sol" id="sol-mer">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">/*
+  Proyecto: BD Torneos Deportivos del Colegio
+  Autores: [Integrante1], [Integrante2]
+  Fecha: 2026-08-XX
+  Clase: 9 — Ejemplo final del módulo de Bases de Datos
+
+  MER (Modelo Entidad-Relación):
+  - deportes(id PK, nombre UNIQUE)
+  - torneos(id PK, nombre, deporte_id FK→deportes, categoria CHECK IN)
+  - equipos(id PK, nombre, torneo_id FK→torneos)
+  - jugadores(id PK, nombre, fecha_nac, equipo_id FK→equipos)
+  - partidos(id PK, torneo_id FK→torneos, fecha, hora, cancha,
+             local_id FK→equipos, visitante_id FK→equipos,
+             goles_local, goles_visitante, estado CHECK IN)
+*/</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">2</span> DDL — CREATE TABLE × 5</h4>
+      <p>Escribe los 5 <code>CREATE TABLE</code> en el orden correcto (deportes → torneos → equipos → jugadores → partidos) con todas las restricciones (PK, FK, NOT NULL, UNIQUE, CHECK).</p>
+      <button class="taller-sol-toggle" data-sol="sol-ddl">👁️ Ver solución DDL</button>
+      <div class="taller-sol" id="sol-ddl">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">CREATE TABLE deportes (
+    id      SERIAL PRIMARY KEY,
+    nombre  VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE torneos (
+    id          SERIAL PRIMARY KEY,
+    nombre      VARCHAR(100) NOT NULL,
+    deporte_id  INTEGER REFERENCES deportes(id),
+    categoria   VARCHAR(20) NOT NULL
+                CHECK (categoria IN ('Infantil', 'Junior', 'Veteranos'))
+);
+
+CREATE TABLE equipos (
+    id          SERIAL PRIMARY KEY,
+    nombre      VARCHAR(80) NOT NULL,
+    torneo_id   INTEGER REFERENCES torneos(id)
+);
+
+CREATE TABLE jugadores (
+    id          SERIAL PRIMARY KEY,
+    nombre      VARCHAR(100) NOT NULL,
+    fecha_nac   DATE NOT NULL,
+    equipo_id   INTEGER REFERENCES equipos(id)
+);
+
+CREATE TABLE partidos (
+    id              SERIAL PRIMARY KEY,
+    torneo_id       INTEGER REFERENCES torneos(id),
+    fecha           DATE NOT NULL,
+    hora            VARCHAR(5) NOT NULL,
+    cancha          VARCHAR(60) NOT NULL,
+    local_id        INTEGER REFERENCES equipos(id),
+    visitante_id    INTEGER REFERENCES equipos(id),
+    goles_local     INTEGER,
+    goles_visitante INTEGER,
+    estado          VARCHAR(15) NOT NULL
+                    CHECK (estado IN ('programado', 'finalizado'))
+);</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">3</span> DML — INSERT de datos</h4>
+      <p>Inserta 2 deportes, 3 torneos, 6 equipos, 15 jugadores y 8 partidos (5 finalizados con marcador + 3 programados con <code>NULL</code> en goles). Usa <code>INSERT</code> multi-fila y datos contextualizados en Medellín.</p>
+      <button class="taller-sol-toggle" data-sol="sol-dml">👁️ Ver solución DML</button>
+      <div class="taller-sol" id="sol-dml">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- Deportes
+INSERT INTO deportes (nombre) VALUES ('Fútbol'), ('Baloncesto');
+
+-- Torneos
+INSERT INTO torneos (nombre, deporte_id, categoria) VALUES
+    ('Copa Interclases 2026', 1, 'Junior'),
+    ('Liga Veteranos 2026', 1, 'Veteranos'),
+    ('Torneo Baloncesto Junior', 2, 'Junior');
+
+-- Equipos
+INSERT INTO equipos (nombre, torneo_id) VALUES
+    ('Los Tigres', 1), ('Las Águilas', 1), ('Los Leones', 1),
+    ('Los Halcones', 2), ('Las Panteras', 2),
+    ('Los Tiburones', 3);
+
+-- Jugadores (15)
+INSERT INTO jugadores (nombre, fecha_nac, equipo_id) VALUES
+    ('Juan Gómez', '2013-05-14', 1), ('Pedro Pérez', '2013-08-22', 1),
+    ('María López', '2013-11-03', 1), ('Carlos Ruiz', '2013-02-18', 2),
+    ('Ana Torres', '2013-07-30', 2), ('Luis Mesa', '2013-09-12', 2),
+    ('Sofía Vargas', '2013-04-25', 3), ('Diego Castro', '2013-12-08', 3),
+    ('Valeria Gómez', '2008-03-15', 4), ('Sebastián Ríos', '2008-06-21', 4),
+    ('Camila Rojas', '2008-01-10', 5), ('Mateo Quintero', '2008-11-05', 5),
+    ('Lucía Cardona', '2013-10-19', 6), ('Tomás Ortega', '2013-03-07', 6),
+    ('Isabela Múnera', '2013-08-28', 6);
+
+-- Partidos finalizados (5)
+INSERT INTO partidos (torneo_id, fecha, hora, cancha, local_id, visitante_id, goles_local, goles_visitante, estado) VALUES
+    (1, '2026-09-15', '15:00', 'Cancha 1', 1, 2, 3, 1, 'finalizado'),
+    (1, '2026-09-22', '15:00', 'Cancha 2', 3, 1, 2, 2, 'finalizado'),
+    (1, '2026-09-29', '15:00', 'Cancha 1', 2, 3, 1, 4, 'finalizado'),
+    (2, '2026-09-18', '16:00', 'Cancha 3', 4, 5, 2, 0, 'finalizado'),
+    (2, '2026-09-25', '16:00', 'Cancha 3', 5, 4, 1, 1, 'finalizado');
+
+-- Partidos programados (3)
+INSERT INTO partidos (torneo_id, fecha, hora, cancha, local_id, visitante_id, goles_local, goles_visitante, estado) VALUES
+    (1, '2026-10-06', '15:00', 'Cancha 2', 1, 3, NULL, NULL, 'programado'),
+    (2, '2026-10-09', '16:00', 'Cancha 3', 4, 5, NULL, NULL, 'programado'),
+    (1, '2026-10-20', '15:00', 'Cancha 1', 2, 1, NULL, NULL, 'programado');</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">4</span> DQL — Próximos partidos</h4>
+      <p>Escribe la consulta que lista los partidos <code>programados</code> con fecha, hora, cancha, nombre del torneo y nombres de los equipos local y visitante. Usa 3 JOINs y <code>ORDER BY fecha ASC</code>.</p>
+      <button class="taller-sol-toggle" data-sol="sol-proximos">👁️ Ver solución</button>
+      <div class="taller-sol" id="sol-proximos">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- Próximos partidos programados
+SELECT  p.fecha, p.hora, p.cancha,
+        t.nombre AS torneo,
+        l.nombre AS local,
+        v.nombre AS visitante
+FROM partidos p
+JOIN torneos t ON p.torneo_id = t.id
+JOIN equipos l ON p.local_id = l.id
+JOIN equipos v ON p.visitante_id = v.id
+WHERE p.estado = 'programado'
+ORDER BY p.fecha ASC;</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">5</span> DQL — Histórico de resultados</h4>
+      <p>Escribe la consulta que lista los partidos <code>finalizados</code> con fecha, nombres de equipos y marcador, ordenados por fecha descendente (más recientes primero).</p>
+      <button class="taller-sol-toggle" data-sol="sol-historico">👁️ Ver solución</button>
+      <div class="taller-sol" id="sol-historico">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">-- Histórico de resultados
+SELECT  p.fecha,
+        l.nombre AS local,
+        v.nombre AS visitante,
+        p.goles_local,
+        p.goles_visitante
+FROM partidos p
+JOIN equipos l ON p.local_id = l.id
+JOIN equipos v ON p.visitante_id = v.id
+WHERE p.estado = 'finalizado'
+ORDER BY p.fecha DESC;</pre>
+      </div>
+    </div>
+
+    <div class="taller-er-step">
+      <h4><span class="step-num">6</span> Reflexión final</h4>
+      <p>Al final del archivo, en un bloque <code>/* ... */</code>, respondan en pareja: ¿qué fue lo más difícil de diseñar? ¿Qué aprendieron sobre la relación entre el MER y el DDL? ¿Qué consulta les costó más y por qué?</p>
+      <button class="taller-sol-toggle" data-sol="sol-reflex">👁️ Ver ejemplo</button>
+      <div class="taller-sol" id="sol-reflex">
+        <pre style="background:#04121c;padding:0.8rem;border-radius:8px;color:#d4d4d4;font-size:0.82rem;overflow-x:auto;">/*
+  Reflexión final:
+  Lo más difícil fue el modelo de partidos: al principio no
+  entendíamos cómo un partido podía tener dos equipos (local y
+  visitante) apuntando a la misma tabla. Lo resolvimos con dos
+  FK diferentes (local_id y visitante_id) y aprendimos que una
+  tabla puede tener varias FK hacia la misma tabla destino.
+
+  La consulta que más nos costó fue la de próximos partidos,
+  porque requiere 3 JOINs en una sola sentencia (torneos + 2x
+  equipos). Al principio repetíamos el alias "equipos" dos veces
+  y PostgreSQL daba error. Aprendimos que cada JOIN necesita su
+  propio alias (l y v) para distinguirlos.
+
+  La gran lección: el MER es el plano, el DDL es el cemento, el
+  DML son los muebles y el DQL es usar la casa. Sin plano, todo
+  se cae.
+*/</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="caja-aula">
+    <h4>👨‍🏫 Cierre del módulo — 5 minutos</h4>
+    <p>Cada pareja entrega un único archivo <code>taller9-torneos-&lt;integrante1&gt;-&lt;integrante2&gt;.sql</code>. El profesor lo ejecuta con <code>psql -f archivo.sql</code> y valida: (1) las 5 tablas se crean sin error, (2) los INSERT no fallan, (3) las 2 consultas DQL devuelven resultados correctos, (4) las restricciones CHECK rechazan valores inválidos, (5) la reflexión está presente. <strong>¡Felicidades: han completado el módulo de Bases de Datos!</strong></p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>📋 Rúbrica de evaluación (100 pts)</h4>
+    <div class="contenedor-tabla" style="margin-top:0.6rem;">
+      <table class="tabla-compara">
+        <thead><tr><th>Criterio</th><th>Pts</th><th>Indicador</th></tr></thead>
+        <tbody>
+          <tr><td>MER (comentarios)</td><td>10</td><td>Descripción clara de entidades, PK/FK y relaciones.</td></tr>
+          <tr><td>DDL (5 CREATE TABLE)</td><td>25</td><td>Tablas con PK, FK, NOT NULL, UNIQUE y CHECK en orden correcto.</td></tr>
+          <tr><td>DML (datos)</td><td>20</td><td>2 deportes, 3 torneos, 6 equipos, 15 jugadores, 8 partidos (5+3).</td></tr>
+          <tr><td>DQL — Próximos partidos</td><td>15</td><td>3 JOINs + WHERE estado = 'programado' + ORDER BY fecha ASC.</td></tr>
+          <tr><td>DQL — Histórico</td><td>15</td><td>2 JOINs + WHERE estado = 'finalizado' + ORDER BY fecha DESC.</td></tr>
+          <tr><td>Reflexión</td><td>15</td><td>Bloque de comentario con reflexión sobre lo aprendido.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:0.6rem;font-size:0.9rem;"><strong>Entrega:</strong> <code>taller9-torneos-&lt;integrante1&gt;-&lt;integrante2&gt;.sql</code></p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>🧩 Investigación (punto extra, 10 pts)</h4>
+    <p>Investiga y agrega al final: ¿qué es una <code>VIEW</code> en PostgreSQL y cómo podría usarse para crear una vista de "tabla de posiciones" que se actualice automáticamente? Escribe la sentencia <code>CREATE VIEW</code> para la tabla de posiciones del entregable D.</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🏆 ¡Módulo completado, Maestro BD!</h2>
+    <p class="lead">Nueve clases. De «¿qué es una base de datos?» a diseñar, crear, poblar y consultar la BD de torneos deportivos del colegio <strong>de punta a punta</strong>. Has integrado el modelo ER, la normalización, el DDL con restricciones, el DML con datos reales y el DQL con JOINs — exactamente lo que hace un desarrollador backend. <strong>Este es el final del módulo de Bases de Datos.</strong> 🎓</p>
+    <p style="margin-top:1rem;font-size:1.05rem;color:var(--verde);font-weight:700;">En el próximo módulo: consultas avanzadas (JOIN, GROUP BY, HAVING) y conexión con FastAPI. ¡Nos vemos! 🚀</p>
+    <button class="btn-final" data-reiniciar>🔁 Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Anterior</button>
+  </div>
+</section>
+
+</main>
+
+<!-- =================== FOOTER =================== -->
+<footer class="pie">
+  <div class="fb">🎓 Bases de Datos · Clase 9 · Ejemplo final del módulo</div>
+  <div>Torneos deportivos del colegio · MER → DDL → DML → DQL · 4 horas · Nivel Integrador</div>
+  <div style="margin-top:.5rem;font-size:.78rem;">Hecho con 💜 para adolescentes que construyeron su primera BD real.</div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

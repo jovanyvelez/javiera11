@@ -76,6 +76,9 @@
   --bd-8-a:          #06b6d4;   /* Clase 8 BD — cian/dorado (consultas / exploración) */
   --bd-8-b:          #f59e0b;
 
+  --bd-9-a:          #16a34a;   /* Clase 9 BD — verde/dorado (cancha / trofeos) */
+  --bd-9-b:          #f59e0b;
+
   --herr-a:          #f43f5e;
   --herr-b:          #f97316;
 
@@ -436,6 +439,7 @@ main {
 .clase-card.bd-6::before   { background: linear-gradient(90deg, var(--bd-6-a), var(--bd-6-b)); }
 .clase-card.bd-7::before   { background: linear-gradient(90deg, var(--bd-7-a), var(--bd-7-b)); }
 .clase-card.bd-8::before   { background: linear-gradient(90deg, var(--bd-8-a), var(--bd-8-b)); }
+.clase-card.bd-9::before   { background: linear-gradient(90deg, var(--bd-9-a), var(--bd-9-b)); }
 
 .clase-card:hover {
   transform: translateY(-6px) scale(1.01);
@@ -474,6 +478,7 @@ main {
 .clase-card.bd-6 .clase-badge   { background: linear-gradient(135deg, var(--bd-6-a), var(--bd-6-b));     color: #000; }
 .clase-card.bd-7 .clase-badge   { background: linear-gradient(135deg, var(--bd-7-a), var(--bd-7-b));     color: #fff; }
 .clase-card.bd-8 .clase-badge   { background: linear-gradient(135deg, var(--bd-8-a), var(--bd-8-b));     color: #000; }
+.clase-card.bd-9 .clase-badge   { background: linear-gradient(135deg, var(--bd-9-a), var(--bd-9-b));     color: #000; }
 
 .clase-badge.gris {
   background: rgba(148, 163, 184, 0.2);
