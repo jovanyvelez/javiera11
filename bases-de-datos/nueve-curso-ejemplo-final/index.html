@@ -241,11 +241,11 @@ partidos(
   <div class="mermaid" style="background:var(--fondo-claro);border:1px solid var(--tarjeta-borde);border-radius:var(--radio);padding:1.5rem;overflow-x:auto;text-align:center;">
 erDiagram
     DEPORTES ||--o{ TORNEOS : "tiene"
-    TORNEOS  ||--o{ EQUIPOS  : "inscribe"
-    EQUIPOS  ||--o{ JUGADORES : "posee"
-    TORNEOS  ||--o{ PARTIDOS  : "programa"
-    EQUIPOS  ||--o{ PARTIDOS  : "equipo_a"
-    EQUIPOS  ||--o{ PARTIDOS  : "equipo_b"
+    TORNEOS ||--o{ EQUIPOS : "inscribe"
+    EQUIPOS ||--o{ JUGADORES : "posee"
+    TORNEOS ||--o{ PARTIDOS : "programa"
+    EQUIPOS ||--o{ PARTIDOS : "equipo_a"
+    EQUIPOS ||--o{ PARTIDOS : "equipo_b"
 
     DEPORTES {
         int id PK
@@ -254,29 +254,29 @@ erDiagram
     TORNEOS {
         int id PK
         string nombre
-        int deporte_id FK
+        int deporteId FK
         string categoria
     }
     EQUIPOS {
         int id PK
         string nombre
-        int torneo_id FK
+        int torneoId FK
     }
     JUGADORES {
         int id PK
         string nombre
-        date fecha_nac
-        int equipo_id FK
+        date fechaNac
+        int equipoId FK
     }
     PARTIDOS {
         int id PK
-        int torneo_id FK
+        int torneoId FK
         date fecha
         string hora
-        int equipo_a_id FK
-        int equipo_b_id FK
-        int goles_a
-        int goles_b
+        int equipoAId FK
+        int equipoBId FK
+        int golesA
+        int golesB
         string estado
     }
   </div>
@@ -1243,7 +1243,7 @@ ORDER BY p.fecha DESC;</pre>
 </footer>
 
 <script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.8/dist/mermaid.esm.min.mjs';
   mermaid.initialize({ startOnLoad: true, theme: 'dark' });
 </script>
 <script src="app.js"></script>
