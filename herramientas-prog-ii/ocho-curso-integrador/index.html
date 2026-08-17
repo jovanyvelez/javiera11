@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛠️ Herramientas de Programación II · Clase 8 · Integrador</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🏆</span>
+    <div>
+      <h1>Herramientas de Programación II · Clase 8</h1>
+      <p class="subtitulo">Proyecto integrador · la app completa de autores</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">🔁 Repaso</button>
+  <button class="btn-modulo" data-modulo="2">🌊 Flujo</button>
+  <button class="btn-modulo" data-modulo="3">♻️ CRUD</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🛡️ Validación</button>
+  <button class="btn-modulo" data-modulo="6">🖥️ Frontend</button>
+  <button class="btn-modulo" data-modulo="7">🏆 Proyecto</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🏆 El proyecto completo</h2>
+    <p class="lead">Llegó el momento de unir <strong>todo</strong>: Python, FastAPI, base de datos, repositorio, Pydantic, Jinja2, htmx y Bootstrap. Hoy construiremos la <strong>app completa de autores</strong>, de principio a fin, y repasaremos cada pieza del rompecabezas.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — dev@app</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd">fastapi dev main.py</span></div>
+        <div class="out">INFO: Pool de conexiones establecido</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd"># abre http://localhost:8000/autores</span></div>
+        <div class="out">✅ Crear, listar, editar y borrar autores</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3h 45min en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Integrar todas las piezas en una app completa y entender el flujo de principio a fin.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>La pieza que no encaja, el flujo que se rompe, el proyecto que no arranca.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · Repaso</td><td style="color:var(--a)">Las 7 clases</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>02 · Flujo</td><td style="color:var(--b)">De la URL a la BD</td><td style="color:var(--rosa)">Flujo que se rompe</td><td>100 XP</td></tr>
+        <tr><td>03 · CRUD</td><td style="color:var(--a)">Las 5 operaciones</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · Validación</td><td style="color:var(--verde)">Pydantic</td><td style="color:var(--rosa)">Dato inválido</td><td>100 XP</td></tr>
+        <tr><td>05 · Frontend</td><td style="color:var(--b)">Jinja2 + htmx</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>06 · Proyecto</td><td style="color:var(--a)">Integración final</td><td style="color:var(--rosa)">—</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: intenten listar de memoria <strong>las 7 clases</strong> que vimos. ¿Cuántas recuerdan? (pista: Python, FastAPI, BD, repositorio, Pydantic, Jinja2, htmx).</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El mapa completo</h4>
+    <p>Nuestra app tiene 6 archivos: <code>main.py</code> (arranque), <code>database.py</code> (conexión), <code>repositorio.py</code> (SQL), <code>esquemas.py</code> (validación), <code>vistas.py</code> (rutas) y las plantillas en <code>templates/</code>. Cada uno con una responsabilidad.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: Repaso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>🔁 Repaso: las 7 clases</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Todo lo que construimos"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 El viaje completo</h3>
+    <p>En 7 clases construimos, pieza por pieza, una app web completa. Repasemos cada una:</p>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Clase</th><th>Qué aprendimos</th><th>Archivo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Python, HTTP, async/await, JSON</td><td>—</td></tr>
+        <tr><td>2</td><td>FastAPI, rutas, lifespan, Depends</td><td>main.py</td></tr>
+        <tr><td>3</td><td>PostgreSQL, asyncpg, pool</td><td>database.py</td></tr>
+        <tr><td>4</td><td>CRUD con SQL parametrizado</td><td>repositorio.py</td></tr>
+        <tr><td>5</td><td>Validación con Pydantic</td><td>esquemas.py</td></tr>
+        <tr><td>6</td><td>Plantillas Jinja2</td><td>templates/</td></tr>
+        <tr><td>7</td><td>htmx + Bootstrap</td><td>templates/</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Cada archivo, una responsabilidad</h4>
+    <p>La clave de un proyecto limpio es que <strong>cada archivo hace una sola cosa</strong>. Si algo falla, sabes exactamente dónde mirar. Esa es una de las lecciones más importantes de todo el módulo.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Con su compañero/a: para cada archivo (<code>main.py</code>, <code>database.py</code>, <code>repositorio.py</code>, <code>esquemas.py</code>, <code>vistas.py</code>), digan <strong>qué hace</strong> en una frase. Comparen con otra pareja.</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué archivo contiene las consultas SQL?</p>
+      <button class="opcion" data-op="a">main.py</button>
+      <button class="opcion" data-op="b">repositorio.py</button>
+      <button class="opcion" data-op="c">esquemas.py</button>
+      <button class="opcion" data-op="d">database.py</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué archivo contiene los modelos Pydantic?</p>
+      <button class="opcion" data-op="a">esquemas.py</button>
+      <button class="opcion" data-op="b">main.py</button>
+      <button class="opcion" data-op="c">repositorio.py</button>
+      <button class="opcion" data-op="d">vistas.py</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Flujo →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>🌊 El flujo completo: de la URL a la BD</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El viaje de una petición"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Cuando un usuario visita <code>/autores</code>, ocurre una cadena de eventos. Entender este flujo es entender <strong>cómo funciona toda la app</strong>. Sigamos el viaje paso a paso.</p>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Paso</th><th>Quién</th><th>Qué hace</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Navegador</td><td>Envía GET /autores</td></tr>
+        <tr><td>2</td><td>FastAPI</td><td>Encuentra la ruta en vistas.py</td></tr>
+        <tr><td>3</td><td>get_connection</td><td>Pide prestada una conexión del pool</td></tr>
+        <tr><td>4</td><td>repositorio</td><td>Ejecuta SELECT * FROM autores</td></tr>
+        <tr><td>5</td><td>PostgreSQL</td><td>Devuelve las filas</td></tr>
+        <tr><td>6</td><td>Jinja2</td><td>Rellena la plantilla con los datos</td></tr>
+        <tr><td>7</td><td>FastAPI</td><td>Devuelve el HTML al navegador</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el flujo que se rompe</h4>
+    <p>Si una pieza falla (la conexión, la consulta, la plantilla), todo el flujo se rompe. Por eso cada pieza tiene su responsabilidad y su manejo de errores. Entender el flujo te ayuda a saber <strong>dónde</strong> mirar cuando algo falla.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Con su compañero/a: sigan los 7 pasos en orden. <strong>¿En qué paso se devuelve la conexión al pool?</strong> ¿Y en qué paso se genera el HTML?</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Quién ejecuta la consulta SQL?</p>
+      <button class="opcion" data-op="a">El navegador</button>
+      <button class="opcion" data-op="b">El repositorio</button>
+      <button class="opcion" data-op="c">Jinja2</button>
+      <button class="opcion" data-op="d">Bootstrap</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Quién genera el HTML final?</p>
+      <button class="opcion" data-op="a">Jinja2, rellenando la plantilla</button>
+      <button class="opcion" data-op="b">PostgreSQL</button>
+      <button class="opcion" data-op="c">El navegador</button>
+      <button class="opcion" data-op="d">asyncpg</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: CRUD →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>♻️ El CRUD completo</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Las 5 operaciones en acción"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Nuestra app hace 5 cosas: listar, obtener, crear, actualizar y borrar autores. Cada una corresponde a un método HTTP y a una función del repositorio. Repasemos la correspondencia.</p>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Operación</th><th>Método HTTP</th><th>SQL</th><th>Función</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Listar</td><td>GET</td><td>SELECT *</td><td>obtener_autores</td></tr>
+        <tr><td>Obtener uno</td><td>GET</td><td>SELECT ... WHERE</td><td>obtener_autor</td></tr>
+        <tr><td>Crear</td><td>POST</td><td>INSERT</td><td>crear_autor</td></tr>
+        <tr><td>Actualizar</td><td>PUT</td><td>UPDATE</td><td>actualizar_autor</td></tr>
+        <tr><td>Borrar</td><td>DELETE</td><td>DELETE</td><td>eliminar_autor</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 CRUD = el corazón de toda app</h4>
+    <p>Casi toda aplicación web es, en el fondo, un CRUD. Una red social crea posts (POST), los muestra (GET), los edita (PUT) y los borra (DELETE). Si entiendes el CRUD, entiendes el patrón de casi todo el software.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Con su compañero/a: piensen en una app que usen (Instagram, YouTube, Spotify). <strong>¿Qué "cosas" crea, lee, actualiza y borra?</strong> Identifiquen el CRUD de esa app.</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué método HTTP usa "crear"?</p>
+      <button class="opcion" data-op="a">GET</button>
+      <button class="opcion" data-op="b">POST</button>
+      <button class="opcion" data-op="c">DELETE</button>
+      <button class="opcion" data-op="d">PUT</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué método HTTP usa "borrar"?</p>
+      <button class="opcion" data-op="a">DELETE</button>
+      <button class="opcion" data-op="b">GET</button>
+      <button class="opcion" data-op="c">POST</button>
+      <button class="opcion" data-op="d">PUT</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73% agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Coméntale a tu compañero/a qué parte del proyecto te costó más. 1 min.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>El patrón CRUD fue popularizado por <strong>James Martin</strong> en los años 80. Desde entonces, casi todo el software de gestión (bancos, tiendas, redes sociales) se construye sobre estas 4 operaciones básicas. ♻️</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Validación →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>🛡️ Validación en el flujo</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Dónde encaja Pydantic"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>La validación con Pydantic ocurre <strong>antes</strong> de tocar la base de datos. Cuando el usuario envía un formulario, la ruta recibe los datos, los valida con el modelo, y solo si son válidos llama al repositorio. Si no, responde 422.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — el flujo de crear</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">@router.post</span>(<span class="str">"/autores"</span>)
+<span class="kw">async def</span> <span class="fn">crear_autor</span>(nombre: <span class="ty">str</span> = Form(), ...):
+    <span class="cm"># 1. validar con Pydantic</span>
+    autor = AutorCrear(nombre=nombre, pais=pais, nacimiento=nacimiento)
+    <span class="cm"># 2. si es válido, guardar en la BD</span>
+    <span class="kw">await</span> crear_autor(conn, autor.nombre, autor.pais, autor.nacimiento)
+    <span class="cm"># 3. devolver la tabla actualizada</span>
+    <span class="kw">return</span> templates.TemplateResponse(...)</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Validar antes de guardar</h4>
+    <p>El orden importa: <strong>primero</strong> validar, <strong>después</strong> guardar. Nunca al revés. Si guardas datos inválidos, ensucias la base de datos. Pydantic es el guardián que protege la puerta de entrada.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿qué pasa si el usuario envía un nombre vacío? Sigan el flujo: ¿llega a la base de datos o se detiene en la validación?</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuándo ocurre la validación con Pydantic?</p>
+      <button class="opcion" data-op="a">Después de guardar en la BD</button>
+      <button class="opcion" data-op="b">Antes de tocar la base de datos</button>
+      <button class="opcion" data-op="c">Nunca</button>
+      <button class="opcion" data-op="d">Al apagar el servidor</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué pasa si los datos son inválidos?</p>
+      <button class="opcion" data-op="a">El servidor responde 422 y no guarda nada</button>
+      <button class="opcion" data-op="b">Se guardan igual</button>
+      <button class="opcion" data-op="c">Se borra la BD</button>
+      <button class="opcion" data-op="d">No pasa nada</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Frontend →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>🖥️ El frontend: Jinja2 + htmx + Bootstrap</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "La cara visible de la app"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>El frontend combina tres herramientas: <strong>Jinja2</strong> genera el HTML con los datos, <strong>Bootstrap</strong> le da estilo, y <strong>htmx</strong> lo hace interactivo. Juntas forman una página completa sin escribir JavaScript a mano.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-verde"><span class="emoji">📄</span><h3>Jinja2</h3><p>Genera el HTML con variables y bucles.</p></div>
+    <div class="tarjeta"><span class="emoji">🎨</span><h3>Bootstrap</h3><p>Da estilo con clases listas (btn, table, card).</p></div>
+    <div class="tarjeta tarjeta-ambar"><span class="emoji">⚡</span><h3>htmx</h3><p>Hace la página interactiva sin recargar.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Tres piezas, un objetivo</h4>
+    <p>Jinja2 responde "¿qué muestro?", Bootstrap responde "¿cómo se ve?", y htmx responde "¿cómo interactúa?". Cada una resuelve un problema distinto, y juntas forman el frontend completo.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: para cada herramienta (Jinja2, Bootstrap, htmx), digan <strong>qué problema resuelve</strong> en una frase. Comparen con otra pareja.</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué herramienta genera el HTML con los datos?</p>
+      <button class="opcion" data-op="a">Bootstrap</button>
+      <button class="opcion" data-op="b">Jinja2</button>
+      <button class="opcion" data-op="c">htmx</button>
+      <button class="opcion" data-op="d">PostgreSQL</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué herramienta hace la página interactiva?</p>
+      <button class="opcion" data-op="a">htmx</button>
+      <button class="opcion" data-op="b">Jinja2</button>
+      <button class="opcion" data-op="c">Bootstrap</button>
+      <button class="opcion" data-op="d">Pydantic</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Proyecto →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🏆 Proyecto final: la app completa</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "Integra todo"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🏆 Proyecto final</span>
+      <span class="challenge-title">La app de autores, de principio a fin</span>
+    </div>
+    <p>Tu misión es describir (o construir) la app completa de autores, conectando todas las piezas que aprendiste en las 8 clases.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 El mapa de archivos</h3>
+    <ol>
+      <li><code>main.py</code> — arranca la app y conecta/desconecta la BD.</li>
+      <li><code>database.py</code> — el pool y <code>get_connection</code>.</li>
+      <li><code>repositorio.py</code> — las 5 funciones del CRUD.</li>
+      <li><code>esquemas.py</code> — los modelos Pydantic.</li>
+      <li><code>vistas.py</code> — las rutas que unen todo.</li>
+      <li><code>templates/</code> — las plantillas Jinja2 con htmx y Bootstrap.</li>
+    </ol>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 15 minutos</h4>
+    <p>Con su compañero/a, respondan por escrito (o construyan):</p>
+    <ol>
+      <li>¿Qué hace cada uno de los 6 archivos?</li>
+      <li>¿Cuál es el flujo cuando un usuario crea un autor?</li>
+      <li>¿Dónde se valida el dato y dónde se guarda?</li>
+      <li>¿Cómo se actualiza la tabla sin recargar la página?</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Respuesta esperada</h4>
+    <p>El formulario (htmx) envía un POST a <code>vistas.py</code>, que valida con <code>esquemas.py</code>, guarda con <code>repositorio.py</code> (usando la conexión de <code>database.py</code>), y devuelve el partial de la tabla que htmx inserta en <code>#tabla-autores</code>. Todo sin recargar.</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Módulo completado!</h2>
+    <p>Construiste una app web completa: backend con FastAPI, base de datos con PostgreSQL, validación con Pydantic y frontend con Jinja2 + htmx + Bootstrap. <strong>¡Eres oficialmente un desarrollador web!</strong></p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🛠️ Herramientas de Programación II · Clase 8 de 8</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

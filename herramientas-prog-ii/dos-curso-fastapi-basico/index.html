@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛠️ Herramientas de Programación II · Clase 2 · FastAPI Básico</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🚀</span>
+    <div>
+      <h1>Herramientas de Programación II · Clase 2</h1>
+      <p class="subtitulo">FastAPI básico · app, rutas y lifespan</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">🧩 Framework</button>
+  <button class="btn-modulo" data-modulo="2">🛣️ Rutas</button>
+  <button class="btn-modulo" data-modulo="3">🔄 Lifespan</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🔗 Depends</button>
+  <button class="btn-modulo" data-modulo="6">📚 Docs</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🚀 Tu primera app web con FastAPI</h2>
+    <p class="lead">En la clase 1 aprendimos Python y HTTP. Hoy vamos a construir nuestra <strong>primera app web real</strong> con <strong>FastAPI</strong>, el framework moderno de Python. Al final tendrás un servidor que responde a peticiones HTTP y una ruta <code>/autores</code> funcionando.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — dev@app</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd">fastapi dev main.py</span></div>
+        <div class="out">INFO: Uvicorn running on http://127.0.0.1:8000</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd">curl localhost:8000/autores</span></div>
+        <div class="out">[{"id":1,"nombre":"Gabriel García Márquez"}]</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3h 45min en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Crear una app FastAPI con rutas, entender el <code>lifespan</code> y usar <code>Depends</code> para inyectar dependencias.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>La app que no arranca, la ruta que no responde, el recurso que nunca se cierra.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · Framework</td><td style="color:var(--a)">Qué es FastAPI</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>02 · Rutas</td><td style="color:var(--b)">@app.get</td><td style="color:var(--rosa)">Ruta que no responde</td><td>100 XP</td></tr>
+        <tr><td>03 · Lifespan</td><td style="color:var(--a)">Ciclo de vida</td><td style="color:var(--rosa)">Recurso que nunca se cierra</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · Depends</td><td style="color:var(--verde)">Inyección</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>05 · Docs</td><td style="color:var(--b)">/docs automática</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>06 · Taller</td><td style="color:var(--a)">Diagnóstico</td><td style="color:var(--rosa)">App que no arranca</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿qué creen que es un <strong>framework</strong>? ¿En qué se diferencia de un lenguaje de programación? Adivinen y luego lo comprobamos.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Qué es un framework?</h4>
+    <p>Un framework es un <strong>conjunto de herramientas ya hechas</strong> que te ahorran trabajo. En vez de escribir desde cero cómo recibir peticiones HTTP, FastAPI ya lo hace por ti. Tú solo defines las <strong>rutas</strong> y la lógica.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: Framework →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>🧩 FastAPI: el framework moderno</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El framework que hace el trabajo pesado"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es FastAPI?</h3>
+    <p>FastAPI es un <strong>framework web</strong> de Python para construir <strong>APIs</strong> (interfaces que otras apps usan para pedir datos). Es moderno, rápido y muy popular. Su superpoder: es <strong>asíncrono</strong> (usa <code>async/await</code>) y genera <strong>documentación automática</strong>.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-verde"><span class="emoji">⚡</span><h3>Rápido</h3><p>Es uno de los frameworks más rápidos de Python, comparable a los de Node.js y Go.</p></div>
+    <div class="tarjeta"><span class="emoji">📚</span><h3>Documentado solo</h3><p>Genera la documentación de tu API automáticamente en <code>/docs</code>.</p></div>
+    <div class="tarjeta tarjeta-ambar"><span class="emoji">🛡️</span><h3>Valida datos</h3><p>Con Pydantic valida los datos de entrada y salida automáticamente.</p></div>
+    <div class="tarjeta tarjeta-magenta"><span class="emoji">🔁</span><h3>Asíncrono</h3><p>Usa <code>async/await</code> para atender a muchos usuarios a la vez.</p></div>
+  </div>
+
+  <h3>📝 La app más simple del mundo</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — la app mínima</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+
+app = FastAPI()
+
+
+<span class="kw">@app.get</span>(<span class="str">"/"</span>)
+<span class="kw">async def</span> <span class="fn">inicio</span>():
+    <span class="kw">return</span> {<span class="str">"mensaje"</span>: <span class="str">"Hola mundo"</span>}</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Tres líneas que lo cambian todo</h4>
+    <p><code>app = FastAPI()</code> crea la aplicación. <code>@app.get("/")</code> define una ruta. La función devuelve un diccionario que FastAPI convierte en JSON. Con eso ya tienes un servidor web funcionando.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: miren el código de arriba. <strong>¿Qué creen que hace el símbolo <code>@</code> antes de <code>app.get</code>?</strong> (pista: se llama "decorador" y le dice a FastAPI "esta función es una ruta").</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es FastAPI?</p>
+      <button class="opcion" data-op="a">Un lenguaje de programación</button>
+      <button class="opcion" data-op="b">Un framework web de Python para construir APIs</button>
+      <button class="opcion" data-op="c">Una base de datos</button>
+      <button class="opcion" data-op="d">Un navegador web</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué hace <code>app = FastAPI()</code>?</p>
+      <button class="opcion" data-op="a">Crea la aplicación web</button>
+      <button class="opcion" data-op="b">Cierra el servidor</button>
+      <button class="opcion" data-op="c">Conecta a la base de datos</button>
+      <button class="opcion" data-op="d">Instala Python</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Rutas →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>🛣️ Rutas: los caminos de tu API</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Cómo el servidor sabe qué responder"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es una ruta?</h3>
+    <p>Una <strong>ruta</strong> (o <em>endpoint</em>) es una dirección de tu API. Cuando alguien visita <code>/autores</code>, FastAPI ejecuta la función asociada a esa ruta y devuelve su resultado. Cada ruta se define con un <strong>decorador</strong> que indica el método HTTP.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — rutas con métodos HTTP</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">@app.get</span>(<span class="str">"/autores"</span>)          <span class="cm"># leer (GET)</span>
+<span class="kw">async def</span> <span class="fn">listar_autores</span>():
+    <span class="kw">return</span> [{<span class="str">"id"</span>: <span class="num">1</span>, <span class="str">"nombre"</span>: <span class="str">"Gabo"</span>}]
+
+<span class="kw">@app.post</span>(<span class="str">"/autores"</span>)         <span class="cm"># crear (POST)</span>
+<span class="kw">async def</span> <span class="fn">crear_autor</span>():
+    <span class="kw">return</span> {<span class="str">"mensaje"</span>: <span class="str">"Autor creado"</span>}</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El decorador define el método</h4>
+    <p><code>@app.get</code> responde a peticiones GET, <code>@app.post</code> a POST, <code>@app.put</code> a PUT y <code>@app.delete</code> a DELETE. La misma ruta <code>/autores</code> puede tener varios métodos, cada uno con su función.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: la ruta que no responde</h4>
+    <p>Si escribes mal la ruta (por ejemplo <code>/autores</code> en vez de <code>/autor</code>), el servidor responde <strong>404 Not Found</strong>. O si defines la ruta con <code>@app.get</code> pero el cliente envía un POST, también falla. La ruta y el método deben coincidir exactamente.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: si quieren una ruta para <strong>borrar</strong> un autor, ¿qué decorador usarían? ¿Y para <strong>actualizar</strong>? Escriban las dos líneas en papel.</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es una ruta (endpoint)?</p>
+      <button class="opcion" data-op="a">Un archivo de Python</button>
+      <button class="opcion" data-op="b">Una dirección de la API que ejecuta una función</button>
+      <button class="opcion" data-op="c">Una base de datos</button>
+      <button class="opcion" data-op="d">Un tipo de variable</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué decorador usarías para CREAR un autor?</p>
+      <button class="opcion" data-op="a">@app.post</button>
+      <button class="opcion" data-op="b">@app.get</button>
+      <button class="opcion" data-op="c">@app.delete</button>
+      <button class="opcion" data-op="d">@app.print</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Lifespan →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>🔄 Lifespan: el ciclo de vida de la app</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Qué pasa al arrancar y al apagar"</p>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el recurso que nunca se cierra</h4>
+    <p>Muchas apps necesitan <strong>abrir recursos</strong> al arrancar (conectar a la base de datos) y <strong>cerrarlos</strong> al apagar. Si abres la conexión pero nunca la cierras, cada reinicio deja conexiones "zombis" y la base de datos se satura. La solución es el <strong>lifespan</strong>.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>El <strong>lifespan</strong> es un bloque de código que FastAPI ejecuta <strong>al arrancar</strong> (antes de recibir requests) y <strong>al apagar</strong> (después del último request). Se define con <code>@asynccontextmanager</code> y la palabra <code>yield</code> marca el punto medio.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — lifespan</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">from</span> contextlib <span class="kw">import</span> asynccontextmanager
+
+<span class="kw">@asynccontextmanager</span>
+<span class="kw">async def</span> <span class="fn">lifespan</span>(app: FastAPI):
+    <span class="cm"># Código ANTES del yield: se ejecuta al arrancar</span>
+    <span class="kw">await</span> db.connect(DATABASE_URL)
+    <span class="kw">yield</span>
+    <span class="cm"># Código DESPUÉS del yield: se ejecuta al apagar</span>
+    <span class="kw">await</span> db.close()
+
+app = FastAPI(lifespan=lifespan)</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 yield = "la app vive aquí"</h4>
+    <p>Todo lo que está <strong>antes</strong> de <code>yield</code> corre al arrancar. Todo lo que está <strong>después</strong> corre al apagar. Mientras la app está viva, se queda "pausada" en el <code>yield</code>. Es como abrir la tienda, atender clientes y cerrar la tienda.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: imaginen que la app es un restaurante. <strong>¿Qué haría el restaurante "antes del yield" y qué "después del yield"?</strong> (pista: abrir la cocina / cerrar la cocina).</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>En nuestro proyecto, el <code>lifespan</code> conecta a la base de datos al arrancar y la desconecta al apagar. Sin esto, cada vez que reinicias el servidor quedaría una conexión abierta. Es una buena práctica que verás en todo backend profesional.</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Para qué sirve el lifespan?</p>
+      <button class="opcion" data-op="a">Para definir rutas</button>
+      <button class="opcion" data-op="b">Para ejecutar código al arrancar y al apagar la app</button>
+      <button class="opcion" data-op="c">Para validar datos</button>
+      <button class="opcion" data-op="d">Para generar documentación</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué marca el punto medio del lifespan?</p>
+      <button class="opcion" data-op="a">La palabra yield</button>
+      <button class="opcion" data-op="b">La palabra return</button>
+      <button class="opcion" data-op="c">La palabra break</button>
+      <button class="opcion" data-op="d">La palabra print</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73% agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Coméntale a tu compañero/a qué te costó más: las rutas o el lifespan. 1 min.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>FastAPI fue creado por <strong>Sebastián Ramírez</strong> en 2018. En pocos años se volvió uno de los frameworks más usados de Python, con más de 70.000 estrellas en GitHub. Empresas como Netflix y Microsoft lo usan. 🚀</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Depends →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>🔗 Depends: inyección de dependencias</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Cómo una ruta pide lo que necesita"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Muchas rutas necesitan lo mismo: una conexión a la base de datos. En vez de repetir el código en cada ruta, FastAPI usa <strong>dependencias</strong> con <code>Depends</code>. Le dices a la ruta "necesito una conexión" y FastAPI se la consigue automáticamente.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — dependencia con Depends</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> Depends
+
+<span class="kw">async def</span> <span class="fn">get_connection</span>():
+    <span class="cm"># consigue una conexión y la "presta"</span>
+    <span class="kw">async with</span> db.pool.acquire() <span class="kw">as</span> conn:
+        <span class="kw">yield</span> conn
+
+<span class="kw">@app.get</span>(<span class="str">"/autores"</span>)
+<span class="kw">async def</span> <span class="fn">listar_autores</span>(conn = Depends(get_connection)):
+    <span class="cm"># conn ya está lista para usar</span>
+    <span class="kw">return</span> <span class="kw">await</span> conn.fetch(<span class="str">"SELECT * FROM autores"</span>)</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Depends = "pídeselo a FastAPI"</h4>
+    <p>Con <code>Depends(get_connection)</code>, FastAPI llama a <code>get_connection</code>, obtiene la conexión y se la pasa a la ruta. Cuando la ruta termina, FastAPI ejecuta el código después del <code>yield</code> para devolver la conexión. Todo automático.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿por qué creen que es mejor usar <code>Depends</code> que escribir el código de conexión en cada ruta? (pista: ¿qué pasa si hay 50 rutas y cambia la forma de conectar?).</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>En un backend con 50 endpoints, todos necesitan la conexión a la BD. Con <code>Depends</code>, defines la dependencia <strong>una sola vez</strong> y la reutilizas en las 50 rutas. Si mañana cambias de base de datos, solo tocas un lugar. Eso es código profesional.</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Para qué sirve Depends?</p>
+      <button class="opcion" data-op="a">Para definir rutas</button>
+      <button class="opcion" data-op="b">Para inyectar dependencias en una ruta</button>
+      <button class="opcion" data-op="c">Para cerrar el servidor</button>
+      <button class="opcion" data-op="d">Para instalar librerías</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué ventaja tiene usar Depends en vez de repetir código?</p>
+      <button class="opcion" data-op="a">Defines la dependencia una vez y la reutilizas</button>
+      <button class="opcion" data-op="b">Hace el código más largo</button>
+      <button class="opcion" data-op="c">No tiene ninguna ventaja</button>
+      <button class="opcion" data-op="d">Solo funciona de noche</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Docs →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>📚 Documentación automática</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Tu API se documenta sola"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 El superpoder de FastAPI</h3>
+    <p>FastAPI genera <strong>documentación interactiva</strong> de tu API automáticamente. Solo tienes que abrir <code>/docs</code> en tu navegador y verás todas tus rutas, con sus métodos, parámetros y ejemplos. Incluso puedes <strong>probar</strong> las rutas desde ahí.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-verde"><span class="emoji">📖</span><h3>/docs</h3><p>Interfaz Swagger UI: lista todas las rutas y permite probarlas.</p></div>
+    <div class="tarjeta"><span class="emoji">🔍</span><h3>Explorar</h3><p>Ves cada endpoint, su método HTTP y qué devuelve.</p></div>
+    <div class="tarjeta tarjeta-ambar"><span class="emoji">🧪</span><h3>Probar</h3><p>Puedes enviar requests de prueba sin escribir código.</p></div>
+    <div class="tarjeta tarjeta-magenta"><span class="emoji">🎁</span><h3>Gratis</h3><p>No tienes que escribir la documentación: se genera sola.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué importa la documentación?</h4>
+    <p>En un equipo real, el backend lo usa el frontend. La documentación le dice al equipo del frontend <strong>qué rutas existen y qué devuelven</strong>, sin tener que leer el código. Es como el menú de un restaurante: te dice qué puedes pedir.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: si tuvieran que explicarle a otro equipo cómo usar su API, <strong>¿qué información necesitarían darle?</strong> (pista: rutas, métodos, qué datos recibe y qué devuelve).</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>Cuando un desarrollador se une a un proyecto, lo primero que hace es abrir <code>/docs</code> para entender la API. Es una de las razones por las que FastAPI es tan querido: la documentación <strong>siempre está actualizada</strong> porque se genera del código mismo.</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Dónde encuentras la documentación automática de FastAPI?</p>
+      <button class="opcion" data-op="a">En un archivo PDF</button>
+      <button class="opcion" data-op="b">En la ruta /docs de tu app</button>
+      <button class="opcion" data-op="c">En la base de datos</button>
+      <button class="opcion" data-op="d">No existe documentación</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué puedes hacer en /docs?</p>
+      <button class="opcion" data-op="a">Ver y probar las rutas de tu API</button>
+      <button class="opcion" data-op="b">Editar la base de datos</button>
+      <button class="opcion" data-op="c">Instalar Python</button>
+      <button class="opcion" data-op="d">Apagar el servidor</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: arma tu primera app</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "Aplica todo lo aprendido"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">Construye la app de autores</span>
+    </div>
+    <p>Tu misión es escribir (en papel o en la mente) la estructura de una app FastAPI que tenga una ruta <code>/autores</code> y un <code>lifespan</code> que conecte a la base de datos.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 Lo que debe tener tu app</h3>
+    <ol>
+      <li>Una línea <code>app = FastAPI(lifespan=lifespan)</code>.</li>
+      <li>Un <code>lifespan</code> que conecte y desconecte la base de datos.</li>
+      <li>Una ruta <code>@app.get("/autores")</code> que devuelva la lista de autores.</li>
+      <li>Una dependencia <code>get_connection</code> que preste la conexión.</li>
+    </ol>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 10 minutos</h4>
+    <p>Con su compañero/a, respondan por escrito:</p>
+    <ol>
+      <li>¿Qué método HTTP usa la ruta <code>/autores</code> para <strong>leer</strong>?</li>
+      <li>¿Qué hace el código <strong>antes</strong> del <code>yield</code> en el lifespan?</li>
+      <li>¿Para qué sirve <code>Depends(get_connection)</code>?</li>
+      <li>¿Dónde verían la documentación de su API?</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Respuesta esperada</h4>
+    <p>La ruta usa <code>GET</code>. Antes del <code>yield</code> se conecta a la base de datos (y después se desconecta). <code>Depends(get_connection)</code> inyecta la conexión en la ruta. Y la documentación está en <code>/docs</code>.</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 2 completada!</h2>
+    <p>Ya sabes crear una app FastAPI con rutas, lifespan y dependencias. En la próxima clase conectaremos la app a una <strong>base de datos real</strong> con un pool de conexiones.</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🛠️ Herramientas de Programación II · Clase 2 de 8</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

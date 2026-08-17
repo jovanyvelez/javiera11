@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛠️ Herramientas de Programación II · Clase 7 · htmx + Bootstrap</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">⚡</span>
+    <div>
+      <h1>Herramientas de Programación II · Clase 7</h1>
+      <p class="subtitulo">htmx + Bootstrap · frontend sin JavaScript</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">🎨 Bootstrap</button>
+  <button class="btn-modulo" data-modulo="2">⚡ htmx</button>
+  <button class="btn-modulo" data-modulo="3">📤 hx-post</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🎯 hx-target</button>
+  <button class="btn-modulo" data-modulo="6">🔁 hx-swap</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>⚡ Una página interactiva sin JavaScript</h2>
+    <p class="lead">Ya tenemos plantillas que muestran datos. Hoy vamos a hacerlas <strong>interactivas</strong>: crear, editar y borrar autores <strong>sin recargar la página</strong>. Usaremos <strong>Bootstrap</strong> para el estilo y <strong>htmx</strong> para la interactividad, sin escribir una sola línea de JavaScript.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — dev@app</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd"># htmx envía el formulario sin recargar</span></div>
+        <div class="out">hx-post="/autores" hx-target="#tabla-autores"</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd"># el servidor devuelve solo la tabla actualizada</span></div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3h 45min en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Hacer la página interactiva con htmx (hx-post, hx-target, hx-swap) y estilizarla con Bootstrap.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>La página que recarga entera, el formulario que no envía, el botón que no hace nada.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · Bootstrap</td><td style="color:var(--a)">Estilos listos</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>02 · htmx</td><td style="color:var(--b)">Interactividad</td><td style="color:var(--rosa)">Recargar toda la página</td><td>100 XP</td></tr>
+        <tr><td>03 · hx-post</td><td style="color:var(--a)">Enviar formulario</td><td style="color:var(--rosa)">Formulario que no envía</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · hx-target</td><td style="color:var(--verde)">Dónde insertar</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>05 · hx-swap</td><td style="color:var(--b)">Cómo reemplazar</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>06 · Taller</td><td style="color:var(--a)">CRUD interactivo</td><td style="color:var(--rosa)">—</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: cuando crean un autor en una página web, <strong>¿prefieren que la página se recargue entera o que solo se actualice la tabla?</strong> ¿Por qué?</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué htmx?</h4>
+    <p>Normalmente, hacer una página interactiva requiere escribir JavaScript. htmx te permite hacerlo <strong>solo con atributos HTML</strong> (<code>hx-post</code>, <code>hx-target</code>...). Es más simple y perfecto para aprender.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: Bootstrap →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>🎨 Bootstrap: estilos listos para usar</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "CSS bonito sin escribirlo"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es Bootstrap?</h3>
+    <p>Bootstrap es una <strong>librería de CSS</strong> con estilos ya hechos: botones, tablas, formularios, tarjetas. En vez de escribir CSS desde cero, agregas <strong>clases</strong> como <code>btn</code>, <code>table</code> o <code>card</code> y todo se ve bien automáticamente.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>base.html — incluir Bootstrap por CDN</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>&lt;head&gt;
+  &lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"&gt;
+&lt;/head&gt;</code></pre>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-verde"><span class="emoji">🔘</span><h3>Botones</h3><p><code>btn btn-primary</code> crea un botón azul bonito.</p></div>
+    <div class="tarjeta"><span class="emoji">📊</span><h3>Tablas</h3><p><code>table table-striped</code> crea una tabla con filas alternadas.</p></div>
+    <div class="tarjeta tarjeta-ambar"><span class="emoji">🃏</span><h3>Tarjetas</h3><p><code>card</code> crea un contenedor con borde y sombra.</p></div>
+    <div class="tarjeta tarjeta-magenta"><span class="emoji">📐</span><h3>Grid</h3><p><code>row</code> y <code>col</code> organizan el contenido en columnas.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 CDN = sin instalar nada</h4>
+    <p>Incluimos Bootstrap por <strong>CDN</strong> (un enlace a internet). No hay que descargar ni instalar nada: el navegador carga los estilos directamente desde el enlace. Lo mismo haremos con htmx.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿qué clases de Bootstrap usarían para (1) un botón de "Crear", (2) una tabla de autores, (3) un formulario? Intenten adivinar los nombres.</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es Bootstrap?</p>
+      <button class="opcion" data-op="a">Un lenguaje de programación</button>
+      <button class="opcion" data-op="b">Una librería de CSS con estilos ya hechos</button>
+      <button class="opcion" data-op="c">Una base de datos</button>
+      <button class="opcion" data-op="d">Un servidor web</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cómo incluyes Bootstrap en tu página?</p>
+      <button class="opcion" data-op="a">Con un enlace CDN en el head</button>
+      <button class="opcion" data-op="b">Instalando un programa</button>
+      <button class="opcion" data-op="c">Escribiendo CSS a mano</button>
+      <button class="opcion" data-op="d">No se puede incluir</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: htmx →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>⚡ htmx: interactividad sin JavaScript</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Atributos HTML que hacen magia"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es htmx?</h3>
+    <p>htmx es una <strong>librería de JavaScript</strong> que te permite hacer peticiones HTTP <strong>desde atributos HTML</strong>. En vez de escribir JavaScript, agregas atributos como <code>hx-post</code> a un elemento y htmx se encarga de todo. Es la forma moderna y simple de hacer páginas interactivas.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>base.html — incluir htmx por CDN</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>&lt;head&gt;
+  &lt;script src="https://unpkg.com/htmx.org@2.0.10"&gt;&lt;/script&gt;
+&lt;/head&gt;</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: recargar toda la página</h4>
+    <p>Sin htmx, cada acción (crear, editar, borrar) recarga la página entera. Eso es lento y molesto. Con htmx, solo se actualiza la parte que cambió. Es la diferencia entre "recargar todo" y "actualizar solo lo necesario".</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 htmx = HTML + interactividad</h4>
+    <p>La idea de htmx es que el HTML mismo describa la interactividad. <code>hx-post="/autores"</code> significa "cuando se envíe este formulario, haz un POST a /autores". Sin JavaScript a mano.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿qué creen que hace el atributo <code>hx-post="/autores"</code> en un formulario? Intenten explicarlo con sus palabras.</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es htmx?</p>
+      <button class="opcion" data-op="a">Un framework de Python</button>
+      <button class="opcion" data-op="b">Una librería para hacer peticiones HTTP desde atributos HTML</button>
+      <button class="opcion" data-op="c">Una base de datos</button>
+      <button class="opcion" data-op="d">Un lenguaje de programación</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué ventaja tiene htmx?</p>
+      <button class="opcion" data-op="a">Actualiza solo una parte de la página sin recargarla</button>
+      <button class="opcion" data-op="b">Hace la página más lenta</button>
+      <button class="opcion" data-op="c">Requiere escribir mucho JavaScript</button>
+      <button class="opcion" data-op="d">No tiene ventajas</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: hx-post →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>📤 hx-post: enviar el formulario</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Crear un autor sin recargar"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Para que un formulario envíe datos con htmx, le agregas <code>hx-post="/autores"</code>. Cuando el usuario presiona "Crear", htmx envía los datos del formulario a esa ruta <strong>sin recargar la página</strong>. El servidor procesa y devuelve HTML.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>formulario_autor.html — con hx-post</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>&lt;form hx-post="/autores" hx-target="#tabla-autores" hx-swap="outerHTML"&gt;
+  &lt;input type="text" name="nombre" placeholder="Nombre"&gt;
+  &lt;input type="text" name="pais" placeholder="País"&gt;
+  &lt;input type="number" name="nacimiento" placeholder="Año"&gt;
+  &lt;button type="submit"&gt;Crear&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el formulario que no envía</h4>
+    <p>Si olvidas el <code>hx-post</code>, el formulario se envía de la forma tradicional (recargando la página) o no se envía. El atributo <code>hx-post</code> es lo que le dice a htmx "intercepta este envío y hazlo sin recargar".</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 name = clave del dato</h4>
+    <p>Cada <code>&lt;input&gt;</code> tiene un atributo <code>name</code>. Ese nombre es la <strong>clave</strong> con la que el dato viaja al servidor. En el backend lo recibimos con <code>Form()</code> usando ese mismo nombre.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: en el formulario de arriba, <strong>¿qué claves</strong> viajan al servidor cuando se envía? (pista: mira los atributos <code>name</code>).</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace hx-post="/autores" en un formulario?</p>
+      <button class="opcion" data-op="a">Borra el formulario</button>
+      <button class="opcion" data-op="b">Envía los datos a /autores sin recargar la página</button>
+      <button class="opcion" data-op="c">Conecta a la base de datos</button>
+      <button class="opcion" data-op="d">No hace nada</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Para qué sirve el atributo name en un input?</p>
+      <button class="opcion" data-op="a">Es la clave con la que el dato viaja al servidor</button>
+      <button class="opcion" data-op="b">Es el color del input</button>
+      <button class="opcion" data-op="c">No sirve para nada</button>
+      <button class="opcion" data-op="d">Es el tamaño del input</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73% agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Coméntale a tu compañero/a qué te costó más: Bootstrap o htmx. 1 min.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>htmx fue creado por <strong>Carson Gross</strong> en 2020. Su idea es radical: "¿y si no necesitamos tanto JavaScript?". Hoy es una de las librerías más queridas por los desarrolladores que buscan simplicidad. ⚡</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: hx-target →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>🎯 hx-target: dónde insertar la respuesta</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Decirle a htmx dónde poner el HTML"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Cuando htmx recibe la respuesta del servidor, necesita saber <strong>dónde</strong> ponerla. El atributo <code>hx-target</code> indica el elemento destino, usando un selector CSS. Por ejemplo, <code>hx-target="#tabla-autores"</code> apunta al elemento con id <code>tabla-autores</code>.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>tabla_autores.html — el destino</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>&lt;div class="card" id="tabla-autores"&gt;
+  &lt;table&gt;
+    {% for autor in autores %}
+      &lt;tr&gt;&lt;td&gt;{{ autor.nombre }}&lt;/td&gt;&lt;/tr&gt;
+    {% endfor %}
+  &lt;/table&gt;
+&lt;/div&gt;</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El id conecta todo</h4>
+    <p>El formulario tiene <code>hx-target="#tabla-autores"</code> y la tabla tiene <code>id="tabla-autores"</code>. Así, cuando creas un autor, htmx reemplaza la tabla con la nueva versión que devuelve el servidor. El <code>#</code> significa "busca por id".</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: si el formulario tiene <code>hx-target="#resultado"</code>, <strong>¿qué elemento de la página recibirá la respuesta?</strong> (pista: el que tenga <code>id="resultado"</code>).</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Para qué sirve hx-target?</p>
+      <button class="opcion" data-op="a">Para borrar un elemento</button>
+      <button class="opcion" data-op="b">Para indicar dónde insertar la respuesta del servidor</button>
+      <button class="opcion" data-op="c">Para conectar a la BD</button>
+      <button class="opcion" data-op="d">Para validar datos</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué significa el # en hx-target="#tabla-autores"?</p>
+      <button class="opcion" data-op="a">Que busca un elemento por su id</button>
+      <button class="opcion" data-op="b">Que es un comentario</button>
+      <button class="opcion" data-op="c">Que borra el elemento</button>
+      <button class="opcion" data-op="d">No significa nada</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: hx-swap →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>🔁 hx-swap: cómo reemplazar el contenido</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Reemplazar o insertar"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p><code>hx-swap</code> le dice a htmx <strong>cómo</strong> colocar la respuesta en el destino. <code>outerHTML</code> reemplaza el elemento completo; <code>innerHTML</code> reemplaza solo su contenido. Es la diferencia entre "cambia la caja entera" y "cambia lo que hay dentro".</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-verde"><span class="emoji">📦</span><h3>outerHTML</h3><p>Reemplaza el elemento completo, incluyendo su etiqueta.</p></div>
+    <div class="tarjeta"><span class="emoji">📥</span><h3>innerHTML</h3><p>Reemplaza solo el contenido interno del elemento.</p></div>
+    <div class="tarjeta tarjeta-ambar"><span class="emoji">⬆️</span><h3>beforebegin</h3><p>Inserta antes del elemento.</p></div>
+    <div class="tarjeta tarjeta-magenta"><span class="emoji">⬇️</span><h3>afterend</h3><p>Inserta después del elemento.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 outerHTML para reemplazar la tabla</h4>
+    <p>En nuestro caso, el servidor devuelve la tabla completa (con su <code>&lt;div id="tabla-autores"&gt;</code>). Por eso usamos <code>hx-swap="outerHTML"</code>: reemplazamos la tabla vieja por la nueva, incluyendo su contenedor.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: si el servidor devuelve <code>&lt;div id="tabla-autores"&gt;...&lt;/div&gt;</code> completo, <strong>¿usarían outerHTML o innerHTML?</strong> ¿Por qué?</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace hx-swap="outerHTML"?</p>
+      <button class="opcion" data-op="a">Borra el elemento</button>
+      <button class="opcion" data-op="b">Reemplaza el elemento completo</button>
+      <button class="opcion" data-op="c">Inserta antes del elemento</button>
+      <button class="opcion" data-op="d">No hace nada</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cuál es la diferencia entre outerHTML e innerHTML?</p>
+      <button class="opcion" data-op="a">outerHTML reemplaza el elemento completo; innerHTML solo su contenido</button>
+      <button class="opcion" data-op="b">No hay diferencia</button>
+      <button class="opcion" data-op="c">innerHTML borra todo</button>
+      <button class="opcion" data-op="d">outerHTML no existe</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: el CRUD interactivo</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "Aplica todo lo aprendido"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">Haz la página de autores interactiva</span>
+    </div>
+    <p>Tu misión es diseñar los atributos htmx para que la página de autores permita crear, editar y borrar sin recargar.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 Lo que debe tener</h3>
+    <ol>
+      <li>Un formulario con <code>hx-post="/autores"</code> y <code>hx-target="#tabla-autores"</code>.</li>
+      <li>Un botón "Borrar" con <code>hx-delete="/autores/{id}"</code>.</li>
+      <li>Un botón "Editar" con <code>hx-get="/autores/{id}/editar"</code>.</li>
+      <li>La tabla con <code>id="tabla-autores"</code>.</li>
+    </ol>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 10 minutos</h4>
+    <p>Con su compañero/a, respondan por escrito:</p>
+    <ol>
+      <li>¿Qué atributo htmx usarías para <strong>crear</strong> un autor?</li>
+      <li>¿Qué atributo para <strong>borrar</strong> un autor?</li>
+      <li>¿Qué atributo para <strong>editar</strong> un autor?</li>
+      <li>¿Qué hace <code>hx-target</code> y <code>hx-swap</code> juntos?</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Respuesta esperada</h4>
+    <p>Crear usa <code>hx-post</code>, borrar usa <code>hx-delete</code>, editar usa <code>hx-get</code>. <code>hx-target</code> dice dónde poner la respuesta y <code>hx-swap</code> dice cómo reemplazarla. Juntos actualizan solo la parte que cambió.</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 7 completada!</h2>
+    <p>Ya sabes hacer páginas interactivas con htmx y Bootstrap. En la próxima clase integraremos <strong>todo</strong> en un proyecto completo.</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🛠️ Herramientas de Programación II · Clase 7 de 8</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

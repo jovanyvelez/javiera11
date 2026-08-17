@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛠️ Herramientas de Programación II · Clase 5 · Pydantic</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🛡️</span>
+    <div>
+      <h1>Herramientas de Programación II · Clase 5</h1>
+      <p class="subtitulo">Validación con Pydantic · modelos y formularios</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">🧱 Modelos</button>
+  <button class="btn-modulo" data-modulo="2">🏷️ Field</button>
+  <button class="btn-modulo" data-modulo="3">📝 Form</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🚫 422</button>
+  <button class="btn-modulo" data-modulo="6">📐 Esquemas</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🛡️ Validando los datos con Pydantic</h2>
+    <p class="lead">Hasta ahora confiamos en que el usuario envía datos correctos. Pero un usuario puede enviar un año de nacimiento que no es número, o un nombre vacío. Hoy vamos a <strong>validar</strong> los datos con <strong>Pydantic</strong>, para que la app rechace lo que no sirve antes de tocar la base de datos.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — dev@app</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd">curl -X POST localhost:8000/autores -d "nombre=&nacimiento=abc"</span></div>
+        <div class="out">422 Unprocessable Entity — datos inválidos</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd">curl -X POST localhost:8000/autores -d "nombre=Gabo&nacimiento=1927"</span></div>
+        <div class="out">{"id":5,"nombre":"Gabo","nacimiento":1927}</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3h 45min en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Validar los datos de entrada con modelos Pydantic y entender el error 422.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>El dato inválido que rompe la BD, el nombre vacío, el año que no es número.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · Modelos</td><td style="color:var(--a)">BaseModel</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>02 · Field</td><td style="color:var(--b)">Reglas de validación</td><td style="color:var(--rosa)">Nombre vacío</td><td>100 XP</td></tr>
+        <tr><td>03 · Form</td><td style="color:var(--a)">Datos de formulario</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · 422</td><td style="color:var(--verde)">El error de validación</td><td style="color:var(--rosa)">Dato inválido</td><td>100 XP</td></tr>
+        <tr><td>05 · Esquemas</td><td style="color:var(--b)">Archivo esquemas.py</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>06 · Taller</td><td style="color:var(--a)">Validación</td><td style="color:var(--rosa)">—</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: si un usuario escribe "abc" en el campo "año de nacimiento", <strong>¿qué debería hacer la app?</strong> ¿Guardarlo igual, o rechazarlo? ¿Por qué?</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué validar?</h4>
+    <p>Los datos que llegan del usuario <strong>no son de confianza</strong>. Pueden estar vacíos, mal escritos o ser malintencionados. Validar antes de guardar evita errores y protege la base de datos. Pydantic hace esta validación automáticamente.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: Modelos →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>🧱 Modelos Pydantic: la forma de los datos</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Definir qué datos esperamos"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es un modelo Pydantic?</h3>
+    <p>Un <strong>modelo Pydantic</strong> es una clase que describe <strong>la forma de los datos</strong>: qué campos tiene y de qué tipo es cada uno. Se crea heredando de <code>BaseModel</code>. Cuando FastAPI recibe datos, los valida contra el modelo: si no coinciden, los rechaza.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>esquemas.py — un modelo simple</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel
+
+<span class="kw">class</span> <span class="ty">AutorCrear</span>(BaseModel):
+    nombre: <span class="ty">str</span>
+    pais: <span class="ty">str</span> | <span class="kw">None</span> = <span class="kw">None</span>
+    nacimiento: <span class="ty">int</span> | <span class="kw">None</span> = <span class="kw">None</span></code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Tipos = reglas</h4>
+    <p>Cada campo declara su <strong>tipo</strong>: <code>nombre</code> debe ser texto (<code>str</code>), <code>nacimiento</code> debe ser número (<code>int</code>). El <code>| None</code> significa "puede estar vacío". Si llega un dato del tipo equivocado, Pydantic lo rechaza.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: miren el modelo de arriba. <strong>¿Qué campos son obligatorios y cuáles opcionales?</strong> (pista: los que tienen <code>= None</code> son opcionales).</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es un modelo Pydantic?</p>
+      <button class="opcion" data-op="a">Una base de datos</button>
+      <button class="opcion" data-op="b">Una clase que describe la forma y tipos de los datos</button>
+      <button class="opcion" data-op="c">Un framework web</button>
+      <button class="opcion" data-op="d">Un tipo de archivo</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué significa str | None = None?</p>
+      <button class="opcion" data-op="a">El campo es opcional y puede ser texto o vacío</button>
+      <button class="opcion" data-op="b">El campo es obligatorio</button>
+      <button class="opcion" data-op="c">El campo es un número</button>
+      <button class="opcion" data-op="d">El campo no existe</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Field →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>🏷️ Field: reglas de validación</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Poner límites a los datos"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Con <code>Field</code> puedes agregar <strong>reglas</strong> a cada campo. Por ejemplo, que el nombre tenga al menos 1 carácter (<code>min_length=1</code>) o que el año de nacimiento sea mayor o igual a 0 (<code>ge=0</code>). Si un dato no cumple la regla, Pydantic lo rechaza.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>esquemas.py — con reglas</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel, Field
+
+<span class="kw">class</span> <span class="ty">AutorCrear</span>(BaseModel):
+    nombre: <span class="ty">str</span> = Field(min_length=<span class="num">1</span>)
+    pais: <span class="ty">str</span> | <span class="kw">None</span> = <span class="kw">None</span>
+    nacimiento: <span class="ty">int</span> | <span class="kw">None</span> = Field(default=<span class="kw">None</span>, ge=<span class="num">0</span>)</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el nombre vacío</h4>
+    <p>Sin <code>min_length=1</code>, un usuario podría crear un autor con nombre vacío (<code>""</code>). Eso ensucia la base de datos. Con la regla, Pydantic rechaza el nombre vacío antes de que llegue a la BD.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Reglas comunes de Field</h4>
+    <p><code>min_length</code> (longitud mínima), <code>max_length</code> (máxima), <code>ge</code> (mayor o igual), <code>le</code> (menor o igual), <code>gt</code> (mayor que), <code>lt</code> (menor que). Son como las reglas de un formulario, pero en el backend.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿qué regla usarían para que el año de nacimiento no pueda ser negativo? ¿Y para que el nombre no pueda estar vacío?</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Para qué sirve Field?</p>
+      <button class="opcion" data-op="a">Para conectar a la base de datos</button>
+      <button class="opcion" data-op="b">Para agregar reglas de validación a un campo</button>
+      <button class="opcion" data-op="c">Para definir rutas</button>
+      <button class="opcion" data-op="d">Para instalar librerías</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué hace min_length=1?</p>
+      <button class="opcion" data-op="a">Exige que el texto tenga al menos 1 carácter</button>
+      <button class="opcion" data-op="b">Borra el texto</button>
+      <button class="opcion" data-op="c">Convierte el texto a número</button>
+      <button class="opcion" data-op="d">No hace nada</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Form →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>📝 Form: datos de formulario</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Recibir datos de un formulario HTML"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Cuando un formulario HTML envía datos, estos llegan como <strong>form data</strong> (pares clave=valor). En FastAPI los recibimos con <code>Form()</code>. Luego los pasamos al modelo Pydantic para validarlos.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — recibir formulario y validar</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> Form
+
+<span class="kw">@router.post</span>(<span class="str">"/autores"</span>)
+<span class="kw">async def</span> <span class="fn">crear_autor</span>(
+    nombre: <span class="ty">str</span> = Form(),
+    pais: <span class="ty">str</span> | <span class="kw">None</span> = Form(default=<span class="kw">None</span>),
+    nacimiento: <span class="ty">int</span> | <span class="kw">None</span> = Form(default=<span class="kw">None</span>),
+):
+    <span class="cm"># validamos con el modelo Pydantic</span>
+    autor = AutorCrear(nombre=nombre, pais=pais, nacimiento=nacimiento)
+    <span class="kw">await</span> crear_autor(conn, autor.nombre, autor.pais, autor.nacimiento)</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Form() = "viene de un formulario"</h4>
+    <p><code>Form()</code> le dice a FastAPI "este dato viene del cuerpo de un formulario HTML". Es distinto de <code>Query()</code> (viene de la URL) y de <code>Body()</code> (viene de JSON). Cada uno indica de dónde sale el dato.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿de dónde creen que vienen los datos cuando llenas un formulario en una página web y presionas "Enviar"? (pista: no vienen de la URL).</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Para qué sirve Form() en FastAPI?</p>
+      <button class="opcion" data-op="a">Para conectar a la base de datos</button>
+      <button class="opcion" data-op="b">Para recibir datos de un formulario HTML</button>
+      <button class="opcion" data-op="c">Para definir rutas</button>
+      <button class="opcion" data-op="d">Para generar documentación</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué haces con los datos después de recibirlos con Form()?</p>
+      <button class="opcion" data-op="a">Los validas con un modelo Pydantic</button>
+      <button class="opcion" data-op="b">Los borras</button>
+      <button class="opcion" data-op="c">Los ignoras</button>
+      <button class="opcion" data-op="d">Los imprimes y ya</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73% agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Coméntale a tu compañero/a qué te costó más: los modelos o Field. 1 min.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>Pydantic es tan popular que FastAPI lo usa como base para toda su validación. Fue creado por <strong>Samuel Colvin</strong> y hoy es una de las librerías más usadas de Python. Su nombre viene de "pedantic" (meticuloso), porque es muy estricto con los datos. 🛡️</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: 422 →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>🚫 422: el error de validación</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Cuando los datos no pasan la prueba"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Cuando los datos no cumplen las reglas del modelo, FastAPI responde con el código <strong>422 Unprocessable Entity</strong>. Es la forma del servidor de decir "recibí tus datos, pero no son válidos". El error incluye un detalle de <strong>qué</strong> falló y <strong>por qué</strong>.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el dato inválido</h4>
+    <p>Si un usuario envía <code>nacimiento="abc"</code> (texto en vez de número), Pydantic no puede convertirlo a <code>int</code> y responde 422. Sin esta validación, el dato "abc" llegaría a la base de datos y causaría un error más grave (o datos corruptos).</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-verde"><span class="emoji">✅</span><h3>200</h3><p>Todo bien: los datos son válidos y se procesaron.</p></div>
+    <div class="tarjeta"><span class="emoji">🚫</span><h3>422</h3><p>Datos inválidos: no cumplen las reglas del modelo.</p></div>
+    <div class="tarjeta tarjeta-ambar"><span class="emoji">🔍</span><h3>404</h3><p>No encontrado: la ruta o el recurso no existe.</p></div>
+    <div class="tarjeta tarjeta-magenta"><span class="emoji">💥</span><h3>500</h3><p>Error interno: algo se rompió en el servidor.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El 422 es tu amigo</h4>
+    <p>El 422 no es un error "malo": es el servidor <strong>protegiéndose</strong>. Te dice exactamente qué campo falló y por qué. En el frontend, puedes usar ese detalle para mostrar un mensaje al usuario: "el año de nacimiento debe ser un número".</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿qué código de estado creen que devuelve el servidor si el usuario envía un nombre vacío? ¿Y si envía un año de nacimiento en texto?</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué significa el código 422?</p>
+      <button class="opcion" data-op="a">Todo salió bien</button>
+      <button class="opcion" data-op="b">Los datos enviados no son válidos</button>
+      <button class="opcion" data-op="c">No se encontró la ruta</button>
+      <button class="opcion" data-op="d">Error interno del servidor</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué pasa si envías "abc" en un campo que espera un número?</p>
+      <button class="opcion" data-op="a">Pydantic lo rechaza y responde 422</button>
+      <button class="opcion" data-op="b">Se guarda como texto</button>
+      <button class="opcion" data-op="c">Se convierte en 0</button>
+      <button class="opcion" data-op="d">No pasa nada</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Esquemas →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>📐 Esquemas: el archivo de los modelos</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Organizar los modelos en un solo lugar"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Igual que separamos el SQL en <code>repositorio.py</code>, separamos los modelos Pydantic en <code>esquemas.py</code>. Ahí viven todos los modelos de validación. Es una buena práctica: cada archivo tiene una responsabilidad clara.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>esquemas.py — los modelos</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel, Field
+
+<span class="kw">class</span> <span class="ty">AutorCrear</span>(BaseModel):
+    nombre: <span class="ty">str</span> = Field(min_length=<span class="num">1</span>)
+    pais: <span class="ty">str</span> | <span class="kw">None</span> = <span class="kw">None</span>
+    nacimiento: <span class="ty">int</span> | <span class="kw">None</span> = Field(default=<span class="kw">None</span>, ge=<span class="num">0</span>)
+
+<span class="kw">class</span> <span class="ty">AutorActualizar</span>(BaseModel):
+    nombre: <span class="ty">str</span> = Field(min_length=<span class="num">1</span>)
+    pais: <span class="ty">str</span> | <span class="kw">None</span> = <span class="kw">None</span>
+    nacimiento: <span class="ty">int</span> | <span class="kw">None</span> = Field(default=<span class="kw">None</span>, ge=<span class="num">0</span>)</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Crear vs Actualizar</h4>
+    <p>Nota que <code>AutorCrear</code> y <code>AutorActualizar</code> son casi iguales. En proyectos reales a veces se separan porque crear y actualizar pueden tener reglas distintas (por ejemplo, al actualizar el id es obligatorio). Por ahora los mantenemos simples.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿por qué creen que es buena idea separar los modelos en <code>esquemas.py</code> en vez de ponerlos en las rutas? (pista: piensa en la regla de "una responsabilidad por archivo").</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Dónde viven los modelos Pydantic?</p>
+      <button class="opcion" data-op="a">En las rutas</button>
+      <button class="opcion" data-op="b">En un archivo esquemas.py</button>
+      <button class="opcion" data-op="c">En la base de datos</button>
+      <button class="opcion" data-op="d">En el navegador</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué separar los modelos en su propio archivo?</p>
+      <button class="opcion" data-op="a">Porque cada archivo tiene una responsabilidad clara</button>
+      <button class="opcion" data-op="b">Porque es obligatorio</button>
+      <button class="opcion" data-op="c">No hay razón</button>
+      <button class="opcion" data-op="d">Porque Pydantic lo exige</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: valida los datos</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "Aplica todo lo aprendido"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">Diseña las reglas de validación</span>
+    </div>
+    <p>Tu misión es diseñar el modelo Pydantic para validar los datos de un autor, con reglas que rechacen los datos inválidos.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 Lo que debe tener tu modelo</h3>
+    <ol>
+      <li>Un campo <code>nombre</code> obligatorio con al menos 1 carácter.</li>
+      <li>Un campo <code>pais</code> opcional.</li>
+      <li>Un campo <code>nacimiento</code> opcional, que no pueda ser negativo.</li>
+    </ol>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 10 minutos</h4>
+    <p>Con su compañero/a, respondan por escrito:</p>
+    <ol>
+      <li>¿Qué regla de <code>Field</code> usarían para el nombre?</li>
+      <li>¿Qué regla usarían para que el año no sea negativo?</li>
+      <li>¿Qué código de estado devuelve el servidor si el nombre está vacío?</li>
+      <li>¿En qué archivo pondrían el modelo?</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Respuesta esperada</h4>
+    <p>Para el nombre: <code>Field(min_length=1)</code>. Para el año: <code>Field(ge=0)</code>. Si el nombre está vacío, el servidor responde <strong>422</strong>. Y el modelo va en <code>esquemas.py</code>.</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 5 completada!</h2>
+    <p>Ya sabes validar datos con Pydantic. En la próxima clase crearemos las <strong>plantillas Jinja2</strong> para mostrar los datos en el navegador.</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🛠️ Herramientas de Programación II · Clase 5 de 8</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

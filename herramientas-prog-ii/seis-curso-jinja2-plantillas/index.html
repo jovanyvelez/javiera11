@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛠️ Herramientas de Programación II · Clase 6 · Jinja2</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">📄</span>
+    <div>
+      <h1>Herramientas de Programación II · Clase 6</h1>
+      <p class="subtitulo">Plantillas Jinja2 · herencia, macros y partials</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">📄 Plantillas</button>
+  <button class="btn-modulo" data-modulo="2">🧬 Herencia</button>
+  <button class="btn-modulo" data-modulo="3">🧩 Macros</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🔲 Partials</button>
+  <button class="btn-modulo" data-modulo="6">📨 TemplateResponse</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>📄 Mostrando datos con Jinja2</h2>
+    <p class="lead">Hasta ahora nuestra API devuelve JSON. Pero los humanos queremos ver <strong>páginas web</strong>. Hoy vamos a usar <strong>Jinja2</strong>, el motor de plantillas, para generar HTML con los datos de la base de datos. Aprenderemos herencia, macros y partials, al estilo de React o Svelte.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — dev@app</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd">curl localhost:8000/autores</span></div>
+        <div class="out">&lt;h1&gt;Autores&lt;/h1&gt;&lt;table&gt;...&lt;/table&gt;</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd"># ¡ahora devuelve HTML, no JSON!</span></div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3h 45min en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Generar HTML con Jinja2 usando herencia, macros y partials para reutilizar código.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>El HTML repetido, la plantilla gigante, el código que no se reutiliza.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · Plantillas</td><td style="color:var(--a)">Qué es Jinja2</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>02 · Herencia</td><td style="color:var(--b)">extends y block</td><td style="color:var(--rosa)">HTML repetido</td><td>100 XP</td></tr>
+        <tr><td>03 · Macros</td><td style="color:var(--a)">Componentes</td><td style="color:var(--rosa)">Código que no se reutiliza</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · Partials</td><td style="color:var(--verde)">Fragmentos</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>05 · TemplateResponse</td><td style="color:var(--b)">Renderizar</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>06 · Taller</td><td style="color:var(--a)">Plantillas</td><td style="color:var(--rosa)">—</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿qué creen que es una <strong>plantilla</strong>? ¿En qué se diferencia de una página HTML normal? Adivinen y luego lo comprobamos.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué plantillas?</h4>
+    <p>Escribir HTML a mano para cada dato es imposible. Una plantilla es un HTML con <strong>huecos</strong> que se rellenan con datos. Jinja2 rellena esos huecos y genera el HTML final. Es como una carta con espacios en blanco que se completan.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: Plantillas →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>📄 Jinja2: el motor de plantillas</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "HTML con huecos que se rellenan"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es Jinja2?</h3>
+    <p>Jinja2 es un <strong>motor de plantillas</strong> para Python. Te permite escribir HTML con <strong>variables</strong> (<code>{{ variable }}</code>) y <strong>lógica</strong> (<code>{% for %}</code>, <code>{% if %}</code>). FastAPI lo usa para generar páginas web con datos reales.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>autores.html — variables y bucles</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>&lt;h1&gt;Autores&lt;/h1&gt;
+
+&lt;ul&gt;
+  {% for autor in autores %}
+    &lt;li&gt;{{ autor.nombre }} — {{ autor.pais }}&lt;/li&gt;
+  {% endfor %}
+&lt;/ul&gt;</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Dos tipos de llaves</h4>
+    <p><code>{{ ... }}</code> imprime una variable (el valor). <code>{% ... %}</code> ejecuta lógica (bucles, condiciones). Con <code>{% for %}</code> recorres una lista y generas HTML por cada elemento.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: miren el código de arriba. <strong>¿Qué creen que imprime <code>{{ autor.nombre }}</code>?</strong> ¿Y cuántas veces se repite el <code>&lt;li&gt;</code>?</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es Jinja2?</p>
+      <button class="opcion" data-op="a">Una base de datos</button>
+      <button class="opcion" data-op="b">Un motor de plantillas para Python</button>
+      <button class="opcion" data-op="c">Un framework web</button>
+      <button class="opcion" data-op="d">Un lenguaje de programación</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué hace {{ variable }} en una plantilla?</p>
+      <button class="opcion" data-op="a">Imprime el valor de la variable</button>
+      <button class="opcion" data-op="b">Borra la variable</button>
+      <button class="opcion" data-op="c">Crea un bucle</button>
+      <button class="opcion" data-op="d">No hace nada</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Herencia →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>🧬 Herencia: una base para todas las páginas</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "No repitas el HTML común"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Todas las páginas comparten cosas: el <code>&lt;head&gt;</code>, los estilos, el menú. Con <strong>herencia</strong>, defines una plantilla <strong>base</strong> con <strong>bloques</strong> (<code>{% block %}</code>) y las demás páginas la <strong>extienden</strong> (<code>{% extends %}</code>) rellenando solo lo que cambia.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>base.html — la plantilla base</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;{% block title %}Autores{% endblock %}&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  {% block content %}{% endblock %}
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>autores.html — extiende la base</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{% extends "base.html" %}
+
+{% block content %}
+  &lt;h1&gt;Lista de autores&lt;/h1&gt;
+{% endblock %}</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el HTML repetido</h4>
+    <p>Si cada página repite el <code>&lt;head&gt;</code> completo, y mañana cambias el título o agregas un estilo, tienes que editar <strong>todas</strong> las páginas. Con herencia, editas solo la base y todas se actualizan.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿qué partes de una página web creen que son <strong>iguales en todas las páginas</strong> de un sitio? (pista: piensa en el menú, el pie de página, los estilos).</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Para qué sirve la herencia en Jinja2?</p>
+      <button class="opcion" data-op="a">Para borrar páginas</button>
+      <button class="opcion" data-op="b">Para reutilizar una plantilla base y no repetir HTML</button>
+      <button class="opcion" data-op="c">Para conectar a la base de datos</button>
+      <button class="opcion" data-op="d">Para validar datos</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué hace {% extends "base.html" %}?</p>
+      <button class="opcion" data-op="a">Hace que la página use la plantilla base</button>
+      <button class="opcion" data-op="b">Borra la plantilla base</button>
+      <button class="opcion" data-op="c">Crea un bucle</button>
+      <button class="opcion" data-op="d">No hace nada</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Macros →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>🧩 Macros: componentes reutilizables</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Al estilo de React o Svelte"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Una <strong>macro</strong> es como una <strong>función</strong> que devuelve HTML. La defines una vez y la usas muchas veces, pasándole datos. Es la forma de Jinja2 de crear <strong>componentes</strong>, como los de React o Svelte.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>componentes/tabla_autores.html — una macro</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{% macro tabla_autores(autores) %}
+&lt;table&gt;
+  {% for autor in autores %}
+    &lt;tr&gt;&lt;td&gt;{{ autor.nombre }}&lt;/td&gt;&lt;/tr&gt;
+  {% endfor %}
+&lt;/table&gt;
+{% endmacro %}</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>autores.html — usar la macro</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{% from "componentes/tabla_autores.html" import tabla_autores %}
+
+{{ tabla_autores(autores) }}</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Macro = componente</h4>
+    <p>Igual que en React tienes <code>&lt;TablaAutores /&gt;</code>, en Jinja2 tienes <code>{{ tabla_autores(autores) }}</code>. La idea es la misma: un bloque de interfaz reutilizable que recibe datos y devuelve HTML.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿qué "componentes" podrían crear para la app de autores? (pista: piensa en el formulario de crear y en la tabla de listar).</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es una macro en Jinja2?</p>
+      <button class="opcion" data-op="a">Una base de datos</button>
+      <button class="opcion" data-op="b">Una función que devuelve HTML reutilizable</button>
+      <button class="opcion" data-op="c">Un tipo de variable</button>
+      <button class="opcion" data-op="d">Un error</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿A qué se parecen las macros?</p>
+      <button class="opcion" data-op="a">A los componentes de React o Svelte</button>
+      <button class="opcion" data-op="b">A las bases de datos</button>
+      <button class="opcion" data-op="c">A los bucles</button>
+      <button class="opcion" data-op="d">A los archivos</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73% agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Coméntale a tu compañero/a qué te costó más: la herencia o las macros. 1 min.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>Jinja2 se llama así por los <strong>templos jinja</strong> de Japón, y el "2" es la segunda versión. Lo usan frameworks como Flask y FastAPI, y también herramientas como Ansible. Es el motor de plantillas más popular de Python. ⛩️</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Partials →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>🔲 Partials: fragmentos de página</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Devolver solo un pedazo de HTML"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Un <strong>partial</strong> es una plantilla que devuelve <strong>solo un fragmento</strong> de HTML, no la página completa. Es clave para htmx (que veremos en la próxima clase): cuando creas un autor, el servidor devuelve solo la tabla actualizada, no toda la página.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>partials/tabla_autores.html — un fragmento</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{% from "componentes/tabla_autores.html" import tabla_autores %}
+
+{{ tabla_autores(autores) }}</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Página completa vs partial</h4>
+    <p>La página completa (<code>autores.html</code>) extiende la base y tiene todo. El partial (<code>partials/tabla_autores.html</code>) es solo la tabla, sin <code>&lt;head&gt;</code> ni menú. El partial se usa para actualizar una parte de la página sin recargarla.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿por qué creen que es útil devolver <strong>solo la tabla</strong> en vez de toda la página cuando creas un autor? (pista: piensa en la velocidad y en no recargar).</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es un partial?</p>
+      <button class="opcion" data-op="a">Una página completa</button>
+      <button class="opcion" data-op="b">Una plantilla que devuelve solo un fragmento de HTML</button>
+      <button class="opcion" data-op="c">Una base de datos</button>
+      <button class="opcion" data-op="d">Un tipo de error</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Para qué sirve un partial?</p>
+      <button class="opcion" data-op="a">Para actualizar una parte de la página sin recargarla</button>
+      <button class="opcion" data-op="b">Para borrar la página</button>
+      <button class="opcion" data-op="c">Para conectar a la BD</button>
+      <button class="opcion" data-op="d">No sirve para nada</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: TemplateResponse →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>📨 TemplateResponse: renderizar la plantilla</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Cómo la ruta devuelve HTML"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Para devolver HTML en vez de JSON, la ruta usa <code>TemplateResponse</code>. Le pasas el <strong>request</strong>, el <strong>nombre</strong> de la plantilla y el <strong>contexto</strong> (los datos). Jinja2 rellena la plantilla con esos datos y devuelve el HTML.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — renderizar</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">from</span> fastapi.templating <span class="kw">import</span> Jinja2Templates
+
+templates = Jinja2Templates(directory=<span class="str">"templates"</span>)
+
+<span class="kw">@router.get</span>(<span class="str">"/autores"</span>)
+<span class="kw">async def</span> <span class="fn">listar_autores</span>(request, conn):
+    autores = <span class="kw">await</span> obtener_autores(conn)
+    <span class="kw">return</span> templates.TemplateResponse(
+        request=request,
+        name=<span class="str">"autores.html"</span>,
+        context={<span class="str">"autores"</span>: autores},
+    )</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Tres argumentos</h4>
+    <p><code>request</code> es la petición (FastAPI la necesita). <code>name</code> es el archivo de la plantilla. <code>context</code> es un diccionario con los datos que la plantilla usará (aquí, la lista de autores).</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: en el código de arriba, <strong>¿cómo sabe la plantilla <code>autores.html</code> qué autores mostrar?</strong> (pista: mira el <code>context</code>).</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué devuelve TemplateResponse?</p>
+      <button class="opcion" data-op="a">JSON</button>
+      <button class="opcion" data-op="b">HTML generado a partir de una plantilla</button>
+      <button class="opcion" data-op="c">Un archivo</button>
+      <button class="opcion" data-op="d">Un error</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué es el "context" en TemplateResponse?</p>
+      <button class="opcion" data-op="a">Un diccionario con los datos que usará la plantilla</button>
+      <button class="opcion" data-op="b">El nombre de la plantilla</button>
+      <button class="opcion" data-op="c">La conexión a la BD</button>
+      <button class="opcion" data-op="d">El código de estado</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: arma tus plantillas</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "Aplica todo lo aprendido"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">Diseña las plantillas de autores</span>
+    </div>
+    <p>Tu misión es diseñar la estructura de plantillas para la app de autores, usando herencia, macros y partials.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 Lo que debe tener</h3>
+    <ol>
+      <li>Una plantilla <code>base.html</code> con el <code>&lt;head&gt;</code> y un bloque <code>content</code>.</li>
+      <li>Una macro <code>tabla_autores(autores)</code> que genere la tabla.</li>
+      <li>Una macro <code>formulario_crear_autor()</code> para el formulario.</li>
+      <li>Un partial <code>tabla_autores.html</code> que devuelva solo la tabla.</li>
+    </ol>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 10 minutos</h4>
+    <p>Con su compañero/a, respondan por escrito:</p>
+    <ol>
+      <li>¿Qué va en la plantilla base y qué en las páginas hijas?</li>
+      <li>¿Por qué usar macros para la tabla y el formulario?</li>
+      <li>¿Cuándo devolverías un partial en vez de la página completa?</li>
+      <li>¿Qué tres argumentos recibe <code>TemplateResponse</code>?</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Respuesta esperada</h4>
+    <p>La base tiene el <code>&lt;head&gt;</code> y bloques; las hijas rellenan los bloques. Las macros reutilizan la tabla y el formulario. El partial se usa para actualizar una parte sin recargar. Y <code>TemplateResponse</code> recibe <code>request</code>, <code>name</code> y <code>context</code>.</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 6 completada!</h2>
+    <p>Ya sabes generar HTML con Jinja2. En la próxima clase haremos la página <strong>interactiva</strong> con htmx y Bootstrap.</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🛠️ Herramientas de Programación II · Clase 6 de 8</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

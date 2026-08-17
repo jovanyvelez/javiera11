@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛠️ Herramientas de Programación II · Clase 3 · BD + Pool</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🐘</span>
+    <div>
+      <h1>Herramientas de Programación II · Clase 3</h1>
+      <p class="subtitulo">Base de datos y pool de conexiones · asyncpg</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">🐘 PostgreSQL</button>
+  <button class="btn-modulo" data-modulo="2">⚡ asyncpg</button>
+  <button class="btn-modulo" data-modulo="3">🏊 Pool</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🔗 get_connection</button>
+  <button class="btn-modulo" data-modulo="6">🔄 Lifespan</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🐘 Conectando la app a la base de datos</h2>
+    <p class="lead">Hasta ahora nuestra app no guarda nada. Hoy vamos a conectarla a una <strong>base de datos PostgreSQL</strong> usando <strong>asyncpg</strong> y un <strong>pool de conexiones</strong>. Al final, la ruta <code>/autores</code> leerá datos reales de la base de datos.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — dev@app</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd">fastapi dev main.py</span></div>
+        <div class="out">INFO: Pool de conexiones establecido</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd">curl localhost:8000/autores</span></div>
+        <div class="out">[{"id":1,"nombre":"Gabriel García Márquez","pais":"Colombia"}]</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3h 45min en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Conectar la app a PostgreSQL con asyncpg, usando un pool de conexiones y una dependencia <code>get_connection</code>.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>La conexión por request que colapsa, el pool que nunca se cierra, la conexión que se queda colgada.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · PostgreSQL</td><td style="color:var(--a)">La base de datos</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>02 · asyncpg</td><td style="color:var(--b)">El driver</td><td style="color:var(--rosa)">Conexión síncrona</td><td>100 XP</td></tr>
+        <tr><td>03 · Pool</td><td style="color:var(--a)">create_pool</td><td style="color:var(--rosa)">1 conexión por request</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · get_connection</td><td style="color:var(--verde)">Dependencia</td><td style="color:var(--rosa)">Conexión colgada</td><td>100 XP</td></tr>
+        <tr><td>05 · Lifespan</td><td style="color:var(--b)">Ciclo de vida</td><td style="color:var(--rosa)">Pool que nunca se cierra</td><td>100 XP</td></tr>
+        <tr><td>06 · Taller</td><td style="color:var(--a)">Diagnóstico</td><td style="color:var(--rosa)">Backend que colapsa</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: si la app tiene que leer 10 autores de una base de datos, <strong>¿cuántas veces creen que se abre la conexión?</strong> ¿Una vez al arrancar, o una vez por cada usuario? Adivinen y luego lo comprobamos.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué una base de datos?</h4>
+    <p>Si guardas los datos en un archivo, se pierden al apagar la app y no soportan muchos usuarios. Una base de datos como PostgreSQL guarda los datos de forma <strong>segura y duradera</strong>, y permite que muchos usuarios lean y escriban a la vez.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: PostgreSQL →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>🐘 PostgreSQL: la base de datos</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Donde viven los datos"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es PostgreSQL?</h3>
+    <p>PostgreSQL es un <strong>sistema de gestión de bases de datos</strong> (SGBD). Es donde guardamos los datos de forma organizada, en <strong>tablas</strong> con filas y columnas. Es gratuito, muy potente y uno de los más usados del mundo.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-verde"><span class="emoji">📊</span><h3>Tablas</h3><p>Los datos se organizan en tablas con filas (registros) y columnas (campos).</p></div>
+    <div class="tarjeta"><span class="emoji">🔒</span><h3>Seguro</h3><p>Protege los datos y evita que se corrompan.</p></div>
+    <div class="tarjeta tarjeta-ambar"><span class="emoji">👥</span><h3>Concurrente</h3><p>Muchos usuarios pueden leer y escribir a la vez sin chocar.</p></div>
+    <div class="tarjeta tarjeta-magenta"><span class="emoji">💾</span><h3>Duradero</h3><p>Los datos persisten aunque apagues la app.</p></div>
+  </div>
+
+  <h3>📝 Nuestra tabla de autores</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>id</th><th>nombre</th><th>pais</th><th>nacimiento</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Gabriel García Márquez</td><td>Colombia</td><td>1927</td></tr>
+        <tr><td>2</td><td>Julio Cortázar</td><td>Argentina</td><td>1914</td></tr>
+        <tr><td>3</td><td>Jorge Luis Borges</td><td>Argentina</td><td>1899</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Cada fila = un autor</h4>
+    <p>La tabla <code>autores</code> tiene 4 columnas: <code>id</code> (número único), <code>nombre</code>, <code>pais</code> y <code>nacimiento</code>. Cada fila es un autor. Cuando la app pide "los autores", en realidad pide "todas las filas de esta tabla".</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: si quisieran guardar <strong>libros</strong> (título, autor, año), ¿qué columnas tendría la tabla <code>libros</code>? Diseñen la tabla en papel.</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es PostgreSQL?</p>
+      <button class="opcion" data-op="a">Un lenguaje de programación</button>
+      <button class="opcion" data-op="b">Un sistema de gestión de bases de datos</button>
+      <button class="opcion" data-op="c">Un framework web</button>
+      <button class="opcion" data-op="d">Un navegador</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cómo se organizan los datos en una base de datos?</p>
+      <button class="opcion" data-op="a">En tablas con filas y columnas</button>
+      <button class="opcion" data-op="b">En archivos de texto sueltos</button>
+      <button class="opcion" data-op="c">En imágenes</button>
+      <button class="opcion" data-op="d">No se organizan</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: asyncpg →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>⚡ asyncpg: el driver asíncrono</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El traductor entre Python y PostgreSQL"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es un driver?</h3>
+    <p>Python no sabe hablar con PostgreSQL por sí solo. Necesita un <strong>driver</strong>: una librería que hace de <strong>traductor</strong> entre el código Python y la base de datos. <strong>asyncpg</strong> es el driver asíncrono de PostgreSQL: mientras espera la respuesta, no bloquea el programa.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: la conexión síncrona</h4>
+    <p>Un driver síncrono (como <code>psycopg2</code>) se queda <strong>esperando</strong> la respuesta de la BD sin hacer nada más. Si 100 usuarios piden datos a la vez, cada uno espera su turno. Con <code>asyncpg</code>, mientras la BD responde, la app atiende a otros usuarios.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>database.py — crear el pool con asyncpg</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">import</span> asyncpg
+
+<span class="kw">async def</span> <span class="fn">connect</span>(db_url):
+    <span class="cm"># create_pool abre varias conexiones y las mantiene listas</span>
+    pool = <span class="kw">await</span> asyncpg.create_pool(
+        dsn=db_url,
+        min_size=<span class="num">1</span>,
+        max_size=<span class="num">10</span>,
+    )
+    <span class="kw">return</span> pool</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 asyncpg = asíncrono + PostgreSQL</h4>
+    <p>El nombre lo dice todo: <strong>async</strong> (asíncrono) + <strong>pg</strong> (PostgreSQL). Es el driver asíncrono más usado para PostgreSQL en Python. Sus métodos principales son <code>fetch</code> (leer varios), <code>fetchrow</code> (leer uno) y <code>execute</code> (insertar/actualizar/borrar).</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿por qué creen que es importante que el driver sea <strong>asíncrono</strong> y no síncrono? (pista: recuerda la clase 1 y el mesero que atiende varias mesas).</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es asyncpg?</p>
+      <button class="opcion" data-op="a">Una base de datos</button>
+      <button class="opcion" data-op="b">El driver asíncrono de PostgreSQL para Python</button>
+      <button class="opcion" data-op="c">Un framework web</button>
+      <button class="opcion" data-op="d">Un lenguaje de programación</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué ventaja tiene un driver asíncrono?</p>
+      <button class="opcion" data-op="a">No bloquea el programa mientras espera la respuesta</button>
+      <button class="opcion" data-op="b">Es más lento</button>
+      <button class="opcion" data-op="c">No funciona con PostgreSQL</button>
+      <button class="opcion" data-op="d">Solo funciona de día</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Pool →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>🏊 Pool de conexiones</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "No abras una conexión por request"</p>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: 1 conexión por request</h4>
+    <p>Si cada request abre y cierra una conexión, abrir/cerrar cuesta tiempo (~30 ms) y PostgreSQL se satura con tantas conexiones nuevas. Con 100 usuarios por segundo, pierdes segundos solo en conexiones. La solución: un <strong>pool</strong> que mantiene conexiones abiertas y las reutiliza.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Un <strong>pool de conexiones</strong> es un conjunto de conexiones <strong>ya abiertas</strong> que se reutilizan. En vez de abrir y cerrar por cada request, la app <strong>pide prestada</strong> una conexión del pool, la usa y la <strong>devuelve</strong>. Se crea con <code>asyncpg.create_pool()</code>.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-verde"><span class="emoji">📉</span><h3>min_size</h3><p>Conexiones mínimas abiertas desde el inicio.</p></div>
+    <div class="tarjeta"><span class="emoji">📈</span><h3>max_size</h3><p>Máximo de conexiones simultáneas permitidas.</p></div>
+    <div class="tarjeta tarjeta-ambar"><span class="emoji">⏱️</span><h3>timeout</h3><p>Cuánto esperar para adquirir una conexión.</p></div>
+    <div class="tarjeta tarjeta-magenta"><span class="emoji">♻️</span><h3>Reutilizar</h3><p>Las conexiones se devuelven y se vuelven a usar.</p></div>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Con su compañero/a: imaginen que el pool es el <strong>parqueadero de un restaurante</strong>. <code>min_size=1</code> es el carro siempre listo, <code>max_size=10</code> el tope. <strong>¿Qué pasaría si <code>max_size=1</code>?</strong> ¿Y si <code>min_size=1000</code>? Discutan qué se rompe en cada caso.</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>Una app con 1000 usuarios concurrentes no necesita 1000 conexiones: con <code>max_size=10</code> suele bastar, porque cada request usa la conexión por milisegundos y la devuelve. El pool es un <strong>parqueadero compartido</strong>: pocos carros alcanzan para muchos viajes.</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Para qué sirve un pool de conexiones?</p>
+      <button class="opcion" data-op="a">Para cifrar los datos</button>
+      <button class="opcion" data-op="b">Para reutilizar conexiones abiertas y no abrir una por request</button>
+      <button class="opcion" data-op="c">Para borrar la base de datos</button>
+      <button class="opcion" data-op="d">Para instalar Python</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué significa max_size=10?</p>
+      <button class="opcion" data-op="a">Máximo de 10 conexiones simultáneas</button>
+      <button class="opcion" data-op="b">10 bases de datos</button>
+      <button class="opcion" data-op="c">10 segundos de espera</button>
+      <button class="opcion" data-op="d">10 tablas</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73% agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Coméntale a tu compañero/a qué te costó más: asyncpg o el pool. 1 min.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>PostgreSQL se llama así porque evolucionó de un proyecto llamado <strong>POSTGRES</strong> (Post Ingres) en la Universidad de California en los años 80. Lleva más de 30 años en desarrollo y sigue siendo gratuito y de código abierto. 🐘</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: get_connection →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>🔗 get_connection: la dependencia con yield</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Prestar y devolver una conexión"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p><code>get_connection</code> es una dependencia de FastAPI que <strong>adquiere</strong> una conexión del pool, la <strong>cede</strong> a la ruta con <code>yield</code> y, al terminar, la <strong>devuelve</strong> al pool. La ruta nunca abre ni cierra nada: solo recibe una conexión lista y la usa.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>database.py — get_connection</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">async def</span> <span class="fn">get_connection</span>():
+    <span class="kw">if</span> db.pool <span class="kw">is</span> <span class="kw">None</span>:
+        <span class="kw">raise</span> RuntimeError(<span class="str">"El pool no está inicializado"</span>)
+
+    <span class="cm"># adquiere una conexión del pool</span>
+    <span class="kw">async with</span> db.pool.acquire() <span class="kw">as</span> conn:
+        <span class="kw">yield</span> conn  <span class="cm"># la cede a la ruta</span>
+    <span class="cm"># al terminar, la conexión regresa al pool</span></code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: la conexión colgada</h4>
+    <p>Si adquieres una conexión y nunca la devuelves, el pool se queda sin conexiones y nadie más puede entrar. El <code>async with</code> garantiza que la conexión <strong>siempre</strong> regrese al pool, incluso si la ruta lanza un error. No hay fugas.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 yield vs return</h4>
+    <p>Con <code>return</code> la función termina. Con <code>yield</code> la función <strong>se pausa</strong>, entrega el valor y, cuando la ruta termina, <strong>retoma</strong> para ejecutar la limpieza (devolver la conexión). Por eso es ideal para "pedir prestado y devolver".</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: <strong>¿qué creen que pasa si la ruta lanza un error a mitad de la consulta?</strong> ¿Se devuelve la conexión al pool o se queda colgada? (pista: <code>async with</code> la protege).</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace get_connection?</p>
+      <button class="opcion" data-op="a">Crea la base de datos</button>
+      <button class="opcion" data-op="b">Adquiere una conexión del pool y la cede a la ruta</button>
+      <button class="opcion" data-op="c">Borra todas las conexiones</button>
+      <button class="opcion" data-op="d">Instala asyncpg</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué se usa yield y no return?</p>
+      <button class="opcion" data-op="a">Porque yield permite devolver la conexión después de que la ruta termine</button>
+      <button class="opcion" data-op="b">Porque return no funciona en async</button>
+      <button class="opcion" data-op="c">Porque yield es más rápido</button>
+      <button class="opcion" data-op="d">Porque return no devuelve conexiones</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Lifespan →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>🔄 Lifespan: conectar y desconectar</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El pool vive desde que arranca hasta que apaga"</p>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el pool que nunca se cierra</h4>
+    <p>Si creas el pool al arrancar pero nunca lo cierras, cada reinicio deja conexiones <strong>zombis</strong> en PostgreSQL. Tras unos días, la BD se queda sin conexiones y nadie puede entrar. La solución: cerrar el pool en el <code>lifespan</code>.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>El pool se <strong>crea una sola vez</strong> al arrancar la app y se <strong>cierra una sola vez</strong> al apagarla. Esto se hace en el <code>lifespan</code> de FastAPI, que ya vimos en la clase 2. Jamás se crea dentro de una ruta.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — lifespan con el pool</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">@asynccontextmanager</span>
+<span class="kw">async def</span> <span class="fn">lifespan</span>(app: FastAPI):
+    <span class="kw">await</span> db.connect(DATABASE_URL)   <span class="cm"># arranque: abrir pool</span>
+    <span class="kw">yield</span>
+    <span class="kw">await</span> db.close()                <span class="cm"># apagado: cerrar pool</span>
+
+app = FastAPI(lifespan=lifespan)</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El flujo completo</h4>
+    <p>Al arrancar: se abre el pool. Durante la vida de la app: cada request pide prestada una conexión y la devuelve. Al apagar: se cierra el pool. Todo limpio, sin conexiones zombis.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿qué pasaría si crearas el pool <strong>dentro</strong> de la ruta <code>/autores</code> en vez de en el lifespan? (pista: ¿cuántas veces se ejecuta la ruta?).</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>Este patrón (abrir al arrancar, cerrar al apagar) es universal en backends profesionales. El pool vive desde que el servidor arranca hasta que se apaga, y cada request solo "pide prestada" una conexión por milisegundos.</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuándo se crea el pool de conexiones?</p>
+      <button class="opcion" data-op="a">En cada request</button>
+      <button class="opcion" data-op="b">Una sola vez, al arrancar la app</button>
+      <button class="opcion" data-op="c">Nunca</button>
+      <button class="opcion" data-op="d">Cada minuto</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué pasa si nunca cierras el pool?</p>
+      <button class="opcion" data-op="a">Quedan conexiones zombis y la BD se satura</button>
+      <button class="opcion" data-op="b">Nada, no importa</button>
+      <button class="opcion" data-op="c">La app va más rápido</button>
+      <button class="opcion" data-op="d">Se borran los datos</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: diagnóstico de un backend que colapsa</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "Aplica todo lo aprendido"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">El caso del backend que se queda sin conexiones</span>
+    </div>
+    <p>Una app funciona bien al principio, pero después de unos días <strong>nadie puede entrar</strong>: la base de datos dice "demasiadas conexiones". Tu misión es diagnosticar qué está mal.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 Las pistas</h3>
+    <ul>
+      <li>El código abre una conexión <strong>por cada request</strong>.</li>
+      <li>El pool se crea pero <strong>nunca se cierra</strong> al apagar.</li>
+      <li>No hay <code>get_connection</code> con <code>yield</code>: las conexiones se quedan colgadas.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 10 minutos</h4>
+    <p>Con su compañero/a, respondan por escrito:</p>
+    <ol>
+      <li>¿Cuál es la <strong>causa raíz</strong> del problema?</li>
+      <li>¿Qué cambiarían para arreglarlo? (pista: pool + get_connection + lifespan)</li>
+      <li>¿Dónde se debe crear el pool? ¿Y dónde se debe cerrar?</li>
+      <li>¿Qué garantiza que una conexión siempre regrese al pool?</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Respuesta esperada</h4>
+    <p>La causa raíz es abrir una conexión por request y nunca cerrar el pool. La solución: crear el pool <strong>una vez</strong> en el lifespan, usar <code>get_connection</code> con <code>yield</code> para prestar/devolver conexiones, y cerrar el pool al apagar. El <code>async with</code> garantiza que la conexión siempre regrese.</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 3 completada!</h2>
+    <p>Ya sabes conectar tu app a PostgreSQL con un pool de conexiones. En la próxima clase escribiremos el <strong>CRUD completo</strong>: crear, leer, actualizar y borrar autores.</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🛠️ Herramientas de Programación II · Clase 3 de 8</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

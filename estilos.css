@@ -82,6 +82,30 @@
   --herr-a:          #f43f5e;
   --herr-b:          #f97316;
 
+  --herr-1-a:        #f43f5e;   /* Clase 1 Herr — rojo/naranja (Python+HTTP) */
+  --herr-1-b:        #f97316;
+
+  --herr-2-a:        #06b6d4;   /* Clase 2 Herr — cian/azul (FastAPI) */
+  --herr-2-b:        #3b82f6;
+
+  --herr-3-a:        #84cc16;   /* Clase 3 Herr — lima/índigo (BD+Pool) */
+  --herr-3-b:        #6366f1;
+
+  --herr-4-a:        #10b981;   /* Clase 4 Herr — esmeralda/ámbar (CRUD) */
+  --herr-4-b:        #f59e0b;
+
+  --herr-5-a:        #a855f7;   /* Clase 5 Herr — morado/rosa (Pydantic) */
+  --herr-5-b:        #ec4899;
+
+  --herr-6-a:        #f59e0b;   /* Clase 6 Herr — ámbar/morado (Jinja2) */
+  --herr-6-b:        #a855f7;
+
+  --herr-7-a:        #ec4899;   /* Clase 7 Herr — fucsia/cian (htmx) */
+  --herr-7-b:        #06b6d4;
+
+  --herr-8-a:        #16a34a;   /* Clase 8 Herr — verde/dorado (Integrador) */
+  --herr-8-b:        #f59e0b;
+
   --gris:            #94a3b8;
 
   --sombra:          0 12px 40px rgba(0, 0, 0, 0.5);
@@ -340,6 +364,11 @@ main {
   border-color: var(--bd-1-a);
 }
 
+.curso-encabezado.herr {
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.18), rgba(249, 115, 22, 0.10));
+  border-color: var(--herr-1-a);
+}
+
 .curso-titulo {
   display: flex;
   gap: 1.2rem;
@@ -440,6 +469,14 @@ main {
 .clase-card.bd-7::before   { background: linear-gradient(90deg, var(--bd-7-a), var(--bd-7-b)); }
 .clase-card.bd-8::before   { background: linear-gradient(90deg, var(--bd-8-a), var(--bd-8-b)); }
 .clase-card.bd-9::before   { background: linear-gradient(90deg, var(--bd-9-a), var(--bd-9-b)); }
+.clase-card.herr-1::before  { background: linear-gradient(90deg, var(--herr-1-a), var(--herr-1-b)); }
+.clase-card.herr-2::before  { background: linear-gradient(90deg, var(--herr-2-a), var(--herr-2-b)); }
+.clase-card.herr-3::before  { background: linear-gradient(90deg, var(--herr-3-a), var(--herr-3-b)); }
+.clase-card.herr-4::before  { background: linear-gradient(90deg, var(--herr-4-a), var(--herr-4-b)); }
+.clase-card.herr-5::before  { background: linear-gradient(90deg, var(--herr-5-a), var(--herr-5-b)); }
+.clase-card.herr-6::before  { background: linear-gradient(90deg, var(--herr-6-a), var(--herr-6-b)); }
+.clase-card.herr-7::before  { background: linear-gradient(90deg, var(--herr-7-a), var(--herr-7-b)); }
+.clase-card.herr-8::before  { background: linear-gradient(90deg, var(--herr-8-a), var(--herr-8-b)); }
 
 .clase-card:hover {
   transform: translateY(-6px) scale(1.01);
@@ -479,6 +516,14 @@ main {
 .clase-card.bd-7 .clase-badge   { background: linear-gradient(135deg, var(--bd-7-a), var(--bd-7-b));     color: #fff; }
 .clase-card.bd-8 .clase-badge   { background: linear-gradient(135deg, var(--bd-8-a), var(--bd-8-b));     color: #000; }
 .clase-card.bd-9 .clase-badge   { background: linear-gradient(135deg, var(--bd-9-a), var(--bd-9-b));     color: #000; }
+.clase-card.herr-1 .clase-badge  { background: linear-gradient(135deg, var(--herr-1-a), var(--herr-1-b)); color: #fff; }
+.clase-card.herr-2 .clase-badge  { background: linear-gradient(135deg, var(--herr-2-a), var(--herr-2-b)); color: #000; }
+.clase-card.herr-3 .clase-badge  { background: linear-gradient(135deg, var(--herr-3-a), var(--herr-3-b)); color: #000; }
+.clase-card.herr-4 .clase-badge  { background: linear-gradient(135deg, var(--herr-4-a), var(--herr-4-b)); color: #000; }
+.clase-card.herr-5 .clase-badge  { background: linear-gradient(135deg, var(--herr-5-a), var(--herr-5-b)); color: #fff; }
+.clase-card.herr-6 .clase-badge  { background: linear-gradient(135deg, var(--herr-6-a), var(--herr-6-b)); color: #000; }
+.clase-card.herr-7 .clase-badge  { background: linear-gradient(135deg, var(--herr-7-a), var(--herr-7-b)); color: #fff; }
+.clase-card.herr-8 .clase-badge  { background: linear-gradient(135deg, var(--herr-8-a), var(--herr-8-b)); color: #000; }
 
 .clase-badge.gris {
   background: rgba(148, 163, 184, 0.2);

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛠️ Herramientas de Programación II · Clase 4 · Repositorio CRUD</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">📚</span>
+    <div>
+      <h1>Herramientas de Programación II · Clase 4</h1>
+      <p class="subtitulo">Repositorio y CRUD · las 5 operaciones SQL</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">📚 Repositorio</button>
+  <button class="btn-modulo" data-modulo="2">🔍 SELECT</button>
+  <button class="btn-modulo" data-modulo="3">➕ INSERT</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">✏️ UPDATE</button>
+  <button class="btn-modulo" data-modulo="6">🗑️ DELETE</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>📚 El CRUD completo de autores</h2>
+    <p class="lead">Ya tenemos la conexión a la base de datos. Hoy vamos a escribir las <strong>5 operaciones</strong> que toda app necesita: listar, obtener uno, crear, actualizar y borrar. Las pondremos en un archivo llamado <strong>repositorio</strong>, que es donde vive todo el SQL.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — dev@app</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd">curl localhost:8000/autores</span></div>
+        <div class="out">[{"id":1,"nombre":"Gabo","pais":"Colombia","nacimiento":1927}]</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd">curl -X POST localhost:8000/autores</span></div>
+        <div class="out">{"id":4,"nombre":"Cortázar","pais":"Argentina"}</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3h 45min en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Escribir las 5 funciones del CRUD en un archivo <code>repositorio.py</code>, usando SQL parametrizado.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>La inyección SQL, la consulta sin WHERE que borra todo, el dato que se pierde.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · Repositorio</td><td style="color:var(--a)">Separar el SQL</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>02 · SELECT</td><td style="color:var(--b)">Leer datos</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>03 · INSERT</td><td style="color:var(--a)">Crear datos</td><td style="color:var(--rosa)">Inyección SQL</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · UPDATE</td><td style="color:var(--verde)">Actualizar</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>05 · DELETE</td><td style="color:var(--b)">Borrar</td><td style="color:var(--rosa)">Borrar todo sin WHERE</td><td>100 XP</td></tr>
+        <tr><td>06 · Taller</td><td style="color:var(--a)">CRUD completo</td><td style="color:var(--rosa)">—</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿qué significa <strong>CRUD</strong>? Intenten recordar las 4 palabras en inglés (pista: las vimos en la clase 1 con los métodos HTTP).</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué un archivo "repositorio"?</h4>
+    <p>Separar el SQL en un archivo propio (<code>repositorio.py</code>) es una buena práctica: la ruta se encarga de HTTP, y el repositorio se encarga de la base de datos. Si mañana cambias la BD, solo tocas el repositorio.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: Repositorio →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>📚 El repositorio: donde vive el SQL</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Separar la lógica de datos"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es un repositorio?</h3>
+    <p>Un <strong>repositorio</strong> es un archivo (o clase) que contiene <strong>todas las consultas a la base de datos</strong>. En vez de escribir SQL dentro de las rutas, lo escribimos en funciones del repositorio. Cada función hace una operación: listar, obtener, crear, actualizar o borrar.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-verde"><span class="emoji">🧩</span><h3>Organizado</h3><p>Todo el SQL en un solo lugar, fácil de encontrar.</p></div>
+    <div class="tarjeta"><span class="emoji">🔁</span><h3>Reutilizable</h3><p>La misma función se usa desde varias rutas.</p></div>
+    <div class="tarjeta tarjeta-ambar"><span class="emoji">🛡️</span><h3>Seguro</h3><p>Centraliza la parametrización para evitar inyección SQL.</p></div>
+    <div class="tarjeta tarjeta-magenta"><span class="emoji">🔧</span><h3>Fácil de cambiar</h3><p>Si cambias la BD, solo tocas el repositorio.</p></div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>repositorio.py — estructura</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="cm"># Cada función recibe la conexión y hace una operación</span>
+
+<span class="kw">async def</span> <span class="fn">obtener_autores</span>(conn) -> list[dict]:
+    <span class="kw">return</span> [dict(r) <span class="kw">for</span> r <span class="kw">in</span> <span class="kw">await</span> conn.fetch(<span class="str">"SELECT * FROM autores"</span>)]
+
+<span class="kw">async def</span> <span class="fn">obtener_autor</span>(conn, autor_id):
+    ...
+
+<span class="kw">async def</span> <span class="fn">crear_autor</span>(conn, nombre, pais, nacimiento):
+    ...
+
+<span class="kw">async def</span> <span class="fn">actualizar_autor</span>(conn, autor_id, nombre, pais, nacimiento):
+    ...
+
+<span class="kw">async def</span> <span class="fn">eliminar_autor</span>(conn, autor_id):
+    ...</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 La regla de oro</h4>
+    <p>Cada función del repositorio <strong>recibe la conexión</strong> como primer argumento y hace <strong>una sola cosa</strong>. Así el código es fácil de leer y de probar. La ruta llama a la función, no escribe SQL.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿por qué creen que es mejor que la ruta <strong>no</strong> escriba SQL directamente? (pista: ¿qué pasa si hay 20 rutas y cambia la base de datos?).</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es un repositorio?</p>
+      <button class="opcion" data-op="a">Una base de datos</button>
+      <button class="opcion" data-op="b">Un archivo que contiene todas las consultas a la BD</button>
+      <button class="opcion" data-op="c">Un framework web</button>
+      <button class="opcion" data-op="d">Un tipo de variable</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué ventaja tiene separar el SQL en un repositorio?</p>
+      <button class="opcion" data-op="a">Es más fácil de mantener y reutilizar</button>
+      <button class="opcion" data-op="b">Hace el código más confuso</button>
+      <button class="opcion" data-op="c">No tiene ventajas</button>
+      <button class="opcion" data-op="d">Solo funciona con MySQL</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: SELECT →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>🔍 SELECT: leer datos</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Listar y obtener un autor"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Para <strong>leer</strong> datos usamos <code>SELECT</code>. Hay dos casos: listar <strong>todos</strong> los autores (<code>fetch</code>) y obtener <strong>uno</strong> por su id (<code>fetchrow</code>). El <code>WHERE id = $1</code> filtra por el id, y <code>$1</code> es un <strong>parámetro</strong> que se rellena de forma segura.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>repositorio.py — leer</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">async def</span> <span class="fn">obtener_autores</span>(conn) -> list[dict]:
+    <span class="cm"># fetch devuelve TODAS las filas</span>
+    rows = <span class="kw">await</span> conn.fetch(<span class="str">"SELECT * FROM autores ORDER BY id"</span>)
+    <span class="kw">return</span> [dict(row) <span class="kw">for</span> row <span class="kw">in</span> rows]
+
+<span class="kw">async def</span> <span class="fn">obtener_autor</span>(conn, autor_id: int) -> dict | <span class="kw">None</span>:
+    <span class="cm"># fetchrow devuelve UNA fila (o None si no existe)</span>
+    row = <span class="kw">await</span> conn.fetchrow(<span class="str">"SELECT * FROM autores WHERE id = $1"</span>, autor_id)
+    <span class="kw">return</span> dict(row) <span class="kw">if</span> row <span class="kw">else</span> <span class="kw">None</span></code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 fetch vs fetchrow</h4>
+    <p><code>fetch</code> devuelve una <strong>lista</strong> de filas (para "todos los autores"). <code>fetchrow</code> devuelve <strong>una sola</strong> fila (para "el autor con id 3"). Si no hay resultados, <code>fetchrow</code> devuelve <code>None</code>.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: si quieren obtener <strong>solo el autor con id 5</strong>, ¿usarían <code>fetch</code> o <code>fetchrow</code>? ¿Y para listar todos los autores?</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué método usarías para obtener UN solo autor?</p>
+      <button class="opcion" data-op="a">fetch</button>
+      <button class="opcion" data-op="b">fetchrow</button>
+      <button class="opcion" data-op="c">execute</button>
+      <button class="opcion" data-op="d">print</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué hace WHERE id = $1?</p>
+      <button class="opcion" data-op="a">Filtra por el id usando un parámetro seguro</button>
+      <button class="opcion" data-op="b">Borra el id</button>
+      <button class="opcion" data-op="c">Crea un nuevo id</button>
+      <button class="opcion" data-op="d">Ordena por id</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: INSERT →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>➕ INSERT: crear datos</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Agregar un autor nuevo"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Para <strong>crear</strong> un autor usamos <code>INSERT INTO</code>. Le pasamos los valores como <strong>parámetros</strong> (<code>$1</code>, <code>$2</code>, <code>$3</code>) y usamos <code>RETURNING *</code> para que la BD nos devuelva el autor recién creado (con su id nuevo).</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>repositorio.py — crear</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">async def</span> <span class="fn">crear_autor</span>(conn, nombre, pais, nacimiento) -> dict:
+    row = <span class="kw">await</span> conn.fetchrow(
+        <span class="str">"INSERT INTO autores (nombre, pais, nacimiento) VALUES ($1, $2, $3) RETURNING *"</span>,
+        nombre, pais, nacimiento,
+    )
+    <span class="kw">return</span> dict(row)</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: la inyección SQL</h4>
+    <p>Si pegas el valor del usuario directamente en la consulta con un f-string (<code>f"... {nombre}"</code>), un usuario malintencionado podría escribir <code>"; DROP TABLE autores; --</code> y <strong>borrar la tabla</strong>. Con parámetros (<code>$1</code>), asyncpg envía el valor por separado y PostgreSQL lo trata como dato, no como código. <strong>Siempre parametriza.</strong></p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 RETURNING *</h4>
+    <p>Normalmente <code>INSERT</code> no devuelve nada. Con <code>RETURNING *</code> le pedimos a la BD que nos devuelva la fila recién creada, incluyendo el <code>id</code> que se generó automáticamente. Así sabemos qué id le tocó al nuevo autor.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿por qué es peligroso usar <code>f"INSERT ... {nombre}"</code> en vez de parámetros <code>$1</code>? Intenten explicar el ataque de inyección SQL con sus palabras.</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Para qué sirve RETURNING * en un INSERT?</p>
+      <button class="opcion" data-op="a">Para borrar la fila</button>
+      <button class="opcion" data-op="b">Para que la BD devuelva la fila recién creada</button>
+      <button class="opcion" data-op="c">Para ordenar los datos</button>
+      <button class="opcion" data-op="d">Para cerrar la conexión</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué usar parámetros ($1) en vez de f-strings?</p>
+      <button class="opcion" data-op="a">Para evitar la inyección SQL</button>
+      <button class="opcion" data-op="b">Porque es más bonito</button>
+      <button class="opcion" data-op="c">Porque los f-strings no funcionan</button>
+      <button class="opcion" data-op="d">No hay diferencia</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73% agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Coméntale a tu compañero/a qué te costó más: SELECT o INSERT. 1 min.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>La inyección SQL es uno de los ataques más antiguos y peligrosos de la web. En 2012, un atacante usó inyección SQL para robar datos de millones de usuarios de LinkedIn. Por eso parametrizar las consultas es una regla de oro. 🛡️</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: UPDATE →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>✏️ UPDATE: actualizar datos</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Editar un autor existente"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Para <strong>actualizar</strong> un autor usamos <code>UPDATE ... SET ... WHERE</code>. El <code>SET</code> dice qué columnas cambiar, y el <code>WHERE id = $4</code> dice <strong>cuál</strong> autor cambiar. Sin el <code>WHERE</code>, actualizarías <strong>todos</strong> los autores.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>repositorio.py — actualizar</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">async def</span> <span class="fn">actualizar_autor</span>(conn, autor_id, nombre, pais, nacimiento):
+    row = <span class="kw">await</span> conn.fetchrow(
+        <span class="str">"UPDATE autores SET nombre = $1, pais = $2, nacimiento = $3 WHERE id = $4 RETURNING *"</span>,
+        nombre, pais, nacimiento, autor_id,
+    )
+    <span class="kw">return</span> dict(row) <span class="kw">if</span> row <span class="kw">else</span> <span class="kw">None</span></code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el UPDATE sin WHERE</h4>
+    <p>Si olvidas el <code>WHERE</code>, el <code>UPDATE</code> cambia <strong>todas las filas</strong> de la tabla. Imagina editar un autor y que de repente todos los autores tengan el mismo nombre. Por eso el <code>WHERE id = $4</code> es obligatorio.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Devolver el autor actualizado</h4>
+    <p>Igual que con <code>INSERT</code>, usamos <code>RETURNING *</code> para que la BD nos devuelva el autor ya actualizado. Si el id no existe, <code>fetchrow</code> devuelve <code>None</code> y la función devuelve <code>None</code>.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿qué pasaría si escriben <code>UPDATE autores SET nombre = 'X'</code> sin el <code>WHERE</code>? ¿Cuántos autores cambiarían?</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Para qué sirve el WHERE en un UPDATE?</p>
+      <button class="opcion" data-op="a">Para ordenar los datos</button>
+      <button class="opcion" data-op="b">Para indicar qué fila actualizar</button>
+      <button class="opcion" data-op="c">Para borrar la tabla</button>
+      <button class="opcion" data-op="d">No sirve para nada</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué pasa si olvidas el WHERE en un UPDATE?</p>
+      <button class="opcion" data-op="a">Se actualizan todas las filas</button>
+      <button class="opcion" data-op="b">No pasa nada</button>
+      <button class="opcion" data-op="c">Se borra la base de datos</button>
+      <button class="opcion" data-op="d">Se cierra el servidor</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: DELETE →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>🗑️ DELETE: borrar datos</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Eliminar un autor"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Para <strong>borrar</strong> un autor usamos <code>DELETE FROM ... WHERE</code>. Igual que con <code>UPDATE</code>, el <code>WHERE</code> es obligatorio: sin él, borrarías <strong>toda la tabla</strong>. La función devuelve <code>True</code> si borró algo y <code>False</code> si no.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>repositorio.py — borrar</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">async def</span> <span class="fn">eliminar_autor</span>(conn, autor_id: int) -> bool:
+    <span class="cm"># execute devuelve un texto como "DELETE 1"</span>
+    result = <span class="kw">await</span> conn.execute(<span class="str">"DELETE FROM autores WHERE id = $1"</span>, autor_id)
+    <span class="kw">return</span> result == <span class="str">"DELETE 1"</span></code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el DELETE sin WHERE</h4>
+    <p><code>DELETE FROM autores</code> sin <code>WHERE</code> borra <strong>todos los autores</strong> de una sola vez. Es uno de los errores más temidos en bases de datos. Por eso siempre, <strong>siempre</strong>, el <code>DELETE</code> lleva su <code>WHERE</code>.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 execute vs fetch</h4>
+    <p>Para <code>DELETE</code> (y a veces <code>INSERT</code>/<code>UPDATE</code>) usamos <code>execute</code>, que no devuelve filas sino un texto indicando cuántas se afectaron (por ejemplo <code>"DELETE 1"</code>). Con eso sabemos si realmente se borró algo.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿qué devuelve <code>execute</code> cuando borra una fila? ¿Y cómo sabríamos si el id que intentamos borrar no existía?</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué método usarías para borrar un autor?</p>
+      <button class="opcion" data-op="a">fetch</button>
+      <button class="opcion" data-op="b">execute</button>
+      <button class="opcion" data-op="c">fetchrow</button>
+      <button class="opcion" data-op="d">print</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué pasa si haces DELETE sin WHERE?</p>
+      <button class="opcion" data-op="a">Se borran todas las filas de la tabla</button>
+      <button class="opcion" data-op="b">No pasa nada</button>
+      <button class="opcion" data-op="c">Se crea una tabla nueva</button>
+      <button class="opcion" data-op="d">Se ordenan los datos</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: el CRUD completo</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "Aplica todo lo aprendido"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">Escribe las 5 funciones del repositorio</span>
+    </div>
+    <p>Tu misión es escribir (en papel o en la mente) las 5 funciones del CRUD para la tabla <code>autores</code>, usando SQL parametrizado.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 Las 5 operaciones</h3>
+    <ol>
+      <li><strong>Listar</strong> todos los autores → <code>SELECT * FROM autores</code></li>
+      <li><strong>Obtener</strong> uno por id → <code>SELECT ... WHERE id = $1</code></li>
+      <li><strong>Crear</strong> → <code>INSERT INTO ... VALUES (...) RETURNING *</code></li>
+      <li><strong>Actualizar</strong> → <code>UPDATE ... SET ... WHERE id = $4</code></li>
+      <li><strong>Borrar</strong> → <code>DELETE FROM ... WHERE id = $1</code></li>
+    </ol>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 10 minutos</h4>
+    <p>Con su compañero/a, respondan por escrito:</p>
+    <ol>
+      <li>¿Qué método (fetch/fetchrow/execute) usa cada operación?</li>
+      <li>¿Por qué todas las consultas usan parámetros <code>$1</code>, <code>$2</code>...?</li>
+      <li>¿Qué pasa si olvidas el <code>WHERE</code> en UPDATE o DELETE?</li>
+      <li>¿Para qué sirve <code>RETURNING *</code>?</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Respuesta esperada</h4>
+    <p>Listar usa <code>fetch</code>, obtener usa <code>fetchrow</code>, crear usa <code>fetchrow</code> con <code>RETURNING *</code>, actualizar usa <code>fetchrow</code> con <code>RETURNING *</code>, y borrar usa <code>execute</code>. Los parámetros evitan la inyección SQL. Sin <code>WHERE</code> se afectan todas las filas. <code>RETURNING *</code> devuelve la fila afectada.</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 4 completada!</h2>
+    <p>Ya sabes escribir el CRUD completo con SQL parametrizado. En la próxima clase validaremos los datos de entrada con <strong>Pydantic</strong>.</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🛠️ Herramientas de Programación II · Clase 4 de 8</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

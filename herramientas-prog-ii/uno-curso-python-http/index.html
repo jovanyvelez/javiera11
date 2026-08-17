@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛠️ Herramientas de Programación II · Clase 1 · Python + HTTP</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🐍</span>
+    <div>
+      <h1>Herramientas de Programación II · Clase 1</h1>
+      <p class="subtitulo">Fundamentos de Python y HTTP · async/await · request/response</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">🐍 Python</button>
+  <button class="btn-modulo" data-modulo="2">⚡ async/await</button>
+  <button class="btn-modulo" data-modulo="3">🌐 HTTP</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">📨 Request/Response</button>
+  <button class="btn-modulo" data-modulo="6">📦 JSON</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🐍 ¿Cómo habla una app con el mundo?</h2>
+    <p class="lead">Antes de construir una API con FastAPI, necesitamos dos bases: <strong>Python</strong> (el lenguaje) y <strong>HTTP</strong> (el idioma de la web). Hoy vamos a entender cómo un programa Python envía y recibe mensajes por internet, y por qué <code>async/await</code> es el superpoder que hace que una app atienda a miles de usuarios a la vez.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — dev@app</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd">python -c "print('hola web')"</span></div>
+        <div class="out">hola web</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd">curl https://api.ejemplo.com/autores</span></div>
+        <div class="out">[{"id":1,"nombre":"Gabriel García Márquez"}]</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3h 45min en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Entender qué es Python, qué es HTTP y cómo <code>async/await</code> permite que un servidor atienda a muchos usuarios sin congelarse.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>El programa que se congela esperando una respuesta, el servidor que atiende de a uno, el JSON mal formado que rompe todo.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · Python</td><td style="color:var(--a)">El lenguaje base</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>02 · async/await</td><td style="color:var(--b)">Concurrencia</td><td style="color:var(--rosa)">Programa que se congela</td><td>100 XP</td></tr>
+        <tr><td>03 · HTTP</td><td style="color:var(--a)">El idioma de la web</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · Request/Response</td><td style="color:var(--verde)">El ciclo de la web</td><td style="color:var(--rosa)">Servidor que atiende de a uno</td><td>100 XP</td></tr>
+        <tr><td>05 · JSON</td><td style="color:var(--b)">El formato de datos</td><td style="color:var(--rosa)">JSON mal formado</td><td>100 XP</td></tr>
+        <tr><td>06 · Taller</td><td style="color:var(--a)">Diagnóstico</td><td style="color:var(--rosa)">App que colapsa</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: cuando abren Instagram y ven su perfil, <strong>¿qué creen que pasa "por debajo"?</strong> ¿El teléfono tiene todos los datos guardados, o se los pide a alguien por internet? Adivinen y luego lo comprobamos.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué empezar por Python y HTTP?</h4>
+    <p>FastAPI es un framework de Python. Si no entendemos Python, no entendemos FastAPI. Y FastAPI es un servidor web: si no entendemos HTTP, no entendemos qué hace. Estas dos bases son el cimiento de todo el módulo.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: Python →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>🐍 Python: el lenguaje base</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El idioma en el que escribimos el backend"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es Python?</h3>
+    <p>Python es un lenguaje de programación <strong>fácil de leer</strong> y muy usado en el mundo real: Netflix, Instagram, Spotify y Google lo usan. Se escribe casi como se lee en inglés, y por eso es ideal para aprender. En este módulo lo usamos para construir el <strong>backend</strong> (la parte del servidor) de una app web.</p>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-verde"><span class="emoji">📖</span><h3>Legible</h3><p>Su sintaxis es clara. Un <code>if</code>, un <code>for</code>, una función: todo se entiende de un vistazo.</p></div>
+    <div class="tarjeta"><span class="emoji">🧰</span><h3>Con librerías</h3><p>Tiene miles de librerías listas: <code>asyncpg</code> para bases de datos, <code>fastapi</code> para web.</p></div>
+    <div class="tarjeta tarjeta-ambar"><span class="emoji">⚡</span><h3>Asíncrono</h3><p>Con <code>async/await</code> puede hacer muchas cosas "a la vez" sin congelarse.</p></div>
+    <div class="tarjeta tarjeta-magenta"><span class="emoji">🌍</span><h3>Popular</h3><p>Es uno de los lenguajes más usados del mundo. Aprenderlo abre muchas puertas.</p></div>
+  </div>
+
+  <h3>📝 Lo mínimo que necesitas recordar</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>python — conceptos básicos</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="cm"># Una función: un bloque de código con nombre</span>
+<span class="kw">def</span> <span class="fn">saludar</span>(nombre):
+    <span class="kw">return</span> <span class="str">f"Hola, {nombre}"</span>
+
+<span class="cm"># Una variable: guarda un valor</span>
+autor = <span class="str">"Gabriel García Márquez"</span>
+
+<span class="cm"># Un diccionario: guarda pares clave → valor</span>
+libro = {<span class="str">"titulo"</span>: <span class="str">"Cien años de soledad"</span>, <span class="str">"anio"</span>: <span class="num">1967</span>}
+
+<span class="cm"># Una lista: guarda varios valores en orden</span>
+autores = [<span class="str">"Gabo"</span>, <span class="str">"Cortázar"</span>, <span class="str">"Borges"</span>]</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El diccionario es tu mejor amigo</h4>
+    <p>En el backend, casi todo lo que devolvemos es un <strong>diccionario</strong> (o una lista de diccionarios). Por ejemplo, un autor se representa como <code>{"id": 1, "nombre": "Gabo"}</code>. Acostúmbrate a esta forma de pensar: <strong>los datos son diccionarios</strong>.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: escriban en papel (o en la mente) un diccionario que represente a <strong>su canción favorita</strong>. ¿Qué claves usarían? (pista: título, artista, año, género). Comparen con otra pareja.</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es un diccionario en Python?</p>
+      <button class="opcion" data-op="a">Una lista ordenada de números</button>
+      <button class="opcion" data-op="b">Una colección de pares clave → valor</button>
+      <button class="opcion" data-op="c">Un tipo de archivo</button>
+      <button class="opcion" data-op="d">Un bucle que se repite</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué Python es ideal para aprender backend?</p>
+      <button class="opcion" data-op="a">Porque es legible y tiene librerías como FastAPI</button>
+      <button class="opcion" data-op="b">Porque solo sirve para videojuegos</button>
+      <button class="opcion" data-op="c">Porque no necesita internet</button>
+      <button class="opcion" data-op="d">Porque es el único lenguaje que existe</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: async/await →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>⚡ async/await: el superpoder de la concurrencia</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Hacer muchas cosas sin congelarse"</p>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el programa que se congela</h4>
+    <p>Imagina que tu app pide datos a una base de datos y esa petición tarda 1 segundo. Si el programa es <strong>síncrono</strong>, durante ese segundo <strong>no hace nada más</strong>: se queda congelado esperando. Si llegan 100 usuarios, cada uno espera su turno. La app se siente lenta y "se cae" sin haberse caído.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Con <code>async</code> y <code>await</code>, una función puede <strong>esperar</strong> una respuesta <strong>sin bloquear</strong> el resto del programa. Mientras espera, el programa atiende a otros usuarios. Es como un mesero que, en vez de quedarse parado esperando el plato, atiende a otras mesas y vuelve cuando la cocina está lista.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>python — async/await</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">async def</span> <span class="fn">obtener_autores</span>():
+    <span class="cm"># await = "espera aquí, pero no congeles el programa"</span>
+    datos = <span class="kw">await</span> base_de_datos.consultar(<span class="str">"SELECT * FROM autores"</span>)
+    <span class="kw">return</span> datos</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 async def + await = función asíncrona</h4>
+    <p>Una función con <code>async def</code> es <strong>asíncrona</strong>. Dentro de ella, usas <code>await</code> para esperar operaciones lentas (consultas a BD, peticiones de red) sin bloquear. FastAPI está construido 100% sobre esto: por eso es tan rápido con muchos usuarios.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: imaginen un restaurante con 1 mesero. ¿Atiende más mesas si (a) espera cada plato de pie antes de tomar el siguiente pedido, o (b) anota todos los pedidos y vuelve cuando cada plato está listo? <strong>¿Cuál es síncrono y cuál asíncrono?</strong></p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>Netflix no puede congelarse cada vez que alguien pide una película. Su backend usa <code>async/await</code> para atender a millones de usuarios a la vez. Cuando tu app pide datos, el servidor "anota tu pedido" y sigue atendiendo a los demás mientras la base de datos responde.</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace <code>await</code> en una función asíncrona?</p>
+      <button class="opcion" data-op="a">Cancela la operación</button>
+      <button class="opcion" data-op="b">Espera el resultado sin bloquear el resto del programa</button>
+      <button class="opcion" data-op="c">Cierra el programa</button>
+      <button class="opcion" data-op="d">Abre una nueva ventana</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cuál es la ventaja de una función asíncrona?</p>
+      <button class="opcion" data-op="a">Puede atender a muchos usuarios sin congelarse</button>
+      <button class="opcion" data-op="b">Es más difícil de leer</button>
+      <button class="opcion" data-op="c">Solo funciona de noche</button>
+      <button class="opcion" data-op="d">No necesita internet</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: HTTP →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>🌐 HTTP: el idioma de la web</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Cómo se comunican el navegador y el servidor"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es HTTP?</h3>
+    <p>HTTP (<em>HyperText Transfer Protocol</em>) es el <strong>idioma</strong> que usan el navegador y el servidor para hablar. Cuando escribes una URL y presionas Enter, tu navegador envía un <strong>request</strong> (petición) y el servidor responde con un <strong>response</strong> (respuesta). Todo lo que ves en la web viaja por HTTP.</p>
+  </div>
+
+  <h3>📊 Los métodos HTTP (verbos)</h3>
+  <p>Cada request lleva un <strong>método</strong> que dice qué quieres hacer. Son como verbos:</p>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Método</th><th>Qué hace</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>GET</strong></td><td>Leer / pedir datos</td><td>Ver la lista de autores</td></tr>
+        <tr><td><strong>POST</strong></td><td>Crear algo nuevo</td><td>Crear un autor</td></tr>
+        <tr><td><strong>PUT</strong></td><td>Actualizar algo</td><td>Editar un autor</td></tr>
+        <tr><td><strong>DELETE</strong></td><td>Borrar algo</td><td>Eliminar un autor</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 CRUD = los 4 verbos</h4>
+    <p>Crear, Leer, Actualizar y Borrar (en inglés <strong>CRUD</strong>: Create, Read, Update, Delete) se mapean a los 4 métodos HTTP: <code>POST</code>, <code>GET</code>, <code>PUT</code> y <code>DELETE</code>. Casi toda app web es, en el fondo, un CRUD. Nuestro proyecto de autores es exactamente eso.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: para cada acción, digan qué método HTTP usarían: (1) ver tu perfil, (2) publicar una foto, (3) cambiar tu nombre de usuario, (4) borrar un comentario. <strong>¿Pueden nombrar los 4?</strong></p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>Cada vez que das "me gusta" en una foto, tu teléfono envía un <code>POST</code>. Cada vez que cargas tu feed, envía un <code>GET</code>. Cada vez que editas tu perfil, un <code>PUT</code>. Y cuando borras un mensaje, un <code>DELETE</code>. <strong>Ya usas HTTP todo el día sin saberlo.</strong></p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué método HTTP se usa para LEER datos?</p>
+      <button class="opcion" data-op="a">POST</button>
+      <button class="opcion" data-op="b">GET</button>
+      <button class="opcion" data-op="c">DELETE</button>
+      <button class="opcion" data-op="d">PUT</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué es un "request" en HTTP?</p>
+      <button class="opcion" data-op="a">Una petición que el cliente envía al servidor</button>
+      <button class="opcion" data-op="b">Un tipo de base de datos</button>
+      <button class="opcion" data-op="c">Un lenguaje de programación</button>
+      <button class="opcion" data-op="d">Un archivo de imagen</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73% agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Coméntale a tu compañero/a qué te costó más: async/await o los métodos HTTP. 1 min.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>HTTP fue inventado por <strong>Tim Berners-Lee</strong> en 1989, el mismo que creó la World Wide Web. Lo diseñó para que científicos compartieran documentos. Hoy, más de 30 años después, sigue siendo el idioma de toda la web. 🌐</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Request/Response →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>📨 Request/Response: el ciclo de la web</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El viaje completo de una petición"</p>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el servidor que atiende de a uno</h4>
+    <p>Si un servidor atiende un request a la vez, cuando llegan 100 usuarios, el número 100 espera a que terminen los 99 anteriores. Con <code>async/await</code>, el servidor atiende a todos "a la vez": mientras espera la respuesta de la BD para el usuario 1, ya está procesando al usuario 2.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 El ciclo request → response</h3>
+    <p>Toda interacción web sigue el mismo ciclo: el <strong>cliente</strong> (navegador) envía un <strong>request</strong>, el <strong>servidor</strong> lo procesa y devuelve un <strong>response</strong>. El response incluye un <strong>código de estado</strong> que dice si todo salió bien o no.</p>
+  </div>
+
+  <h3>📊 Códigos de estado más comunes</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Código</th><th>Significado</th><th>Cuándo lo ves</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>200</strong></td><td>OK, todo bien</td><td>La página cargó correctamente</td></tr>
+        <tr><td><strong>404</strong></td><td>No encontrado</td><td>La URL no existe</td></tr>
+        <tr><td><strong>422</strong></td><td>Datos inválidos</td><td>Enviaste datos mal formados</td></tr>
+        <tr><td><strong>500</strong></td><td>Error del servidor</td><td>Algo se rompió por dentro</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El 422 será tu amigo</h4>
+    <p>En nuestro proyecto, cuando un usuario envía un formulario con datos inválidos (por ejemplo, un año de nacimiento que no es número), FastAPI responde <strong>422</strong>. Es la forma del servidor de decir "tus datos no están bien". Lo veremos en la clase de Pydantic.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: ¿alguna vez vieron un error <strong>404</strong> en un navegador? ¿Qué creen que significa? ¿Y un <strong>500</strong>? Discutan la diferencia entre "no encontré lo que pediste" y "me rompí por dentro".</p>
+  </div>
+
+  <div class="caja-destacada">
+    <h4>🔍 En la vida real</h4>
+    <p>Cuando una página tarda en cargar, muchas veces no es tu internet: es que el servidor está <strong>atendiendo de a uno</strong> (síncrono) en vez de en paralelo (asíncrono). Por eso las empresas invierten en backends asíncronos como FastAPI.</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué significa el código de estado 404?</p>
+      <button class="opcion" data-op="a">Todo salió bien</button>
+      <button class="opcion" data-op="b">No se encontró lo que se pedía</button>
+      <button class="opcion" data-op="c">Datos inválidos</button>
+      <button class="opcion" data-op="d">Error interno del servidor</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué es un "response"?</p>
+      <button class="opcion" data-op="a">La respuesta que el servidor devuelve al cliente</button>
+      <button class="opcion" data-op="b">La petición que envía el cliente</button>
+      <button class="opcion" data-op="c">Un tipo de base de datos</button>
+      <button class="opcion" data-op="d">Un lenguaje de programación</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: JSON →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>📦 JSON: el formato de los datos</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Cómo viajan los datos por la web"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es JSON?</h3>
+    <p>JSON (<em>JavaScript Object Notation</em>) es un <strong>formato de texto</strong> para representar datos. Es el idioma universal de las APIs: cuando un servidor devuelve datos, casi siempre los devuelve en JSON. Se parece mucho a los diccionarios de Python.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>json — un autor y una lista de autores</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="cm">// Un autor (objeto JSON)</span>
+{<span class="str">"id"</span>: <span class="num">1</span>, <span class="str">"nombre"</span>: <span class="str">"Gabriel García Márquez"</span>, <span class="str">"pais"</span>: <span class="str">"Colombia"</span>}
+
+<span class="cm">// Una lista de autores (array de objetos)</span>
+[
+  {<span class="str">"id"</span>: <span class="num">1</span>, <span class="str">"nombre"</span>: <span class="str">"Gabo"</span>},
+  {<span class="str">"id"</span>: <span class="num">2</span>, <span class="str">"nombre"</span>: <span class="str">"Cortázar"</span>}
+]</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 JSON ≈ diccionario de Python</h4>
+    <p>Un objeto JSON es casi idéntico a un diccionario de Python. La diferencia es que JSON es <strong>texto</strong> (para viajar por internet) y el diccionario es un <strong>objeto en memoria</strong>. FastAPI convierte automáticamente entre ambos: tú devuelves un diccionario y FastAPI lo envía como JSON.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el JSON mal formado</h4>
+    <p>Si un JSON tiene una coma de más, una llave sin cerrar o una comilla mal puesta, <strong>se rompe todo</strong>. El cliente no puede leerlo. Por eso es importante que el servidor genere JSON válido siempre. FastAPI lo hace por ti, pero es bueno saber qué hay debajo.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: escriban en JSON la información de <strong>su película favorita</strong> (título, año, director). Luego intercambien con otra pareja y verifiquen que el JSON esté bien formado (llaves cerradas, comas correctas).</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es JSON?</p>
+      <button class="opcion" data-op="a">Un lenguaje de programación</button>
+      <button class="opcion" data-op="b">Un formato de texto para representar datos</button>
+      <button class="opcion" data-op="c">Un tipo de base de datos</button>
+      <button class="opcion" data-op="d">Un servidor web</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿A qué se parece un objeto JSON en Python?</p>
+      <button class="opcion" data-op="a">A un diccionario</button>
+      <button class="opcion" data-op="b">A un bucle</button>
+      <button class="opcion" data-op="c">A una función</button>
+      <button class="opcion" data-op="d">A un archivo</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: diagnóstico de una app lenta</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "Aplica todo lo aprendido"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">El caso de la app que se congela</span>
+    </div>
+    <p>Una app de biblioteca se volvió lenta: cuando muchos estudiantes entran a la vez, la página tarda segundos en cargar. Tu misión es <strong>diagnosticar</strong> qué está mal usando lo que aprendiste hoy.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 Las pistas</h3>
+    <ul>
+      <li>El código usa funciones <strong>síncronas</strong> (sin <code>async/await</code>).</li>
+      <li>Cada request espera a la base de datos <strong>sin hacer nada más</strong>.</li>
+      <li>Cuando llegan 50 usuarios, se forman en fila y esperan su turno.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 10 minutos</h4>
+    <p>Con su compañero/a, respondan por escrito:</p>
+    <ol>
+      <li>¿Cuál es la <strong>causa raíz</strong> del problema? (pista: síncrono vs asíncrono)</li>
+      <li>¿Qué cambiarían en el código para arreglarlo? (pista: <code>async def</code> y <code>await</code>)</li>
+      <li>¿Qué método HTTP usaría la app para <strong>mostrar</strong> la lista de libros? ¿Y para <strong>prestar</strong> un libro?</li>
+      <li>¿En qué formato devolvería el servidor la lista de libros? (pista: empieza con J)</li>
+    </ol>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Respuesta esperada</h4>
+    <p>La causa raíz es que el código es <strong>síncrono</strong>: cada request bloquea al servidor mientras espera a la BD. La solución es usar <code>async/await</code> para que el servidor atienda a muchos usuarios a la vez. Mostrar libros es un <code>GET</code>, prestar un libro es un <code>POST</code>, y los datos viajan en <strong>JSON</strong>.</p>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 1 completada!</h2>
+    <p>Ya entiendes Python, HTTP, async/await y JSON. Son los cimientos de todo lo que viene. En la próxima clase construiremos nuestra primera app con <strong>FastAPI</strong>.</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🛠️ Herramientas de Programación II · Clase 1 de 8</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
