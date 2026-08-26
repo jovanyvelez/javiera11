@@ -328,13 +328,67 @@ main {
 
 /* -------- CURSO BLOQUE -------- */
 .curso-bloque {
-  margin-bottom: 3.5rem;
+  margin-bottom: 3rem;
   animation: aparece 0.6s ease;
 }
 
 @keyframes aparece {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Acordeón colapsable --- */
+.curso-encabezado {
+  cursor: pointer;
+  user-select: none;
+}
+
+.curso-encabezado:focus-visible {
+  outline: 2px solid var(--dorado);
+  outline-offset: 3px;
+}
+
+.curso-encabezado:hover .chevron-curso {
+  color: var(--dorado-cl);
+}
+
+.chevron-curso {
+  font-size: 1.4rem;
+  color: var(--texto-suave);
+  transition: transform 0.35s ease, color 0.3s ease;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+.curso-bloque.colapsado .chevron-curso {
+  transform: rotate(-90deg);
+}
+
+.curso-progreso-pct {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--cyan-cl);
+}
+
+.curso-progreso-pct.completo {
+  background: linear-gradient(135deg, var(--dorado), var(--cyan));
+  color: #000;
+}
+
+.cuadricula-clases {
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
+}
+
+.curso-bloque.colapsado .cuadricula-clases {
+  max-height: 0 !important;
+  opacity: 0;
+  margin-top: -1.5rem;
+  pointer-events: none;
 }
 
 .curso-encabezado {

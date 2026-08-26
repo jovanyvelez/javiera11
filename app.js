@@ -5,6 +5,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   mostrarFecha();
+  configurarAcordeon();
   cargarProgresoPorClase();
   animarStats();
 });
@@ -25,6 +26,77 @@ function mostrarFecha() {
   const a = hoy.getFullYear();
 
   el.textContent = `${d}, ${dia} de ${m} de ${a}`;
+}
+
+/* ---------- ACORDEÓN DE CURSOS ---------- */
+function configurarAcordeon() {
+  const bloques = document.querySelectorAll('.curso-bloque');
+
+  bloques.forEach((bloque, idx) => {
+    const encabezado = bloque.querySelector('.curso-encabezado');
+    const grid = bloque.querySelector('.cuadricula-clases');
+
+    // Calcula y fija la altura "natural" del grid para animar max-height
+    if (grid) {
+      grid.style.maxHeight = grid.scrollHeight + 'px';
+    }
+
+    // Colapsa todos por defecto excepto el primero (que queda abierto de bienvenida)
+    if (idx !== 0) {
+      bloque.classList.add('colapsado');
+    }
+
+    // Inyecta chevron y contenedor de progreso % en el encabezado
+    const meta = encabezado.querySelector('.curso-meta');
+    if (meta && !encabezado.querySelector('.chevron-curso')) {
+      const pct = document.createElement('span');
+      pct.className = 'curso-progreso-pct';
+      pct.textContent = '0%';
+      meta.insertBefore(pct, meta.firstChild);
+
+      const chev = document.createElement('span');
+      chev.className = 'chevron-curso';
+      chev.textContent = '▾';
+      chev.setAttribute('aria-hidden', 'true');
+      encabezado.appendChild(chev);
+    }
+
+    // Toggle al click
+    encabezado.addEventListener('click', () => {
+      const colapsado = bloque.classList.toggle('colapsado');
+      if (!colapsado && grid) {
+        // Recalcula altura por si el contenido cambió (progreso cargado, etc.)
+        grid.style.maxHeight = grid.scrollHeight + 'px';
+      }
+    });
+
+    // Accesibilidad: Enter / Espacio
+    encabezado.setAttribute('tabindex', '0');
+    encabezado.setAttribute('role', 'button');
+    encabezado.setAttribute('aria-expanded', idx === 0 ? 'true' : 'false');
+    encabezado.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        encabezado.click();
+      }
+    });
+  });
+
+  // Sincroniza aria-expanded al colapsar/expandir
+  const observer = new MutationObserver(() => {
+    bloques.forEach(b => {
+      const e = b.querySelector('.curso-encabezado');
+      if (e) e.setAttribute('aria-expanded', b.classList.contains('colapsado') ? 'false' : 'true');
+    });
+  });
+  bloques.forEach(b => observer.observe(b, { attributes: true, attributeFilter: ['class'] }));
+
+  // Recalcula alturas cuando cambian tamaños (p.ej. al cargar progreso)
+  window.addEventListener('resize', () => {
+    document.querySelectorAll('.curso-bloque:not(.colapsado) .cuadricula-clases').forEach(grid => {
+      grid.style.maxHeight = grid.scrollHeight + 'px';
+    });
+  });
 }
 
 /* ---------- LEER PROGRESO DE CADA CURSO ---------- */
@@ -64,6 +136,9 @@ function cargarProgresoPorClase() {
   let totalGlobal = 0;
   let completosGlobal = 0;
 
+  // Progreso agregado por curso (para el chip del encabezado)
+  const porCurso = {};
+
   document.querySelectorAll('.clase-card[data-storage]').forEach(card => {
     const key = card.dataset.storage;
     const totalMods = TOTALES_MODULOS[key] || 7;
@@ -73,6 +148,31 @@ function cargarProgresoPorClase() {
 
     totalGlobal += totalMods;
     completosGlobal += Math.round((pct / 100) * totalMods);
+
+    // Suma al curso correspondiente (data-curso del bloque padre)
+    const bloque = card.closest('.curso-bloque');
+    if (bloque) {
+      const id = bloque.dataset.curso;
+      if (!porCurso[id]) porCurso[id] = { sum: 0, n: 0 };
+      porCurso[id].sum += pct;
+      porCurso[id].n += 1;
+    }
+  });
+
+  // Actualiza el chip de progreso en cada encabezado
+  document.querySelectorAll('.curso-bloque').forEach(bloque => {
+    const id = bloque.dataset.curso;
+    const datos = porCurso[id];
+    const chip = bloque.querySelector('.curso-progreso-pct');
+    if (!chip || !datos) return;
+    const promedio = Math.round(datos.sum / datos.n);
+    chip.textContent = promedio + '%';
+    chip.classList.toggle('completo', promedio === 100);
+  });
+
+  // Recalcula alturas de grids abiertos por si el texto cambió de tamaño
+  document.querySelectorAll('.curso-bloque:not(.colapsado) .cuadricula-clases').forEach(grid => {
+    grid.style.maxHeight = grid.scrollHeight + 'px';
   });
 
   // Actualizar el progreso global del dashboard
