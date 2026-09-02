@@ -1,6 +1,6 @@
 /* ============================================================
    CLASE nueve — HERRAMIENTAS DE PROGRAMACIÓN II
-   Plantillas Jinja2 · la última milla del monolito
+   Estructuras repetitivas (for, while, contadores y acumuladores)
    Lógica de navegación, quizzes y taller
 ============================================================ */
 
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   actualizarUI();
 });
 
-const STORAGE_KEY = 'curso-herr-9-jinja2';
+const STORAGE_KEY = 'curso-herr-9-repetitivas';
 
 function guardarProgreso() {
   try {
@@ -96,11 +96,11 @@ function marcarCompletado(n) {
   estado.completados.add(n);
   estado.xp = Math.min(XP_TOTAL, estado.xp + XP_POR_MODULO);
 
-  const badgesModulo = {0: "🚀 Iniciado", 1: "🎨 El For", 2: "🎚️ Filtros", 3: "🚦 Decide", 4: "☕ Descansado", 5: "📊 Anidados", 6: "🧩 Compone", 7: "🛠️ Taller Jinja"};
+  const badgesModulo = {0: "🚀 Iniciado", 1: "🔁 For In", 2: "🧮 Cuenta", 3: "🌀 While", 4: "☕ Descansado", 5: "🎨 Bucle Jinja", 6: "🤖 Automatiza", 7: "🛠️ Taller Repetitivas"};
   if (badgesModulo[n]) otorgarBadge(badgesModulo[n]);
 
   if (estado.completados.size === TOTAL_MODULOS) {
-    otorgarBadge('🏆 Jinja2 Dominado');
+    otorgarBadge('🏆 Repetitivas Dominadas');
   }
 
   mostrarToast(`🎉 ¡+${XP_POR_MODULO} XP! Módulo ${n} completado`);
@@ -134,7 +134,7 @@ function actualizarUI() {
 
   const mAct = document.getElementById('modulo-actual');
   if (mAct) {
-    const labels = ['Inicio', 'El For', 'Filtros', 'Decisiones', 'Descanso', 'Anidados', 'Componentes', 'Taller'];
+    const labels = ['Inicio', 'For... in', 'Contar y Sumar', 'While', 'Descanso', 'Jinja', 'Automatizar', 'Taller'];
     mAct.textContent = labels[estado.moduloActual] || ('Módulo ' + estado.moduloActual);
   }
 

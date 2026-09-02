@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛠️ Herramientas de Programación II · Clase 9 · Estructuras repetitivas</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🔁</span>
+    <div>
+      <h1>Herramientas de Programación II · Clase 9</h1>
+      <p class="subtitulo">Estructuras repetitivas · automatizar procesos con for, while y Jinja2</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">🔁 For... in</button>
+  <button class="btn-modulo" data-modulo="2">🧮 Contar y Sumar</button>
+  <button class="btn-modulo" data-modulo="3">🌀 While</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🎨 Jinja</button>
+  <button class="btn-modulo" data-modulo="6">🤖 Automatizar</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🔁 Hazlo una vez, repite mil veces</h2>
+    <p class="lead">La app de la biblioteca <strong>repite procesos todo el tiempo</strong>: validar cada préstamo que llega, sumar las multas de cada estudiante, contar libros por categoría, pintar una fila HTML por cada libro del catálogo. Si escribieras cada repetición a mano, el código sería eterno. Hoy automatizas todo eso con <strong>estructuras repetitivas</strong>: <code>for ... in</code> y <code>while</code> en <strong>Python</strong>, y <code>{% for %}</code> en tus plantillas <strong>Jinja2</strong>.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — dev@app</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd">python -c "print(sum([2, 3, 5]))"</span></div>
+        <div class="out">10</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd"># la máquina suma, cuenta y repite — tú escribes el proceso UNA sola vez</span></div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3h 45min en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Dominar <code>for ... in</code> y <code>while</code> en Python, los patrones de <strong>contador</strong> y <strong>acumulador</strong>, los atajos de Python (<code>sum()</code>, <code>len()</code>, <code>Counter</code>) y los bucles <code>{% for %}</code> con <code>loop</code> en Jinja2 — siempre al servicio de la app de biblioteca con SQL + FastAPI.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>El copy-paste de una instrucción por cada elemento, el <code>if</code> por cada caso repetido, el contador a mano dentro de la plantilla HTML, y el <code>while</code> que nunca termina.</p>
+    </div>
+  </div>
+
+  <h3>🏠 ¿Dónde trabaja cada parte?</h3>
+  <p class="lead">Las estructuras repetitivas viven en <strong>las tres capas</strong> del monolito, pero cada una repite algo distinto. Este mapa te acompaña toda la clase.</p>
+  <div class="mapa-residencia">
+    <div class="mr-head">Capa</div>
+    <div class="mr-head">¿Qué repite?</div>
+    <div class="mr-head">Ejemplo en la biblioteca</div>
+
+    <div class="mr-cell sql">🐘 <strong>SQL</strong></div>
+    <div class="mr-cell">Agrega sobre muchas filas <strong>en el motor</strong>, sin traerlas a Python.</div>
+    <div class="mr-cell"><code>SELECT categoria, COUNT(*) FROM libros GROUP BY categoria</code>.</div>
+
+    <div class="mr-cell python">🐍 <strong>Python · FastAPI</strong></div>
+    <div class="mr-cell">Recorre, valida, <strong>cuenta y acumula</strong> para armar el <code>context</code>.</div>
+    <div class="mr-cell"><code>for p in prestamos:</code> … <code>sum()</code>, <code>len()</code>, <code>Counter</code>.</div>
+
+    <div class="mr-cell jinja">🎨 <strong>Jinja2 · <code>templates/*.html</code></strong></div>
+    <div class="mr-cell"><strong>Pinta</strong> un trozo de HTML por cada elemento del contexto.</div>
+    <div class="mr-cell"><code>{% for libro in libros %}</code> … una fila de tabla por libro.</div>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Regla de oro</h4>
+    <p><strong>Si sabes cuántas vueltas son, usa <code>for ... in</code>.</strong> Si es "hasta que algo pase", usa <code>while</code>. Y antes de contar o sumar tú mismo, pregunta: <strong>¿eso no lo puede hacer SQL (<code>COUNT</code>/<code>SUM</code>) o Python (<code>sum()</code>/<code>len()</code>)?</strong> El bucle manual enseña la idea; cuando la entiendes, la expresas con las herramientas del lenguaje.</p>
+  </div>
+
+  <h3>🧪 Prepara tu ambiente</h3>
+  <p>Los ejemplos corren en la terminal de Python <strong>sin base de datos</strong>. Para el tramo final (rutas FastAPI + plantillas) necesitas lo de siempre:</p>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>setup — dependencias de la clase</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># 1. Dependencias</span>
+pip install fastapi uvicorn jinja2
+
+<span class="com"># 2. (Opcional) Para datos reales de Neon, exporta la URL — nunca la pegues al código:</span>
+<span class="com">#    Tu docente te la entrega por canal privado.</span>
+export DATABASE_URL=<span class="str">"postgresql://usuario:clave@host.neon.tech/biblioteca?sslmode=require"</span>
+
+<span class="com"># 3. REPL para experimentar con bucles sin escribir archivos:</span>
+python</code></pre>
+  </div>
+
+  <h3>🗺️ Ruta de la clase</h3>
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">1️⃣</span>
+      <h3>For... in (Python)</h3>
+      <p>El bucle que recorre <em>cualquier cosa que contenga cosas</em>: listas de filas, dicts, strings. Con <code>enumerate()</code> y bucles anidados.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">2️⃣</span>
+      <h3>Contadores y acumuladores</h3>
+      <p>Los dos patrones que automatizan procesos: contar elementos y sumar valores. Y los superpoderes: <code>sum()</code>, <code>len()</code>, <code>Counter</code>.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">3️⃣</span>
+      <h3>While</h3>
+      <p>Repetir <em>mientras</em> una condición sea verdadera: reintentos, validación de entradas, procesar hasta que no quede nada.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">4️⃣</span>
+      <h3>Bucles en Jinja2</h3>
+      <p>El mismo <code>for ... in</code> pero pintando HTML, con el contador <code>loop</code> incorporado y filtros que cuentan y suman.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">5️⃣</span>
+      <h3>Automatizar procesos</h3>
+      <p>Un mismo reporte resuelto en las tres capas: SQL agrega, Python arma, Jinja pinta. ¿Quién cuenta? ¿Quién acumula?</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">6️⃣</span>
+      <h3>Taller final</h3>
+      <p>La página <code>/prestamos</code> de la biblioteca completa: reporte, tabla, conteo por categoría — con las herramientas correctas.</p>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0" style="visibility:hidden">← Anterior</button>
+    <button class="btn-siguiente" data-ir="1">Siguiente: For... in →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>🔁 El <code>for ... in</code>: recorrer lo que ya tienes</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Por cada elemento adentro, haz esto"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>En Python el <code>for</code> no cuenta vueltas: <strong>visita elementos</strong>. La palabra clave es <code>in</code> — "dentro de". <code>for libro in libros:</code> se lee: <em>"para cada libro que está dentro de la lista <code>libros</code>, haz esto"</em>. La pregunta que siempre se hace un <code>for ... in</code> es: <strong>¿qué hay adentro?</strong> Y lo visita <strong>uno por uno, en orden, sin saltarse ninguno</strong>.</p>
+  </div>
+
+  <div class="caja-donde donde-python">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge python">🐍 Python</span></span>
+    </h4>
+    <p>Este <code>for ... in</code> vive en <strong>vistas.py</strong>, en la lógica de tu app FastAPI: procesas las filas que SQL te devolvió y armas el <code>context</code>. (Tranquilo: en el módulo 5 verás que Jinja2 usa la <em>misma</em> sintaxis para pintar HTML.)</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>lo que devuelve tu consulta — una lista de dicts</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># Esto vive en vistas.py: prestamos = await conn.fetch(...)</span>
+prestamos = [
+    {<span class="str">"estudiante"</span>: <span class="str">"Ana"</span>,     <span class="str">"libro"</span>: <span class="str">"Cien años de soledad"</span>,  <span class="str">"dias_atraso"</span>: <span class="num">0</span>,  <span class="str">"multa"</span>: <span class="num">0</span>},
+    {<span class="str">"estudiante"</span>: <span class="str">"Brayan"</span>,   <span class="str">"libro"</span>: <span class="str">"El hobbit"</span>,              <span class="str">"dias_atraso"</span>: <span class="num">3</span>,  <span class="str">"multa"</span>: <span class="num">1500</span>},
+    {<span class="str">"estudiante"</span>: <span class="str">"Camila"</span>,   <span class="str">"libro"</span>: <span class="str">"Buenos presagios"</span>,        <span class="str">"dias_atraso"</span>: <span class="num">7</span>,  <span class="str">"multa"</span>: <span class="num">3500</span>},
+    {<span class="str">"estudiante"</span>: <span class="str">"Daniela"</span>,  <span class="str">"libro"</span>: <span class="str">"El Señor de los Anillos"</span>, <span class="str">"dias_atraso"</span>: <span class="num">0</span>,  <span class="str">"multa"</span>: <span class="num">0</span>},
+]</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>for ... in — visitar cada préstamo y hacer algo</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># "para cada préstamo DENTRO de prestamos"</span>
+<span class="kw">for</span> prestamo <span class="kw">in</span> prestamos:
+    estado = <span class="str">"a tiempo"</span> <span class="kw">if</span> prestamo[<span class="str">"dias_atraso"</span>] == <span class="num">0</span> <span class="kw">else</span> <span class="str">"atrasado"</span>
+    print(f<span class="str">"{prestamo['estudiante']}: {prestamo['libro']} — {estado}"</span>)
+
+<span class="com"># Ana: Cien años de soledad — a tiempo</span>
+<span class="com"># Brayan: El hobbit — atrasado</span>
+<span class="com"># Camila: Buenos presagios — atrasado</span>
+<span class="com"># Daniela: El Señor de los Anillos — a tiempo</span></code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: el copy-paste por elemento</h4>
+    <p>El anti-patrón es escribir <code>procesar(prestamos[0])</code>, <code>procesar(prestamos[1])</code>, <code>procesar(prestamos[2])</code>… Eso funciona <strong>hasta que mañana hay 200 préstamos</strong>. El <code>for ... in</code> escribe el proceso <strong>una sola vez</strong> y Python lo repite por cada elemento. Cambian los datos, no el código. 🍰</p>
+  </div>
+
+  <h3>📦 ¿Qué puede haber "adentro"? Casi todo</h3>
+  <p class="lead">La potencia de <code>in</code> es que <strong>muchas cosas contienen cosas</strong>. El mismo <code>for</code> las recorre a todas:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>in sobre listas, dicts, strings y rangos</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># 1. Una LISTA de diccionarios (lo que devuelve conn.fetch)</span>
+<span class="kw">for</span> prestamo <span class="kw">in</span> prestamos:
+    ...
+
+<span class="com"># 2. Un DICT: 'in' visita las CLAVES</span>
+conteo = {<span class="str">"novela"</span>: <span class="num">4</span>, <span class="str">"ciencia"</span>: <span class="num">2</span>}
+<span class="kw">for</span> categoria <span class="kw">in</span> conteo:
+    print(categoria, conteo[categoria])   <span class="com"># novela 4 / ciencia 2</span>
+
+<span class="com"># 3. Un STRING: 'in' visita cada carácter</span>
+<span class="kw">for</span> letra <span class="kw">in</span> <span class="str">"ISBN"</span>:
+    print(letra)                          <span class="com"># I / S / B / N</span>
+
+<span class="com"># 4. range(n): la lista de vueltas cuando NO tienes elementos todavía</span>
+<span class="kw">for</span> i <span class="kw">in</span> range(<span class="num">3</span>):
+    print(i)                              <span class="com"># 0 / 1 / 2</span></code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El operador <code>in</code> tiene dos vidas</h4>
+    <p>Como <strong>operador</strong>, pregunta pertenencia y responde <code>True</code>/<code>False</code>: <code>"Ana" in prestamos[0]["estudiante"]</code>. Como parte del <code>for</code>, <strong>recorre</strong>: <code>for p in prestamos:</code>. Mismo <code>in</code>, dos superpoderes. Y fíjate: <code>if categoria in conteo:</code> es el guardián perfecto antes de sumar a un dict contador.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>enumerate() — el elemento Y su posición</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># ¿Necesitas el número de fila además del dato? No cuentes tú: enumera</span>
+<span class="kw">for</span> posicion, prestamo <span class="kw">in</span> enumerate(prestamos, start=<span class="num">1</span>):
+    print(f<span class="str">"#{posicion} — {prestamo['estudiante']}"</span>)
+
+<span class="com"># 1 — Ana / 2 — Brayan / 3 — Camila / 4 — Daniela</span>
+<span class="com"># (enumerate regala la posición; tú NO mantienes un contador a mano… todavía 😏)</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>for anidado: filas de un JOIN (autor → sus libros)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># El JOIN devuelve filas planas (autor, libro). Agrupamos recorriendo:</span>
+filas = [
+    {<span class="str">"autor"</span>: <span class="str">"García Márquez"</span>, <span class="str">"libro"</span>: <span class="str">"Cien años de soledad"</span>},
+    {<span class="str">"autor"</span>: <span class="str">"García Márquez"</span>, <span class="str">"libro"</span>: <span class="str">"El amor en los tiempos del cólera"</span>},
+    {<span class="str">"autor"</span>: <span class="str">"Tolkien"</span>,        <span class="str">"libro"</span>: <span class="str">"El hobbit"</span>},
+    {<span class="str">"autor"</span>: <span class="str">"Tolkien"</span>,        <span class="str">"libro"</span>: <span class="str">"El Señor de los Anillos"</span>},
+]
+
+<span class="kw">for</span> autor <span class="kw">in</span> {f[<span class="str">"autor"</span>] <span class="kw">for</span> f <span class="kw">in</span> filas}:          <span class="com"># autores únicos (set)</span>
+    libros = [f[<span class="str">"libro"</span>] <span class="kw">for</span> f <span class="kw">in</span> filas <span class="kw">if</span> f[<span class="str">"autor"</span>] == autor]
+    print(f<span class="str">"✍️ {autor} ({len(libros)} libro(s)):"</span>)
+    <span class="kw">for</span> libro <span class="kw">in</span> libros:                              <span class="com"># bucle ANIDADO: uno por autor</span>
+        print(f<span class="str">"   📖 {libro}"</span>)
+
+<span class="com"># ✍️ García Márquez (2 libro(s)):</span>
+<span class="com">#    📖 Cien años de soledad</span>
+<span class="com">#    📖 El amor en los tiempos del cólera</span>
+<span class="com"># ✍️ Tolkien (2 libro(s)):</span>
+<span class="com">#    📖 El hobbit</span>
+<span class="com">#    📖 El Señor de los Anillos</span></code></pre>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Con su compañero/a: escriban un <code>for ... in</code> que recorra <code>prestamos</code> e imprima solo los <strong>atrasados</strong> (con <code>if</code> adentro del bucle). Luego respondan: ¿cuántas líneas escribió cada uno? ¿Qué pasaría si la lista tuviera 1.000 préstamos?</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> En <code>for libro in libros:</code>, ¿qué hace la palabra <code>in</code>?</p>
+      <button class="opcion" data-op="a">Compara si <code>libro</code> es igual a <code>libros</code></button>
+      <button class="opcion" data-op="b">Indica que <code>libro</code> toma, una por una, los elementos que están dentro de <code>libros</code></button>
+      <button class="opcion" data-op="c">Importa la lista <code>libros</code> desde otro archivo</button>
+      <button class="opcion" data-op="d">Filtra los libros prestados</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Si recorres un <code>dict</code> con <code>for clave in conteo:</code>, ¿qué visita la variable <code>clave</code>?</p>
+      <button class="opcion" data-op="a">Los valores del dict</button>
+      <button class="opcion" data-op="b">Las parejas clave-valor juntas</button>
+      <button class="opcion" data-op="c">Las claves del dict</button>
+      <button class="opcion" data-op="d">Da error: los dict no se pueden recorrer</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Para qué sirve <code>enumerate(prestamos, start=1)</code>?</p>
+      <button class="opcion" data-op="a">A regalar cada elemento junto con su posición, empezando en 1</button>
+      <button class="opcion" data-op="b">A contar cuántos elementos tiene la lista</button>
+      <button class="opcion" data-op="c">A ordenar la lista alfabéticamente</button>
+      <button class="opcion" data-op="d">A repetir la lista dos veces</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Cuál NO es un anti-patrón (villano) al recorrer datos?</p>
+      <button class="opcion" data-op="a">Escribir <code>procesar(datos[0])</code>, <code>procesar(datos[1])</code>… a mano</button>
+      <button class="opcion" data-op="b">Copiar y pegar la misma instrucción una vez por elemento</button>
+      <button class="opcion" data-op="c">Un <code>if</code> enorme con un caso por cada elemento posible</button>
+      <button class="opcion" data-op="d">Un <code>for elemento in datos:</code> que procesa cada fila</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Contar y Sumar →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>🧮 Contadores y acumuladores: los dos patrones que lo automatizan todo</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Contar es preguntar cuántos; acumular es ir sumando"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Casi todo proceso automatizado se reduce a dos patrones. El <strong>contador</strong>: una variable que empieza en 0 y suma <strong>1</strong> cada vez que algo cumple una condición — <em>¿cuántos préstamos están atrasados?</em> El <strong>acumulador</strong>: una variable que empieza en 0 y suma <strong>un valor</strong> en cada vuelta — <em>¿cuánto dinero hay en multas?</em> Se escriben casi igual:</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>el patrón clásico — contador y acumulador a mano</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>atrasados = <span class="num">0</span>          <span class="com"># CONTADOR: cuántos cumplen la condición</span>
+total_multas = <span class="num">0</span>       <span class="com"># ACUMULADOR: la suma de los valores</span>
+
+<span class="kw">for</span> prestamo <span class="kw">in</span> prestamos:
+    <span class="kw">if</span> prestamo[<span class="str">"dias_atraso"</span>] &gt; <span class="num">0</span>:
+        atrasados += <span class="num">1</span>                       <span class="com"># contar: +1</span>
+        total_multas += prestamo[<span class="str">"multa"</span>]         <span class="com"># acumular: +valor</span>
+
+print(f<span class="str">"Préstamos atrasados: {atrasados}"</span>)        <span class="com"># 2</span>
+print(f<span class="str">"Total en multas: ${total_multas}"</span>)        <span class="com"># $5000</span></code></pre>
+  </div>
+
+  <div class="caja-donde donde-python">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge python">🐍 Python</span></span>
+    </h4>
+    <p>Contar y acumular es trabajo de <strong>Python (o de SQL, como verás en el módulo 6)</strong>. El resultado llega a la plantilla como un número más del <code>context</code>: <code>context={"atrasados": atrasados, "total_multas": total_multas}</code>. <strong>Jinja2 nunca acumula</strong> — solo muestra el resultado.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Contador o acumulador? Pregúntalo así</h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li><strong>"¿Cuántos…?"</strong> → contador: <code>x += 1</code>.</li>
+      <li><strong>"¿Cuánto en total…?"</strong> → acumulador: <code>x += valor</code>.</li>
+      <li>El acumulador no siempre es dinero: puede acumular textos (<code>saludo += " " + nombre</code>) o listas (<code>libros_atrasados.append(...)</code>).</li>
+      <li><strong>Ambos empiezan en 0 (o vacíos) ANTES del bucle</strong>. Inicializarlos adentro es el error clásico: se reinician en cada vuelta. 💥</li>
+    </ul>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>contador con teclado (dict) — contar por categorías</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># ¿Y si hay que contar VARIAS cosas a la vez (por categoría)?</span>
+<span class="com"># El dict es un contador con teclado: una llave por categoría.</span>
+
+libros = [
+    {<span class="str">"titulo"</span>: <span class="str">"Cien años de soledad"</span>,  <span class="str">"categoria"</span>: <span class="str">"novela"</span>},
+    {<span class="str">"titulo"</span>: <span class="str">"El hobbit"</span>,             <span class="str">"categoria"</span>: <span class="str">"fantasía"</span>},
+    {<span class="str">"titulo"</span>: <span class="str">"El Señor de los Anillos"</span>, <span class="str">"categoria"</span>: <span class="str">"fantasía"</span>},
+    {<span class="str">"titulo"</span>: <span class="str">"Breve historia del tiempo"</span>, <span class="str">"categoria"</span>: <span class="str">"ciencia"</span>},
+    {<span class="str">"titulo"</span>: <span class="str">"Pedro Páramo"</span>,           <span class="str">"categoria"</span>: <span class="str">"novela"</span>},
+]
+
+por_categoria = {}                        <span class="com"># contador vacío, ANTES del bucle</span>
+<span class="kw">for</span> libro <span class="kw">in</span> libros:
+    cat = libro[<span class="str">"categoria"</span>]
+    por_categoria[cat] = por_categoria.get(cat, <span class="num">0</span>) + <span class="num">1</span>   <span class="com"># ¿existe? suma 1; si no, nace en 1</span>
+
+print(por_categoria)   <span class="com"># {'novela': 2, 'fantasía': 2, 'ciencia': 1}</span></code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🐍 Los superpoderes de Python: contar y sumar SIN bucle</h4>
+    <p>El patrón manual enseña <em>qué</em> está pasando. Pero Python trae herramientas que lo hacen en una línea, y el código profesional las usa:</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>len(), sum(), min(), max() — las funciones integradas</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># len()  → el contador universal: cuántos elementos hay</span>
+total_prestamos = len(prestamos)                       <span class="com"># 4</span>
+
+<span class="com"># sum()  → el acumulador universal: suma una secuencia</span>
+total_multas = sum(p[<span class="str">"multa"</span>] <span class="kw">for</span> p <span class="kw">in</span> prestamos)   <span class="com"># 5000</span>
+
+<span class="com"># sum() con condición (generator + if): contar atrasados SIN contador</span>
+atrasados = sum(<span class="num">1</span> <span class="kw">for</span> p <span class="kw">in</span> prestamos <span class="kw">if</span> p[<span class="str">"dias_atraso"</span>] &gt; <span class="num">0</span>)   <span class="com"># 2</span>
+
+<span class="com"># min() / max() sobre los días de atraso</span>
+peor_atraso = max(p[<span class="str">"dias_atraso"</span>] <span class="kw">for</span> p <span class="kw">in</span> prestamos)     <span class="com"># 7</span>
+
+<span class="com"># any() / all(): ¿hay alguno? ¿están todos?</span>
+hay_atrasados = any(p[<span class="str">"dias_atraso"</span>] &gt; <span class="num">0</span> <span class="kw">for</span> p <span class="kw">in</span> prestamos)  <span class="com"># True</span>
+todos_atrasados = all(p[<span class="str">"dias_atraso"</span>] &gt; <span class="num">0</span> <span class="kw">for</span> p <span class="kw">in</span> prestamos)  <span class="com"># False</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>collections.Counter — el contador profesional</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">from</span> collections <span class="kw">import</span> Counter
+
+<span class="com"># Counter cuenta por ti lo que el dict contador contaba a mano:</span>
+por_categoria = Counter(libro[<span class="str">"categoria"</span>] <span class="kw">for</span> libro <span class="kw">in</span> libros)
+print(por_categoria)        <span class="com"># Counter({'novela': 2, 'fantasía': 2, 'ciencia': 1})</span>
+
+<span class="com"># Y regala herramientas extra:</span>
+print(por_categoria[<span class="str">"novela"</span>])     <span class="com"># 2  (0 si la clave no existe: sin KeyError)</span>
+print(por_categoria.most_common(<span class="num">2</span>))  <span class="com"># [('novela', 2), ('fantasía', 2)] — ¡el top N!</span>
+
+<span class="com"># En FastAPI, el context queda elegantísimo:</span>
+context = {
+    <span class="str">"libros"</span>: libros,
+    <span class="str">"total"</span>: len(libros),
+    <span class="str">"por_categoria"</span>: dict(por_categoria),
+}</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Cuál uso? La guía de estilo de esta clase</h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li><strong>Aprendiendo / depurando:</strong> el bucle manual con <code>contador += 1</code>. Se ve todo lo que pasa.</li>
+      <li><strong>Código real de la app:</strong> <code>len()</code>, <code>sum(...)</code>, <code>Counter</code>. Una línea, cero errores de inicialización.</li>
+      <li><strong>Conteos y totales de la BD:</strong> ni Python — <strong>SQL</strong> con <code>COUNT</code>/<code>SUM</code>/<code>GROUP BY</code> (módulo 6).</li>
+      <li>Regla: <strong>primero entiendes el patrón a mano, después lo delegas al lenguaje</strong>. Nunca al revés.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Con su compañero/a: calculen el <strong>promedio de multas</strong> de los préstamos atrasados — primero con el patrón manual (contador de atrasados + acumulador de multas) y luego en una línea con <code>sum()</code> y <code>len()</code>. ¿Qué versión entregarían en el proyecto y por qué?</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la diferencia entre contador y acumulador?</p>
+      <button class="opcion" data-op="a">Ninguna, son sinónimos</button>
+      <button class="opcion" data-op="b">El contador suma 1 por elemento que cumple una condición; el acumulador suma un valor distinto en cada vuelta</button>
+      <button class="opcion" data-op="c">El contador cuenta elementos y el acumulador cuenta caracteres</button>
+      <button class="opcion" data-op="d">El acumulador siempre guarda strings</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Dónde se inicializa un acumulador?</p>
+      <button class="opcion" data-op="a">Dentro del bucle, antes del <code>if</code></button>
+      <button class="opcion" data-op="b">Dentro del bucle, después del <code>if</code></button>
+      <button class="opcion" data-op="c">Antes del bucle, en 0 (o vacío)</button>
+      <button class="opcion" data-op="d">No hace falta inicializarlo</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué hace <code>sum(1 for p in prestamos if p["dias_atraso"] > 0)</code>?</p>
+      <button class="opcion" data-op="a">Cuenta cuántos préstamos están atrasados</button>
+      <button class="opcion" data-op="b">Suma los días de atraso de todos</button>
+      <button class="opcion" data-op="c">Suma las multas de los atrasados</button>
+      <button class="opcion" data-op="d">Da error porque <code>sum</code> no acepta condiciones</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Qué reemplaza al dict contador <code>por_categoria.get(cat, 0) + 1</code>?</p>
+      <button class="opcion" data-op="a"><code>sum(por_categoria)</code></button>
+      <button class="opcion" data-op="b"><code>len(por_categoria)</code></button>
+      <button class="opcion" data-op="c">Un <code>while</code> infinito</button>
+      <button class="opcion" data-op="d"><code>Counter</code> de <code>collections</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: While →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>🌀 El <code>while</code>: repetir mientras algo sea verdad</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "No sé cuántas vueltas: sé hasta cuándo"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>El <code>while</code> repite un bloque <strong>mientras una condición sea verdadera</strong>. No sabe cuántas vueltas dará — sabe <strong>cuándo parar</strong>. En una app sirve para: <em>seguir pidiendo un dato hasta que sea válido</em>, <em>seguir procesando páginas de una API hasta que llegue una vacía</em>, <em>seguir intentando una conexión hasta que logre</em>. Su estructura siempre es la misma:</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>anatomía del while — 3 piezas obligatorias</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># 1️⃣ Preparar: la variable de la condición, ANTES del bucle</span>
+respuesta = <span class="str">""</span>
+
+<span class="com"># 2️⃣ La condición: mientras sea True, el bloque se repite</span>
+<span class="kw">while</span> respuesta != <span class="str">"s"</span> <span class="kw">and</span> respuesta != <span class="str">"n"</span>:
+    respuesta = input(<span class="str">"¿Registrar otro préstamo? (s/n): "</span>).strip().lower()
+    <span class="com"># 3️⃣ Avanzar: algo debe poder cambiar la condición</span>
+
+print(f<span class="str">"Respuesta válida: {respuesta}"</span>)</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: el bucle infinito</h4>
+    <p>Si la condición <strong>nunca se vuelve falsa</strong>, el <code>while</code> jamás termina: la app se cuelga. 💀 La causa #1 es olvidar la pieza 3 (avanzar): <code>while respuesta != "s": ...</code> sin volver a preguntar dentro. Receta anti-infinito: <strong>preparar antes, avanzar dentro</strong>. Y si mientras pruebas algo se cuelga: <code>Ctrl + C</code> lo corta.</p>
+  </div>
+
+  <div class="caja-donde donde-python">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge python">🐍 Python</span></span>
+    </h4>
+    <p>El <code>while</code> es <strong>100% Python</strong>: valida entradas en tus rutas, procesa lotes, reintenta conexiones. <strong>Jinja2 no tiene <code>while</code></strong> — sus plantillas solo usan <code>{% for %}</code>, porque pintar HTML siempre es "por cada elemento del contexto".</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>while + acumulador: registrar préstamos hasta que diga basta</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># El patrón "carga de datos" de toda la vida:</span>
+prestamos = []                    <span class="com"># acumulador de listas</span>
+total_multas = <span class="num">0</span>               <span class="com"># acumulador de dinero</span>
+continuar = <span class="str">"s"</span>                 <span class="com"># preparar la condición</span>
+
+<span class="kw">while</span> continuar == <span class="str">"s"</span>:
+    estudiante = input(<span class="str">"Estudiante: "</span>)
+    multa = <span class="num">float</span>(input(<span class="str">"Multa: $"</span>))
+    prestamos.append({<span class="str">"estudiante"</span>: estudiante, <span class="str">"multa"</span>: multa})
+    total_multas += multa                                  <span class="com"># acumular</span>
+    continuar = input(<span class="str">"¿Otro? (s/n): "</span>).strip().lower()   <span class="com"># avanzar</span>
+
+print(f<span class="str">"Se registraron {len(prestamos)} préstamos (contador de regalo)."</span>)
+print(f<span class="str">"Total en multas: ${total_multas}"</span>)</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>while en FastAPI: validar hasta que el dato sea correcto</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># En una ruta, validar la entrada de un formulario:</span>
+<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI, Request
+<span class="kw">from</span> fastapi.responses <span class="kw">import</span> HTMLResponse
+
+app = FastAPI()
+
+<span class="kw">def</span> validar_isbn(texto: <span class="num">str</span>) -&gt; <span class="num">str</span> | <span class="num">None</span>:
+    <span class="com"># While seco: pedir-consigo-mismo hasta lograr</span>
+    isbn = texto.strip()
+    intentos = <span class="num">0</span>                                <span class="com"># contador de reintentos</span>
+    <span class="kw">while</span> <span class="kw">not</span> (isbn.isdigit() <span class="kw">and</span> <span class="num">len</span>(isbn) == <span class="num">13</span>) <span class="kw">and</span> intentos &lt; <span class="num">5</span>:
+        isbn = input(<span class="str">"ISBN inválido (13 dígitos). Reintenta: "</span>).strip()
+        intentos += <span class="num">1</span>                        <span class="com"># avanzar: el contador pone tope</span>
+    <span class="kw">return</span> isbn <span class="kw">if</span> isbn.isdigit() <span class="kw">and</span> <span class="num">len</span>(isbn) == <span class="num">13</span> <span class="kw">else</span> <span class="num">None</span>
+
+<span class="kw">def</span> paginar_api(url_inicial: <span class="num">str</span>) -&gt; <span class="num">list</span>:
+    <span class="com"># While "hasta que llegue una página vacía" — clásico de APIs:</span>
+    resultados = []                              <span class="com"># acumulador</span>
+    url = url_inicial
+    <span class="kw">while</span> url:                                 <span class="com"># mientras haya página siguiente…</span>
+        datos = requests.get(url).json()          <span class="com"># (ejemplo ilustrativo)</span>
+        resultados.extend(datos[<span class="str">"items"</span>])       <span class="com"># acumular</span>
+        url = datos[<span class="str">"next"</span>]                   <span class="com"># avanzar: None cuando no hay más</span>
+    <span class="kw">return</span> resultados</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>break y continue — control fino del bucle</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># break: CORTA el bucle completo (encontré lo que buscaba)</span>
+<span class="kw">for</span> prestamo <span class="kw">in</span> prestamos:
+    <span class="kw">if</span> prestamo[<span class="str">"estudiante"</span>] == <span class="str">"Camila"</span>:
+        print(<span class="str">"Camila tiene un préstamo activo"</span>)
+        <span class="kw">break</span>                        <span class="com"># no sigo recorriendo: ya la encontré</span>
+
+<span class="com"># continue: SALTA esta vuelta (este no me interesa, siguiente)</span>
+<span class="kw">for</span> prestamo <span class="kw">in</span> prestamos:
+    <span class="kw">if</span> prestamo[<span class="str">"dias_atraso"</span>] == <span class="num">0</span>:
+        <span class="kw">continue</span>                     <span class="com"># a tiempo: saltarlo</span>
+    print(f<span class="str">"Atrasado: {prestamo['estudiante']}"</span>)   <span class="com"># solo los atrasados</span>
+
+<span class="com"># Funcionan igual en for y en while. Úsalos para CLARIDAD, no para acrobacias.</span></code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿<code>for</code> o <code>while</code>? La tabla de decisión</h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li><strong>¿Sabes cuántas vueltas o tienes una colección?</strong> → <code>for ... in</code>. Recorrer filas, listas, dicts, strings.</li>
+      <li><strong>¿Solo sabes la condición de paro?</strong> → <code>while</code>. Validar, reintentar, "hasta que llegue vacío".</li>
+      <li><strong>Truco mental:</strong> si tu <code>while</code> empieza con <code>i = 0</code> y hace <code>i += 1</code> para recorrer una lista… ese es un <code>for ... in</code> disfrazado. 🥸 Cámbialo.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Con su compañero/a: escriban un <code>while</code> que pida un <strong>día de atraso</strong> y no acepte hasta que sea un número entre 0 y 30 (usen <code>.isdigit()</code>). Luego: ¿qué pasa si quitan la línea que vuelve a pedir? Pruébenlo (con <code>Ctrl + C</code> a la mano 😄).</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuándo es correcto elegir <code>while</code> en vez de <code>for</code>?</p>
+      <button class="opcion" data-op="a">Siempre que la lista tenga más de 10 elementos</button>
+      <button class="opcion" data-op="b">Cuando no sabes cuántas vueltas serán, pero sí la condición de paro</button>
+      <button class="opcion" data-op="c">Cuando quieres recorrer un dict</button>
+      <button class="opcion" data-op="d">Nunca: el while está descontinuado</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Cuál es la causa #1 del bucle infinito?</p>
+      <button class="opcion" data-op="a">Usar <code>while</code> dentro de una función</button>
+      <button class="opcion" data-op="b">Poner la condición entre paréntesis</button>
+      <button class="opcion" data-op="c">Que nada dentro del bucle cambie la condición (no se "avanza")</button>
+      <button class="opcion" data-op="d">Acumular en una lista</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué diferencia hay entre <code>break</code> y <code>continue</code>?</p>
+      <button class="opcion" data-op="a"><code>break</code> termina el bucle completo; <code>continue</code> salta a la siguiente vuelta</button>
+      <button class="opcion" data-op="b"><code>continue</code> termina el bucle; <code>break</code> salta la vuelta</button>
+      <button class="opcion" data-op="c">Ambos terminan el bucle</button>
+      <button class="opcion" data-op="d">Ambos saltan a la siguiente vuelta</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Tiene Jinja2 un <code>{% while %}</code>?</p>
+      <button class="opcion" data-op="a">Sí, con la misma sintaxis de Python</button>
+      <button class="opcion" data-op="b">Sí, pero solo dentro de macros</button>
+      <button class="opcion" data-op="c">Sí, desde la versión 3 con <code>{% while %}</code></button>
+      <button class="opcion" data-op="d">No: las plantillas solo iteran colecciones con <code>{% for %}</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73% agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Coméntale a tu compañero/a: ¿cuál fue el bucle más largo que escribiste hoy? ¿Era <code>for</code> o <code>while</code>? 1 min.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>El <code>while</code> nació <strong>antes</strong> que el <code>for</code>: viene de los lenguajes de los años 60 (ALGOL, C) donde todo bucle era "mientras una condición". El <code>for ... in</code> moderno es herencia de <strong>ABC y Python</strong>, que pensaron: "si casi siempre recorremos una colección, el bucle debería hablar de la colección, no del contador". Por eso el de Python no necesita <code>i = i + 1</code> — el <code>in</code> ya sabe dónde va. 📜</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Jinja →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>🎨 Bucles en Jinja2: <code>{% for ... in %}</code> para pintar HTML</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El mismo 'in', pero cada vuelta pinta HTML"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>¿Recuerdas el módulo 1? <code>for prestamo in prestamos:</code> visitaba cada elemento de una lista. En Jinja2 es <strong>exactamente la misma idea</strong> con sintaxis de plantilla: <code>{% for prestamo in prestamos %}...{% endfor %}</code>. La diferencia es qué hace cada vuelta: en Python <em>procesa</em> datos; en Jinja2 <em>pinta</em> un trozo de HTML. El <code>in</code> pregunta lo mismo: <strong>¿qué hay adentro del contexto?</strong></p>
+  </div>
+
+  <div class="caja-donde donde-jinja">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge python">🐍 Python (arma)</span><span class="capa-badge jinja">🎨 Jinja2 (pinta)</span></span>
+    </h4>
+    <p>Lo que iteras <strong>ya viene en el contexto</strong>: FastAPI hizo la consulta y te entregó la lista. La plantilla la recorre con <code>{% for %}</code> y genera una fila de tabla (o una tarjeta, o un <code>&lt;li&gt;</code>) por elemento. <strong>No consultas la BD ni calculas nada aquí</strong>.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — la ruta arma el contexto (repaso)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># Python ya contó y acumuló: la plantilla solo recibe resultados</span>
+<span class="kw">from</span> collections <span class="kw">import</span> Counter
+
+<span class="kw">async def</span> prestamos(request: Request):
+    filas = <span class="kw">await</span> conn.fetch(<span class="str">"SELECT * FROM prestamos"</span>)
+    atrasados = sum(<span class="num">1</span> <span class="kw">for</span> p <span class="kw">in</span> filas <span class="kw">if</span> p[<span class="str">"dias_atraso"</span>] &gt; <span class="num">0</span>)
+    total_multas = sum(p[<span class="str">"multa"</span>] <span class="kw">for</span> p <span class="kw">in</span> filas)
+    <span class="kw">return</span> templates.TemplateResponse(
+        request, <span class="str">"prestamos.html"</span>,
+        context={<span class="str">"prestamos"</span>: filas, <span class="str">"atrasados"</span>: atrasados, <span class="str">"total_multas"</span>: total_multas},
+    )</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>templates/prestamos.html — el for pinta una fila por elemento</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>&lt;table class=<span class="str">"table table-striped"</span>&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;#&lt;/th&gt;&lt;th&gt;Estudiante&lt;/th&gt;&lt;th&gt;Libro&lt;/th&gt;&lt;th&gt;Días de atraso&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    {% for prestamo in prestamos %}
+    &lt;tr&gt;
+      &lt;td&gt;{{ loop.index }}&lt;/td&gt;
+      &lt;td&gt;{{ prestamo.estudiante }}&lt;/td&gt;
+      &lt;td&gt;{{ prestamo.libro }}&lt;/td&gt;
+      &lt;td&gt;{{ prestamo.dias_atraso }}&lt;/td&gt;
+    &lt;/tr&gt;
+    {% endfor %}
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Hay {{ prestamos|length }} préstamos, {{ atrasados }} atrasados.&lt;/p&gt;</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: el contador a mano en la plantilla</h4>
+    <p>Alguien siempre inventa esto: <code>{% set i = 0 %}</code> … <code>{% set i = i + 1 %}</code> dentro del <code>{% for %}</code>. <strong>No.</strong> Jinja2 te regala el contador incorporado <code>loop</code>, que se reinicia solo en cada bucle y nunca se desincroniza. Y si necesitas contar o sumar la lista completa: eso vino calculado desde Python en el contexto (o lo lees con <code>|length</code>).</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>la variable loop — tu contador incorporado y gratuito</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{% for prestamo in prestamos %}
+  &lt;tr class=<span class="str">"{% if loop.index is even %}fila-par{% else %}fila-impar{% endif %}"</span>&gt;
+    &lt;td&gt;{{ loop.index }}&lt;/td&gt;        &lt;!-- 1, 2, 3… (desde 1) --&gt;
+    &lt;td&gt;{{ prestamo.estudiante }}&lt;/td&gt;
+    {% if loop.first %}&lt;td&gt;🆕 primer préstamo&lt;/td&gt;{% endif %}
+    {% if loop.last %}&lt;td&gt;🏁 último&lt;/td&gt;{% endif %}
+  &lt;/tr&gt;
+{% endfor %}</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Atributos de <code>loop</code> (el contador de Jinja2)</h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li><code>{{ loop.index }}</code> — contador desde <strong>1</strong> (el número de fila).</li>
+      <li><code>{{ loop.index0 }}</code> — contador desde <strong>0</strong> (como Python).</li>
+      <li><code>loop.first</code> / <code>loop.last</code> — <code>True</code> solo en la primera/última vuelta.</li>
+      <li><code>{{ loop.length }}</code> — el total de vueltas (= <code>prestamos|length</code>).</li>
+      <li><code>loop.cycle('par', 'impar')</code> — alterna valores vuelta a vuelta.</li>
+    </ul>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>else del for, groupby y sum — contar/sumar al pintar</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com">{# 1. Lista vacía sin tabla en blanco: {% else %} del for #}</span>
+{% for prestamo in prestamos %}
+  &lt;li&gt;{{ prestamo.estudiante }} — {{ prestamo.libro }}&lt;/li&gt;
+{% else %}
+  &lt;li class=<span class="str">"text-muted"</span>&gt;📭 No hay préstamos registrados todavía&lt;/li&gt;
+{% endfor %}
+
+<span class="com">{# 2. Contar al pintar: |length  (sin bucle, sin loop) #}</span>
+&lt;p&gt;{{ prestamos|length }} préstamos en total.&lt;/p&gt;
+
+<span class="com">{# 3. Sumar al pintar: |sum sobre un atributo #}</span>
+&lt;p&gt;Suma de días de atraso: {{ prestamos|sum(attribute=<span class="str">'dias_atraso'</span>) }}.&lt;/p&gt;
+
+<span class="com">{# 4. Anidado con groupby: pintar por categorías #}</span>
+{% for grupo in libros|groupby(<span class="str">'categoria'</span>) %}
+  &lt;h3&gt;{{ grupo.grouper }} ({{ grupo.list|length }})&lt;/h3&gt;
+  &lt;ul&gt;
+    {% for libro in grupo.list %}
+      &lt;li&gt;{{ libro.titulo }}&lt;/li&gt;
+    {% endfor %}
+  &lt;/ul&gt;
+{% endfor %}</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El caso especial: <code>namespace()</code> cuando NO hay otra</h4>
+    <p>¿Y si de verdad necesitas un acumulador <em>dentro</em> de la plantilla (p. ej. marcar "ya imprimí este autor")? Jinja2 ofrece <code>{% set visto = namespace(valor=False) %}</code> y se muta con <code>visto.valor = True</code>. Existe — pero es una <strong>señal de alerta</strong>: casi siempre ese cálculo debió llegar hecho desde Python en el contexto. Úsalo como último recurso, con comentario explicando por qué. 🚨</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Con su compañero/a: tomen la tabla de <code>prestamos</code> y agréguenle una columna "Estado" que pinte 🟢 si <code>dias_atraso == 0</code> y 🔴 si no, usando <code>{% if %}</code> adentro del <code>{% for %}</code>. ¿Tuvo que tocar <code>vistas.py</code>? ¿Por qué no?</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> En <code>{% for prestamo in prestamos %}</code>, ¿de dónde viene la lista <code>prestamos</code>?</p>
+      <button class="opcion" data-op="a">De una consulta SQL que hace la plantilla</button>
+      <button class="opcion" data-op="b">Del <code>context</code> que armó la ruta de FastAPI en Python</button>
+      <button class="opcion" data-op="c">La declara la plantilla con <code>{% set %}</code></button>
+      <button class="opcion" data-op="d">Del navegador</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Quieres numerar las filas de la tabla (1, 2, 3…). ¿Qué usas?</p>
+      <button class="opcion" data-op="a"><code>{% set i = 0 %}</code> y sumar dentro del bucle</button>
+      <button class="opcion" data-op="b">Un contador acumulado en el contexto</button>
+      <button class="opcion" data-op="c"><code>{{ loop.index }}</code>, el contador incorporado</button>
+      <button class="opcion" data-op="d">No se puede numerar filas en Jinja2</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué hace <code>{{ prestamos|sum(attribute='dias_atraso') }}</code>?</p>
+      <button class="opcion" data-op="a">Suma el valor de <code>dias_atraso</code> de todos los préstamos</button>
+      <button class="opcion" data-op="b">Cuenta cuántos préstamos tienen atraso</button>
+      <button class="opcion" data-op="c">Muestra el mayor atraso</button>
+      <button class="opcion" data-op="d">Agrupa los préstamos por días de atraso</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> Si ves <code>{% set contador = 0 %}</code> … <code>{% set contador = contador + 1 %}</code> dentro de un <code>{% for %}</code>, ¿qué opinas?</p>
+      <button class="opcion" data-op="a">Perfecto: es la forma correcta de contar</button>
+      <button class="opcion" data-op="b">Está mal: Jinja2 no permite <code>{% set %}</code></button>
+      <button class="opcion" data-op="c">Está bien, pero solo dentro de macros</button>
+      <button class="opcion" data-op="d">Es el villano "contador a mano": existe <code>loop.index</code> o venía del contexto</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Automatizar →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>🤖 Automatizar un proceso en las tres capas</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Quien puede contar en SQL, que cuente en SQL"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Un mismo proceso — <strong>el reporte de préstamos atrasados con total de multas</strong> — puede automatizarse en tres capas. La pregunta profesional no es "¿dónde puedo?" sino <strong>"¿dónde conviene?"</strong>. La respuesta corta: <strong>el que tiene los datos cuenta</strong>. Si son todos los de la BD → SQL. Si son datos ya en Python → <code>sum()</code>/<code>Counter</code>. Si es solo pintar cada elemento → Jinja2.</p>
+  </div>
+
+  <div class="mapa-residencia">
+    <div class="mr-head">Necesito…</div>
+    <div class="mr-head">Capa correcta</div>
+    <div class="mr-head">Herramienta</div>
+
+    <div class="mr-cell sql">🐘 Contar/sumar <strong>toda la BD</strong></div>
+    <div class="mr-cell"><strong>SQL</strong> — el motor agrega sin mover filas.</div>
+    <div class="mr-cell"><code>COUNT(*)</code>, <code>SUM(multa)</code>, <code>GROUP BY categoria</code>.</div>
+
+    <div class="mr-cell python">🐍 Contar/sumar datos <strong>que ya tengo en Python</strong></div>
+    <div class="mr-cell"><strong>Python</strong> — una línea por métrica.</div>
+    <div class="mr-cell"><code>len()</code>, <code>sum(...)</code>, <code>Counter</code>, <code>min()/max()</code>.</div>
+
+    <div class="mr-cell jinja">🎨 Una pieza de HTML <strong>por elemento</strong></div>
+    <div class="mr-cell"><strong>Jinja2</strong> — solo pinta lo que llega.</div>
+    <div class="mr-cell"><code>{% for %}</code> + <code>loop.index</code> + <code>{% if %}</code>.</div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>versión 1 — todo lo cuenta SQL (la más eficiente)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com">-- El motor de PostgreSQL (Neon) cuenta y suma SIN sacar las filas de la BD.</span>
+<span class="kw">SELECT</span>
+    COUNT(*)                                    <span class="com">AS total_prestamos,</span>
+    COUNT(*) FILTER (WHERE dias_atraso &gt; <span class="num">0</span>)    <span class="com">AS atrasados,</span>
+    COALESCE(SUM(multa), <span class="num">0</span>)                    <span class="com">AS total_multas</span>
+<span class="kw">FROM</span> prestamos;
+
+<span class="com">-- Y el conteo por categoría, directo para el contexto:</span>
+<span class="kw">SELECT</span> categoria, COUNT(*) <span class="kw">AS</span> cantidad
+<span class="kw">FROM</span> libros
+<span class="kw">GROUP BY</span> categoria
+<span class="kw">ORDER BY</span> cantidad DESC;</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>versión 2 — Python arma el contexto con sus superpoderes</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">async def</span> reporte_prestamos(request: Request):
+    <span class="com"># Ya tengo las filas en Python: sum() y Counter hacen el resto</span>
+    filas = <span class="kw">await</span> conn.fetch(<span class="str">"SELECT * FROM prestamos"</span>)
+
+    <span class="kw">def</span> estado(p):
+        <span class="kw">return</span> <span class="str">"atrasado"</span> <span class="kw">if</span> p[<span class="str">"dias_atraso"</span>] &gt; <span class="num">0</span> <span class="kw">else</span> <span class="str">"a_tiempo"</span>
+
+    por_estado = Counter(estado(p) <span class="kw">for</span> p <span class="kw">in</span> filas)   <span class="com"># {'a_tiempo': 2, 'atrasado': 2}</span>
+    contexto = {
+        <span class="str">"prestamos"</span>: filas,
+        <span class="str">"total"</span>: <span class="num">len</span>(filas),                        <span class="com"># contador delegado</span>
+        <span class="str">"atrasados"</span>: por_estado[<span class="str">"atrasado"</span>],
+        <span class="str">"total_multas"</span>: sum(p[<span class="str">"multa"</span>] <span class="kw">for</span> p <span class="kw">in</span> filas),  <span class="com"># acumulador delegado</span>
+        <span class="str">"por_estado"</span>: dict(por_estado),
+    }
+    <span class="kw">return</span> templates.TemplateResponse(request, <span class="str">"prestamos.html"</span>, context=contexto)</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>versión 3 — Jinja2 solo pinta lo que le mandaron</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>&lt;div class=<span class="str">"row text-center"</span>&gt;
+  &lt;div class=<span class="str">"col"</span>&gt;📊 {{ total }} préstamos&lt;/div&gt;
+  &lt;div class=<span class="str">"col"</span>&gt;⚠️ {{ atrasados }} atrasados&lt;/div&gt;
+  &lt;div class=<span class="str">"col"</span>&gt;💰 ${{ total_multas }} en multas&lt;/div&gt;
+&lt;/div&gt;
+
+{% for prestamo in prestamos %}
+  &lt;tr&gt;
+    &lt;td&gt;{{ loop.index }}&lt;/td&gt;
+    &lt;td&gt;{{ prestamo.estudiante }}&lt;/td&gt;
+    &lt;td&gt;{{ <span class="str">"🔴"</span> if prestamo.dias_atraso &gt; <span class="num">0</span> else <span class="str">"🟢"</span> }}&lt;/td&gt;
+  &lt;/tr&gt;
+{% endfor %}
+
+<span class="com">{# Cero contadores, cero acumuladores: todo llegó calculado. Solo 'in' y pintar. #}</span></code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: contar en la capa equivocada</h4>
+    <p>Tres pecados que verás en código real: <strong>(1)</strong> traer 10.000 filas a Python para que SQL "no se canse" y contarlas con un bucle manual → el motor de BD cuenta millones de filas sin sudar, <strong>mándale el <code>COUNT</code> a SQL</strong>. <strong>(2)</strong> Contar en la plantilla con <code>namespace()</code> y <code>|sum</code> por todos lados → eso vivía en el contexto. <strong>(3)</strong> Recorrer en Python la lista <em>dos veces</em> (una para contar, otra para sumar) → <code>len()</code> + <code>sum()</code> lo hacen claro y sin bucles extra.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>proceso completo — validar y registrar préstamos (automatizado)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">async def</span> registrar_prestamos(request: Request, datos: <span class="num">list</span>[<span class="num">dict</span>]):
+    <span class="com"># 1. FOR: recorre y valida cada préstamo que llegó del formulario</span>
+    validos, rechazados = [], []                      <span class="com"># dos acumuladores de listas</span>
+    <span class="kw">for</span> prestamo <span class="kw">in</span> datos:
+        <span class="kw">if</span> prestamo[<span class="str">"dias_atraso"</span>] &lt; <span class="num">0</span>:
+            rechazados.append(prestamo)               <span class="com"># acumular rechazos</span>
+        <span class="kw">else</span>:
+            validos.append(prestamo)                  <span class="com"># acumular válidos</span>
+
+    <span class="com"># 2. Los inserto en la BD de uno en uno (for sobre los válidos)</span>
+    <span class="kw">for</span> p <span class="kw">in</span> validos:
+        <span class="kw">await</span> conn.execute(
+            <span class="str">"INSERT INTO prestamos (estudiante, libro, dias_atraso, multa) VALUES ($1, $2, $3, $4)"</span>,
+            p[<span class="str">"estudiante"</span>], p[<span class="str">"libro"</span>], p[<span class="str">"dias_atraso"</span>], p[<span class="str">"multa"</span>],
+        )
+
+    <span class="com"># 3. Reporte con contadores delegados al lenguaje</span>
+    <span class="kw">return</span> {<span class="str">"registrados"</span>: <span class="num">len</span>(validos), <span class="str">"rechazados"</span>: <span class="num">len</span>(rechazados)}</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Checklist del proceso automatizado</h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li>¿El proceso repite algo? → <code>for ... in</code> una vez, no copy-paste.</li>
+      <li>¿Se repite "hasta que pase algo"? → <code>while</code> con avance garantizado.</li>
+      <li>¿Hay un "¿cuántos?" o "¿cuánto?" → <code>len()</code>/<code>sum()</code>/SQL, no bucle manual.</li>
+      <li>¿Es por categorías? → <code>Counter</code> en Python o <code>GROUP BY</code> en SQL.</li>
+      <li>¿La plantilla necesita ese número? → llega por el <code>context</code>, calculado.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Con su compañero/a: auditen este código y encuentren <strong>tres pecados de capa</strong>: <code>filas = await conn.fetch("SELECT multa FROM prestamos")</code> … <code>total = 0; for f in filas: total += f["multa"]</code> … <code>{% set i = 0 %}</code> en la plantilla para numerar. ¿Cómo queda la versión correcta en tres capas?</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> Necesitas el total de multas de <strong>todos</strong> los préstamos de la BD. ¿Dónde conviene calcularlo?</p>
+      <button class="opcion" data-op="a">En SQL, con <code>SELECT SUM(multa) FROM prestamos</code></button>
+      <button class="opcion" data-op="b">En Python, con un bucle manual sobre las filas</button>
+      <button class="opcion" data-op="c">En la plantilla, con <code>|sum</code></button>
+      <button class="opcion" data-op="d">En el navegador con JavaScript</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> Ya tienes una lista de préstamos en Python y necesitas cuántos hay. ¿Qué es lo más expresivo?</p>
+      <button class="opcion" data-op="a"><code>contador = 0; for p in prestamos: contador += 1</code></button>
+      <button class="opcion" data-op="b"><code>len(prestamos)</code></button>
+      <button class="opcion" data-op="c">Un <code>while</code> que recorra la lista</button>
+      <button class="opcion" data-op="d">Preguntarle a la plantilla con <code>|length</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> El conteo de libros por categoría para una página web, ¿cuál es la cadena correcta?</p>
+      <button class="opcion" data-op="a">SQL trae todas las filas → la plantilla cuenta con <code>namespace</code></button>
+      <button class="opcion" data-op="b">La plantilla consulta la BD y cuenta con <code>|length</code></button>
+      <button class="opcion" data-op="c">SQL agrupa con <code>GROUP BY</code> (o Python con <code>Counter</code>) → el contexto lo lleva → Jinja lo pinta con <code>{% for %}</code></button>
+      <button class="opcion" data-op="d">Un <code>while</code> en la ruta hasta que no queden categorías</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Qué NO debería hacer una plantilla Jinja2?</p>
+      <button class="opcion" data-op="a">Recorrer el contexto con <code>{% for %}</code></button>
+      <button class="opcion" data-op="b">Acumular totales con contadores manuales o consultar la BD</button>
+      <button class="opcion" data-op="c">Numerar filas con <code>{{ loop.index }}</code></button>
+      <button class="opcion" data-op="d">Pintar un mensaje con <code>{% else %}</code> si la lista está vacía</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: la página <code>/prestamos</code> completa</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "Un proceso, tres capas, cero copy-paste"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">El reporte de préstamos de la biblioteca</span>
+    </div>
+    <p>Vas a armar, paso a paso, la página <strong>/prestamos</strong>: el reporte con tarjetas de resumen, la tabla numerada con semáforo de atraso, el conteo por categoría y — de postre — la versión SQL equivalente. Vas a usar <code>for ... in</code>, <code>while</code>, contadores, acumuladores y los superpoderes de Python, repartidos en la capa correcta.</p>
+  </div>
+
+  <div class="caja-donde donde-python">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge sql">🐘 SQL</span><span class="capa-badge python">🐍 Python</span><span class="capa-badge jinja">🎨 Jinja2</span></span>
+    </h4>
+    <p>Este taller sí toca las tres capas: un <code>SELECT</code> (o los datos de muestra), una ruta FastAPI que arma el contexto, y una plantilla que pinta. Trabaja con los datos de muestra si no tienes la BD conectada.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>datos de muestra (o el resultado de tu SELECT)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>prestamos = [
+    {<span class="str">"id"</span>: <span class="num">1</span>, <span class="str">"estudiante"</span>: <span class="str">"Ana"</span>,     <span class="str">"libro"</span>: <span class="str">"Cien años de soledad"</span>,   <span class="str">"categoria"</span>: <span class="str">"novela"</span>,   <span class="str">"dias_atraso"</span>: <span class="num">0</span>, <span class="str">"multa"</span>: <span class="num">0</span>},
+    {<span class="str">"id"</span>: <span class="num">2</span>, <span class="str">"estudiante"</span>: <span class="str">"Brayan"</span>,   <span class="str">"libro"</span>: <span class="str">"El hobbit"</span>,              <span class="str">"categoria"</span>: <span class="str">"fantasía"</span>, <span class="str">"dias_atraso"</span>: <span class="num">3</span>, <span class="str">"multa"</span>: <span class="num">1500</span>},
+    {<span class="str">"id"</span>: <span class="num">3</span>, <span class="str">"estudiante"</span>: <span class="str">"Camila"</span>,   <span class="str">"libro"</span>: <span class="str">"Buenos presagios"</span>,         <span class="str">"categoria"</span>: <span class="str">"fantasía"</span>, <span class="str">"dias_atraso"</span>: <span class="num">7</span>, <span class="str">"multa"</span>: <span class="num">3500</span>},
+    {<span class="str">"id"</span>: <span class="num">4</span>, <span class="str">"estudiante"</span>: <span class="str">"Daniela"</span>,  <span class="str">"libro"</span>: <span class="str">"Breve historia del tiempo"</span>, <span class="str">"categoria"</span>: <span class="str">"ciencia"</span>,  <span class="str">"dias_atraso"</span>: <span class="num">0</span>, <span class="str">"multa"</span>: <span class="num">0</span>},
+    {<span class="str">"id"</span>: <span class="num">5</span>, <span class="str">"estudiante"</span>: <span class="str">"Esteban"</span>,  <span class="str">"libro"</span>: <span class="str">"Pedro Páramo"</span>,             <span class="str">"categoria"</span>: <span class="str">"novela"</span>,   <span class="str">"dias_atraso"</span>: <span class="num">2</span>, <span class="str">"multa"</span>: <span class="num">1000</span>},
+]</code></pre>
+  </div>
+
+  <h3>🧠 Reto 1 — La ruta que arma el contexto (Python)</h3>
+  <p>Escribe la ruta <code>/prestamos</code>: calcula <strong>total</strong>, <strong>atrasados</strong>, <strong>total de multas</strong> y el <strong>conteo por categoría</strong>. Regla: <strong>cero bucles manuales</strong> — usa <code>len()</code>, <code>sum(...)</code> y <code>Counter</code>. El resultado va al <code>context</code>.</p>
+
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 1</h4>
+    <pre><code><span class="kw">from</span> collections <span class="kw">import</span> Counter
+
+<span class="kw">async def</span> reporte_prestamos(request: Request):
+    filas = prestamos                        <span class="com"># los datos de muestra (o tu SELECT)</span>
+    atrasados = sum(<span class="num">1</span> <span class="kw">for</span> p <span class="kw">in</span> filas <span class="kw">if</span> p[<span class="str">"dias_atraso"</span>] &gt; <span class="num">0</span>)
+    contexto = {
+        <span class="str">"prestamos"</span>: filas,
+        <span class="str">"total"</span>: len(filas),
+        <span class="str">"atrasados"</span>: atrasados,
+        <span class="str">"total_multas"</span>: sum(p[<span class="str">"multa"</span>] <span class="kw">for</span> p <span class="kw">in</span> filas),
+        <span class="str">"por_categoria"</span>: dict(Counter(p[<span class="str">"categoria"</span>] <span class="kw">for</span> p <span class="kw">in</span> filas)),
+    }
+    <span class="kw">return</span> templates.TemplateResponse(request, <span class="str">"prestamos.html"</span>, context=contexto)</code></pre>
+  </div>
+
+  <h3>🧠 Reto 2 — Las tarjetas de resumen y la tabla (Jinja2)</h3>
+  <p>Pinta tres tarjetas Bootstrap (<code>card</code>) con <code>total</code>, <code>atrasados</code> y <code>total_multas</code> (usan <code>|default</code> por si algo viene <code>None</code>). Debajo, la tabla: una fila por préstamo <strong>numerada con <code>loop.index</code></strong>, con 🟢 si <code>dias_atraso == 0</code> y 🔴 si no. Si la lista viene vacía, muestra una alerta en vez de la tabla.</p>
+
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 2</h4>
+    <pre><code>&lt;div class=<span class="str">"row text-center my-3"</span>&gt;
+  &lt;div class=<span class="str">"col"</span>&gt;&lt;div class=<span class="str">"card"</span>&gt;&lt;div class=<span class="str">"card-body"</span>&gt;
+    &lt;h5&gt;Préstamos&lt;/h5&gt;{{ total | default(0) }}
+  &lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;div class=<span class="str">"col"</span>&gt;&lt;div class=<span class="str">"card"</span>&gt;&lt;div class=<span class="str">"card-body"</span>&gt;
+    &lt;h5&gt;Atrasados&lt;/h5&gt;{{ atrasados | default(0) }}
+  &lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;div class=<span class="str">"col"</span>&gt;&lt;div class=<span class="str">"card"</span>&gt;&lt;div class=<span class="str">"card-body"</span>&gt;
+    &lt;h5&gt;Multas&lt;/h5&gt;${{ total_multas | default(0) }}
+  &lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+{% if not prestamos %}
+  &lt;div class=<span class="str">"alert alert-info"</span>&gt;📭 No hay préstamos registrados.&lt;/div&gt;
+{% else %}
+&lt;table class=<span class="str">"table table-striped"</span>&gt;
+  &lt;thead&gt;&lt;tr&gt;&lt;th&gt;#&lt;/th&gt;&lt;th&gt;Estudiante&lt;/th&gt;&lt;th&gt;Libro&lt;/th&gt;&lt;th&gt;Estado&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+  &lt;tbody&gt;
+    {% for p in prestamos %}
+    &lt;tr&gt;
+      &lt;td&gt;{{ loop.index }}&lt;/td&gt;
+      &lt;td&gt;{{ p.estudiante }}&lt;/td&gt;
+      &lt;td&gt;{{ p.libro }}&lt;/td&gt;
+      &lt;td&gt;{{ <span class="str">"🔴 atrasado"</span> if p.dias_atraso &gt; <span class="num">0</span> else <span class="str">"🟢 a tiempo"</span> }}&lt;/td&gt;
+    &lt;/tr&gt;
+    {% endfor %}
+  &lt;/tbody&gt;
+&lt;/table&gt;
+{% endif %}</code></pre>
+  </div>
+
+  <h3>🧠 Reto 3 — Conteo por categoría (Python + Jinja)</h3>
+  <p>Pinta el <code>por_categoria</code> del contexto como lista: <em>"fantasía — 2 préstamo(s)"</em>, ordenada de mayor a menor. Bonus: reordena en Python con <code>sorted(..., key=..., reverse=True)</code> antes de mandarlo, y pinta con <code>{{ loop.index }}</code> el puesto de cada categoría.</p>
+
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 3</h4>
+    <pre><code><span class="com"># En la ruta, ordenado por conteo descendente:</span>
+top = sorted(por_categoria.items(), key=lambda par: par[<span class="num">1</span>], reverse=<span class="num">True</span>)
+contexto[<span class="str">"top_categorias"</span>] = top   <span class="com"># [('fantasía', 2), ('novela', 2), ('ciencia', 1)]</span></code></pre>
+    <pre><code>&lt;h3&gt;📊 Préstamos por categoría&lt;/h3&gt;
+&lt;ul class=<span class="str">"list-group"</span>&gt;
+  {% for categoria, cantidad in top_categorias %}
+    &lt;li class=<span class="str">"list-group-item d-flex justify-content-between"</span>&gt;
+      &lt;span&gt;{{ loop.index }}. {{ categoria }}&lt;/span&gt;
+      &lt;span&gt;{{ cantidad }} préstamo(s)&lt;/span&gt;
+    &lt;/li&gt;
+  {% else %}
+    &lt;li class=<span class="str">"list-group-item"</span>&gt;📭 Sin categorías todavía&lt;/li&gt;
+  {% endfor %}
+&lt;/ul&gt;</code></pre>
+    <p>¿Viste? <code>{% for categoria, cantidad in top_categorias %}</code> desempaqueta las parejas — el <code>in</code> también visita tuplas.</p>
+  </div>
+
+  <h3>🧠 Reto 4 — La versión SQL equivalente</h3>
+  <p>Escribe la consulta que resuelve <strong>el mismo reporte completo en SQL</strong>: conteo por categoría con <code>JOIN</code> entre <code>prestamos</code> y <code>libros</code>, y aparte el total de multas con <code>SUM</code>. Compárala con tu ruta del Reto 1: ¿cuál harías en producción? ¿Cuándo elegirías cada una?</p>
+
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 4</h4>
+    <pre><code><span class="kw">SELECT</span> l.categoria, COUNT(*) <span class="kw">AS</span> cantidad
+<span class="kw">FROM</span> prestamos p
+<span class="kw">JOIN</span> libros l <span class="kw">ON</span> l.titulo = p.libro
+<span class="kw">GROUP BY</span> l.categoria
+<span class="kw">ORDER BY</span> cantidad DESC;
+
+<span class="kw">SELECT</span> COALESCE(SUM(multa), <span class="num">0</span>) <span class="kw">AS</span> total_multas
+<span class="kw">FROM</span> prestamos;</code></pre>
+  </div>
+
+  <h3>🧠 Reto 5 (bonus) — El while del bibliotecario</h3>
+  <p>En la terminal: escribe un menú con <code>while</code> que ofrezca <em>(1) ver atrasados, (2) ver total de multas, (3) salir</em>. El bucle repite hasta que elijan "3". ¿Qué pieza de tu <code>while</code> evita el bucle infinito?</p>
+
+  <div class="caja-importante">
+    <h4>🦹 Reflexión final</h4>
+    <p>En este taller automatizaste un proceso real de la biblioteca sin escribir una sola repetición a mano: <strong>Python contó con <code>len()</code>/<code>sum()</code>/<code>Counter</code>, la plantilla pintó con <code>{% for %}</code> + <code>loop.index</code>, y SQL demostró que puede agregar sin mover filas</strong>. El bucle manual no era el objetivo — era el trampolín para entender qué hace el lenguaje por ti. Ahora sabes elegir la estructura <em>y</em> la capa correcta. 🎯</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 10 minutos</h4>
+    <p>Con su compañero/a, revisen sus soluciones:</p>
+    <ol>
+      <li>¿Quedó algún bucle manual que <code>len()</code>/<code>sum()</code>/<code>Counter</code> expresan mejor?</li>
+      <li>¿La plantilla numeró con <code>loop.index</code> (y no con un <code>{% set %}</code> contador)?</li>
+      <li>Si <code>prestamos</code> viene vacío, ¿la página avisa o muestra una tabla en blanco?</li>
+      <li>¿Algún <code>while</code> sin avance garantizado? (¡que no los agarre el bucle infinito!)</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="7">
+    <h3>🎯 Quiz Final</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> Tu ruta recorre los préstamos y arma el contexto. Para el total de multas, lo más expresivo es:</p>
+      <button class="opcion" data-op="a">Un <code>while</code> con acumulador manual</button>
+      <button class="opcion" data-op="b">Pedirle a la plantilla un <code>|sum</code> en cada fila</button>
+      <button class="opcion" data-op="c"><code>sum(p["multa"] for p in prestamos)</code> en Python (o <code>SUM(multa)</code> en SQL)</button>
+      <button class="opcion" data-op="d">Un contador <code>total += 1</code></button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> En la plantilla, la fila <code>&lt;td&gt;{{ loop.index }}&lt;/td&gt;</code> demuestra que…</p>
+      <button class="opcion" data-op="a">…hay un contador acumulándose a mano en el contexto</button>
+      <button class="opcion" data-op="b">…Jinja2 trae un contador incorporado por bucle: no lo construyas tú</button>
+      <button class="opcion" data-op="c">…el número de fila lo calculó SQL</button>
+      <button class="opcion" data-op="d">…<code>loop.index</code> es un filtro de Jinja2</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuál pareja está correctamente emparejada?</p>
+      <button class="opcion" data-op="a">Contar elementos → <code>len()</code> / acumular valores → <code>sum()</code></button>
+      <button class="opcion" data-op="b">Contar elementos → <code>sum()</code> / acumular valores → <code>len()</code></button>
+      <button class="opcion" data-op="c">Contar elementos → <code>while</code> / acumular valores → <code>enumerate()</code></button>
+      <button class="opcion" data-op="d">Contar elementos → <code>range()</code> / acumular valores → <code>in</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> El proceso "seguir pidiendo el ISBN hasta que tenga 13 dígitos" pide un…</p>
+      <button class="opcion" data-op="a"><code>for isbn in isbns:</code>, porque ISBN es una lista</button>
+      <button class="opcion" data-op="b"><code>{% for %}</code> en la plantilla</button>
+      <button class="opcion" data-op="c"><code>Counter</code>, porque cuenta reintentos</button>
+      <button class="opcion" data-op="d"><code>while</code> con avance garantizado (y tope de reintentos)</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 9 completada!</h2>
+    <p>Dominas las <strong>estructuras repetitivas</strong>: el <code>for ... in</code> que pregunta "¿qué hay adentro?" en Python y en Jinja2, el <code>while</code> que repite hasta que la condición diga basta, los patrones de <strong>contador</strong> y <strong>acumulador</strong> — y los superpoderes para delegarlos: <code>len()</code>, <code>sum()</code>, <code>Counter</code>, <code>loop.index</code> y el <code>COUNT</code>/<code>SUM</code>/<code>GROUP BY</code> de SQL. Ahora los procesos de tu app de biblioteca se repiten solos… en la capa correcta.</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🛠️ Herramientas de Programación II · Clase 9 · Estructuras repetitivas</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
