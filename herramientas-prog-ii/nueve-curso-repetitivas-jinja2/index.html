@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛠️ Herramientas de Programación II · Clase 9 · Repetitivas en Python y Jinja2</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🔁</span>
+    <div>
+      <h1>Herramientas de Programación II · Clase 9</h1>
+      <p class="subtitulo">Estructuras repetitivas en Python y Jinja2 · acumuladores y operaciones masivas</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">🔁 Repetitivas</button>
+  <button class="btn-modulo" data-modulo="2">🧮 Acumuladores</button>
+  <button class="btn-modulo" data-modulo="3">📊 Anidados</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🔂 For en Jinja2</button>
+  <button class="btn-modulo" data-modulo="6">📨 FastAPI</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🔁 Escribir 1 vez, ejecutar 5.000</h2>
+    <p class="lead">En las clases anteriores construimos la app de <strong>biblioteca</strong>: autores, libros y préstamos. Pero hay un problema que aparece siempre: <strong>hacer lo mismo muchas veces</strong>. Mostrar 200 libros en una tabla, sumar el total de un préstamo, cargar 5.000 registros de golpe. Hoy aprendemos la herramienta que lo resuelve todo: los <strong>bucles</strong>, primero en <strong>Python</strong> y luego dentro de las plantillas <strong>Jinja2</strong>.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — dev@app</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd">python cargar_catalogo.py</span></div>
+        <div class="out">Procesando 5000 libros... 100% en 0.42s ✅</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd"># un solo for hizo el trabajo de 5000 líneas</span></div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3h 45min en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Dominar <code>for</code> y <code>while</code> en Python, el patrón acumulador, los bucles anidados y <code>{% for %}</code> en Jinja2 con FastAPI.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>El copiar-pegar, el bucle infinito y la suma que nunca acumula (porque el acumulador va en el lugar equivocado).</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · Repetitivas</td><td style="color:var(--a)">for, range, while</td><td style="color:var(--rosa)">El copiar-pegar</td><td>100 XP</td></tr>
+        <tr><td>02 · Acumuladores</td><td style="color:var(--b)">total += x</td><td style="color:var(--rosa)">La suma que no acumula</td><td>100 XP</td></tr>
+        <tr><td>03 · Anidados</td><td style="color:var(--verde)">Bucles dentro de bucles</td><td style="color:var(--rosa)">El O(n²) descuidado</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · For en Jinja2</td><td style="color:var(--a)">loop.index, else</td><td style="color:var(--rosa)">La tabla escrita a mano</td><td>100 XP</td></tr>
+        <tr><td>05 · FastAPI</td><td style="color:var(--b)">Listas al contexto</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>06 · Taller masivo</td><td style="color:var(--a)">5.000 registros</td><td style="color:var(--rosa)">La carga lenta</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: piensen en la app de biblioteca. <strong>¿Qué cosas de la app implican repetir algo?</strong> (pista: piensen en la tabla de autores, en buscar un libro, en cargar un catálogo completo).</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué bucles?</h4>
+    <p>Imagina mostrar los 9 autores de la biblioteca. Podrías escribir 9 líneas de HTML... y si mañana hay 500 autores, ¿escribirías 500? Un bucle escribe la línea <strong>una vez</strong> y el computador la repite por ti, tantas veces como datos haya. Los bucles son la diferencia entre programar y ser una fotocopiadora humana. 📄</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: Repetitivas →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>🔁 Estructuras repetitivas en Python</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "for para colecciones, while para condiciones"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>En Python hay dos formas de repetir código. El <strong><code>for</code></strong> recorre una <em>colección</em> (lista, texto, rango): "por cada elemento, haz esto". El <strong><code>while</code></strong> repite mientras una <em>condición</em> sea verdadera: "mientras no llegues al final, sigue". El 90% de los casos en la app de biblioteca se resuelven con <code>for</code>.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo_1.py — for sobre la lista de autores</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">autores</span> = [
+    <span class="str">"Gabriel García Márquez"</span>,
+    <span class="str">"J. R. R. Tolkien"</span>,
+    <span class="str">"Jorge Luis Borges"</span>,
+]
+
+<span class="kw">for</span> autor <span class="kw">in</span> autores:
+    <span class="fn">print</span>(<span class="str">"📖"</span>, autor)
+<span class="com"># Se imprime una línea por cada autor: 3 vueltas, 3 líneas</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo_2.py — range(): repetir N veces</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># Imprimir préstamos del préstamo 1 al 5</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="num">6</span>):
+    <span class="fn">print</span>(<span class="str">f"Préstamo #{i} creado"</span>)
+
+<span class="com"># range(1, 6) genera 1, 2, 3, 4, 5 — el final NUNCA se incluye</span></code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el copiar-pegar</h4>
+    <p>Sin bucles, mostrar 9 autores serían 9 bloques de código casi idénticos. ¿Un error de dedo? Hay que corregirlo 9 veces. Con un <code>for</code>, el código existe <strong>una sola vez</strong> y funciona igual con 9 o con 9.000 autores. Si estás copiando y pegando una línea parecida, un bucle te está mirando mal. 👀</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo_3.py — while: repetir hasta que algo cambie</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">intentos</span> = <span class="num">0</span>
+<span class="kw">prestamo_devuelto</span> = <span class="kw">False</span>
+
+<span class="kw">while</span> <span class="kw">not</span> prestamo_devuelto <span class="kw">and</span> intentos &lt; <span class="num">3</span>:
+    intentos += <span class="num">1</span>
+    <span class="fn">print</span>(<span class="str">f"Intento {intentos}: recordando al estudiante..."</span>)
+    <span class="com"># aquí iría la lógica que puede poner prestamo_devuelto = True</span>
+
+<span class="fn">print</span>(<span class="str">f"Total de intentos: {intentos}"</span>)</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Regla de oro</h4>
+    <p>¿Sabes <strong>cuántas vueltas</strong> vas a dar (o estás recorriendo una lista)? → <code>for</code>. ¿Repites <strong>hasta que pase algo</strong> (un acierto, un tope, una respuesta)? → <code>while</code>. Y en todo <code>while</code>, algo dentro del cuerpo debe poder cambiar la condición... o tendrás el bucle infinito. 💀</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Con su compañero/a: escriban en papel un <code>for</code> que salude a cada uno de los 3 autores de la lista de arriba. Luego: <strong>¿ese caso es for o while?</strong> ¿Por qué?</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuántas veces imprime <code>for i in range(1, 6):</code>?</p>
+      <button class="opcion" data-op="a">6 veces</button>
+      <button class="opcion" data-op="b">5 veces (1, 2, 3, 4, 5)</button>
+      <button class="opcion" data-op="c">4 veces</button>
+      <button class="opcion" data-op="d">Infinitas veces</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cuál es la mejor elección para recorrer la lista de autores?</p>
+      <button class="opcion" data-op="a">for, porque recorres una colección conocida</button>
+      <button class="opcion" data-op="b">while, porque las listas son largas</button>
+      <button class="opcion" data-op="c">if, porque hay una condición</button>
+      <button class="opcion" data-op="d">Ninguna, hay que copiar y pegar el código</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué causa un bucle infinito con while?</p>
+      <button class="opcion" data-op="a">Usar range() en vez de una lista</button>
+      <button class="opcion" data-op="b">Poner el print antes del for</button>
+      <button class="opcion" data-op="c">Que nada dentro del cuerpo cambia la condición</button>
+      <button class="opcion" data-op="d">Escribir for en vez de While</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Acumuladores →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>🧮 Acumuladores y contadores</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "La variable que recuerda lo que pasó en las vueltas anteriores"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 El patrón más usado de la programación</h3>
+    <p>Un <strong>acumulador</strong> es una variable que empieza en un valor inicial (casi siempre <code>0</code>) y va <strong>sumando</strong> algo en cada vuelta del bucle. El <strong>contador</strong> es su primo: suma <strong>1</strong> por cada vez que ocurre algo. Con estos dos patrones respondes preguntas como: ¿cuántos libros hay?, ¿cuántos vencidos?, ¿cuál es el total de multas?</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo_4.py — contar libros vencidos</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">prestamos</span> = [
+    {<span class="str">"titulo"</span>: <span class="str">"Cien años de soledad"</span>, <span class="str">"dias_atraso"</span>: <span class="num">12</span>},
+    {<span class="str">"titulo"</span>: <span class="str">"El Hobbit"</span>, <span class="str">"dias_atraso"</span>: <span class="num">0</span>},
+    {<span class="str">"titulo"</span>: <span class="str">"Rayuela"</span>, <span class="str">"dias_atraso"</span>: <span class="num">5</span>},
+    {<span class="str">"titulo"</span>: <span class="str">"Ficciones"</span>, <span class="str">"dias_atraso"</span>: <span class="num">0</span>},
+]
+
+<span class="kw">vencidos</span> = <span class="num">0</span>          <span class="com"># 🔢 CONTADOR: arranca en 0</span>
+<span class="kw">multa_total</span> = <span class="num">0</span>       <span class="com"># 🧮 ACUMULADOR: arranca en 0</span>
+
+<span class="kw">for</span> p <span class="kw">in</span> prestamos:
+    <span class="kw">if</span> p[<span class="str">"dias_atraso"</span>] &gt; <span class="num">0</span>:
+        vencidos += <span class="num">1</span>                    <span class="com"># +1 por cada caso</span>
+        multa_total += p[<span class="str">"dias_atraso"</span>] * <span class="num">500</span>  <span class="com"># suma la multa de este préstamo</span>
+
+<span class="fn">print</span>(<span class="str">f"Vencidos: {vencidos} — Multa total: ${multa_total:,}"</span>)
+<span class="com"># Vencidos: 2 — Multa total: $8,500</span></code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: la suma que no acumula</h4>
+    <p>El error clásico: declarar el acumulador <strong>dentro</strong> del bucle. Así, en cada vuelta la variable vuelve a 0 y al final la suma vale solo lo último sumado. Otro clásico: acumular <strong>fuera</strong> del <code>if</code> cuando la condición importa. El acumulador se crea <strong>antes</strong> del bucle y se actualiza <strong>dentro</strong>, en la línea exacta donde corresponde.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo_5.py — el bug del acumulador (mal ✗ vs bien ✓)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># ✗ MAL: total nace dentro del for → siempre vale la última suma</span>
+<span class="kw">for</span> p <span class="kw">in</span> prestamos:
+    total = <span class="num">0</span>
+    total += p[<span class="str">"dias_atraso"</span>]
+<span class="fn">print</span>(total)   <span class="com"># ¡imprime 0, no la suma de todos!</span>
+
+<span class="com"># ✓ BIEN: total nace antes del for → recuerda todas las vueltas</span>
+<span class="kw">total</span> = <span class="num">0</span>
+<span class="kw">for</span> p <span class="kw">in</span> prestamos:
+    total += p[<span class="str">"dias_atraso"</span>]
+<span class="fn">print</span>(total)   <span class="com"># 17 ✅</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo_6.py — máximo y promedio con acumuladores</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">anios</span> = [<span class="num">1967</span>, <span class="num">1937</span>, <span class="num">1963</span>, <span class="num">1944</span>]
+<span class="kw">suma</span> = <span class="num">0</span>
+<span class="kw">mas_antiguo</span> = anios[<span class="num">0</span>]
+
+<span class="kw">for</span> anio <span class="kw">in</span> anios:
+    suma += anio
+    <span class="kw">if</span> anio &lt; mas_antiguo:
+        mas_antiguo = anio
+
+<span class="fn">print</span>(<span class="str">f"Promedio: {suma / len(anios):.0f} — Más antiguo: {mas_antiguo}"</span>)
+<span class="com"># Promedio: 1953 — Más antiguo: 1937</span></code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Cómo "ver" un acumulador</h4>
+    <p>Prueba de escritorio: dibuja una tabla con una fila por vuelta. Columna izquierda: el valor de la variable del <code>for</code>. Columna derecha: cuánto vale el acumulador <strong>después</strong> de esa vuelta. Si al final no da lo que esperabas, la tabla te muestra en qué vuelta se dañó. Los programadores profesionales hacen esto todo el tiempo.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Con su compañero/a: hagan la prueba de escritorio del <code>ejemplo_4</code> (vencidos y multa_total vuelta por vuelta). Luego inventen juntos <strong>una pregunta nueva</strong> sobre los préstamos que se pueda responder con un acumulador (ej.: ¿cuántos están a menos de 3 días de vencerse?).</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Dónde debe declararse el acumulador?</p>
+      <button class="opcion" data-op="a">Antes del bucle</button>
+      <button class="opcion" data-op="b">Dentro del bucle, en la primera línea</button>
+      <button class="opcion" data-op="c">Después del bucle</button>
+      <button class="opcion" data-op="d">Da igual, funciona igual</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Qué diferencia hay entre contador y acumulador?</p>
+      <button class="opcion" data-op="a">El contador usa for y el acumulador while</button>
+      <button class="opcion" data-op="b">Ninguna, son lo mismo</button>
+      <button class="opcion" data-op="c">El contador suma siempre 1; el acumulador suma cantidades variables</button>
+      <button class="opcion" data-op="d">El acumulador solo sirve para strings</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> Con <code>dias_atraso = [12, 0, 5, 0]</code> y <code>total = 0; for d in dias_atraso: total += d</code>, ¿cuánto vale <code>total</code>?</p>
+      <button class="opcion" data-op="a">0</button>
+      <button class="opcion" data-op="b">17</button>
+      <button class="opcion" data-op="c">12</button>
+      <button class="opcion" data-op="d">5</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Bucles anidados →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>📊 Bucles anidados: un bucle dentro de otro</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Por cada autor... recorre sus libros"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>La relación <strong>autores ↔ libros</strong> que ya conoces de la app es perfecta para bucles anidados: por <strong>cada autor</strong> (bucle externo) recorres <strong>sus libros</strong> (bucle interno). El bucle interno se ejecuta <em>completo</em> en cada vuelta del externo. Si hay 3 autores con 2 libros cada uno, el bucle interno corre 3 × 2 = 6 veces.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo_7.py — catálogo: autores y sus libros</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">catalogo</span> = [
+    {<span class="str">"nombre"</span>: <span class="str">"Gabriel García Márquez"</span>, <span class="str">"libros"</span>: [<span class="str">"Cien años de soledad"</span>, <span class="str">"Crónica de una muerte anunciada"</span>]},
+    {<span class="str">"nombre"</span>: <span class="str">"J. R. R. Tolkien"</span>, <span class="str">"libros"</span>: [<span class="str">"El Hobbit"</span>, <span class="str">"El Señor de los Anillos"</span>]},
+    {<span class="str">"nombre"</span>: <span class="str">"Jorge Luis Borges"</span>, <span class="str">"libros"</span>: [<span class="str">"Ficciones"</span>]},
+]
+
+<span class="kw">total_libros</span> = <span class="num">0</span>
+
+<span class="kw">for</span> autor <span class="kw">in</span> catalogo:              <span class="com"># bucle EXTERNO: autores</span>
+    <span class="fn">print</span>(<span class="str">f"✍️  {autor['nombre']}:"</span>)
+    <span class="kw">for</span> libro <span class="kw">in</span> autor[<span class="str">"libros"</span>]:   <span class="com"># bucle INTERNO: sus libros</span>
+        <span class="fn">print</span>(<span class="str">f"   📖 {libro}"</span>)
+        total_libros += <span class="num">1</span>
+
+<span class="fn">print</span>(<span class="str">f"Total del catálogo: {total_libros} libros"</span>)</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo_8.py — acumulador POR AUTOR (se reinicia en cada vuelta)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">for</span> autor <span class="kw">in</span> catalogo:
+    <span class="kw">cantidad</span> = <span class="num">0</span>            <span class="com"># ⚠️ aquí sí va DENTRO: se reinicia por autor</span>
+    <span class="kw">for</span> libro <span class="kw">in</span> autor[<span class="str">"libros"</span>]:
+        cantidad += <span class="num">1</span>
+    <span class="fn">print</span>(<span class="str">f"{autor['nombre']}: {cantidad} libro(s)"</span>)</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 ¿Dentro o fuera? ¡Depende de la pregunta!</h4>
+    <p>En el módulo anterior aprendiste que el acumulador va <strong>antes</strong> del bucle... pero en bucles anidados hay dos niveles: ¿quieres el total <strong>global</strong> (5 libros)? → se crea <strong>antes del bucle externo</strong>. ¿Quieres el total <strong>por autor</strong>? → se crea <strong>entre los dos bucles</strong>, para que se reinicie en cada autor. Elegir el nivel correcto es la mitad de la batalla.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo_9.py — reporte: total global + subtotal por autor</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">total_global</span> = <span class="num">0</span>                    <span class="com"># nivel 1: global → antes de todo</span>
+
+<span class="kw">for</span> autor <span class="kw">in</span> catalogo:
+    <span class="kw">subtotal</span> = <span class="num">0</span>                    <span class="com"># nivel 2: por autor → entre los bucles</span>
+    <span class="kw">for</span> libro <span class="kw">in</span> autor[<span class="str">"libros"</span>]:
+        subtotal += <span class="num">1</span>
+    total_global += subtotal
+    <span class="fn">print</span>(<span class="str">f"{autor['nombre']}: {subtotal}"</span>)
+
+<span class="fn">print</span>(<span class="str">f"GRAN TOTAL: {total_global}"</span>)</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Cuidado con la multiplicación de vueltas</h4>
+    <p>Si el bucle externo tiene 1.000 vueltas y el interno 1.000, el cuerpo interno corre <strong>1.000.000 de veces</strong>. Eso se llama crecimiento cuadrático y puede congelar tu app. Regla práctica: el bucle interno debe hacer <em>trabajo pequeño</em>, y si puedes evitar el anidamiento con una buena estructura de datos, hazlo.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Con su compañero/a: agreguen mentalmente un tercer nivel — por cada <strong>libro</strong>, recorrer sus <strong>categorías</strong> (ej. "realismo mágico", "novela"). ¿Dónde crearían un acumulador que cuente cuántas categorías tiene el catálogo completo? ¿Y uno que cuente las categorías por libro?</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> 4 autores con 3 libros cada uno: ¿cuántas veces se ejecuta el cuerpo del bucle interno?</p>
+      <button class="opcion" data-op="a">7 veces</button>
+      <button class="opcion" data-op="b">12 veces (4 × 3)</button>
+      <button class="opcion" data-op="c">4 veces</button>
+      <button class="opcion" data-op="d">3 veces</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Dónde creas el acumulador para el subtotal <em>por autor</em>?</p>
+      <button class="opcion" data-op="a">Entre el bucle externo y el interno (se reinicia por autor)</button>
+      <button class="opcion" data-op="b">Antes del bucle externo (nunca se reinicia)</button>
+      <button class="opcion" data-op="c">Dentro del bucle interno (se reinicia por libro)</button>
+      <button class="opcion" data-op="d">Después del bucle interno</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué pasa si el bucle interno tiene 1.000 vueltas y el externo 1.000?</p>
+      <button class="opcion" data-op="a">El cuerpo interno corre 1.000 veces</button>
+      <button class="opcion" data-op="b">El cuerpo interno corre 2.000 veces</button>
+      <button class="opcion" data-op="c">El cuerpo interno corre 1.000.000 de veces</button>
+      <button class="opcion" data-op="d">Python lanza un error</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73% agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Coméntale a tu compañero/a qué fue más difícil: el acumulador o los bucles anidados. 1 min.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>La palabra <code>for</code> de Python viene del inglés "para cada..." y existe desde el primer Python de 1991. Pero el concepto de bucle es casi tan viejo como la programación: Ada Lovelace ya describía repeticiones en 1843, ¡cuando ni siquiera existían los computadores! 🧑‍💻</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: For en Jinja2 →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>🔂 <code>{% for %}</code> en Jinja2: el bucle que construye HTML</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "La tabla de autores, línea por línea"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Jinja2 tiene su propio <code>for</code>, que vive <strong>dentro del HTML</strong> de la plantilla. Recorre la lista que le llega desde FastAPI y genera un bloque HTML por cada elemento. Es la pieza que convierte <code>{"autores": [...]}</code> en una tabla de 9 filas... o de 9.000.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>autores.html — la tabla que ya conoces</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>&lt;table class="table table-striped"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;ID&lt;/th&gt;&lt;th&gt;Nombre&lt;/th&gt;&lt;th&gt;País&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    {% for autor in autores %}
+    &lt;tr&gt;
+      &lt;td&gt;{{ autor.id }}&lt;/td&gt;
+      &lt;td&gt;{{ autor.nombre }}&lt;/td&gt;
+      &lt;td&gt;{{ autor.pais }}&lt;/td&gt;
+    &lt;/tr&gt;
+    {% endfor %}
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>superpoderes de loop</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{% for autor in autores %}
+  &lt;tr&gt;
+    &lt;td&gt;{{ loop.index }}&lt;/td&gt;               &lt;!-- 1, 2, 3... contador gratis --&gt;
+    &lt;td&gt;{{ autor.nombre }}&lt;/td&gt;
+    {% if loop.first %}&lt;td&gt;⭐ primera fila&lt;/td&gt;{% endif %}
+    {% if loop.last %}&lt;td&gt;🏁 última fila&lt;/td&gt;{% endif %}
+  &lt;/tr&gt;
+{% endfor %}
+
+&lt;p&gt;Hay {{ autores|length }} autores.&lt;/p&gt;</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El for de Jinja2 que nadie te cuenta</h4>
+    <p><code>loop.index</code> es un contador que Jinja2 lleva <strong>por ti</strong> (el acumulador del módulo 2, ¡ya automático!). <code>loop.first</code> y <code>loop.last</code> son <code>True</code> solo en la primera/última vuelta — perfectos para estilos especiales. Y <code>{% else %}</code> después del <code>for</code> se ejecuta si la lista viene <strong>vacía</strong>: ideal para el mensaje "Sin resultados para tu búsqueda".</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>resultados_busqueda.html — for + if + else</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{% if coincidentes %}
+&lt;p class="small"&gt;{{ coincidentes|length }} coincidencia(s)&lt;/p&gt;
+&lt;ul&gt;
+    {% for autor in coincidentes %}
+    &lt;li&gt;{{ autor }}&lt;/li&gt;
+    {% endfor %}
+&lt;/ul&gt;
+{% else %}
+&lt;p&gt;Sin resultados para "{{ q }}".&lt;/p&gt;
+{% endif %}</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: la tabla escrita a mano</h4>
+    <p>Un HTML con 9 <code>&lt;tr&gt;</code> escritos a mano funciona... hasta que llega el autor número 10, 100, 1000. Con <code>{% for %}</code>, la plantilla sirve <strong>para cualquier cantidad</strong> de datos, hoy y el año que viene. La plantilla nunca cambia: cambian los datos que le llegan.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Con su compañero/a: en la plantilla de búsqueda de arriba, ¿qué pasa si <code>coincidentes</code> es una lista vacía? ¿Qué HTML recibe el navegador? ¿Y si tiene 3 autores, cuántas veces se ejecuta el <code>&lt;li&gt;</code>?</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué imprime <code>{{ loop.index }}</code> en cada vuelta?</p>
+      <button class="opcion" data-op="a">El nombre del autor</button>
+      <button class="opcion" data-op="b">El número de la vuelta: 1, 2, 3...</button>
+      <button class="opcion" data-op="c">El total de elementos</button>
+      <button class="opcion" data-op="d">Nada, es decorativo</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cuándo se ejecuta el bloque <code>{% else %}</code> de un <code>{% for %}</code>?</p>
+      <button class="opcion" data-op="a">Cuando la lista está vacía</button>
+      <button class="opcion" data-op="b">Cuando hay un error</button>
+      <button class="opcion" data-op="c">En la última vuelta</button>
+      <button class="opcion" data-op="d">Nunca se ejecuta</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué hace <code>{{ coincidentes|length }}</code>?</p>
+      <button class="opcion" data-op="a">Borra la lista</button>
+      <button class="opcion" data-op="b">Convierte la lista en texto</button>
+      <button class="opcion" data-op="c">Cuenta cuántos elementos tiene la lista</button>
+      <button class="opcion" data-op="d">Ordena la lista alfabéticamente</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: FastAPI →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>📨 FastAPI + Jinja2: del bucle en Python al bucle en HTML</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El acumulador corre en el servidor, la tabla se dibuja en la plantilla"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>La ruta de FastAPI recibe los datos, usa <strong>acumuladores en Python</strong> para calcular resúmenes (total, promedios, el más antiguo), y le pasa <strong>la lista</strong> a la plantilla, que la recorre con <code>{% for %}</code>. División perfecta: <strong>Python calcula, Jinja2 dibuja</strong>.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — ruta con lista + resumen acumulado</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">@router.get</span>(<span class="str">"/libros/resumen"</span>)
+<span class="kw">async def</span> <span class="fn">resumen_libros</span>(request: Request):
+    libros = [   <span class="com"># en la app real: await obtener_libros(conn)</span>
+        {<span class="str">"titulo"</span>: <span class="str">"Cien años de soledad"</span>, <span class="str">"anio"</span>: <span class="num">1967</span>},
+        {<span class="str">"titulo"</span>: <span class="str">"El Hobbit"</span>, <span class="str">"anio"</span>: <span class="num">1937</span>},
+        {<span class="str">"titulo"</span>: <span class="str">"Ficciones"</span>, <span class="str">"anio"</span>: <span class="num">1944</span>},
+    ]
+
+    <span class="com"># 🧮 acumuladores calculados en Python (backend)</span>
+    <span class="kw">total</span> = <span class="num">0</span>
+    <span class="kw">suma_anios</span> = <span class="num">0</span>
+    <span class="kw">mas_antiguo</span> = <span class="kw">None</span>
+    <span class="kw">for</span> libro <span class="kw">in</span> libros:
+        total += <span class="num">1</span>
+        suma_anios += libro[<span class="str">"anio"</span>]
+        <span class="kw">if</span> mas_antiguo <span class="kw">is None</span> <span class="kw">or</span> libro[<span class="str">"anio"</span>] &lt; mas_antiguo[<span class="str">"anio"</span>]:
+            mas_antiguo = libro
+
+    <span class="kw">return</span> templates.TemplateResponse(
+        request=request,
+        name=<span class="str">"resumen.html"</span>,
+        context={
+            <span class="str">"libros"</span>: libros,
+            <span class="str">"total"</span>: total,
+            <span class="str">"promedio_anio"</span>: suma_anios / total <span class="kw">if</span> total <span class="kw">else</span> <span class="num">0</span>,
+            <span class="str">"mas_antiguo"</span>: mas_antiguo,
+        },
+    )</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>resumen.html — la plantilla dibuja lo calculado</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>&lt;h1&gt;📚 Resumen del catálogo&lt;/h1&gt;
+&lt;p&gt;{{ total }} libros · año promedio: {{ promedio_anio|round(0)|int }}&lt;/p&gt;
+{% if mas_antiguo %}
+&lt;p&gt;El más antiguo es &lt;strong&gt;{{ mas_antiguo.titulo }}&lt;/strong&gt; ({{ mas_antiguo.anio }}).&lt;/p&gt;
+{% endif %}
+
+&lt;ul&gt;
+  {% for libro in libros %}
+    &lt;li&gt;{{ loop.index }}. {{ libro.titulo }} — {{ libro.anio }}&lt;/li&gt;
+  {% else %}
+    &lt;li&gt;El catálogo está vacío 📭&lt;/li&gt;
+  {% endfor %}
+&lt;/ul&gt;</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué calcular en Python y no en la plantilla?</h4>
+    <p>Jinja2 <em>puede</em> hacer sumas, pero las plantillas están hechas para <strong>mostrar</strong>, no para <strong>pensar</strong>. Si un día el resumen necesita más lógica (descuentos, impuestos, reglas raras), la cambias en <code>vistas.py</code> sin tocar el HTML. Además, así puedes reutilizar el mismo cálculo para la API JSON y para la página HTML. Plantilla simple = felicidad futura. 😌</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Con su compañero/a: en la ruta de arriba, identifiquen <strong>los 3 acumuladores</strong> y digan qué pregunta responde cada uno. Luego: ¿qué línea de la plantilla mostraría el resultado de cada uno?</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Dónde conviene calcular el total de libros?</p>
+      <button class="opcion" data-op="a">Dentro de la plantilla, con HTML</button>
+      <button class="opcion" data-op="b">En Python (backend), con un acumulador, antes de renderizar</button>
+      <button class="opcion" data-op="c">En la base de datos manualmente</button>
+      <button class="opcion" data-op="d">No se puede calcular</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cómo llega la lista de libros a la plantilla?</p>
+      <button class="opcion" data-op="a">Por el context de TemplateResponse</button>
+      <button class="opcion" data-op="b">Por telepatía</button>
+      <button class="opcion" data-op="c">Se vuelve a escribir dentro del HTML</button>
+      <button class="opcion" data-op="d">Por la URL</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué imprime <code>{{ mas_antiguo.titulo }}</code> si <code>mas_antiguo</code> es None?</p>
+      <button class="opcion" data-op="a">El título del libro</button>
+      <button class="opcion" data-op="b">Un error que rompe la página</button>
+      <button class="opcion" data-op="c">Nada (cadena vacía) — por eso se cuida con {% if %}</button>
+      <button class="opcion" data-op="d">"None"</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller Masivo →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: simulación de operaciones masivas</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "5.000 libros, un solo bucle"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">Carga masiva del catálogo</span>
+    </div>
+    <p>El colegio recibió un catálogo digital con <strong>5.000 libros</strong>. Tu script debe procesarlos todos, contar éxitos y errores, medir cuánto tarda y generar un reporte. Es el trabajo real de un desarrollador: <em>operaciones masivas</em> con bucles + acumuladores.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 Reto 1 — Generar los 5.000 registros</h3>
+    <p>Crea un script <code>masivo.py</code> que genere la lista de libros con un <code>for</code> y <code>range()</code>. Pista: usa <code>f"Libro #{i}"</code> para crear títulos distintos y simula el año con un cálculo simple.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Solución esperada — Reto 1</h4>
+    <pre><code>libros = []
+for i in range(1, 5001):
+    libros.append({"titulo": f"Libro #{i}", "anio": 1900 + (i % 126)})
+print(len(libros), "libros generados")</code></pre>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 Reto 2 — Acumuladores de control</h3>
+    <p>Recorre los 5.000 libros y calcula con acumuladores: cuántos son de antes de 1950 (contador), cuántos son "modernos" (2000 en adelante), y el año promedio. Imprime un reporte.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Solución esperada — Reto 2</h4>
+    <pre><code>antiguos = 0
+modernos = 0
+suma_anios = 0
+for libro in libros:
+    suma_anios += libro["anio"]
+    if libro["anio"] &lt; 1950:
+        antiguos += 1
+    elif libro["anio"] &gt;= 2000:
+        modernos += 1
+print(f"Antiguos: {antiguos} · Modernos: {modernos} · Promedio: {suma_anios / len(libros):.1f}")</code></pre>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 Reto 3 — Medir el tiempo de la carga masiva</h3>
+    <p>Simula la inserción de los 5.000 libros a la base de datos: por cada uno, acumula el tiempo de "inserción" (usa <code>time.perf_counter()</code> alrededor de la operación) y cuenta insertados vs. fallidos (simula fallos cuando el id es múltiplo de 250). Al final imprime: total, exitosos, fallidos, tiempo total y promedio por fila. Compara con tu pareja: ¿sus números dan igual? ¿Por qué sí/no?</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Solución esperada — Reto 3</h4>
+    <pre><code>import time
+
+exitosos = 0
+fallidos = 0
+tiempo_total = 0.0
+
+for i, libro in enumerate(libros, start=1):
+    inicio = time.perf_counter()
+    # aqui iria: await insertar_libro(conn, libro)
+    fallo = (i % 250 == 0)      # simulamos un error cada 250
+    if fallo:
+        fallidos += 1
+    else:
+        exitosos += 1
+    tiempo_total += time.perf_counter() - inicio
+
+print(f"Exitosos: {exitosos} · Fallidos: {fallidos}")
+print(f"Tiempo total: {tiempo_total:.3f}s · Promedio: {tiempo_total / len(libros) * 1000:.4f} ms/libro")</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Reflexión final: fila por fila vs. lote</h4>
+    <p>El script de arriba inserta <strong>una fila por vuelta</strong>: 5.000 viajes a la base de datos. Las apps reales usan inserción <strong>en lote</strong> (una sola operación con los 5.000): decenas de veces más rápido. El bucle que escribiste es la versión didáctica — y también la base para entender <em>por qué</em> el lote es más rápido: menos vueltas, menos viajes. Cuando llegues al proyecto integrador, este conocimiento te hará elegir mejor.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 10 minutos</h4>
+    <p>Con su compañero/a, respondan por escrito:</p>
+    <ol>
+      <li>¿Cuándo usarías <code>for</code> y cuándo <code>while</code> en la app de biblioteca? Un ejemplo de cada uno.</li>
+      <li>¿Dónde se declara el acumulador para calcular el total global y dónde para un subtotal por autor?</li>
+      <li>En Jinja2, ¿qué imprime <code>loop.index</code> y cuándo se ejecuta el <code>{% else %}</code>?</li>
+      <li>¿Por qué el acumulador <code>tiempo_total</code> del Reto 3 va fuera del <code>for</code> y qué pasaría si estuviera dentro?</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="7">
+    <h3>🎯 Quiz Final</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> En la simulación masiva, ¿por qué usar <code>time.perf_counter()</code> por vuelta y sumar al final?</p>
+      <button class="opcion" data-op="a">Para que el script se vea más profesional</button>
+      <button class="opcion" data-op="b">Porque cada operación tiene su propio tiempo y el acumulador los suma todos</button>
+      <button class="opcion" data-op="c">Porque Python no permite medir el tiempo total de otra forma</button>
+      <button class="opcion" data-op="d">Para detectar errores de sintaxis</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> Con 5.000 libros y fallo cada 250 insertados (i % 250 == 0), ¿cuántos fallidos hay?</p>
+      <button class="opcion" data-op="a">20</button>
+      <button class="opcion" data-op="b">25</button>
+      <button class="opcion" data-op="c">250</button>
+      <button class="opcion" data-op="d">0</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué combinación define el patrón "operación masiva"?</p>
+      <button class="opcion" data-op="a">Un if + una variable global</button>
+      <button class="opcion" data-op="b">Una plantilla Jinja2 + htmx</button>
+      <button class="opcion" data-op="c">Un for + acumuladores (éxitos, fallos, tiempo) + reporte final</button>
+      <button class="opcion" data-op="d">Una lista sin recorrido</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 9 completada!</h2>
+    <p>Dominas los bucles donde viven de verdad: en <strong>Python</strong> (acumuladores, anidados, operaciones masivas) y en <strong>Jinja2</strong> (el <code>{% for %}</code> que dibuja tablas dinámicas). En la próxima clase la página se vuelve <strong>interactiva</strong> con htmx y Bootstrap.</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🛠️ Herramientas de Programación II · Clase 9</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

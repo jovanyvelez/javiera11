@@ -130,7 +130,8 @@ function cargarProgresoPorClase() {
     'curso-herr-5': 6,
     'curso-herr-6': 6,
     'curso-herr-7': 6,
-    'curso-herr-8': 6
+    'curso-herr-8': 6,
+    'curso-herr-9': 6
   };
 
   let totalGlobal = 0;
@@ -357,6 +358,9 @@ document.addEventListener('keydown', (e) => {
   } else if (e.key === 'u' || e.key === 'U') {
     const card = document.querySelector('.clase-card.herr-8');
     if (card) card.click();
+  } else if (e.key === 'i' || e.key === 'I') {
+    const card = document.querySelector('.clase-card.herr-9');
+    if (card) card.click();
   }
 });
 
@@ -366,7 +370,7 @@ window.addEventListener('load', () => {
   const keys = ['curso-csharp-funciones-7', 'curso-csharp-poo-10', 'curso-csharp-arreglos-11',
                 'curso-csharp-funciones', 'curso-analisis-diseno', 'curso-requerimientos',
                 'curso-elicitacion', 'curso-documentacion', 'curso-introduccion-diseno',
-                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3', 'curso-herr-4', 'curso-herr-5', 'curso-herr-6', 'curso-herr-7', 'curso-herr-8'];
+                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3', 'curso-herr-4', 'curso-herr-5', 'curso-herr-6', 'curso-herr-7', 'curso-herr-8', 'curso-herr-9'];
 
   let tienePrograma = false;
   let ultimaClase = null;
