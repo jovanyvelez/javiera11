@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛠️ Herramientas de Programación II · Clase 9 · Plantillas Jinja2</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🎨</span>
+    <div>
+      <h1>Herramientas de Programación II · Clase 9</h1>
+      <p class="subtitulo">Plantillas Jinja2 · la última milla del monolito</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">🔁 El For</button>
+  <button class="btn-modulo" data-modulo="2">🎚️ Filtros</button>
+  <button class="btn-modulo" data-modulo="3">🚦 Decisiones</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">📊 Anidados</button>
+  <button class="btn-modulo" data-modulo="6">🧩 Componentes</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🎨 La última milla del monolito</h2>
+    <p class="lead">Cuando ves la página de la biblioteca en el navegador, <strong>la mayor parte del trabajo ya está hecho</strong>: el SQL de PostgreSQL (Neon) filtró y agregó; FastAPI ya calculó totales en Python; lo que llega a la plantilla es una <strong>lista de dicts casi lista para pintar</strong>. Tu trabajo —el que vamos a practicar hoy— vive en <strong><code>templates/*.html</code></strong> con <strong>Jinja2</strong>.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — dev@app</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd">curl localhost:8000/libros</span></div>
+        <div class="out">&lt;h1&gt;Catálogo&lt;/h1&gt;&lt;ul&gt;...&lt;li&gt;Cien años de soledad (1967)&lt;/li&gt;...&lt;/ul&gt;</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd"># el HTML se pintó en la plantilla — el SQL y FastAPI ya hicieron lo suyo</span></div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3h 45min en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Dominar <code>{% for %}</code>, <code>{% if %}</code>, <strong>filtros</strong> y <strong>macros</strong> de Jinja2 para pintar la información que SQL + FastAPI ya dejaron lista en el <code>context</code>.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>La tabla escrita a mano, el cálculo escondido en la plantilla, el HTML que no sabe qué hacer cuando la lista viene vacía.</p>
+    </div>
+  </div>
+
+  <h3>🏠 ¿Dónde trabaja cada parte?</h3>
+  <p class="lead">Antes de tocar <code>templates/*.html</code>, mira el mapa. Te dice qué te toca a ti y qué ya hicieron los demás.</p>
+  <div class="mapa-residencia">
+    <div class="mr-head">Capa</div>
+    <div class="mr-head">¿Qué hace?</div>
+    <div class="mr-head">Lo que vas a escribir</div>
+
+    <div class="mr-cell sql">🐘 <strong>SQL</strong></div>
+    <div class="mr-cell">Filtra, agrupa y entrega filas listas.</div>
+    <div class="mr-cell"><code>SELECT</code> con <code>JOIN</code>, <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>GROUP BY</code> en el motor de Neon.</div>
+
+    <div class="mr-cell python">🐍 <strong>Python · FastAPI</strong></div>
+    <div class="mr-cell">Recibe las filas y arma el <code>context</code>.</div>
+    <div class="mr-cell">Un <code>await conn.fetch(...)</code>, un <code>TemplateResponse(context={...})</code>. La lista llega ya armada.</div>
+
+    <div class="mr-cell jinja">🎨 <strong>Jinja2 · <code>templates/*.html</code></strong></div>
+    <div class="mr-cell"><strong>Pinta</strong> el HTML final.</div>
+    <div class="mr-cell"><code>{% for %}</code>, <code>{% if %}</code>, filtros <code>|length</code> <code>|default</code> <code>|groupby</code>, macros. <strong>Aquí trabajas tú hoy</strong>.</div>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Regla de oro</h4>
+    <p><strong>SQL agrega grande.</strong> <strong>FastAPI calcula y arma el contexto.</strong> <strong>Jinja2 dibuja.</strong> Si ves un cálculo pesado dentro de la plantilla, algo se quedó atrás: pídelo en el contexto o mándalo a SQL. Las plantillas que solo dibujan son las que duran años sin romperse.</p>
+  </div>
+
+  <h3>🧪 Prepara tu ambiente</h3>
+  <p>Los ejemplos de esta clase <strong>no requieren que tengas la BD levantada</strong>: las plantillas se ven en el navegador aunque el contexto sea un <code>dict</code> fijo. Si quieres verlas con datos reales de Neon, sí necesitas exportar <code>DATABASE_URL</code> como en clases anteriores.</p>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>setup — instalar Jinja2 y FastAPI</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># 1. Dependencias (lo único que usa esta clase)</span>
+pip install fastapi uvicorn jinja2
+
+<span class="com"># 2. (Opcional) Si quieres conectar a Neon, exporta la URL — nunca la pegues al código:</span>
+<span class="com">#    Tu docente te la entrega por canal privado.</span>
+export DATABASE_URL=<span class="str">"postgresql://usuario:clave@host.neon.tech/biblioteca?sslmode=require"</span></code></pre>
+  </div>
+
+  <div class="nota-docente">
+    <h4>🔒 Solo docente — credencial real de Neon</h4>
+    <p>Esta clase puede verse sin conexión, pero si quieres mostrar los templates con datos reales, comparte esta URL solo por canal privado. <strong>Nunca</strong> debe quedar en commits públicos a GitHub.</p>
+    <p><strong>Cadena real (no compartir públicamente):</strong></p>
+    <p><code>postgresql://neondb_owner:npg_jvMFy4wmNt7c@ep-withered-wind-apq7hmfj-pooler.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require&amp;channel_binding=require</code></p>
+    <p>Tablas del proyecto: <code>autores</code>, <code>libros</code>, <code>autoria</code>.</p>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Capa</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · El For</td><td style="color:var(--a)">{% for %} + campos</td><td>🎨 Jinja2</td><td style="color:var(--rosa)">La tabla a mano</td><td>100 XP</td></tr>
+        <tr><td>02 · Filtros</td><td style="color:var(--b)">|length, |default, |groupby…</td><td>🎨 Jinja2</td><td style="color:var(--rosa)">El cálculo escondido</td><td>100 XP</td></tr>
+        <tr><td>03 · Decisiones</td><td style="color:var(--verde)">{% if %} + badges</td><td>🎨 Jinja2</td><td style="color:var(--rosa)">El HTML roto en listas vacías</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · Anidados</td><td style="color:var(--a)">for dentro de for</td><td>🎨 Jinja2</td><td style="color:var(--rosa)">Anidar lo que SQL ya agrupó</td><td>100 XP</td></tr>
+        <tr><td>05 · Componentes</td><td style="color:var(--b)">macros + include</td><td>🎨 Jinja2</td><td style="color:var(--rosa)">Copiar-pegar filas</td><td>100 XP</td></tr>
+        <tr><td>06 · Taller</td><td style="color:var(--a)">Página completa</td><td>🎨 Jinja2</td><td style="color:var(--rosa)">—</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 2 minutos</h4>
+    <p>Con su compañero/a: abran la página <code>/autores</code> de la app de biblioteca. <strong>¿Qué partes del HTML de la página son iguales para todas las filas?</strong> ¿Cuáles cambian? Eso que cambia es justo lo que va a variar en el <code>{% for %}</code>.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué Jinja2?</h4>
+    <p>Cuando SQL ya hizo el JOIN y FastAPI ya calculó el total, lo único que queda es <strong>convertir filas en HTML</strong>. Jinja2 es un motor de plantillas que hace exactamente eso: <em>datos dentro, HTML legible fuera</em>. Te ahorra el copy-paste de filas, deja que la lógica compleja viva donde corresponde (en el SQL y en Python) y produce plantillas que un humano puede leer sin saber programar. 📄</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: El For →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>🔁 El <code>{% for %}</code>: de filas a filas HTML</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Por cada fila del contexto, una fila de la tabla"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>FastAPI te entrega un <code>context</code> con una <strong>lista de diccionarios</strong>: cada elemento es una fila. Tu trabajo es recorrer esa lista con <code>{% for %}</code> y, por cada fila, generar un <code>&lt;tr&gt;</code> (o un <code>&lt;li&gt;</code>, o un <code>&lt;article&gt;</code>). <strong>SQL filtra</strong>, <strong>Python arma</strong>, <strong>Jinja2 pinta</strong>.</p>
+  </div>
+
+  <div class="caja-donde donde-jinja">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge jinja">🎨 Jinja2</span></span>
+    </h4>
+    <p>El <code>{% for %}</code> vive <strong>en la plantilla</strong>. Lo que iteras <strong>ya viene en el contexto</strong>: no vuelves a hacer la consulta a la BD ni calculas nada dentro.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — lo que YA está hecho antes de tocar la plantilla</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># Esto vive en vistas.py: SQL filtra, Python arma el context.</span>
+<span class="com"># Tú, en la plantilla, recibes 'autores' como lista de dicts.</span>
+{
+    <span class="str">"autores"</span>: [
+        {<span class="str">"id"</span>: <span class="num">1</span>, <span class="str">"nombre"</span>: <span class="str">"Gabriel García Márquez"</span>, <span class="str">"pais"</span>: <span class="str">"Colombia"</span>,        <span class="str">"nacimiento"</span>: <span class="num">1927</span>},
+        {<span class="str">"id"</span>: <span class="num">2</span>, <span class="str">"nombre"</span>: <span class="str">"Mario Vargas Llosa"</span>,     <span class="str">"pais"</span>: <span class="str">"Perú"</span>,            <span class="str">"nacimiento"</span>: <span class="num">1936</span>},
+        {<span class="str">"id"</span>: <span class="str">"3"</span>, <span class="str">"nombre"</span>: <span class="str">"J. R. R. Tolkien"</span>,       <span class="str">"pais"</span>: <span class="str">"Reino Unido"</span>,     <span class="str">"nacimiento"</span>: <span class="num">1892</span>},
+        {<span class="str">"id"</span>: <span class="num">4</span>, <span class="str">"nombre"</span>: <span class="str">"Terry Pratchett"</span>,        <span class="str">"pais"</span>: <span class="str">"Reino Unido"</span>,     <span class="str">"nacimiento"</span>: <span class="num">1948</span>},
+    ],
+    <span class="str">"total"</span>: <span class="num">4</span>,
+}</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>templates/autores.html — tu trabajo real</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>&lt;table class="table table-striped"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;ID&lt;/th&gt;&lt;th&gt;Nombre&lt;/th&gt;&lt;th&gt;País&lt;/th&gt;&lt;th&gt;Nacimiento&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    {% for autor in autores %}
+    &lt;tr&gt;
+      &lt;td&gt;{{ autor.id }}&lt;/td&gt;
+      &lt;td&gt;{{ autor.nombre }}&lt;/td&gt;
+      &lt;td&gt;{{ autor.pais }}&lt;/td&gt;
+      &lt;td&gt;{{ autor.nacimiento }}&lt;/td&gt;
+    &lt;/tr&gt;
+    {% endfor %}
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p class="mt-3"&gt;Hay {{ autores|length }} autores en la base.&lt;/p&gt;</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: la tabla escrita a mano</h4>
+    <p>Imagina escribir un <code>&lt;tr&gt;</code> por cada autor y copiar-pegar 9 veces. Si mañana el SQL filtra 200 autores, ¿escribes 200 filas a mano? El <code>{% for %}</code> escribe la fila <strong>una sola vez</strong> y deja que el navegador la duplique por cada elemento. La plantilla no cambia cuando cambian los datos: los datos cambian dentro del mismo molde. 🍰</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>La variable <code>loop</code>: superpoderes del for de Jinja2</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{% for autor in autores %}
+  &lt;tr&gt;
+    &lt;td&gt;{{ loop.index }}&lt;/td&gt;            &lt;!-- contador: 1, 2, 3… --&gt;
+    &lt;td&gt;{{ autor.nombre }}&lt;/td&gt;
+    {% if loop.first %}&lt;td&gt;⭐ primer registro&lt;/td&gt;{% endif %}
+    {% if loop.last %}&lt;td&gt;🏁 último registro&lt;/td&gt;{% endif %}
+  &lt;/tr&gt;
+{% endfor %}</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Atributos útiles de <code>loop</code></h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li><code>{{ loop.index }}</code> — número de vuelta empezando en <strong>1</strong>.</li>
+      <li><code>{{ loop.index0 }}</code> — igual pero empezando en <strong>0</strong>.</li>
+      <li><code>loop.first</code> / <code>loop.last</code> — <code>True</code> solo en la primera/última vuelta.</li>
+      <li><code>loop.length</code> — total de elementos (igual que <code>autores|length</code>).</li>
+      <li><code>loop.cycle('a', 'b', 'c')</code> — rota valores entre vueltas (útil para alternar colores de fila).</li>
+    </ul>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>El bloque <code>{% else %}</code>: lista vacía sin error</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{% for autor in autores %}
+  &lt;li&gt;{{ autor.nombre }}&lt;/li&gt;
+{% else %}
+  &lt;li class="text-muted"&gt;Aún no hay autores registrados 📭&lt;/li&gt;
+{% endfor %}</code></pre>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Con su compañero/a: copien la plantilla de arriba y agreguen dentro del <code>{% for %}</code> un <code>&lt;td&gt;</code> que muestre la <strong>edad</strong> del autor (suponiendo <code>hoy = 2026</code>: <code>{{ 2026 - autor.nacimiento }}</code>). ¿Funciona sin tocar <code>vistas.py</code>? ¿Por qué?</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> En <code>{% for autor in autores %}</code>, ¿qué es <code>autores</code>?</p>
+      <button class="opcion" data-op="a">Una variable que tú declaras dentro de la plantilla</button>
+      <button class="opcion" data-op="b">Una clave del <code>context</code> que FastAPI te mandó</button>
+      <button class="opcion" data-op="c">Una tabla de la base de datos directamente accesible</button>
+      <button class="opcion" data-op="d">Una palabra mágica de Jinja2</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Qué imprime <code>{{ loop.index }}</code> en la tercera vuelta?</p>
+      <button class="opcion" data-op="a">2</button>
+      <button class="opcion" data-op="b">3, contando desde 0</button>
+      <button class="opcion" data-op="c">3, contando desde 1</button>
+      <button class="opcion" data-op="d">El número de elementos</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuándo se ejecuta el bloque <code>{% else %}</code> dentro de un <code>{% for %}</code>?</p>
+      <button class="opcion" data-op="a">Cuando la lista está vacía</button>
+      <button class="opcion" data-op="b">Cuando ocurre un error</button>
+      <button class="opcion" data-op="c">En la última vuelta</button>
+      <button class="opcion" data-op="d">Nunca</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> ¿Dónde calculas el total de libros que vas a mostrar?</p>
+      <button class="opcion" data-op="a">En SQL con <code>COUNT</code>, o en Python, y lo pasas en el <code>context</code></button>
+      <button class="opcion" data-op="b">Dentro de la plantilla con un acumulador invisible</button>
+      <button class="opcion" data-op="c">En el navegador con JavaScript</button>
+      <button class="opcion" data-op="d">No se puede saber el total</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Filtros →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>🎚️ Filtros: transformar un valor al imprimirlo</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El formato vive en la plantilla, el cálculo vive en Python"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Un <strong>filtro</strong> se aplica al valor <em>justo antes de imprimirlo</em>, con el operador <code>|</code>. <code>{{ autor.nombre | upper }}</code> muestra el nombre en mayúsculas. Sirven para dar formato (fechas, números, mayúsculas), manejar vacíos (<code>|default</code>), contar (<code>|length</code>) o incluso <strong>agrupar</strong> una lista en el último momento (<code>|groupby</code>).</p>
+  </div>
+
+  <div class="caja-donde donde-jinja">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge jinja">🎨 Jinja2</span></span>
+    </h4>
+    <p>Los filtros son de <strong>Jinja2</strong>: viven en la plantilla y solo afectan <strong>cómo se imprime</strong> un valor, no los datos. La suma real la hace Python/SQL; <code>|length</code> solo la lee.</p>
+  </div>
+
+  <h3>Los filtros que usarás una y otra vez</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>filtros básicos — formato y seguridad</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{{ autor.nombre | upper }}                          &lt;!-- "GABRIEL GARCÍA MÁRQUEZ" --&gt;
+{{ autor.pais | default("Sin país") }}             &lt;!-- si pais es None o vacío → "Sin país" --&gt;
+{{ libro.titulo | truncate(30) }}                  &lt;!-- "Cien años de soledad" → "Cien años de soled…" --&gt;
+{{ 1234567 | int }}                                 &lt;!-- convertir string a int --&gt;
+{{ fecha | date("Y-m-d") }}                       &lt;!-- formatear fecha --&gt;</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>filtros de colecciones — listas y conteo</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{{ autores | length }}                            &lt;!-- 4 --&gt;
+{{ autores | first }}                            &lt;!-- primer dict --&gt;
+{{ autores | last }}                             &lt;!-- último dict --&gt;
+{{ autores | map(attribute='pais') | list | unique }}   &lt;!-- ['Colombia', 'Perú', 'Reino Unido'] --&gt;
+
+{% set nombres = autores | map(attribute='nombre') | join(', ') %}
+&lt;p&gt;Autores: {{ nombres }}&lt;/p&gt;
+&lt;!-- Autores: Gabriel García Márquez, Mario Vargas Llosa, J. R. R. Tolkien, Terry Pratchett --&gt;</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span><code>groupby</code>: agrupar filas para pintarlas juntas</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{% for grupo in libros | groupby('decada') %}
+  &lt;h3&gt;{{ grouper }}&lt;/h3&gt;            &lt;!-- "1960s", "1990s"… --&gt;
+  &lt;ul&gt;
+    {% for libro in grupo %}
+      &lt;li&gt;{{ libro.titulo }}&lt;/li&gt;
+    {% endfor %}
+  &lt;/ul&gt;
+{% endfor %}</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: el cálculo escondido en la plantilla</h4>
+    <p>¿<code>|sum</code> para sumar? Sí existe. Pero si tu HTML tiene que sumar muchas cosas, <strong>algo se quedó en el contexto que debió llegar hecho</strong>. Pide el total en <code>context={...}</code> y déjalo en una variable con nombre (<code>total_libros</code>, <code>promedio_anio</code>). Una plantilla que solo pinta y formatea es una plantilla que se mantiene.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>filtrar filas por atributo: <code>selectattr</code> / <code>rejectattr</code></span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>&lt;h3&gt;Solo autores vivos en 2026 (nacidos &lt; 2000)&lt;/h3&gt;
+&lt;ul&gt;
+{% for autor in autores | selectattr('nacimiento', '&lt;', 2000) %}
+  &lt;li&gt;{{ autor.nombre }} (n. {{ autor.nacimiento }})&lt;/li&gt;
+{% endfor %}
+&lt;/ul&gt;
+
+&lt;h3&gt;Autores sin país registrado&lt;/h3&gt;
+&lt;ul&gt;
+{% for autor in autores | rejectattr('pais') %}
+  &lt;li class="text-muted"&gt;{{ autor.nombre }}&lt;/li&gt;
+{% endfor %}
+&lt;/ul&gt;</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: <code>{% set %}</code> para nombres legibles</h4>
+    <p>Si una expresión larga aparece varias veces en la plantilla, guárdala en una variable local con <code>{% set %}</code>. La plantilla se vuelve más fácil de leer y cambias la fórmula en un solo lugar.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Con su compañero/a: a partir de la lista de autores del módulo 1, <strong>impriman solo los nacidos antes de 1940</strong> en una lista con <code>selectattr</code>. ¿Funciona sin tocar <code>vistas.py</code>? ¿Es mejor así, o conviene pedirlo al SQL?</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué hace <code>{{ autor.pais | default("Sin país") }}</code> si <code>pais</code> es <code>None</code>?</p>
+      <button class="opcion" data-op="a">Imprime <code>None</code></button>
+      <button class="opcion" data-op="b">Rompe la página con un error</button>
+      <button class="opcion" data-op="c">Imprime <code>Sin país</code></button>
+      <button class="opcion" data-op="d">Imprime una cadena vacía</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Cuál filtro cuenta los elementos de una lista?</p>
+      <button class="opcion" data-op="a"><code>size</code></button>
+      <button class="opcion" data-op="b"><code>length</code></button>
+      <button class="opcion" data-op="c"><code>count</code></button>
+      <button class="opcion" data-op="d"><code>total</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Para qué sirve <code>|groupby('decada')</code>?</p>
+      <button class="opcion" data-op="a">Para agrupar filas que comparten el mismo valor en <code>decada</code></button>
+      <button class="opcion" data-op="b">Para borrar las filas duplicadas</button>
+      <button class="opcion" data-op="c">Para sumar valores por década</button>
+      <button class="opcion" data-op="d">Para contar elementos</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> Si tu plantilla está llena de <code>|sum</code> y <code>|map</code>, ¿qué deberías revisar primero?</p>
+      <button class="opcion" data-op="a">El nombre de los campos en la BD</button>
+      <button class="opcion" data-op="b">Que esos cálculos no deban venir ya hechos en el <code>context</code> desde Python o SQL</button>
+      <button class="opcion" data-op="c">La versión de Jinja2 instalada</button>
+      <button class="opcion" data-op="d">El color de la tabla</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Decisiones →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>🚦 Decisiones visuales con <code>{% if %}</code></h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "La vista cambia según el dato"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Los datos que llegan al contexto no son uniformes: hay un país que es <code>None</code>, un año que es muy antiguo, un libro sin portada. El <code>{% if %}</code> te permite pintar <strong>HTML distinto</strong> según el valor: badge de "clásico", mensaje de "vacío", clase CSS de "alerta". El motor de la decisión es la plantilla; la lógica de <em>qué</em> decidir sigue en SQL/Python.</p>
+  </div>
+
+  <div class="caja-donde donde-jinja">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge jinja">🎨 Jinja2</span></span>
+    </h4>
+    <p>El <code>{% if %}</code> vive <strong>en la plantilla</strong>: solo decide cómo se ve cada fila. La clasificación (<em>"este libro es antiguo"</em>) puede llegar pre-calculada desde Python en el contexto, así la plantilla no inventa reglas.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>if / elif / else básico</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{% if autor.pais %}
+  &lt;span class="badge bg-primary"&gt;{{ autor.pais }}&lt;/span&gt;
+{% elif autor.nacimiento %}
+  &lt;span class="badge bg-secondary"&gt;n. {{ autor.nacimiento }}&lt;/span&gt;
+{% else %}
+  &lt;span class="badge bg-warning text-dark"&gt;Sin datos&lt;/span&gt;
+{% endif %}</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>badge según la era del libro</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{% for libro in libros %}
+  &lt;tr&gt;
+    &lt;td&gt;{{ libro.titulo }}&lt;/td&gt;
+    &lt;td&gt;{{ libro.anio }}&lt;/td&gt;
+    &lt;td&gt;
+      {% if libro.anio &lt; 1950 %}
+        &lt;span class="badge bg-warning text-dark"&gt;Clásico&lt;/span&gt;
+      {% elif libro.anio &gt;= 2000 %}
+        &lt;span class="badge bg-info"&gt;Moderno&lt;/span&gt;
+      {% else %}
+        &lt;span class="badge bg-secondary"&gt;Siglo XX&lt;/span&gt;
+      {% endif %}
+    &lt;/td&gt;
+  &lt;/tr&gt;
+{% endfor %}</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>estado vacío amigable</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{% if not libros %}
+  &lt;div class="alert alert-info"&gt;
+    📭 Aún no hay libros en el catálogo. Vuelve pronto.
+  &lt;/div&gt;
+{% else %}
+  &lt;table class="table"&gt;…&lt;/table&gt;
+{% endif %}</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: la página rota cuando no hay datos</h4>
+    <p>Si tu plantilla solo tiene el <code>{% for %}</code> sin un <code>{% else %}</code> o un <code>{% if not lista %}</code>, el día que la lista viene vacía el usuario ve una tabla en blanco o un error. <strong>Una buena plantilla siempre tiene un mensaje para el caso vacío.</strong></p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Verdadero / Falso en Jinja2</h4>
+    <p>Para Jinja2, <code>None</code>, <code>""</code>, <code>[]</code>, <code>{}</code>, <code>0</code> y <code>False</code> son <strong>falsy</strong>. El resto es <strong>truthy</strong>. Por eso <code>{% if autor.pais %}</code> cubre tanto <code>None</code> como cadena vacía.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>combinar if + loop: clases CSS por fila</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{% for autor in autores %}
+  &lt;tr class="{% if loop.index is even %}fila-par{% else %}fila-impar{% endif %}"&gt;
+    &lt;td&gt;{{ loop.index }}&lt;/td&gt;
+    &lt;td&gt;{{ autor.nombre }}&lt;/td&gt;
+  &lt;/tr&gt;
+{% endfor %}</code></pre>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Con su compañero/a: armen una plantilla que reciba una lista de <strong>préstamos</strong> (días de atraso) y muestre una <em>etiqueta de color</em> distinta: verde para 0 días, amarillo para 1–5, naranja para 6–10, rojo para más de 10. ¿Todo eso va en la plantilla, o conviene pedir <code>categoria</code> ya calculada desde SQL?</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál de estos valores es <strong>falsy</strong> para Jinja2?</p>
+      <button class="opcion" data-op="a"><code>"Colombia"</code></button>
+      <button class="opcion" data-op="b"><code>""</code> (cadena vacía)</button>
+      <button class="opcion" data-op="c"><code>["a"]</code></button>
+      <button class="opcion" data-op="d"><code>" "</code> (un espacio)</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué imprime <code>{{ autor.pais | default('—') }}</code> si <code>autor.pais</code> es <code>None</code>?</p>
+      <button class="opcion" data-op="a"><code>—</code></button>
+      <button class="opcion" data-op="b"><code>None</code></button>
+      <button class="opcion" data-op="c">Cadena vacía</button>
+      <button class="opcion" data-op="d">Rompe la página</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cómo pintas "no hay datos" si la lista llegó vacía?</p>
+      <button class="opcion" data-op="a">Con <code>{% else %}</code> después del <code>{% for %}</code>, o con <code>{% if not lista %}</code></button>
+      <button class="opcion" data-op="b">No se puede, eso le toca al JavaScript del navegador</button>
+      <button class="opcion" data-op="c">Con un <code>{% while %}</code> que nunca termina</button>
+      <button class="opcion" data-op="d">Escribiendo el HTML a mano por si acaso</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73% agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Coméntale a tu compañero/a: ¿prefieres hacer el <code>JOIN</code> en SQL o anidar <code>{% for %}</code> en la plantilla? 1 min.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>Jinja2 debe su nombre a los <strong>templos jinja</strong> de Japón (⛩️). Lo creó en 2008 Armin Ronacher para el framework Flask; hoy lo usan FastAPI, Django, Ansible y muchas más. Es el motor de plantillas más popular del ecosistema Python. 📜</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Anidados →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>📊 Bucles anidados en HTML: listas dentro de listas</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Un {% for %} por cada nivel del JOIN"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>En la app de biblioteca ya existe la tabla intermedia <code>autoria</code>: une <strong>autores</strong> con sus <strong>libros</strong>. Una sola consulta SQL con <code>JOIN</code> devuelve filas planas <em>(autor, libro)</em>. La plantilla puede anidar dos <code>{% for %}</code> para pintarlo en dos niveles: un encabezado por autor y, debajo, una lista de sus libros.</p>
+  </div>
+
+  <div class="caja-donde donde-jinja">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge sql">🐘 SQL (JOIN)</span><span class="capa-badge python">🐍 Python (armar)</span><span class="capa-badge jinja">🎨 Jinja2 (pintar)</span></span>
+    </h4>
+    <p>El <strong>JOIN</strong> vive en SQL. <strong>Python</strong> puede agrupar las filas en una estructura anidada o pasarlas planas. La <strong>plantilla</strong> solo decide la jerarquía visual. Si ves anidamiento de 3 niveles, probablemente el SQL no está haciendo su parte.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — la consulta que ya devuelve lo necesario</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># Esto vive en SQL/Python. El JOIN une cada autor con sus libros.</span>
+{
+    <span class="str">"autores_con_libros"</span>: [
+        {<span class="str">"autor"</span>: <span class="str">"Gabriel García Márquez"</span>, <span class="str">"libro"</span>: <span class="str">"Cien años de soledad"</span>,        <span class="str">"anio"</span>: <span class="num">1967</span>},
+        {<span class="str">"autor"</span>: <span class="str">"Gabriel García Márquez"</span>, <span class="str">"libro"</span>: <span class="str">"El amor en los tiempos del cólera"</span>, <span class="str">"anio"</span>: <span class="num">1985</span>},
+        {<span class="str">"autor"</span>: <span class="str">"Mario Vargas Llosa"</span>,      <span class="str">"libro"</span>: <span class="str">"La ciudad y los perros"</span>,        <span class="str">"anio"</span>: <span class="num">1963</span>},
+        {<span class="str">"autor"</span>: <span class="str">"J. R. R. Tolkien"</span>,        <span class="str">"libro"</span>: <span class="str">"El hobbit"</span>,                     <span class="str">"anio"</span>: <span class="num">1937</span>},
+        {<span class="str">"autor"</span>: <span class="str">"J. R. R. Tolkien"</span>,        <span class="str">"libro"</span>: <span class="str">"El Señor de los Anillos"</span>,        <span class="str">"anio"</span>: <span class="num">1954</span>},
+        {<span class="str">"autor"</span>: <span class="str">"Terry Pratchett"</span>,         <span class="str">"libro"</span>: <span class="str">"Buenos presagios"</span>,               <span class="str">"anio"</span>: <span class="num">1990</span>},
+    ],
+    <span class="str">"total"</span>: <span class="num">6</span>,
+}</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>biblioteca.html — tu trabajo: anidar para pintar jerarquía</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{% set actual = namespace(nombre=None) %}
+{% for fila in autores_con_libros %}
+  {% if fila.autor != actual.nombre %}
+    {% if not loop.first %}&lt;/ul&gt;&lt;/li&gt;{% endif %}
+    &lt;li&gt;&lt;strong&gt;{{ fila.autor }}&lt;/strong&gt;
+    &lt;ul&gt;
+    {% set actual.nombre = fila.autor %}
+  {% endif %}
+  &lt;li&gt;{{ fila.libro }} ({{ fila.anio }})&lt;/li&gt;
+{% endfor %}
+{% if autores_con_libros %}&lt;/ul&gt;&lt;/li&gt;{% endif %}</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: anidar lo que SQL ya agrupó</h4>
+    <p>El patrón de arriba con <code>namespace</code> + <code>{% if %}</code> funciona, pero hace el HTML frágil. Si el SQL puede devolver la lista ya agrupada (<em>{autor: [libros…]}</em>), la plantilla es más limpia: <strong>una sola decisión visual, no dos niveles de coordinación</strong>.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>la versión limpia: SQL + Python ya agruparon por autor</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># Lo que llega al contexto, ya agrupado en Python:</span>
+{
+    <span class="str">"autores"</span>: [
+        {<span class="str">"nombre"</span>: <span class="str">"Gabriel García Márquez"</span>,
+         <span class="str">"libros"</span>: [
+            {<span class="str">"titulo"</span>: <span class="str">"Cien años de soledad"</span>,          <span class="str">"anio"</span>: <span class="num">1967</span>},
+            {<span class="str">"titulo"</span>: <span class="str">"El amor en los tiempos del cólera"</span>, <span class="str">"anio"</span>: <span class="num">1985</span>},
+         ]},
+        {<span class="str">"nombre"</span>: <span class="str">"J. R. R. Tolkien"</span>,
+         <span class="str">"libros"</span>: [
+            {<span class="str">"titulo"</span>: <span class="str">"El hobbit"</span>,               <span class="str">"anio"</span>: <span class="num">1937</span>},
+            {<span class="str">"titulo"</span>: <span class="str">"El Señor de los Anillos"</span>,  <span class="str">"anio"</span>: <span class="num">1954</span>},
+         ]},
+    ],
+}</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>biblioteca.html — un {% for %} limpio por nivel</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>&lt;ul class="biblioteca"&gt;
+{% for autor in autores %}
+  &lt;li&gt;
+    &lt;h3&gt;✍️ {{ autor.nombre }}&lt;/h3&gt;
+    &lt;ul&gt;
+      {% for libro in autor.libros %}
+        &lt;li&gt;📖 {{ libro.titulo }} ({{ libro.anio }})&lt;/li&gt;
+      {% endfor %}
+    &lt;/ul&gt;
+  &lt;/li&gt;
+{% endfor %}
+&lt;/ul&gt;</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Cuándo anidar en Jinja2 y cuándo no</h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li><strong>2 niveles (autor → libros):</strong> casi siempre viene bien pre-agrupado del SQL/Python.</li>
+      <li><strong>3 niveles o más:</strong> sospecha. Probablemente el SQL no hizo el <code>JOIN</code> correcto o te falta una vista materializada.</li>
+      <li><strong>Solo 1 nivel pero con jerarquía visual:</strong> usa <code>|groupby('autor')</code> en la propia plantilla — sin tocar la consulta.</li>
+    </ul>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span><code>|groupby</code> en la plantilla — sin tocar SQL ni Python</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>&lt;ul&gt;
+{% for grupo in autores_con_libros | groupby('autor') %}
+  &lt;li&gt;
+    &lt;strong&gt;{{ grupo.grouper }}&lt;/strong&gt;
+    &lt;ul&gt;
+      {% for fila in grupo.list %}
+        &lt;li&gt;{{ fila.libro }} ({{ fila.anio }})&lt;/li&gt;
+      {% endfor %}
+    &lt;/ul&gt;
+  &lt;/li&gt;
+{% endfor %}
+&lt;/ul&gt;</code></pre>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Con su compañero/a: pidan a la BD una lista plana <em>(autor, libro)</em> y pinten la misma jerarquía de las dos formas: (a) con el truco de <code>namespace</code> + <code>if</code>, y (b) con <code>|groupby</code>. ¿Cuál se entiende mejor? ¿Cuál rompe antes si la lista viene vacía?</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> Para pintar una lista de <em>autores con sus libros</em>, ¿qué capa debería traer la relación?</p>
+      <button class="opcion" data-op="a">Jinja2 con un <code>{% for %}</code> doble y muchos <code>{% if %}</code></button>
+      <button class="opcion" data-op="b">Python con un bucle anidado que recorra dos listas</button>
+      <button class="opcion" data-op="c">SQL con un <code>JOIN</code> entre <code>autores</code>, <code>autoria</code> y <code>libros</code></button>
+      <button class="opcion" data-op="d">El usuario, que escriba los autores a mano</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cuándo es buena idea anidar <code>{% for %}</code> directamente en la plantilla?</p>
+      <button class="opcion" data-op="a">Cuando SQL/Python ya te devolvieron una estructura jerárquica clara</button>
+      <button class="opcion" data-op="b">Cuando te da pereza escribir el SQL correcto</button>
+      <button class="opcion" data-op="c">Cuando necesitas 3 niveles o más</button>
+      <button class="opcion" data-op="d">Nunca, Jinja2 no anida</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Qué hace <code>|groupby('autor')</code> sobre una lista de filas planas?</p>
+      <button class="opcion" data-op="a">Borra las filas duplicadas por autor</button>
+      <button class="opcion" data-op="b">Agrupa las filas que comparten el mismo autor en sublistas</button>
+      <button class="opcion" data-op="c">Cuenta cuántos autores hay</button>
+      <button class="opcion" data-op="d">Convierte la lista en una sola cadena</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Componentes →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>🧩 Macros e <code>{% include %}</code>: componentes en Jinja2</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Reutilizar sin copiar-pegar"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Jinja2 tiene dos mecanismos para <strong>reutilizar HTML</strong>: <strong>macros</strong> (parecidas a funciones: reciben datos y devuelven HTML) y <strong><code>{% include %}</code></strong> (incluir un archivo de plantilla tal cual). Son el equivalente Jinja2 de los <em>componentes</em> de React o Svelte. La pieza se define una vez y se usa muchas.</p>
+  </div>
+
+  <div class="caja-donde donde-jinja">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge jinja">🎨 Jinja2</span></span>
+    </h4>
+    <p>Macros e <code>{% include %}</code> son <strong>puro Jinja2</strong>: viven en <code>templates/</code>. Son la respuesta al "tengo que repetir este pedazo de HTML en 8 archivos": se hace un componente y se reutiliza.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>templates/componentes/badge.html — un macro reutilizable</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{% macro badge(texto, color="secondary") %}
+  &lt;span class="badge bg-{{ color }}"&gt;{{ texto }}&lt;/span&gt;
+{% endmacro %}
+
+{% macro era(anio) %}
+  {% if anio &lt; 1950 %}
+    {{ badge('Clásico', 'warning') }}
+  {% elif anio &gt;= 2000 %}
+    {{ badge('Moderno', 'info') }}
+  {% else %}
+    {{ badge('Siglo XX', 'secondary') }}
+  {% endif %}
+{% endmacro %}</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>templates/libros.html — usar los macros</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>{% from "componentes/badge.html" import badge, era %}
+
+&lt;h1&gt;📚 Catálogo&lt;/h1&gt;
+&lt;table class="table"&gt;
+  {% for libro in libros %}
+    &lt;tr&gt;
+      &lt;td&gt;{{ libro.titulo }}&lt;/td&gt;
+      &lt;td&gt;{{ libro.anio }}&lt;/td&gt;
+      &lt;td&gt;{{ era(libro.anio) }}&lt;/td&gt;
+    &lt;/tr&gt;
+  {% endfor %}
+&lt;/table&gt;
+
+&lt;p&gt;Hay {{ badge(total, 'primary') }} libros en el catálogo.&lt;/p&gt;</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>templates/componentes/fila_autor.html — un include</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>&lt;tr&gt;
+  &lt;td&gt;{{ autor.id }}&lt;/td&gt;
+  &lt;td&gt;{{ autor.nombre }}&lt;/td&gt;
+  &lt;td&gt;{{ autor.pais }}&lt;/td&gt;
+&lt;/tr&gt;</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>templates/autores.html — incluir filas</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>&lt;table class="table table-striped"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;ID&lt;/th&gt;&lt;th&gt;Nombre&lt;/th&gt;&lt;th&gt;País&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    {% for autor in autores %}
+      {% include "componentes/fila_autor.html" %}
+    {% endfor %}
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: copiar-pegar filas HTML</h4>
+    <p>¿Ves una etiqueta <code>&lt;tr&gt;</code> con cuatro <code>&lt;td&gt;</code> que se repite en 6 archivos? Eso es un componente esperando nacer. Con <code>{% include %}</code> lo extraes a <code>componentes/fila.html</code> y lo metes con una línea. Mañana agregas una columna: tocas <strong>un solo archivo</strong>.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Macro vs include — ¿cuándo?</h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li><strong>Macro:</strong> cuando quieres parametrizar (ej. <code>era(anio)</code> elige color según valor).</li>
+      <li><strong>Include:</strong> cuando la pieza es <em>siempre</em> la misma con los datos que ya vienen en el contexto.</li>
+      <li><strong>Ambos</strong> pueden anidarse: un include que dentro tiene <code>{% from ... import %}</code> y usa un macro.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Con su compañero/a: extraigan la <strong>fila de la tabla de libros</strong> del módulo 1 a un componente <code>componentes/fila_libro.html</code>. ¿Qué incluye y qué no? Si el libro no tiene autor, ¿quién decide el mensaje de "sin autor", la plantilla o el componente?</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la diferencia entre una <strong>macro</strong> y un <strong>include</strong>?</p>
+      <button class="opcion" data-op="a">Son lo mismo, sin diferencias</button>
+      <button class="opcion" data-op="b">Una macro recibe parámetros y devuelve HTML; un include simplemente trae un archivo</button>
+      <button class="opcion" data-op="c">Un include recibe parámetros; una macro no</button>
+      <button class="opcion" data-op="d">Las macros son de Python y los includes de JavaScript</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cómo importas un macro que está en <code>templates/componentes/badge.html</code>?</p>
+      <button class="opcion" data-op="a">Con <code>{% from "componentes/badge.html" import badge %}</code></button>
+      <button class="opcion" data-op="b">Con <code>import badge</code> (igual que en Python)</button>
+      <button class="opcion" data-op="c">Con un <code>&lt;script src="..."&gt;</code></button>
+      <button class="opcion" data-op="d">No se puede importar, hay que copiar el macro</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> Si el mismo <code>&lt;tr&gt;</code> aparece en 6 archivos de plantilla, ¿qué conviene hacer?</p>
+      <button class="opcion" data-op="a">Extraerlo a un <code>{% include %}</code> en <code>componentes/</code></button>
+      <button class="opcion" data-op="b">Dejarlo igual y corregir en los 6 cada vez que cambia</button>
+      <button class="opcion" data-op="c">Moverlo a SQL</button>
+      <button class="opcion" data-op="d">Esconderlo en el JavaScript del navegador</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: tu página completa con Jinja2</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "Mete {% for %}, {% if %}, filtros y macros en una sola página"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">El catálogo de la biblioteca</span>
+    </div>
+    <p>Vas a armar, paso a paso, la página <strong>/libros</strong> del proyecto de biblioteca: lista de libros con autor, badge de era, columna de "antigüedad", estado vacío, tarjetas de resumen al inicio y un macro para los badges. Todo en una sola plantilla. SQL/Python ya hicieron su parte.</p>
+  </div>
+
+  <div class="caja-donde donde-jinja">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge jinja">🎨 Jinja2</span></span>
+    </h4>
+    <p>El taller es <strong>puro Jinja2</strong>: no tocarás <code>vistas.py</code> ni SQL. Asumimos que el contexto ya trae <code>libros</code>, <code>total</code>, <code>resumen</code> y <code>decadas</code> con la forma adecuada.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>el context que te llega (preparado por SQL/Python)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># Lo que FastAPI te manda (esto NO lo escribes tú, solo lo recibes):</span>
+{
+    <span class="str">"libros"</span>: [
+        {<span class="str">"titulo"</span>: <span class="str">"Cien años de soledad"</span>,          <span class="str">"anio"</span>: <span class="num">1967</span>, <span class="str">"autor"</span>: <span class="str">"Gabriel García Márquez"</span>},
+        {<span class="str">"titulo"</span>: <span class="str">"El hobbit"</span>,                       <span class="str">"anio"</span>: <span class="num">1937</span>, <span class="str">"autor"</span>: <span class="str">"J. R. R. Tolkien"</span>},
+        {<span class="str">"titulo"</span>: <span class="str">"Buenos presagios"</span>,                <span class="str">"anio"</span>: <span class="num">1990</span>, <span class="str">"autor"</span>: <span class="str">"Terry Pratchett"</span>},
+        {<span class="str">"titulo"</span>: <span class="str">"Introducción a los algoritmos"</span>,   <span class="str">"anio"</span>: <span class="num">1990</span>, <span class="str">"autor"</span>: <span class="str">"Charles E. Leiserson"</span>},
+    ],
+    <span class="str">"total"</span>: <span class="num">4</span>,
+    <span class="str">"resumen"</span>: {<span class="str">"antiguo"</span>: <span class="num">1937</span>, <span class="str">"reciente"</span>: <span class="num">1990</span>, <span class="str">"promedio"</span>: <span class="num">1971</span>},
+    <span class="str">"decadas"</span>: [{<span class="str">"decada"</span>: <span class="str">"1930s"</span>, <span class="str">"cantidad"</span>: <span class="num">1</span>}, {<span class="str">"decada"</span>: <span class="str">"1960s"</span>, <span class="str">"cantidad"</span>: <span class="num">1</span>}, {<span class="str">"decada"</span>: <span class="str">"1990s"</span>, <span class="str">"cantidad"</span>: <span class="num">2</span>}],
+}</code></pre>
+  </div>
+
+  <h3>🧠 Reto 1 — Tres tarjetas de resumen arriba</h3>
+  <p>Pinta tres tarjetas Bootstrap (<code>card</code>) con el <strong>total</strong>, el año <strong>más antiguo</strong> y el año <strong>más reciente</strong> usando el <code>resumen</code> del contexto. Usa <code>|default</code> por si alguno viene <code>None</code>.</p>
+
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 1</h4>
+    <pre><code>&lt;div class="row text-center my-3"&gt;
+  &lt;div class="col"&gt;&lt;div class="card"&gt;&lt;div class="card-body"&gt;
+    &lt;h5&gt;Libros&lt;/h5&gt;{{ total | default(0) }}
+  &lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;div class="col"&gt;&lt;div class="card"&gt;&lt;div class="card-body"&gt;
+    &lt;h5&gt;Más antiguo&lt;/h5&gt;{{ resumen.antiguo | default('—') }}
+  &lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;div class="col"&gt;&lt;div class="card"&gt;&lt;div class="card-body"&gt;
+    &lt;h5&gt;Más reciente&lt;/h5&gt;{{ resumen.reciente | default('—') }}
+  &lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  </div>
+
+  <h3>🧠 Reto 2 — La tabla de libros con badge de era</h3>
+  <p>Recorre <code>libros</code> con un <code>{% for %}</code>. Por cada libro muestra <code>titulo</code>, <code>autor</code>, <code>anio</code> y un <strong>badge de era</strong> (Clásico si <code>anio &lt; 1950</code>, Moderno si <code>&gt;= 2000</code>, Siglo XX si no). Si <code>libros</code> viene vacío, muestra una alerta "Sin libros todavía".</p>
+
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 2</h4>
+    <pre><code>{% if not libros %}
+  &lt;div class="alert alert-info"&gt;📭 Sin libros todavía.&lt;/div&gt;
+{% else %}
+&lt;table class="table table-striped"&gt;
+  &lt;thead&gt;&lt;tr&gt;&lt;th&gt;#&lt;/th&gt;&lt;th&gt;Título&lt;/th&gt;&lt;th&gt;Autor&lt;/th&gt;&lt;th&gt;Año&lt;/th&gt;&lt;th&gt;Era&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+  &lt;tbody&gt;
+    {% for libro in libros %}
+    &lt;tr&gt;
+      &lt;td&gt;{{ loop.index }}&lt;/td&gt;
+      &lt;td&gt;{{ libro.titulo }}&lt;/td&gt;
+      &lt;td&gt;{{ libro.autor | default('—') }}&lt;/td&gt;
+      &lt;td&gt;{{ libro.anio }}&lt;/td&gt;
+      &lt;td&gt;
+        {% if libro.anio &lt; 1950 %}&lt;span class="badge bg-warning text-dark"&gt;Clásico&lt;/span&gt;
+        {% elif libro.anio &gt;= 2000 %}&lt;span class="badge bg-info"&gt;Moderno&lt;/span&gt;
+        {% else %}&lt;span class="badge bg-secondary"&gt;Siglo XX&lt;/span&gt;
+        {% endif %}
+      &lt;/td&gt;
+    &lt;/tr&gt;
+    {% endfor %}
+  &lt;/tbody&gt;
+&lt;/table&gt;
+{% endif %}</code></pre>
+  </div>
+
+  <h3>🧠 Reto 3 — Distribución por década</h3>
+  <p>Recorre <code>decadas</code> y pinta una lista donde se vea <code>"1960s — 1 libro"</code>. Usa <code>|length</code> si prefieres contar tú mismo desde <code>libros</code>, pero te recomendamos usar el contexto.</p>
+
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 3</h4>
+    <pre><code>&lt;h3&gt;📊 Por década&lt;/h3&gt;
+&lt;ul class="list-group"&gt;
+  {% for d in decadas %}
+    &lt;li class="list-group-item d-flex justify-content-between"&gt;
+      &lt;span&gt;{{ d.decada }}&lt;/span&gt;
+      &lt;span&gt;{{ d.cantidad }} libro(s)&lt;/span&gt;
+    &lt;/li&gt;
+  {% endfor %}
+&lt;/ul&gt;</code></pre>
+  </div>
+
+  <h3>🧠 Reto 4 — Extrae el badge a un macro</h3>
+    <p>Crea <code>templates/componentes/era.html</code> con un macro <code>era(anio)</code> que reciba un año y devuelva el badge correcto (Clásico/Moderno/Siglo XX). Úsalo en la tabla del Reto 2 con <code>{% from ... import %}</code>.</p>
+
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 4</h4>
+    <pre><code>&lt;!-- templates/componentes/era.html --&gt;
+{% macro era(anio) %}
+  {% if anio &lt; 1950 %}&lt;span class="badge bg-warning text-dark"&gt;Clásico&lt;/span&gt;
+  {% elif anio &gt;= 2000 %}&lt;span class="badge bg-info"&gt;Moderno&lt;/span&gt;
+  {% else %}&lt;span class="badge bg-secondary"&gt;Siglo XX&lt;/span&gt;
+  {% endif %}
+{% endmacro %}</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Reflexión final</h4>
+    <p>En este taller no tocaste <code>vistas.py</code>, no escribiste SQL, no calculaste nada. <strong>Solo dibujaste</strong>. La información venía armada porque SQL hizo el <code>JOIN</code> con <code>autoria</code> y Python empaquetó el <code>resumen</code> y <code>decadas</code>. Esa es la frontera del trabajo en una plantilla: lo que llega se pinta, lo que falta se pide. <strong>Si te toca calcular algo dentro del HTML, algo se quedó en el camino.</strong></p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 10 minutos</h4>
+    <p>Con su compañero/a, revisen sus plantillas:</p>
+    <ol>
+      <li>¿Algún filtro o cálculo debería estar en el <code>context</code> en vez de en la plantilla?</li>
+      <li>¿Hay HTML repetido entre archivos que debería ser un <code>componentes/</code>?</li>
+      <li>Si <code>libros</code> viene vacío, ¿la plantilla avisa o muestra una tabla en blanco?</li>
+      <li>¿Cada <code>{% if %}</code> protege contra un valor <code>None</code>?</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="7">
+    <h3>🎯 Quiz Final</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> En este taller, ¿en qué capa hiciste la mayor parte del trabajo?</p>
+      <button class="opcion" data-op="a">En Jinja2 (la plantilla)</button>
+      <button class="opcion" data-op="b">En Python (FastAPI)</button>
+      <button class="opcion" data-op="c">En SQL (PostgreSQL)</button>
+      <button class="opcion" data-op="d">En el navegador con JavaScript</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Quién arma el <code>context</code> que llega a la plantilla?</p>
+      <button class="opcion" data-op="a">La plantilla misma con <code>{% set %}</code></button>
+      <button class="opcion" data-op="b">La ruta de FastAPI en <code>vistas.py</code> al llamar <code>TemplateResponse(context={...})</code></button>
+      <button class="opcion" data-op="c">El navegador al renderizar</button>
+      <button class="opcion" data-op="d">PostgreSQL directamente</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuándo conviene usar un <strong>macro</strong> en vez de un <strong>include</strong>?</p>
+      <button class="opcion" data-op="a">Cuando la pieza cambia según un parámetro (ej. color, valor)</button>
+      <button class="opcion" data-op="b">Cuando el HTML es siempre idéntico</button>
+      <button class="opcion" data-op="c">Cuando quieres meter CSS</button>
+      <button class="opcion" data-op="d">Nunca, son lo mismo</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> Si en la plantilla ves <code>{% for %}</code> triples y muchos <code>{% if %}</code> anidados, ¿qué sospechas?</p>
+      <button class="opcion" data-op="a">Que el CSS no está bien escrito</button>
+      <button class="opcion" data-op="b">Que el SQL no hizo bien el <code>JOIN</code> o falta pre-agupar en Python</button>
+      <button class="opcion" data-op="c">Que la versión de Jinja2 es vieja</button>
+      <button class="opcion" data-op="d">Nada, eso es normal</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 9 completada!</h2>
+    <p>Dominas <strong>Jinja2</strong>: el <code>{% for %}</code> para pintar filas, el <code>{% if %}</code> para decidir HTML distinto, los <strong>filtros</strong> (<code>|length</code>, <code>|default</code>, <code>|groupby</code>) para dar formato, y los <strong>macros</strong> + <code>{% include %}</code> para reutilizar sin copy-paste. Ahora tu trabajo en el monolito vive justo donde debe vivir: en <code>templates/*.html</code>, dejando que SQL y FastAPI se encarguen del resto.</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🛠️ Herramientas de Programación II · Clase 9 · Plantillas Jinja2</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
