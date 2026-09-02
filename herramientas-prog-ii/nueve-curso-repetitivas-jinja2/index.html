@@ -45,14 +45,14 @@
 <section class="modulo activo" data-modulo="0">
   <div class="hero">
     <h2>🔁 Escribir 1 vez, ejecutar 5.000</h2>
-    <p class="lead">En las clases anteriores construimos la app de <strong>biblioteca</strong>: autores, libros y préstamos. Pero hay un problema que aparece siempre: <strong>hacer lo mismo muchas veces</strong>. Mostrar 200 libros en una tabla, sumar el total de un préstamo, cargar 5.000 registros de golpe. Hoy aprendemos la herramienta que lo resuelve todo: los <strong>bucles</strong>, primero en <strong>Python</strong> y luego dentro de las plantillas <strong>Jinja2</strong>.</p>
+    <p class="lead">En las clases anteriores construimos el <strong>monolito de biblioteca</strong>: una sola app donde <strong>PostgreSQL</strong> (en la nube, Neon) guarda los datos, <strong>FastAPI</strong> calcula y responde, y <strong>Jinja2</strong> dibuja el HTML. Hoy vemos <strong>dónde vive cada estructura repetitiva</strong>: el <code>for</code>/<code>while</code>/acumulador vive en <strong>Python</strong>; el <code>{% for %}</code> solo dibuja en la <strong>plantilla</strong>; y SQL también sabe repetir con <code>COUNT</code>/<code>SUM</code>/<code>GROUP BY</code>.</p>
 
     <div class="hero-terminal">
       <div class="hero-terminal-head">⌘ terminal — dev@app</div>
       <div class="hero-terminal-body">
         <div><span class="prompt">dev@app:~$</span> <span class="cmd">python cargar_catalogo.py</span></div>
         <div class="out">Procesando 5000 libros... 100% en 0.42s ✅</div>
-        <div><span class="prompt">dev@app:~$</span> <span class="cmd"># un solo for hizo el trabajo de 5000 líneas</span></div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd"># el for vive en vistas.py — la plantilla solo dibuja</span></div>
         <div><span class="prompt">dev@app:~$</span> <span class="cursor"></span></div>
       </div>
     </div>
@@ -67,36 +67,92 @@
     <div class="tarjeta">
       <span class="emoji">🎯</span>
       <h3>Objetivo</h3>
-      <p>Dominar <code>for</code> y <code>while</code> en Python, el patrón acumulador, los bucles anidados y <code>{% for %}</code> en Jinja2 con FastAPI.</p>
+      <p>Ubicar <code>for</code>/<code>while</code>/acumuladores en <strong>Python</strong> (FastAPI), <code>{% for %}</code>/<code>loop</code> en <strong>Jinja2</strong>, y <code>COUNT</code>/<code>SUM</code>/<code>GROUP BY</code> en <strong>SQL</strong> — usando la BD real de la app de biblioteca.</p>
     </div>
     <div class="tarjeta">
       <span class="emoji">🦹</span>
       <h3>Los "villanos" de hoy</h3>
-      <p>El copiar-pegar, el bucle infinito y la suma que nunca acumula (porque el acumulador va en el lugar equivocado).</p>
+      <p>El copiar-pegar, el bucle infinito, la suma que no acumula y el cálculo pesado metido a la fuerza dentro de la plantilla HTML.</p>
     </div>
+  </div>
+
+  <h3>🏠 ¿Dónde vive cada estructura? El mapa del monolito</h3>
+  <p class="lead">Antes de escribir un solo <code>for</code>, mira la columna en que vive. Te va a ahorrar errores toda la clase.</p>
+  <div class="mapa-residencia">
+    <div class="mr-head">Capa</div>
+    <div class="mr-head">Vive en…</div>
+    <div class="mr-head">Estructuras que viven allí</div>
+
+    <div class="mr-cell sql">🐘 <strong>SQL</strong></div>
+    <div class="mr-cell">El motor de PostgreSQL en Neon</div>
+    <div class="mr-cell"><code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>GROUP BY</code>, <code>JOIN</code>, <code>ORDER BY</code>. Filtros grandes sobre la tabla <em>sin traer</em> las filas.</div>
+
+    <div class="mr-cell python">🐍 <strong>Python</strong></div>
+    <div class="mr-cell"><code>vistas.py</code> · <code>repositorio.py</code></div>
+    <div class="mr-cell"><code>for</code>, <code>while</code>, <code>range</code>, <code>enumerate</code>, <strong>acumuladores</strong>, <strong>contadores</strong>, bucles anidados, <strong>operaciones masivas</strong> (fila por fila vs. lote).</div>
+
+    <div class="mr-cell jinja">🎨 <strong>Jinja2</strong></div>
+    <div class="mr-cell"><code>templates/*.html</code></div>
+    <div class="mr-cell"><code>{% for %}</code>, <code>{% endfor %}</code>, <code>{% else %}</code>, <code>{% if %}</code>, <code>loop.index</code>, <code>loop.first</code>, <code>loop.last</code>, <code>|length</code>. <strong>Solo dibujan HTML</strong>; no piensan.</div>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Regla de oro del monolito</h4>
+    <p><strong>SQL filtra y agrega grande.</strong> <strong>Python calcula con lógica.</strong> <strong>Jinja2 dibuja.</strong> Si metes un <code>for</code> con lógica pesada dentro de la plantilla, terminas con un HTML imposible de mantener. Si traes 50.000 filas para sumarlas en Python en vez de hacer <code>SUM(anio)</code> en SQL, gastas ancho de banda y memoria para nada.</p>
+  </div>
+
+  <h3>🧪 Prepara tu ambiente</h3>
+  <p>Todos los snippets de esta clase se conectan a la <strong>BD real del proyecto</strong> (Neon, PostgreSQL). Nunca hardcodeamos la contraseña en el código: la leemos del entorno.</p>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>setup — dependencias y DATABASE_URL</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># 1. Instala dependencias (una sola vez)</span>
+pip install fastapi uvicorn jinja2 asyncpg
+
+<span class="com"># 2. Define la URL de conexión en tu terminal (no en el código)</span>
+<span class="com">#    Tu docente te indicará el valor real de DATABASE_URL.</span>
+<span class="com">#    Formato general:</span>
+<span class="com">#    postgresql://USUARIO:CLAVE@HOST.neon.tech/DB?sslmode=require</span>
+export DATABASE_URL=<span class="str">"postgresql://usuario:clave@host.neon.tech/biblioteca?sslmode=require"</span>
+
+<span class="com"># 3. Verifica que Python la lee</span>
+python -c <span class="str">"import os; print(os.environ['DATABASE_URL'][:30] + '…')"</span></code></pre>
+  </div>
+
+  <div class="nota-docente">
+    <h4>🔒 Solo docente — credencial real de Neon</h4>
+    <p>Este curso se conecta a una BD compartida de Neon (PostgreSQL gestionado). La cadena real la entrega el/la docente a cada estudiante por el canal privado del colegio; <strong>nunca debe aparecer en este HTML</strong> ni en commits a GitHub.</p>
+    <p><strong>Cadena real (no compartir públicamente):</strong></p>
+    <p><code>postgresql://neondb_owner:npg_jvMFy4wmNt7c@ep-withered-wind-apq7hmfj-pooler.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require&amp;channel_binding=require</code></p>
+    <p>Tablas del proyecto: <code>autores</code>, <code>libros</code>, <code>autoria</code>. La tabla <code>carga_prueba</code> la crea y borra el taller del módulo 7.</p>
   </div>
 
   <h3>🗺️ Tu ruta de misiones</h3>
   <div class="contenedor-tabla">
     <table class="tabla-compara">
       <thead>
-        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+        <tr><th>Misión</th><th>Tema</th><th>Capa</th><th>Villano</th><th>XP</th></tr>
       </thead>
       <tbody>
-        <tr><td>01 · Repetitivas</td><td style="color:var(--a)">for, range, while</td><td style="color:var(--rosa)">El copiar-pegar</td><td>100 XP</td></tr>
-        <tr><td>02 · Acumuladores</td><td style="color:var(--b)">total += x</td><td style="color:var(--rosa)">La suma que no acumula</td><td>100 XP</td></tr>
-        <tr><td>03 · Anidados</td><td style="color:var(--verde)">Bucles dentro de bucles</td><td style="color:var(--rosa)">El O(n²) descuidado</td><td>100 XP</td></tr>
-        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
-        <tr><td>04 · For en Jinja2</td><td style="color:var(--a)">loop.index, else</td><td style="color:var(--rosa)">La tabla escrita a mano</td><td>100 XP</td></tr>
-        <tr><td>05 · FastAPI</td><td style="color:var(--b)">Listas al contexto</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
-        <tr><td>06 · Taller masivo</td><td style="color:var(--a)">5.000 registros</td><td style="color:var(--rosa)">La carga lenta</td><td>140 XP</td></tr>
+        <tr><td>01 · Repetitivas</td><td style="color:var(--a)">for, range, while</td><td>🐍 Python</td><td style="color:var(--rosa)">El copiar-pegar</td><td>100 XP</td></tr>
+        <tr><td>02 · Acumuladores</td><td style="color:var(--b)">total += x</td><td>🐍 Python</td><td style="color:var(--rosa)">La suma que no acumula</td><td>100 XP</td></tr>
+        <tr><td>03 · Anidados</td><td style="color:var(--verde)">Bucles dentro de bucles</td><td>🐍 Python</td><td style="color:var(--rosa)">El O(n²) descuidado</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · For en Jinja2</td><td style="color:var(--a)">loop.index, else</td><td>🎨 Jinja2</td><td style="color:var(--rosa)">La tabla escrita a mano</td><td>100 XP</td></tr>
+        <tr><td>05 · FastAPI</td><td style="color:var(--b)">Viaje completo del dato</td><td>🐍 + 🎨</td><td style="color:var(--rosa)">Lógica en la plantilla</td><td>100 XP</td></tr>
+        <tr><td>06 · Taller masivo</td><td style="color:var(--a)">500 filas en Neon</td><td>🐍 + 🐘</td><td style="color:var(--rosa)">La carga lenta</td><td>140 XP</td></tr>
       </tbody>
     </table>
   </div>
 
   <div class="caja-pareja">
     <h4>🔄 Actividad en pareja — 2 minutos</h4>
-    <p>Con su compañero/a: piensen en la app de biblioteca. <strong>¿Qué cosas de la app implican repetir algo?</strong> (pista: piensen en la tabla de autores, en buscar un libro, en cargar un catálogo completo).</p>
+    <p>Con su compañero/a: para cada ejemplo cotidiano de la app de biblioteca (tabla de autores, buscador, cargar catálogo, "el más antiguo"), digan <strong>en qué capa</strong> vive: ¿SQL, Python o Jinja2? ¿Por qué?</p>
   </div>
 
   <div class="caja-tip">
@@ -119,23 +175,31 @@
     <p>En Python hay dos formas de repetir código. El <strong><code>for</code></strong> recorre una <em>colección</em> (lista, texto, rango): "por cada elemento, haz esto". El <strong><code>while</code></strong> repite mientras una <em>condición</em> sea verdadera: "mientras no llegues al final, sigue". El 90% de los casos en la app de biblioteca se resuelven con <code>for</code>.</p>
   </div>
 
+  <div class="caja-donde donde-python">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge python">🐍 Python</span></span>
+    </h4>
+    <p>El <code>for</code>, <code>while</code> y <code>range()</code> viven en <strong>Python</strong> — concretamente en <code>vistas.py</code> o <code>repositorio.py</code>. Las plantillas HTML (Jinja2) <strong>no</strong> ven nunca estos bucles; lo que reciben ya es una lista de filas que recorren con su propio <code>{% for %}</code>.</p>
+  </div>
+
   <div class="code-wrap">
     <div class="code-header">
       <div class="code-header-left">
         <div class="code-dots"><span></span><span></span><span></span></div>
-        <span>ejemplo_1.py — for sobre la lista de autores</span>
+        <span>ejemplo_1.py — for sobre las filas que trajo la BD</span>
       </div>
       <button class="copy-btn">📋 Copiar</button>
     </div>
-<pre><code><span class="kw">autores</span> = [
-    <span class="str">"Gabriel García Márquez"</span>,
-    <span class="str">"J. R. R. Tolkien"</span>,
-    <span class="str">"Jorge Luis Borges"</span>,
+<pre><code><span class="com"># asyncpg devuelve filas como objetos Record; [dict(r) for r in rows] las vuelve dicts</span>
+<span class="kw">autores</span> = [
+    {<span class="str">"id"</span>: <span class="num">1</span>, <span class="str">"nombre"</span>: <span class="str">"Gabriel García Márquez"</span>, <span class="str">"pais"</span>: <span class="str">"Colombia"</span>},
+    {<span class="str">"id"</span>: <span class="num">2</span>, <span class="str">"nombre"</span>: <span class="str">"Mario Vargas Llosa"</span>,   <span class="str">"pais"</span>: <span class="str">"Perú"</span>},
+    {<span class="str">"id"</span>: <span class="num">3</span>, <span class="str">"nombre"</span>: <span class="str">"J. R. R. Tolkien"</span>,     <span class="str">"pais"</span>: <span class="str">"Reino Unido"</span>},
 ]
 
 <span class="kw">for</span> autor <span class="kw">in</span> autores:
-    <span class="fn">print</span>(<span class="str">"📖"</span>, autor)
-<span class="com"># Se imprime una línea por cada autor: 3 vueltas, 3 líneas</span></code></pre>
+    <span class="fn">print</span>(<span class="str">"📖"</span>, autor[<span class="str">"id"</span>], autor[<span class="str">"nombre"</span>], <span class="str">"—"</span>, autor[<span class="str">"pais"</span>])
+<span class="com"># 3 vueltas, una por fila de la tabla autores</span></code></pre>
   </div>
 
   <div class="code-wrap">
@@ -146,7 +210,7 @@
       </div>
       <button class="copy-btn">📋 Copiar</button>
     </div>
-<pre><code><span class="com"># Imprimir préstamos del préstamo 1 al 5</span>
+<pre><code><span class="com"># Generar 5 ids de préstamos nuevos, antes de pedirles fecha</span>
 <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="num">6</span>):
     <span class="fn">print</span>(<span class="str">f"Préstamo #{i} creado"</span>)
 
@@ -184,7 +248,7 @@
 
   <div class="caja-pareja">
     <h4>🔄 Actividad en pareja — 3 minutos</h4>
-    <p>Con su compañero/a: escriban en papel un <code>for</code> que salude a cada uno de los 3 autores de la lista de arriba. Luego: <strong>¿ese caso es for o while?</strong> ¿Por qué?</p>
+    <p>Con su compañero/a: escriban en papel un <code>for</code> que imprima los 9 autores de la BD en formato <code>"1. Gabriel García Márquez — Colombia"</code>. ¿Ese <code>for</code> va en el <code>.py</code> o en el <code>.html</code>? ¿Por qué?</p>
   </div>
 
   <div class="quiz" data-quiz="1">
@@ -197,18 +261,25 @@
       <button class="opcion" data-op="d">Infinitas veces</button>
     </div>
     <div class="pregunta" data-correcta="a">
-      <p><strong>2.</strong> ¿Cuál es la mejor elección para recorrer la lista de autores?</p>
-      <button class="opcion" data-op="a">for, porque recorres una colección conocida</button>
-      <button class="opcion" data-op="b">while, porque las listas son largas</button>
-      <button class="opcion" data-op="c">if, porque hay una condición</button>
+      <p><strong>2.</strong> ¿Cuál es la mejor elección para recorrer las filas que devuelve <code>await conn.fetch("SELECT * FROM autores")</code>?</p>
+      <button class="opcion" data-op="a"><code>for</code>, porque recorres una colección de filas</button>
+      <button class="opcion" data-op="b"><code>while</code>, porque las listas son largas</button>
+      <button class="opcion" data-op="c"><code>if</code>, porque hay una condición</button>
       <button class="opcion" data-op="d">Ninguna, hay que copiar y pegar el código</button>
     </div>
     <div class="pregunta" data-correcta="c">
-      <p><strong>3.</strong> ¿Qué causa un bucle infinito con while?</p>
-      <button class="opcion" data-op="a">Usar range() en vez de una lista</button>
-      <button class="opcion" data-op="b">Poner el print antes del for</button>
+      <p><strong>3.</strong> ¿Qué causa un bucle infinito con <code>while</code>?</p>
+      <button class="opcion" data-op="a">Usar <code>range()</code> en vez de una lista</button>
+      <button class="opcion" data-op="b">Poner el <code>print</code> antes del <code>for</code></button>
       <button class="opcion" data-op="c">Que nada dentro del cuerpo cambia la condición</button>
-      <button class="opcion" data-op="d">Escribir for en vez de While</button>
+      <button class="opcion" data-op="d">Escribir <code>for</code> en vez de <code>while</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> ¿Dónde va el <code>for</code> que recorre las filas que devolvió la BD?</p>
+      <button class="opcion" data-op="a">En un <code>.py</code> (vistas / repositorio)</button>
+      <button class="opcion" data-op="b">Dentro del HTML (plantilla)</button>
+      <button class="opcion" data-op="c">En el archivo de CSS</button>
+      <button class="opcion" data-op="d">En el archivo .sql, mezclado con las queries</button>
     </div>
     <div class="resultado-quiz"></div>
   </div>
@@ -229,19 +300,27 @@
     <p>Un <strong>acumulador</strong> es una variable que empieza en un valor inicial (casi siempre <code>0</code>) y va <strong>sumando</strong> algo en cada vuelta del bucle. El <strong>contador</strong> es su primo: suma <strong>1</strong> por cada vez que ocurre algo. Con estos dos patrones respondes preguntas como: ¿cuántos libros hay?, ¿cuántos vencidos?, ¿cuál es el total de multas?</p>
   </div>
 
+  <div class="caja-donde donde-python">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge python">🐍 Python</span><span class="capa-badge sql">🐘 SQL (también)</span></span>
+    </h4>
+    <p>Los acumuladores viven en <strong>Python</strong>, en <code>vistas.py</code>, sobre filas que ya trajo <code>conn.fetch(...)</code>. <strong>Pero SQL también sabe acumular</strong>: <code>COUNT(*)</code>, <code>SUM(anio)</code> y <code>AVG</code> viven en el motor y se ejecutan <em>sin traer las filas</em>. La regla está abajo 👇.</p>
+  </div>
+
   <div class="code-wrap">
     <div class="code-header">
       <div class="code-header-left">
         <div class="code-dots"><span></span><span></span><span></span></div>
-        <span>ejemplo_4.py — contar libros vencidos</span>
+        <span>ejemplo_4.py — contar libros vencidos sobre filas reales</span>
       </div>
       <button class="copy-btn">📋 Copiar</button>
     </div>
-<pre><code><span class="kw">prestamos</span> = [
+<pre><code><span class="com"># Misma forma de los 4 libros reales de la BD del colegio:</span>
+<span class="kw">prestamos</span> = [
     {<span class="str">"titulo"</span>: <span class="str">"Cien años de soledad"</span>, <span class="str">"dias_atraso"</span>: <span class="num">12</span>},
-    {<span class="str">"titulo"</span>: <span class="str">"El Hobbit"</span>, <span class="str">"dias_atraso"</span>: <span class="num">0</span>},
-    {<span class="str">"titulo"</span>: <span class="str">"Rayuela"</span>, <span class="str">"dias_atraso"</span>: <span class="num">5</span>},
-    {<span class="str">"titulo"</span>: <span class="str">"Ficciones"</span>, <span class="str">"dias_atraso"</span>: <span class="num">0</span>},
+    {<span class="str">"titulo"</span>: <span class="str">"El hobbit"</span>,            <span class="str">"dias_atraso"</span>: <span class="num">0</span>},
+    {<span class="str">"titulo"</span>: <span class="str">"Rayuela"</span>,               <span class="str">"dias_atraso"</span>: <span class="num">5</span>},
+    {<span class="str">"titulo"</span>: <span class="str">"Ficciones"</span>,             <span class="str">"dias_atraso"</span>: <span class="num">0</span>},
 ]
 
 <span class="kw">vencidos</span> = <span class="num">0</span>          <span class="com"># 🔢 CONTADOR: arranca en 0</span>
@@ -249,8 +328,8 @@
 
 <span class="kw">for</span> p <span class="kw">in</span> prestamos:
     <span class="kw">if</span> p[<span class="str">"dias_atraso"</span>] &gt; <span class="num">0</span>:
-        vencidos += <span class="num">1</span>                    <span class="com"># +1 por cada caso</span>
-        multa_total += p[<span class="str">"dias_atraso"</span>] * <span class="num">500</span>  <span class="com"># suma la multa de este préstamo</span>
+        vencidos += <span class="num">1</span>                                <span class="com"># +1 por cada caso</span>
+        multa_total += p[<span class="str">"dias_atraso"</span>] * <span class="num">500</span>      <span class="com"># suma la multa de este préstamo</span>
 
 <span class="fn">print</span>(<span class="str">f"Vencidos: {vencidos} — Multa total: ${multa_total:,}"</span>)
 <span class="com"># Vencidos: 2 — Multa total: $8,500</span></code></pre>
@@ -290,7 +369,8 @@
       </div>
       <button class="copy-btn">📋 Copiar</button>
     </div>
-<pre><code><span class="kw">anios</span> = [<span class="num">1967</span>, <span class="num">1937</span>, <span class="num">1963</span>, <span class="num">1944</span>]
+<pre><code><span class="com"># Las 4 fechas reales de la BD del colegio:</span>
+<span class="kw">anios</span> = [<span class="num">1967</span>, <span class="num">1937</span>, <span class="num">1990</span>, <span class="num">1954</span>]
 <span class="kw">suma</span> = <span class="num">0</span>
 <span class="kw">mas_antiguo</span> = anios[<span class="num">0</span>]
 
@@ -300,7 +380,7 @@
         mas_antiguo = anio
 
 <span class="fn">print</span>(<span class="str">f"Promedio: {suma / len(anios):.0f} — Más antiguo: {mas_antiguo}"</span>)
-<span class="com"># Promedio: 1953 — Más antiguo: 1937</span></code></pre>
+<span class="com"># Promedio: 1962 — Más antiguo: 1937</span></code></pre>
   </div>
 
   <div class="caja-tip">
@@ -336,6 +416,13 @@
       <button class="opcion" data-op="c">12</button>
       <button class="opcion" data-op="d">5</button>
     </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> Si quiero el <strong>total</strong> de libros en la BD, ¿dónde se vive mejor?</p>
+      <button class="opcion" data-op="a">En SQL, con <code>SELECT COUNT(*) FROM libros</code></button>
+      <button class="opcion" data-op="b">En la plantilla Jinja2 con <code>|length</code></button>
+      <button class="opcion" data-op="c">En Python con un acumulador dentro de un while</button>
+      <button class="opcion" data-op="d">No se puede saber</button>
+    </div>
     <div class="resultado-quiz"></div>
   </div>
 
@@ -355,27 +442,39 @@
     <p>La relación <strong>autores ↔ libros</strong> que ya conoces de la app es perfecta para bucles anidados: por <strong>cada autor</strong> (bucle externo) recorres <strong>sus libros</strong> (bucle interno). El bucle interno se ejecuta <em>completo</em> en cada vuelta del externo. Si hay 3 autores con 2 libros cada uno, el bucle interno corre 3 × 2 = 6 veces.</p>
   </div>
 
+  <div class="caja-donde donde-python">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge python">🐍 Python</span><span class="capa-badge sql">🐘 SQL (también)</span></span>
+    </h4>
+    <p>El anidamiento profundo vive en <strong>Python</strong>, sobre filas ya traídas. Pero el caso típico "autores con sus libros" lo resuelve SQL con un <code>JOIN</code>: el motor devuelve directamente las filas <em>(autor, libro)</em> emparejadas, y Python solo recorre una lista plana.</p>
+  </div>
+
   <div class="code-wrap">
     <div class="code-header">
       <div class="code-header-left">
         <div class="code-dots"><span></span><span></span><span></span></div>
-        <span>ejemplo_7.py — catálogo: autores y sus libros</span>
+        <span>ejemplo_7.py — catálogo: autores y sus libros (de la BD)</span>
       </div>
       <button class="copy-btn">📋 Copiar</button>
     </div>
-<pre><code><span class="kw">catalogo</span> = [
-    {<span class="str">"nombre"</span>: <span class="str">"Gabriel García Márquez"</span>, <span class="str">"libros"</span>: [<span class="str">"Cien años de soledad"</span>, <span class="str">"Crónica de una muerte anunciada"</span>]},
-    {<span class="str">"nombre"</span>: <span class="str">"J. R. R. Tolkien"</span>, <span class="str">"libros"</span>: [<span class="str">"El Hobbit"</span>, <span class="str">"El Señor de los Anillos"</span>]},
-    {<span class="str">"nombre"</span>: <span class="str">"Jorge Luis Borges"</span>, <span class="str">"libros"</span>: [<span class="str">"Ficciones"</span>]},
+<pre><code><span class="com"># Esto es lo que devuelven los JOIN en la BD real:</span>
+<span class="kw">catalogo</span> = [
+    {<span class="str">"autor"</span>: <span class="str">"Gabriel García Márquez"</span>, <span class="str">"libro"</span>: <span class="str">"Cien años de soledad"</span>},
+    {<span class="str">"autor"</span>: <span class="str">"Gabriel García Márquez"</span>, <span class="str">"libro"</span>: <span class="str">"El amor en los tiempos del cólera"</span>},
+    {<span class="str">"autor"</span>: <span class="str">"Mario Vargas Llosa"</span>,      <span class="str">"libro"</span>: <span class="str">"La ciudad y los perros"</span>},
+    {<span class="str">"autor"</span>: <span class="str">"J. R. R. Tolkien"</span>,        <span class="str">"libro"</span>: <span class="str">"El hobbit"</span>},
+    {<span class="str">"autor"</span>: <span class="str">"J. R. R. Tolkien"</span>,        <span class="str">"libro"</span>: <span class="str">"El Señor de los Anillos"</span>},
 ]
 
 <span class="kw">total_libros</span> = <span class="num">0</span>
+<span class="kw">autor_actual</span> = <span class="kw">None</span>
 
-<span class="kw">for</span> autor <span class="kw">in</span> catalogo:              <span class="com"># bucle EXTERNO: autores</span>
-    <span class="fn">print</span>(<span class="str">f"✍️  {autor['nombre']}:"</span>)
-    <span class="kw">for</span> libro <span class="kw">in</span> autor[<span class="str">"libros"</span>]:   <span class="com"># bucle INTERNO: sus libros</span>
-        <span class="fn">print</span>(<span class="str">f"   📖 {libro}"</span>)
-        total_libros += <span class="num">1</span>
+<span class="kw">for</span> fila <span class="kw">in</span> catalogo:                    <span class="com"># bucle EXTERNO: recorre filas</span>
+    <span class="kw">if</span> fila[<span class="str">"autor"</span>] != autor_actual:        <span class="com"># ¿cambió el autor?</span>
+        autor_actual = fila[<span class="str">"autor"</span>]
+        <span class="fn">print</span>(<span class="str">f"✍️  {autor_actual}:"</span>)
+    <span class="fn">print</span>(<span class="str">f"   📖 {fila['libro']}"</span>)
+    total_libros += <span class="num">1</span>
 
 <span class="fn">print</span>(<span class="str">f"Total del catálogo: {total_libros} libros"</span>)</code></pre>
   </div>
@@ -384,15 +483,22 @@
     <div class="code-header">
       <div class="code-header-left">
         <div class="code-dots"><span></span><span></span><span></span></div>
-        <span>ejemplo_8.py — acumulador POR AUTOR (se reinicia en cada vuelta)</span>
+        <span>ejemplo_8.py — conteo POR AUTOR (se reinicia al cambiar)</span>
       </div>
       <button class="copy-btn">📋 Copiar</button>
     </div>
-<pre><code><span class="kw">for</span> autor <span class="kw">in</span> catalogo:
-    <span class="kw">cantidad</span> = <span class="num">0</span>            <span class="com"># ⚠️ aquí sí va DENTRO: se reinicia por autor</span>
-    <span class="kw">for</span> libro <span class="kw">in</span> autor[<span class="str">"libros"</span>]:
-        cantidad += <span class="num">1</span>
-    <span class="fn">print</span>(<span class="str">f"{autor['nombre']}: {cantidad} libro(s)"</span>)</code></pre>
+<pre><code><span class="kw">autor_actual</span> = <span class="kw">None</span>
+<span class="kw">cantidad</span> = <span class="num">0</span>
+
+<span class="kw">for</span> fila <span class="kw">in</span> catalogo:
+    <span class="kw">if</span> fila[<span class="str">"autor"</span>] != autor_actual:
+        <span class="kw">if</span> autor_actual <span class="kw">is not None</span>:
+            <span class="fn">print</span>(<span class="str">f"{autor_actual}: {cantidad} libro(s)"</span>)
+        autor_actual = fila[<span class="str">"autor"</span>]
+        cantidad = <span class="num">0</span>     <span class="com"># ⚠️ se reinicia al cambiar de autor</span>
+    cantidad += <span class="num">1</span>
+
+<span class="fn">print</span>(<span class="str">f"{autor_actual}: {cantidad} libro(s)"</span>)   <span class="com"># último autor</span></code></pre>
   </div>
 
   <div class="caja-importante">
@@ -408,26 +514,31 @@
       </div>
       <button class="copy-btn">📋 Copiar</button>
     </div>
-<pre><code><span class="kw">total_global</span> = <span class="num">0</span>                    <span class="com"># nivel 1: global → antes de todo</span>
+<pre><code><span class="kw">total_global</span> = <span class="num">0</span>                <span class="com"># nivel 1: global → antes de todo</span>
+<span class="kw">autor_actual</span> = <span class="kw">None</span>
+<span class="kw">subtotal</span> = <span class="num">0</span>                    <span class="com"># nivel 2: por autor → se reinicia al cambiar</span>
 
-<span class="kw">for</span> autor <span class="kw">in</span> catalogo:
-    <span class="kw">subtotal</span> = <span class="num">0</span>                    <span class="com"># nivel 2: por autor → entre los bucles</span>
-    <span class="kw">for</span> libro <span class="kw">in</span> autor[<span class="str">"libros"</span>]:
-        subtotal += <span class="num">1</span>
-    total_global += subtotal
-    <span class="fn">print</span>(<span class="str">f"{autor['nombre']}: {subtotal}"</span>)
+<span class="kw">for</span> fila <span class="kw">in</span> catalogo:
+    <span class="kw">if</span> fila[<span class="str">"autor"</span>] != autor_actual:
+        <span class="kw">if</span> autor_actual <span class="kw">is not None</span>:
+            <span class="fn">print</span>(<span class="str">f"{autor_actual}: {subtotal}"</span>)
+            total_global += subtotal
+        autor_actual = fila[<span class="str">"autor"</span>]
+        subtotal = <span class="num">0</span>
+    subtotal += <span class="num">1</span>
 
-<span class="fn">print</span>(<span class="str">f"GRAN TOTAL: {total_global}"</span>)</code></pre>
+<span class="fn">print</span>(<span class="str">f"{autor_actual}: {subtotal}"</span>)   <span class="com"># último grupo</span>
+<span class="fn">print</span>(<span class="str">f"GRAN TOTAL: {total_global + subtotal}"</span>)</code></pre>
   </div>
 
   <div class="caja-tip">
     <h4>💡 Cuidado con la multiplicación de vueltas</h4>
-    <p>Si el bucle externo tiene 1.000 vueltas y el interno 1.000, el cuerpo interno corre <strong>1.000.000 de veces</strong>. Eso se llama crecimiento cuadrático y puede congelar tu app. Regla práctica: el bucle interno debe hacer <em>trabajo pequeño</em>, y si puedes evitar el anidamiento con una buena estructura de datos, hazlo.</p>
+    <p>Si el bucle externo tiene 1.000 vueltas y el interno 1.000, el cuerpo interno corre <strong>1.000.000 de veces</strong>. Eso se llama crecimiento cuadrático y puede congelar tu app. Regla práctica: el bucle interno debe hacer <em>trabajo pequeño</em>, y si puedes evitar el anidamiento con una buena estructura de datos (o resolviéndolo en SQL con <code>GROUP BY</code>), hazlo.</p>
   </div>
 
   <div class="caja-pareja">
     <h4>🔄 Actividad en pareja — 5 minutos</h4>
-    <p>Con su compañero/a: agreguen mentalmente un tercer nivel — por cada <strong>libro</strong>, recorrer sus <strong>categorías</strong> (ej. "realismo mágico", "novela"). ¿Dónde crearían un acumulador que cuente cuántas categorías tiene el catálogo completo? ¿Y uno que cuente las categorías por libro?</p>
+    <p>Con su compañero/a: para la app de biblioteca, ¿qué pregunta <strong>no</strong> se puede responder con un solo SQL y necesita sí o sí un bucle en Python? Pista: piensen en reglas raras (ej. "total de multas, pero solo de quienes devolvieron después de una semana y tienen menos de 3 libros").</p>
   </div>
 
   <div class="quiz" data-quiz="3">
@@ -452,6 +563,13 @@
       <button class="opcion" data-op="b">El cuerpo interno corre 2.000 veces</button>
       <button class="opcion" data-op="c">El cuerpo interno corre 1.000.000 de veces</button>
       <button class="opcion" data-op="d">Python lanza un error</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> ¿Para qué relación de la BD el SQL es mejor que un bucle anidado en Python?</p>
+      <button class="opcion" data-op="a">Para emparejar autores con sus libros (<code>JOIN autoria</code>)</button>
+      <button class="opcion" data-op="b">Para imprimir "Hola mundo" por cada autor</button>
+      <button class="opcion" data-op="c">Para generar ids aleatorios</button>
+      <button class="opcion" data-op="d">SQL no sirve para eso</button>
     </div>
     <div class="resultado-quiz"></div>
   </div>
@@ -495,6 +613,18 @@
   <div class="caja-concepto">
     <h3>🧠 La idea central</h3>
     <p>Jinja2 tiene su propio <code>for</code>, que vive <strong>dentro del HTML</strong> de la plantilla. Recorre la lista que le llega desde FastAPI y genera un bloque HTML por cada elemento. Es la pieza que convierte <code>{"autores": [...]}</code> en una tabla de 9 filas... o de 9.000.</p>
+  </div>
+
+  <div class="caja-donde donde-jinja">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge jinja">🎨 Jinja2</span></span>
+    </h4>
+    <p>El <code>{% for %}</code> vive <strong>en la plantilla</strong> (<code>templates/*.html</code>). <strong>Solo dibuja HTML</strong>: no calcula totales, no consulta la BD, no toma decisiones de negocio. Si necesitas un total, calcúlalo en Python y pásalo por <code>context</code>.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: meter lógica en la plantilla</h4>
+    <p>La plantilla puede sumar con <code>|length</code> y filtrar con <code>{% if %}</code>, pero si ves un <code>{% for %}</code> anidado <em>complejo</em> dentro de otro o un <code>{% if %}</code> enorme con lógica de negocio… eso no pinta. La plantilla se está haciendo cargo del cálculo, y el día que cambies una regla tendrás que editar HTML. <strong>Python calcula, Jinja2 dibuja.</strong></p>
   </div>
 
   <div class="code-wrap">
@@ -610,40 +740,84 @@
 
 <!-- ==================== MÓDULO 6 ==================== -->
 <section class="modulo" data-modulo="6">
-  <h2>📨 FastAPI + Jinja2: del bucle en Python al bucle en HTML</h2>
-  <p class="meta-modulo">⏱️ 35 minutos · "El acumulador corre en el servidor, la tabla se dibuja en la plantilla"</p>
+  <h2>📨 El viaje completo de un dato</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Postgres (Neon) → Python (FastAPI) → HTML (Jinja2)"</p>
 
   <div class="caja-concepto">
     <h3>🧠 La idea central</h3>
-    <p>La ruta de FastAPI recibe los datos, usa <strong>acumuladores en Python</strong> para calcular resúmenes (total, promedios, el más antiguo), y le pasa <strong>la lista</strong> a la plantilla, que la recorre con <code>{% for %}</code>. División perfecta: <strong>Python calcula, Jinja2 dibuja</strong>.</p>
+    <p>En el monolito de biblioteca, cada vez que pides una página pasa esto: <strong>(1)</strong> la ruta de FastAPI ejecuta un <code>SELECT</code> en PostgreSQL (Neon), <strong>(2)</strong> las filas llegan como lista de dicts a <code>vistas.py</code>, <strong>(3)</strong> Python recorre la lista con un <code>for</code> y calcula acumuladores, <strong>(4)</strong> FastAPI pasa todo a la plantilla, <strong>(5)</strong> Jinja2 dibuja con un <code>{% for %}</code>. Cada capa hace solo su parte.</p>
   </div>
+
+  <div class="caja-donde donde-python">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge sql">🐘 SQL</span><span class="capa-badge python">🐍 Python</span><span class="capa-badge jinja">🎨 Jinja2</span></span>
+    </h4>
+    <p>Tres capas, un solo viaje:</p>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li><strong>SQL</strong> filtra y trae las filas correctas.</li>
+      <li><strong>Python</strong> acumula, calcula máximos y promedios sobre esas filas.</li>
+      <li><strong>Jinja2</strong> solo dibuja; <strong>nunca</strong> recalcula.</li>
+    </ul>
+  </div>
+
+  <pre class="ascii-diagrama" style="background:rgba(20,184,166,0.05); padding:0.9rem 1.1rem; border-radius:8px; border:1px solid var(--tarjeta-borde); font-family:ui-monospace,monospace; font-size:0.86rem; line-height:1.5; overflow-x:auto;">
+🐘 Neon (PostgreSQL)            🐍 FastAPI (Python)               🎨 Jinja2 (HTML)
+─────────────────               ─────────────────────              ─────────────────
+SELECT id, titulo, anio    ───▶  rows = await conn.fetch(...)   ───▶  {% for libro in libros %}
+FROM libros                       libros = [dict(r) for r in rows]        &lt;li&gt;{{ loop.index }}.
+ORDER BY anio                                                            {{ libro.titulo }}&lt;/li&gt;
+                                                                ───▶  {% endfor %}
+                              # 🧮 acumuladores (Python)
+                              total = 0; suma_anios = 0
+                              for libro in libros:
+                                  total += 1
+                                  suma_anios += libro["anio"]
+                              context = {"libros": ..., "total": total}
+  </pre>
 
   <div class="code-wrap">
     <div class="code-header">
       <div class="code-header-left">
         <div class="code-dots"><span></span><span></span><span></span></div>
-        <span>vistas.py — ruta con lista + resumen acumulado</span>
+        <span>vistas.py — ruta al resumen del catálogo (datos reales de Neon)</span>
       </div>
       <button class="copy-btn">📋 Copiar</button>
     </div>
-<pre><code><span class="kw">@router.get</span>(<span class="str">"/libros/resumen"</span>)
+<pre><code><span class="kw">import</span> os
+<span class="kw">from</span> fastapi <span class="kw">import</span> APIRouter, Request
+<span class="kw">from</span> fastapi.templating <span class="kw">import</span> Jinja2Templates
+<span class="kw">import</span> asyncpg
+
+router = APIRouter(tags=[<span class="str">"vistas"</span>])
+templates = Jinja2Templates(directory=<span class="str">"templates"</span>)
+
+<span class="kw">async def</span> <span class="fn">_conexion</span>():
+    <span class="com"># La URL viene del entorno (export DATABASE_URL=...). Nunca en el código.</span>
+    <span class="kw">return await</span> asyncpg.connect(os.environ[<span class="str">"DATABASE_URL"</span>])
+
+<span class="kw">@router.get</span>(<span class="str">"/libros/resumen"</span>)
 <span class="kw">async def</span> <span class="fn">resumen_libros</span>(request: Request):
-    libros = [   <span class="com"># en la app real: await obtener_libros(conn)</span>
-        {<span class="str">"titulo"</span>: <span class="str">"Cien años de soledad"</span>, <span class="str">"anio"</span>: <span class="num">1967</span>},
-        {<span class="str">"titulo"</span>: <span class="str">"El Hobbit"</span>, <span class="str">"anio"</span>: <span class="num">1937</span>},
-        {<span class="str">"titulo"</span>: <span class="str">"Ficciones"</span>, <span class="str">"anio"</span>: <span class="num">1944</span>},
-    ]
+    conn = <span class="kw">await</span> _conexion()
+    <span class="kw">try</span>:
+        <span class="com"># 🐘 SQL: traer las filas que la BD ya sabe filtrar y ordenar</span>
+        rows = <span class="kw">await</span> conn.fetch(
+            <span class="str">"SELECT titulo, anio FROM libros ORDER BY anio"</span>
+        )
+        libros = [dict(r) <span class="kw">for</span> r <span class="kw">in</span> rows]
 
-    <span class="com"># 🧮 acumuladores calculados en Python (backend)</span>
-    <span class="kw">total</span> = <span class="num">0</span>
-    <span class="kw">suma_anios</span> = <span class="num">0</span>
-    <span class="kw">mas_antiguo</span> = <span class="kw">None</span>
-    <span class="kw">for</span> libro <span class="kw">in</span> libros:
-        total += <span class="num">1</span>
-        suma_anios += libro[<span class="str">"anio"</span>]
-        <span class="kw">if</span> mas_antiguo <span class="kw">is None</span> <span class="kw">or</span> libro[<span class="str">"anio"</span>] &lt; mas_antiguo[<span class="str">"anio"</span>]:
-            mas_antiguo = libro
+        <span class="com"># 🐍 Python: acumuladores sobre esas filas</span>
+        <span class="kw">total</span> = <span class="num">0</span>
+        <span class="kw">suma_anios</span> = <span class="num">0</span>
+        <span class="kw">mas_antiguo</span> = <span class="kw">None</span>
+        <span class="kw">for</span> libro <span class="kw">in</span> libros:
+            total += <span class="num">1</span>
+            suma_anios += libro[<span class="str">"anio"</span>]
+            <span class="kw">if</span> mas_antiguo <span class="kw">is None</span> <span class="kw">or</span> libro[<span class="str">"anio"</span>] &lt; mas_antiguo[<span class="str">"anio"</span>]:
+                mas_antiguo = libro
+    <span class="kw">finally</span>:
+        <span class="kw">await</span> conn.close()
 
+    <span class="com"># TemplateResponse: Python le pasa a Jinja2 lo calculado + la lista</span>
     <span class="kw">return</span> templates.TemplateResponse(
         request=request,
         name=<span class="str">"resumen.html"</span>,
@@ -660,7 +834,7 @@
     <div class="code-header">
       <div class="code-header-left">
         <div class="code-dots"><span></span><span></span><span></span></div>
-        <span>resumen.html — la plantilla dibuja lo calculado</span>
+        <span>templates/resumen.html — la plantilla solo dibuja</span>
       </div>
       <button class="copy-btn">📋 Copiar</button>
     </div>
@@ -712,6 +886,13 @@
       <button class="opcion" data-op="c">Nada (cadena vacía) — por eso se cuida con {% if %}</button>
       <button class="opcion" data-op="d">"None"</button>
     </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> ¿En qué capa se ejecuta el <code>SELECT</code> <code>"SELECT titulo, anio FROM libros ORDER BY anio"</code>?</p>
+      <button class="opcion" data-op="a">En SQL (PostgreSQL / Neon)</button>
+      <button class="opcion" data-op="b">En Python</button>
+      <button class="opcion" data-op="c">En Jinja2</button>
+      <button class="opcion" data-op="d">En el navegador</button>
+    </div>
     <div class="resultado-quiz"></div>
   </div>
 
@@ -723,79 +904,134 @@
 
 <!-- ==================== MÓDULO 7 ==================== -->
 <section class="modulo" data-modulo="7">
-  <h2>🛠️ Taller: simulación de operaciones masivas</h2>
-  <p class="meta-modulo">⏱️ 40 minutos · "5.000 libros, un solo bucle"</p>
+  <h2>🛠️ Taller: operaciones masivas contra Neon</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "500 filas, dos estrategias: fila por fila vs. lote"</p>
 
   <div class="challenge">
     <div class="challenge-head">
       <span class="challenge-badge">🛠️ Taller final</span>
-      <span class="challenge-title">Carga masiva del catálogo</span>
+      <span class="challenge-title">Carga masiva en la BD real</span>
     </div>
-    <p>El colegio recibió un catálogo digital con <strong>5.000 libros</strong>. Tu script debe procesarlos todos, contar éxitos y errores, medir cuánto tarda y generar un reporte. Es el trabajo real de un desarrollador: <em>operaciones masivas</em> con bucles + acumuladores.</p>
+    <p>Vas a insertar <strong>500 filas</strong> en una tabla de prueba de la BD real del proyecto (<code>carga_prueba</code>). Lo vas a hacer de <strong>dos formas</strong>: fila por fila con un <code>for</code> en Python, y en <strong>lote</strong> con <code>executemany</code>. Vas a medir el tiempo de cada estrategia. Y al final, <strong>borras la tabla</strong> para dejar la BD como la encontraste.</p>
+  </div>
+
+  <div class="caja-donde donde-python">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge python">🐍 Python</span><span class="capa-badge sql">🐘 SQL</span></span>
+    </h4>
+    <p>La carga masiva vive en <strong>Python</strong> (el bucle <code>for</code> + <code>executemany</code>), hablando con <strong>SQL</strong> de Neon (<code>CREATE TABLE</code>, <code>INSERT</code>, <code>SELECT COUNT</code>, <code>DROP TABLE</code>). Jinja2 no participa: este taller es <strong>de servidor</strong>.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>masivo.py — preparar 500 libros</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># 500 libros falsos (no toca la BD, solo construye la lista en memoria)</span>
+<span class="kw">libros</span> = [
+    (i, <span class="str">f"Libro de prueba #{i}"</span>, <span class="num">1900</span> + (i % <span class="num">126</span>))
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="num">501</span>)
+]
+<span class="fn">print</span>(<span class="str">f"Lista preparada: {len(libros)} libros"</span>)</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>masivo.py — Reto 1: crear tabla de prueba en Neon</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">import</span> os
+<span class="kw">import</span> asyncpg
+
+<span class="kw">conn</span> = <span class="kw">await</span> asyncpg.connect(os.environ[<span class="str">"DATABASE_URL"</span>])
+
+<span class="kw">await</span> conn.execute(<span class="str">"""
+    DROP TABLE IF EXISTS carga_prueba;
+    CREATE TABLE carga_prueba (
+        id     INTEGER PRIMARY KEY,
+        titulo TEXT    NOT NULL,
+        anio   INTEGER NOT NULL
+    );
+"""</span>)
+<span class="fn">print</span>(<span class="str">"Tabla carga_prueba lista ✅"</span>)
+<span class="kw">await</span> conn.close()</code></pre>
   </div>
 
   <div class="caja-concepto">
-    <h3>🧠 Reto 1 — Generar los 5.000 registros</h3>
-    <p>Crea un script <code>masivo.py</code> que genere la lista de libros con un <code>for</code> y <code>range()</code>. Pista: usa <code>f"Libro #{i}"</code> para crear títulos distintos y simula el año con un cálculo simple.</p>
-  </div>
-
-  <div class="caja-tip">
-    <h4>💡 Solución esperada — Reto 1</h4>
-    <pre><code>libros = []
-for i in range(1, 5001):
-    libros.append({"titulo": f"Libro #{i}", "anio": 1900 + (i % 126)})
-print(len(libros), "libros generados")</code></pre>
-  </div>
-
-  <div class="caja-concepto">
-    <h3>🧠 Reto 2 — Acumuladores de control</h3>
-    <p>Recorre los 5.000 libros y calcula con acumuladores: cuántos son de antes de 1950 (contador), cuántos son "modernos" (2000 en adelante), y el año promedio. Imprime un reporte.</p>
+    <h3>🧠 Reto 2 — Fila por fila con un <code>for</code> en Python</h3>
+    <p>Recorre los 500 libros con un <code>for</code> e inserta cada uno con <code>conn.execute(...)</code>. Mide el tiempo total con <code>time.perf_counter()</code> alrededor del bucle. Acumula cuántos tardaron más de 50 ms (serán la mayoría, por el viaje de red hasta Neon).</p>
   </div>
 
   <div class="caja-tip">
     <h4>💡 Solución esperada — Reto 2</h4>
-    <pre><code>antiguos = 0
-modernos = 0
-suma_anios = 0
-for libro in libros:
-    suma_anios += libro["anio"]
-    if libro["anio"] &lt; 1950:
-        antiguos += 1
-    elif libro["anio"] &gt;= 2000:
-        modernos += 1
-print(f"Antiguos: {antiguos} · Modernos: {modernos} · Promedio: {suma_anios / len(libros):.1f}")</code></pre>
+    <pre><code>import time
+
+conn = await asyncpg.connect(os.environ["DATABASE_URL"])
+try:
+    inicio = time.perf_counter()
+    lentos = 0
+    for id_, titulo, anio in libros:
+        t0 = time.perf_counter()
+        await conn.execute(
+            "INSERT INTO carga_prueba (id, titulo, anio) VALUES ($1, $2, $3)",
+            id_, titulo, anio,
+        )
+        if time.perf_counter() - t0 &gt; 0.050:
+            lentos += 1
+    total = time.perf_counter() - inicio
+    print(f"Fila por fila: {total:.2f}s ({lentos}/500 viajes lentos &gt; 50ms)")
+finally:
+    await conn.close()</code></pre>
   </div>
 
   <div class="caja-concepto">
-    <h3>🧠 Reto 3 — Medir el tiempo de la carga masiva</h3>
-    <p>Simula la inserción de los 5.000 libros a la base de datos: por cada uno, acumula el tiempo de "inserción" (usa <code>time.perf_counter()</code> alrededor de la operación) y cuenta insertados vs. fallidos (simula fallos cuando el id es múltiplo de 250). Al final imprime: total, exitosos, fallidos, tiempo total y promedio por fila. Compara con tu pareja: ¿sus números dan igual? ¿Por qué sí/no?</p>
+    <h3>🧠 Reto 3 — Lote con <code>executemany</code></h3>
+    <p>Ahora vacía la tabla (<code>TRUNCATE carga_prueba</code>) y vuelve a cargar los 500 libros pero con <code>conn.executemany(...)</code>: <strong>un solo viaje</strong> a Neon con los 500 registros empaquetados. Mide el tiempo y compara.</p>
   </div>
 
   <div class="caja-tip">
     <h4>💡 Solución esperada — Reto 3</h4>
-    <pre><code>import time
+    <pre><code>conn = await asyncpg.connect(os.environ["DATABASE_URL"])
+try:
+    await conn.execute("TRUNCATE carga_prueba;")
 
-exitosos = 0
-fallidos = 0
-tiempo_total = 0.0
-
-for i, libro in enumerate(libros, start=1):
     inicio = time.perf_counter()
-    # aqui iria: await insertar_libro(conn, libro)
-    fallo = (i % 250 == 0)      # simulamos un error cada 250
-    if fallo:
-        fallidos += 1
-    else:
-        exitosos += 1
-    tiempo_total += time.perf_counter() - inicio
-
-print(f"Exitosos: {exitosos} · Fallidos: {fallidos}")
-print(f"Tiempo total: {tiempo_total:.3f}s · Promedio: {tiempo_total / len(libros) * 1000:.4f} ms/libro")</code></pre>
+    await conn.executemany(
+        "INSERT INTO carga_prueba (id, titulo, anio) VALUES ($1, $2, $3)",
+        libros,                       # toda la lista de tuplas en un solo viaje
+    )
+    total = time.perf_counter() - inicio
+    print(f"Lote (executemany): {total:.2f}s")
+finally:
+    await conn.close()</code></pre>
   </div>
 
   <div class="caja-importante">
-    <h4>🦹 Reflexión final: fila por fila vs. lote</h4>
-    <p>El script de arriba inserta <strong>una fila por vuelta</strong>: 5.000 viajes a la base de datos. Las apps reales usan inserción <strong>en lote</strong> (una sola operación con los 5.000): decenas de veces más rápido. El bucle que escribiste es la versión didáctica — y también la base para entender <em>por qué</em> el lote es más rápido: menos vueltas, menos viajes. Cuando llegues al proyecto integrador, este conocimiento te hará elegir mejor.</p>
+    <h4>🦹 Reflexión: fila por fila vs. lote</h4>
+    <p>Fila por fila: <strong>500 viajes</strong> a Neon (cada uno con su ida y vuelta por la red). Lote: <strong>1 solo viaje</strong> con las 500 filas empaquetadas. La diferencia es la misma que mandar 500 cartas de a una vs. meter las 500 en un sobre y enviarlo una vez. <strong>El bucle fila-por-fila es didáctico</strong> (ves qué hace cada INSERT); el lote es producción. Cuando lo veas en una app real, sabrás por qué importa.</p>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>🧠 Reto 4 — Verificar y dejar la BD limpia</h3>
+    <p>Cuenta cuántos registros quedaron en la tabla con <code>SELECT COUNT(*) FROM carga_prueba</code> (esperas 500). Luego <strong>borra la tabla</strong> con <code>DROP TABLE carga_prueba</code>: la BD compartida del colegio debe quedar igual a como la encontraste.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Solución esperada — Reto 4</h4>
+    <pre><code>conn = await asyncpg.connect(os.environ["DATABASE_URL"])
+try:
+    n = await conn.fetchval("SELECT COUNT(*) FROM carga_prueba")
+    print(f"Total en carga_prueba: {n} (esperado 500)")
+    await conn.execute("DROP TABLE carga_prueba;")
+    print("Tabla eliminada ✅ — la BD del colegio queda limpia.")
+finally:
+    await conn.close()</code></pre>
   </div>
 
   <div class="caja-pareja">
@@ -805,39 +1041,46 @@ print(f"Tiempo total: {tiempo_total:.3f}s · Promedio: {tiempo_total / len(libro
       <li>¿Cuándo usarías <code>for</code> y cuándo <code>while</code> en la app de biblioteca? Un ejemplo de cada uno.</li>
       <li>¿Dónde se declara el acumulador para calcular el total global y dónde para un subtotal por autor?</li>
       <li>En Jinja2, ¿qué imprime <code>loop.index</code> y cuándo se ejecuta el <code>{% else %}</code>?</li>
-      <li>¿Por qué el acumulador <code>tiempo_total</code> del Reto 3 va fuera del <code>for</code> y qué pasaría si estuviera dentro?</li>
+      <li>¿Por qué <code>executemany</code> es más rápido que el bucle fila-por-fila? <em>Pista: red, no CPU.</em></li>
     </ol>
   </div>
 
   <div class="quiz" data-quiz="7">
     <h3>🎯 Quiz Final</h3>
     <div class="pregunta" data-correcta="b">
-      <p><strong>1.</strong> En la simulación masiva, ¿por qué usar <code>time.perf_counter()</code> por vuelta y sumar al final?</p>
-      <button class="opcion" data-op="a">Para que el script se vea más profesional</button>
-      <button class="opcion" data-op="b">Porque cada operación tiene su propio tiempo y el acumulador los suma todos</button>
-      <button class="opcion" data-op="c">Porque Python no permite medir el tiempo total de otra forma</button>
-      <button class="opcion" data-op="d">Para detectar errores de sintaxis</button>
-    </div>
-    <div class="pregunta" data-correcta="a">
-      <p><strong>2.</strong> Con 5.000 libros y fallo cada 250 insertados (i % 250 == 0), ¿cuántos fallidos hay?</p>
-      <button class="opcion" data-op="a">20</button>
-      <button class="opcion" data-op="b">25</button>
-      <button class="opcion" data-op="c">250</button>
-      <button class="opcion" data-op="d">0</button>
+      <p><strong>1.</strong> ¿Por qué <code>executemany</code> es mucho más rápido que un bucle con <code>conn.execute</code> por fila?</p>
+      <button class="opcion" data-op="a">Porque Python se vuelve más veloz</button>
+      <button class="opcion" data-op="b">Porque hace <strong>un solo viaje</strong> a la BD con todas las filas, en vez de 500 viajes</button>
+      <button class="opcion" data-op="c">Porque evita el <code>for</code></button>
+      <button class="opcion" data-op="d">No es más rápido, es lo mismo</button>
     </div>
     <div class="pregunta" data-correcta="c">
-      <p><strong>3.</strong> ¿Qué combinación define el patrón "operación masiva"?</p>
-      <button class="opcion" data-op="a">Un if + una variable global</button>
-      <button class="opcion" data-op="b">Una plantilla Jinja2 + htmx</button>
-      <button class="opcion" data-op="c">Un for + acumuladores (éxitos, fallos, tiempo) + reporte final</button>
-      <button class="opcion" data-op="d">Una lista sin recorrido</button>
+      <p><strong>2.</strong> ¿Dónde vive el bucle <code>for</code> que recorre los 500 libros para enviarlos?</p>
+      <button class="opcion" data-op="a">En Jinja2, dentro de una plantilla</button>
+      <button class="opcion" data-op="b">En SQL, dentro del <code>INSERT</code></button>
+      <button class="opcion" data-op="c">En Python (<code>vistas.py</code> o un script), llamando a <code>conn.executemany</code></button>
+      <button class="opcion" data-op="d">En el navegador</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuál es la <strong>primera</strong> orden SQL del taller antes de empezar a insertar?</p>
+      <button class="opcion" data-op="a"><code>CREATE TABLE carga_prueba</code> (con <code>DROP TABLE IF EXISTS</code> por si existe)</button>
+      <button class="opcion" data-op="b"><code>SELECT * FROM libros</code></button>
+      <button class="opcion" data-op="c"><code>DELETE FROM carga_prueba</code></button>
+      <button class="opcion" data-op="d">No hace falta crear nada</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> Al final del taller, ¿qué orden SQL <strong>obligatoria</strong> ejecuta el Reto 4?</p>
+      <button class="opcion" data-op="a"><code>SELECT * FROM carga_prueba</code></button>
+      <button class="opcion" data-op="b"><code>DROP TABLE carga_prueba</code></button>
+      <button class="opcion" data-op="c"><code>UPDATE carga_prueba SET anio = 2000</code></button>
+      <button class="opcion" data-op="d">Nada, la tabla se borra sola</button>
     </div>
     <div class="resultado-quiz"></div>
   </div>
 
   <div class="cierre">
     <h2>🎉 ¡Clase 9 completada!</h2>
-    <p>Dominas los bucles donde viven de verdad: en <strong>Python</strong> (acumuladores, anidados, operaciones masivas) y en <strong>Jinja2</strong> (el <code>{% for %}</code> que dibuja tablas dinámicas). En la próxima clase la página se vuelve <strong>interactiva</strong> con htmx y Bootstrap.</p>
+    <p>Dominas los bucles donde viven de verdad en el monolito: <strong>SQL</strong> (Neon) con <code>COUNT</code>/<code>SUM</code>/<code>JOIN</code>, <strong>Python</strong> (FastAPI) con <code>for</code>, acumuladores, anidados y <code>executemany</code>, y <strong>Jinja2</strong> (plantilla) con <code>{% for %}</code> que solo dibuja. En la próxima clase la página se vuelve <strong>interactiva</strong> con htmx y Bootstrap.</p>
     <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
   </div>
 </section>

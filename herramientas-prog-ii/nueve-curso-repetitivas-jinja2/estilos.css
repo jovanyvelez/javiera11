@@ -377,6 +377,88 @@ main { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
 
 .caja-concepto { border-color: var(--b-claro); background: linear-gradient(135deg, rgba(168, 85, 247, 0.10), transparent); }
 
+/* ---------- CAJA "DÓNDE VIVE" (capa del monolito) ---------- */
+.caja-donde {
+  position: relative;
+  padding: 1.1rem 1.2rem 1.1rem 1.4rem;
+  border-left: 4px solid var(--b);
+  border-radius: var(--radio-chico);
+  background: rgba(20, 184, 166, 0.06);
+  margin: 1.2rem 0;
+  font-size: 0.96rem;
+}
+.caja-donde h4 {
+  margin: 0 0 0.45rem 0;
+  font-size: 1.02rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.caja-donde p { margin: 0.35rem 0; }
+.capa-badges {
+  display: inline-flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-left: 0.4rem;
+}
+.capa-badge {
+  display: inline-block;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #fff;
+}
+.capa-badge.sql     { background: #2563eb; }
+.capa-badge.python  { background: var(--a); color: #042b25; }
+.capa-badge.jinja   { background: var(--b); }
+
+.caja-donde.donde-sql    { border-left-color: #2563eb; background: rgba(37, 99, 235, 0.08); }
+.caja-donde.donde-python { border-left-color: var(--a); background: rgba(20, 184, 166, 0.08); }
+.caja-donde.donde-jinja  { border-left-color: var(--b); background: rgba(139, 92, 246, 0.08); }
+
+/* ---------- NOTA DOCENTE (información sensible solo para el profesor) ---------- */
+.nota-docente {
+  border: 1px dashed var(--naranja);
+  border-left: 4px solid var(--naranja);
+  background: rgba(249, 115, 22, 0.07);
+  border-radius: var(--radio-chico);
+  padding: 0.9rem 1.1rem;
+  margin: 1.2rem 0;
+  font-size: 0.92rem;
+}
+.nota-docente h4 { margin: 0 0 0.4rem 0; color: var(--naranja); font-size: 1rem; }
+.nota-docente code { word-break: break-all; }
+.nota-docente p { margin: 0.35rem 0; }
+
+/* ---------- MAPA DE RESIDENCIA (tabla en M0) ---------- */
+.mapa-residencia {
+  display: grid;
+  grid-template-columns: 1.2fr 1.4fr 2fr;
+  gap: 0.4rem;
+  margin: 1rem 0 1.4rem 0;
+  font-size: 0.94rem;
+}
+.mapa-residencia .mr-head,
+.mapa-residencia .mr-row {
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--radio-chico);
+  border: 1px solid var(--tarjeta-borde);
+  background: var(--tarjeta-alt);
+}
+.mapa-residencia .mr-head { font-weight: 700; background: var(--tarjeta); }
+.mapa-residencia .mr-cell { padding: 0.6rem 0.8rem; border-radius: var(--radio-chico); background: var(--tarjeta-alt); border: 1px solid var(--tarjeta-borde); }
+.mapa-residencia .mr-cell.sql    { border-left: 4px solid #2563eb; }
+.mapa-residencia .mr-cell.python { border-left: 4px solid var(--a); }
+.mapa-residencia .mr-cell.jinja  { border-left: 4px solid var(--b); }
+.mapa-residencia code { background: rgba(255,255,255,0.06); padding: 0.05rem 0.3rem; border-radius: 4px; }
+
+@media (max-width: 720px) {
+  .mapa-residencia { grid-template-columns: 1fr; }
+}
+
 .caja-desafio { border-color: var(--a); background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(255, 122, 41, 0.06)); }
 
 .caja-historia { border-color: var(--gris-tinta); background: rgba(92, 104, 136, 0.10); font-style: italic; }
