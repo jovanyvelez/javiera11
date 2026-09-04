@@ -131,7 +131,8 @@ function cargarProgresoPorClase() {
     'curso-herr-6': 6,
     'curso-herr-7': 6,
     'curso-herr-8': 6,
-    'curso-herr-9-repetitivas': 6
+    'curso-herr-9-repetitivas': 6,
+    'curso-herr-10-funciones': 6
   };
 
   let totalGlobal = 0;
@@ -226,11 +227,11 @@ function actualizarBarraClase(card, pct) {
 function animarStats() {
   // Los 3 primeros son fijos
   animarNumero(document.getElementById('stat-cursos'),  0, 6,  800);
-  animarNumero(document.getElementById('stat-clases'), 0, 28, 900);
+  animarNumero(document.getElementById('stat-clases'), 0, 30, 900);
   // El cuarto (horas) tiene "+" al final
   const elHoras = document.getElementById('stat-horas');
   if (elHoras) {
-    animarNumero(elHoras, 0, 92, 1000, valor => valor + '+');
+    animarNumero(elHoras, 0, 100, 1000, valor => valor + '+');
   }
   // El de progreso ya se actualiza en cargarProgresoPorClase
 }
@@ -361,6 +362,9 @@ document.addEventListener('keydown', (e) => {
   } else if (e.key === 'i' || e.key === 'I') {
     const card = document.querySelector('.clase-card.herr-9');
     if (card) card.click();
+  } else if (e.key === 'f' || e.key === 'F') {
+    const card = document.querySelector('.clase-card.herr-10');
+    if (card) card.click();
   }
 });
 
@@ -370,7 +374,7 @@ window.addEventListener('load', () => {
   const keys = ['curso-csharp-funciones-7', 'curso-csharp-poo-10', 'curso-csharp-arreglos-11',
                 'curso-csharp-funciones', 'curso-analisis-diseno', 'curso-requerimientos',
                 'curso-elicitacion', 'curso-documentacion', 'curso-introduccion-diseno',
-                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3', 'curso-herr-4', 'curso-herr-5', 'curso-herr-6', 'curso-herr-7', 'curso-herr-8', 'curso-herr-9-repetitivas'];
+                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3', 'curso-herr-4', 'curso-herr-5', 'curso-herr-6', 'curso-herr-7', 'curso-herr-8', 'curso-herr-9-repetitivas', 'curso-herr-10-funciones'];
 
   let tienePrograma = false;
   let ultimaClase = null;

@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛠️ Herramientas de Programación II · Clase 10 · Funciones y métodos</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🧩</span>
+    <div>
+      <h1>Herramientas de Programación II · Clase 10</h1>
+      <p class="subtitulo">Funciones y métodos · escribir una vez, usar mil veces</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">📦 def</button>
+  <button class="btn-modulo" data-modulo="2">🔌 Parámetros</button>
+  <button class="btn-modulo" data-modulo="3">📤 Retorno</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">♻️ Reutilizar</button>
+  <button class="btn-modulo" data-modulo="6">🧬 Métodos</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🧩 Escribe una vez, usa mil veces</h2>
+    <p class="lead">La app de la biblioteca <strong>repite lógica por todos lados</strong>: calcular la multa de un préstamo aparece en el registro, en el reporte y en la tabla; formatear dinero aparece en cada página; validar un ISBN aparece en dos formularios. Si copias y pegas esa lógica en cada ruta, el código se vuelve <strong>imposible de mantener</strong>. Hoy la escribes <strong>una sola vez</strong> dentro de una <strong>función</strong>, le pasas <strong>parámetros</strong>, te devuelve un <strong>resultado</strong> — y la <strong>reutilizas</strong> en todas tus rutas FastAPI. De postre: los <strong>métodos</strong>, funciones que viven dentro de tus modelos.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — dev@app</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd">python -c "print(len('biblioteca'))"</span></div>
+        <div class="out">11</div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cmd"># len() es una función: tú le pasas datos, ella te devuelve un resultado</span></div>
+        <div><span class="prompt">dev@app:~$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3h 45min en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Dominar la creación de <strong>funciones</strong> con <code>def</code>: paso de <strong>parámetros</strong>, <strong>retorno de valores</strong> y <strong>reutilización de código</strong> (DRY) — y entender los <strong>métodos</strong> de tus modelos Pydantic y las rutas FastAPI como funciones que ya venías usando sin saberlo.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>El copy-paste de la misma fórmula en 5 rutas, el número mágico (<code>500</code>… ¿pesos? ¿días?), la función que calcula y <em>también</em> imprime, y el parámetro mutable compartido entre llamadas.</p>
+    </div>
+  </div>
+
+  <h3>🏠 ¿Dónde trabaja cada parte?</h3>
+  <p class="lead">Las funciones de tu app viven en <strong>tres lugares</strong> de tu monolito. Este mapa te acompaña toda la clase.</p>
+  <div class="mapa-residencia">
+    <div class="mr-head">Lugar</div>
+    <div class="mr-head">¿Qué tipo de función?</div>
+    <div class="mr-head">Ejemplo en la biblioteca</div>
+
+    <div class="mr-cell python">🐍 <strong>Helpers en vistas.py</strong></div>
+    <div class="mr-cell">Funciones <em>tuyas</em> con <code>def</code>: cálculos, formatos, validaciones.</div>
+    <div class="mr-cell"><code>def calcular_multa(dias): ...</code> usada por 3 rutas.</div>
+
+    <div class="mr-cell python">🔗 <strong>Dependencias FastAPI</strong></div>
+    <div class="mr-cell">Funciones que FastAPI ejecuta <em>por ti</em> al llegar cada request.</div>
+    <div class="mr-cell"><code>async def get_db(): yield conn</code> + <code>Depends()</code>.</div>
+
+    <div class="mr-cell jinja">🧬 <strong>Métodos de modelos</strong></div>
+    <div class="mr-cell">Funciones que viven <em>dentro</em> de una clase, sobre sus propios datos.</div>
+    <div class="mr-cell"><code>prestamo.esta_atrasado()</code> en tu modelo Pydantic.</div>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Regla de oro</h4>
+    <p><strong>Copia-pasteaste la misma lógica dos veces → tercera vez NO.</strong> Extrae una función. La fórmula vive en <strong>un solo lugar</strong>: si la regla del negocio cambia (la multa sube de $500 a $800 por día), cambias <strong>una línea</strong> y las 5 rutas que la usan quedan actualizadas. Eso es <strong>reutilización</strong>, y es la diferencia entre código de tarea y código profesional. 🏗️</p>
+  </div>
+
+  <h3>🧪 Prepara tu ambiente</h3>
+  <p>Los ejemplos de los módulos 1–3 corren en la terminal de Python <strong>sin base de datos</strong>. Para los módulos 5–7 necesitas lo de siempre:</p>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>setup — dependencias de la clase</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># 1. Dependencias</span>
+pip install fastapi uvicorn jinja2 pydantic
+
+<span class="com"># 2. (Opcional) Para datos reales de Neon, exporta la URL — nunca la pegues al código:</span>
+<span class="com">#    Tu docente te la entrega por canal privado.</span>
+export DATABASE_URL=<span class="str">"postgresql://usuario:clave@host.neon.tech/biblioteca?sslmode=require"</span>
+
+<span class="com"># 3. REPL para experimentar con funciones sin escribir archivos:</span>
+python</code></pre>
+  </div>
+
+  <h3>🗺️ Ruta de la clase</h3>
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">1️⃣</span>
+      <h3>def: tu primera función</h3>
+      <p>Anatomía completa: nombre, parámetros, cuerpo y <code>return</code>. Nombrar bien, documentar con docstring y matar el número mágico.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">2️⃣</span>
+      <h3>Parámetros</h3>
+      <p>La entrada de la función: posicionales, nombrados, valores por defecto y la trampa del mutable default. Mapeados 1 a 1 con los parámetros de una ruta FastAPI.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">3️⃣</span>
+      <h3>Retorno</h3>
+      <p>La salida: <code>return</code> de un valor, de varios (tupla), early return para validaciones — y por qué lo que devuelve una ruta FastAPI <strong>es</strong> la respuesta HTTP.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">4️⃣</span>
+      <h3>Reutilización (DRY)</h3>
+      <p>El superpoder: extraer helpers, compartirlos entre rutas y convertir una conexión repetida en una dependencia <code>Depends</code> que inyecta FastAPI.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">5️⃣</span>
+      <h3>Métodos</h3>
+      <p>Funciones que viven dentro de una clase: <code>self</code>, métodos de tus modelos Pydantic, <code>@field_validator</code> y las rutas FastAPI como funciones decoradas.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">6️⃣</span>
+      <h3>Taller final</h3>
+      <p>Refactorizar la ruta-monstruo <code>/prestamos</code>: extraer funciones, crear una dependencia y darle métodos al modelo. DRY de principio a fin.</p>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0" style="visibility:hidden">← Anterior</button>
+    <button class="btn-siguiente" data-ir="1">Siguiente: def →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>📦 <code>def</code>: tu primera función</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Una receta con nombre: le das ingredientes, te da un plato"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Una función es un <strong>bloque de código con nombre</strong> que puedes ejecutar (llamar) cuantas veces quieras. Tú ya venías usando funciones: <code>print()</code>, <code>len()</code>, <code>input()</code>, <code>conn.fetch()</code>… todas son funciones <em>que alguien más escribió</em>. Hoy pasas al otro lado: <strong>tú las escribes</strong>. La palabra clave es <code>def</code> — <em>definir</em> — y tiene 4 piezas:</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>anatomía de una función — las 4 piezas</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">def</span> <span class="fn">calcular_multa</span>(dias_atraso):          <span class="com"># 1️⃣ def + nombre + (parámetros)</span>
+    <span class="str">"""Calcula la multa de un préstamo atrasado."""</span>   <span class="com"># 2️⃣ docstring: qué hace</span>
+    tarifa_por_dia = <span class="num">500</span>                   <span class="com"># 3️⃣ cuerpo: la lógica</span>
+    <span class="kw">return</span> dias_atraso * tarifa_por_dia   <span class="com"># 4️⃣ return: la salida</span>
+
+<span class="com"># Llamarla (ejecutarla) — aquí sí pasa algo:</span>
+multa = <span class="fn">calcular_multa</span>(<span class="num">3</span>)       <span class="com"># multa = 1500</span>
+print(<span class="fn">calcular_multa</span>(<span class="num">7</span>))       <span class="com"># 3500</span></code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Definir no es ejecutar</h4>
+    <p>Entre <code>def</code> y el final, la función <strong>no se ejecuta</strong>: solo queda registrada con su nombre. El código de adentro corre <strong>cada vez que la llamas</strong> con paréntesis: <code>calcular_multa(3)</code>. Olvidar los paréntesis es el error #1: <code>calcular_multa</code> sin <code>()</code> es "la receta"; con <code>()</code> es "cocinar el plato". 🍳</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: el número mágico</h4>
+    <p>Ver esto regado por el código: <code>multa = dias * 500</code>, <code>recargo = 500 * 0.1</code>, <code>tope = 500 * 30</code>… ¿Qué es ese <code>500</code>? ¿Pesos? ¿Días? ¿La altura de un edifico? Y peor: si la tarifa sube, hay que cazarlo en 20 lugares. La función con su <code>tarifa_por_dia = 500</code> nombrado (o una <strong>constante</strong> <code>TARIFA_POR_DIA = 500</code> en mayúsculas, arriba del archivo) mata al villano: <strong>un nombre que explica, un lugar que cambia</strong>.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>constantes + funciones — el dúo profesional</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># Arriba del archivo: constantes del negocio, en MAYÚSCULAS</span>
+TARIFA_POR_DIA = <span class="num">500</span>
+MAX_DIAS_PRESTAMO = <span class="num">15</span>
+
+<span class="kw">def</span> <span class="fn">calcular_multa</span>(dias_atraso: <span class="num">int</span>) -&gt; <span class="num">int</span>:
+    <span class="str">"""Multa = días de atraso × tarifa. 0 días → $0."""</span>
+    <span class="kw">if</span> dias_atraso &lt;= <span class="num">0</span>:
+        <span class="kw">return</span> <span class="num">0</span>
+    <span class="kw">return</span> dias_atraso * TARIFA_POR_DIA
+
+<span class="com"># Type hints: pistas de qué entra (int) y qué sale (int)</span>
+<span class="com"># No son obligatorios, pero FastAPI los usa para validar y documentar 😉</span></code></pre>
+  </div>
+
+  <h3>📦 Funciones que ya usabas sin saberlo</h3>
+  <p class="lead">Todo lo que llamabas con <code>()</code> en tus clases anteriores era una función. Mira el patrón:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>mismas piezas, distintas funciones — todas las conoces</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># Python integradas ("builtin"):</span>
+longitud = <span class="fn">len</span>(<span class="str">"biblioteca"</span>)           <span class="com"># parámetro: un string → retorno: 11</span>
+total    = <span class="fn">sum</span>([<span class="num">1500</span>, <span class="num">3500</span>, <span class="num">0</span>])        <span class="com"># parámetro: una lista → retorno: 5000</span>
+
+<span class="com"># De asyncpg — funciones (métodos) de tu conexión:</span>
+filas = <span class="kw">await</span> conn.<span class="fn">fetch</span>(<span class="str">"SELECT * FROM prestamos"</span>)
+
+<span class="com"># De FastAPI — la propia app es un objeto con funciones:</span>
+app = <span class="fn">FastAPI</span>()                       <span class="com"># crear la app: una llamada más</span></code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Cómo nombrar una función (para que se lea como prosa)</h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li><strong>Verbos + objeto</strong>, en minúsculas con guion bajo: <code>calcular_multa</code>, <code>formatear_dinero</code>, <code>validar_isbn</code>.</li>
+      <li>El nombre debe responder <strong>¿qué hace?</strong> sin abrir el código. Si necesitas un comentario para explicarlo, el nombre está mal.</li>
+      <li><strong>Una función = una tarea</strong>. Si el nombre necesita la palabra "y" (<code>calcular_y_guardar</code>), son dos funciones.</li>
+      <li>Máximo ~20 líneas por función. ¿Más? Huele a que hay dos tareas adentro.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>En la terminal: escriban <code>def saludar(nombre)</code> que retorne <code>"¡Hola, {nombre}! 📚"</code> y llámenla con sus dos nombres. Luego: ¿qué pasa si llaman <code>saludar</code> sin paréntesis y la imprimen con <code>print</code>? ¿Qué ven y por qué? Experimenten.</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace la palabra clave <code>def</code>?</p>
+      <button class="opcion" data-op="a">Ejecuta el código de la función inmediatamente</button>
+      <button class="opcion" data-op="b">Define (registra) la función con un nombre, sin ejecutarla todavía</button>
+      <button class="opcion" data-op="c">Borra la función de la memoria</button>
+      <button class="opcion" data-op="d">Es un comentario decorativo de Python</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Cuál es la diferencia entre <code>calcular_multa</code> y <code>calcular_multa(3)</code>?</p>
+      <button class="opcion" data-op="a">Ninguna, son sinónimos</button>
+      <button class="opcion" data-op="b"><code>calcular_multa(3)</code> define la función y <code>calcular_multa</code> la ejecuta</button>
+      <button class="opcion" data-op="c">La primera es la definición (la receta); la segunda es una llamada que ejecuta el código con el argumento 3</button>
+      <button class="opcion" data-op="d">La primera corre más rápido</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Para qué sirve el docstring (el string de la primera línea del cuerpo)?</p>
+      <button class="opcion" data-op="a">Documenta qué hace la función; lo muestra <code>help()</code> y lo lee cualquier compañero</button>
+      <button class="opcion" data-op="b">Es el valor que retorna la función</button>
+      <button class="opcion" data-op="c">Declara los parámetros obligatorios</button>
+      <button class="opcion" data-op="d">Es decoración obligatoria o Python da error</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> Encontraste <code>total = cantidad * 500</code> en 12 lugares del código de tu app. ¿Cuál es el anti-patrón?</p>
+      <button class="opcion" data-op="a">Usar números en Python</button>
+      <button class="opcion" data-op="b">Guardar el resultado en una variable</button>
+      <button class="opcion" data-op="c">Multiplicar en vez de sumar</button>
+      <button class="opcion" data-op="d">El número mágico sin nombre, repetido: debe ser una constante o vivir dentro de una función</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Parámetros →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>🔌 Parámetros: la entrada de tu función</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "La misma receta, distintos ingredientes"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Los <strong>parámetros</strong> son las variables que la función <strong>recibe</strong> en su definición; los <strong>argumentos</strong> son los valores concretos que le pasas en cada llamada. Es la diferencia entre la receta ("necesito <em>harina</em> y <em>huevos</em>") y cocinarla ("200 g de harina, 3 huevos"). Gracias a los parámetros, <strong>una misma función sirve para mil casos distintos</strong>: <code>calcular_multa(3)</code>, <code>calcular_multa(7)</code>, <code>calcular_multa(0)</code>…</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>posicionales, nombrados y valores por defecto</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">def</span> <span class="fn">formatear_dinero</span>(valor: <span class="num">int</span>, simbolo: <span class="num">str</span> = <span class="str">"$"</span>) -&gt; <span class="num">str</span>:
+    <span class="str">"""Pinta 3500 como '$3.500' (o con el símbolo que pidan)."""</span>
+    <span class="kw">return</span> f<span class="str">"{simbolo}{valor:,}"</span>.replace(<span class="str">","</span>, <span class="str">"."</span>)
+
+<span class="com"># 1. Posicional: el orden manda</span>
+print(<span class="fn">formatear_dinero</span>(<span class="num">3500</span>, <span class="str">"€"</span>))       <span class="com"># €3.500 — valor→valor, "€"→simbolo</span>
+
+<span class="com"># 2. Nombrado: el nombre manda (¡orden libre!)</span>
+print(<span class="fn">formatear_dinero</span>(simbolo=<span class="str">"€"</span>, valor=<span class="num">3500</span>))   <span class="com"># €3.500</span>
+
+<span class="com"># 3. Por defecto: si no lo envían, se usa el predefinido</span>
+print(<span class="fn">formatear_dinero</span>(<span class="num">3500</span>))           <span class="com"># $3.500 — simbolo tomó "$" solo</span></code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: el mutable default (la trampa clásica)</h4>
+    <p>¿Recuerdas que <code>simbolo = "$"</code> se evaluaba una vez? Si el valor por defecto es una <strong>lista</strong> o un <strong>dict</strong> (mutables), esa misma lista se <strong>comparte entre TODAS las llamadas</strong> que no la envíen — y lo que una llamada appendea, ¡la siguiente lo ve! 😱 Regla de oro: <strong>defaults mutables = NO</strong>. Usa <code>None</code> y crea la lista adentro:</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>la trampa del mutable default — verla para creerla</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># ❌ VILLANO: la misma lista para todos</span>
+<span class="kw">def</span> <span class="fn">registrar_prestamos</span>(nuevo, prestamos=[]):        <span class="com"># ¡trampa!</span>
+    prestamos.append(nuevo)
+    <span class="kw">return</span> prestamos
+
+<span class="fn">registrar_prestamos</span>(<span class="str">"Ana"</span>)      <span class="com"># ['Ana']</span>
+<span class="fn">registrar_prestamos</span>(<span class="str">"Brayan"</span>)    <span class="com"># ['Ana', 'Brayan'] ← ¿¡Por qué Ana sigue ahí!?</span>
+
+<span class="com"># ✅ HEROE: None + crear adentro</span>
+<span class="kw">def</span> <span class="fn">registrar_prestamos</span>(nuevo, prestamos=<span class="kw">None</span>):
+    <span class="kw">if</span> prestamos <span class="kw">is</span> <span class="kw">None</span>:
+        prestamos = []                     <span class="com"># lista fresca en CADA llamada</span>
+    prestamos.append(nuevo)
+    <span class="kw">return</span> prestamos</code></pre>
+  </div>
+
+  <div class="caja-donde donde-python">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge python">🐍 Python</span><span class="capa-badge jinja">🚀 FastAPI</span></span>
+    </h4>
+    <p>Aquí viene el "ajá" de la clase: <strong>los parámetros de una ruta FastAPI son los parámetros de una función normal</strong>. El decorador <code>@app.get(...)</code> solo registra la función como ruta; lo que llega en la URL o en el body, FastAPI te lo pasa como argumentos:</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>FastAPI: los parámetros de la ruta = parámetros de la función</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI, Depends
+
+app = FastAPI()
+
+<span class="com"># path parameter: lo que va en /prestamos/3 → llega como prestamo_id=3</span>
+@app.get(<span class="str">"/prestamos/{prestamo_id}"</span>)
+<span class="kw">async def</span> <span class="fn">ver_prestamo</span>(prestamo_id: <span class="num">int</span>):
+    <span class="com">#                 ^^^^^^^^^^^ parámetro de función normal y corriente</span>
+    <span class="kw">return</span> {<span class="str">"id"</span>: prestamo_id, <span class="str">"multa"</span>: calcular_multa(prestamo_id)}
+
+<span class="com"># query parameter: /multas?dias=7&amp;formato=pdf → llega como argumentos</span>
+@app.get(<span class="str">"/multas"</span>)
+<span class="kw">async def</span> <span class="fn">ver_multas</span>(dias: <span class="num">int</span> = <span class="num">0</span>, formato: <span class="num">str</span> = <span class="str">"json"</span>):
+    <span class="com">#              ^^^ valor por defecto: si la URL no trae ?dias=, llega 0</span>
+    <span class="kw">return</span> {<span class="str">"dias"</span>: dias, <span class="str">"formato"</span>: formato, <span class="str">"total"</span>: calcular_multa(dias)}
+
+<span class="com"># ¡Es la MISMA mecánica que aprendiste arriba! Solo cambia quién llama:</span>
+<span class="com"># en la terminal la llamas tú; en FastAPI la llama el framework.</span></code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Parámetro o argumento? (vocabulario fino)</h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li><strong>Parámetro</strong>: el nombre en la definición. <code>def f(simbolo="$")</code> — <code>simbolo</code> es parámetro.</li>
+      <li><strong>Argumento</strong>: el valor concreto en la llamada. <code>f("€")</code> — <code>"€"</code> es argumento.</li>
+      <li>En la práctica se mezclan, pero saberlo te hace sonar pro en la sustentación. 😎</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>En la terminal: escriban <code>def etiqueta(estudiante, libro, dias=0)</code> que retorne <code>"Ana tomó 'El hobbit' (0 días de atraso)"</code>. Llámenla (1) solo con posicionales, (2) con nombrados en desorden, (3) sin <code>dias</code>. Luego peguen el villano del mutable default y comprueben la lista "fantasma". ¿Les quedó claro por qué pasa?</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> En <code>def formatear_dinero(valor, simbolo="$")</code>, ¿qué es <code>simbolo="$"</code>?</p>
+      <button class="opcion" data-op="a">Un argumento obligatorio</button>
+      <button class="opcion" data-op="b">Un parámetro que no se puede usar</button>
+      <button class="opcion" data-op="c">Un parámetro con valor por defecto: si la llamada no lo envía, usa "$"</button>
+      <button class="opcion" data-op="d">Una constante global obligatoria</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Por qué <code>def registrar(nuevo, prestamos=[])</code> es una trampa?</p>
+      <button class="opcion" data-op="a">Porque las listas no se pueden pasar a funciones</button>
+      <button class="opcion" data-op="b">Porque la misma lista se comparte entre llamadas: una llamada contamina a la siguiente</button>
+      <button class="opcion" data-op="c">Porque Python no permite valores por defecto</button>
+      <button class="opcion" data-op="d">Porque append es lento</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> En la ruta <code>@app.get("/prestamos/{prestamo_id}")</code> con <code>async def ver_prestamo(prestamo_id: int)</code>, ¿quién llama a la función y le pasa <code>prestamo_id</code>?</p>
+      <button class="opcion" data-op="a">FastAPI, cuando llega un request como /prestamos/3</button>
+      <button class="opcion" data-op="b">El navegador ejecuta la función en JavaScript</button>
+      <button class="opcion" data-op="c">La base de datos Neon</button>
+      <button class="opcion" data-op="d">Nadie: la función nunca se ejecuta</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Qué imprime <code>formatear_dinero(3500)</code> con la definición del módulo?</p>
+      <button class="opcion" data-op="a">Error: faltan argumentos</button>
+      <button class="opcion" data-op="b">"3500"</button>
+      <button class="opcion" data-op="c">"€3.500"</button>
+      <button class="opcion" data-op="d">"$3.500"</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Retorno →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>📤 Retorno: la salida de tu función</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "No me digas 'lo imprimí': devuélvemelo"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>El <code>return</code> es lo que la función <strong>le devuelve a quien la llamó</strong>. Sin <code>return</code>, la función hace cosas… pero el resultado se pierde (técnicamente devuelve <code>None</code>). Con <code>return</code>, el resultado <strong>vive en una variable</strong> y puedes reutilizarlo, pasarlo a otra función, mandarlo al contexto de una plantilla o — en FastAPI — convertirlo en la <strong>respuesta HTTP</strong>.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>return vs print — la diferencia que separa a los pros</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># ❌ VILLANO: calcula y "devuelve" imprimiendo</span>
+<span class="kw">def</span> <span class="fn">mostrar_multa</span>(dias_atraso):
+    print(dias_atraso * <span class="num">500</span>)
+
+total = <span class="fn">mostrar_multa</span>(<span class="num">3</span>)       <span class="com"># imprime 1500… pero total = None 😱</span>
+<span class="com"># No puedes sumarlo, mandarlo al contexto, ni reutilizarlo. Se perdió.</span>
+
+<span class="com"># ✅ HEROE: calcula y devuelve</span>
+<span class="kw">def</span> <span class="fn">calcular_multa</span>(dias_atraso):
+    <span class="kw">return</span> dias_atraso * <span class="num">500</span>
+
+total = <span class="fn">calcular_multa</span>(<span class="num">3</span>)          <span class="com"># total = 1500: reutilizable ✨</span>
+suma  = <span class="fn">calcular_multa</span>(<span class="num">3</span>) + <span class="fn">calcular_multa</span>(<span class="num">7</span>)   <span class="com"># 5000</span></code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: la función que hace de todo</h4>
+    <p>Una función que <em>calcula</em>, <em>imprime</em> y <em>guarda en la BD</em> a la vez no se puede reutilizar: cada vez que la llamas hace las tres cosas quieras o no. <strong>Una función, una tarea</strong>: <code>calcular_multa</code> solo calcula y devuelve; quien la llama decide qué hace con el resultado (imprimirlo, guardarlo, sumarlo). Por eso las funciones que retornan se componen como piezas de LEGO. 🧱</p>
+  </div>
+
+  <h3>📦 Volver varios valores: la tupla</h3>
+  <p class="lead">¿Y si necesitas devolver dos cosas? Python lo hace fácil: el <code>return</code> puede llevar varias expresiones separadas por coma — y quien llama puede <strong>desempaquetarlas</strong>:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>retorno múltiple + desempaquetado</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">def</span> <span class="fn">analizar_prestamo</span>(dias_atraso):
+    <span class="str">"""Devuelve la multa y si está atrasado."""</span>
+    atrasado = dias_atraso &gt; <span class="num">0</span>
+    <span class="kw">return</span> dias_atraso * <span class="num">500</span>, atrasado        <span class="com"># retorna una tupla (1500, True)</span>
+
+multa, atrasado = <span class="fn">analizar_prestamo</span>(<span class="num">3</span>)   <span class="com"># desempaquetado en 2 variables</span>
+print(multa, atrasado)                                  <span class="com"># 1500 True</span>
+
+<span class="com"># ¿Recuerdas del módulo 5 de la clase 9? ¡enumerate hace esto mismo!</span>
+<span class="kw">for</span> posicion, prestamo <span class="kw">in</span> enumerate(prestamos, start=<span class="num">1</span>):
+    ...  <span class="com"># cada vuelta desempaqueta una tupla (posicion, prestamo)</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>early return — validaciones que cortan temprano</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">def</span> <span class="fn">calcular_multa</span>(dias_atraso):
+    <span class="str">"""Multa de un préstamo. Casos raros resueltos PRIMERO."""</span>
+    <span class="kw">if</span> dias_atraso <span class="kw">is</span> <span class="kw">None</span>:       <span class="com"># caso raro 1: sin dato</span>
+        <span class="kw">return</span> <span class="num">0</span>
+    <span class="kw">if</span> dias_atraso &lt;= <span class="num">0</span>:         <span class="com"># caso raro 2: a tiempo (o negativo)</span>
+        <span class="kw">return</span> <span class="num">0</span>
+    <span class="com"># camino feliz: el código principal queda plano, sin indentar</span>
+    <span class="kw">return</span> dias_atraso * TARIFA_POR_DIA
+
+<span class="com"># Ojo: return CORTA la función en seco. Todo lo que sigue, no corre.</span></code></pre>
+  </div>
+
+  <div class="caja-donde donde-jinja">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge python">🐍 Python</span><span class="capa-badge jinja">🚀 FastAPI</span></span>
+    </h4>
+    <p>En FastAPI, <strong>lo que tu ruta retorna es literalmente la respuesta</strong> que viaja al navegador como JSON (o HTML, si retornas un <code>TemplateResponse</code>). Cuando devuelves un <code>dict</code>, FastAPI lo convierte a JSON por ti. Otra vez: misma mecánica de función, el framework hace el resto.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>el retorno de la ruta ES la respuesta HTTP</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># Retornas un dict → el navegador recibe JSON:</span>
+@app.get(<span class="str">"/api/prestamos/{prestamo_id}"</span>)
+<span class="kw">async def</span> <span class="fn">ver_prestamo</span>(prestamo_id: <span class="num">int</span>):
+    <span class="kw">return</span> {
+        <span class="str">"id"</span>: prestamo_id,
+        <span class="str">"multa"</span>: calcular_multa(<span class="num">7</span>),          <span class="com"># ← reutilizando tu función 😉</span>
+        <span class="str">"estado"</span>: <span class="str">"atrasado"</span>,
+    }
+<span class="com"># → GET /api/prestamos/3 responde: {"id":3,"multa":3500,"estado":"atrasado"}</span>
+
+<span class="com"># Retornas un TemplateResponse → el navegador recibe HTML pintado:</span>
+@app.get(<span class="str">"/prestamos"</span>)
+<span class="kw">async def</span> <span class="fn">listar_prestamos</span>(request: Request):
+    contexto = {<span class="str">"prestamos"</span>: filas, <span class="str">"total"</span>: <span class="num">len</span>(filas)}
+    <span class="kw">return</span> templates.TemplateResponse(request, <span class="str">"prestamos.html"</span>, context=contexto)</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Tipos de retorno con type hints</h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li><code>def calcular_multa(dias: int) -&gt; int:</code> — "entra entero, sale entero".</li>
+      <li><code>-&gt; str</code>, <code>-&gt; bool</code>, <code>-&gt; list</code>, <code>-&gt; dict</code> — FastAPI los lee para <strong>documentar y validar</strong> automáticamente.</li>
+      <li>Función sin <code>return</code> explícito → devuelve <code>None</code> (en FastAPI eso sería una respuesta vacía: evítalo).</li>
+      <li><code>return</code> sin nada al lado también corta la función y devuelve <code>None</code>.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Escriban <code>def analizar_prestamo(dias_atraso)</code> que retorne la <strong>tupla</strong> <code>(multa, estado)</code> donde <code>estado</code> es <code>"atrasado"</code> o <code>"a tiempo"</code>. Desempaquénenla en dos variables y armen un f-string: <code>"Camila: $3500 (atrasado)"</code>. Pregunta de discusión: ¿por qué retornar la tupla es mejor que imprimir el mensaje adentro?</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué vale <code>total</code> después de <code>def f(): print(1500)</code> y <code>total = f()</code>?</p>
+      <button class="opcion" data-op="a">1500</button>
+      <button class="opcion" data-op="b"><code>None</code>, porque la función no tiene <code>return</code></button>
+      <button class="opcion" data-op="c">Error de sintaxis</button>
+      <button class="opcion" data-op="d">"1500" como texto</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> <code>return multa, atrasado</code> al final de una función devuelve…</p>
+      <button class="opcion" data-op="a">Una tupla con los dos valores, desempaquetable en dos variables</button>
+      <button class="opcion" data-op="b">Solo el último valor, <code>atrasado</code></button>
+      <button class="opcion" data-op="c">Error: return solo acepta un valor</button>
+      <button class="opcion" data-op="d">Un dict {"multa": ..., "atrasado": ...}</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué hace el <code>return</code> además de entregar el valor?</p>
+      <button class="opcion" data-op="a">Reinicia los parámetros de la función</button>
+      <button class="opcion" data-op="b">Convierte el valor a JSON</button>
+      <button class="opcion" data-op="c">Termina la ejecución de la función en ese punto: lo que sigue no corre</button>
+      <button class="opcion" data-op="d">Imprime el valor en la consola del servidor</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> Una ruta FastAPI retorna un <code>dict</code>. ¿Qué recibe el navegador?</p>
+      <button class="opcion" data-op="a">El código Python del dict</button>
+      <button class="opcion" data-op="b">Una página HTML en blanco</button>
+      <button class="opcion" data-op="c">Nada: los dict no se pueden retornar</button>
+      <button class="opcion" data-op="d">JSON: FastAPI convierte el dict automáticamente</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73% agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Coméntale a tu compañero/a: ¿cuál es la función que más has reutilizado hoy? ¿<code>calcular_multa</code> o <code>formatear_dinero</code>? 1 min.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>La palabra <code>return</code> tiene casi 60 años: viene de ALGOL 60, y la idea de "subrutina que devuelve un valor" es de los años 50. Antes, los programas eran un solo bloque gigante de líneas en orden (¡como tus rutas de 100 líneas!). Quien inventó la función inventó también el primer <strong>DRY</strong>: "ya no copies esas 20 líneas, ponles nombre". Linus Torvalds lo dice de otra forma: <em>"Good code is short code"</em>. 📜</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Reutilizar →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>♻️ Reutilización: el superpoder DRY</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Don't Repeat Yourself — un cambio, un lugar"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Todo lo de hoy (def, parámetros, return) existe para un solo propósito: <strong>reutilizar</strong>. El principio <strong>DRY</strong> (<em>Don't Repeat Yourself</em>) dice que cada pieza de conocimiento de tu app debe vivir en <strong>un único lugar</strong>. Si la fórmula de la multa está escrita en 5 rutas, no son 5 líneas: son <strong>5 oportunidades de olvidar una</strong> cuando la tarifa cambie. La técnica se llama <strong>extract function</strong>: cortas el código repetido, lo pones en una función con nombre, y llamas la función donde estaba cada copia.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>antes — tres rutas, tres copias de lo mismo (DRY llora 😭)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># ❌ La fórmula de la multa vive en 3 lugares distintos:</span>
+<span class="kw">async def</span> <span class="fn">registrar_prestamo</span>(datos: PrestamoIn):
+    multa = datos.dias_atraso * <span class="num">500</span>          <span class="com"># copia 1</span>
+    ...
+
+<span class="kw">async def</span> <span class="fn">reporte_prestamos</span>(request: Request):
+    <span class="kw">for</span> p <span class="kw">in</span> filas:
+        p[<span class="str">"multa"</span>] = p[<span class="str">"dias_atraso"</span>] * <span class="num">500</span>  <span class="com"># copia 2</span>
+    ...
+
+<span class="kw">async def</span> <span class="fn">pagar_multa</span>(prestamo_id: <span class="num">int</span>):
+    multa = dias * <span class="num">500</span>                       <span class="com"># copia 3 — ¡y esta usa 'dias'!</span>
+    ...
+
+<span class="com"># 🦹 Mañana la tarifa sube a $800 → hay que cazar las 3 copias.</span>
+<span class="com"># ¿Las 3? ¿Seguro que son 3? Ese es el problema del copy-paste.</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>después — extract function: la fórmula vive en UN lugar</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># ✅ Un solo lugar define la fórmula (encima del archivo o en helpers.py):</span>
+TARIFA_POR_DIA = <span class="num">500</span>
+
+<span class="kw">def</span> <span class="fn">calcular_multa</span>(dias_atraso: <span class="num">int</span>) -&gt; <span class="num">int</span>:
+    <span class="str">"""Multa = días de atraso × tarifa vigente."""</span>
+    <span class="kw">if</span> dias_atraso <span class="kw">is</span> <span class="kw">None</span> <span class="kw">or</span> dias_atraso &lt;= <span class="num">0</span>:
+        <span class="kw">return</span> <span class="num">0</span>
+    <span class="kw">return</span> dias_atraso * TARIFA_POR_DIA
+
+<span class="com"># Y las 3 rutas ahora LA LLAMAN:</span>
+<span class="kw">async def</span> <span class="fn">registrar_prestamo</span>(datos: PrestamoIn):
+    multa = <span class="fn">calcular_multa</span>(datos.dias_atraso)     <span class="com"># 1 línea, 0 riesgo</span>
+    ...
+
+<span class="kw">async def</span> <span class="fn">reporte_prestamos</span>(request: Request):
+    <span class="kw">for</span> p <span class="kw">in</span> filas:
+        p[<span class="str">"multa"</span>] = <span class="fn">calcular_multa</span>(p[<span class="str">"dias_atraso"</span>])
+    ...
+
+<span class="com"># ¿La tarifa subió a $800? Cambias UNA línea. Las 3 rutas (y las 20</span>
+<span class="com"># que vengan) quedan actualizadas al instante. Un cambio, un lugar. ♻️</span></code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: la conexión repetida en cada ruta</h4>
+    <p>¿Te acuerdas de la clase 2? Cada ruta necesitaba una conexión a la BD, y copiar el <code>await pool.acquire()</code> en 50 rutas era inviable. La solución de FastAPI también es una <strong>función reutilizable</strong>: una <strong>dependencia</strong> con <code>Depends</code>. Ya escribiste esa función — hoy entiendes <em>por qué</em> funciona: es una función con parámetros (los que necesita), retorno (<code>yield</code> de la conexión) y reutilización (las 50 rutas la comparten).</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>Depends — la función que FastAPI reutiliza por ti en cada request</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI, Depends
+
+<span class="com"># 1. La dependencia: una función como cualquier otra</span>
+<span class="kw">async def</span> <span class="fn">get_db</span>():
+    conn = <span class="kw">await</span> pool.acquire()      <span class="com"># antes del yield: "preparar"</span>
+    <span class="kw">try</span>:
+        <span class="kw">yield</span> conn                  <span class="com"># la entrega a la ruta (return pausado)</span>
+    <span class="kw">finally</span>:
+        <span class="kw">await</span> pool.release(conn)    <span class="com"># después: "limpiar", siempre</span>
+
+<span class="com"># 2. Las rutas solo declaran el parámetro — FastAPI llama a get_db()</span>
+<span class="com">#    en CADA request y le inyecta el resultado. Una definición, N usos.</span>
+@app.get(<span class="str">"/prestamos"</span>)
+<span class="kw">async def</span> <span class="fn">listar_prestamos</span>(conn = Depends(get_db)):
+    <span class="kw">return</span> <span class="kw">await</span> conn.fetch(<span class="str">"SELECT * FROM prestamos"</span>)
+
+@app.get(<span class="str">"/libros"</span>)
+<span class="kw">async def</span> <span class="fn">listar_libros</span>(conn = Depends(get_db)):
+    <span class="kw">return</span> <span class="kw">await</span> conn.fetch(<span class="str">"SELECT * FROM libros"</span>)
+
+<span class="com"># ¿Cambió la forma de conectar? Solo tocas get_db. Cero copy-paste. ♻️</span></code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Checklist del refactor DRY</h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li>¿El mismo código (o casi) aparece 2+ veces? → extrae función.</li>
+      <li>¿Se <em>parece</em> pero cambia un dato? → parámetro: <code>calcular_multa(dias)</code>, no <code>calcular_multa_3_dias</code>.</li>
+      <li>¿Muchas rutas necesitan lo mismo antes de empezar? → dependencia con <code>Depends</code>.</li>
+      <li>Nombra la función por <strong>qué hace</strong>, no por dónde se usa: <code>formatear_dinero</code> sí, <code>cosa_de_reporte</code> no.</li>
+      <li>Regla de los 3 pasos: <strong>copia 1</strong> tolerable, <strong>copia 2</strong> sospechosa, <strong>copia 3</strong> refactor YA.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Auditen este fragmento y apliquen extract function en papel: <code>if dias &gt; 0: multa = dias * 500 else: multa = 0</code> aparece en <code>registrar</code>, <code>reporte</code> y <code>pagar</code>. (1) ¿Cómo queda la función extraída? (2) ¿Qué nombre le ponen? (3) ¿Qué ventaja tiene si mañana la multa se calcula con recargo del 10%?</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué significa DRY?</p>
+      <button class="opcion" data-op="a">Escribe el código lo más seco posible, sin comentarios</button>
+      <button class="opcion" data-op="b">Don't Repeat Yourself: cada lógica vive en un único lugar</button>
+      <button class="opcion" data-op="c">Duplica Rapidamente Y reutiliza</button>
+      <button class="opcion" data-op="d">Documenta Requerimientos Y funciones</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> La fórmula <code>dias * 500</code> está copiada en 3 rutas y la tarifa cambia a $800. ¿Cuál es el riesgo REAL del copy-paste?</p>
+      <button class="opcion" data-op="a">El programa corre más lento</button>
+      <button class="opcion" data-op="b">Ninguno: buscar y reemplazar lo arregla siempre</button>
+      <button class="opcion" data-op="c">Que actualices 2 de las 3 copias (o ninguna) y la app calcule mal en silencio</button>
+      <button class="opcion" data-op="d">Que Python no permita constantes</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> En <code>async def listar(conn = Depends(get_db))</code>, ¿qué papel juega <code>get_db</code>?</p>
+      <button class="opcion" data-op="a">Una función reutilizable que FastAPI ejecuta en cada request para entregar la conexión</button>
+      <button class="opcion" data-op="b">Una tabla de la base de datos</button>
+      <button class="opcion" data-op="c">Un decorador de ruta</button>
+      <button class="opcion" data-op="d">Un parámetro con valor por defecto mutable</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> Tienes <code>def saludar_ana()</code>, <code>def saludar_brayan()</code> y <code>def saludar_camila()</code>. ¿El refactor DRY correcto?</p>
+      <button class="opcion" data-op="a">Unir las tres en una sola función gigante con if</button>
+      <button class="opcion" data-op="b">Copiarlas a un archivo helpers.py</button>
+      <button class="opcion" data-op="c">Dejarlas: son solo 3, la regla dice que a la tercera</button>
+      <button class="opcion" data-op="d"><code>def saludar(nombre)</code> con un parámetro: el dato que cambia se vuelve parámetro</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Métodos →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>🧬 Métodos: funciones que viven dentro de una clase</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Una función con acceso a sus propios datos"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Un <strong>método</strong> es una función definida <strong>dentro de una clase</strong>. La diferencia práctica: un método <strong>ya conoce sus datos</strong> (los atributos del objeto) y no se los tienes que pasar como parámetros. Ya usaste miles: <code>conn.fetch()</code> es el método <code>fetch</code> del objeto <code>conn</code>; <code>texto.strip()</code> es el método <code>strip</code> del string; <code>lista.append(x)</code>, el de la lista. El punto <code>.</code> significa <em>"llama esta función que vive dentro de este objeto"</em>.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>de función suelta a método — el mismo def, ahora dentro</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># Función suelta: tú llevas los datos a la función</span>
+<span class="kw">def</span> <span class="fn">esta_atrasado</span>(dias_atraso):
+    <span class="kw">return</span> dias_atraso &gt; <span class="num">0</span>
+
+<span class="fn">esta_atrasado</span>(prestamo[<span class="str">"dias_atraso"</span>])   <span class="com"># le PASAS el dato</span>
+
+<span class="com"># Método: el objeto YA tiene el dato — self es "este objeto"</span>
+<span class="kw">class</span> Prestamo:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, estudiante, dias_atraso):   <span class="com"># constructor</span>
+        self.estudiante = estudiante
+        self.dias_atraso = dias_atraso
+
+    <span class="kw">def</span> <span class="fn">esta_atrasado</span>(self):                   <span class="com"># método: sin parámetros extra</span>
+        <span class="kw">return</span> self.dias_atraso &gt; <span class="num">0</span>           <span class="com"># self = "YO (este préstamo)"</span>
+
+    <span class="kw">def</span> <span class="fn">calcular_multa</span>(self):                 <span class="com"># ¡reutilizando tu función!</span>
+        <span class="kw">return</span> calcular_multa(self.dias_atraso)
+
+p = Prestamo(<span class="str">"Camila"</span>, <span class="num">7</span>)
+p.<span class="fn">esta_atrasado</span>()       <span class="com"># True — no le pasaste nada: él ya lo sabe</span>
+p.<span class="fn">calcular_multa</span>()     <span class="com"># 3500</span></code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 La regla de <code>self</code></h4>
+    <p><code>self</code> es <strong>"el objeto mismo"</strong>. Cuando escribes <code>p.esta_atrasado()</code>, Python traduce a <code>esta_atrasado(p)</code>: el objeto que va antes del punto entra como <code>self</code>. Por eso todo método lleva <code>self</code> como primer parámetro — y por eso <code>p.dias_atraso</code> adentro se escribe <code>self.dias_atraso</code>. El punto <code>.</code> es un <em>paso de parámetro invisible</em>. 🕵️</p>
+  </div>
+
+  <div class="caja-donde donde-python">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge python">🐍 Python</span><span class="capa-badge jinja">🛡️ Pydantic</span><span class="capa-badge sql">🚀 FastAPI</span></span>
+    </h4>
+    <p>Tus modelos <strong>Pydantic</strong> (clase 5) son clases perfectas para colgarles métodos: el modelo ya guarda <code>dias_atraso</code>, <code>estudiante</code>… y puedes pedirle al propio modelo lo que necesites. Y las rutas FastAPI son <strong>funciones decoradas</strong> que agrupas con <code>APIRouter</code> — mismas piezas de siempre, un escalón más de organización.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>modelos Pydantic con métodos y field_validator (clase 5, nivel pro)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel, Field, field_validator
+
+<span class="kw">class</span> PrestamoIn(BaseModel):                       <span class="com"># modelo de entrada (clase 5)</span>
+    estudiante: <span class="num">str</span> = Field(min_length=<span class="num">2</span>, max_length=<span class="num">50</span>)
+    libro: <span class="num">str</span>
+    dias_atraso: <span class="num">int</span> = Field(default=<span class="num">0</span>, ge=<span class="num">0</span>)
+
+    <span class="kw">@field_validator</span>(<span class="str">"estudiante"</span>)                  <span class="com"># método-especial: valida al crear</span>
+    <span class="kw">def</span> <span class="fn">sin_espacios</span>(cls, valor):                    <span class="com"># (cls = la clase, no un objeto)</span>
+        <span class="kw">if</span> valor.strip() == <span class="str">""</span>:
+            <span class="kw">raise</span> ValueError(<span class="str">"El nombre no puede ser solo espacios"</span>)
+        <span class="kw">return</span> valor.strip()
+
+    <span class="com"># ✨ Método normal y corriente: el modelo calcula su propia multa</span>
+    <span class="kw">def</span> <span class="fn">multa</span>(self) -&gt; <span class="num">int</span>:
+        <span class="kw">return</span> calcular_multa(self.dias_atraso)   <span class="com"># reutilización total ♻️</span>
+
+<span class="com"># Uso: FastAPI recibe el JSON, crea el objeto y YA puedes llamar métodos</span>
+@app.post(<span class="str">"/prestamos"</span>)
+<span class="kw">async def</span> <span class="fn">crear_prestamo</span>(datos: PrestamoIn, conn = Depends(get_db)):
+    <span class="kw">return</span> {<span class="str">"recibido"</span>: datos.estudiante, <span class="str">"multa"</span>: datos.<span class="fn">multa</span>()}</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>APIRouter — agrupa rutas relacionadas (organizar también es reutilizar)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> APIRouter
+
+prestamos_router = APIRouter(prefix=<span class="str">"/prestamos"</span>, tags=[<span class="str">"préstamos"</span>])
+
+<span class="com"># Cada ruta es una función decorada — lo de siempre:</span>
+@prestamos_router.get(<span class="str">""</span>)                       <span class="com"># → GET /prestamos</span>
+<span class="kw">async def</span> <span class="fn">listar</span>(conn = Depends(get_db)):
+    <span class="kw">return</span> <span class="kw">await</span> conn.fetch(<span class="str">"SELECT * FROM prestamos"</span>)
+
+@prestamos_router.post(<span class="str">""</span>)                      <span class="com"># → POST /prestamos</span>
+<span class="kw">async def</span> <span class="fn">crear</span>(datos: PrestamoIn):
+    ...
+
+<span class="com"># En main.py, una línea los monta todos:</span>
+app.include_router(prestamos_router)
+<span class="com"># Prefijo, tags y validaciones compartidas: definidos UNA vez. ♻️</span></code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: cuándo NO hacer un método</h4>
+    <p>Si el cálculo <strong>no toca ningún dato del objeto</strong> (<code>self</code> queda sin usarse), no es un método: es una función normal. <code>formatear_dinero(valor)</code> no necesita saber nada del préstamo → función. <code>prestamo.esta_atrasado()</code> sí necesita <code>self.dias_atraso</code> → método. Pregúntalo así: <strong>"¿el objeto ya sabe lo que la función necesita?"</strong> Sí → método. No → función.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Añádanle a <code>Prestamo</code> el método <code>descripcion()</code> que retorne <code>"Camila · 7 días · $3500"</code> usando <code>self.estudiante</code>, <code>self.dias_atraso</code> y llamando a <code>self.multa()</code>. Después discutan: ¿<code>formatear_dinero()</code> merece ser método de <code>Prestamo</code>? ¿Por qué sí o no? (pista: ¿usa algo de <code>self</code>?)</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es un método?</p>
+      <button class="opcion" data-op="a">Una función que no retorna nada</button>
+      <button class="opcion" data-op="b">Una función definida dentro de una clase, que ya conoce los datos del objeto</button>
+      <button class="opcion" data-op="c">Un parámetro con valor por defecto</button>
+      <button class="opcion" data-op="d">Un tipo especial de return</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> En <code>p.esta_atrasado()</code>, ¿qué representa <code>self</code> dentro del método?</p>
+      <button class="opcion" data-op="a">La clase Prestamo completa</button>
+      <button class="opcion" data-op="b">Un parámetro que debes pasar a mano</button>
+      <button class="opcion" data-op="c">El objeto <code>p</code> mismo: el que va antes del punto</button>
+      <button class="opcion" data-op="d">Un error de sintaxis</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuándo un cálculo SÍ merece ser método del modelo?</p>
+      <button class="opcion" data-op="a">Cuando necesita datos que el propio objeto ya guarda (usa <code>self</code>)</button>
+      <button class="opcion" data-op="b">Cuando es cortito</button>
+      <button class="opcion" data-op="c">Cuando retorna un string</button>
+      <button class="opcion" data-op="d">Siempre: todo debe ser método</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Qué hace <code>app.include_router(prestamos_router)</code>?</p>
+      <button class="opcion" data-op="a">Crea una nueva base de datos</button>
+      <button class="opcion" data-op="b">Valida los modelos Pydantic</button>
+      <button class="opcion" data-op="c">Copía y pega las rutas dentro de main.py</button>
+      <button class="opcion" data-op="d">Monta en la app todas las rutas del grupo, con el prefijo y tags definidos una sola vez</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: refactorizar la ruta-monstruo de <code>/prestamos</code></h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "De 60 líneas spaghetti a 6 piezas con nombre"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">El refactor de la ruta-monstruo</span>
+    </div>
+    <p>La ruta <code>/prestamos</code> de la biblioteca creció sin control: calcula multas inline, conecta a la BD a mano, formatea dinero en el contexto y valida con if sueltos. Tu misión: <strong>refactorizarla con todo lo de la clase</strong> — funciones con parámetros y retorno, una dependencia <code>Depends</code>, y un modelo Pydantic con métodos. La página debe quedar <strong>idéntica para el usuario</strong>: solo cambia el motor por dentro.</p>
+  </div>
+
+  <div class="caja-donde donde-python">
+    <h4>🏠 ¿Dónde vive esto?
+      <span class="capa-badges"><span class="capa-badge sql">🐘 SQL</span><span class="capa-badge python">🐍 Python</span><span class="capa-badge jinja">🚀 FastAPI</span></span>
+    </h4>
+    <p>Toca las tres capas: SQL trae las filas (o usas los datos de muestra), Python arma funciones y contexto, FastAPI une todo. Trabaja con los datos de muestra si no tienes la BD conectada.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>el villano — la ruta-monstruo antes del refactor</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># ❌ 60 líneas que hacen TODO: conectar, calcular, formatear, responder…</span>
+@app.get(<span class="str">"/prestamos"</span>)
+<span class="kw">async def</span> <span class="fn">prestamos</span>(request: Request):
+    conn = <span class="kw">await</span> pool.acquire()                 <span class="com"># 1. conexión a mano</span>
+    <span class="kw">try</span>:
+        filas = <span class="kw">await</span> conn.fetch(<span class="str">"SELECT * FROM prestamos"</span>)
+        total_multas = <span class="num">0</span>                        <span class="com"># 2. acumulador</span>
+        atrasados = <span class="num">0</span>
+        <span class="kw">for</span> p <span class="kw">in</span> filas:                       <span class="com"># 3. fórmula inline (¡número mágico!)</span>
+            <span class="kw">if</span> p[<span class="str">"dias_atraso"</span>] &gt; <span class="num">0</span>:
+                total_multas += p[<span class="str">"dias_atraso"</span>] * <span class="num">500</span>
+                atrasados += <span class="num">1</span>
+        contexto = {
+            <span class="str">"prestamos"</span>: filas,
+            <span class="str">"atrasados"</span>: atrasados,
+            <span class="str">"total_multas"</span>: f<span class="str">"${total_multas:,}"</span>.replace(<span class="str">","</span>, <span class="str">"."</span>),  <span class="com"># 4. formato inline</span>
+        }
+        <span class="kw">return</span> templates.TemplateResponse(request, <span class="str">"prestamos.html"</span>, context=contexto)
+    <span class="kw">finally</span>:
+        <span class="kw">await</span> pool.release(conn)              <span class="com"># 5. liberación a mano</span>
+    <span class="com"># Y esto se copia-pega en /libros, /estudiantes, /multas… 😱</span></code></pre>
+  </div>
+
+  <h3>🧠 Reto 1 — La función <code>calcular_multa</code> y la constante</h3>
+  <p>Extrae la fórmula (<code>dias * 500</code>) a una función <code>calcular_multa(dias_atraso) -&gt; int</code> con su constante <code>TARIFA_POR_DIA</code>, docstring y early return para <code>None</code>/negativos. Escribe también <code>formatear_dinero(valor, simbolo="$") -&gt; str</code>. En la terminal, prueba: <code>calcular_multa(7)</code>, <code>calcular_multa(0)</code>, <code>calcular_multa(None)</code>, <code>formatear_dinero(3500)</code>.</p>
+
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 1</h4>
+    <pre><code>TARIFA_POR_DIA = <span class="num">500</span>
+
+<span class="kw">def</span> <span class="fn">calcular_multa</span>(dias_atraso: <span class="num">int</span> | <span class="kw">None</span>) -&gt; <span class="num">int</span>:
+    <span class="str">"""Multa = días × tarifa. None o ≤0 → $0."""</span>
+    <span class="kw">if</span> dias_atraso <span class="kw">is</span> <span class="kw">None</span> <span class="kw">or</span> dias_atraso &lt;= <span class="num">0</span>:
+        <span class="kw">return</span> <span class="num">0</span>
+    <span class="kw">return</span> dias_atraso * TARIFA_POR_DIA
+
+<span class="kw">def</span> <span class="fn">formatear_dinero</span>(valor: <span class="num">int</span>, simbolo: <span class="num">str</span> = <span class="str">"$"</span>) -&gt; <span class="num">str</span>:
+    <span class="str">"""3500 → '$3.500'."""</span>
+    <span class="kw">return</span> f<span class="str">"{simbolo}{valor:,}"</span>.replace(<span class="str">","</span>, <span class="str">"."</span>)</code></pre>
+  </div>
+
+  <h3>🧠 Reto 2 — La dependencia <code>get_db</code></h3>
+  <p>Convierte la conexión a mano (acquire/release) en la dependencia <code>async def get_db()</code> con <code>yield</code> y <code>finally</code>, y úsala en la ruta con <code>Depends(get_db)</code>. Verifica que la ruta quedó <strong>más corta</strong> y que la conexión se libera aunque la consulta falle (pruébalo con un SELECT mal escrito a propósito).</p>
+
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 2</h4>
+    <pre><code><span class="kw">async def</span> <span class="fn">get_db</span>():
+    conn = <span class="kw">await</span> pool.acquire()
+    <span class="kw">try</span>:
+        <span class="kw">yield</span> conn
+    <span class="kw">finally</span>:
+        <span class="kw">await</span> pool.release(conn)
+
+@app.get(<span class="str">"/prestamos"</span>)
+<span class="kw">async def</span> <span class="fn">prestamos</span>(request: Request, conn = Depends(get_db)):
+    filas = <span class="kw">await</span> conn.fetch(<span class="str">"SELECT * FROM prestamos"</span>)
+    ...</code></pre>
+  </div>
+
+  <h3>🧠 Reto 3 — El modelo con método</h3>
+  <p>Crea el modelo Pydantic <code>Prestamo</code> con los campos de la tabla y añádele el método <code>multa(self) -&gt; int</code> (delega en tu <code>calcular_multa</code>) y <code>estado(self) -&gt; str</code> (retorna "atrasado"/"a tiempo"). Bonus: un <code>@field_validator</code> para que <code>estudiante</code> nunca venga vacío ni con espacios sobrantes.</p>
+
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 3</h4>
+    <pre><code><span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel, Field, field_validator
+
+<span class="kw">class</span> Prestamo(BaseModel):
+    estudiante: <span class="num">str</span> = Field(min_length=<span class="num">2</span>)
+    libro: <span class="num">str</span>
+    dias_atraso: <span class="num">int</span> = Field(default=<span class="num">0</span>, ge=<span class="num">0</span>)
+
+    <span class="kw">@field_validator</span>(<span class="str">"estudiante"</span>)
+    <span class="kw">def</span> <span class="fn">limpiar_nombre</span>(cls, v):
+        v = v.strip()
+        <span class="kw">if</span> <span class="kw">not</span> v:
+            <span class="kw">raise</span> ValueError(<span class="str">"estudiante vacío"</span>)
+        <span class="kw">return</span> v
+
+    <span class="kw">def</span> <span class="fn">multa</span>(self) -&gt; <span class="num">int</span>:
+        <span class="kw">return</span> calcular_multa(self.dias_atraso)   <span class="com"># ♻️ reutilización</span>
+
+    <span class="kw">def</span> <span class="fn">estado</span>(self) -&gt; <span class="num">str</span>:
+        <span class="kw">return</span> <span class="str">"atrasado"</span> <span class="kw">if</span> self.dias_atraso &gt; <span class="num">0</span> <span class="kw">else</span> <span class="str">"a tiempo"</span></code></pre>
+  </div>
+
+  <h3>🧠 Reto 4 — La ruta refrescada</h3>
+  <p>Reescribe <code>/prestamos</code> usando todo lo anterior: <code>Depends(get_db)</code>, <code>calcular_multa</code>/<code>formatear_dinero</code> para armar el contexto (o los métodos del modelo si convertiste las filas), y el bucle que suma totales delegado en <code>sum()</code> como en la clase 9. Meta: <strong>la ruta no supera ~10 líneas</strong> y no contiene ni una fórmula.</p>
+
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 4</h4>
+    <pre><code>@app.get(<span class="str">"/prestamos"</span>)
+<span class="kw">async def</span> <span class="fn">prestamos</span>(request: Request, conn = Depends(get_db)):
+    filas = <span class="kw">await</span> conn.fetch(<span class="str">"SELECT * FROM prestamos"</span>)
+    contexto = {
+        <span class="str">"prestamos"</span>: filas,
+        <span class="str">"atrasados"</span>: sum(<span class="num">1</span> <span class="kw">for</span> p <span class="kw">in</span> filas <span class="kw">if</span> p[<span class="str">"dias_atraso"</span>] &gt; <span class="num">0</span>),
+        <span class="str">"total_multas"</span>: formatear_dinero(sum(calcular_multa(p[<span class="str">"dias_atraso"</span>]) <span class="kw">for</span> p <span class="kw">in</span> filas)),
+    }
+    <span class="kw">return</span> templates.TemplateResponse(request, <span class="str">"prestamos.html"</span>, context=contexto)</code></pre>
+  </div>
+
+  <h3>🧠 Reto 5 (bonus) — <code>APIRouter</code> y el archivo <code>helpers.py</code></h3>
+  <p>Organiza: mueve <code>TARIFA_POR_DIA</code>, <code>calcular_multa</code> y <code>formatear_dinero</code> a un archivo <code>helpers.py</code> e impórtalos (<code>from helpers import calcular_multa, formatear_dinero</code>). Agrupa las rutas de préstamos en un <code>APIRouter</code> con <code>prefix="/prestamos"</code> y móntalo con <code>include_router</code>. Pregunta final: ¿cuántas piezas quedaron reutilizables para la app completa?</p>
+
+  <div class="caja-importante">
+    <h4>🦹 Reflexión final</h4>
+    <p>Empezaste con una ruta de 60 líneas que hacía todo; terminaste con <strong>una constante, dos funciones con parámetros y retorno, una dependencia que FastAPI ejecuta por ti, y un modelo con métodos que delegan en tus propias funciones</strong>. La ruta quedó corta, legible y — lo más importante — <strong>cada pieza sirve para las demás rutas de la app</strong>. Eso es reutilización de código: escribir una vez, usar mil veces. 🧩</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 10 minutos</h4>
+    <p>Con su compañero/a, revisen sus soluciones:</p>
+    <ol>
+      <li>¿La ruta quedó sin fórmulas inline ni números mágicos?</li>
+      <li>¿<code>calcular_multa</code> maneja <code>None</code> y negativos con early return?</li>
+      <li>¿La conexión se libera aunque la consulta falle? (el <code>finally</code> de <code>get_db</code>)</li>
+      <li>¿Los métodos del modelo usan <code>self</code>? ¿O alguno merecía ser función suelta?</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="7">
+    <h3>🎯 Quiz Final</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> La tarifa por día sube de $500 a $800 en toda tu app refactorizada. ¿Cuántos lugares tocas?</p>
+      <button class="opcion" data-op="a">Uno por cada ruta que calcula multas</button>
+      <button class="opcion" data-op="b">Dos: la constante y su docstring</button>
+      <button class="opcion" data-op="c">Uno: <code>TARIFA_POR_DIA = 800</code> — todas las rutas y métodos la usan</button>
+      <button class="opcion" data-op="d">Ninguno: Python actualiza constantes solo</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué <code>async def get_db()</code> con <code>yield</code> es una función reutilizable?</p>
+      <button class="opcion" data-op="a">Porque se define una vez y FastAPI la ejecuta en cada request de todas las rutas que la declaran con <code>Depends</code></button>
+      <button class="opcion" data-op="b">Porque yield hace la consulta SQL</button>
+      <button class="opcion" data-op="c">Porque es async y las async se comparten</button>
+      <button class="opcion" data-op="d">Porque retorna un TemplateResponse</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> En el modelo, <code>def multa(self)</code> es mejor que <code>def multa(dias_atraso)</code> suelta…</p>
+      <button class="opcion" data-op="a">…porque los métodos corren más rápido</button>
+      <button class="opcion" data-op="b">…porque el objeto ya conoce su <code>dias_atraso</code>: quien llama no necesita pasarlo, y encima delega en tu función reutilizable</button>
+      <button class="opcion" data-op="c">…porque Pydantic exige métodos</button>
+      <button class="opcion" data-op="d">…porque no necesita docstring</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> Resumen de la clase en una línea:</p>
+      <button class="opcion" data-op="a">Las funciones evitan usar SQL</button>
+      <button class="opcion" data-op="b">Los métodos reemplazan a las rutas</button>
+      <button class="opcion" data-op="c"><code>return</code> es opcional en FastAPI</button>
+      <button class="opcion" data-op="d">def + parámetros + return + reutilización: escribes la lógica UNA vez y la llamas donde haga falta</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 10 completada!</h2>
+    <p>Dominas las <strong>funciones y métodos</strong>: <code>def</code> para definirlas, <strong>parámetros</strong> (posicionales, nombrados, por defecto — y la trampa mutable) como entrada, <strong>retorno</strong> (<code>return</code>, tuplas, early return) como salida, y el principio <strong>DRY</strong> para reutilizarlas en todas tus rutas — con <code>Depends</code> como la función que FastAPI ejecuta por ti, y los <strong>métodos</strong> de tus modelos Pydantic como funciones que ya conocen sus datos. Tu app de biblioteca acaba de pasar de copy-paste a arquitectura. 🧩</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🛠️ Herramientas de Programación II · Clase 10 · Funciones y métodos</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
