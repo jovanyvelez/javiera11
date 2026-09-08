@@ -326,7 +326,7 @@
 
   <div class="caja-concepto">
     <h3>🧠 La idea central</h3>
-    <p>La validación con Pydantic ocurre <strong>antes</strong> de tocar la base de datos. Cuando el usuario envía un formulario, la ruta recibe los datos, los valida con el modelo, y solo si son válidos llama al repositorio. Si no, responde 422.</p>
+    <p>La validación con Pydantic ocurre <strong>antes</strong> de tocar la base de datos. La ruta recibe el modelo <strong>ya validado</strong> (<code>Annotated[AutorCrear, Form()]</code>, como en la clase 5): si el formulario no cumple las reglas, FastAPI responde 422 y ni siquiera entra a la función. Si entra, los datos son confiables y solo queda llamar al repositorio.</p>
   </div>
 
   <div class="code-wrap">
@@ -338,10 +338,10 @@
       <button class="copy-btn">📋 Copiar</button>
     </div>
 <pre><code><span class="kw">@router.post</span>(<span class="str">"/autores"</span>)
-<span class="kw">async def</span> <span class="fn">crear_autor</span>(nombre: <span class="ty">str</span> = Form(), ...):
-    <span class="cm"># 1. validar con Pydantic</span>
-    autor = AutorCrear(nombre=nombre, pais=pais, nacimiento=nacimiento)
-    <span class="cm"># 2. si es válido, guardar en la BD</span>
+<span class="kw">async def</span> <span class="fn">crear_autor</span>(
+    autor: <span class="ty">Annotated</span>[<span class="ty">AutorCrear</span>, <span class="ty">Form</span>()],  <span class="cm"># 1. FastAPI valida ANTES de entrar</span>
+):
+    <span class="cm"># 2. ya es válido: guardar en la BD</span>
     <span class="kw">await</span> crear_autor(conn, autor.nombre, autor.pais, autor.nacimiento)
     <span class="cm"># 3. devolver la tabla actualizada</span>
     <span class="kw">return</span> templates.TemplateResponse(...)</code></pre>
