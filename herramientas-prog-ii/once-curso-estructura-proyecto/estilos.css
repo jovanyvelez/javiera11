@@ -687,6 +687,108 @@ main { max-width: 1000px; margin: 0 auto; padding: 2.4rem 1.6rem 5rem; }
 .matriz tr.destacada td { background: var(--alerta-suave); }
 
 /* ============================================================
+   DESPLEGABLE — «hazlo con comandos» para quien lo necesite
+   ============================================================ */
+.fuente-dropdown {
+  background: var(--papel-3);
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio);
+  margin: 1.2rem 0;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.fuente-dropdown:hover { border-color: var(--c1); }
+.fuente-dropdown[open] { border-color: var(--c1); box-shadow: var(--sombra); }
+
+.fuente-dropdown summary {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .85rem 1.1rem;
+  cursor: pointer;
+  font-size: .92rem;
+  font-weight: 700;
+  list-style: none;
+  user-select: none;
+  background: linear-gradient(90deg, var(--c1-suave), transparent);
+  transition: background .2s;
+}
+.fuente-dropdown summary::-webkit-details-marker { display: none; }
+.fuente-dropdown summary:hover { background: linear-gradient(90deg, #e2ebff, transparent); }
+
+.fuente-dropdown .fuente-emoji { font-size: 1.1rem; }
+.fuente-dropdown summary code { color: var(--c1); font-size: .9em; }
+.fuente-dropdown .fuente-rol { color: var(--tinta-3); font-size: .8rem; font-weight: 400; }
+.fuente-dropdown .fuente-chevron {
+  margin-left: auto;
+  color: var(--c1);
+  font-size: .8rem;
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.fuente-dropdown[open] .fuente-chevron { transform: rotate(90deg); }
+
+.fuente-desc {
+  padding: .9rem 1.1rem .2rem;
+  font-size: .88rem;
+  color: var(--tinta-2);
+}
+
+.fuente-dropdown .code-wrap { margin: .8rem 0 0; border-radius: 0; border-left: none; border-right: none; }
+.fuente-dropdown .fuente-desc:last-child { padding-bottom: .9rem; }
+
+/* ============================================================
+   CONSOLA DE LA CLASE — referencia Windows / Mac / Linux
+   ============================================================ */
+.consola { border: 1px solid var(--linea-fuerte); background: var(--papel-3); margin: 1.5rem 0; }
+
+.consola-cab {
+  display: flex;
+  align-items: baseline;
+  gap: .6rem;
+  padding: .7rem 1.1rem;
+  background: var(--tinta);
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  flex-wrap: wrap;
+}
+.consola-cab small {
+  font-size: .68rem;
+  letter-spacing: .04em;
+  text-transform: none;
+  color: #a8a79f;
+}
+
+.consola .contenedor-tabla { margin: 0; }
+.consola .tabla { min-width: 620px; }
+
+.consola .tabla th:first-child { width: 38%; }
+.consola .tabla th.win  { color: var(--c1); }
+.consola .tabla th.unix { color: var(--c2); }
+.consola .tabla code { white-space: nowrap; font-size: .82em; }
+.consola .tabla td:first-child { color: var(--tinta-2); font-size: .87rem; }
+.consola .tabla td.win  code { color: var(--c1); border-left: 3px solid var(--c1); }
+.consola .tabla td.unix code { color: var(--c2); border-left: 3px solid var(--c2); }
+
+/* Avisos de Windows que la clase resuelve de forma explícita */
+.trampa {
+  border: 1px solid var(--c3);
+  border-left: 4px solid var(--c3);
+  background: var(--c3-suave);
+  padding: .9rem 1.1rem;
+  margin: 1.1rem 0;
+  border-radius: var(--radio);
+}
+.trampa h4 { color: var(--c3); margin-bottom: .5rem; font-size: .96rem; }
+.trampa ul { margin: 0; }
+.trampa li { margin: .45rem 0; font-size: .9rem; }
+.trampa code { white-space: nowrap; }
+.trampa .win { color: var(--c1); font-weight: 700; }
+
+/* ============================================================
    PASOS DEL PROTOCOLO DE LECTURA
    ============================================================ */
 .lectura { margin: 1.3rem 0; border: 1px solid var(--linea); background: var(--papel-3); }
@@ -898,6 +1000,21 @@ main { max-width: 1000px; margin: 0 auto; padding: 2.4rem 1.6rem 5rem; }
 .code-ruta .p.c1 { color: var(--c1); }
 .code-ruta .p.c2 { color: var(--c2); }
 .code-ruta .p.c3 { color: var(--c3); }
+
+/* Etiqueta de la "shell" de un bloque de comandos */
+.code-ruta .shell {
+  font-size: .6rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+  background: var(--papel);
+  border: 1px solid var(--linea-fuerte);
+  border-radius: 2px;
+  padding: .05rem .38rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.code-ruta .shell.vscode { color: var(--c1); border-color: var(--c1); }
 
 .copy-btn {
   background: var(--papel-3);

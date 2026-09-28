@@ -187,13 +187,81 @@
     <p>Todos los ejemplos del bloque 02 corren en la terminal de Python, sin servidor y sin PostgreSQL. En el taller sí vas a levantar la app, pero si no tienes la base de datos conectada <strong>el taller se puede hacer completo</strong>: las fases 1 a 4 son reorganización pura —mover archivos y arreglar imports— y la fase 5 solo necesita la base de datos si quieres comparar la página final.</p>
   </div>
 
+  <h3>🖥️ Prepara tu terminal</h3>
+  <p class="lead">Esta clase te va a pedir algunos comandos. Si usas Windows, tu terminal es <strong>PowerShell</strong>, que no es lo mismo que la de Mac o Linux: los comandos se escriben distinto. No te preocupes, porque para todo lo importante <strong>hay dos caminos</strong> y solo uno de ellos usa la consola.</p>
+
+  <div class="caja-tip">
+    <h4>El camino corto: el Explorador de archivos y el buscador de VS Code</h4>
+    <p>Todo lo de esta clase —crear carpetas, crear archivos, moverlos, buscar un texto— se puede hacer con dos botones, y funcionan <strong>exactamente igual en Windows, Mac y Linux</strong>. Por eso los comandos de esta clase son, en su mayoría, opcionales:</p>
+    <ul style="margin:0.4rem 0 0 1.1rem;">
+      <li><strong>Crear y mover carpetas y archivos</strong> → el Explorador de archivos de Windows, o el panel <em>Explorer</em> de VS Code (el de la izquierda, con el ícono de dos carpetas). Clic derecho → «Nueva carpeta», y para mover, arrastrar y soltar.</li>
+      <li><strong>Buscar un texto en todo el proyecto</strong> → <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd> en VS Code. Es el buscador de todo tu código, con la opción de activar las expresiones regulares (el botón <code>.*</code> de la esquina). Con esto haces <em>todas</em> las auditorías del bloque 05 y del taller, sin escribir un solo comando.</li>
+    </ul>
+    <p>La terminal la vas a necesitar para dos cosas solamente: <strong>ejecutar el servidor</strong> y <strong>correr Python</strong>. Y para eso, la receta es la misma en todos los sistemas.</p>
+  </div>
+
+  <h4>La terminal de esta clase</h4>
+  <p>La forma más segura de abrirla es el menú del editor, porque el atajo del teclado cambia con el idioma del teclado:</p>
+  <div class="cuadricula-2">
+    <div class="tarjeta">
+      <span class="emoji">🪟</span>
+      <h3>Windows</h3>
+      <p>Con <strong>VS Code abierto</strong>: menú <em>Terminal → Nueva terminal</em>. El atajo oficial es <kbd>Ctrl</kbd>+<kbd>`</kbd>, pero con teclado en español a veces no responde: el menú nunca falla. La terminal se abre abajo, en una pantalla dividida. Lo que verás es <strong>PowerShell</strong>, y su línea empieza con <code>PS C:\…&gt;</code>.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🍎</span>
+      <h3>Mac o Linux</h3>
+      <p>Con <strong>VS Code abierto</strong>: el mismo menú <em>Terminal → Nueva terminal</em> (atajo <kbd>Ctrl</kbd>+<kbd>`</kbd>). Verás el símbolo <code>$</code> al inicio de cada línea. Si prefieres la aplicación aparte, en Mac es <em>Terminal</em> y en Linux depende de la distribución.</p>
+    </div>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cab">Referencia rápida de la consola <small>guárdala: la vas a usar todo el taller</small></div>
+    <div class="contenedor-tabla">
+      <table class="tabla">
+        <thead>
+          <tr><th>Para…</th><th class="win">Windows · PowerShell</th><th class="unix">Mac / Linux · terminal</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Ver lo que hay en la carpeta</td><td class="win"><code>Get-ChildItem</code></td><td class="unix"><code>ls</code></td></tr>
+          <tr><td>Entrar a una carpeta</td><td class="win"><code>cd biblioteca</code></td><td class="unix"><code>cd biblioteca</code></td></tr>
+          <tr><td>Volver a la carpeta de arriba</td><td class="win"><code>cd ..</code></td><td class="unix"><code>cd ..</code></td></tr>
+          <tr><td>Crear una carpeta</td><td class="win"><code>mkdir nucleo</code></td><td class="unix"><code>mkdir nucleo</code></td></tr>
+          <tr><td>Crear <strong>varias</strong> carpetas de una vez</td><td class="win"><code>mkdir nucleo,dominio,presentacion</code></td><td class="unix"><code>mkdir nucleo dominio presentacion</code></td></tr>
+          <tr><td>Crear un archivo vacío</td><td class="win"><code>New-Item archivo.py -ItemType File</code></td><td class="unix"><code>touch archivo.py</code></td></tr>
+          <tr><td>Copiar una carpeta entera</td><td class="win"><code>Copy-Item -Recurse biblioteca biblioteca-plana</code></td><td class="unix"><code>cp -r biblioteca biblioteca-plana</code></td></tr>
+          <tr><td>Mover / renombrar</td><td class="win"><code>Move-Item esquemas.py dominio\esquemas.py</code></td><td class="unix"><code>mv esquemas.py dominio/esquemas.py</code></td></tr>
+          <tr><td>Borrar un archivo</td><td class="win"><code>Remove-Item archivo.py</code></td><td class="unix"><code>rm archivo.py</code></td></tr>
+          <tr><td>Borrar una carpeta con todo</td><td class="win"><code>Remove-Item -Recurse -Force carpeta</code></td><td class="unix"><code>rm -rf carpeta</code></td></tr>
+          <tr><td>Ver el árbol de carpetas</td><td class="win"><code>tree /F</code></td><td class="unix"><code>tree -a</code></td></tr>
+          <tr><td>Buscar un texto en el proyecto</td><td class="win"><code>Select-String</code> <span class="nota">(usa mejor <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd>)</span></td><td class="unix"><code>grep -rn "texto" .</code></td></tr>
+          <tr><td>Ejecutar un archivo de Python</td><td class="win"><code>py app.py</code></td><td class="unix"><code>python3 app.py</code></td></tr>
+          <tr><td>Probar un import</td><td class="win"><code>py -c "import main"</code></td><td class="unix"><code>python3 -c "import main"</code></td></tr>
+          <tr><td>Poner la variable <code>DATABASE_URL</code></td><td class="win"><code>$env:DATABASE_URL = "postgresql://…"</code></td><td class="unix"><code>export DATABASE_URL="postgresql://…"</code></td></tr>
+          <tr><td>Levantar el servidor</td><td class="win"><code>uvicorn main:app --reload</code></td><td class="unix"><code>uvicorn main:app --reload</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="trampa">
+    <h4>⚠️ Cinco trampas de Windows que te van a parar (y cómo salir de ellas)</h4>
+    <ul>
+      <li><span class="win">«python» no se reconoce como comando.</span> En Windows el lanzador se llama <code>py</code>. Escribe <code>py app.py</code> en vez de <code>python app.py</code>. Si tampoco funciona, es que Python no está en el PATH: reinstálalo marcando <em>«Add Python to PATH»</em>.</li>
+      <li><span class="win">Las barras.</span> En Windows las rutas usan <code>\</code> y en Mac y Linux usan <code>/</code>. En los <strong>imports de Python da igual</strong>: <code>from presentacion.rutas.autores import …</code> funciona en los tres sistemas con la misma barra. Lo que sí es relativo al sistema es el <code>directory="presentacion/templates"</code> de <code>Jinja2Templates</code>, y también ahí funciona con <code>/</code>.</li>
+      <li><span class="win">Los acentos se rompen al escribir archivos desde la terminal.</span> Si creas un archivo con acentos o con la raya «—» usando el comando, hay que especificar la codificación. Por eso los comandos de esta clase que escriben archivos llevan <code>-Encoding UTF8</code>. Si prefieres evitarlo, <strong>crea los archivos en el editor</strong>: es más fácil y nunca falla.</li>
+      <li><span class="win">«export» no se reconoce como comando.</span> Ese es de Mac y Linux: en PowerShell las variables de entorno se escriben distinto. Para poner la de la base de datos: <code>$env:DATABASE_URL = "postgresql://…"</code>, sin espacios alrededor del <code>=</code>. Ojo: la variable dura lo que dure esa terminal; si la cierras, hay que ponerla otra vez antes de arrancar el servidor.</li>
+      <li><span class="win">«El proceso no puede acceder al archivo porque está siendo utilizado por otro proceso».</span> Es Windows bloqueando el borrado o el movimiento de una carpeta que tiene el servidor funcionando. Cierra la terminal donde corre el servidor (o presiona <kbd>Ctrl</kbd>+<kbd>C</kbd> ahí) y vuelve a intentar. En Mac y Linux esto casi nunca pasa: es una protección propia de Windows.</li>
+    </ul>
+  </div>
+
   <div class="caja-pareja">
     <h4>Antes de empezar — 3 minutos</h4>
     <p>Abre tu proyecto <code>biblioteca/</code> y responde en voz alta, junto a tu compañero o compañera:</p>
     <ol>
       <li>Si mañana te piden «agrega la página de préstamos», ¿en qué archivo escribirías?</li>
       <li>Si te piden «cambia la tarifa de la multa a $800», ¿cuántos archivos abrirías?</li>
-      <li>Si alguien nuevo entra al equipo, ¿qué le dices que abra primero para entender el proyecto?</li>
+      <li>Si alguien nuevo entra al equipo, ¿qué le dices que abre primero para entender el proyecto?</li>
     </ol>
     <p>Anota las tres respuestas. Al final de la clase las vas a comparar con lo que aprendiste.</p>
   </div>
@@ -218,22 +286,55 @@
   </div>
 
   <h3>Mira los números reales</h3>
-  <p class="lead">Abre la terminal dentro de la carpeta de tu proyecto y ejecuta esto. No es un ejercicio: es la radiografía de tu proyecto.</p>
+  <p class="lead">Esto es la radiografía de tu proyecto. Y la buena noticia es que la forma más fácil de obtenerla no usa la consola.</p>
 
   <div class="code-wrap">
     <div class="code-header">
-      <div class="code-ruta"><span class="p">📟 terminal — dentro de biblioteca/</span></div>
+      <div class="code-ruta"><span class="shell vscode">VS Code</span><span class="p">📂 Explorador — el atajo más rápido</span></div>
+    </div>
+<pre><code><span class="com">// 1. Abre biblioteca/ en el panel Explorer de VS Code (el de la izquierda).</span>
+<span class="com">// 2. Marca los siete archivos .py con Ctrl+clic.</span>
+<span class="com">// 3. Mira la barra de estado, abajo a la derecha: dice cuántos archivos</span>
+<span class="com">//    seleccionaste y cuántas líneas tienen en total.</span>
+
+<span class="com">// Para ver el tamaño de uno solo, ábrelo y lee la barra de estado:</span>
+<span class="com">//    "Ln 164, Col 9 (100 %)"  ← 164 es su última línea.</span>
+<span class="com">//    Ese 164 es exactamente el mismo número que te da el comando de abajo.</span></code></pre>
+  </div>
+
+  <p>Si prefieres la terminal, el comando que trae la misma tabla está a continuación. Está escrito en <strong>PowerShell</strong>, que es la terminal de Windows. Y si en un tutorial antiguo ves <code>wc -l *.py</code>, esa es la versión de Mac y Linux: es la última línea del bloque, como comentario.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-ruta"><span class="shell">PowerShell</span><span class="p">📟 dentro de la carpeta biblioteca/</span></div>
       <button class="copy-btn">copiar</button>
     </div>
-<pre><code>dev@biblioteca:~$ <span class="kw">wc</span> -l *.py
-    8 dependencias.py
-   13 esquemas.py
-   22 main.py
-   56 database.py
-  116 repositorio.py
-  120 ejercicios.py
-  164 vistas.py
-  499 total</code></pre>
+<pre><code>PS C:\...\biblioteca&gt; Get-ChildItem *.py | ForEach-Object {
+&gt;   [PSCustomObject]@{
+&gt;     Archivo = $_.Name
+&gt;     Lineas  = (Get-Content $_.FullName).Count
+&gt;   }
+&gt; } | Sort-Object Lineas | Format-Table -AutoSize
+
+<span class="com"># En Mac o Linux, el mismo resultado es una sola línea:</span>
+<span class="com">#   wc -l *.py | sort -n</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-ruta"><span class="p">📋 el resultado, sea cual sea la ruta que tomaste</span></div>
+    </div>
+<pre><code>Archivo           Lineas
+--------           ------
+dependencias.py         8
+esquemas.py            13
+main.py                22
+database.py            56
+repositorio.py        116
+ejercicios.py         120
+vistas.py             164
+                      <span class="com">─────</span>
+                      499  en total</code></pre>
   </div>
 
   <div class="nota-mono">Lo que dicen estos números
@@ -455,7 +556,7 @@ uvicorn main:app <span class="com"># ← lanzado desde biblioteca/ → '.' es la
     <p>Si borras un <code>__init__.py</code>, o si lanzas el servidor desde la carpeta equivocada, aparece esto:</p>
 <pre><code>ModuleNotFoundError: No module named 'nucleo'
 
-<span class="com"># Y el más confuso de todos, que loAecha en el bloque 04:</span>
+<span class="com"># Y el más confuso de todos, el que desarmamos por completo en el bloque 04:</span>
 ImportError: cannot import name 'calcular_multa' from partially
 initialized module 'dominio.servicios' (most likely due to a circular import)</code></pre>
     <p>El primero significa <strong>«no te encontré la carpeta»</strong>: o falta el <code>__init__.py</code>, o no estás parado en la raíz del proyecto. El segundo significa <strong>«dos archivos se están esperando mutuamente»</strong>, y es el error que más cuesta cuando uno empieza a organizar. Lo desarmamos por completo en el bloque 04.</p>
@@ -503,60 +604,89 @@ initialized module 'dominio.servicios' (most likely due to a circular import)</c
   </div>
 
   <h3>Manos a la obra: un proyecto de tres archivos en cinco minutos</h3>
-  <p class="lead">Este es el ejercicio que quita el miedo. Crea una carpeta llamada <code>prueba_estructura</code> y llénala así:</p>
+  <p class="lead">Este es el ejercicio que quita el miedo. Vas a crear una carpeta llamada <code>prueba_estructura</code> con tres archivos. <strong>Hazlo en el editor</strong>, que es la forma más rápida y la que no falla: en el panel <em>Explorer</em> de VS Code, clic derecho sobre la carpeta donde estás → «Nueva carpeta», le pones el nombre, y dentro, «Nuevo archivo» para cada archivo.</p>
 
   <div class="code-wrap">
     <div class="code-header">
-      <div class="code-ruta"><span class="p">🛠️ comandos exactos</span></div>
-      <button class="copy-btn">copiar</button>
+      <div class="code-ruta"><span class="shell vscode">VS Code</span><span class="p">🛠️ los tres archivos, completos</span></div>
     </div>
-<pre><code><span class="com"># 1. Crear la carpeta y entrar</span>
-mkdir prueba_estructura &amp;&amp; <span class="kw">cd</span> prueba_estructura
+<pre><code><span class="com">// 📁 prueba_estructura/</span>
+<span class="com">// │</span>
+<span class="com">// ├── 📁 nucleo/</span>
+<span class="com">// │    ├── __init__.py      ← archivo nuevo, déjalo VACÍO</span>
+<span class="com">// │    └── conexion.py     ← archivo nuevo, con este contenido:</span>
 
-<span class="com"># 2. Crear el paquete "nucleo" con su __init__.py</span>
-mkdir nucleo
-touch nucleo/__init__.py
-
-<span class="com"># 3. El módulo de la conexión</span>
-cat &gt; nucleo/conexion.py &lt;&lt;<span class="str">'PY'</span>
 <span class="kw">def</span> <span class="fn">saludar</span>() -&gt; str:
     <span class="str">"""Saludo del paquete nucleo."""</span>
     <span class="str">"Hola desde nucleo/conexion.py"</span>
-PY
 
-<span class="com"># 4. El archivo que usa al paquete</span>
-cat &gt; app.py &lt;&lt;<span class="str">'PY'</span>
+
+<span class="com">// ├── 📁 app.py             ← archivo nuevo en la raíz, con esto:</span>
+
 <span class="kw">from</span> nucleo.conexion <span class="kw">import</span> saludar
-<span class="fn">print</span>(<span class="fn">saludar</span>())
-PY
-
-<span class="com"># 5. Ejecutar DESDE la raíz, que es donde está app.py</span>
-python app.py
-<span class="com"># → Hola desde nucleo/conexion.py    ✅</span></code></pre>
+<span class="fn">print</span>(<span class="fn">saludar</span>())</code></pre>
   </div>
 
+  <p>Ahora abre una terminal <strong>dentro de la carpeta <code>prueba_estructura</code></strong> —en VS Code: clic derecho sobre la carpeta en el panel <em>Explorer</em> → «Open in Integrated Terminal»— y ejecuta <code>py app.py</code> (en Mac o Linux, <code>python3 app.py</code>). Debe imprimir <code>Hola desde nucleo/conexion.py</code>.</p>
+
+  <details class="fuente-dropdown">
+    <summary><span class="fuente-emoji">⌨️</span> ¿Prefieres crearlo con comandos? <span class="fuente-rol">aquí están, para PowerShell</span><span class="fuente-chevron">▶</span></summary>
+    <div class="fuente-desc">Copia este bloque en la terminal, línea por línea. Fíjate en el <code>-Encoding UTF8</code> del final: es lo que evita que Windows escriba los acentos con otra codificación.</div>
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-ruta"><span class="shell">PowerShell</span><span class="p">🛠️ crear la estructura con la terminal</span></div>
+        <button class="copy-btn">copiar</button>
+      </div>
+<pre><code><span class="com"># 1. Crear la carpeta y entrar</span>
+mkdir prueba_estructura
+<span class="kw">cd</span> prueba_estructura
+
+<span class="com"># 2. Crear el paquete "nucleo" con su __init__.py vacío</span>
+mkdir nucleo
+New-Item nucleo/__init__.py -ItemType File
+
+<span class="com"># 3. El módulo de la conexión</span>
+<span class="kw">@'</span>
+<span class="kw">def</span> <span class="fn">saludar</span>() -&gt; str:
+    <span class="str">"""Saludo del paquete nucleo."""</span>
+    <span class="str">"Hola desde nucleo/conexion.py"</span>
+<span class="kw">'@ | Set-Content nucleo/conexion.py -Encoding UTF8</span>
+
+<span class="com"># 4. El archivo que usa al paquete</span>
+<span class="kw">@'</span>
+<span class="kw">from</span> nucleo.conexion <span class="kw">import</span> saludar
+<span class="fn">print</span>(<span class="fn">saludar</span>())
+<span class="kw">'@ | Set-Content app.py -Encoding UTF8</span>
+
+<span class="com"># 5. Ejecutar DESDE la raíz, que es donde está app.py</span>
+py app.py
+<span class="com"># → Hola desde nucleo/conexion.py    ✅</span></code></pre>
+    </div>
+    <p class="fuente-desc" style="border: none; padding-top: .8rem;">En Mac o Linux, lo mismo con: <code>mkdir prueba_estructura &amp;&amp; cd prueba_estructura</code>, <code>touch nucleo/__init__.py</code>, y para escribir cada archivo <code>cat &gt; archivo.py</code> seguido del contenido, y <kbd>Ctrl</kbd>+<kbd>D</kbd> para cerrar. No hace falta el <code>-Encoding UTF8</code>.</p>
+  </details>
+
   <h3>Ahora rómpelo a propósito (esto es lo importante)</h3>
-  <p class="lead">Un error que entiendes ya no vuelve a ocurrir. Provoca los tres y anota el mensaje exacto, porque son los que verás en el taller.</p>
+  <p class="lead">Un error que entiendes ya no vuelve a ocurrir. Provoca los tres y anota el mensaje exacto, porque son los que verás en el taller. Los comandos de borrar y de cambiar de carpeta son los únicos que aquí sí usas la terminal.</p>
 
   <div class="code-wrap">
     <div class="code-header">
-      <div class="code-ruta"><span class="p">💣 tres errores y su explicación</span></div>
+      <div class="code-ruta"><span class="shell">PowerShell</span><span class="p">💣 tres errores y su explicación</span></div>
       <button class="copy-btn">copiar</button>
     </div>
 <pre><code><span class="com"># ERROR A — borra el __init__.py del paquete</span>
-rm nucleo/__init__.py
-python app.py
+Remove-Item nucleo/__init__.py
+py app.py
 <span class="no">ModuleNotFoundError: No module named 'nucleo.conexion'</span>
 <span class="com"># → Sin __init__.py la carpeta no es un paquete y Python la ignora.</span>
-touch nucleo/__init__.py
+New-Item nucleo/__init__.py -ItemType File
 
 <span class="com"># ERROR B — ejecutar desde la carpeta equivocada</span>
-cd ..                      <span class="com"># ahora estás FUERA de prueba_estructura/</span>
-python prueba_estructura/app.py
+<span class="kw">cd</span> ..                      <span class="com"># ahora estás FUERA de prueba_estructura/</span>
+py prueba_estructura/app.py
 <span class="no">ModuleNotFoundError: No module named 'nucleo.conexion'</span>
 <span class="com"># → La primera carpeta que se revisa es la desde la que</span>
 <span class="com">#   lanzaste el comando, NO la del archivo ejecutado.</span>
-cd prueba_estructura
+<span class="kw">cd</span> prueba_estructura
 
 <span class="com"># ERROR C — import relativo fuera de un paquete (el clásico</span>
 <span class="com">#   de los tutoriales: "from .conexion import saludar" dentro de</span>
@@ -564,13 +694,15 @@ cd prueba_estructura
 <span class="no">ImportError: attempted relative import with no known parent package</span>
 <span class="com"># → Los imports relativos solo funcionan si el archivo se importa</span>
 <span class="com">#   como parte de un paquete, nunca ejecutándolo directo.</span>
-<span class="com">#   Otra razón para usar siempre imports ABSOLUTOS.</span></code></pre>
+<span class="com">#   Otra razón para usar siempre imports ABSOLUTOS.</span>
+
+<span class="com"># En Mac o Linux:  rm nucleo/__init__.py  ·  python3 app.py  ·  cd ..</span></code></pre>
   </div>
 
   <div class="caja-tip">
     <h4>Dos costumbres que te van a salvar el taller</h4>
     <ul style="margin:0.3rem 0 0 1.1rem;">
-      <li><strong>Siempre desde la raíz.</strong> Todo comando que importe tu proyecto (<code>uvicorn main:app --reload</code>, <code>python -c "import main"</code>, <code>pytest</code>) se ejecuta desde la carpeta que contiene <code>main.py</code>. Si tu terminal dice <code>dev@equipo:~/…</code> en vez de <code>dev@biblioteca:~$</code>, estás en el lugar equivocado.</li>
+      <li><strong>Siempre desde la raíz.</strong> Todo comando que importe tu proyecto (<code>uvicorn main:app --reload</code>, <code>py -c "import main"</code>, <code>pytest</code>) se ejecuta desde la carpeta que contiene <code>main.py</code>. Para llegar ahí en Windows: <code>cd biblioteca</code>. Si tu terminal dice <code>PS C:\Users\tu_usuario\…</code> en vez de <code>PS C:\...\biblioteca&gt;</code>, estás en el lugar equivocado.</li>
       <li><strong>Lee el error completo, no solo la última línea.</strong> El traceback de Python empieza arriba y termina abajo, pero la línea que explica <em>por qué</em> es la última. Léelas todas: las primeras te dicen en qué archivo se rompió.</li>
     </ul>
   </div>
@@ -596,8 +728,8 @@ cd prueba_estructura
       <button class="opcion" data-op="d">Que el nombre esté en mayúsculas</button>
     </div>
     <div class="pregunta" data-correcta="a">
-      <p><strong>2.</strong> Estás en <code>~/descargas</code> y ejecutas <code>python biblioteca/app.py</code>. Ese archivo hace <code>from nucleo.conexion import …</code>. ¿Qué pasa?</p>
-      <button class="opcion" data-op="a">Falla con <code>ModuleNotFoundError</code>: Python buscó a partir de <code>~/descargas</code>, no de <code>~/descargas/biblioteca/</code></button>
+      <p><strong>2.</strong> Tu terminal está en <code>Descargas</code> y ejecutas <code>py biblioteca/app.py</code>. Ese archivo hace <code>from nucleo.conexion import …</code>. ¿Qué pasa?</p>
+      <button class="opcion" data-op="a">Falla con <code>ModuleNotFoundError</code>: Python buscó a partir de la carpeta <code>Descargas</code>, no de la carpeta <code>biblioteca/</code> que está dentro</button>
       <button class="opcion" data-op="b">Funciona, porque Python siempre busca en la carpeta del archivo ejecutado</button>
       <button class="opcion" data-op="c">Funciona, pero más lento</button>
       <button class="opcion" data-op="d">Falla solo si además falta el <code>__init__.py</code></button>
@@ -1064,7 +1196,7 @@ autores = []
 
   <div class="regla" data-num="04">
     <h4>La cuarta regla: si una capa necesita mirar hacia arriba, es que algo está mal</h4>
-    <p>Casi siempre, el problema real no es el import: es que <strong>esa función no estaba en la capa correcta</strong>. Mover el archivo a donde pertenece arregla el import y además arregla el nombre. Cuando te toque pelear con un import hacia arriba, no busques el truco parainementarlo: pregúntate qué responsabilidad está haciendo esa capa y muévela.</p>
+    <p>Casi siempre, el problema real no es el import: es que <strong>esa función no estaba en la capa correcta</strong>. Mover el archivo a donde pertenece arregla el import y además arregla el nombre. Cuando te toque pelear con un import hacia arriba, no busques el truco para esquivarlo: pregúntate qué responsabilidad está haciendo esa capa y muévela.</p>
   </div>
 
   <div class="caja-pareja">
@@ -1266,59 +1398,98 @@ autores = []
     <div class="lr">
       <div class="lr-n">1</div>
       <div class="lr-h"><small>el borde</small>Lee el punto de entrada de arriba abajo</div>
-      <div class="lr-c"><code>cat main.py</code></div>
+      <div class="lr-c"><code>Get-Content main.py</code>   <span class="gr">// Windows · en Mac o Linux: cat main.py</span></div>
       <div class="lr-w">Qué aprendes: <b>qué módulos existen y cómo se arman entre sí</b>. En el nuestro: tres routers y un pool. Con eso ya sabes el tamaño del proyecto sin haber leído nada más.</div>
     </div>
 
     <div class="lr">
       <div class="lr-n">2</div>
-      <div class="lr-h"><small>los imports</small>Deja que el editor te muestre los imports de cada archivo</div>
-      <div class="lr-c"><code>grep -rn "^from\|^import" --include="*.py" .</code></div>
+      <div class="lr-h"><small>los imports</small>Abre el buscador de VS Code y pide todos los imports</div>
+      <div class="lr-c"><code>Ctrl+Shift+F</code>   <span class="gr">// y busca:  ^from | ^import</span></div>
       <div class="lr-w">Qué aprendes: <b>la dirección de las flechas</b>. Si ves un <code>from presentacion</code> dentro de <code>dominio/</code>, ya encontraste un problema — y el comando te lo muestra en un segundo.</div>
     </div>
 
     <div class="lr">
       <div class="lr-n">3</div>
-      <div class="lr-h"><small>los verbos</small>Lista todas las funciones, agrupadas por archivo</div>
-      <div class="lr-c"><code>grep -rn "def \|@router" --include="*.py" .</code></div>
+      <div class="lr-h"><small>los verbos</small>Busca todas las definiciones y rutas del proyecto</div>
+      <div class="lr-c"><code>Ctrl+Shift+F</code>   <span class="gr">// y busca:  def | @router</span></div>
       <div class="lr-w">Qué aprendes: <b>el vocabulario del proyecto</b>. Los <code>def</code> son las piezas; los <code>@router</code> son las puertas de entrada. Con esta lista ya sabes qué se puede hacer y desde dónde.</div>
     </div>
 
     <div class="lr">
       <div class="lr-n">4</div>
       <div class="lr-h"><small>un dato</small>Sigue un dato real de principio a fin</div>
-      <div class="lr-c"><code>grep -rn "Guardar" presentacion/templates/ &nbsp;#&nbsp; y luego busca quién llena esa variable</code></div>
+      <div class="lr-c"><code>Ctrl+Shift+F → busca  Guardar</code><span class="gr">// primero en las plantillas, y luego entre los .py para ver quién llena esa variable</span></div>
       <div class="lr-w">Qué aprendes: <b>el recorrido completo</b>. Si puedes contar un dato desde la base de datos hasta el HTML, entiendes el proyecto mejor que la mayoría de la gente que lo usa todos los días.</div>
     </div>
   </div>
 
-  <h3>Cuatro comandos que vale la pena memorizar</h3>
-  <p class="lead">No son trucos: son la forma barata de verificar que la estructura es la que dicen ser. Funcionan en Linux, en macOS y en el terminal integrado de VS Code.</p>
+  <h3>Cuatro verificaciones que vale la pena memorizar</h3>
+  <p class="lead">No son trucos: son la forma barata de verificar que la estructura es la que dice ser. Y tres de las cuatro <strong>no necesitan la consola</strong>: se hacen con el buscador de VS Code, que es igual en Windows, Mac y Linux.</p>
 
   <div class="code-wrap">
     <div class="code-header">
-      <div class="code-ruta"><span class="p">🔍 auditoría de estructura — corre estas cuatro en el taller</span></div>
+      <div class="code-ruta"><span class="shell vscode">VS Code</span><span class="p">🔍 las tres búsquedas — Ctrl+Shift+F</span></div>
+    </div>
+<pre><code><span class="com">// Abrir el buscador: Ctrl+Shift+F. Para estas búsquedas activa la</span>
+<span class="com">// opción de expresiones regulares (el botón ".*" de la esquina derecha).</span>
+
+<span class="com">// ① ¿Hay algún import que suba de capa?  →  no debe aparecer NADA</span>
+<span class="str">^from presentacion|^import presentacion</span>
+
+<span class="com">// ② ¿Hay SQL fuera del repositorio?  →  no debe aparecer NADA</span>
+<span class="str">SELECT|INSERT|UPDATE|DELETE</span>     <span class="com">← luego revisa en qué archivos salió</span>
+
+<span class="com">// ③ ¿Quedó algún import viejo?  →  no debe aparecer NADA</span>
+<span class="str">from database|from dependencias|from vistas|from repositorio</span>
+
+<span class="com">// Truco: en la lista de resultados, cada archivo aparece con un</span>
+<span class="com">// número de coincidencias. Si el número va en 0, ese archivo es</span>
+<span class="com">// el que debes abrir. Eso es todo el taller, sin escribir un comando.</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-ruta"><span class="shell vscode">VS Code</span><span class="p">🌳 ¿existe toda la estructura?</span></div>
+    </div>
+<pre><code><span class="com">// No necesitas comando: el panel Explorer de VS Code (el de la izquierda)</span>
+<span class="com">// ES el árbol de tu proyecto, y se actualiza solo.</span>
+<span class="com">// Contrae las carpetas que no te interesen y comprueba que existían</span>
+<span class="com">// nucleo/, dominio/ y presentacion/, cada una con su __init__.py</span>
+<span class="com">// y, dentro de presentacion/, las carpetas rutas/ y templates/.</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-ruta"><span class="shell">PowerShell</span><span class="p">⌨️ las mismas cuatro, en la terminal</span></div>
       <button class="copy-btn">copiar</button>
     </div>
-<pre><code><span class="com"># 1. ¿Existe toda la estructura? Instantáneo del árbol.</span>
-tree -a --dirsfirst
+<pre><code><span class="com"># 1. ¿Existe toda la estructura?</span>
+tree /F
 
 <span class="com"># 2. ¿Hay algún import que suba? (no debe imprimir NADA)</span>
-grep -rn <span class="str">"^from presentacion\|^import presentacion"</span> nucleo/ dominio/
+Get-ChildItem -Recurse -Filter *.py |
+  Select-String -Pattern <span class="str">"^from presentacion|^import presentacion"</span>
 
 <span class="com"># 3. ¿Hay SQL fuera del repositorio? (no debe imprimir NADA)</span>
-grep -rn <span class="str">"SELECT\|INSERT\|UPDATE\|DELETE"</span> --include=<span class="str">"*.py"</span> . \
-  | grep -v <span class="str">"dominio/repositorios.py"</span>
+Get-ChildItem -Recurse -Filter *.py |
+  Select-String -Pattern <span class="str">"SELECT|INSERT|UPDATE|DELETE"</span> |
+  Where-Object { $_.Path -notlike <span class="str">"*repositorios.py"</span> }
 
-<span class="com"># 4. ¿Cada capa está en su sitio? (deben salir tres carpetas)</span>
-<span class="kw">ls</span> -1 nucleo/ dominio/ presentacion/</code></pre>
+<span class="com"># 4. ¿Cada capa está en su sitio? (una lista por cada capa, con sus archivos)</span>
+Get-ChildItem nucleo,dominio,presentacion
+
+<span class="com"># En Mac o Linux las cuatro son más cortas:</span>
+<span class="com">#   tree -a  ·  grep -rn "..." nucleo/ dominio/  ·  ls -1 nucleo/ dominio/</span></code></pre>
   </div>
 
   <div class="caja-tip">
     <h4>Y una métrica sencilla que te va a sorprender</h4>
-    <p>Cuenta en cuántos archivos distintos se escribe SQL y compáralo con cuántos archivos tiene el proyecto. En un proyecto desordenado, los datos aparecen en más archivos que las rutas. En uno bien organizado, la lista de archivos que tocan la base de datos es <strong>corta y obvia</strong>. Esa desproporción es, en sí misma, un indicador de desorden:</p>
+    <p>Cuenta en cuántos archivos distintos se escribe SQL y compáralo con cuántos archivos tiene el proyecto. En un proyecto desordenado, los datos aparecen en más archivos que las rutas. En uno bien organizado, la lista de archivos que tocan la base de datos es <strong>corta y obvia</strong>. Esa desproporción es, en sí misma, un indicador de desorden.</p>
+    <p>En el buscador de VS Code lo ves así: haces la búsqueda ② y miras la lista de archivos. Si el mismo patrón aparece en <strong>tres o más archivos distintos</strong>, estás en un proyecto desordenado. Si aparece en <strong>uno solo</strong>, estás en uno bien organizado:</p>
 <pre><code><span class="com"># ¿En cuántos archivos distintos se escribe SQL en tu proyecto?</span>
-grep -rl <span class="str">"SELECT\|INSERT\|UPDATE\|DELETE"</span> --include=<span class="str">"*.py"</span> . | wc -l
+<span class="com"># → en el buscador: busca SELECT|INSERT|UPDATE|DELETE</span>
+<span class="com">#   y cuenta cuántos nombres de archivo salen en la lista.</span>
 <span class="com"># Estructurado: 1.   Desestructurado: probablemente tres o más.</span></code></pre>
   </div>
 
@@ -1342,7 +1513,7 @@ grep -rl <span class="str">"SELECT\|INSERT\|UPDATE\|DELETE"</span> --include=<sp
       <button class="opcion" data-op="d"><code>dominio/repositorios.py</code>, porque la regla se comprueba en la base de datos</button>
     </div>
     <div class="pregunta" data-correcta="c">
-      <p><strong>2.</strong> El comando <code>grep -rn "SELECT" --include="*.py" . | grep -v "dominio/repositorios.py"</code> no imprime nada. ¿Qué significa?</p>
+      <p><strong>2.</strong> Al buscar <code>SELECT|INSERT|UPDATE|DELETE</code> en todo el proyecto, los resultados aparecen <strong>solo en un archivo</strong>: <code>dominio/repositorios.py</code>. ¿Qué significa?</p>
       <button class="opcion" data-op="a">Que no hay base de datos conectada</button>
       <button class="opcion" data-op="b">Que el repositorio está vacío</button>
       <button class="opcion" data-op="c">Que no hay SQL en ningún otro archivo: la capa de datos está correctamente aislada</button>
@@ -1386,6 +1557,21 @@ grep -rl <span class="str">"SELECT\|INSERT\|UPDATE\|DELETE"</span> --include=<sp
     </div>
     <p>El entregable es <strong>el mismo programa funcionando exactamente igual</strong>, pero con la estructura del bloque 03. No vas a escribir funciones nuevas ni a reescribir el código: vas a <strong>mover</strong> código y <strong>arreglar imports</strong>. Esa es la habilidad real de esta clase.</p>
     <p><strong>Regla de oro del taller:</strong> cada fase tiene una prueba de fuego. Si la prueba falla, <strong>no sigas adelante</strong>. Revertir es rápido si fallaste a tiempo, y carísimo si sigues acumulando errores sobre una base rota.</p>
+    <p><strong>Y un tranquilizador:</strong> en todo el taller vas a necesitar la terminal para <em>dos</em> cosas solamente: arrancar el servidor y comprobar un import. El primer comando es idéntico en Windows, Mac y Linux; el segundo cambia una sola palabra. Todo lo demás —crear carpetas, mover archivos, buscar— se hace con el Explorador de archivos y el buscador de VS Code.</p>
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-ruta"><span class="shell">los dos únicos comandos del taller</span><span class="p">desde la raíz del proyecto</span></div>
+        <button class="copy-btn">copiar</button>
+      </div>
+<pre><code><span class="com"># ① Levantar el servidor. Clic derecho sobre la carpeta biblioteca/ en el panel</span>
+<span class="com">#    Explorer de VS Code → «Open in Integrated Terminal», y ejecuta esto.</span>
+<span class="com">#    Déjalo corriendo en esa terminal.</span>
+uvicorn main:app --reload
+
+<span class="com"># ② Probar que los imports quedaron bien, desde la raíz del proyecto.</span>
+<span class="com">#    En Windows con "py", en Mac o Linux con "python3".</span>
+py -c <span class="str">"import main"</span>          <span class="com"># no debe imprimir nada</span></code></pre>
+    </div>
   </div>
 
   <div class="fases">
@@ -1393,16 +1579,28 @@ grep -rl <span class="str">"SELECT\|INSERT\|UPDATE\|DELETE"</span> --include=<sp
     <div class="fase">
       <span class="fase-meta">5 minutos · no se negocia</span>
       <h4>Respaldo y punto de partida</h4>
-      <p>Antes de mover un solo archivo, asegúrate de poder volver atrás. Con <code>git</code>:</p>
+      <p>Antes de mover un solo archivo, asegúrate de poder volver atrás. <code>git</code> es lo ideal y funciona igual en Windows, Mac y Linux — en Windows solo hay que instalarlo y marcar «Git Bash» al final del instalador.</p>
       <div class="code-wrap">
-        <div class="code-header"><div class="code-ruta"><span class="p">💾 respaldo</span></div><button class="copy-btn">copiar</button></div>
-<pre><code><span class="com"># Opción A — con git, que es lo ideal</span>
+        <div class="code-header"><div class="code-ruta"><span class="p">💾 respaldo — el mismo bloque en los tres sistemas</span></div><button class="copy-btn">copiar</button></div>
+<pre><code><span class="com"># Opción A — con git (recomendada)</span>
 git add -A
 git commit -m <span class="str">"estructura plana verificada y funcionando"</span>
 
-<span class="com"># Opción B — sin git</span>
-cp -r biblioteca biblioteca-plana
-<span class="com"># Y si algo sale mal:  rm -rf biblioteca &amp;&amp; cp -r biblioteca-plana biblioteca</span></code></pre>
+<span class="com"># Opción B — sin git. Lo más fácil en Windows es copiar la carpeta</span>
+<span class="com"># desde el Explorador de archivos, pegarla, y renombrar la copia</span>
+<span class="com"># a "biblioteca-plana". O, en PowerShell:</span>
+Copy-Item -Recurse biblioteca biblioteca-plana
+
+<span class="com"># Y si algo sale mal, deshaces el cambio con:</span>
+Remove-Item -Recurse -Force biblioteca
+Copy-Item -Recurse biblioteca-plana biblioteca
+
+<span class="com"># Mac o Linux:  cp -r biblioteca biblioteca-plana</span>
+<span class="com">#                rm -rf biblioteca &amp;&amp; cp -r biblioteca-plana biblioteca</span></code></pre>
+      </div>
+      <div class="trampa">
+        <h4>⚠️ Si Windows dice «el proceso no puede acceder al archivo porque está siendo utilizado»</h4>
+        <p>Te va a pasar al borrar o mover una carpeta. Es Windows protegiendo los archivos que tiene abiertos el servidor que está corriendo. Cierra la terminal donde lo levantaste (o presiona <kbd>Ctrl</kbd>+<kbd>C</kbd> ahí) y repite el comando. Nunca intentes forzar el borrado con el servidor encendido.</p>
       </div>
       <p class="entrega"><b>Prueba de fuego:</b> levanta la app y recorre las pantallas que vas a comparar al final: inicio, autores, libros, crear autor, editar, borrar, libros de un autor y los ejercicios de htmx. Anótalas en una lista. Si algo ya fallaba <em>antes</em> de tocar nada, anótalo también: no es culpa de la reorganización.</p>
     </div>
@@ -1434,37 +1632,76 @@ cp -r biblioteca biblioteca-plana
     <div class="fase">
       <span class="fase-meta">10 minutos · la estructura vacía, primero</span>
       <h4>Crea el esqueleto</h4>
-      <p>Primero la estructura, después el contenido. Así, si algo falla, sabes que el problema está en los imports y no en el código que moviste.</p>
+      <p>Primero la estructura, después el contenido. Así, si algo falla, sabes que el problema está en los imports y no en el código que moviste. <strong>Esta fase se hace en el editor, no en la terminal</strong>, y funciona igual en los tres sistemas.</p>
       <div class="code-wrap">
-        <div class="code-header"><div class="code-ruta"><span class="p">🛠️ crear la estructura vacía</span></div><button class="copy-btn">copiar</button></div>
-<pre><code><span class="com"># Las tres capas</span>
-mkdir nucleo dominio presentacion
+        <div class="code-header"><div class="code-ruta"><span class="shell vscode">VS Code</span><span class="p">📂 la forma recomendada</span></div></div>
+<pre><code><span class="com">// En el panel Explorer de VS Code (el de la izquierda), clic derecho</span>
+<span class="com">// sobre la carpeta biblioteca/ y elige "Nueva carpeta". Repite</span>
+<span class="com">// con cada uno de estos nombres:</span>
+<span class="com">//</span>
+<span class="com">//     nucleo   ·   dominio   ·   presentacion</span>
+<span class="com">//</span>
+<span class="com">// Después, dentro de presentacion/, repite tres veces:</span>
+<span class="com">//</span>
+<span class="com">//     rutas   ·   templates   ·   static</span>
+<span class="com">//</span>
+<span class="com">// Por último, dentro de estas cuatro carpetas:</span>
+<span class="com">//</span>
+<span class="com">//     nucleo/   ·   dominio/   ·   presentacion/   ·   presentacion/rutas/</span>
+<span class="com">//</span>
+<span class="com">// crea un archivo nuevo llamado  __init__.py  y escribe dentro la frase</span>
+<span class="com">// que le toca (siguiente bloque).</span></code></pre>
+      </div>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-ruta"><span class="shell vscode">VS Code</span><span class="p">✍️ qué frase va en cada __init__.py</span></div></div>
+<pre><code><span class="com">// nucleo/__init__.py</span>
+<span class="str">"""Capa 1 — Conexión. Configuración y pool de base de datos."""</span>
+
+<span class="com">// dominio/__init__.py</span>
+<span class="str">"""Capa 2 — Lógica. Reglas de la biblioteca, validación y repositorios."""</span>
+
+<span class="com">// presentacion/__init__.py</span>
+<span class="str">"""Capa 3 — Diseño. Rutas, plantillas y archivos estáticos."""</span>
+
+<span class="com">// presentacion/rutas/__init__.py</span>
+<span class="str">"""Rutas de la aplicación: un archivo por módulo de la biblioteca."""</span></code></pre>
+      </div>
+      <details class="fuente-dropdown">
+        <summary><span class="fuente-emoji">⌨️</span> ¿Prefieres crearlo con comandos? <span class="fuente-rol">aquí está, para PowerShell</span><span class="fuente-chevron">▶</span></summary>
+        <div class="fuente-desc">Fíjate en dos cosas: las carpetas van separadas por <strong>comas</strong> (en PowerShell, no por espacios), y el <code>-Encoding UTF8</code> del final es lo que evita que Windows escriba las rayas «—» con otra codificación y Python las lea mal.</div>
+        <div class="code-wrap">
+          <div class="code-header"><div class="code-ruta"><span class="shell">PowerShell</span><span class="p">🛠️ crear la estructura vacía</span></div><button class="copy-btn">copiar</button></div>
+<pre><code><span class="com"># Las tres capas — OJO: en PowerShell las carpetas van separadas por COMAS</span>
+mkdir nucleo,dominio,presentacion
 
 <span class="com"># La subcapa de rutas, y donde viven las plantillas y los estilos</span>
-mkdir presentacion/rutas presentacion/templates presentacion/static
+mkdir presentacion/rutas,presentacion/templates,presentacion/static
 
-<span class="com"># Los __init__.py: lo que convierte una carpeta en paquete</span>
-touch nucleo/__init__.py dominio/__init__.py \
-      presentacion/__init__.py presentacion/rutas/__init__.py
-
-<span class="com"># Un archivo vacío no es un archivo útil. Ponle su frase.</span>
-cat &gt; nucleo/__init__.py &lt;&lt;<span class="str">'PY'</span>
+<span class="com"># Los __init__.py: se crean y se les escribe su frase de una vez</span>
+<span class="str">@'</span>
 <span class="str">"""Capa 1 — Conexión. Configuración y pool de base de datos."""</span>
-PY
-cat &gt; dominio/__init__.py &lt;&lt;<span class="str">'PY'</span>
-<span class="str">"""Capa 2 — Lógica. Reglas de la biblioteca, validación y repositorios."""</span>
-PY
-cat &gt; presentacion/__init__.py &lt;&lt;<span class="str">'PY'</span>
-<span class="str">"""Capa 3 — Diseño. Rutas, plantillas y archivos estáticos."""</span>
-PY
-cat &gt; presentacion/rutas/__init__.py &lt;&lt;<span class="str">'PY'</span>
-<span class="str">"""Rutas de la aplicación: un archivo por módulo de la biblioteca."""</span>
-PY
+<span class="str">'@ | Set-Content nucleo/__init__.py -Encoding UTF8</span>
 
-<span class="com"># Comprobación: la estructura existe</span>
-tree -a --dirsfirst</code></pre>
-      </div>
-      <p class="entrega"><b>Prueba de fuego:</b> <code>tree -a</code> muestra las tres capas y sus <code>__init__.py</code>. La aplicación todavía no arranca, y está bien: los archivos viejos siguen en su sitio.</p>
+<span class="str">@'</span>
+<span class="str">"""Capa 2 — Lógica. Reglas de la biblioteca, validación y repositorios."""</span>
+<span class="str">'@ | Set-Content dominio/__init__.py -Encoding UTF8</span>
+
+<span class="str">@'</span>
+<span class="str">"""Capa 3 — Diseño. Rutas, plantillas y archivos estáticos."""</span>
+<span class="str">'@ | Set-Content presentacion/__init__.py -Encoding UTF8</span>
+
+<span class="str">@'</span>
+<span class="str">"""Rutas de la aplicación: un archivo por módulo de la biblioteca."""</span>
+<span class="str">'@ | Set-Content presentacion/rutas/__init__.py -Encoding UTF8</span>
+
+<span class="com"># Comprobación: la estructura existe.</span>
+<span class="com"># En PowerShell →  tree /F      (en Mac o Linux →  tree -a)</span>
+<span class="com"># O simplemente mira el panel Explorer de VS Code.</span>
+tree /F</code></pre>
+        </div>
+        <p class="fuente-desc" style="border:none; padding-top:.8rem;">En Mac o Linux es más corto: <code>mkdir nucleo dominio presentacion</code> (con espacios, sin comas), <code>touch nucleo/__init__.py</code> para crear los vacíos, y para escribir el contenido <code>cat &gt; archivo.py</code>, el texto, y <kbd>Ctrl</kbd>+<kbd>D</kbd>. Ahí no hace falta el <code>-Encoding UTF8</code>.</p>
+      </details>
+      <p class="entrega"><b>Prueba de fuego:</b> el panel <em>Explorer</em> de VS Code muestra las tres capas y sus <code>__init__.py</code> (o, si usaste la terminal, <code>tree /F</code> en Windows y <code>tree -a</code> en Mac o Linux). La aplicación todavía no arranca, y está bien: los archivos viejos siguen en su sitio.</p>
     </div>
 
     <div class="fase">
@@ -1472,18 +1709,23 @@ tree -a --dirsfirst</code></pre>
       <h4>Mueve los archivos, en orden, y arregla los imports</h4>
       <p><strong>El orden importa.</strong> Mueve de abajo hacia arriba, para que en cada momento sepas a qué capa pertenece lo que ya está en su sitio.</p>
       <div class="code-wrap">
-        <div class="code-header"><div class="code-ruta"><span class="p">📦 mover, capa por capa</span></div><button class="copy-btn">copiar</button></div>
+        <div class="code-header"><div class="code-ruta"><span class="shell">PowerShell</span><span class="p">📦 mover, capa por capa</span></div><button class="copy-btn">copiar</button></div>
 <pre><code><span class="com"># ── CAPA 1 · conexión ─────────────────────────────────────────</span>
-<span class="kw">mv</span> database.py nucleo/conexion.py
+Move-Item database.py nucleo/conexion.py
 
 <span class="com"># ── CAPA 2 · lógica ──────────────────────────────────────────</span>
-<span class="kw">mv</span> esquemas.py   dominio/esquemas.py
-<span class="kw">mv</span> repositorio.py dominio/repositorios.py
+Move-Item esquemas.py     dominio/esquemas.py
+Move-Item repositorio.py  dominio/repositorios.py
 
 <span class="com"># ── CAPA 3 · diseño ──────────────────────────────────────────</span>
-<span class="kw">mv</span> templates/   presentacion/templates/
-<span class="kw">mv</span> ejercicios.py presentacion/rutas/ejercicios.py
-<span class="kw">mv</span> vistas.py     presentacion/rutas/autores.py
+Move-Item templates      presentacion/templates
+Move-Item ejercicios.py  presentacion/rutas/ejercicios.py
+Move-Item vistas.py      presentacion/rutas/autores.py
+
+<span class="com"># Mac o Linux:  mv database.py nucleo/conexion.py   (etc.)</span>
+<span class="com"># Con git:      git mv database.py nucleo/conexion.py  ← mejor,</span>
+<span class="com">#                                              porque el editor</span>
+<span class="com">#                                              ve el renombrado.</span>
 
 <span class="com"># ── ahora los imports, archivo por archivo ───────────────────</span>
 <span class="com">#  · en nucleo/conexion.py, el import de dependencias.py se</span>
@@ -1535,7 +1777,11 @@ conexion = Conexion()
 <span class="com"># El alias que antes vivía solo en dependencias.py, ahora con su casa:</span>
 ConexionDep = Annotated[asyncpg.Connection, Depends(get_conexion)]</code></pre>
       </div>
-      <p class="entrega"><b>Prueba de fuego:</b> <code>python -c "import main"</code> desde la raíz. Si no imprime nada y no lanza error, los imports están bien. Si lanza error, léelo entero: te va a decir el archivo y la línea exacta.</p>
+      <div class="trampa">
+        <h4>⚠️ La flechita «\» dentro de las rutas</h4>
+        <p>Si prefieres escribir las rutas con la barra que usa Windows, funciona igual en un import: <code>from nucleo\conexion import …</code> es válido. <strong>Pero usa siempre la barra <code>/</code> en el código</strong>, por dos razones: es lo que vas a ver en todos los tutoriales, y funciona sin cambios en los tres sistemas. Si copias código de internet con barras invertidas, cámbialas antes de pegarlo.</p>
+      </div>
+      <p class="entrega"><b>Prueba de fuego:</b> <code>py -c "import main"</code> en Windows, o <code>python3 -c "import main"</code> en Mac o Linux, <strong>desde la raíz del proyecto</strong>. Si no imprime nada y no lanza error, los imports están bien. Si lanza error, léelo entero: la última línea te dice por qué y las primeras te dicen en qué archivo.</p>
     </div>
 
     <div class="fase">
@@ -1599,23 +1845,47 @@ no sabe de plantillas y no abre conexiones: las recibe.
     <div class="fase">
       <span class="fase-meta">10 minutos · verificar la arquitectura</span>
       <h4>Audita la estructura</h4>
-      <p>Corre los cuatro comandos del bloque 05. Los dos primeros y el cuarto <strong>no deben imprimir nada sospechoso</strong>; si lo hacen, todavía hay algo en el lugar equivocado.</p>
+      <p>Repite las cuatro verificaciones del bloque 05. Tres de ellas se hacen en el buscador de VS Code y una en el Explorer, así que en Windows no necesitas escribir ningún comando.</p>
       <div class="code-wrap">
-        <div class="code-header"><div class="code-ruta"><span class="p">🔍 auditoría del taller</span></div><button class="copy-btn">copiar</button></div>
+        <div class="code-header"><div class="code-ruta"><span class="shell vscode">VS Code</span><span class="p">🔍 auditoría del taller — Ctrl+Shift+F</span></div></div>
+<pre><code><span class="com">// ① ¿Algún import que suba?  →  la búsqueda debe devolver CERO resultados</span>
+<span class="str">^from presentacion|^import presentacion</span>
+
+<span class="com">// ② ¿Quedó algún import viejo del proyecto plano?  →  CERO resultados</span>
+<span class="str">from database|from dependencias|from vistas|from repositorio</span>
+
+<span class="com">// ③ ¿Hay SQL fuera del repositorio?  →  CERO resultados fuera de</span>
+<span class="com">//    dominio/repositorios.py. Si salen, mira en qué archivo fue.</span>
+<span class="str">SELECT|INSERT|UPDATE|DELETE</span>
+
+<span class="com">// ④ ¿Cuántos archivos tocan la base de datos?  →  mira la lista de</span>
+<span class="com">//    resultados de ③: debe aparecer UN SOLO nombre de archivo.</span></code></pre>
+      </div>
+      <details class="fuente-dropdown">
+        <summary><span class="fuente-emoji">⌨️</span> ¿Las quieres en la terminal? <span class="fuente-rol">PowerShell</span><span class="fuente-chevron">▶</span></summary>
+        <div class="fuente-desc">Las cuatro, desde la raíz del proyecto.</div>
+        <div class="code-wrap">
+          <div class="code-header"><div class="code-ruta"><span class="shell">PowerShell</span><span class="p">🔍 auditoría del taller</span></div><button class="copy-btn">copiar</button></div>
 <pre><code><span class="com"># 1. El árbol completo: ¿se parece al del bloque 03?</span>
-tree -a --dirsfirst
+tree /F
 
 <span class="com"># 2. ¿Algún import que suba? (silencio = bien)</span>
-grep -rn <span class="str">"^from presentacion\|^import presentacion"</span> nucleo/ dominio/
+Get-ChildItem -Recurse -Filter *.py |
+  Select-String -Pattern <span class="str">"^from presentacion|^import presentacion"</span>
 
 <span class="com"># 3. ¿SQL fuera del repositorio? (silencio = bien)</span>
-grep -rn <span class="str">"SELECT\|INSERT\|UPDATE\|DELETE"</span> --include=<span class="str">"*.py"</span> . \
-  | grep -v <span class="str">"dominio/repositorios.py"</span>
+Get-ChildItem -Recurse -Filter *.py |
+  Select-String -Pattern <span class="str">"SELECT|INSERT|UPDATE|DELETE"</span> |
+  Where-Object { $_.Path -notlike <span class="str">"*repositorios.py"</span> }
 
 <span class="com"># 4. ¿Cuántos archivos tocan la base de datos? Debe salir 1.</span>
-grep -rl <span class="str">"SELECT\|INSERT\|UPDATE\|DELETE"</span> --include=<span class="str">"*.py"</span> . | wc -l</code></pre>
-      </div>
-      <p class="entrega"><b>Prueba de fuego:</b> los cuatro comandos se ejecutan desde la raíz y el comando 4 imprime un <code>1</code>. Si imprime tres o más, todavía hay SQL regado: vuelve a la fase 4.</p>
+(Get-ChildItem -Recurse -Filter *.py |
+  Select-String -Pattern <span class="str">"SELECT|INSERT|UPDATE|DELETE"</span>).Path -replace <span class="str">".*[\\]"</span>, <span class="str">""</span> |
+  Sort-Object -Unique | Measure-Object | Select-Object -ExpandProperty Count</code></pre>
+        </div>
+        <p class="fuente-desc" style="border:none; padding-top:.8rem;">En Mac o Linux, las cuatro son más cortas: <code>tree -a</code>, y <code>grep -rn "…" . | grep -v "repositorios.py"</code> para las búsquedas, y <code>grep -rl "…" --include="*.py" . | wc -l</code> para contar archivos.</p>
+      </details>
+      <p class="entrega"><b>Prueba de fuego:</b> las búsquedas ①, ② y ③ devuelven cero resultados, y en ③ el único archivo que aparece es <code>dominio/repositorios.py</code>. Si aparecen tres o más archivos con SQL, todavía está regado: vuelve a la fase 4.</p>
     </div>
 
     <div class="fase">
@@ -1657,6 +1927,11 @@ o la tecnología sin reescribir las reglas del negocio.</code></pre>
       <thead><tr><th style="width:32%">Lo que ves</th><th style="width:24%">Qué significa</th><th>Qué hacer</th></tr></thead>
       <tbody>
         <tr>
+          <td>KeyError: 'DATABASE_URL'</td>
+          <td>La variable de entorno no está puesta en esta terminal</td>
+          <td>En PowerShell: <code>$env:DATABASE_URL = "postgresql://…"</code> (en Mac o Linux: <code>export DATABASE_URL="postgresql://…"</code>) y vuelve a arrancar. Dura lo que dure la terminal: si la cierras, hay que ponerla otra vez.</td>
+        </tr>
+        <tr>
           <td>ModuleNotFoundError: No module named 'dominio'</td>
           <td>No te encontró la carpeta</td>
           <td>Revisa que exista <code>dominio/__init__.py</code> y que estés parado en la raíz del proyecto, no en una subcarpeta.</td>
@@ -1664,7 +1939,7 @@ o la tecnología sin reescribir las reglas del negocio.</code></pre>
         <tr>
           <td>ModuleNotFoundError: No module named 'database'</td>
           <td>Quedó un import viejo</td>
-          <td>Busca <code>grep -rn "from database" --include="*.py" .</code> y cámbialo por <code>from nucleo.conexion</code>.</td>
+          <td>Busca <code>from database</code> en el buscador (o con <code>Select-String</code> / <code>grep -rn</code>) y cámbialo por <code>from nucleo.conexion</code>.</td>
         </tr>
         <tr>
           <td>ImportError: partially initialized module … circular import</td>
@@ -1704,7 +1979,7 @@ o la tecnología sin reescribir las reglas del negocio.</code></pre>
     <label class="check-item"><input type="checkbox" data-check="c2"><span class="check-caja">✓</span><span class="check-texto"><strong>Mapa escrito</strong> <small>La tabla de los nueve archivos, con la responsabilidad de cada uno en una frase.</small></span></label>
     <label class="check-item"><input type="checkbox" data-check="c3"><span class="check-caja">✓</span><span class="check-texto"><strong>Estructura creada</strong> <small><code>nucleo/</code>, <code>dominio/</code>, <code>presentacion/</code> y los cuatro <code>__init__.py</code> con su frase.</small></span></label>
     <label class="check-item"><input type="checkbox" data-check="c4"><span class="check-caja">✓</span><span class="check-texto"><strong>Archivos movidos</strong> <small>Los siete <code>.py</code> y <code>templates/</code> están en su capa.</small></span></label>
-    <label class="check-item"><input type="checkbox" data-check="c5"><span class="check-caja">✓</span><span class="check-texto"><strong><code>python -c "import main"</code> no falla</strong> <small>Los imports quedaron bien, y no en un archivo suelto a la primera.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c5"><span class="check-caja">✓</span><span class="check-texto"><strong><code>py -c "import main"</code> no falla</strong> <small>Los imports quedaron bien, y no en un archivo suelto a la primera.</small></span></label>
     <label class="check-item"><input type="checkbox" data-check="c6"><span class="check-caja">✓</span><span class="check-texto"><strong><code>servicios.py</code> existe y tiene una regla</strong> <small>Una regla del negocio que antes vivía en la ruta, ahora en su casa.</small></span></label>
     <label class="check-item"><input type="checkbox" data-check="c7"><span class="check-caja">✓</span><span class="check-texto"><strong>Ningún import sube</strong> <small>El comando 2 de la auditoría no imprime nada.</small></span></label>
     <label class="check-item"><input type="checkbox" data-check="c8"><span class="check-caja">✓</span><span class="check-texto"><strong>El SQL vive en un solo archivo</strong> <small>El comando 4 imprime un <code>1</code>.</small></span></label>
