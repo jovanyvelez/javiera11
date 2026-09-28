@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 11 · Estructura de carpetas y archivos</title>
+<meta name="description" content="Clase 11: organización de un proyecto por carpetas y archivos en tres capas (conexión, lógica y diseño) con separación de responsabilidades.">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo" aria-hidden="true">▤</span>
+    <div>
+      <span class="doc-marca">Herramientas de programación II · Clase 11 · Documento de arquitectura</span>
+      <h1>Estructura de carpetas y archivos</h1>
+      <p class="subtitulo">Un proyecto no se mide por lo que funciona, sino por lo fácil que resulta cambiarlo.</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Bloque 00</span>
+      <span><strong id="xp-display">0 / 10</strong> criterios · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos" aria-label="Índice de la clase">
+  <button class="btn-modulo activo" data-modulo="0">00 · Punto de partida</button>
+  <button class="btn-modulo" data-modulo="1">01 · El síntoma</button>
+  <button class="btn-modulo" data-modulo="2">02 · Carpetas e imports</button>
+  <button class="btn-modulo" data-modulo="3">03 · Las tres capas</button>
+  <button class="btn-modulo descanso" data-modulo="4">— Descanso</button>
+  <button class="btn-modulo" data-modulo="5">04 · Flecha de dependencia</button>
+  <button class="btn-modulo" data-modulo="6">05 · Leer el código</button>
+  <button class="btn-modulo" data-modulo="7">06 · Taller</button>
+</nav>
+
+<main>
+
+<!-- ===================================================================
+     MÓDULO 0 — PUNTO DE PARTIDA
+     =================================================================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <span class="eyebrow">§ 00 · Apertura</span>
+    <h2>Todo funciona.<span class="h2-bajo">La pregunta es si puedes cambiarlo sin romper nada.</span></h2>
+    <p class="lead">Tu proyecto <code>biblioteca/</code> funciona: arranca, se conecta a PostgreSQL, lista autores, crea, edita y borra. Eso ya es un logro real. Pero llegó el día en que alguien te pide <em>«cambia la tarifa de la multa»</em>… y descubres que esa fórmula vive en varios sitios. O que el <code>SELECT</code> aparece en un archivo donde no debería. O que el compañero nuevo tardó cuarenta minutos en encontrar la regla del negocio.</p>
+    <p class="lead">Hoy vamos a resolver eso. No vamos a aprender una herramienta nueva: vamos a <strong>darle una casa a cada cosa</strong> de tu proyecto. El resultado se ve en la barra de direcciones de tu editor, pero se siente en el tiempo que te ahorra cada cambio futuro.</p>
+  </div>
+
+  <div class="ficha">
+    <div><dt>Duración</dt><dd>3 h 45 min · 8 bloques</dd></div>
+    <div><dt>Descanso</dt><dd>15 min (bloque 04)</dd></div>
+    <div><dt>Requiere</dt><dd>Clases 1 a 10 del módulo</dd></div>
+    <div><dt>Entregable</dt><dd><code>biblioteca/</code> en 3 capas, funcionando igual</dd></div>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>El objetivo, en una frase</h3>
+    <p>Convertir un proyecto plano —siete archivos <code>.py</code> sueltos en la raíz— en una <strong>estructura de tres capas con responsabilidades separadas</strong>: <strong>conexión</strong>, <strong>lógica</strong> y <strong>diseño</strong>. El objetivo no es que quede bonito: es que cualquier persona del equipo sepa, sin preguntar, en qué archivo va una cosa nueva y dónde vive la que ya existe. Y que la aplicación quede <strong>exactamente igual</strong> para quien la usa. Si el usuario nota el cambio, es porque la reorganización se hizo mal.</p>
+  </div>
+
+  <h3>Las tres capas, de un vistazo</h3>
+  <p class="lead">Todo lo de hoy gira alrededor de esta tabla. Vuelve a ella cada vez que dudes de dónde va algo.</p>
+
+  <div class="capas">
+    <div class="capa c1">
+      <span class="capa-num">Capa 1</span>
+      <h3>Conexión</h3>
+      <span class="capa-carpeta">nucleo/</span>
+      <p class="capa-pregunta">«¿De dónde vienen los datos y quién abre la puerta?»</p>
+      <ul class="contrato puede">
+        <li>Leer configuración y variables de entorno</li>
+        <li>Crear y cerrar el pool de conexiones</li>
+        <li>Entregar una conexión a quien la pida</li>
+      </ul>
+      <ul class="contrato nopuede">
+        <li>Saber qué es un autor o una multa</li>
+        <li>Escribir SQL de la biblioteca</li>
+        <li>Devolver HTML</li>
+      </ul>
+    </div>
+
+    <div class="capa c2">
+      <span class="capa-num">Capa 2</span>
+      <h3>Lógica</h3>
+      <span class="capa-carpeta">dominio/</span>
+      <p class="capa-pregunta">«¿Qué reglas tiene la biblioteca y cómo se guardan los datos?»</p>
+      <ul class="contrato puede">
+        <li>Reglas del negocio (multa, disponibilidad)</li>
+        <li>Validar datos con modelos Pydantic</li>
+        <li>Consultar y guardar en la base de datos</li>
+      </ul>
+      <ul class="contrato nopuede">
+        <li>Saber que existe una carpeta de plantillas</li>
+        <li>Conectarse por su cuenta a la base de datos</li>
+        <li>Devolver HTML</li>
+      </ul>
+    </div>
+
+    <div class="capa c3">
+      <span class="capa-num">Capa 3</span>
+      <h3>Diseño</h3>
+      <span class="capa-carpeta">presentacion/</span>
+      <p class="capa-pregunta">«¿Qué rutas existen y qué ve el usuario en cada una?»</p>
+      <ul class="contrato puede">
+        <li>Declarar rutas, formularios y métodos HTTP</li>
+        <li>Escoger la plantilla y armar el contexto</li>
+        <li>Servir estilos, imágenes y scripts</li>
+      </ul>
+      <ul class="contrato nopuede">
+        <li>Escribir SQL</li>
+        <li>Guardar datos a mano en la base de datos</li>
+        <li>Decidir la regla de la multa</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="regla" data-num="01">
+    <h4>La primera regla de la clase</h4>
+    <p>Las carpetas se nombran por <strong>la responsabilidad, no por la tecnología</strong>. No creamos una carpeta <code>fastapi/</code> ni una <code>asyncpg/</code>: el día que cambies de framework esos nombres no significan nada. Creamos <code>presentacion/</code>, <code>dominio/</code> y <code>nucleo/</code>, que significan algo <em>aun dentro de diez años</em>.</p>
+  </div>
+
+  <h3>Dónde estamos hoy: el proyecto plano</h3>
+  <p class="lead">Este es el <code>biblioteca/</code> real que vienes trabajando: siete archivos Python, todos al mismo nivel, sin carpetas que los agrupen. Haz clic en cada uno; el panel de la derecha te dice qué contiene, qué capa le tocaría y qué problema causa.</p>
+
+  <div class="arbol" data-arbol="plano">
+    <div class="arbol-lista">
+      <button class="fl padre raiz" data-nodo="p-raiz"><span class="gl"></span><span class="ic">▸</span> biblioteca/</button>
+      <button class="fl" data-capa="0" data-nombre="main.py" data-rol="Punto de entrada" data-resp="Crea la app de FastAPI, abre y cierra el pool con lifespan y monta los routers. Funciona, pero solo porque el resto de archivos está tirado en la raíz y Python los encuentra por casualidad." data-dato="lifespan(app) → db.connect(DATABASE_URL) → app.include_router(...)" data-pista="Problema: nada dice «esto es infraestructura». El día que sumes veinte routers, este archivo deja de ser una tabla de contenidos."><span class="gl">├──</span><span class="ic">◈</span>main.py</button>
+      <button class="fl" data-capa="1" data-nombre="database.py" data-rol="Conexión" data-resp="Define la clase Db, crea el pool de asyncpg y expone get_connection(), la dependencia que FastAPI usa para entregar una conexión a cada ruta. Es conexión pura… pero está suelta en la raíz, junto a las rutas y a las plantillas." data-dato="class Db → connect() · close() · db = Db() · async def get_connection()" data-pista="Problema: es el archivo que menos debería cambiar y el que nadie sabe identificar como tal."><span class="gl">├──</span><span class="ic">◈</span>database.py</button>
+      <button class="fl" data-capa="1" data-nombre="dependencias.py" data-rol="Conexión" data-resp="Ocho líneas que fabrican el alias ConnectionDep. Es una pieza de infraestructura diminuta y, sin embargo, ocupa un lugar privilegiado en la raíz: casi todas las rutas lo importan." data-dato="ConnectionDep = Annotated[asyncpg.Connection, Depends(get_connection)]" data-pista="Problema: un archivo de 8 líneas no se justifica solo. O se une al de la conexión, o se convierte en la puerta de entrada de una capa organizada."><span class="gl">├──</span><span class="ic">◈</span>dependencias.py</button>
+      <button class="fl" data-capa="2" data-nombre="esquemas.py" data-rol="Lógica · validación" data-resp="Los modelos Pydantic AutorCrear y AutorActualizar: qué campos tiene un autor y qué valores son válidos. Es lógica de negocio… mezclada con conexión y con diseño en el mismo nivel de carpeta." data-dato="class AutorCrear(BaseModel): nombre, pais, nacimiento" data-pista="Problema: el nombre dice «esquemas», no «validación». Y no hay ninguna señal de que este archivo pertenezca al negocio."><span class="gl">├──</span><span class="ic">◈</span>esquemas.py</button>
+      <button class="fl" data-capa="2" data-nombre="repositorio.py" data-rol="Lógica + acceso a datos" data-resp="Todas las consultas SQL: 116 líneas con SELECT, INSERT, UPDATE, JOIN y UPSERT. Es el segundo archivo más grande, y en cambio está al lado de las rutas, a la misma altura y con el mismo aspecto." data-dato="async def obtener_autores(conn) → list[dict]  ·  await conn.fetch(...)" data-pista="Problema: no hay forma de saber a simple vista dónde termina «la base de datos» y empieza «la lógica»."><span class="gl">├──</span><span class="ic">◈</span>repositorio.py</button>
+      <button class="fl" data-capa="3" data-nombre="vistas.py" data-rol="Las tres capas en un archivo" data-resp="El corazón del problema: 164 líneas con las rutas, la validación, el armado del contexto, la elección de plantilla y el manejo de errores. Un solo archivo haciendo el trabajo de tres capas." data-dato="@router.post('/autores') → AutorCrear(...) → obtener_autores(conn) → templates.TemplateResponse(...)" data-pista="Problema: cuando buscas «dónde está la regla de la multa» no hay respuesta, porque la respuesta es «depende»."><span class="gl">├──</span><span class="ic">◈</span>vistas.py</button>
+      <button class="fl" data-capa="3" data-nombre="ejercicios.py" data-rol="Diseño" data-resp="120 líneas con los ejercicios de htmx: nueve rutas de práctica. Es diseño puro, pero vive al lado de vistas.py sin que nada diga que son la misma familia." data-dato="router = APIRouter(prefix='/ejercicios', tags=['ejercicios'])" data-pista="Problema: «vistas» y «ejercicios» son lo mismo —rutas— con dos nombres distintos. La estructura no expresa esa relación."><span class="gl">├──</span><span class="ic">◈</span>ejercicios.py</button>
+      <button class="fl padre" data-nodo="p-tpl"><span class="gl">├──</span><span class="ic">▸</span>templates/ <span class="gr">— 18 archivos .html</span></button>
+      <button class="fl padre" data-nodo="p-docs"><span class="gl">├──</span><span class="ic">▸</span>docs/ <span class="gr">— guías .md del proyecto</span></button>
+      <button class="fl padre" data-nodo="p-cfg"><span class="gl">├──</span><span class="ic">◈</span>pyproject.toml · .gitignore · vercel.json</button>
+      <button class="fl padre" data-nodo="p-readme"><span class="gl">└──</span><span class="ic">◈</span>README.md</button>
+    </div>
+    <div class="arbol-panel">
+      <div class="ap-vacio">Selecciona un archivo del árbol para ver su responsabilidad y el problema que causa.</div>
+    </div>
+  </div>
+
+  <h3>Lo que harás en las próximas 3 h 45 min</h3>
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="tarjeta-num">Bloque 01</span>
+      <h3>El síntoma</h3>
+      <p>Tener muchos archivos no es lo mismo que estar organizado, y las tres preguntas que delatan un proyecto desordenado.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="tarjeta-num">Bloque 02</span>
+      <h3>Carpetas e imports</h3>
+      <p>Módulos, paquetes y <code>__init__.py</code>. Y por qué Python deja de encontrar tus archivos en cuanto cambias de carpeta.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="tarjeta-num">Bloque 03</span>
+      <h3>Las tres capas</h3>
+      <p>El contrato escrito de cada capa: qué puede hacer, qué no puede hacer, y el árbol final con un archivo por responsabilidad.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="tarjeta-num">Bloque 04</span>
+      <h3>La flecha</h3>
+      <p>La regla que hace que la arquitectura aguante: hacia dónde se puede importar y hacia dónde nunca.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="tarjeta-num">Bloque 05</span>
+      <h3>Leer el código</h3>
+      <p>El mismo recorrido de un clic, antes y después. Y el protocolo de cuatro pasos para leer lo que no escribiste tú.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="tarjeta-num">Bloque 06</span>
+      <h3>Taller</h3>
+      <p>Seis fases para construir la estructura base del sistema, con una prueba de fuego en cada fase.</p>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>No vas a necesitar la base de datos</h4>
+    <p>Todos los ejemplos del bloque 02 corren en la terminal de Python, sin servidor y sin PostgreSQL. En el taller sí vas a levantar la app, pero si no tienes la base de datos conectada <strong>el taller se puede hacer completo</strong>: las fases 1 a 4 son reorganización pura —mover archivos y arreglar imports— y la fase 5 solo necesita la base de datos si quieres comparar la página final.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>Antes de empezar — 3 minutos</h4>
+    <p>Abre tu proyecto <code>biblioteca/</code> y responde en voz alta, junto a tu compañero o compañera:</p>
+    <ol>
+      <li>Si mañana te piden «agrega la página de préstamos», ¿en qué archivo escribirías?</li>
+      <li>Si te piden «cambia la tarifa de la multa a $800», ¿cuántos archivos abrirías?</li>
+      <li>Si alguien nuevo entra al equipo, ¿qué le dices que abra primero para entender el proyecto?</li>
+    </ol>
+    <p>Anota las tres respuestas. Al final de la clase las vas a comparar con lo que aprendiste.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0" style="visibility:hidden">← Anterior</button>
+    <button class="btn-siguiente" data-ir="1">Siguiente: el síntoma →</button>
+  </div>
+</section>
+
+<!-- ===================================================================
+     MÓDULO 1 — EL SÍNTOMA
+     =================================================================== -->
+<section class="modulo" data-modulo="1">
+  <span class="eyebrow">§ 01 · El síntoma</span>
+  <h2>Tener muchos archivos no es lo mismo que estar organizado</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · «Saber que algo está mal, aunque todavía funcione»</p>
+
+  <div class="caja-concepto">
+    <h3>La idea central</h3>
+    <p><code>biblioteca/</code> no está desordenada porque tenga siete archivos. Está desordenada porque <strong>los siete hacen cosas distintas y ninguno lo dice</strong>. Un archivo de 164 líneas que declara rutas, valida datos, elige plantilla y llama al SQL no se puede nombrar bien: no hay un nombre que lo describa. Y cuando no hay nombre, no hay lugar; y cuando no hay lugar, cada cambio es una búsqueda a ciegas.</p>
+  </div>
+
+  <h3>Mira los números reales</h3>
+  <p class="lead">Abre la terminal dentro de la carpeta de tu proyecto y ejecuta esto. No es un ejercicio: es la radiografía de tu proyecto.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-ruta"><span class="p">📟 terminal — dentro de biblioteca/</span></div>
+      <button class="copy-btn">copiar</button>
+    </div>
+<pre><code>dev@biblioteca:~$ <span class="kw">wc</span> -l *.py
+    8 dependencias.py
+   13 esquemas.py
+   22 main.py
+   56 database.py
+  116 repositorio.py
+  120 ejercicios.py
+  164 vistas.py
+  499 total</code></pre>
+  </div>
+
+  <div class="nota-mono">Lo que dicen estos números
+
+<b>164</b>  vistas.py        el archivo más grande concentra el 33% del código
+<b>  8</b>  dependencias.py  el más pequeño, y casi todos lo importan
+<b>499</b>  total            menos de 500 líneas: el problema NO es el tamaño</div>
+
+  <p>Necesitas entender esto bien: <strong>499 líneas no son muchas</strong>. No te vas a perder por volumen. Te vas a perder porque esas <strong>499 líneas no están agrupadas por responsabilidad</strong>. Un archivo de 500 líneas que habla de un solo tema es más fácil de leer que tres archivos de 160 líneas con tres temas mezclados.</p>
+
+  <h3>El diagnóstico: mira una sola función</h3>
+  <p class="lead">Esta es la ruta de «crear autor» de tu <code>vistas.py</code> real, tal cual, con sus 42 líneas.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-ruta"><span class="p c3">vistas.py</span></div>
+      <button class="copy-btn">copiar</button>
+    </div>
+<pre><code><span class="com"># ¿Qué RESPONSABILIDAD tiene esta función?</span>
+<span class="com">#   Declara una ruta, valida el formulario, habla con la base</span>
+<span class="com">#   de datos, elige la plantilla y decide el código de error.</span>
+@router.post(<span class="str">"/autores"</span>)
+<span class="kw">async def</span> <span class="fn">crear_autor_vista</span>(
+    request: Request,
+    conn: ConnectionDep,
+    nombre: Annotated[str | None, Form()] = <span class="kw">None</span>,
+    pais: Annotated[str | None, Form()] = <span class="kw">None</span>,
+    nacimiento: Annotated[int | None, Form()] = <span class="kw">None</span>,
+):
+    <span class="kw">try</span>:
+        autor = AutorCrear(nombre=nombre, pais=pais, nacimiento=nacimiento)   <span class="com"># ← LÓGICA</span>
+    <span class="kw">except</span> ValidationError <span class="kw">as</span> e:
+        autores = <span class="kw">await</span> <span class="fn">obtener_autores</span>(conn)                  <span class="com"># ← DATOS</span>
+        <span class="kw">return</span> templates.TemplateResponse(                          <span class="com"># ← DISEÑO</span>
+            request=request,
+            name=<span class="str">"autores.html"</span>,
+            context={<span class="str">"autores"</span>: autores, <span class="str">"nombre"</span>: nombre,
+                     <span class="str">"pais"</span>: pais, <span class="str">"nacimiento"</span>: nacimiento,
+                     <span class="str">"errors"</span>: e.<span class="fn">errors</span>()},
+            status_code=<span class="num">422</span>,                                <span class="com"># ← DISEÑO</span>
+        )
+
+    <span class="kw">await</span> <span class="fn">crear_autor</span>(conn, autor.nombre, autor.pais, autor.nacimiento)  <span class="com"># ← DATOS</span>
+    autores = <span class="kw">await</span> <span class="fn">obtener_autores</span>(conn)                      <span class="com"># ← DATOS</span>
+
+    <span class="kw">return</span> templates.TemplateResponse(                          <span class="com"># ← DISEÑO</span>
+        request=request,
+        name=<span class="str">"autores.html"</span>,
+        context={<span class="str">"autores"</span>: autores, <span class="str">"nombre"</span>: <span class="str">""</span>,
+                 <span class="str">"pais"</span>: <span class="str">""</span>, <span class="str">"nacimiento"</span>: <span class="str">""</span>, <span class="str">"errors"</span>: {}},
+    )</code></pre>
+  </div>
+
+  <p>Haz el ejercicio de conteo, en serio, y cronometra 60 segundos. Esta función, línea por línea, ¿qué hace?</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla">
+      <thead>
+        <tr><th style="width:30%">Línea</th><th style="width:32%">Capa que responde</th><th>¿Sobrevive si cambio la base de datos?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>@router.post("/autores")</code></td><td><strong style="color:var(--c3)">Diseño</strong> — declara la ruta</td><td class="no">No</td></tr>
+        <tr><td><code>AutorCrear(...)</code></td><td><strong style="color:var(--c2)">Lógica</strong> — valida los datos</td><td class="no">No debería ver la BD, y sin embargo la tiene en la firma</td></tr>
+        <tr><td><code>await obtener_autores(conn)</code></td><td><strong style="color:var(--c1)">Conexión</strong> — habla con PostgreSQL</td><td class="no">Cambia entero</td></tr>
+        <tr><td><code>context={...}</code></td><td><strong style="color:var(--c3)">Diseño</strong> — decide qué ve el usuario</td><td class="no">No</td></tr>
+        <tr><td><code>status_code=422</code></td><td><strong style="color:var(--c3)">Diseño</strong> — decisión de interfaz</td><td class="no">No</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="regla" data-num="02">
+    <h4>La segunda regla: el nombre es la primera prueba</h4>
+    <p>Antes de discutir si un archivo es grande o pequeño, hazle esta pregunta: <strong>¿puedo decir qué hace en una frase, sin abrirlo?</strong> <code>repositorio.py</code> → «las consultas a la base de datos». Sí se puede. <code>vistas.py</code> → «las rutas… y también los SQL… y también los errores». No se puede. Un archivo al que no puedes nombrar bien no tiene una responsabilidad: tiene varias. Y un archivo con varias responsabilidades no se puede mover, no se puede probar y no se puede leer.</p>
+  </div>
+
+  <h3>Las tres preguntas que delatan el desorden</h3>
+  <p class="lead">Un proyecto está bien organizado cuando las tres respuestas son cómodas. Aplícalas a <code>biblioteca/</code> hoy, y vuelve a aplicarlas al final del taller.</p>
+
+  <div class="compare">
+    <div class="compare-card a">
+      <h4>1 · ¿Dónde va lo nuevo?</h4>
+      <p>«Agrega el formulario de préstamos».<br><strong>Hoy:</strong> «depende… ¿en <code>vistas.py</code>? ¿en <code>ejercicios.py</code>?».<br><strong>Objetivo:</strong> «en <code>presentacion/rutas/</code>, junto a los otros formularios».</p>
+    </div>
+    <div class="compare-card b">
+      <h4>2 · ¿Cuántos archivos toco si cambio algo?</h4>
+      <p>«La tarifa de la multa pasa a $800».<br><strong>Hoy:</strong> hay que buscar el número por todo el proyecto y rogar que no queden copias.<br><strong>Objetivo:</strong> exactamente uno, y se sabe cuál.</p>
+    </div>
+    <div class="compare-card c">
+      <h4>3 · ¿Puedo probarlo sin el resto?</h4>
+      <p>«¿La multa está bien calculada?»<br><strong>Hoy:</strong> hay que levantar FastAPI <em>y</em> tener PostgreSQL <em>y</em> abrir el navegador.<br><strong>Objetivo:</strong> se importa una función y se comprueba en la terminal.</p>
+    </div>
+  </div>
+
+  <div class="caja-importante">
+    <h4>El antihéroe: la carpeta que no dice nada</h4>
+    <p>Cuando alguien no sabe cómo organizar, crea la carpeta <code>utils/</code>. ¿Qué es un <em>util</em>? ¿La función que formatea una fecha? ¿La que valida un ISBN? ¿La que abre la conexión? Eso es un cajón de basura con otro nombre: cuando la necesitas, tienes que abrir la carpeta entera para ver si está ahí.</p>
+    <p>El criterio para evitarlo es simple: <strong>una carpeta se nombra por su responsabilidad, y todo lo que hay dentro comparte esa misma responsabilidad</strong>. Si algo no encaja, esa cosa no debería estar ahí. Y esa es exactamente la señal de que falta una carpeta, o de que el archivo está en el lugar equivocado.</p>
+    <p>Otros nombres que no dicen nada: <code>misc/</code>, <code>cosas/</code>, <code>helpers2/</code>, <code>pruebas/</code> (¿pruebas de qué?), <code>nuevo/</code>, o ese <code>temp/</code> que nadie borra. Cada uno de esos nombres es una pregunta que tu equipo te va a terminar haciendo.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>Matiz importante: no es «organizar por tecnología»</h4>
+    <p>Existe una organización que suena lógico y es un error: <code>carpeta_python/</code>, <code>carpeta_html/</code>, <code>carpeta_sql/</code>. ¿Por qué falla?Porque esas carpetas describen <strong>el lenguaje</strong>, no <strong>la responsabilidad</strong>. Van a funcionar exactamente igual el día que tu lógica esté en JavaScript y tus plantillas en otro motor, y ese día no te van a servir de nada. Además obligan a que una misma ruta viva lejos de sus propias pruebas.</p>
+    <p>Regla práctica: <strong>si el nombre de la carpeta cambia cuando cambias de tecnología, es una mala carpeta</strong>.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>Actividad en pareja — 8 minutos</h4>
+    <ol>
+      <li>En una hoja, listen los siete archivos de <code>biblioteca/</code> y escriban la responsabilidad de cada uno en <strong>una frase de cinco palabras</strong>.</li>
+      <li>Marquen los que no pudieron describir en una sola frase.</li>
+      <li>Respondan las tres preguntas del bloque para <code>biblioteca/</code> y anoten la respuesta tal cual. Esa nota es su punto de partida.</li>
+      <li>Inventen un nombre de carpeta para el proyecto que <em>no</em> diga nada. Expliquen por qué es malo. Es un juego rápido y funciona muy bien.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Mini-evaluación · Bloque 01</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> El proyecto tiene siete archivos Python y 499 líneas. ¿Cuál es el problema real?</p>
+      <button class="opcion" data-op="a">Son demasiados archivos: deberían ser tres</button>
+      <button class="opcion" data-op="b">Los archivos se organizan por tecnología y no por responsabilidad, así que uno de ellos hace el trabajo de las tres capas</button>
+      <button class="opcion" data-op="c">499 líneas son demasiadas para un proyecto escolar</button>
+      <button class="opcion" data-op="d">Falta un archivo <code>README.md</code> que lo explique</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Cuál es la mejor prueba para saber si un archivo está bien ubicado?</p>
+      <button class="opcion" data-op="a">Que tenga menos de cien líneas</button>
+      <button class="opcion" data-op="b">Que su nombre termine en <code>.py</code></button>
+      <button class="opcion" data-op="c">Que puedas describir su responsabilidad en una frase sin abrirlo</button>
+      <button class="opcion" data-op="d">Que nadie lo haya modificado nunca</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Por qué <code>utils/</code> es un mal nombre de carpeta?</p>
+      <button class="opcion" data-op="a">Porque no dice qué responsabilidad tienen los archivos de adentro: es un cajón de basura con otro nombre</button>
+      <button class="opcion" data-op="b">Porque Python no acepta carpetas que se llamen así</button>
+      <button class="opcion" data-op="c">Porque las carpetas deben nombrarse en inglés</button>
+      <button class="opcion" data-op="d">Porque solo se puede usar una carpeta de utilidades</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Por qué <code>carpeta_python/</code> y <code>carpeta_html/</code> son una mala organización?</p>
+      <button class="opcion" data-op="a">Porque Python y HTML no se pueden mezclar en un proyecto</button>
+      <button class="opcion" data-op="b">Porque quedan demasiados archivos adentro de cada carpeta</button>
+      <button class="opcion" data-op="c">Porque el navegador no encuentra los archivos dentro de ellas</button>
+      <button class="opcion" data-op="d">Porque describen la tecnología usada y no la responsabilidad, así que el día que cambies de framework dejan de significar nada</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: carpetas e imports →</button>
+  </div>
+</section>
+
+<!-- ===================================================================
+     MÓDULO 2 — CARPETAS E IMPORTS
+     =================================================================== -->
+<section class="modulo" data-modulo="2">
+  <span class="eyebrow">§ 02 · Mecánica</span>
+  <h2>Cómo encuentra Python tus archivos (y por qué deja de encontrarlos)</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · «Módulos, paquetes y el __init__.py que todos tememos»</p>
+
+  <div class="caja-concepto">
+    <h3>La idea central</h3>
+    <p>Cuando escribes <code>from database import db</code>, Python hace dos cosas: <strong>busca</strong> un archivo llamado <code>database.py</code> dentro de una lista de carpetas, y luego <strong>lo registra</strong> como módulo disponible. Si la búsqueda falla, el programa no arranca, y el error te dice exactamente por qué. Hoy vas a ver esa búsqueda con tus propios ojos, porque es la llave para que el taller del bloque 06 no te desarme a mitad de camino.</p>
+  </div>
+
+  <h3>Módulo, paquete, subpaquete</h3>
+  <p class="lead">Tres palabras que se usan como sinónimos y no lo son:</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla">
+      <thead><tr><th style="width:20%">Palabra</th><th style="width:36%">Qué es en la práctica</th><th>Ejemplo en tu proyecto</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Módulo</strong></td>
+          <td>Un archivo <code>.py</code>. Su nombre, sin el <code>.py</code>, es el nombre con el que se importa.</td>
+          <td><code>repositorio.py</code> → <code>import repositorio</code></td>
+        </tr>
+        <tr>
+          <td><strong>Paquete</strong></td>
+          <td>Una carpeta que además contiene un archivo <code>__init__.py</code>. Ese archivo es lo que convierte una simple carpeta en algo que Python puede importar como una unidad.</td>
+          <td><code>dominio/__init__.py</code> → <code>from dominio import servicios</code></td>
+        </tr>
+        <tr>
+          <td><strong>Subpaquete</strong></td>
+          <td>Un paquete dentro de otro paquete. Funciona igual: necesita su propio <code>__init__.py</code>.</td>
+          <td><code>presentacion/rutas/__init__.py</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-ruta"><span class="p">🔎 la búsqueda, paso a paso</span></div>
+      <button class="copy-btn">copiar</button>
+    </div>
+<pre><code><span class="com"># Supongamos esto, lanzado desde la carpeta biblioteca/:</span>
+<span class="kw">import</span> nucleo.conexion
+
+<span class="com"># 1. Python recorre una lista de carpetas donde puede buscar.</span>
+<span class="com">#    La primera de esa lista es la carpeta desde la que LANZASTE</span>
+<span class="com">#    el programa. Las otras las agrega el intérprete.</span>
+<span class="com"># 2. En cada carpeta busca una subcarpeta llamada  nucleo/</span>
+<span class="com"># 3. Dentro, busca el archivo  __init__.py</span>
+<span class="com">#    ├─ ¿Existe? → es un paquete. Sigue: busca  conexion.py  adentro.</span>
+<span class="com">#    └─ ¿No?    → no puede tratarla como paquete y te lo dice.</span>
+<span class="com"># 4. Ejecuta ese archivo UNA vez y guarda sus nombres en el módulo.</span>
+<span class="com">#    Por eso el segundo import del mismo archivo es instantáneo.</span>
+
+<span class="com"># Y esto es lo que hace que funcione:</span>
+uvicorn main:app <span class="com"># ← lanzado desde biblioteca/ → '.' es la raíz</span></code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>El error que vas a ver, y cómo anticiparlo</h4>
+    <p>Si borras un <code>__init__.py</code>, o si lanzas el servidor desde la carpeta equivocada, aparece esto:</p>
+<pre><code>ModuleNotFoundError: No module named 'nucleo'
+
+<span class="com"># Y el más confuso de todos, que loAecha en el bloque 04:</span>
+ImportError: cannot import name 'calcular_multa' from partially
+initialized module 'dominio.servicios' (most likely due to a circular import)</code></pre>
+    <p>El primero significa <strong>«no te encontré la carpeta»</strong>: o falta el <code>__init__.py</code>, o no estás parado en la raíz del proyecto. El segundo significa <strong>«dos archivos se están esperando mutuamente»</strong>, y es el error que más cuesta cuando uno empieza a organizar. Lo desarmamos por completo en el bloque 04.</p>
+  </div>
+
+  <h3>Import absoluto e import relativo</h3>
+  <p class="lead">Cuando un archivo importa a otro hay dos formas de escribirlo. Las dos funcionan; el orden de la clase es una, y la razón es la legibilidad.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-ruta"><span class="p c2">dominio/servicios.py</span></div>
+      <button class="copy-btn">copiar</button>
+    </div>
+<pre><code><span class="com"># ✅ ABSOLUTO — el que usamos en todo el proyecto.</span>
+<span class="com">#    Empieza en la raíz del proyecto. Se lee igual desde</span>
+<span class="com">#    cualquier archivo, sin importar dónde estés parado.</span>
+<span class="kw">from</span> nucleo.conexion <span class="kw">import</span> get_conexion
+<span class="kw">from</span> dominio.repositorios <span class="kw">import</span> obtener_autores
+
+<span class="com"># ◐ RELATIVO — relativo a QUIÉN está importando.</span>
+<span class="com">#    El punto significa «sube a mi carpeta». Un punto más es un</span>
+<span class="com">#    nivel más arriba.</span>
+<span class="kw">from</span> .repositorios <span class="kw">import</span> obtener_autores      <span class="com"># el que está a mi lado</span>
+<span class="kw">from</span> ..nucleo.conexion <span class="kw">import</span> get_conexion    <span class="com"># subo un nivel</span>
+
+<span class="com"># ¿Por qué absolutos? Porque al leer</span>
+<span class="com">#   from nucleo.conexion import get_conexion</span>
+<span class="com"># sabes de inmediato DÓNDE está ese archivo, sin contar</span>
+<span class="com"># puntos. Con los relativos tienes que saber dónde estás</span>
+<span class="com"># parado para poder entender la línea.</span></code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>¿Qué va dentro de <code>__init__.py</code>?</h4>
+    <p>Casi nada. Su trabajo es <strong>marcar la carpeta como paquete</strong> y, si quieres, exponer desde afuera lo que tenga sentido exponer. En este proyecto va una frase que dice qué hay adentro. Un <code>__init__.py</code> de trescientas líneas es un archivón disfrazado.</p>
+<pre><code><span class="com"># nucleo/__init__.py</span>
+<span class="str">"""Capa 1 — Conexión. Configuración y pool de base de datos."""</span>
+
+<span class="com"># dominio/__init__.py</span>
+<span class="str">"""Capa 2 — Lógica. Reglas de la biblioteca, validación y repositorios."""</span>
+
+<span class="com"># presentacion/__init__.py</span>
+<span class="str">"""Capa 3 — Diseño. Rutas, plantillas y archivos estáticos."""</span></code></pre>
+    <p>Más adelante, si quisieras escribir <code>from dominio import servicios</code> en vez de <code>from dominio.servicios import …</code>, el atajo se declara ahí. Hoy no hace falta: dejamos el archivo limpio.</p>
+  </div>
+
+  <h3>Manos a la obra: un proyecto de tres archivos en cinco minutos</h3>
+  <p class="lead">Este es el ejercicio que quita el miedo. Crea una carpeta llamada <code>prueba_estructura</code> y llénala así:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-ruta"><span class="p">🛠️ comandos exactos</span></div>
+      <button class="copy-btn">copiar</button>
+    </div>
+<pre><code><span class="com"># 1. Crear la carpeta y entrar</span>
+mkdir prueba_estructura &amp;&amp; <span class="kw">cd</span> prueba_estructura
+
+<span class="com"># 2. Crear el paquete "nucleo" con su __init__.py</span>
+mkdir nucleo
+touch nucleo/__init__.py
+
+<span class="com"># 3. El módulo de la conexión</span>
+cat &gt; nucleo/conexion.py &lt;&lt;<span class="str">'PY'</span>
+<span class="kw">def</span> <span class="fn">saludar</span>() -&gt; str:
+    <span class="str">"""Saludo del paquete nucleo."""</span>
+    <span class="str">"Hola desde nucleo/conexion.py"</span>
+PY
+
+<span class="com"># 4. El archivo que usa al paquete</span>
+cat &gt; app.py &lt;&lt;<span class="str">'PY'</span>
+<span class="kw">from</span> nucleo.conexion <span class="kw">import</span> saludar
+<span class="fn">print</span>(<span class="fn">saludar</span>())
+PY
+
+<span class="com"># 5. Ejecutar DESDE la raíz, que es donde está app.py</span>
+python app.py
+<span class="com"># → Hola desde nucleo/conexion.py    ✅</span></code></pre>
+  </div>
+
+  <h3>Ahora rómpelo a propósito (esto es lo importante)</h3>
+  <p class="lead">Un error que entiendes ya no vuelve a ocurrir. Provoca los tres y anota el mensaje exacto, porque son los que verás en el taller.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-ruta"><span class="p">💣 tres errores y su explicación</span></div>
+      <button class="copy-btn">copiar</button>
+    </div>
+<pre><code><span class="com"># ERROR A — borra el __init__.py del paquete</span>
+rm nucleo/__init__.py
+python app.py
+<span class="no">ModuleNotFoundError: No module named 'nucleo.conexion'</span>
+<span class="com"># → Sin __init__.py la carpeta no es un paquete y Python la ignora.</span>
+touch nucleo/__init__.py
+
+<span class="com"># ERROR B — ejecutar desde la carpeta equivocada</span>
+cd ..                      <span class="com"># ahora estás FUERA de prueba_estructura/</span>
+python prueba_estructura/app.py
+<span class="no">ModuleNotFoundError: No module named 'nucleo.conexion'</span>
+<span class="com"># → La primera carpeta que se revisa es la desde la que</span>
+<span class="com">#   lanzaste el comando, NO la del archivo ejecutado.</span>
+cd prueba_estructura
+
+<span class="com"># ERROR C — import relativo fuera de un paquete (el clásico</span>
+<span class="com">#   de los tutoriales: "from .conexion import saludar" dentro de</span>
+<span class="com">#   app.py, y ejecutar app.py directamente)</span>
+<span class="no">ImportError: attempted relative import with no known parent package</span>
+<span class="com"># → Los imports relativos solo funcionan si el archivo se importa</span>
+<span class="com">#   como parte de un paquete, nunca ejecutándolo directo.</span>
+<span class="com">#   Otra razón para usar siempre imports ABSOLUTOS.</span></code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>Dos costumbres que te van a salvar el taller</h4>
+    <ul style="margin:0.3rem 0 0 1.1rem;">
+      <li><strong>Siempre desde la raíz.</strong> Todo comando que importe tu proyecto (<code>uvicorn main:app --reload</code>, <code>python -c "import main"</code>, <code>pytest</code>) se ejecuta desde la carpeta que contiene <code>main.py</code>. Si tu terminal dice <code>dev@equipo:~/…</code> en vez de <code>dev@biblioteca:~$</code>, estás en el lugar equivocado.</li>
+      <li><strong>Lee el error completo, no solo la última línea.</strong> El traceback de Python empieza arriba y termina abajo, pero la línea que explica <em>por qué</em> es la última. Léelas todas: las primeras te dicen en qué archivo se rompió.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>Actividad en pareja — 12 minutos</h4>
+    <p>Con la carpeta <code>prueba_estructura</code> ya creada:</p>
+    <ol>
+      <li>Agrega un segundo módulo <code>nucleo/lectores.py</code> con una función <code>leer()</code> que devuelva un texto, e impórtalo desde <code>app.py</code> con import absoluto.</li>
+      <li>Crea un subpaquete <code>nucleo/extra/</code> con su <code>__init__.py</code> y un módulo <code>utilidades.py</code>. Impórtalo desde arriba: <code>from nucleo.extra.utilidades import …</code>.</li>
+      <li>Repite los tres errores a propósito y <strong>anota el mensaje exacto</strong> de cada uno.</li>
+      <li>Prueba qué pasa si pones un <code>print("cargando…")</code> dentro de <code>nucleo/__init__.py</code> e importas dos veces. ¿Se ejecuta una vez o dos? ¿Por qué importa saberlo?</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Mini-evaluación · Bloque 02</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué convierte una simple carpeta en algo que Python puede importar como una unidad?</p>
+      <button class="opcion" data-op="a">Que tenga archivos <code>.py</code> adentro</button>
+      <button class="opcion" data-op="b">Que esté dentro de la carpeta del proyecto</button>
+      <button class="opcion" data-op="c">Que tenga un archivo <code>__init__.py</code> adentro</button>
+      <button class="opcion" data-op="d">Que el nombre esté en mayúsculas</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> Estás en <code>~/descargas</code> y ejecutas <code>python biblioteca/app.py</code>. Ese archivo hace <code>from nucleo.conexion import …</code>. ¿Qué pasa?</p>
+      <button class="opcion" data-op="a">Falla con <code>ModuleNotFoundError</code>: Python buscó a partir de <code>~/descargas</code>, no de <code>~/descargas/biblioteca/</code></button>
+      <button class="opcion" data-op="b">Funciona, porque Python siempre busca en la carpeta del archivo ejecutado</button>
+      <button class="opcion" data-op="c">Funciona, pero más lento</button>
+      <button class="opcion" data-op="d">Falla solo si además falta el <code>__init__.py</code></button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Por qué el proyecto usa imports absolutos (<code>from nucleo.conexion import x</code>) en vez de relativos (<code>from .conexion import x</code>)?</p>
+      <button class="opcion" data-op="a">Porque los absolutos se ejecutan más rápido</button>
+      <button class="opcion" data-op="b">Porque al leerlos sabes de inmediato dónde está el archivo, sin contar puntos ni saber dónde estás parado</button>
+      <button class="opcion" data-op="c">Porque los relativos no funcionan en Python 3</button>
+      <button class="opcion" data-op="d">Porque es lo que exige FastAPI</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Para qué sirve un <code>__init__.py</code> en este proyecto?</p>
+      <button class="opcion" data-op="a">Para escribir la versión del proyecto</button>
+      <button class="opcion" data-op="b">Para guardar las constantes de la aplicación</button>
+      <button class="opcion" data-op="c">Para que Python ignore la carpeta al compilar</button>
+      <button class="opcion" data-op="d">Para marcar la carpeta como paquete importable, y dejar una frase que diga qué hay adentro</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: las tres capas →</button>
+  </div>
+</section>
+
+<!-- ===================================================================
+     MÓDULO 3 — LAS TRES CAPAS
+     =================================================================== -->
+<section class="modulo" data-modulo="3">
+  <span class="eyebrow">§ 03 · Arquitectura</span>
+  <h2>Tres capas, tres responsabilidades, tres carpetas</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · «El mapa del territorio»</p>
+
+  <div class="caja-concepto">
+    <h3>La idea central</h3>
+    <p>Una capa es un conjunto de archivos que comparten <strong>una sola responsabilidad</strong>. Cuando esa responsabilidad es la conexión, sus archivos viven juntos en <code>nucleo/</code>; cuando es la lógica del negocio, en <code>dominio/</code>; cuando es lo que el usuario ve, en <code>presentacion/</code>. Eso es todo: no hay magia, no hay framework, no hay nada más que cumplir un acuerdo. Y ese acuerdo es exactamente lo que convierte siete archivos sueltos en algo que se puede mantener, ampliar y entender.</p>
+  </div>
+
+  <h3>El árbol final</h3>
+  <p class="lead">Este es el destino, y es la referencia de todo el taller: cada archivo que crees tiene su lugar aquí. Haz clic en cada nodo para leer su contrato y entender por qué está donde está.</p>
+
+  <div class="arbol" data-arbol="capas">
+    <div class="arbol-lista">
+      <button class="fl padre raiz" data-nodo="t-raiz"><span class="gl"></span><span class="ic">▸</span> biblioteca/</button>
+      <button class="fl" data-capa="0" data-nombre="main.py" data-rol="Punto de entrada" data-resp="Lo único que arranca el programa: crea la app, abre y cierra la base de datos con lifespan y monta los routers. Su trabajo es poner las piezas en su sitio, no hacer el trabajo de ninguna." data-dato="6 imports · 8 líneas de lógica · 0 reglas de negocio" data-pista="Meta del taller: que main.py quede por debajo de veinte líneas. Si crece, significa que alguien metió lógica de negocio en el punto de entrada."><span class="gl">├──</span><span class="ic">◈</span>main.py</button>
+      <button class="fl" data-capa="1" data-nombre="nucleo/ — CAPA 1 · CONEXIÓN" data-rol="Infraestructura" data-resp="Todo lo que habla con el mundo exterior: lee la configuración del sistema y administra el pool de conexiones. Es la única capa que sabe que existe una base de datos y, deliberadamente, la única que no sabe qué es un autor." data-dato="2 archivos Python + __init__.py" data-pista="Prueba rápida: ¿hay un SELECT en esta carpeta? No debería. ¿Aparece la palabra «autor» o «multa»? Tampoco. Esa es la diferencia entre infraestructura y lógica."><span class="gl">├──</span><span class="ic">▸ c1</span>nucleo/</button>
+      <button class="fl" data-capa="1" data-nombre="nucleo/configuracion.py" data-rol="Configuración" data-resp="Lee las variables de entorno y expone constantes: la URL de la base de datos, el tamaño del pool, el nombre de la aplicación. Separa «de dónde vienen los datos de configuración» de «cómo me conecto»." data-dato="DATABASE_URL = os.environ['DATABASE_URL']" data-pista="Beneficio concreto: el día que la app necesite dos ambientes —desarrollo y producción— solo tocas este archivo."><span class="gl">│&nbsp; │──</span><span class="ic">◈</span>configuracion.py</button>
+      <button class="fl" data-capa="1" data-nombre="nucleo/conexion.py" data-rol="Pool de conexiones" data-resp="Reúne lo que hoy está repartido entre database.py y dependencias.py: la clase que crea y cierra el pool, y la dependencia get_conexion() que FastAPI ejecuta en cada ruta. Sesenta y cuatro líneas juntas, y las dos cosas son infraestructura pura." data-dato="class Conexion · conectar() · cerrar() · async def get_conexion()" data-pista="¿Por qué unir los dos archivos? Porque ocho líneas no justifican un archivo propio. Dos archivos con la misma responsabilidad van en el mismo sitio: eso también es organizar."><span class="gl">│&nbsp; └──</span><span class="ic">◈</span>conexion.py</button>
+      <button class="fl" data-capa="2" data-nombre="dominio/ — CAPA 2 · LÓGICA" data-rol="Reglas del negocio" data-resp="Aquí vive lo que la biblioteca sabe hacer: qué es un autor válido, cuánto es la multa, cuándo un libro está disponible. No sabe de HTTP ni de HTML, y no se conecta solo a la base de datos: recibe la conexión que le den." data-dato="3 archivos Python + __init__.py" data-pista="Prueba rápida: ¿puedes escribir aquí una función de negocio sin importar nada de FastAPI ni de Jinja? Si puedes, la capa está limpia."><span class="gl">├──</span><span class="ic">▸ c2</span>dominio/</button>
+      <button class="fl" data-capa="2" data-nombre="dominio/esquemas.py" data-rol="Validación" data-resp="Los modelos Pydantic: qué campos tiene un autor y qué valores se aceptan. Sigue siendo el archivo de siempre; lo que cambia es que su ubicación dice «esto es validación de negocio»." data-dato="class AutorCrear(BaseModel) · AutorActualizar(BaseModel)" data-pista="Carpeta nueva, archivo de siempre. Así se ve un buen cambio de estructura: conservas lo que funciona y corriges lo que no comunicaba."><span class="gl">│&nbsp; │──</span><span class="ic">◈</span>esquemas.py</button>
+      <button class="fl" data-capa="2" data-nombre="dominio/servicios.py" data-rol="Reglas de negocio · NUEVO" data-resp="El archivo que hoy no existe y que le faltaba a la biblioteca. Aquí van las acciones completas: registrar_autor(), calcular_multa(), esta_disponible(). Llama al repositorio y aplica las reglas; no sabe que existe una interfaz." data-dato="async def registrar_autor(conn, datos): validar → comprobar → guardar" data-pista="Es la pieza clave del taller, porque es el único lugar donde una regla puede vivir sin que nadie tenga que buscarla. Y porque se puede probar sin servidor: solo necesita una conexión cualquiera."><span class="gl">│&nbsp; │──</span><span class="ic">◈</span>servicios.py</button>
+      <button class="fl" data-capa="2" data-nombre="dominio/repositorios.py" data-rol="Acceso a datos" data-resp="El archivo más grande, y ahora el más fácil de encontrar. Todas las consultas SQL de la biblioteca, y solo ellas. Cada función dice qué tabla toca y qué devuelve." data-dato="async def obtener_autores(conn) → list[dict]" data-pista="Aquí, y solo aquí, se escribe SQL. Es una regla que se puede verificar con un comando, y lo vamos a hacer en el taller, en la fase 4."><span class="gl">│&nbsp; └──</span><span class="ic">◈</span>repositorios.py</button>
+      <button class="fl" data-capa="3" data-nombre="presentacion/ — CAPA 3 · DISEÑO" data-rol="Interfaz" data-resp="Todo lo que el usuario ve y toca: las rutas, las plantillas, los estilos. Es la capa más grande, y está bien que lo sea: la interfaz cambia mucho más que el negocio. Pero es también la que menos sabe." data-dato="3 paquetes + 18 plantillas + estáticos" data-pista="Aquí también hay subcapas: rutas, que es el Python de la interfaz, y templates, que es su HTML. La interfaz es un problema tan grande que necesita su propia estructura."><span class="gl">├──</span><span class="ic">▸ c3</span>presentacion/</button>
+      <button class="fl" data-capa="3" data-nombre="presentacion/rutas/" data-rol="Rutas HTTP" data-resp="Un archivo por módulo de la biblioteca, como ya haces con APIRouter: autores.py, libros.py, ejercicios.py. Cada uno declara sus rutas y llama a los servicios. Nada de SQL, nada de reglas propias." data-dato="router = APIRouter(prefix='/autores', tags=['autores'])" data-pista="La diferencia con hoy es solo la ubicación: siguen siendo archivos Python. Ese cambio de lugar es el que permite que dos personas trabajen en dos módulos sin pisarse."><span class="gl">│&nbsp; │──</span><span class="ic">▸</span>rutas/</button>
+      <button class="fl" data-capa="3" data-nombre="presentacion/templates/" data-rol="Plantillas" data-resp="Las dieciocho plantillas que ya usas, sin ningún cambio: base.html, las páginas y componentes/ con los fragmentos de htmx. Se mueven tal cual; lo único que cambia es dónde las busca el servidor." data-dato="base.html · inicio.html · autores.html · componentes/*.html" data-pista="La duda que siempre aparece: ¿adentro van más carpetas? Sí, cuando el número de plantillas crezca. componentes/ ya es esa carpeta."><span class="gl">│&nbsp; └──</span><span class="ic">▸</span>templates/</button>
+      <button class="fl" data-capa="3" data-nombre="presentacion/static/" data-rol="Estáticos · NUEVO" data-resp="Tu CSS, tus imágenes, tu JavaScript. Hoy no tienes carpeta propia, pero en cuanto agregues un estilo propio la vas a necesitar: es la versión de la capa 3 para lo que descarga el navegador." data-dato="static/css/estilos.css · static/img/…" data-pista="Cuidado: lo estático no se importa en Python. Lo sirve FastAPI con StaticFiles. Es un detalle, pero confundirlos es un error muy común."><span class="gl">├──</span><span class="ic">▸ c3</span>static/</button>
+      <button class="fl" data-capa="0" data-nombre="tests/" data-rol="Pruebas" data-resp="Un archivo por cosa que quieras comprobar. No es obligatorio en este curso, pero es el pago más grande de haber separado capas: aquí puedes probar la lógica de la biblioteca sin levantar el servidor." data-dato="tests/test_servicios.py · tests/test_repositorios.py" data-pista="Reto opcional del taller: escribe un test de servicios.py que no use la base de datos. Es la demostración más rápida de para qué sirve todo esto."><span class="gl">├──</span><span class="ic">▸</span>tests/</button>
+      <button class="fl padre" data-nodo="t-cfg"><span class="gl">├──</span><span class="ic">◈</span>pyproject.toml · .gitignore · .env.example</button>
+      <button class="fl padre" data-nodo="t-readme"><span class="gl">└──</span><span class="ic">◈</span>README.md <span class="gr">— con la sección «Estructura del proyecto»</span></button>
+    </div>
+    <div class="arbol-panel">
+      <div class="ap-vacio">Selecciona un archivo o una carpeta del árbol para leer su contrato.</div>
+    </div>
+  </div>
+
+  <div class="caja-desafio">
+    <h4>Observa lo que la estructura te da gratis</h4>
+    <p>Antes de decidir, conviene hacer la prueba. Toma tu proyecto <strong>tal como está hoy</strong> y cuenta cuántos archivos tendrías que abrir en cada escenario:</p>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla">
+      <thead>
+        <tr><th style="width:32%">Si hay que…</th><th style="width:14%">Hoy (plano)</th><th style="width:16%">Con tres capas</th><th>Por qué cambia</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Cambiar la base de datos (de Neon a un PostgreSQL local)</td>
+          <td style="text-align:center" class="no">2 archivos</td>
+          <td style="text-align:center" class="si">1 archivo</td>
+          <td>Solo hay un archivo que menciona <code>asyncpg</code>.</td>
+        </tr>
+        <tr>
+          <td>Subir la tarifa de la multa a $800</td>
+          <td style="text-align:center" class="no">2 archivos</td>
+          <td style="text-align:center" class="si">1 archivo</td>
+          <td>La regla vive en un servicio, no repartida entre rutas.</td>
+        </tr>
+        <tr>
+          <td>Cambiar el color de un botón</td>
+          <td style="text-align:center" class="no">2 archivos</td>
+          <td style="text-align:center" class="si">1 archivo</td>
+          <td>Un solo archivo de estilos, dentro de la capa de diseño.</td>
+        </tr>
+        <tr>
+          <td>Agregar una API que devuelva JSON en vez de HTML</td>
+          <td style="text-align:center" class="no">no se sabe</td>
+          <td style="text-align:center" class="si">1 archivo nuevo</td>
+          <td>Las reglas no se tocan: se agrega otra interfaz al lado.</td>
+        </tr>
+        <tr>
+          <td>Comprobar la regla de la multa sin base de datos</td>
+          <td style="text-align:center" class="no">Imposible</td>
+          <td style="text-align:center" class="si">1 import</td>
+          <td>La lógica no depende ni de HTTP ni de PostgreSQL.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="regla" data-num="03">
+    <h4>La tercera regla: el objetivo no es verse profesional</h4>
+    <p>La estructura no existe para que tu proyecto se vea elegante en una exposición. Existe para que <strong>el próximo cambio sea barato</strong>. Si un cambio te obliga a abrir cuatro archivos, la estructura está mal. Si te obliga a abrir uno, está bien — sin importar cuántas carpetas tenga el árbol. Ármate de ese criterio para todo lo que viene.</p>
+  </div>
+
+  <h3>El contrato de cada capa, escrito</h3>
+  <p class="lead">Un contrato es simplemente la lista de cosas que una capa puede hacer y la lista de cosas que no puede. Cuando dos personas trabajan en el mismo proyecto, el contrato evita la mitad de los desacuerdos.</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla">
+      <thead>
+        <tr><th style="width:16%">Capa</th><th style="width:24%">Puede hacer</th><th style="width:24%">NO puede hacer</th><th>Se rompe si…</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--c1)">1 · Conexión</strong><br><code>nucleo/</code></td>
+          <td>Leer configuración, crear y cerrar el pool, entregar conexiones</td>
+          <td>Escribir SQL de la biblioteca; saber qué es un autor; devolver HTML</td>
+          <td>Alguien escribe un <code>SELECT</code> aquí «porque total ya estoy en esta carpeta».</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--c2)">2 · Lógica</strong><br><code>dominio/</code></td>
+          <td>Validar datos, aplicar reglas, escribir y leer SQL</td>
+          <td>Importar FastAPI o Jinja; abrir su propia conexión; devolver HTML</td>
+          <td>Alguien importa <code>templates</code> desde un servicio «para no devolver solo datos».</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--c3)">3 · Diseño</strong><br><code>presentacion/</code></td>
+          <td>Declarar rutas, leer formularios, elegir plantilla, servir estáticos</td>
+          <td>Escribir SQL; guardar datos; decidir reglas del negocio</td>
+          <td>Alguien mete un <code>await conn.fetch(…)</code> «para no crear otro archivo».</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Y <code>main.py</code>? Todos preguntan por él</h3>
+  <p class="lead">El punto de entrada es una capa delgada, una más: existe para que las otras se vuelvan visibles. Compara el antes y el después de tu archivo real:</p>
+
+  <div class="antes-despues">
+    <div class="antes">
+      <span class="ad-cab">main.py · hoy</span>
+<pre><code><span class="kw">import</span> os
+<span class="kw">from</span> contextlib <span class="kw">import</span> asynccontextmanager
+<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+
+<span class="kw">from</span> database <span class="kw">import</span> db                  <span class="com"># ← de dónde sale</span>
+<span class="kw">from</span> ejercicios <span class="kw">import</span> router <span class="kw">as</span> ejercicios_router
+<span class="kw">from</span> vistas <span class="kw">import</span> router <span class="kw">as</span> vistas_router
+
+DATABASE_URL = os.environ[<span class="str">"DATABASE_URL"</span>]
+
+@asynccontextmanager
+<span class="kw">async def</span> <span class="fn">lifespan</span>(app: FastAPI):
+    <span class="kw">await</span> db.<span class="fn">connect</span>(DATABASE_URL)
+    <span class="kw">yield</span>
+    <span class="kw">await</span> db.<span class="fn">close</span>()
+
+app = FastAPI(lifespan=lifespan)
+app.<span class="fn">include_router</span>(vistas_router)
+app.<span class="fn">include_router</span>(ejercicios_router)</code></pre>
+      <p>Funciona. Pero cada import dice «toma este archivo de la raíz», sin decir de qué capa viene, y el orden de los routers es la única pista de cómo está construido el proyecto.</p>
+    </div>
+    <div class="despues">
+      <span class="ad-cab">main.py · después</span>
+<pre><code><span class="kw">from</span> contextlib <span class="kw">import</span> asynccontextmanager
+<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+
+<span class="kw">from</span> nucleo.configuracion <span class="kw">import</span> CONFIGURACION
+<span class="kw">from</span> nucleo.conexion <span class="kw">import</span> conexion
+<span class="kw">from</span> presentacion.rutas.autores <span class="kw">import</span> router <span class="kw">as</span> autores
+<span class="kw">from</span> presentacion.rutas.libros <span class="kw">import</span> router <span class="kw">as</span> libros
+<span class="kw">from</span> presentacion.rutas.ejercicios <span class="kw">import</span> router <span class="kw">as</span> ejercicios
+
+@asynccontextmanager
+<span class="kw">async def</span> <span class="fn">lifespan</span>(app: FastAPI):
+    <span class="kw">await</span> conexion.<span class="fn">conectar</span>(CONFIGURACION.base_datos)
+    <span class="kw">yield</span>
+    <span class="kw">await</span> conexion.<span class="fn">cerrar</span>()
+
+app = FastAPI(lifespan=lifespan)
+app.<span class="fn">include_router</span>(autores)
+app.<span class="fn">include_router</span>(libros)
+app.<span class="fn">include_router</span>(ejercicios)</code></pre>
+      <p>Las mismas veintidós líneas, pero ahora cada import <strong>te dice en qué capa vive lo que trae</strong>. Y el archivo no creció: sigue siendo solo la lista de piezas.</p>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>Convenciones de nombres, para que el árbol se lea solo</h4>
+    <ul style="margin:0.3rem 0 0 1.1rem;">
+      <li><strong>Minúsculas, sin tildes, sin espacios.</strong> Carpetas y archivos: <code>presentacion/</code>, <code>repositorios.py</code>. Los imports se escriben más fácil y no hay sorpresas entre sistemas operativos.</li>
+      <li><strong>Una palabra por responsabilidad.</strong> Si necesitas dos palabras para nombrar una carpeta, probablemente son dos carpetas.</li>
+      <li><strong>El nombre es la primera documentación.</strong> Un archivo nuevo llamado <code>cosas.py</code> no lo va a abrir nadie. Uno llamado <code>repositorios.py</code> ya te dice qué buscar adentro.</li>
+      <li><strong>Consistencia en el plural.</strong> No mezcles <code>autor.py</code> con <code>autores.py</code> en la misma carpeta.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>Actividad en pareja — 10 minutos</h4>
+    <ol>
+      <li>¿En qué capa va <code>static/estilos.css</code>? ¿Y el archivo <code>tablas_bd.sql</code> con el <code>CREATE TABLE</code>? Justifiquen las dos respuestas.</li>
+      <li>Si mañana la biblioteca prestara también libros digitales: ¿dónde iría la regla «un digital no genera multa»? ¿Y la regla «no se puede prestar dos veces el mismo digital»?</li>
+      <li>¿Tiene sentido crear <code>presentacion/rutas/prestamos.py</code> si todavía no hay préstamos? Discutan los dos bandos y decidan.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Mini-evaluación · Bloque 03</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la responsabilidad de la capa <code>dominio/</code>?</p>
+      <button class="opcion" data-op="a">Servir las páginas HTML y los estilos</button>
+      <button class="opcion" data-op="b">Las reglas de la biblioteca: validar, calcular y guardar, sin saber de HTTP ni de plantillas</button>
+      <button class="opcion" data-op="c">Administrar el pool de conexiones y leer las variables de entorno</button>
+      <button class="opcion" data-op="d">Crear la aplicación de FastAPI y registrar los routers</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Quieres escribir la consulta que trae los títulos recientes. ¿Dónde va?</p>
+      <button class="opcion" data-op="a"><code>nucleo/conexion.py</code>, porque ya estás conectándote a la base de datos</button>
+      <button class="opcion" data-op="b"><code>presentacion/rutas/libros.py</code>, porque es la ruta la que la necesita</button>
+      <button class="opcion" data-op="c"><code>dominio/repositorios.py</code>, que es el único archivo donde se escribe SQL</button>
+      <button class="opcion" data-op="d"><code>presentacion/templates/libros.html</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Por qué la estructura se organiza por responsabilidad y no por tecnología (<code>carpeta_python/</code>, <code>carpeta_html/</code>)?</p>
+      <button class="opcion" data-op="a">Porque un nombre por responsabilidad sigue siendo válido aunque cambies de framework o de lenguaje</button>
+      <button class="opcion" data-op="b">Porque Python no permite carpetas por tecnología</button>
+      <button class="opcion" data-op="c">Porque organizar por tecnología siempre deja archivos muy grandes</button>
+      <button class="opcion" data-op="d">Porque es lo que exige el framework FastAPI</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> Al terminar el taller, ¿qué debería medir <code>main.py</code> para saber que la reorganización funcionó?</p>
+      <button class="opcion" data-op="a">Que tenga más de cien líneas, para que se entienda todo junto</button>
+      <button class="opcion" data-op="b">Que tenga el menor número de imports posible</button>
+      <button class="opcion" data-op="c">Que contenga la función que calcula las multas</button>
+      <button class="opcion" data-op="d">Que siga siendo pequeño y solo arme las piezas: si creció, es que se coló lógica de negocio en el punto de entrada</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: descanso →</button>
+  </div>
+</section>
+
+<!-- ===================================================================
+     MÓDULO 4 — DESCANSO
+     =================================================================== -->
+<section class="modulo" data-modulo="4">
+  <span class="eyebrow">§ — · Descanso</span>
+  <h2>Quince minutos para que tu cerebro consolide lo aprendido</h2>
+  <p class="meta-modulo">⏱️ 15 minutos · Obligatorios: pararse, estirar y beber agua</p>
+
+  <div class="cuadricula-2">
+    <div class="tarjeta">
+      <span class="emoji">👀</span>
+      <h3>Regla 20-20-20</h3>
+      <p>Mira a <strong>6 metros</strong> de distancia durante <strong>20 segundos</strong>, tres veces seguidas. El ojo se tensa igual que el brazo, y no te avisa.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🙆</span>
+      <h3>Estira el cuerpo</h3>
+      <p>Ponte de pie. Gira el cuello cinco veces a cada lado, lento. Estira los brazos hacia arriba diez segundos y suelta.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">💧</span>
+      <h3>Agua</h3>
+      <p>Un vaso entero. El cerebro es casi 73% agua, y la deshidratación se nota primero como «no me entra nada».</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🗣️</span>
+      <h3>Coméntalo</h3>
+      <p>Con tu compañero o compañera, en una frase cada uno: «¿qué capa del proyecto de la biblioteca te quedó más clara y cuál menos?». Dos minutos. Justo lo que vas a necesitar en el taller.</p>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>Una pregunta para pensar mientras descansas</h4>
+    <p>Tu computador tiene una carpeta <code>node_modules/</code> —si has visto un proyecto de JavaScript— con miles de archivos, y una carpeta <code>.git/</code> con el historial completo del proyecto. Los dos son casos extremos del tema de hoy:</p>
+    <ul style="margin:0.5rem 0 0 1.1rem;">
+      <li><code>node_modules/</code> es un cajón de basura gigante, pero <strong>no es código tuyo</strong>: es código de otras personas, y su estructura la define la herramienta, no tú.</li>
+      <li><code>.git/</code> guarda objetos con nombres incomprensibles a propósito: <strong>el significado está en las carpetas de arriba</strong>, no dentro del almacén.</li>
+    </ul>
+    <p>La lección escondida: <strong>estructura es una promesa sobre lo que vas a encontrar</strong>. Hasta el sistema operativo lo entiende así.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: la flecha de dependencia →</button>
+  </div>
+</section>
+
+<!-- ===================================================================
+     MÓDULO 5 — LA FLECHA DE DEPENDENCIA
+     =================================================================== -->
+<section class="modulo" data-modulo="5">
+  <span class="eyebrow">§ 04 · La regla que lo sostiene todo</span>
+  <h2>La flecha de dependencia: hacia dónde se puede importar</h2>
+  <p class="meta-modulo">⏱️ 45 minutos · «La regla que separa la arquitectura de un montón de carpetas»</p>
+
+  <div class="caja-concepto">
+    <h3>La idea central</h3>
+    <p>Crear las carpetas es lo fácil. Lo que las convierte en <em>arquitectura</em> es una regla de una sola línea: <strong>las dependencias solo bajan</strong>. La capa de diseño puede usar la de lógica; la de lógica puede usar la de conexión; la de conexión no puede usar ninguna. Nunca hacia arriba, nunca al lado, nunca en círculo. Esa flecha es la razón por la que puedes cambiar la base de datos, la interfaz o la tecnología sin reescribir el negocio.</p>
+  </div>
+
+  <div class="flecha-diagrama">
+    <div class="fd-caja">
+      <span class="fd-capa">Capa 3 · la de arriba</span>
+      <div class="fd-tit" style="color:var(--c3)">presentacion/</div>
+      <div class="fd-nota">Rutas, plantillas, estilos. Sabe que hay lógica y que hay conexión.</div>
+    </div>
+    <div class="fd-flecha">↓</div>
+    <div class="fd-caja">
+      <span class="fd-capa">Capa 2 · la del medio</span>
+      <div class="fd-tit" style="color:var(--c2)">dominio/</div>
+      <div class="fd-nota">Reglas, validación y SQL. Sabe que hay conexión. No sabe que exista una interfaz.</div>
+    </div>
+    <div class="fd-flecha">↓</div>
+    <div class="fd-caja">
+      <span class="fd-capa">Capa 1 · la de abajo</span>
+      <div class="fd-tit" style="color:var(--c1)">nucleo/</div>
+      <div class="fd-nota">Configuración y conexiones. No sabe que existen las otras dos.</div>
+    </div>
+  </div>
+
+  <p class="lead">Cómo se lee: <strong>cada capa solo tiene permiso para mirar hacia abajo, y las flechas nunca se cruzan</strong>. Por eso se llama «dependencia»: cuando cambias algo abajo, lo de arriba ni se entera; cuando cambias algo arriba, lo de abajo tampoco.</p>
+
+  <h3>La matriz, que es donde se ve todo de un golpe</h3>
+  <p class="lead">Lee las filas como «esta capa» y las columnas como «puede usar esta otra»:</p>
+
+  <div class="contenedor-tabla">
+    <table class="matriz">
+      <thead>
+        <tr>
+          <th style="width:22%">Usa ↓ / Usa →</th>
+          <th>nucleo/<br><span style="font-weight:400;font-size:.75rem">Conexión</span></th>
+          <th>dominio/<br><span style="font-weight:400;font-size:.75rem">Lógica</span></th>
+          <th>presentacion/<br><span style="font-weight:400;font-size:.75rem">Diseño</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="fila">presentacion/<br><span class="nota">Diseño</span></td>
+          <td class="si">✓<span class="nota">para abrir y cerrar la BD</span></td>
+          <td class="si">✓<span class="nota">para usar las reglas</span></td>
+          <td class="no" style="background:var(--papel-2)">—<span class="nota">no se usa a sí misma</span></td>
+        </tr>
+        <tr>
+          <td class="fila">dominio/<br><span class="nota">Lógica</span></td>
+          <td class="si">✓<span class="nota">recibe la conexión</span></td>
+          <td class="no" style="background:var(--papel-2)">—<span class="nota">sí se usa a sí misma</span></td>
+          <td class="no">✗<span class="nota">prohibido: no sabe que hay interfaz</span></td>
+        </tr>
+        <tr class="destacada">
+          <td class="fila">nucleo/<br><span class="nota">Conexión</span></td>
+          <td class="no" style="background:var(--papel-2)">—<span class="nota">sí se usa a sí misma</span></td>
+          <td class="no">✗<span class="nota">prohibido: la lógica no baja aquí</span></td>
+          <td class="no">✗<span class="nota">prohibido: no depende de la interfaz</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-importante">
+    <h4>El villano número uno: el import que sube</h4>
+    <p>La tentación aparece siempre en la capa de conexión. «Es que el pool necesita saber la URL… pero la URL está en un archivo de arriba». Y entonces aparece esto en <code>nucleo/conexion.py</code>:</p>
+<pre><code><span class="com"># ❌ en nucleo/conexion.py — import hacia ARRIBA</span>
+<span class="kw">from</span> presentacion.config <span class="kw">import</span> CONFIGURACION   <span class="com"># prohibido</span>
+
+<span class="com"># ✅ la solución es DARLO POR PARÁMETRO (se llama «inversión»)</span>
+<span class="kw">async def</span> <span class="fn">conectar</span>(url: str):
+    <span class="str">"""La capa de conexión no sabe de dónde salió la URL. Solo la usa."""</span>
+    ...
+
+<span class="com"># y en main.py, que sí puede ver todo, se hace la unión:</span>
+<span class="kw">from</span> nucleo.conexion <span class="kw">import</span> conectar
+<span class="kw">from</span> nucleo.configuracion <span class="kw">import</span> CONFIGURACION
+conectar(CONFIGURACION.base_datos)</code></pre>
+    <p><strong>La prueba para detectarlo:</strong> pregúntate «¿esta función de la capa de abajo está hablando de algo de arriba?». Si la respuesta es sí, casi siempre la respuesta es «pásaselo como parámetro».</p>
+  </div>
+
+  <h3>El villano número dos: los imports circulares</h3>
+  <p class="lead">Ocurren cuando A importa a B y B importa a A. Python intenta cargarlos y, cuando llega al segundo, se encuentra con que el primero todavía no terminó de cargarse:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-ruta"><span class="p">❌ el error exacto que vas a ver</span></div>
+      <button class="copy-btn">copiar</button>
+    </div>
+<pre><code>ImportError: cannot import name 'calcular_multa' from partially
+initialized module 'dominio.servicios' (most likely due to a circular import)</code></pre>
+  </div>
+
+  <p>Las tres causas típicas y cómo se arreglan, en orden de preferencia:</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla">
+      <thead><tr><th style="width:28%">Causa</th><th style="width:34%">Cómo se ve</th><th>Arreglo</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Constante compartida en el lugar equivocado</strong></td>
+          <td>Dos módulos necesitan <code>TARIFA_POR_DIA</code> y cada uno tiene su propia copia escrita.</td>
+          <td>Bájala a la capa que usan los dos —<code>nucleo/configuracion.py</code> si es configuración— o al tercer archivo más bajo que ambos puedan importar.</td>
+        </tr>
+        <tr>
+          <td><strong>Una función que quedó en la capa de arriba</strong></td>
+          <td><code>dominio/servicios.py</code> importa desde <code>presentacion/rutas/…</code> para «reutilizar» algo que en realidad es de negocio.</td>
+          <td>Baja la función a <code>dominio/</code>, que es donde pertenece, y deja que <code>presentacion/</code> la importe. La flecha queda bien y el círculo desaparece.</td>
+        </tr>
+        <tr>
+          <td><strong>Un archivo «de utilidades» que lo importa todo</strong></td>
+          <td>Todos importan <code>utils.py</code>, y <code>utils.py</code> importa a todos para tenerlos a mano.</td>
+          <td>Elimínalo. Cada cosa va con lo suyo. Un archivo que lo importa todo no es una capa: es un nudo.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>El truco que la industria usa en serio: invertir el control</h4>
+    <p>Cuando <code>dominio/servicios.py</code> necesita guardar un autor hay dos caminos. El primero —el que tentaría a un estudiante— es que el servicio <em>importe</em> el repositorio. El segundo es que <strong>se lo pasen por parámetro</strong>:</p>
+<pre><code><span class="com"># presentacion/rutas/autores.py — quien lo ve todo, decide</span>
+<span class="kw">from</span> dominio.servicios <span class="kw">import</span> registrar_autor
+
+<span class="com"># El servicio no importa nada: recibe lo que necesita.</span>
+<span class="kw">async def</span> <span class="fn">registrar_autor</span>(conn, datos, guardar):
+    autor = <span class="fn">validar</span>(datos)                  <span class="com"># regla</span>
+    total = <span class="kw">await</span> <span class="fn">contar_autores</span>(conn)          <span class="com"># consulta</span>
+    <span class="kw">if</span> total &gt;= <span class="num">1000</span>:                     <span class="com"># regla de negocio</span>
+        <span class="kw">raise</span> <span class="fn">LimiteAlcanzado</span>()
+    <span class="kw">return await</span> <span class="fn">guardar</span>(conn, autor)          <span class="com"># me lo dieron hecho</span>
+
+<span class="com"># …y así, un día, puedes probarlo con una «guardar» falsa:</span>
+autores = []
+<span class="kw">await</span> <span class="fn">registrar_autor</span>(<span class="kw">None</span>, datos,
+                        guardar=<span class="kw">lambda</span> c, a: autores.<span class="fn">append</span>(a))</code></pre>
+    <p>Esto se llama <strong>inversión de dependencias</strong>, y es la diferencia entre un código que se puede probar y un código que solo se puede ejecutar con la base de datos real conectada. No tienes que dominarlo hoy: basta con que sepas que existe, para que el día que lo veas en un tutorial no te asuste.</p>
+  </div>
+
+  <h3>Dos palabras que vas a escuchar siempre</h3>
+  <div class="compare">
+    <div class="compare-card b">
+      <h4>Cohesión alta — lo que buscamos</h4>
+      <p>Un archivo donde todo lo que hay adentro hace cosas <strong>parecidas</strong>. Es lo que produce el nombre del archivo: si tienes que pensarlo mucho, la cohesión es baja. Un buen <code>repositorios.py</code> tiene cohesión alta.</p>
+    </div>
+    <div class="compare-card c">
+      <h4>Acoplamiento bajo — lo que buscamos</h4>
+      <p>Cuánto depende un archivo de los demás. Bajo acoplamiento significa que cambiar un archivo no obliga a tocar los demás. La flecha de dependencia existe justamente para bajar el acoplamiento.</p>
+    </div>
+  </div>
+
+  <div class="regla" data-num="04">
+    <h4>La cuarta regla: si una capa necesita mirar hacia arriba, es que algo está mal</h4>
+    <p>Casi siempre, el problema real no es el import: es que <strong>esa función no estaba en la capa correcta</strong>. Mover el archivo a donde pertenece arregla el import y además arregla el nombre. Cuando te toque pelear con un import hacia arriba, no busques el truco parainementarlo: pregúntate qué responsabilidad está haciendo esa capa y muévela.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>Actividad en pareja — 10 minutos</h4>
+    <p>Revisen la matriz de dependencias y discutan estas tres situaciones. Para cada una: ¿está permitida? ¿qué corregirías?</p>
+    <ol>
+      <li><code>presentacion/rutas/autores.py</code> importa <code>from nucleo.conexion import get_conexion</code> y lo usa con <code>Depends(get_conexion)</code>.</li>
+      <li><code>dominio/servicios.py</code> importa <code>from nucleo.conexion import crear_pool</code> y abre su propia conexión.</li>
+      <li><code>dominio/repositorios.py</code> importa <code>from presentacion.rutas.libros import formatear_fecha</code> para devolver la fecha ya formateada.</li>
+    </ol>
+    <p><strong>Respuesta esperada:</strong> (1) permitida, la capa de arriba usa la de abajo. (2) prohibida: la conexión se recibe, no se pide; y además cada servicio abriría una conexión distinta. (3) prohibida: <code>formatear_fecha</code> es lógica o es de presentación, pero la lógica jamás depende de la presentación. Bájala y deja que la ruta la use.</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Mini-evaluación · Bloque 04</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> En una arquitectura de tres capas, ¿qué puede importar <code>dominio/</code>?</p>
+      <button class="opcion" data-op="a"><code>presentacion/</code> y <code>nucleo/</code></button>
+      <button class="opcion" data-op="b">Cualquier capa: el orden no importa</button>
+      <button class="opcion" data-op="c">Solo <code>nucleo/</code>, y los módulos de su propia capa</button>
+      <button class="opcion" data-op="d">Nada: cada capa debe ser completamente independiente</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> <code>nucleo/conexion.py</code> necesita la URL de la base de datos, que hoy está en un archivo de arriba. ¿Qué haces?</p>
+      <button class="opcion" data-op="a">Le das la URL como parámetro —<code>conectar(url)</code>— y quien puede verlo todo se la pasa</button>
+      <button class="opcion" data-op="b">Importas el archivo de arriba, es lo más rápido</button>
+      <button class="opcion" data-op="c">Copias la URL dentro de <code>conexion.py</code> y ya no la cambias más</button>
+      <button class="opcion" data-op="d">La dejas en blanco y rezas</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Qué significa <code>ImportError: … partially initialized module … circular import</code>?</p>
+      <button class="opcion" data-op="a">Que falta un <code>__init__.py</code></button>
+      <button class="opcion" data-op="b">Que dos módulos se importan mutuamente y ninguno termina de cargarse</button>
+      <button class="opcion" data-op="c">Que la base de datos no responde</button>
+      <button class="opcion" data-op="d">Que escribiste mal el nombre de una función</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Por qué vale la pena esa regla de la flecha, en la práctica?</p>
+      <button class="opcion" data-op="a">Porque hace que el código se vea más elegante en un editor</button>
+      <button class="opcion" data-op="b">Porque Python obliga a seguirla en proyectos grandes</button>
+      <button class="opcion" data-op="c">Porque reduce el número de líneas</button>
+      <button class="opcion" data-op="d">Porque permite cambiar la base de datos, la interfaz o la tecnología sin reescribir las reglas del negocio</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: leer el código →</button>
+  </div>
+</section>
+
+<!-- ===================================================================
+     MÓDULO 6 — LEER EL CÓDIGO
+     =================================================================== -->
+<section class="modulo" data-modulo="6">
+  <span class="eyebrow">§ 05 · Habilidad</span>
+  <h2>El salto de «funciona» a «lo entiendo»</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · «Un recorrido completo, paso a paso»</p>
+
+  <div class="caja-concepto">
+    <h3>La idea central</h3>
+    <p>Separar responsabilidades no solo hace más mantenible el código: lo hace <strong>legible</strong>. Antes, para entender qué pasaba al crear un autor tenías que leer 164 líneas buscando entre el SQL y el HTML. Después, la respuesta está en <strong>cuatro archivos que se leen en orden</strong>, y cada uno dice en su nombre de qué se trata. Hoy vas a recorrer ese camino completo y te vas a llevar un protocolo para leer cualquier proyecto nuevo.</p>
+  </div>
+
+  <h3>Un clic, seis paradas</h3>
+  <p class="lead">Este es el recorrido de un <strong>POST a <code>/autores</code></strong> —el botón «Guardar» del formulario— en la estructura nueva. Recórrelo con los botones: cada parada te dice quién tiene la responsabilidad en ese momento, dónde vive y por qué está ahí.</p>
+
+  <div class="recorrido" data-recorrido>
+    <div class="recorrido-controles">
+      <button class="btn" data-rec-prev>← Anterior</button>
+      <button class="btn" data-rec-next>Siguiente →</button>
+      <span class="mono" style="font-size:.74rem;color:var(--tinta-3)">Parada <strong data-rec-contador>1</strong> de 6</span>
+    </div>
+    <div class="recorrido-pasos">
+      <button class="rec-pass activo" data-paso="0" data-capa="3">1 · El formulario</button>
+      <button class="rec-pass" data-paso="1" data-capa="3">2 · La ruta</button>
+      <button class="rec-pass" data-paso="2" data-capa="2">3 · El servicio</button>
+      <button class="rec-pass" data-paso="3" data-capa="1">4 · La conexión</button>
+      <button class="rec-pass" data-paso="4" data-capa="2">5 · El repositorio</button>
+      <button class="rec-pass" data-paso="5" data-capa="3">6 · La plantilla</button>
+    </div>
+    <div class="rec-cuerpo">
+      <div class="rec-paso activo" data-paso="0">
+        <span class="rec-quien">Capa 3 · Diseño — el usuario</span>
+        <div class="rec-donde">presentacion/templates/autores.html</div>
+        <div class="rec-que">El formulario declara el método y el destino. htmx intercepta el envío para que la página no se recargue entera, pero el <em>destino</em> sigue siendo una ruta del servidor.</div>
+        <div class="code-wrap">
+          <div class="code-header"><div class="code-ruta"><span class="p c3">templates/autores.html</span></div><button class="copy-btn">copiar</button></div>
+<pre><code>&lt;<span class="ty">form</span> hx-post=<span class="str">"/autores"</span> hx-target=<span class="str">"#tabla-autores"</span> hx-swap=<span class="str">"outerHTML"</span>&gt;
+  &lt;<span class="ty">input</span> name=<span class="str">"nombre"</span> value=<span class="str">"{{ nombre }}"</span>&gt;
+  &lt;<span class="ty">input</span> name=<span class="str">"pais"</span>&gt;
+  &lt;<span class="ty">button</span> type=<span class="str">"submit"</span>&gt;Guardar&lt;/<span class="ty">button</span>&gt;
+&lt;/<span class="ty">form</span>&gt;</code></pre>
+        </div>
+        <div class="rec-why"><b>Por qué vive aquí:</b> es la interacción con el usuario. Nada de esta plantilla debería saber que existe una base de datos.</div>
+      </div>
+
+      <div class="rec-paso" data-paso="1">
+        <span class="rec-quien">Capa 3 · Diseño — la capa de presentación</span>
+        <div class="rec-donde">presentacion/rutas/autores.py</div>
+        <div class="rec-que">La ruta <strong>recibe</strong> el formulario, <strong>delega</strong> en el servicio y <strong>elige</strong> la plantilla. No valida con reglas propias ni escribe SQL: si esta función tuviera un <code>SELECT</code>, la estructura estaría rota.</div>
+        <div class="code-wrap">
+          <div class="code-header"><div class="code-ruta"><span class="p c3">presentacion/rutas/autores.py</span></div><button class="copy-btn">copiar</button></div>
+<pre><code>@router.post(<span class="str">"/autores"</span>)
+<span class="kw">async def</span> <span class="fn">crear_autor</span>(
+    request: Request,
+    conn: ConnectionDep,
+    nombre: Annotated[str | None, Form()] = <span class="kw">None</span>,
+    pais: Annotated[str | None, Form()] = <span class="kw">None</span>,
+    nacimiento: Annotated[int | None, Form()] = <span class="kw">None</span>,
+):
+    <span class="kw">try</span>:
+        datos = AutorCrear(nombre=nombre, pais=pais, nacimiento=nacimiento)
+    <span class="kw">except</span> ValidationError <span class="kw">as</span> e:
+        <span class="kw">return await</span> <span class="fn">mostrar_autores</span>(request, conn, errores=e.<span class="fn">errors</span>(), status=<span class="num">422</span>)
+
+    <span class="kw">await</span> <span class="fn">registrar_autor</span>(conn, datos)             <span class="com"># ← toda la lógica, allá</span>
+    <span class="kw">return await</span> <span class="fn">mostrar_autores</span>(request, conn)</code></pre>
+        </div>
+        <div class="rec-why"><b>Antes:</b> 42 líneas con cuatro responsabilidades. <b>Ahora:</b> 16 líneas, y todas se pueden leer en voz alta como español.</div>
+      </div>
+
+      <div class="rec-paso" data-paso="2">
+        <span class="rec-quien">Capa 2 · Lógica — la capa de negocio</span>
+        <div class="rec-donde">dominio/servicios.py</div>
+        <div class="rec-que">Aquí vive la regla. Puede pedirle cosas a la capa de conexión porque la flecha se lo permite, y no sabe que exista una interfaz. Un archivo que se puede probar sin levantar el servidor.</div>
+        <div class="code-wrap">
+          <div class="code-header"><div class="code-ruta"><span class="p c2">dominio/servicios.py</span></div><button class="copy-btn">copiar</button></div>
+<pre><code><span class="kw">async def</span> <span class="fn">registrar_autor</span>(conn, datos: AutorCrear) -&gt; dict:
+    <span class="str">"""Crea un autor. Regla: el nombre no puede repetirse."""</span>
+    repetido = <span class="kw">await</span> <span class="fn">existe_autor_con_nombre</span>(conn, datos.nombre)
+    <span class="kw">if</span> repetido:
+        <span class="kw">raise</span> <span class="fn">AutorDuplicado</span>(datos.nombre)
+
+    <span class="kw">return await</span> <span class="fn">crear_autor</span>(conn, datos.nombre, datos.pais, datos.nacimiento)</code></pre>
+        </div>
+        <div class="rec-why"><b>Por qué vive aquí:</b> «no se puede registrar dos veces el mismo autor» es una regla de la biblioteca, no de esta pantalla y no de esta base de datos. El día que llegue por otro medio, la regla ya está escrita en un solo lugar.</div>
+      </div>
+
+      <div class="rec-paso" data-paso="3">
+        <span class="rec-quien">Capa 1 · Conexión — la infraestructura</span>
+        <div class="rec-donde">nucleo/conexion.py</div>
+        <div class="rec-que">La conexión que la ruta está usando llegó por el camino de siempre: FastAPI ejecutó la dependencia <code>get_conexion</code>, tomó una conexión del pool y la entregó. Nadie en este recorrido la creó ni la cerró.</div>
+        <div class="code-wrap">
+          <div class="code-header"><div class="code-ruta"><span class="p c1">nucleo/conexion.py</span></div><button class="copy-btn">copiar</button></div>
+<pre><code><span class="kw">async def</span> <span class="fn">get_conexion</span>() -&gt; AsyncGenerator[Connection, <span class="kw">None</span>]:
+    <span class="str">"""FastAPI ejecuta esto en cada request que la declare."""</span>
+    <span class="kw">async with</span> pool.<span class="fn">acquire</span>() <span class="kw">as</span> conn:
+        <span class="kw">yield</span> conn            <span class="com"># la entrega a la ruta…</span>
+                          <span class="com"># …y la devuelve sola al terminar</span></code></pre>
+        </div>
+        <div class="rec-why"><b>La diferencia con el proyecto plano:</b> antes esto eran <code>database.py</code> y <code>dependencias.py</code>, dos archivos en la raíz, sin ningún indicio de que fueran infraestructura. Ahora están juntos, y el nombre <code>nucleo/</code> lo dice.</div>
+      </div>
+
+      <div class="rec-paso" data-paso="4">
+        <span class="rec-quien">Capa 2 · Lógica — acceso a datos</span>
+        <div class="rec-donde">dominio/repositorios.py</div>
+        <div class="rec-que">El único lugar del proyecto donde se escribe SQL. Recibe la conexión que le pasaron y devuelve datos planos —listas de diccionarios—, sin decidir nada.</div>
+        <div class="code-wrap">
+          <div class="code-header"><div class="code-ruta"><span class="p c2">dominio/repositorios.py</span></div><button class="copy-btn">copiar</button></div>
+<pre><code><span class="kw">async def</span> <span class="fn">crear_autor</span>(conn, nombre: str, pais: str | None, nacimiento: int | None) -&gt; dict:
+    <span class="str">"""INSERT INTO autores. Devuelve la fila ya guardada."""</span>
+    row = <span class="kw">await</span> conn.<span class="fn">fetchrow</span>(
+        <span class="str">"INSERT INTO autores (nombre, pais, nacimiento) "</span>
+        <span class="str">"VALUES ($1, $2, $3) RETURNING *"</span>,
+        nombre, pais, nacimiento,
+    )
+    <span class="kw">return</span> <span class="fn">dict</span>(row)</code></pre>
+        </div>
+        <div class="rec-why"><b>En el taller se verifica:</b> un comando de una línea comprueba que en todo el proyecto no exista un solo <code>SELECT</code>, <code>INSERT</code> o <code>UPDATE</code> fuera de este archivo.</div>
+      </div>
+
+      <div class="rec-paso" data-paso="5">
+        <span class="rec-quien">Capa 3 · Diseño — la respuesta</span>
+        <div class="rec-donde">presentacion/rutas/autores.py → templates/componentes/tabla_autores.html</div>
+        <div class="rec-que">La ruta pide la lista y la pinta. htmx intercambia solo ese fragmento: el menú, el formulario y el título ni se vuelven a cargar. Por eso el par htmx con fragmentos funciona tan bien con esta arquitectura.</div>
+        <div class="code-wrap">
+          <div class="code-header"><div class="code-ruta"><span class="p c3">presentacion/rutas/autores.py</span></div><button class="copy-btn">copiar</button></div>
+<pre><code><span class="com"># la misma función sirve para la página completa y para el fragmento:</span>
+<span class="kw">async def</span> <span class="fn">mostrar_autores</span>(request, conn, errores=<span class="kw">None</span>, status=<span class="num">200</span>):
+    autores = <span class="kw">await</span> <span class="fn">obtener_autores</span>(conn)
+    <span class="kw">return</span> templates.TemplateResponse(
+        request=request,
+        name=<span class="str">"autores.html"</span>,
+        context={<span class="str">"autores"</span>: autores, <span class="str">"errores"</span>: errores or {}},
+        status_code=status,
+    )</code></pre>
+        </div>
+        <div class="rec-why"><b>Y el recorrido termina.</b> Seis paradas, seis archivos, cero sorpresas. Eso es «leer» un proyecto: no leer 500 líneas, sino seguir seis archivos que se nombran solos.</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>El protocolo de lectura: cuatro pasos, siempre en el mismo orden</h3>
+  <p class="lead">Cuando te sientes frente a un proyecto que no escribiste tú, sigue este orden. Está diseñado para que en diez minutos tengas un mapa mental completo.</p>
+
+  <div class="lectura">
+    <div class="lr">
+      <div class="lr-n">1</div>
+      <div class="lr-h"><small>el borde</small>Lee el punto de entrada de arriba abajo</div>
+      <div class="lr-c"><code>cat main.py</code></div>
+      <div class="lr-w">Qué aprendes: <b>qué módulos existen y cómo se arman entre sí</b>. En el nuestro: tres routers y un pool. Con eso ya sabes el tamaño del proyecto sin haber leído nada más.</div>
+    </div>
+
+    <div class="lr">
+      <div class="lr-n">2</div>
+      <div class="lr-h"><small>los imports</small>Deja que el editor te muestre los imports de cada archivo</div>
+      <div class="lr-c"><code>grep -rn "^from\|^import" --include="*.py" .</code></div>
+      <div class="lr-w">Qué aprendes: <b>la dirección de las flechas</b>. Si ves un <code>from presentacion</code> dentro de <code>dominio/</code>, ya encontraste un problema — y el comando te lo muestra en un segundo.</div>
+    </div>
+
+    <div class="lr">
+      <div class="lr-n">3</div>
+      <div class="lr-h"><small>los verbos</small>Lista todas las funciones, agrupadas por archivo</div>
+      <div class="lr-c"><code>grep -rn "def \|@router" --include="*.py" .</code></div>
+      <div class="lr-w">Qué aprendes: <b>el vocabulario del proyecto</b>. Los <code>def</code> son las piezas; los <code>@router</code> son las puertas de entrada. Con esta lista ya sabes qué se puede hacer y desde dónde.</div>
+    </div>
+
+    <div class="lr">
+      <div class="lr-n">4</div>
+      <div class="lr-h"><small>un dato</small>Sigue un dato real de principio a fin</div>
+      <div class="lr-c"><code>grep -rn "Guardar" presentacion/templates/ &nbsp;#&nbsp; y luego busca quién llena esa variable</code></div>
+      <div class="lr-w">Qué aprendes: <b>el recorrido completo</b>. Si puedes contar un dato desde la base de datos hasta el HTML, entiendes el proyecto mejor que la mayoría de la gente que lo usa todos los días.</div>
+    </div>
+  </div>
+
+  <h3>Cuatro comandos que vale la pena memorizar</h3>
+  <p class="lead">No son trucos: son la forma barata de verificar que la estructura es la que dicen ser. Funcionan en Linux, en macOS y en el terminal integrado de VS Code.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-ruta"><span class="p">🔍 auditoría de estructura — corre estas cuatro en el taller</span></div>
+      <button class="copy-btn">copiar</button>
+    </div>
+<pre><code><span class="com"># 1. ¿Existe toda la estructura? Instantáneo del árbol.</span>
+tree -a --dirsfirst
+
+<span class="com"># 2. ¿Hay algún import que suba? (no debe imprimir NADA)</span>
+grep -rn <span class="str">"^from presentacion\|^import presentacion"</span> nucleo/ dominio/
+
+<span class="com"># 3. ¿Hay SQL fuera del repositorio? (no debe imprimir NADA)</span>
+grep -rn <span class="str">"SELECT\|INSERT\|UPDATE\|DELETE"</span> --include=<span class="str">"*.py"</span> . \
+  | grep -v <span class="str">"dominio/repositorios.py"</span>
+
+<span class="com"># 4. ¿Cada capa está en su sitio? (deben salir tres carpetas)</span>
+<span class="kw">ls</span> -1 nucleo/ dominio/ presentacion/</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>Y una métrica sencilla que te va a sorprender</h4>
+    <p>Cuenta en cuántos archivos distintos se escribe SQL y compáralo con cuántos archivos tiene el proyecto. En un proyecto desordenado, los datos aparecen en más archivos que las rutas. En uno bien organizado, la lista de archivos que tocan la base de datos es <strong>corta y obvia</strong>. Esa desproporción es, en sí misma, un indicador de desorden:</p>
+<pre><code><span class="com"># ¿En cuántos archivos distintos se escribe SQL en tu proyecto?</span>
+grep -rl <span class="str">"SELECT\|INSERT\|UPDATE\|DELETE"</span> --include=<span class="str">"*.py"</span> . | wc -l
+<span class="com"># Estructurado: 1.   Desestructurado: probablemente tres o más.</span></code></pre>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>Actividad en pareja — 12 minutos</h4>
+    <ol>
+      <li>Haz el paso 3 del protocolo sobre tu proyecto plano y anota cuántos <code>def</code> hay por archivo.</li>
+      <li>Elige una función que no hayas escrito tú y haz el paso 4: sigue un dato de la tabla hasta la plantilla. Cuenta cuántos archivos tocaste.</li>
+      <li>Repite el recorrido de las seis paradas, pero con el código de tu propio proyecto. ¿Coincide con lo que viste en clase?</li>
+      <li>Escribe en una hoja el protocolo de cuatro pasos con tus propias palabras. Lo vas a necesitar en la fase 5 del taller.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Mini-evaluación · Bloque 05</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿En qué archivo vive la regla «no se puede registrar dos veces el mismo autor»?</p>
+      <button class="opcion" data-op="a"><code>dominio/servicios.py</code>, porque es una regla de la biblioteca y no de una pantalla concreta</button>
+      <button class="opcion" data-op="b"><code>presentacion/rutas/autores.py</code>, porque es donde se usa</button>
+      <button class="opcion" data-op="c"><code>presentacion/templates/autores.html</code></button>
+      <button class="opcion" data-op="d"><code>dominio/repositorios.py</code>, porque la regla se comprueba en la base de datos</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> El comando <code>grep -rn "SELECT" --include="*.py" . | grep -v "dominio/repositorios.py"</code> no imprime nada. ¿Qué significa?</p>
+      <button class="opcion" data-op="a">Que no hay base de datos conectada</button>
+      <button class="opcion" data-op="b">Que el repositorio está vacío</button>
+      <button class="opcion" data-op="c">Que no hay SQL en ningún otro archivo: la capa de datos está correctamente aislada</button>
+      <button class="opcion" data-op="d">Que el comando está mal escrito</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> Al llegar a un proyecto nuevo, ¿por cuál de estos pasos se empieza?</p>
+      <button class="opcion" data-op="a">Por el archivo más largo, que siempre es el más importante</button>
+      <button class="opcion" data-op="b">Por el punto de entrada —<code>main.py</code>— para saber qué piezas existen antes de mirar ninguna</button>
+      <button class="opcion" data-op="c">Por la carpeta de plantillas, que es lo más visual</button>
+      <button class="opcion" data-op="d">Por el archivo de configuración, para saber qué versión se usa</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Cuál es la diferencia real entre el antes y el después de la ruta «crear autor»?</p>
+      <button class="opcion" data-op="a">El después corre más rápido, porque hay menos archivos</button>
+      <button class="opcion" data-op="b">El después tiene menos líneas en total</button>
+      <button class="opcion" data-op="c">El después usa menos librerías</button>
+      <button class="opcion" data-op="d">La misma cantidad de trabajo, repartido en archivos que se nombran solos: ya sabes dónde mirar cada cosa</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: taller →</button>
+  </div>
+</section>
+
+<!-- ===================================================================
+     MÓDULO 7 — TALLER
+     =================================================================== -->
+<section class="modulo" data-modulo="7">
+  <span class="eyebrow">§ 06 · Taller</span>
+  <h2>Actividad: construir la estructura base del sistema</h2>
+  <p class="meta-modulo">⏱️ 60 minutos · «Mover archivos, no reescribir el programa»</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">Taller</span>
+      <span class="challenge-title">De siete archivos sueltos a una estructura de tres capas</span>
+    </div>
+    <p>El entregable es <strong>el mismo programa funcionando exactamente igual</strong>, pero con la estructura del bloque 03. No vas a escribir funciones nuevas ni a reescribir el código: vas a <strong>mover</strong> código y <strong>arreglar imports</strong>. Esa es la habilidad real de esta clase.</p>
+    <p><strong>Regla de oro del taller:</strong> cada fase tiene una prueba de fuego. Si la prueba falla, <strong>no sigas adelante</strong>. Revertir es rápido si fallaste a tiempo, y carísimo si sigues acumulando errores sobre una base rota.</p>
+  </div>
+
+  <div class="fases">
+
+    <div class="fase">
+      <span class="fase-meta">5 minutos · no se negocia</span>
+      <h4>Respaldo y punto de partida</h4>
+      <p>Antes de mover un solo archivo, asegúrate de poder volver atrás. Con <code>git</code>:</p>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-ruta"><span class="p">💾 respaldo</span></div><button class="copy-btn">copiar</button></div>
+<pre><code><span class="com"># Opción A — con git, que es lo ideal</span>
+git add -A
+git commit -m <span class="str">"estructura plana verificada y funcionando"</span>
+
+<span class="com"># Opción B — sin git</span>
+cp -r biblioteca biblioteca-plana
+<span class="com"># Y si algo sale mal:  rm -rf biblioteca &amp;&amp; cp -r biblioteca-plana biblioteca</span></code></pre>
+      </div>
+      <p class="entrega"><b>Prueba de fuego:</b> levanta la app y recorre las pantallas que vas a comparar al final: inicio, autores, libros, crear autor, editar, borrar, libros de un autor y los ejercicios de htmx. Anótalas en una lista. Si algo ya fallaba <em>antes</em> de tocar nada, anótalo también: no es culpa de la reorganización.</p>
+    </div>
+
+    <div class="fase">
+      <span class="fase-meta">10 minutos · en papel, antes que en la terminal</span>
+      <h4>Dibuja el mapa: ¿qué archivo va dónde?</h4>
+      <p>Completa esta tabla a mano. Es el entregable conceptual del taller: si la saltas, vas a terminar moviendo archivos a ciegas.</p>
+      <div class="contenedor-tabla">
+        <table class="tabla sin-corte">
+          <thead><tr><th style="width:22%">Archivo actual</th><th style="width:18%">Va a…</th><th style="width:30%">Nombre nuevo</th><th>Su responsabilidad, en una frase</th></tr></thead>
+          <tbody>
+            <tr><td><code>main.py</code></td><td>queda arriba</td><td><code>main.py</code></td><td>&nbsp;</td></tr>
+            <tr><td><code>database.py</code></td><td>Capa 1</td><td><code>nucleo/conexion.py</code></td><td>&nbsp;</td></tr>
+            <tr><td><code>dependencias.py</code></td><td>Capa 1</td><td><code>nucleo/conexion.py</code> — se une</td><td>&nbsp;</td></tr>
+            <tr><td><code>esquemas.py</code></td><td>Capa 2</td><td><code>dominio/esquemas.py</code></td><td>&nbsp;</td></tr>
+            <tr><td><code>repositorio.py</code></td><td>Capa 2</td><td><code>dominio/repositorios.py</code></td><td>&nbsp;</td></tr>
+            <tr><td><code>vistas.py</code></td><td>Capa 3</td><td><code>presentacion/rutas/autores.py</code></td><td>&nbsp;</td></tr>
+            <tr><td><code>ejercicios.py</code></td><td>Capa 3</td><td><code>presentacion/rutas/ejercicios.py</code></td><td>&nbsp;</td></tr>
+            <tr><td><code>templates/</code></td><td>Capa 3</td><td><code>presentacion/templates/</code></td><td>&nbsp;</td></tr>
+            <tr><td>— todavía no existe —</td><td>Capa 2</td><td><code>dominio/servicios.py</code></td><td>&nbsp;</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Las dos filas marcadas son las decisiones grandes de la clase. Antes de tomarlas, pregúntate por <code>dependencias.py</code>: son ocho líneas que solo definen un alias. Un archivo de ocho líneas con una responsabilidad clara no necesita existir solo, así que <strong>se une al archivo de conexión</strong>. Y <code>servicios.py</code> no existe todavía: lo vas a crear tú en la fase 3.</p>
+      <p class="entrega"><b>Prueba de fuego:</b> tu tabla tiene nueve filas completas y cada una dice su responsabilidad en menos de ocho palabras. Si alguna frase empieza con «las cosas de…», todavía no está bien pensada.</p>
+    </div>
+
+    <div class="fase">
+      <span class="fase-meta">10 minutos · la estructura vacía, primero</span>
+      <h4>Crea el esqueleto</h4>
+      <p>Primero la estructura, después el contenido. Así, si algo falla, sabes que el problema está en los imports y no en el código que moviste.</p>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-ruta"><span class="p">🛠️ crear la estructura vacía</span></div><button class="copy-btn">copiar</button></div>
+<pre><code><span class="com"># Las tres capas</span>
+mkdir nucleo dominio presentacion
+
+<span class="com"># La subcapa de rutas, y donde viven las plantillas y los estilos</span>
+mkdir presentacion/rutas presentacion/templates presentacion/static
+
+<span class="com"># Los __init__.py: lo que convierte una carpeta en paquete</span>
+touch nucleo/__init__.py dominio/__init__.py \
+      presentacion/__init__.py presentacion/rutas/__init__.py
+
+<span class="com"># Un archivo vacío no es un archivo útil. Ponle su frase.</span>
+cat &gt; nucleo/__init__.py &lt;&lt;<span class="str">'PY'</span>
+<span class="str">"""Capa 1 — Conexión. Configuración y pool de base de datos."""</span>
+PY
+cat &gt; dominio/__init__.py &lt;&lt;<span class="str">'PY'</span>
+<span class="str">"""Capa 2 — Lógica. Reglas de la biblioteca, validación y repositorios."""</span>
+PY
+cat &gt; presentacion/__init__.py &lt;&lt;<span class="str">'PY'</span>
+<span class="str">"""Capa 3 — Diseño. Rutas, plantillas y archivos estáticos."""</span>
+PY
+cat &gt; presentacion/rutas/__init__.py &lt;&lt;<span class="str">'PY'</span>
+<span class="str">"""Rutas de la aplicación: un archivo por módulo de la biblioteca."""</span>
+PY
+
+<span class="com"># Comprobación: la estructura existe</span>
+tree -a --dirsfirst</code></pre>
+      </div>
+      <p class="entrega"><b>Prueba de fuego:</b> <code>tree -a</code> muestra las tres capas y sus <code>__init__.py</code>. La aplicación todavía no arranca, y está bien: los archivos viejos siguen en su sitio.</p>
+    </div>
+
+    <div class="fase">
+      <span class="fase-meta">20 minutos · el corazón del taller</span>
+      <h4>Mueve los archivos, en orden, y arregla los imports</h4>
+      <p><strong>El orden importa.</strong> Mueve de abajo hacia arriba, para que en cada momento sepas a qué capa pertenece lo que ya está en su sitio.</p>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-ruta"><span class="p">📦 mover, capa por capa</span></div><button class="copy-btn">copiar</button></div>
+<pre><code><span class="com"># ── CAPA 1 · conexión ─────────────────────────────────────────</span>
+<span class="kw">mv</span> database.py nucleo/conexion.py
+
+<span class="com"># ── CAPA 2 · lógica ──────────────────────────────────────────</span>
+<span class="kw">mv</span> esquemas.py   dominio/esquemas.py
+<span class="kw">mv</span> repositorio.py dominio/repositorios.py
+
+<span class="com"># ── CAPA 3 · diseño ──────────────────────────────────────────</span>
+<span class="kw">mv</span> templates/   presentacion/templates/
+<span class="kw">mv</span> ejercicios.py presentacion/rutas/ejercicios.py
+<span class="kw">mv</span> vistas.py     presentacion/rutas/autores.py
+
+<span class="com"># ── ahora los imports, archivo por archivo ───────────────────</span>
+<span class="com">#  · en nucleo/conexion.py, el import de dependencias.py se</span>
+<span class="com">#    convierte en una línea dentro del mismo archivo</span>
+<span class="com">#  · en dominio/*.py, todo «from database import…» pasa a</span>
+<span class="com">#    «from nucleo.conexion import…»</span>
+<span class="com">#  · en presentacion/rutas/*.py, todos los imports se</span>
+<span class="com">#    vuelven absolutos con la carpeta nueva delante</span>
+<span class="com">#  · en main.py, se actualizan los seis imports</span></code></pre>
+      </div>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-ruta"><span class="p c1">nucleo/conexion.py · el archivo que se crea (fusión de dos)</span></div><button class="copy-btn">copiar</button></div>
+<pre><code><span class="kw">from</span> typing <span class="kw">import</span> AsyncGenerator
+
+<span class="kw">import</span> asyncpg
+
+<span class="kw">from</span> nucleo.configuracion <span class="kw">import</span> CONFIGURACION
+
+
+<span class="kw">class</span> Conexion:
+    <span class="str">"""Abre y cierra el pool de conexiones. No sabe nada de la biblioteca."""</span>
+
+    <span class="kw">def</span> __init__(self) -&gt; <span class="kw">None</span>:
+        self.pool: asyncpg.Pool | None = <span class="kw">None</span>
+
+    <span class="kw">async def</span> <span class="fn">conectar</span>(self, url: str) -&gt; <span class="kw">None</span>:
+        <span class="kw">if</span> self.pool <span class="kw">is not</span> <span class="kw">None</span>:
+            <span class="kw">return</span>
+        self.pool = <span class="kw">await</span> asyncpg.<span class="fn">create_pool</span>(
+            dsn=url, min_size=<span class="num">1</span>, max_size=<span class="num">10</span>
+        )
+
+    <span class="kw">async def</span> <span class="fn">cerrar</span>(self) -&gt; <span class="kw">None</span>:
+        <span class="kw">if</span> self.pool <span class="kw">is not</span> <span class="kw">None</span>:
+            <span class="kw">await</span> self.pool.<span class="fn">close</span>()
+            self.pool = <span class="kw">None</span>
+
+
+conexion = Conexion()
+
+
+<span class="kw">async def</span> <span class="fn">get_conexion</span>() -&gt; AsyncGenerator[asyncpg.Connection, <span class="kw">None</span>]:
+    <span class="str">"""Dependencia de FastAPI: cede una conexión del pool y la devuelve."""</span>
+    <span class="kw">if</span> conexion.pool <span class="kw">is</span> <span class="kw">None</span>:
+        <span class="kw">raise</span> RuntimeError(<span class="str">"El pool no está abierto."</span>)
+    <span class="kw">async with</span> conexion.pool.<span class="fn">acquire</span>() <span class="kw">as</span> conn:
+        <span class="kw">yield</span> conn
+
+<span class="com"># El alias que antes vivía solo en dependencias.py, ahora con su casa:</span>
+ConexionDep = Annotated[asyncpg.Connection, Depends(get_conexion)]</code></pre>
+      </div>
+      <p class="entrega"><b>Prueba de fuego:</b> <code>python -c "import main"</code> desde la raíz. Si no imprime nada y no lanza error, los imports están bien. Si lanza error, léelo entero: te va a decir el archivo y la línea exacta.</p>
+    </div>
+
+    <div class="fase">
+      <span class="fase-meta">10 minutos · el archivo que faltaba</span>
+      <h4>Crea <code>dominio/servicios.py</code> y mueve una regla</h4>
+      <p>Esta fase es la que de verdad transforma el proyecto: por primera vez hay <strong>un lugar donde vive una regla del negocio</strong>. No tienes que mover todas: mueve <strong>una</strong>, la que te parezca más clara, y comprueba que sigue funcionando.</p>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-ruta"><span class="p c2">dominio/servicios.py · ejemplo con la regla de nombres repetidos</span></div><button class="copy-btn">copiar</button></div>
+<pre><code><span class="str">"""Reglas de la biblioteca.
+
+Aquí vive lo que la biblioteca sabe hacer. No sabe de HTTP,
+no sabe de plantillas y no abre conexiones: las recibe.
+"""</span>
+
+<span class="kw">from</span> dominio <span class="kw">import</span> repositorios
+
+
+<span class="kw">async def</span> <span class="fn">listar_autores</span>(conn) -&gt; list[dict]:
+    <span class="str">"""Todos los autores, de la más antigua a la más nueva."""</span>
+    <span class="kw">return await</span> repositorios.<span class="fn">obtener_autores</span>(conn)
+
+
+<span class="kw">async def</span> <span class="fn">registrar_autor</span>(conn, nombre: str, pais: str | None, nacimiento: int | None) -&gt; dict:
+    <span class="str">"""Crea un autor. Regla: no se puede registrar dos veces el mismo nombre."""</span>
+    repetido = <span class="kw">await</span> repositorios.<span class="fn">existe_autor_con_nombre</span>(conn, nombre)
+
+    <span class="kw">if</span> repetido:
+        <span class="kw">raise</span> <span class="fn">AutorDuplicado</span>(nombre)
+
+    <span class="kw">return await</span> repositorios.<span class="fn">crear_autor</span>(conn, nombre, pais, nacimiento)
+
+
+<span class="kw">class</span> AutorDuplicado(Exception):
+    <span class="str">"""Regla violada: ya existe un autor con ese nombre."""</span></code></pre>
+      </div>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-ruta"><span class="p c2">dominio/repositorios.py · la función nueva, junto a las demás</span></div><button class="copy-btn">copiar</button></div>
+<pre><code><span class="kw">async def</span> <span class="fn">existe_autor_con_nombre</span>(conn, nombre: str) -&gt; bool:
+    <span class="str">"""¿Ya existe un autor con ese nombre? La pregunta más simple de todas."""</span>
+    <span class="kw">return await</span> conn.<span class="fn">fetchval</span>(
+        <span class="str">"SELECT EXISTS(SELECT 1 FROM autores WHERE nombre = $1)"</span>, nombre
+    )</code></pre>
+      </div>
+      <p>Y en la ruta, la lógica desaparece y la reemplaza una llamada:</p>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-ruta"><span class="p c3">presentacion/rutas/autores.py · lo que se ve desde arriba</span></div><button class="copy-btn">copiar</button></div>
+<pre><code><span class="kw">from</span> dominio.servicios <span class="kw">import</span> AutorDuplicado, registrar_autor
+
+<span class="kw">async def</span> <span class="fn">crear_autor</span>(request, conn, nombre=Form(), pais=Form(), nacimiento=Form()):
+    <span class="kw">try</span>:
+        <span class="kw">await</span> <span class="fn">registrar_autor</span>(conn, nombre, pais, nacimiento)
+    <span class="kw">except</span> AutorDuplicado:
+        <span class="com"># La ruta decide cómo se ve el error. La regla ya estaba escrita.</span>
+        <span class="kw">return await</span> <span class="fn">mostrar_autores</span>(request, conn, errores={<span class="str">"nombre"</span>: <span class="str">"Ya existe"</span>}, status=<span class="num">422</span>)
+
+    <span class="kw">return await</span> <span class="fn">mostrar_autores</span>(request, conn)</code></pre>
+      </div>
+      <p class="entrega"><b>Prueba de fuego:</b> intenta crear dos autores con el mismo nombre. El segundo debe mostrar el error. Eso demuestra, en la aplicación funcionando, que la regla ya no vive en la ruta.</p>
+    </div>
+
+    <div class="fase">
+      <span class="fase-meta">10 minutos · verificar la arquitectura</span>
+      <h4>Audita la estructura</h4>
+      <p>Corre los cuatro comandos del bloque 05. Los dos primeros y el cuarto <strong>no deben imprimir nada sospechoso</strong>; si lo hacen, todavía hay algo en el lugar equivocado.</p>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-ruta"><span class="p">🔍 auditoría del taller</span></div><button class="copy-btn">copiar</button></div>
+<pre><code><span class="com"># 1. El árbol completo: ¿se parece al del bloque 03?</span>
+tree -a --dirsfirst
+
+<span class="com"># 2. ¿Algún import que suba? (silencio = bien)</span>
+grep -rn <span class="str">"^from presentacion\|^import presentacion"</span> nucleo/ dominio/
+
+<span class="com"># 3. ¿SQL fuera del repositorio? (silencio = bien)</span>
+grep -rn <span class="str">"SELECT\|INSERT\|UPDATE\|DELETE"</span> --include=<span class="str">"*.py"</span> . \
+  | grep -v <span class="str">"dominio/repositorios.py"</span>
+
+<span class="com"># 4. ¿Cuántos archivos tocan la base de datos? Debe salir 1.</span>
+grep -rl <span class="str">"SELECT\|INSERT\|UPDATE\|DELETE"</span> --include=<span class="str">"*.py"</span> . | wc -l</code></pre>
+      </div>
+      <p class="entrega"><b>Prueba de fuego:</b> los cuatro comandos se ejecutan desde la raíz y el comando 4 imprime un <code>1</code>. Si imprime tres o más, todavía hay SQL regado: vuelve a la fase 4.</p>
+    </div>
+
+    <div class="fase">
+      <span class="fase-meta">15 minutos · comparar y documentar</span>
+      <h4>Prueba final y documentación</h4>
+      <p>Levanta la app y recorre, en este orden, las mismas pantallas que anotaste en la fase 1. Después abre el <code>README.md</code> y actualiza la sección «Estructura del proyecto»: es la documentación que le va a tocar leer a la persona que llegue después de ti.</p>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-ruta"><span class="p">📄 la sección del README</span></div><button class="copy-btn">copiar</button></div>
+<pre><code>## Estructura del proyecto
+
+El proyecto está organizado en <span class="str">**tres capas**</span>, y cada una
+tiene una sola responsabilidad.
+
+<span class="com">### nucleo/ — Conexión (capa 1)</span>
+Todo lo que habla con el mundo exterior: configuración y conexiones.
+No sabe qué es un autor.
+
+<span class="com">### dominio/ — Lógica (capa 2)</span>
+Las reglas de la biblioteca: validación, reglas de negocio y las
+consultas SQL. No sabe de HTTP ni de plantillas.
+
+<span class="com">### presentacion/ — Diseño (capa 3)</span>
+Lo que ve el usuario: rutas, plantillas y estilos. No escribe SQL
+ni decide reglas.
+
+<span class="com">### La regla que lo sostiene</span>
+Las dependencias solo bajan: presentacion → dominio → nucleo.
+Nunca al revés. Eso permite cambiar la base de datos, la interfaz
+o la tecnología sin reescribir las reglas del negocio.</code></pre>
+      </div>
+      <p class="entrega"><b>Prueba de fuego:</b> las mismas pantallas de la fase 1 responden igual, y el <code>README.md</code> describe la estructura nueva. Si algo cambió en pantalla, revierte y empieza otra vez: eso también es parte del taller.</p>
+    </div>
+
+  </div>
+
+  <h3>Errores que van a aparecer, y qué hacer con cada uno</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla err-tabla">
+      <thead><tr><th style="width:32%">Lo que ves</th><th style="width:24%">Qué significa</th><th>Qué hacer</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>ModuleNotFoundError: No module named 'dominio'</td>
+          <td>No te encontró la carpeta</td>
+          <td>Revisa que exista <code>dominio/__init__.py</code> y que estés parado en la raíz del proyecto, no en una subcarpeta.</td>
+        </tr>
+        <tr>
+          <td>ModuleNotFoundError: No module named 'database'</td>
+          <td>Quedó un import viejo</td>
+          <td>Busca <code>grep -rn "from database" --include="*.py" .</code> y cámbialo por <code>from nucleo.conexion</code>.</td>
+        </tr>
+        <tr>
+          <td>ImportError: partially initialized module … circular import</td>
+          <td>Dos archivos se importan mutuamente</td>
+          <td>Baja la función compartida a la capa inferior, o pásala por parámetro. Nunca la declares «para tenerla a mano».</td>
+        </tr>
+        <tr>
+          <td>TemplateNotFound: autores.html</td>
+          <td>La ruta de plantillas no coincide</td>
+          <td><code>Jinja2Templates(directory="presentacion/templates")</code> — y recuerda ejecutarlo desde la raíz.</td>
+        </tr>
+        <tr>
+          <td>La app arranca pero <code>/autores</code> da error 500</td>
+          <td>Algo de la base de datos quedó suelto</td>
+          <td>Mira las últimas líneas del traceback en la terminal: casi siempre es un import que se movió de más.</td>
+        </tr>
+        <tr>
+          <td>Las rutas devuelven 404</td>
+          <td>El router no se está montando</td>
+          <td>Revisa que <code>main.py</code> importe el router desde su ruta nueva y que el <code>prefix</code> no haya cambiado.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Lista de verificación del entregable</h3>
+  <p class="lead">Marca cada punto a medida que lo consigas. La lista se guarda en tu navegador, así que puedes cerrar y volver.</p>
+
+  <div class="checklist" data-checklist>
+    <div class="checklist-cab">
+      <span>Verificación de la estructura</span>
+      <span class="cl-avance"><strong data-cl-hechos>0</strong> / <span data-cl-total>0</span> · <span data-cl-pct>0%</span></span>
+      <button class="btn" data-cl-reset style="padding:.3rem .7rem;font-size:.7rem">reiniciar</button>
+    </div>
+
+    <label class="check-item"><input type="checkbox" data-check="c1"><span class="check-caja">✓</span><span class="check-texto"><strong>Respaldo hecho</strong> <small>Commit de git o copia de la carpeta. Hay forma de volver atrás.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c2"><span class="check-caja">✓</span><span class="check-texto"><strong>Mapa escrito</strong> <small>La tabla de los nueve archivos, con la responsabilidad de cada uno en una frase.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c3"><span class="check-caja">✓</span><span class="check-texto"><strong>Estructura creada</strong> <small><code>nucleo/</code>, <code>dominio/</code>, <code>presentacion/</code> y los cuatro <code>__init__.py</code> con su frase.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c4"><span class="check-caja">✓</span><span class="check-texto"><strong>Archivos movidos</strong> <small>Los siete <code>.py</code> y <code>templates/</code> están en su capa.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c5"><span class="check-caja">✓</span><span class="check-texto"><strong><code>python -c "import main"</code> no falla</strong> <small>Los imports quedaron bien, y no en un archivo suelto a la primera.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c6"><span class="check-caja">✓</span><span class="check-texto"><strong><code>servicios.py</code> existe y tiene una regla</strong> <small>Una regla del negocio que antes vivía en la ruta, ahora en su casa.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c7"><span class="check-caja">✓</span><span class="check-texto"><strong>Ningún import sube</strong> <small>El comando 2 de la auditoría no imprime nada.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c8"><span class="check-caja">✓</span><span class="check-texto"><strong>El SQL vive en un solo archivo</strong> <small>El comando 4 imprime un <code>1</code>.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c9"><span class="check-caja">✓</span><span class="check-texto"><strong>La app funciona igual</strong> <small>Recorriste las mismas pantallas de la fase 1 y responden igual.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c10"><span class="check-caja">✓</span><span class="check-texto"><strong>README actualizado</strong> <small>La sección «Estructura del proyecto» describe las tres capas y la regla de la flecha.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c11"><span class="check-caja">✓</span><span class="check-texto"><strong>Reto: probaste las tres preguntas del bloque 01</strong> <small>«¿Dónde va lo nuevo? ¿Cuántos archivos toco? ¿Puedo probarlo solo?»</small></span></label>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>Repaso en pareja — 8 minutos</h4>
+    <p>Con la estructura ya hecha, respondan en voz alta, mirando su proyecto:</p>
+    <ol>
+      <li>¿En qué archivo iría una página nueva de préstamos? ¿Y su consulta SQL?</li>
+      <li>Si mañana cambian la base de datos, ¿cuántos archivos tocan?</li>
+      <li>Muéstrenle el proyecto a alguien que no haya estado en la clase. ¿En cuánto tiempo entendió para qué servía cada carpeta?</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="7">
+    <h3>Evaluación final de la clase</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> La tarifa de la multa cambia de $500 a $800 en tu proyecto ya reorganizado. ¿Cuántos archivos tocas?</p>
+      <button class="opcion" data-op="a">Uno por cada ruta que calcula multas</button>
+      <button class="opcion" data-op="b">Uno: el de la capa de lógica, donde vive la regla</button>
+      <button class="opcion" data-op="c">Dos: la constante y su plantilla</button>
+      <button class="opcion" data-op="d">Todos: hay que actualizar las copias por si acaso</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué las carpetas se llaman <code>nucleo/</code>, <code>dominio/</code> y <code>presentacion/</code>, y no <code>asyncpg/</code>, <code>sql/</code> y <code>html/</code>?</p>
+      <button class="opcion" data-op="a">Porque nombran responsabilidades, así que siguen siendo válidos aunque cambies de framework o de base de datos</button>
+      <button class="opcion" data-op="b">Porque son más cortas de escribir</button>
+      <button class="opcion" data-op="c">Porque Python obliga a que las carpetas se llamen así</button>
+      <button class="opcion" data-op="d">Porque son las que usa FastAPI por defecto</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> Al terminar el taller, ¿qué prueba demuestra mejor que la estructura quedó bien?</p>
+      <button class="opcion" data-op="a">Que <code>main.py</code> tenga menos líneas que antes</button>
+      <button class="opcion" data-op="b">Que el proyecto tenga más carpetas</button>
+      <button class="opcion" data-op="c">Que un solo archivo contenga el SQL y que ninguna capa importe hacia arriba: la app sigue igual, pero ahora sabes dónde vive cada cosa</button>
+      <button class="opcion" data-op="d">Que los archivos se llamen en inglés</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> El <code>__init__.py</code> de <code>dominio/</code> se borró por accidente y nada más funciona. ¿Qué falta?</p>
+      <button class="opcion" data-op="a">El archivo <code>dominio.py</code></button>
+      <button class="opcion" data-op="b">El archivo <code>__init__.py</code>: sin él la carpeta deja de ser un paquete y Python no la importa</button>
+      <button class="opcion" data-op="c">Una variable de entorno</button>
+      <button class="opcion" data-op="d">Nada: Python debería encontrarla igual</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>5.</strong> Resumen de la clase en una frase:</p>
+      <button class="opcion" data-op="a">Organizar es crear la mayor cantidad posible de carpetas y archivos</button>
+      <button class="opcion" data-op="b">Las carpetas se nombran por la tecnología que usan</button>
+      <button class="opcion" data-op="c">La estructura no importa: lo importante es que el programa funcione</button>
+      <button class="opcion" data-op="d">Agrupar por responsabilidad —conexión, lógica, diseño— y dejar que las dependencias solo bajen hace que el siguiente cambio sea barato</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="cierre">
+    <h2>Clase 11 completada</h2>
+    <p>Empezaste con siete archivos Python tirados en la raíz, uno de los cuales hacía el trabajo de las tres capas. Terminaste con una estructura de <strong>tres carpetas, tres responsabilidades y una regla de una línea</strong>: las dependencias solo bajan. La aplicación no se ve distinta —y esa era la meta— pero ahora cualquier persona sabe dónde vive la conexión, dónde viven las reglas y dónde vive la interfaz. El próximo cambio va a ser barato, y eso es exactamente lo que se supone que debe hacer un buen programador.</p>
+    <button class="btn-final" data-reiniciar>Volver al inicio</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7" style="visibility:hidden">Siguiente</button>
+  </div>
+</section>
+
+
+</main>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 11 · Estructura de carpetas y archivos</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
