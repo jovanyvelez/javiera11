@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌿 Herramientas de Programación II · Clase 12 · Git básico</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🌿</span>
+    <div>
+      <h1>Herramientas de Programación II · Clase 12</h1>
+      <p class="subtitulo">Git básico · la máquina del tiempo de tu código (basado en Git 2.56)</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">⏳ ¿Qué es Git?</button>
+  <button class="btn-modulo" data-modulo="2">📸 El commit</button>
+  <button class="btn-modulo" data-modulo="3">🔎 Historial e ignore</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🌿 Ramas</button>
+  <button class="btn-modulo" data-modulo="6">⏪ Deshacer</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🌿 La máquina del tiempo de tu código</h2>
+    <p class="lead">Tu <code>biblioteca/</code> funciona. Pero si borras un archivo, o cambias algo que "antes servía", o tu compañero guarda su versión por encima de la tuya… <strong>no hay vuelta atrás</strong>. Hoy le pones a tu proyecto <strong>Git</strong>: un sistema que toma <strong>fotografías completas</strong> de tu código cuando tú lo digas, te deja <strong>volver a cualquiera de ellas</strong>, experimentar en <strong>universos paralelos</strong> (ramas) y deshacer errores <strong>sin miedo</strong>. Es la herramienta que usa el mundo real, desde este currículo hasta el kernel de Linux.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal de VS Code — PowerShell</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">PS biblioteca&gt;</span> <span class="cmd">git --version</span></div>
+        <div class="out">git version 2.56.0</div>
+        <div><span class="prompt">PS biblioteca&gt;</span> <span class="cmd">git init</span></div>
+        <div class="out">Initialized empty Git repository in C:/usuarios/tunombre/biblioteca/.git/</div>
+        <div><span class="prompt">PS biblioteca&gt;</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3h 45min en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Dominar el <strong>ciclo básico de Git</strong>: <code>init</code>, <code>status</code>, <code>add</code>, <code>commit</code>, <code>log</code> y <code>diff</code>; organizar lo que <em>no</em> se sube con <code>.gitignore</code>; experimentar con <strong>ramas</strong> (<code>switch</code> y <code>merge</code>) y deshacer sin pánico (<code>restore</code>, <code>reset</code>, <code>revert</code>, <code>reflog</code>).</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>El zip <code>proyecto_final_FINAL_v2.zip</code>, el clásico <em>"a mí me funcionaba ayer"</em>, el compañero que pisa tu archivo y el miedo a tocar código que funciona "no vaya a ser que…".</p>
+    </div>
+  </div>
+
+  <h3>🧠 Git, en una frase</h3>
+  <div class="caja-concepto">
+    <h3>La idea central</h3>
+    <p>Git es un <strong>sistema de control de versiones</strong>: un diario que registra <strong>fotografías completas</strong> de tu proyecto (los <em>commits</em>), cada una con fecha, autora y mensaje. En cualquier momento puedes preguntarle <em>"¿cómo estaba esto ayer?"</em> o gritarle <em>"¡devuélveme la foto de ayer!"</em>. Es <strong>distribuido</strong>: el historial completo vive en tu computador, sin necesitar internet ni un servidor. Y es gratis y libre: lo creó <strong>Linus Torvalds</strong> (el mismo del pinguino Linux) en 2005; hoy lo usa prácticamente todo proyecto de software del planeta. La versión que usamos en este curso es la <strong>2.56.0</strong>, la más reciente.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: el zip con nombres creativos</h4>
+    <p>Todos hemos visto (o creado) esto:</p>
+    <pre><code>📚 biblioteca.zip
+📚 biblioteca_final.zip
+📚 biblioteca_final_FINAL.zip
+📚 biblioteca_final_FINAL_v2_ESTA_SI.zip
+📚 biblioteca_final_FINAL_v2_ESTA_SI_con_arreglos.zip 😱</code></pre>
+    <p>Eso <em>parece</em> control de versiones, pero no responde ninguna pregunta útil: ¿qué cambió entre la 2 y la 3? ¿quién hizo el cambio? ¿y si quiero <strong>mezclar</strong> dos versiones? Git convierte esos zips en una <strong>línea de tiempo real</strong> que se lee, se compara y se puede recorrer hacia atrás. Hoy dejamos de numerar zips para siempre.</p>
+  </div>
+
+  <h3>🗺️ ¿Dónde vive cada cosa?</h3>
+  <p class="lead">Hoy el mapa de la clase es territorial: dos de estos tres lugares los vas a dominar hoy; el tercero, en la clase 13.</p>
+  <div class="mapa-residencia">
+    <div class="mr-head">Lugar</div>
+    <div class="mr-head">¿Qué es?</div>
+    <div class="mr-head">Cuándo lo usas</div>
+
+    <div class="mr-cell python">🌿 <strong>Git — tu computador</strong></div>
+    <div class="mr-cell">El programa que lleva el álbum de fotos del proyecto, escondido en la carpeta <code>.git/</code>.</div>
+    <div class="mr-cell">Toda esta clase. No necesita internet.</div>
+
+    <div class="mr-cell jinja">🐙 <strong>GitHub — la nube</strong></div>
+    <div class="mr-cell">El sitio web donde puedes subir una copia del álbum para respaldarla y mostrarla al mundo.</div>
+    <div class="mr-cell">La <strong>clase 13</strong>. (Spoiler: tu portafolio).</div>
+
+    <div class="mr-cell sql">📟 <strong>La terminal — VS Code</strong></div>
+    <div class="mr-cell">El lugar desde donde le hablas a Git. La integrada de VS Code, con clic derecho sobre la carpeta → <em>Open in Integrated Terminal</em>.</div>
+    <div class="mr-cell">Todos los comandos de hoy. Git es idéntico en Windows, Mac y Linux.</div>
+  </div>
+
+  <h3>🖥️ Prepara tu ambiente</h3>
+  <p>Necesitas <strong>Git instalado</strong> y una terminal parada en tu carpeta de proyecto. Si ya instalaste Git con VS Code, lo más probable es que ya esté:</p>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>setup — verificar que Git vive en tu compu</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># 1. Abre VS Code → clic derecho sobre la carpeta biblioteca/ en el Explorer</span>
+<span class="com">#    → "Open in Integrated Terminal".</span>
+
+<span class="com"># 2. Pregunta la versión (si responde, estás list@):</span>
+git --version
+<span class="com">#    → git version 2.56.0   (o cualquier 2.x está bien)</span>
+
+<span class="com"># 3. Si dice "no se reconoce como comando": instala Git for Windows</span>
+<span class="com">#    desde https://git-scm.com → Siguiente, Siguiente, Siguiente… Finalizar,</span>
+<span class="com">#    CIERRA y vuelve a abrir VS Code (para que lo reconozca), y repite el paso 2.</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>config — preséntate: Git firma cada foto con tu nombre</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># Se hace UNA vez por computador. Pon tus datos reales:</span>
+git config --global user.name <span class="str">"Tu Nombre"</span>
+git config --global user.email <span class="str">"tu.correo@colegio.edu.co"</span>
+
+<span class="com"># Que las ramas nuevas nazcan con el nombre moderno (main),</span>
+<span class="com"># igual que GitHub — así no hay sorpresas en la clase 13:</span>
+git config --global init.defaultBranch main
+
+<span class="com"># Verificar que quedó guardado:</span>
+git config --global --list
+<span class="com">#    user.name=Tu Nombre</span>
+<span class="com">#    user.email=tu.correo@colegio.edu.co</span>
+<span class="com">#    init.defaultbranch=main</span></code></pre>
+  </div>
+
+  <h3>🗺️ Ruta de la clase</h3>
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">1️⃣</span>
+      <h3>¿Qué es Git?</h3>
+      <p>El control de versiones de verdad, <code>git init</code>, la carpeta <code>.git/</code> y tu primer <code>git status</code>.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">2️⃣</span>
+      <h3>El commit</h3>
+      <p>Los tres estados (directorio → staging → álbum), <code>add</code> + <code>commit</code>, y el laboratorio interactivo de estados.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">3️⃣</span>
+      <h3>Historial e ignore</h3>
+      <p><code>git log</code> y <code>git diff</code> para leer el diario, y <code>.gitignore</code> para que los secretos nunca salgan en una foto.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">4️⃣</span>
+      <h3>Ramas</h3>
+      <p>Universos paralelos con <code>git switch</code>, unirlos con <code>merge</code> y sobrevivir a tu primer conflicto.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">5️⃣</span>
+      <h3>Deshacer</h3>
+      <p><code>restore</code>, <code>amend</code>, <code>reset</code>, <code>revert</code> y <code>reflog</code>: la navaja suiza del arrepentimiento.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">6️⃣</span>
+      <h3>Taller</h3>
+      <p>El diario de tu proyecto: 5 retos sobre tu <code>biblioteca/</code> real, hasta dejar el historial impecable.</p>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0" style="visibility:hidden">← Anterior</button>
+    <button class="btn-siguiente" data-ir="1">Siguiente: ¿Qué es Git? →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>⏳ ¿Qué es Git? La máquina del tiempo</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Un diario que se puede recorrer hacia atrás"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Un <strong>sistema de control de versiones</strong> responde tres preguntas que el zip no puede: <strong>¿qué cambió?</strong>, <strong>¿quién lo cambió?</strong> y <strong>¿cómo vuelvo a como estaba?</strong>. Git lo hace con una idea simple: cada vez que tú lo ordenas, toma una <strong>fotografía del proyecto completo</strong> (un <em>commit</em>) y la cuelga en una línea de tiempo. Como cada foto tiene <strong>todo</strong>, puedes ir a cualquiera y el proyecto queda exactamente como ese día. Y es <strong>distribuido</strong>: el álbum entero vive en tu computador, dentro de una carpeta escondida llamada <code>.git/</code>. Sin internet, sin servidor, sin permiso de nadie.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>antes y después — el mismo proyecto, dos mundos</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># ❌ VILLANO — el mundo de los zips. Pregúntale al explorador</span>
+<span class="com">#    "¿qué cambió entre final_v2 y final_v3?" y te responderá con silencio.</span>
+biblioteca.zip
+biblioteca_final.zip
+biblioteca_final_FINAL.zip
+biblioteca_final_FINAL_v2_ESTA_SI.zip
+
+<span class="com"># ✅ HÉROE — el mundo con Git. La misma pregunta, respondida en segundos:</span>
+git log --oneline
+<span class="com">#    9f3c2b1 (HEAD -&gt; main) Cambiar tarifa de la multa a $800</span>
+<span class="com">#    4a8e7d2 Agregar página de préstamos</span>
+<span class="com">#    c1d9f3e Primer commit: proyecto biblioteca</span>
+
+<span class="com">#    Y si quieres volver a como estaba ayer:</span>
+<span class="com">#    Git guarda la foto completa de cada una de esas versiones. 📸</span></code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Situación</th><th>Con zips 😱</th><th>Con Git 😎</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>"¿Qué cambió entre la versión 2 y la 3?"</td><td>Abrir dos carpetas y comparar a ojo</td><td><code>git diff</code>: línea por línea, con colores</td></tr>
+        <tr><td>"¿Quién tocó esta función?"</td><td>Imposible saberlo</td><td><code>git log</code>: autora y fecha de cada cambio</td></tr>
+        <tr><td>"Quiero volver a como estaba ayer"</td><td>Buscar el zip de ayer y rezar</td><td>Recuperar la foto de ayer: un comando</td></tr>
+        <tr><td>"Quiero probar algo sin romper lo que sirve"</td><td>Copiar la carpeta entera (…zip)</td><td>Rama: un universo paralelo gratis (módulo 4)</td></tr>
+        <tr><td>Se dañó el computador</td><td>Se murió el proyecto</td><td>Con la clase 13: el álbum vive en la nube</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🔌 <code>git init</code>: encender la máquina del tiempo</h3>
+  <p class="lead">Este comando le dice a Git: <em>"esta carpeta tiene un álbum de fotos a partir de ahora"</em>. Se hace <strong>una sola vez por proyecto</strong>.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>git init — el nacimiento del repositorio</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># En la terminal integrada de VS Code, parada en biblioteca/</span>
+<span class="com"># (clic derecho sobre la carpeta en el Explorer → Open in Integrated Terminal)</span>
+git init
+<span class="com">#    Initialized empty Git repository in C:/usuarios/tunombre/biblioteca/.git/</span>
+
+<span class="com"># ¿Qué creó? Una carpeta OCULTA llamada .git/</span>
+<span class="com"># · En el Explorer de VS Code ya la ves (los archivos que empiezan</span>
+<span class="com">#   por punto aparecen atenuados).</span>
+<span class="com"># · En el explorador de Windows: pestaña Vista → marcar "Elementos ocultos".</span></code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Dentro de <code>.git/</code></th><th>Qué guarda (sin entrar en detalles)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>objects/</code></td><td>Las fotografías comprimidas — el álbum completo</td></tr>
+        <tr><td><code>refs/</code></td><td>Las ramas: nombres que apuntan a una foto ("main")</td></tr>
+        <tr><td><code>HEAD</code></td><td>Un dedo que dice en qué foto y en qué rama estás parado</td></tr>
+        <tr><td><code>index</code></td><td>El <em>staging</em>: la lista de poses de la próxima foto (módulo 2)</td></tr>
+        <tr><td><code>config</code></td><td>Los ajustes de ESTE repositorio</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Dos reglas de oro de <code>.git/</code></h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li><strong>Nunca toques su contenido a mano.</strong> No hay razón: todo se hace con comandos. Es la única carpeta del proyecto con esa regla.</li>
+      <li><strong>Borrarla es borrar el álbum</strong>: tus archivos quedan igual en la carpeta, pero pierdes toda la historia. Si un día quieres "empezar de cero" el historial, ya sabes cuál es el interruptor… y por qué no hay que tocarlo sin querer.</li>
+    </ul>
+  </div>
+
+  <h3>📟 <code>git status</code>: tu nuevo mejor amigo</h3>
+  <p class="lead">Es el comando que vas a escribir más en tu vida. Pregunta: <em>"¿cómo está el proyecto ahora mismo?"</em> Ejecútalo, y mira qué responde.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>git status — la radiografía del momento</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>git status
+<span class="com">#    On branch main</span>
+<span class="com">#    No commits yet</span>
+<span class="com">#    Untracked files:</span>
+<span class="com">#      (use "git add ..." to include in what will be committed)</span>
+<span class="com">#            main.py</span>
+<span class="com">#            nucleo/</span>
+<span class="com">#            dominio/</span>
+<span class="com">#            presentacion/</span>
+<span class="com">#    nothing added to commit but untracked files present</span>
+
+<span class="com"># Traducción: "todavía no hay fotos, y veo archivos que no conozco".</span>
+<span class="com"># A esos Git les dice UNTRACKED: los ve, pero nunca han entrado</span>
+<span class="com"># en ninguna fotografía. En el módulo 2 los vas a fotografiar. 📸</span></code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: el miedo a la terminal</h4>
+    <p>La terminal no muerde: es solo un chat con tu computador, donde los mensajes se llaman <em>comandos</em>. Y Git es el mejor profesor de terminal que existe, porque <strong>siempre te responde</strong>: con una lista de archivos, con un aviso, o con un error que dice exactamente qué hacer ("use <code>git add …</code>"). Regla de la clase: <strong>antes de cada comando, lee lo que respondió</strong>. El 90% de los problemas de principiantes vienen de ejecutar y no mirar la respuesta.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Ambos en su propio computador, uno con la pantalla del otro como copiloto:</p>
+    <ol>
+      <li>Abre la terminal en tu <code>biblioteca/</code> y ejecuta <code>git init</code>. <strong>Ojo:</strong> si ya habías hecho <code>init</code> alguna vez, Git lo avisa: <code>Reinitialized existing…</code>. No pasa nada — el álbum ya existía.</li>
+      <li>Ejecuta <code>git status</code> y <strong>cuenta</strong> cuántos archivos o carpetas salen como <em>untracked</em>. Compáralo con tu compañero/a: ¿tienen los mismos?</li>
+      <li>Discutan: ¿por qué creen que Git no toma las fotos solo, cada vez que guardas? (Pista: piensen en las fotos del celular: ¿se toman solas?)</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es Git?</p>
+      <button class="opcion" data-op="a">Un sitio web para guardar código en la nube</button>
+      <button class="opcion" data-op="b">Un sistema de control de versiones que registra fotos completas del proyecto en tu propio computador</button>
+      <button class="opcion" data-op="c">Un editor de código hecho por Microsoft</button>
+      <button class="opcion" data-op="d">Un compresor de archivos mejorado</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Qué hace <code>git init</code>?</p>
+      <button class="opcion" data-op="a">Toma la primera foto del proyecto automáticamente</button>
+      <button class="opcion" data-op="b">Sube el proyecto a internet</button>
+      <button class="opcion" data-op="c">Crea la carpeta <code>.git/</code>: enciende la máquina del tiempo, sin tomar ninguna foto todavía</button>
+      <button class="opcion" data-op="d">Instala Git en el computador</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Qué significa que un archivo aparezca como <em>untracked</em> en <code>git status</code>?</p>
+      <button class="opcion" data-op="a">Que está dañado y hay que borrarlo</button>
+      <button class="opcion" data-op="b">Que Git lo está vigilando con sospecha</button>
+      <button class="opcion" data-op="c">Que ya fue fotografiado y no cambia</button>
+      <button class="opcion" data-op="d">Que Git lo ve en la carpeta, pero nunca ha entrado en ninguna fotografía</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> ¿Por qué decimos que Git es "distribuido"?</p>
+      <button class="opcion" data-op="a">Porque el historial completo vive en tu computador: no necesitas internet ni un servidor para hacer commits</button>
+      <button class="opcion" data-op="b">Porque reparte los archivos en varias carpetas</button>
+      <button class="opcion" data-op="c">Porque solo funciona con Linux</button>
+      <button class="opcion" data-op="d">Porque divide cada foto en 40 pedazos</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: El commit →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>📸 El commit: la foto que lo cambia todo</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Directorio de trabajo → staging → álbum"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Un <strong>commit</strong> es una fotografía del proyecto guardada para siempre en el álbum (<code>.git/</code>). Pero Git no fotografía a lo loco: usa <strong>tres lugares</strong> por donde pasa tu código. En el <strong>directorio de trabajo</strong> (tu carpeta) vives y editas con toda libertad. El <strong>staging area</strong> es la <em>posing</em>: le dices a Git <em>estos cambios van a entrar en la próxima foto</em> (<code>git add</code>). Y el <strong>repositorio</strong> es el álbum donde la foto queda colgada con su etiqueta (<code>git commit -m "mensaje"</code>). Dominar esta clase es dominar el pasillo entre esos tres lugares.</p>
+  </div>
+
+  <div class="mapa-residencia">
+    <div class="mr-head">Los tres estados</div>
+    <div class="mr-head">Quién manda ahí</div>
+    <div class="mr-head">El comando de la puerta</div>
+
+    <div class="mr-cell python">💻 <strong>1 · Directorio de trabajo</strong></div>
+    <div class="mr-cell">Tú: editas, guardas, borras. La vida real de la carpeta.</div>
+    <div class="mr-cell"><code>git status</code> para ver qué andas cambiando</div>
+
+    <div class="mr-cell jinja">📸 <strong>2 · Staging area (la posing)</strong></div>
+    <div class="mr-cell">La lista de lo que ENTRARÁ en la próxima foto.</div>
+    <div class="mr-cell"><code>git add archivo</code> entra · <code>git restore --staged archivo</code> se sale</div>
+
+    <div class="mr-cell sql">🗄️ <strong>3 · Repositorio (el álbum)</strong></div>
+    <div class="mr-cell">Las fotos completas con fecha, autora, mensaje y hash único.</div>
+    <div class="mr-cell"><code>git commit -m "mensaje"</code> toma la foto · <code>git log</code> la mira</div>
+  </div>
+
+  <h3>🧪 Laboratorio de estados</h3>
+  <p class="lead">Antes de escribir un solo comando real, <strong>juega con la máquina</strong>. Este es tu archivo <code>app.py</code> viviendo entre los tres estados: edítalo, agrégalo a la posing, haz commits y deshaz. El panel de abajo imita la respuesta real de <code>git status</code> en cada momento.</p>
+
+  <div class="simulador" data-lab>
+    <div class="sim-head">🧪 app.py en la máquina del tiempo — experiménta sin miedo</div>
+    <div class="lab-zonas">
+      <div class="lab-zona z-wd">
+        <h5>💻 Directorio de trabajo</h5>
+        <div class="lab-files" data-lab-files="wd"></div>
+      </div>
+      <div class="lab-zona z-st">
+        <h5>📸 Staging area (la posing)</h5>
+        <div class="lab-files" data-lab-files="st"></div>
+      </div>
+      <div class="lab-zona z-rp">
+        <h5>🗄️ Repositorio — <span data-lab-commits>0</span> commits</h5>
+        <div class="lab-files" data-lab-files="rp"></div>
+      </div>
+    </div>
+    <div class="lab-controles">
+      <button class="btn" data-lab-btn="editar">✏️ editar app.py</button>
+      <button class="btn" data-lab-btn="add">git add app.py</button>
+      <button class="btn" data-lab-btn="commit">git commit</button>
+      <button class="btn" data-lab-btn="restore-staged">git restore --staged</button>
+      <button class="btn" data-lab-btn="restore">git restore</button>
+      <button class="btn ghost" data-lab-btn="reset">↺ reiniciar</button>
+    </div>
+    <div class="lab-status" data-lab-status></div>
+  </div>
+
+  <h3>⚙️ El ciclo real, completo y con salida</h3>
+  <p class="lead">Ahora sí: en tu proyecto de verdad. Este es el <strong>ciclo básico de Git</strong>, el que repetirás miles de veces en tu vida.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>el ciclo: editar → add → commit (con respuestas reales)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># 1. Edita algo real en VS Code (por ejemplo main.py) y guarda. Luego:</span>
+git status
+<span class="com">#    Changes not staged for commit:</span>
+<span class="com">#            modified:   main.py</span>
+
+<span class="com"># 2. ¿Qué cambió exactamente? (líneas con - y +)</span>
+git diff
+<span class="com">#    - TARIFA_POR_DIA = 500</span>
+<span class="com">#    + TARIFA_POR_DIA = 800</span>
+
+<span class="com"># 3. Mándalo a la posing (el punto significa "todo lo que ando cambiando"):</span>
+git add .
+<span class="com">#    (no responde nada: es de los pocos comandos silenciosos)</span>
+
+<span class="com"># 4. Verifica la posing antes de la foto:</span>
+git status
+<span class="com">#    Changes to be committed:</span>
+<span class="com">#            modified:   main.py</span>
+
+<span class="com"># 5. ¡FOTO! — el mensaje cuenta QUÉ hiciste y POR QUÉ:</span>
+git commit -m <span class="str">"Cambiar tarifa de la multa a $800"</span>
+<span class="com">#    [main 9f3c2b1] Cambiar tarifa de la multa a $800</span>
+<span class="com">#     1 file changed, 1 insertion(+), 1 deletion(-)</span>
+
+<span class="com"># 6. Mira el álbum:</span>
+git log --oneline
+<span class="com">#    9f3c2b1 (HEAD -&gt; main) Cambiar tarifa de la multa a $800</span>
+<span class="com">#    4a8e7d2 Agregar página de préstamos</span>
+<span class="com">#    c1d9f3e Primer commit: proyecto biblioteca</span></code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Mensaje ❌ villano</th><th>Mensaje ✅ profesional</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>cambios</code></td><td><code>Agregar página de préstamos</code></td></tr>
+        <tr><td><code>final</code></td><td><code>Corregir cálculo de la multa con días negativos</code></td></tr>
+        <tr><td><code>arreglo</code></td><td><code>Cambiar tarifa de la multa a $800</code></td></tr>
+        <tr><td><code>cosas</code> 😱</td><td><code>Conectar el pool con lifespan (clase 2)</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Qué guarda exactamente un commit?</h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li><strong>El contenido</strong> de todo lo que estaba en la posing (no "el cambio": la foto completa del archivo).</li>
+      <li><strong>La autora</strong>: tu <code>user.name</code> y <code>user.email</code> — por eso los configuramos en el módulo 0.</li>
+      <li><strong>Fecha y hora</strong> exactas.</li>
+      <li><strong>El mensaje</strong> que escribiste.</li>
+      <li><strong>Un hash único</strong> (como <code>9f3c2b1</code>): la huella digital de la foto. Son 40 caracteres; Git muestra 7. No hay dos commits en el mundo con el mismo hash.</li>
+    </ul>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: "¿y para qué la posing? ¡Qué flojera!"</h4>
+    <p>Parece un paso innecesario, pero es el superpoder de Git: te deja <strong>decidir qué entra en cada foto</strong>. Terminaste el cambio de la multa pero a mitad de camino arreglaste un acento en una plantilla? Puedes hacer <strong>dos commits limpios</strong>: <code>git add dominio/servicios.py</code> → commit → <code>git add presentacion/templates/inicio.html</code> → commit. Resultado: un diario donde cada foto cuenta <strong>una sola historia</strong>. <code>git add .</code> (todo) es el atajo para el día a día; <code>git add archivo</code> es la precisión del cirujano. Dominas los dos.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>En el laboratorio de arriba, logren juntos esta secuencia (cada uno en su pantalla, turnándose para "manejar"):</p>
+    <ol>
+      <li>Estado donde <code>git status</code> dice <em>"nothing to commit, working tree clean"</em> con <strong>2 commits</strong> en el álbum.</li>
+      <li>Estado donde <code>app.py</code> esté <strong>a la vez</strong> en la posing y con cambios sin preparar (pista: edita <em>después</em> de hacer <code>add</code>). ¿Qué dice el status? Explíquense por qué.</li>
+      <li>Trucos: ¿pueden sacar algo de la posing sin perder los cambios? (<code>restore --staged</code>) ¿Y descartar los cambios para siempre? (<code>restore</code> — cuidado, no hay ctrl+z ahí).</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> <code>app.py</code> está modificado en tu carpeta y ejecutas <code>git add app.py</code>. ¿Dónde está ahora?</p>
+      <button class="opcion" data-op="a">Ya quedó guardado en el álbum para siempre</button>
+      <button class="opcion" data-op="b">En ninguna parte: add solo muestra un preview</button>
+      <button class="opcion" data-op="c">En el staging area: preparado para entrar en la próxima foto, pero todavía no en el álbum</button>
+      <button class="opcion" data-op="d">Se convirtió en un commit nuevo</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Cuál es la diferencia entre <code>git add</code> y <code>git commit</code>?</p>
+      <button class="opcion" data-op="a">Ninguna: son sinónimos</button>
+      <button class="opcion" data-op="b"><code>add</code> elige qué entra en la posing; <code>commit</code> toma la foto y la cuelga en el álbum con mensaje y hash</button>
+      <button class="opcion" data-op="c"><code>add</code> es para archivos nuevos y <code>commit</code> para los viejos</button>
+      <button class="opcion" data-op="d"><code>commit</code> borra el archivo del disco</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> Haces <code>git commit</code> con la posing vacía. ¿Qué pasa?</p>
+      <button class="opcion" data-op="a">Se toma una foto del proyecto vacío</button>
+      <button class="opcion" data-op="b">Se borra el último commit</button>
+      <button class="opcion" data-op="c">Funciona igual: fotografía todos los cambios</button>
+      <button class="opcion" data-op="d">Git se niega: "nothing to commit" — sin posing no hay foto</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> ¿Para qué sirve el hash de un commit (ej. <code>9f3c2b1</code>)?</p>
+      <button class="opcion" data-op="a">Es la huella única de esa foto: sirve para referirla con precisión (volver a ella, compararla, deshacerla)</button>
+      <button class="opcion" data-op="b">Es el tamaño del commit en bytes</button>
+      <button class="opcion" data-op="c">Es la contraseña del repositorio</button>
+      <button class="opcion" data-op="d">Es un número aleatorio sin uso práctico</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Historial e ignore →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>🔎 Leer el diario y cuidar los secretos</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "git log, git diff y el .gitignore que salva vidas"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Un historial que no se puede leer no sirve de nada. Git te da <strong>cuatro formas de mirar</strong>: <code>status</code> (¿cómo estamos ahora?), <code>diff</code> (¿qué cambia entre dos momentos?), <code>log</code> (¿qué fotos hay en el álbum?) y <code>show</code> (muéstrame una foto en detalle). Y como en toda casa hay cosas que no van en el álbum familiar — la basura, las llaves de la puerta — existe <strong><code>.gitignore</code></strong>: la lista de lo que Git debe fingir que no ve. Hoy aprendes las dos cosas: leer el diario y decidir qué no entra en él.</p>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Comando</th><th>Pregunta que responde</th><th>Ejemplo estrella</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git status</code></td><td>¿Cómo está el proyecto ahora mismo?</td><td>Qué está modificado, qué está en posing</td></tr>
+        <tr><td><code>git diff</code></td><td>¿Qué cambió sin guardar en la posing?</td><td>El <code>- TARIFA 500</code> / <code>+ TARIFA 800</code></td></tr>
+        <tr><td><code>git diff --staged</code></td><td>¿Qué está listo para la próxima foto?</td><td>Lo mismo, pero de lo que ya está en posing</td></tr>
+        <tr><td><code>git log --oneline</code></td><td>¿Qué fotos hay en el álbum?</td><td>La línea de tiempo completa, una línea por foto</td></tr>
+        <tr><td><code>git show 9f3c2b1</code></td><td>¿Qué tenía esta foto en detalle?</td><td>El commit con su cambio línea por línea</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>git log con estilo — flags que valen la pena</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># El álbum en una línea por foto:</span>
+git log --oneline
+<span class="com">#    9f3c2b1 (HEAD -&gt; main) Cambiar tarifa de la multa a $800</span>
+<span class="com">#    4a8e7d2 Agregar página de préstamos</span>
+<span class="com">#    c1d9f3e Primer commit: proyecto biblioteca</span>
+
+<span class="com"># Solo las últimas 3 fotos:</span>
+git log --oneline -3
+
+<span class="com"># Con las fechas y la autora:</span>
+git log
+<span class="com">#    commit 9f3c2b1... (HEAD -&gt; main)</span>
+<span class="com">#    Author: Tu Nombre &lt;tu.correo@colegio.edu.co&gt;</span>
+<span class="com">#    Date:   Fri Oct 16 14:20:01 2026 -0500</span>
+<span class="com">#        Cambiar tarifa de la multa a $800</span>
+
+<span class="com"># ¿Quién escribió la palabra "multa" y en qué commit?</span>
+git log -S <span class="str">"multa"</span> --oneline
+<span class="com">#    (muestra solo los commits donde apareció o desapareció esa palabra)</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>git diff — el antes y el después, con colores</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># Cambiaste una línea de servicios.py y NO has hecho add todavía:</span>
+git diff
+<span class="com">#    --- a/dominio/servicios.py</span>
+<span class="com">#    +++ b/dominio/servicios.py</span>
+<span class="com">#    - TARIFA_POR_DIA = 500</span>
+<span class="com">#    + TARIFA_POR_DIA = 800</span>
+<span class="com">#    (en la terminal: rojo lo que sale, verde lo que entra)</span>
+
+<span class="com"># ¿Ya hiciste add? Entonces pregunta por la posing:</span>
+git diff --staged
+<span class="com">#    (mismo formato: lo que está a punto de entrar en la foto)</span>
+
+<span class="com"># Costumbre de programadora profesional: diff ANTES de add.</span>
+<span class="com"># Es releer el mensaje antes de enviarlo. 📧</span></code></pre>
+  </div>
+
+  <h3>🧹 <code>.gitignore</code>: lo que nunca entra en una foto</h3>
+  <p class="lead">Hay dos tipos de archivos que <strong>nunca</strong> deben aparecer en tu álbum: los que se generan solos (basura reciclada como <code>__pycache__/</code>) y los <strong>secretos</strong> (las llaves de la casa, como <code>.env</code> con tu <code>DATABASE_URL</code>).</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>.gitignore — créalo con VS Code, en la raíz del proyecto</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># Clic derecho en el Explorer → "New File" → nómbralo EXACTAMENTE:  .gitignore</span>
+<span class="com"># (empieza por punto, sin extensión). Contenido para tu biblioteca/:</span>
+
+<span class="com"># Python: carpetas y archivos que Python genera solo (basura reciclada)</span>
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+<span class="com"># Secretos: las llaves de la casa. NUNCA en el álbum.</span>
+.env
+
+<span class="com"># Basura del sistema operativo</span>
+.DS_Store
+Thumbs.db</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: el secreto filtrado</h4>
+    <p>Imagina que haces commit de <code>.env</code> con tu <code>DATABASE_URL</code> (que incluye usuario y clave). Luego lo borras y haces otro commit. <strong>Mala noticia: la foto donde aparece la clave sigue en el álbum</strong> — borrar el archivo hoy no borra las fotos viejas. Y el día que ese álbum se publique (clase 13), la clave queda expuesta con fecha y hora. Por eso la regla es tajante: <strong><code>.gitignore</code> ANTES del primer commit</strong>. Y si ya se te coló un secreto: avisa a tu profe — hay formas de limpiarlo, pero ninguna es mágica; lo más sano es <strong>cambiar la clave</strong>.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 La regla mental de los dos grupos</h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li><strong>No se fotografía lo que se regenera</strong>: <code>__pycache__/</code>, <code>venv/</code>… Si borras esa carpeta y un comando la reconstruye, no va en el álbum.</li>
+      <li><strong>No se fotografía lo que es secreto</strong>: <code>.env</code>, claves, tokens. Va al álbum un <code>.env.example</code> con los nombres de las variables y valores de mentiras, para que quien clone el proyecto sepa qué necesita.</li>
+      <li><strong>Todo lo demás sí</strong>: tu código, tus plantillas, tu README. Ese es exactamente el contenido del álbum.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Cada uno en su proyecto:</p>
+    <ol>
+      <li>Creen el <code>.gitignore</code> con el contenido de arriba (o verifiquen que ya lo tienen: la clase 11 lo mencionaba en la raíz del proyecto).</li>
+      <li>Ejecuten <code>git status</code>. Pregunta de la semana: ¿aparece <code>.env</code> o <code>__pycache__/</code> en la lista de untracked? ¿Por qué sí o por qué no?</li>
+      <li>Si aparece algún archivo que NO debería ir al álbum: agréguelo al <code>.gitignore</code> y vuelvan a ejecutar <code>git status</code>. Disfruten el momento en que Git <em>finge que no lo ve</em>.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Para qué sirve el archivo <code>.gitignore</code>?</p>
+      <button class="opcion" data-op="a">Para borrar archivos del proyecto automáticamente</button>
+      <button class="opcion" data-op="b">Para listar los archivos que Git debe ignorar: nunca entran en una foto ni aparecen como untracked</button>
+      <button class="opcion" data-op="c">Para que Git vaya más rápido</button>
+      <button class="opcion" data-op="d">Para ocultar el proyecto del antivirus</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Hiciste <code>git add .</code> y quieres revisar qué entró a la posing antes del commit. ¿Qué ejecutas?</p>
+      <button class="opcion" data-op="a"><code>git diff</code></button>
+      <button class="opcion" data-op="b"><code>git log</code></button>
+      <button class="opcion" data-op="c"><code>git diff --staged</code></button>
+      <button class="opcion" data-op="d"><code>git show</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> Ya hiciste commit de tu <code>.env</code> con la clave de la base de datos. Borras el archivo y haces otro commit. ¿Se solucionó?</p>
+      <button class="opcion" data-op="a">Sí: el archivo ya no existe</button>
+      <button class="opcion" data-op="b">Sí, siempre que lo agregues al .gitignore ahora</button>
+      <button class="opcion" data-op="c">No, pero da igual: el historial es privado para siempre</button>
+      <button class="opcion" data-op="d">No: la foto vieja donde aparece la clave sigue en el historial. Hay que limpiar el historial y, lo más sano, cambiar la clave</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> ¿Cuál de estos archivos SÍ debería ir en el álbum (no en <code>.gitignore</code>)?</p>
+      <button class="opcion" data-op="a"><code>dominio/servicios.py</code></button>
+      <button class="opcion" data-op="b"><code>__pycache__/</code></button>
+      <button class="opcion" data-op="c"><code>.env</code></button>
+      <button class="opcion" data-op="d"><code>venv/</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73% agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>En una frase: ¿cuál es la diferencia entre <code>git add</code> y <code>git commit</code>? Si puedes explicárselo a tu compañero/a sin dudar, ya ganaste media clase.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>Git nació en <strong>2005</strong>, y Linus Torvalds escribió su primera versión <strong>funcional en unos 10 días</strong> — porque el proyecto Linux lo necesitaba con urgencia y las herramientas de la época no aguantaban un proyecto de ese tamaño. Hoy Git es el estándar absoluto: el kernel de Linux, Python, FastAPI, htmx y <strong>hasta el currículo que estás leyendo ahora mismo</strong> se manejan con Git. Cuando salgas de esta clase, usarás literalmente la misma herramienta que los equipos que escriben el software del planeta. 🌍</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Ramas →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>🌿 Ramas: universos paralelos</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Experimentar sin miedo a romper lo que funciona"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Una <strong>rama</strong> es una línea de tiempo paralela que nace de una foto del álbum. La rama principal —por convención <code>main</code>— es la <strong>historia oficial</strong>: lo que funciona y se muestra. Una rama nueva es un <strong>universo de prueba</strong>: ahí puedes destrozar, rehacer y experimentar todo lo que quieras, porque <code>main</code> ni se entera. Y cuando el experimento funciona, lo <strong>fusionas</strong> (<code>merge</code>) de vuelta a la historia oficial. Las ramas son la razón por la que los equipos grandes trabajan sin pisarse: cada persona, su universo; el merge, el momento de unirlos.</p>
+  </div>
+
+  <div class="compare">
+    <div class="compare-card a">
+      <h4>🛤️ main — la historia oficial</h4>
+      <p>La línea que <strong>siempre debe funcionar</strong>. Lo que está en <code>main</code> es lo que se muestra, lo que se sube, lo que se defiende. Regla: <strong>no se experimenta aquí</strong>.</p>
+    </div>
+    <div class="compare-card b">
+      <h4>🧪 feature/… — el universo de prueba</h4>
+      <p>Rama nueva para una función: <code>feature/estadisticas</code>. Si sale bien → <code>merge</code> a main. Si sale mal → <code>git branch -d</code> y <strong>ni main ni nadie se enteran de que existió</strong>. Cero riesgo, cero zips.</p>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>el ciclo completo de una rama — con git switch (el comando moderno)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># 0. ¿En qué rama estoy? (el * marca dónde estás parado)</span>
+git branch
+<span class="com">#    * main</span>
+
+<span class="com"># 1. Crear el universo paralelo Y entrar a él (-c = create):</span>
+git switch -c feature/estadisticas
+<span class="com">#    Switched to a new branch 'feature/estadisticas'</span>
+
+<span class="com"># 2. Trabaja normal: edita, add, commit… pero ¡en la rama nueva!</span>
+<span class="com">#    (todo lo que hagas vive en ESTE universo, main no cambia)</span>
+git add .
+git commit -m <span class="str">"Agregar contador de préstamos atrasados"</span>
+
+<span class="com"># 3. Volver a la historia oficial:</span>
+git switch main
+<span class="com">#    Switched to branch 'main'</span>
+<span class="com">#    (abre tu editor: ¡los cambios de la rama no están! calma, viven en la otra)</span>
+
+<span class="com"># 4. Fusionar el universo en la historia oficial:</span>
+git merge feature/estadisticas
+<span class="com">#    Updating 9f3c2b1..4a8e7d2</span>
+<span class="com">#    Fast-forward</span>
+<span class="com">#     presentacion/rutas/inicio.py | 2 ++</span>
+
+<span class="com"># 5. Borrar el universo ya fusionado (queda en el álbum):</span>
+git branch -d feature/estadisticas
+<span class="com">#    Deleted branch feature/estadisticas.</span></code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 <code>switch</code> vs <code>checkout</code>: el nuevo y el veterano</h4>
+    <p>En tutoriales (y en boca de programadores viejos) verás <code>git checkout -b</code>. Hace lo mismo, pero desde Git <strong>2.23</strong> existe <code>git switch</code>, diseñado a propósito para cambiar y crear ramas — checkout intenta hacer toooodo y por eso confunde. Con tu Git <strong>2.56</strong>: <strong>usa <code>switch</code></strong>. Reconoce <code>checkout</code> para no asustarte cuando lo veas por ahí.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: el conflicto (¡y por qué no es un castigo!)</h4>
+    <p>El conflicto pasa cuando <strong>dos ramas cambian la misma línea</strong> y Git no adivina cuál versión quieres. Un <code>merge</code> te lo avisa así:</p>
+<pre><code>git merge feature/estadisticas
+<span class="com">#    CONFLICT (content): Merge conflict in dominio/servicios.py</span>
+<span class="com">#    Automatic merge failed; fix conflicts and then commit the result.</span>
+
+<span class="com"># Git marca EN TU ARCHIVO el campo de batalla:</span>
+<span class="str">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+TARIFA_POR_DIA = <span class="num">800</span>          <span class="com"># ← tu versión (main)</span>
+<span class="str">=======</span>
+TARIFA_POR_DIA = <span class="num">500</span>          <span class="com"># ← la versión de la rama</span>
+<span class="str">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/estadisticas</span></code></pre>
+    <p>Resolverlo es <strong>trivial</strong> y te toca a ti, porque solo tú sabes qué querías: <strong>1)</strong> abre el archivo, <strong>2)</strong> deja la línea como debe quedar, <strong>3)</strong> borra las tres marcas (<code>&lt;&lt;&lt;</code>, <code>===</code>, <code>&gt;&gt;&gt;</code>), <strong>4)</strong> <code>git add</code> + <code>git commit</code>. El conflicto no es un error: es Git diciendo <em>"esto no lo voy a decidir por ti"</em>.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Nombres de ramas, para que el equipo se entienda</h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li><strong>minúsculas con guiones</strong>: <code>feature/estadisticas</code>, <code>fix/titulo-inicio</code>.</li>
+      <li><strong>el prefijo cuenta la intención</strong>: <code>feature/…</code> algo nuevo, <code>fix/…</code> una corrección.</li>
+      <li>Una rama = <strong>una misión</strong>. Si su nombre necesita la palabra "y", son dos ramas.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 8 minutos</h4>
+    <ol>
+      <li>Cada uno crea una rama <code>feature/su-nombre</code> en su proyecto y hazle un commit (cualquier cambio pequeño).</li>
+      <li>Vuelve a <code>main</code> y confirma en el editor que el cambio "desapareció". ¿Le pasó algo? ¿Dónde vive ahora?</li>
+      <li>Haz merge de tu rama a <code>main</code> y verifica que el cambio volvió. ¿Qué dice <code>git log --oneline</code> ahora?</li>
+      <li>Pregunta de discusión: si dos compañeras hacen <code>merge</code> de ramas que tocaron <strong>archivos distintos</strong>, ¿habrá conflicto? ¿Y si tocaron <strong>la misma línea</strong>? Prepárense: en el taller lo van a provocar a propósito. 😈</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué hace <code>git switch -c feature/estadisticas</code>?</p>
+      <button class="opcion" data-op="a">Borra la rama feature/estadisticas</button>
+      <button class="opcion" data-op="b">Copia la rama main a un archivo zip</button>
+      <button class="opcion" data-op="c">Crea la rama feature/estadisticas y te deja parado en ella</button>
+      <button class="opcion" data-op="d">Fusiona feature/estadisticas con main</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> Estás en una rama nueva, haces commits, y vuelves a <code>main</code>. ¿Dónde están tus commits?</p>
+      <button class="opcion" data-op="a">Se borraron al cambiar de rama</button>
+      <button class="opcion" data-op="b">A salvo en la rama nueva; en main no se ven porque es otra línea de tiempo</button>
+      <button class="opcion" data-op="c">Se copiaron automáticamente a main</button>
+      <button class="opcion" data-op="d">En el staging area</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Cuándo aparece un conflicto en un merge?</p>
+      <button class="opcion" data-op="a">Siempre que haces merge: es obligatorio</button>
+      <button class="opcion" data-op="b">Cuando la rama nueva tiene más de 3 commits</button>
+      <button class="opcion" data-op="c">Cuando la rama nueva tiene errores de sintaxis</button>
+      <button class="opcion" data-op="d">Cuando las dos ramas cambiaron la misma línea: Git no decide por ti y te pide que lo resuelvas</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> ¿Cuál es la regla de oro de la rama <code>main</code>?</p>
+      <button class="opcion" data-op="a">Es la historia oficial: siempre debe funcionar; los experimentos van en ramas nuevas</button>
+      <button class="opcion" data-op="b">Es la rama donde se prueban las cosas peligrosas</button>
+      <button class="opcion" data-op="c">Es la única rama que se puede borrar</button>
+      <button class="opcion" data-op="d">No tiene nada de especial: es un nombre bonito</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Deshacer →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>⏪ Deshacer sin miedo (la navaja suiza)</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "En Git casi todo tiene deshacer — casi"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Programar sin miedo es la diferencia entre avanzar rápido y avanzar <em>aterrado</em>. Git te da un deshacer para casi cada situación, pero cada uno es una herramienta distinta: hay quien <strong>descarta cambios</strong> (<code>restore</code>), quien <strong>retoca la última foto</strong> (<code>amend</code>), quien <strong>saca una foto del álbum privado</strong> (<code>reset</code>) y quien <strong>añade una foto nueva que anula otra</strong> (<code>revert</code>). Y encima existe <code>reflog</code>, el cinturón de seguridad que graba <em>todos</em> tus movimientos. La regla antes de deshacer cualquier cosa: <strong>ejecuta <code>git status</code> y lee</strong>.</p>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Qué te pasó 😰</th><th>El comando 😌</th><th>Qué hace exactamente</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>"Dañé <code>app.py</code> y quiero que vuelva a como estaba en la última foto"</td><td><code>git restore app.py</code></td><td>Descarta los cambios <strong>sin guardar en posing</strong>. Ojo: los cambios desaparecen para siempre</td></tr>
+        <tr><td>"Agregué a la posing algo que no era"</td><td><code>git restore --staged app.py</code></td><td>Saca del staging… pero conserva tus cambios en la carpeta. Puro backspace</td></tr>
+        <tr><td>"El commit quedó con un mensaje feo"</td><td><code>git commit --amend -m "nuevo"</code></td><td>Rehace la última foto con mensaje nuevo (mismo contenido)</td></tr>
+        <tr><td>"Me sobró el último commit (aún no lo he compartido con nadie)"</td><td><code>git reset --soft HEAD~1</code></td><td>Saca la foto del álbum; los cambios quedan en la posing, intactos</td></tr>
+        <tr><td>"Hay que deshacer un commit que YA compartieron/subieron"</td><td><code>git revert &lt;hash&gt;</code></td><td>Crea un commit NUEVO que deshace el anterior. El historial queda limpio y nadie pierde nada</td></tr>
+        <tr><td>"Hice algo horrible y no sé qué"</td><td><code>git reflog</code></td><td>La lista de TODO lo que ha pasado: ahí encuentras el hash donde estabas y vuelves a él</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>los 4 deshaceres en acción — con respuestas reales</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># 1. Descartar cambios de un archivo (¡sin vuelta atrás!)</span>
+git restore main.py
+<span class="com">#    (silencioso: abre el editor y el archivo volvió a la última foto)</span>
+
+<span class="com"># 2. Sacar de la posing SIN perder el trabajo:</span>
+git restore --staged main.py
+<span class="com">#    Updated paths</span>
+
+<span class="com"># 3. Arreglar el mensaje del último commit:</span>
+git commit --amend -m <span class="str">"Cambiar tarifa de la multa a $800 por decisión del consejo"</span>
+
+<span class="com"># 4. Deshacer el último commit PERO conservar los cambios:</span>
+git reset --soft HEAD~1
+<span class="com">#    (HEAD~1 significa "la foto anterior a donde estoy")</span>
+<span class="com">#    Ahora git status muestra los cambios en la posing, listos</span>
+<span class="com">#    para un commit mejor pensado.</span></code></pre>
+  </div>
+
+  <div class="compare">
+    <div class="compare-card b">
+      <h4>🧹 reset — rehacer la historia</h4>
+      <p><strong>Privado.</strong> Saca fotos del álbum como si nunca hubieran existido. Solo para commits que <strong>nadie más ha visto</strong>. Tres niveles: <code>--soft</code> (conserva en posing), <code>--mixed</code> (conserva en carpeta; el default) y <code>--hard</code> (borra TODO: usar con guantes).</p>
+    </div>
+    <div class="compare-card c">
+      <h4>🛟 revert — deshacer sin mentir</h4>
+      <p><strong>Público.</strong> No borra nada: crea un commit nuevo que hace exactamente lo contrario de otro. El historial queda contando la verdad: <em>"hicimos esto, y luego lo deshicimos"</em>. Es la única forma educada de deshacer lo que <strong>ya está compartido</strong> (próximamente: en GitHub).</p>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>revert + reflog — la red de seguridad completa</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># revert: deshacer el commit 9f3c2b1 SIN borrar la historia:</span>
+git revert 9f3c2b1
+<span class="com">#    [main a1b2c3d] Revert "Cambiar tarifa de la multa a $800"</span>
+<span class="com">#    (git incluso escribe el mensaje por ti)</span>
+
+<span class="com"># reflog: TODO lo que ha pasado en este repositorio, incluso lo</span>
+<span class="com"># que "deshiciste". Cada línea es un lugar donde estuvo tu HEAD:</span>
+git reflog
+<span class="com">#    a1b2c3d (HEAD -&gt; main) revert: Revert "Cambiar tarifa…"</span>
+<span class="com">#    9f3c2b1 commit: Cambiar tarifa de la multa a $800</span>
+<span class="com">#    4a8e7d2 commit: Agregar página de préstamos</span>
+<span class="com">#    c1d9f3e commit (initial): Primer commit: proyecto biblioteca</span>
+
+<span class="com"># ¿Quieres volver a alguno de esos momentos? Ahí está el hash.</span>
+<span class="com"># Git guarda tus pasos ~90 días: en la práctica, NADA se pierde</span>
+<span class="com"># de verdad. Por eso decimos: equivocarse en Git es barato. 💚</span></code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano de verdad: <code>reset --hard</code> en historia compartida</h4>
+    <p><code>git reset --hard</code> es el único comando de esta clase que puede causar daño real: borra fotos del álbum <em>y los cambios de la carpeta</em> en un solo golpe. En tu borrador privado, es una herramienta legítima ("vamos a empezar esta rama de cero"). Pero si el proyecto <strong>ya está compartido con alguien</strong> (o subido a GitHub), borrar fotos del álbum común es romper el acuerdo de todos. Regla memorable: <strong>privado: reset; compartido: revert</strong>.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 8 minutos</h4>
+    <p>Uno "maneja" y el otro lee el <code>git status</code> en voz alta en cada paso, como piloto y copiloto:</p>
+    <ol>
+      <li>Edita <code>main.py</code>, haz <code>add</code>… y arrepiéntete: <code>git restore --staged</code>. ¿Dónde quedó el cambio?</li>
+      <li>Arrepiéntete del todo: <code>git restore</code>. ¿Y ahora?</li>
+      <li>Haz un commit con el mensaje "cosas" 😱 y arréglalo con <code>--amend</code>.</li>
+      <li>Deshácelo con <code>reset --soft HEAD~1</code>, míralo en la posing, y vuelve a hacer el commit bien.</li>
+      <li>Para cerrar: <code>git reflog</code> — cuenten cuántas líneas de historia tienen ya. Ese es el tamaño de su red de seguridad.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la diferencia entre <code>git restore app.py</code> y <code>git restore --staged app.py</code>?</p>
+      <button class="opcion" data-op="a">Ninguna: --staged es solo una forma más larga</button>
+      <button class="opcion" data-op="b">Sin flag descarta los cambios para siempre; con --staged solo saca el archivo de la posing, conservando los cambios</button>
+      <button class="opcion" data-op="c">Con --staged borra el último commit</button>
+      <button class="opcion" data-op="d">Sin flag solo funciona en ramas</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Hiciste un commit con el mensaje "cosas" y nadie lo ha visto. ¿El arreglo más limpio?</p>
+      <button class="opcion" data-op="a"><code>git revert</code></button>
+      <button class="opcion" data-op="b">Borrar el repositorio y empezar de nuevo</button>
+      <button class="opcion" data-op="c"><code>git commit --amend -m "mensaje decente"</code></button>
+      <button class="opcion" data-op="d">Hacer otro commit que diga "corrijo el mensaje"</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> Un commit tuyo ya está subido a GitHub y hay que deshacerlo. ¿Qué usas y por qué?</p>
+      <button class="opcion" data-op="a"><code>reset --hard</code>: es el más rápido</button>
+      <button class="opcion" data-op="b"><code>restore</code>: saca el archivo de la posing</button>
+      <button class="opcion" data-op="c"><code>reflog</code>: borra el commit del álbum</button>
+      <button class="opcion" data-op="d"><code>revert</code>: crea un commit nuevo que lo anula, sin borrar la historia que otros ya vieron</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> ¿Para qué sirve <code>git reflog</code>?</p>
+      <button class="opcion" data-op="a">Es la bitácora de todos tus movimientos: hasta lo "deshecho" queda ahí, así que casi siempre hay forma de volver a un estado anterior</button>
+      <button class="opcion" data-op="b">Para listar las ramas</button>
+      <button class="opcion" data-op="c">Para borrar el historial y liberar espacio</button>
+      <button class="opcion" data-op="d">Para mostrar los archivos ignorados</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: el diario de tu proyecto</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "Cinco retos para dejar biblioteca/ con historial profesional"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">De cero a un historial impecable</span>
+    </div>
+    <p>Vas a convertir tu proyecto <code>biblioteca/</code> en un <strong>repositorio Git de verdad</strong>: configuración, primer commit, diario de cambios, una rama fusionada, un conflicto resuelto y un par de deshaceres. Al terminar, tu proyecto tendrá algo que ningún zip tendrá jamás: <strong>una historia que se puede recorrer</strong>. Trabaja directo sobre tu proyecto real — y recuerda la regla de la clase: <strong>lee la respuesta de cada comando antes del siguiente</strong>.</p>
+  </div>
+
+  <h3>🧠 Reto 1 — Enciende la máquina (con .gitignore ANTES de la foto)</h3>
+  <p>Verifica tu configuración, inicia el repositorio (si no existe), crea el <code>.gitignore</code> y toma la primera foto. <strong>El orden importa</strong>: ignore primero, foto después.</p>
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 1</h4>
+    <pre><code>git config user.name        <span class="com"># ¿te reconoce? si no, módulo 0</span>
+git init                    <span class="com"># o "Reinitialized" si ya existía: todo bien</span>
+
+<span class="com"># Crea .gitignore con: __pycache__/  *.pyc  venv/  .env  .DS_Store</span>
+
+git status                  <span class="com"># ¿.env y __pycache__ NO aparecen? perfecto</span>
+git add .
+git commit -m <span class="str">"Primer commit: proyecto biblioteca en tres capas"</span>
+git log --oneline           <span class="com"># debe verse tu primera línea de historia</span></code></pre>
+  </div>
+
+  <h3>🧠 Reto 2 — El diario: tres commits, tres historias</h3>
+  <p>Haz <strong>tres cambios reales</strong> en tu proyecto (uno por commit), con <code>git diff</code> antes de cada foto y mensajes que contarían <em>qué</em> hiciste. Sugerencias: cambia la tarifa de la multa, agrega un comentario a un servicio, corrige un título en una plantilla.</p>
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 2</h4>
+    <pre><code><span class="com"># El ritmo de cada cambio:</span>
+<span class="com">#   1. edita y guarda en VS Code</span>
+<span class="com">#   2. git diff            ← relee qué hiciste, en serio</span>
+<span class="com">#   3. git add .</span>
+<span class="com">#   4. git commit -m "..."</span>
+
+git log --oneline
+<span class="com">#    9f3c2b1 Corregir título de la página de inicio</span>
+<span class="com">#    4a8e7d2 Documentar la regla de la multa en servicios.py</span>
+<span class="com">#    c1d9f3e Cambiar tarifa de la multa a $800</span>
+<span class="com">#    a1b2c3d Primer commit: proyecto biblioteca en tres capas</span></code></pre>
+  </div>
+
+  <h3>🧠 Reto 3 — Un universo paralelo con final feliz</h3>
+  <p>Crea la rama <code>feature/desarrollo</code>, hazle un commit (mejora algo pequeño: una clase CSS, un mensaje de la plantilla), vuelve a <code>main</code>, verifica que el cambio no está, haz el <code>merge</code> y borra la rama.</p>
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 3</h4>
+    <pre><code>git switch -c feature/desarrollo
+<span class="com"># …edita, add, commit…</span>
+git switch main             <span class="com"># el cambio "desaparece" — calma: vive en la rama</span>
+git merge feature/desarrollo
+git branch -d feature/desarrollo
+git log --oneline           <span class="com"># el commit de la rama ahora es parte de main</span></code></pre>
+  </div>
+
+  <h3>🧠 Reto 4 — Provoca un conflicto (y gánale) 😈</h3>
+  <p>El momento de la verdad: en <code>main</code>, cambia la <strong>primera línea</strong> de tu <code>README.md</code> (o cualquier archivo) y haz commit. Luego crea <code>fix/conflicto</code> y cambia <strong>la misma línea</strong> a otra cosa, con commit. Vuelve a <code>main</code> y haz el merge. Git te va a gritar… y tú ya sabes qué hacer.</p>
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 4</h4>
+    <pre><code>git merge fix/conflicto
+<span class="com">#    CONFLICT (content): Merge conflict in README.md</span>
+
+<span class="com"># 1. Abre README.md en VS Code: busca las marcas</span>
+<span class="com"># 2. Deja el texto como debe quedar (¡elige, tú mandas!)</span>
+<span class="com"># 3. Borra las líneas &lt;&lt;&lt;&lt;&lt;&lt;&lt; / ======= / &gt;&gt;&gt;&gt;&gt;&gt;&gt;</span>
+<span class="com"># 4. Cierra el conflicto:</span>
+git add README.md
+git commit -m <span class="str">"Resolver conflicto de título en README"</span>
+
+<span class="com"># ¿Quieres cancelar el merge y pensarlo mejor? git merge --abort</span></code></pre>
+  </div>
+
+  <h3>🧠 Reto 5 — Rompe (a propósito) y deshaz</h3>
+  <p>Prueba en tu propio proyecto las cuatro jugadas del módulo 6, en orden: descarta un cambio con <code>restore</code>, saca algo de la posing con <code>restore --staged</code>, arregla un mensaje con <code>--amend</code> y deshaz un commit con <code>reset --soft</code>. Cierra con <code>git reflog</code> y celebra: <em>acabas de comprobar que casi nada se pierde</em>.</p>
+
+  <div class="caja-importante">
+    <h4>🦹 Reflexión final</h4>
+    <p>Tu proyecto ya no vive en zips ni en la fe: vive en un <strong>álbum con autoras, fechas y mensajes</strong>, con una <strong>rama experimental</strong> usada y fusionada, un <strong>conflicto resuelto</strong> y la certeza de que <strong>equivocarse es barato</strong>. Mañana, cuando agregues la página de préstamos, el miedo a "romper lo que funciona" ya no es excusa: eso es exactamente para lo que existen las ramas. Y en la clase 13 le sumamos la cereza: <strong>que este historial viva en la nube, con tu nombre, para que el mundo lo vea</strong>. 🌍</p>
+  </div>
+
+  <h3>✅ Lista de verificación del taller</h3>
+  <p class="lead">Marca cada punto a medida que lo consigas. La lista se guarda en tu navegador, así que puedes cerrar y volver.</p>
+
+  <div class="checklist" data-checklist>
+    <div class="checklist-cab">
+      <span>Verificación del repositorio</span>
+      <span class="cl-avance"><strong data-cl-hechos>0</strong> / <span data-cl-total>0</span> · <span data-cl-pct>0%</span></span>
+      <button class="btn" data-cl-reset style="padding:.3rem .7rem;font-size:.7rem">reiniciar</button>
+    </div>
+
+    <label class="check-item"><input type="checkbox" data-check="c1"><span class="check-caja">✓</span><span class="check-texto"><strong>Configuración verificada</strong> <small><code>git config user.name</code> y <code>user.email</code> te reconocen; <code>git --version</code> responde 2.x.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c2"><span class="check-caja">✓</span><span class="check-texto"><strong>Repositorio iniciado</strong> <small><code>git init</code> hecho en <code>biblioteca/</code>, y la carpeta <code>.git/</code> existe (y nadie la ha tocado a mano).</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c3"><span class="check-caja">✓</span><span class="check-texto"><strong>.gitignore creado ANTES del primer commit</strong> <small>Con <code>__pycache__/</code>, <code>*.pyc</code>, <code>venv/</code> y <code>.env</code>. Nada regenerable ni secreto en el álbum.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c4"><span class="check-caja">✓</span><span class="check-texto"><strong>Primer commit hecho</strong> <small><code>git log --oneline</code> muestra la primera foto con un mensaje decente.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c5"><span class="check-caja">✓</span><span class="check-texto"><strong>Tres commits con historia</strong> <small>Tres cambios reales, cada uno con <code>git diff</code> antes de la foto y un mensaje que dice QUÉ.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c6"><span class="check-caja">✓</span><span class="check-texto"><strong>Rama creada y fusionada</strong> <small><code>feature/desarrollo</code> con su commit, merge a main, y rama borrada con <code>-d</code>.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c7"><span class="check-caja">✓</span><span class="check-texto"><strong>Conflicto provocado y resuelto</strong> <small>Las marcas <code>&lt;&lt;&lt;</code>/<code>===</code>/<code>&gt;&gt;&gt;</code> ya no existen en el archivo y el merge quedó committeado.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c8"><span class="check-caja">✓</span><span class="check-texto"><strong>Deshaceres probados</strong> <small>restore, restore --staged, --amend y reset --soft, cada uno entendido antes de ejecutarse.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c9"><span class="check-caja">✓</span><span class="check-texto"><strong>reflog consultado</strong> <small>Viste con tus ojos la bitácora de movimientos. Equivocarse es barato.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c10"><span class="check-caja">✓</span><span class="check-texto"><strong>El proyecto sigue funcionando</strong> <small>Arranca el servidor y recorre una pantalla: todo igual que antes del taller. La historia cambió, la app no.</small></span></label>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Repaso en pareja — 8 minutos</h4>
+    <ol>
+      <li>Intercámbiense el computador y <strong>lean el <code>git log</code> del otro</strong> en voz alta, como si le contaran la historia del proyecto a un cliente. ¿Se entiende sola?</li>
+      <li>¿Encontraron algún mensaje tipo "cambios" o "cosas"? Nombren el commit donde está y ayúdense a pensar cómo debía llamarse.</li>
+      <li>Pregunta final para los dos: ¿qué les falta para que este proyecto esté listo para la clase 13? (Pista: solo una cuenta en github.com…)</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="7">
+    <h3>🎯 Quiz Final</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> Tu proyecto de biblioteca vive en una carpeta. ¿Cuál es el orden correcto para dejarlo con historial limpio?</p>
+      <button class="opcion" data-op="a">commit → init → .gitignore → add</button>
+      <button class="opcion" data-op="b">init → .gitignore → add → commit</button>
+      <button class="opcion" data-op="c">init → add → commit → .gitignore (cuando acuerde)</button>
+      <button class="opcion" data-op="d">.gitignore → commit → init</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Vas a intentar un cambio grande en tu biblioteca (agregar reportes con gráficas) y tienes miedo de romperla. ¿El flujo profesional?</p>
+      <button class="opcion" data-op="a">Copiar la carpeta como biblioteca_reportes.zip</button>
+      <button class="opcion" data-op="b">Hacer los cambios directo en main y rezar</button>
+      <button class="opcion" data-op="c">Crear una rama <code>feature/reportes</code>, trabajar ahí, y merge solo cuando funcione</button>
+      <button class="opcion" data-op="d">No hacer el cambio: si funciona, no se toca</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> A mitad del reporte descubres que hace dos commits subiste tu <code>.env</code> con la clave de la base de datos. ¿Qué haces PRIMERO?</p>
+      <button class="opcion" data-op="a">Avisar y cambiar la clave: la foto vieja con el secreto sigue en el historial aunque la borres hoy</button>
+      <button class="opcion" data-op="b">Borrar el .env y hacer commit del borrado: con eso basta</button>
+      <button class="opcion" data-op="c">Renombrarlo a .env2</button>
+      <button class="opcion" data-op="d">Nada: el historial de git es invisible para todos</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> En medio del merge, tu editor muestra <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code>, <code>=======</code> y <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/reportes</code>. ¿Qué significa y qué haces?</p>
+      <button class="opcion" data-op="a">Git borró tu trabajo: toca empezar de cero</button>
+      <button class="opcion" data-op="b">Un virus: cerrar todo</button>
+      <button class="opcion" data-op="c">Que main ganó y ya está: guardar y cerrar</button>
+      <button class="opcion" data-op="d">Que ambas ramas cambiaron la misma línea: elijo cómo debe quedar, borro las marcas, add y commit</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>5.</strong> Resumen de la clase en una línea:</p>
+      <button class="opcion" data-op="a">Git es un compresor de archivos más moderno que el zip</button>
+      <button class="opcion" data-op="b">Git sirve para subir proyectos a internet</button>
+      <button class="opcion" data-op="c">Commits = fotos del proyecto; ramas = universos de prueba; y casi todo se puede deshacer: programar sin miedo</button>
+      <button class="opcion" data-op="d">La terminal es de programadores mayores; mejor usar la interfaz gráfica</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 12 completada!</h2>
+    <p>Tu proyecto dejó de ser una carpeta con zips creativos y ahora tiene una <strong>máquina del tiempo</strong>: fotos completas con autoras y mensajes (<code>add</code> + <code>commit</code>), un diario que se lee (<code>log</code> + <code>diff</code>), secretos blindados (<code>.gitignore</code>), universos paralelos para experimentar sin miedo (<code>switch</code> + <code>merge</code>) y una red de seguridad para equivocarte barato (<code>restore</code>, <code>revert</code>, <code>reflog</code>). Acabas de adoptar la herramienta con la que se construye casi todo el software del planeta. En la <strong>clase 13</strong>, el siguiente paso natural: <strong>publicar tu historial en GitHub</strong> y convertirlo en tu primer portafolio. 🌿</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🌿 Herramientas de Programación II · Clase 12 · Git básico</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
