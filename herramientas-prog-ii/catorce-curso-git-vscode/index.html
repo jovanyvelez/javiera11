@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🖥️ Herramientas de Programación II · Clase 14 · Git en VS Code</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🖥️</span>
+    <div>
+      <h1>Herramientas de Programación II · Clase 14</h1>
+      <p class="subtitulo">Git en VS Code · el mismo Git, con botones (requiere las clases 12 y 13)</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">🌿 Panel SCM</button>
+  <button class="btn-modulo" data-modulo="2">👀 Diffs y staging</button>
+  <button class="btn-modulo" data-modulo="3">📊 Barra de estado</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">⚔️ Conflictos</button>
+  <button class="btn-modulo" data-modulo="6">🕰️ Historial</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🖥️ El mismo Git, con botones</h2>
+    <p class="lead">En la clase 12 aprendiste a hablarle a Git en la terminal. Buenas noticias: <strong>VS Code ya hablaba ese idioma por ti</strong>. Su integración con Git es tan completa que puedes hacer el 90% del trabajo diario — commits, ramas, conflictos, sincronización — <strong>sin escribir un solo comando</strong>. Pero ojo: la meta de hoy no es "olvidar la terminal", sino algo más valioso: <strong>saber qué comando ejecuta cada botón que presionas</strong>. Porque quien entiende el botón, nunca le tiene miedo al clic.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ barra de estado de VS Code (abajo, a la izquierda)</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">🌿 main*</span> <span class="cmd">↓0 ↑2</span> <span class="out">↻ Synchronize Changes</span></div>
+        <div class="out"># rama actual · commits que te faltan por bajar/subir · sincronizar con la nube</div>
+        <div><span class="prompt">Todo esto</span> <span class="cmd">= git status + git pull + git push</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3h 45min en 8 módulos, con descanso de 15 min a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Dominar el manejo de Git <strong>desde la interfaz de VS Code</strong>: el panel <strong>Source Control</strong>, el editor de <strong>diffs</strong>, el staging (incluso <strong>por líneas</strong>), ramas y sincronización en la <strong>barra de estado</strong>, conflictos con botones y el <strong>historial visual</strong>. Cada clic, traducido al comando de la clase 12.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🎒</span>
+      <h3>Requisitos</h3>
+      <p>Las clases <strong>12 (Git)</strong> y <strong>13 (GitHub)</strong>: tu <code>biblioteca/</code> con historial e (idealmente) remoto publicado. Y VS Code con Git instalado — ya lo tienes desde la clase 12.</p>
+    </div>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>La idea que sostiene toda la clase</h3>
+    <p>La documentación oficial de VS Code lo dice sin rodeos: <em>"el editor y Git en la línea de comandos usan el mismo repositorio; puedes trabajar en cualquiera de las dos interfaces sin importar ni sincronizar nada entre ellas"</em>. Es decir: <strong>no hay "un Git de botones" y "un Git de terminal"</strong>. Hay un álbum (la carpeta <code>.git/</code>) y dos formas de conversar con él. Cuando haces clic en <em>Stage Changes</em>, VS Code ejecuta <code>git add</code> detrás de la cortina. Y cuando escribes <code>git commit</code> en la terminal, el panel de VS Code se actualiza al instante. <strong>Mismo álbum, dos idiomas</strong> — y hoy aprendes el segundo con el primero de traductor.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Los villanos de hoy (todos tienen forma de botón)</h4>
+    <p><strong>El clic 🗑️ sin leer la confirmación</strong> — el botón <em>Discard</em> descarta tu trabajo para siempre (es un <code>git restore</code> sin deshacer). <strong>El "Commit &amp; Sync" elegido por accidente</strong> — cuando solo querías commit, y terminas publicando en la nube sin haberlo decidido. <strong>El "hago clic hasta que algo pase"</strong> — el método del pánico: funciona hasta que no funciona. Y el más sutil: <strong>la confianza ciega en "Accept Both Changes"</strong> — que verás en el módulo de conflictos. La vacuna contra los cuatro es la misma, y es la regla de oro de la clase:</p>
+    <p><strong>🌳 Regla de oro: nunca presiones un botón de Git cuyo comando equivalente no puedas decir en voz alta.</strong></p>
+  </div>
+
+  <h3>🗺️ Los cuatro lugares de la interfaz</h3>
+  <p class="lead">Toda la clase transcurre en cuatro rincones de VS Code que ya tienes enfrente. Este mapa te acompaña siempre; vuelve a él cuando te pierdas.</p>
+  <div class="mapa-residencia">
+    <div class="mr-head">Lugar</div>
+    <div class="mr-head">Qué pasa ahí</div>
+    <div class="mr-head">Se ocupa de…</div>
+
+    <div class="mr-cell python">🌿 <strong>Panel Source Control</strong> <span class="mono">(izquierda, Ctrl+Shift+G)</span></div>
+    <div class="mr-cell">El centro de mando: lista de cambios, staging, caja de mensaje y el botón Commit.</div>
+    <div class="mr-cell"><code>status</code> · <code>add</code> · <code>commit</code> (módulos 1–2)</div>
+
+    <div class="mr-cell jinja">👀 <strong>Editor de diffs</strong> <span class="mono">(área central)</span></div>
+    <div class="mr-cell">El antes y el después de un archivo, lado a lado — y el staging por líneas.</div>
+    <div class="mr-cell"><code>diff</code> · staging fino (módulo 2)</div>
+
+    <div class="mr-cell sql">📊 <strong>Barra de estado</strong> <span class="mono">(abajo)</span></div>
+    <div class="mr-cell">La rama actual, los números ↓↑ y el botón de sincronizar con la nube.</div>
+    <div class="mr-cell">ramas · <code>pull</code>/<code>push</code> (módulo 3)</div>
+
+    <div class="mr-cell python">🕰️ <strong>Graph + Timeline</strong> <span class="mono">(vista SCM y Explorer)</span></div>
+    <div class="mr-cell">El álbum hecho visible: la gráfica de commits del repo y la historia de cada archivo.</div>
+    <div class="mr-cell"><code>log</code> · inspección (módulo 5)</div>
+  </div>
+
+  <h3>🖥️ Prepara tu ambiente (5 minutos, con el proyecto abierto)</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>setup — abrir biblioteca/ y saludar al panel</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># 1. Abre VS Code → File → Open Folder → tu biblioteca/</span>
+<span class="com">#    (la de la clase 12, con su .git/ y sus commits).</span>
+
+<span class="com"># 2. Abre el panel Source Control:</span>
+<span class="com">#    · ícono de la ramita en la barra de actividad (izquierda), o</span>
+<span class="com">#    · Ctrl+Shift+G   ← el atajo que vas a usar toda la vida</span>
+
+<span class="com"># 3. Comprobación de que todo está conectado:</span>
+<span class="com">#    · en la BARRA DE ESTADO (abajo-izquierda) debe decir "main"</span>
+<span class="com">#      y quizás unos números como ↓0 ↑0 al lado.</span>
+<span class="com">#    · el panel SCM puede decir "No Changes" — perfecto: tu árbol</span>
+<span class="com">#      está limpio. Haz cualquier cambio y vuelve a mirar. ✨</span>
+
+<span class="com"># Si el panel no aparece o dice que Git no está instalado:</span>
+<span class="com"># vuelve al setup de la clase 12 (git --version en la terminal).</span></code></pre>
+  </div>
+
+  <h3>🗺️ Ruta de la clase</h3>
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">1️⃣</span>
+      <h3>Panel Source Control</h3>
+      <p>Anatomía del centro de mando: Changes, Staged, la caja de mensaje, el botón Commit y sus variantes. Las letras U/M/A.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">2️⃣</span>
+      <h3>Diffs y staging fino</h3>
+      <p>Leer el antes/después sin comandos, preparar cambios con un clic — incluso <strong>solo algunas líneas</strong> — y el botón 🗑️ con respeto.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">3️⃣</span>
+      <h3>Barra de estado</h3>
+      <p>Ramas con clic, los números ↓↑, sincronizar con la nube y publicar una rama nueva.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">4️⃣</span>
+      <h3>Conflictos con CodeLens</h3>
+      <p>Las marcas de la clase 12 se convierten en botones: Accept Current, Accept Incoming, Accept Both.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">5️⃣</span>
+      <h3>Historial en el editor</h3>
+      <p>Source Control Graph, Timeline por archivo, inspeccionar commits — y <strong>Git Output</strong>: ver los comandos que ejecuta cada clic.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">6️⃣</span>
+      <h3>Taller</h3>
+      <p>El ciclo completo de la clase 12 re-hecho 100% con botones, sobre tu <code>biblioteca/</code> real.</p>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0" style="visibility:hidden">← Anterior</button>
+    <button class="btn-siguiente" data-ir="1">Siguiente: Panel SCM →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>🌿 El panel Source Control: el centro de mando</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El mismo git status de siempre, pero pintado bonito"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>El panel <strong>Source Control</strong> (SCM) es, literalmente, tu <code>git status</code> convertido en una aplicación: te dice <strong>qué cambió</strong> (lista de archivos), <strong>qué está preparado</strong> (Staged Changes) y <strong>qué historias nuevas hay</strong> (incoming/outgoing si hay remoto). La diferencia es que en vez de texto plano, cada archivo trae <strong>botones de acción al pasar el cursor</strong> — y cada botón es un comando de la clase 12 con otro traje. Ábrelo con <code>Ctrl+Shift+G</code> y vamos pieza por pieza.</p>
+  </div>
+
+  <h3>🔧 Anatomía del panel, pieza por pieza</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>lo que ves al abrir el panel (con un cambio de ejemplo)</span>
+      </div>
+    </div>
+<pre><code><span class="com">┌──────────────────────────────────────────────────────────┐</span>
+<span class="com">│  SOURCE CONTROL                                    ⋯     │</span>
+<span class="com">│ ┌────────────────────────────────────────────────────┐ │</span>
+<span class="com">│ │  <span class="str">"Mensaje del commit…" ← LA CAJA: lo que irá en el -m </span>   │ │</span>
+<span class="com">│ └────────────────────────────────────────────────────┘ │</span>
+<span class="com">│  [ ✓ Commit  ▾ ]   ← EL BOTÓN: toma la foto (▾ = variantes)│</span>
+<span class="com">│                                                          │</span>
+<span class="com">│  ▾ CHANGES                    ← sin preparar (= git diff) │</span>
+<span class="com">│     M  dominio/servicios.py     ← letra + archivo        │</span>
+<span class="com">│     U  notas.txt                ← nuevo, nunca visto     │</span>
+<span class="com">│  ▾ STAGED CHANGES             ← la posing (= git add)   │</span>
+<span class="com">│     A  main.py                                           │</span>
+<span class="com">└──────────────────────────────────────────────────────────┘</span></code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Letra / color</th><th>Significado</th><th>El comando de la clase 12 que lo provoca</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>U</strong> (verde)</td><td><em>Untracked</em>: Git nunca lo ha fotografiado</td><td>Archivo nuevo, recién creado</td></tr>
+        <tr><td><strong>M</strong> (amarillo)</td><td><em>Modified</em>: cambió desde la última foto</td><td>Editaste y guardaste</td></tr>
+        <tr><td><strong>A</strong> (verde)</td><td><em>Added</em>: está en la posing (staging)</td><td><code>git add</code> (o el botón +)</td></tr>
+        <tr><td><strong>D</strong> (rojo)</td><td><em>Deleted</em>: existía en la última foto y ya no</td><td>Borraste el archivo</td></tr>
+        <tr><td><strong>!</strong> (rojo)</td><td><em>Conflicto</em>: dos historias chocaron</td><td>Un merge con conflicto (módulo 5)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🖱️ El clic que toma la foto (y sus variantes)</h3>
+  <p class="lead">Escribes el mensaje en la caja y presionas el botón <strong>✓ Commit</strong> (o <code>Ctrl+Enter</code> desde la caja). Eso es un <code>git commit -m "…"</code> exacto. Pero el botón trae un pequeño <strong>▾</strong> con variantes que hay que conocer <em>antes</em> de presionarlas sin querer:</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Opción del botón ✓</th><th>Qué hace por debajo</th><th>Cuándo usarla</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Commit</strong></td><td><code>git commit -m "…"</code></td><td>La de siempre: la foto queda en tu compu</td></tr>
+        <tr><td><strong>Commit &amp; Push</strong></td><td>commit + <code>git push</code></td><td>Terminaste y quieres publicar de una vez</td></tr>
+        <tr><td><strong>Commit &amp; Sync</strong></td><td>commit + <code>git pull</code> + <code>git push</code></td><td>Trabajo en equipo: bajarte lo nuevo y subir tu foto en un solo clic</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: el ▾ que nadie abre</h4>
+    <p>VS Code <strong>recuerda la última variante que usaste</strong>: si ayer terminaste en "Commit &amp; Push", hoy el botón principal puede decir eso mismo, y un <code>Ctrl+Enter</code> distraído <strong>publica en la nube lo que creías solo local</strong>. No es peligroso (publicar nunca lo es, con el .gitignore bien puesto), pero es exactamente el tipo de clic que rompe la regla de oro. Costumbre sana: <strong>lee la etiqueta del botón antes de presionarlo</strong> — si dice algo que no quieres hoy, ábrelo con el ▾ y elige "Commit" a secas.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Dos detalles que ahorran sustos</h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li>El asterisco junto a la rama (<code>main*</code>) en la barra de estado significa <strong>"tienes cambios sin commitear"</strong>. Es el recordatorio permanente de que hay una foto pendiente.</li>
+      <li>¿Varios archivos con cambios y quieres prepararlos todos de un golpe? El título <strong>CHANGES</strong> también reacciona al cursor: su botón <strong>+</strong> prepara todo — es el <code>git add .</code> de siempre, con un solo clic más grande.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <ol>
+      <li>Cada uno cambia algo pequeño en su <code>biblioteca/</code> (añade un comentario, toca un título) y abre el panel SCM con <code>Ctrl+Shift+G</code>. ¿Qué letra apareció? ¿De qué color? Explíquense la letra en voz alta: ¿U o M? ¿Por qué?</li>
+      <li>Creen un archivo nuevo <code>notas.txt</code> con una línea cualquiera. ¿Dónde aparece? Ahora compárenlo con el archivo modificado: ¿cuál es U y cuál es M?</li>
+      <li>Sin commitear nada todavía: presionen <strong>+</strong> sobre cada archivo y miren cómo la lista se reorganiza en STAGED CHANGES. ¿Qué comando acaban de ejecutar? (Díganlo en voz alta — regla de oro).</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es el panel Source Control, en términos de la clase 12?</p>
+      <button class="opcion" data-op="a">Un reemplazo de Git con tecnología propia de VS Code</button>
+      <button class="opcion" data-op="b">Tu <code>git status</code> convertido en interfaz: mismo álbum, otra forma de hablarle</button>
+      <button class="opcion" data-op="c">Un navegador de archivos de GitHub</button>
+      <button class="opcion" data-op="d">La terminal de VS Code con otro nombre</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Un archivo aparece con la letra <strong>M</strong> en amarillo. ¿Qué significa?</p>
+      <button class="opcion" data-op="a">Que ya está preparado para el próximo commit</button>
+      <button class="opcion" data-op="b">Que es un archivo nuevo que Git nunca ha visto</button>
+      <button class="opcion" data-op="c">Que existe en la última foto pero lo modificaste desde entonces</button>
+      <button class="opcion" data-op="d">Que tiene un conflicto de merge</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> Escribes el mensaje y presionas <strong>Commit &amp; Sync</strong>. ¿Qué comandos se ejecutan por debajo?</p>
+      <button class="opcion" data-op="a">Solo <code>git commit</code></button>
+      <button class="opcion" data-op="b"><code>git commit</code> y <code>git push</code></button>
+      <button class="opcion" data-op="c"><code>git add</code> y <code>git commit</code></button>
+      <button class="opcion" data-op="d"><code>git commit</code>, <code>git pull</code> y <code>git push</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> El botón ✓ dice "Commit &amp; Push" pero hoy solo quieres commit local. ¿Qué haces?</p>
+      <button class="opcion" data-op="a">Abres el menú ▾ del botón y eliges "Commit" a secas — leer antes de presionar</button>
+      <button class="opcion" data-op="b">Presionas Ctrl+Enter más despacio</button>
+      <button class="opcion" data-op="c">Primero desconectas el internet</button>
+      <button class="opcion" data-op="d">No se puede: VS Code siempre hace push</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: Diffs y staging →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>👀 Diffs, staging fino y el botón que hay que respetar</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El +, el −, el 🗑️… y el staging por líneas"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>Al hacer clic en un archivo del panel SCM, VS Code no lo abre normal: abre el <strong>editor de diffs</strong> — el antes y el después, lado a lado, con las líneas nuevas en verde y las borradas en rojo. Es el <code>git diff</code> de la clase 12, pero <strong>con cursor</strong>: puedes navegarlo, editarlo y, sobre todo, <strong>preparar cambios con precisión quirúrgica</strong>. Hoy verás que se puede preparar para la foto media función cuando en la terminal eso requiere un comando (<code>git add -p</code>) que casi nadie domina. Los botones lo vuelven humano.</p>
+  </div>
+
+  <h3>👀 Leer un diff sin comandos</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>clic en el archivo M → el editor de diffs</span>
+      </div>
+    </div>
+<pre><code><span class="com">│ dominio/servicios.py (lado IZQUIERDO = la última foto)      │</span>
+<span class="com">│                                                          │</span>
+<span class="com">│  TARIFA_POR_DIA = 500                          <span class="str">← rojo: salió</span> │</span>
+<span class="com">│  TARIFA_POR_DIA = 800                          <span class="str">← verde: entró</span> │</span>
+<span class="com">│                                                          │</span>
+<span class="com">│ ┌──────────────────────┐ ┌──────────────────────┐     │</span>
+<span class="com">│ │ (botón ↻: lado a lado)│ │ (botón ▤: inline)    │     │</span>
+<span class="com">│ └──────────────────────┘ └──────────────────────┘     │</span>
+<span class="com"># · Izquierda: cómo estaba en la última foto (read only)</span>
+<span class="com"># · Derecha:   cómo está ahora — y se puede seguir editando</span>
+<span class="com"># · Arriba a la derecha: alterna "lado a lado" ↔ "en línea"</span></code></pre>
+  </div>
+
+  <h3>🖱️ Los tres botones del cursor (y su comando secreto)</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Al pasar el cursor sobre un archivo en el panel…</th><th>Botón</th><th>Comando que ejecuta</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>En CHANGES</td><td><strong>+</strong> (Open / Stage Changes)</td><td><code>git add archivo</code></td></tr>
+        <tr><td>En CHANGES</td><td><strong>↩ / 🗑️</strong> (Discard Changes)</td><td><code>git restore archivo</code> ⚠️ <strong>sin deshacer</strong></td></tr>
+        <tr><td>En STAGED CHANGES</td><td><strong>−</strong> (Unstage Changes)</td><td><code>git restore --staged archivo</code></td></tr>
+        <tr><td>En cualquier lista</td><td><strong>+</strong> sobre el título CHANGES</td><td><code>git add .</code> (prepara todo)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano vive aquí: el botón 🗑️ (Discard Changes)</h4>
+    <p>Es el único botón de la clase que <strong>borra trabajo de verdad</strong>: descarta los cambios del archivo y lo devuelve a como estaba en la última foto — un <code>git restore</code> que <strong>no tiene deshacer</strong>. Por eso VS Code te pregunta con una ventana de confirmación que menciona el archivo exacto. Lee el nombre del archivo en esa ventana: <strong>es tu última oportunidad</strong>. Y una costumbre que evita el 90% de las tragedias: <strong>commit temprano, commit seguido</strong> — con la foto tomada, el 🗑️ vuelve a ser inofensivo (solo descartaría cambios nuevos).</p>
+  </div>
+
+  <h3>✂️ El superpoder: staging por líneas</h3>
+  <p class="lead">Modificaste dos cosas distintas en el mismo archivo — el título y la tarifa — y quieres que cada una viva en su propio commit. En la terminal eso es <code>git add -p</code> (pantalla críptica, miedo escénico). En VS Code es <strong>un clic junto a la línea</strong>:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>stage solo lo que quieres que entre en la foto</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># 1. Abre el diff del archivo (clic sobre él en el panel SCM).</span>
+<span class="com"># 2. Pasa el cursor por el canal IZQUIERDO de cada cambio (gutter):</span>
+<span class="com">#    aparece un signo + que abarca exactamente esas líneas.</span>
+
+<span class="com"># 3. Clic en el +  →  SOLO ese pedazo pasa a STAGED CHANGES.</span>
+<span class="com">#    El resto de los cambios del archivo siguen en CHANGES.</span>
+
+<span class="com"># 4. Caja de mensaje → ✓ Commit  →  foto 1: solo el título.</span>
+<span class="com"># 5. Ahora prepara lo que falta (el + de las otras líneas o el +</span>
+<span class="com">#    del archivo entero) → foto 2: la tarifa.</span>
+
+<span class="com"># Resultado: dos commits que cuentan dos historias distintas,</span>
+<span class="com"># del mismo archivo, sin un solo comando. 🎯</span></code></pre>
+  </div>
+
+  <h3>🎯 Traductor de clics</h3>
+  <p class="lead">Antes del taller, demuestra que cumples la regla de oro: <strong>¿puedes decir en voz alta el comando que esconde cada botón?</strong> Siete situaciones de la interfaz, cuatro opciones cada una. Sin nota, sin castigo — es tu termómetro.</p>
+
+  <div class="simulador" data-traductor>
+    <div class="sim-head">🎯 ¿Qué comando ejecuta este clic?</div>
+    <div class="tr-meta">Situación <span class="tr-contador" data-tr-contador>1 / 7</span> · Aciertos: <strong data-tr-aciertos>0</strong></div>
+    <div class="tr-situacion" data-tr-situacion></div>
+    <div class="tr-opciones" data-tr-opciones></div>
+    <div class="tr-res" data-tr-res></div>
+    <button class="btn primary tr-avanzar" data-tr-avanzar>Siguiente situación →</button>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Detalles que hacen la vida más fácil</h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li>El diff de un archivo <strong>en STAGED</strong> muestra lo que entrará en la próxima foto — es el <code>git diff --staged</code> de siempre.</li>
+      <li>Si el diff se te hace pequeño, el botón de <strong>vista inline</strong> (arriba a la derecha del diff) pone el antes y el después en una sola columna, más fácil de leer en portátiles chicos.</li>
+      <li>El panel SCM también tiene un buscador: si tu proyecto tiene muchos cambios, filtra por nombre de archivo en vez de navegar a mano.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 8 minutos</h4>
+    <ol>
+      <li>Cada uno modifica <strong>dos cosas distintas</strong> de un mismo archivo (por ejemplo: un comentario arriba y una línea en medio).</li>
+      <li>Logren juntos el staging fino: un commit <strong>solo con el comentario</strong> y otro <strong>solo con la línea</strong>. Verifiquen en el historial (módulo 5 o <code>git log --oneline</code>) que las dos fotos existen y son distintas.</li>
+      <li>El juego de la valentía (controlada): uno provoca un cambio tonto, el otro presiona 🗑️ <strong>leyendo la confirmación en voz alta</strong> antes de aceptar. ¿Qué comando se ejecutó? ¿Qué se perdió? ¿Qué NO se perdió? (Pista: lo que ya estaba en el álbum, sigue en el álbum).</li>
+      <li>Rematen el traductor de arriba: cada uno responde 3 situaciones seguidas sin fallar. Copiloto con derecho a risa.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> En el editor de diffs de VS Code, ¿qué significa el lado izquierdo?</p>
+      <button class="opcion" data-op="a">La última foto del archivo (cómo estaba en el último commit): de solo lectura</button>
+      <button class="opcion" data-op="b">Los cambios que ya están en staging</button>
+      <button class="opcion" data-op="c">La versión de la nube</button>
+      <button class="opcion" data-op="d">Un borrador que puedes editar</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Cuál es la diferencia entre el botón <strong>+</strong> y el botón <strong>−</strong> que aparecen al pasar el cursor?</p>
+      <button class="opcion" data-op="a">El + hace commit y el − lo deshace</button>
+      <button class="opcion" data-op="b">Ambos preparan el archivo, pero con distinta velocidad</button>
+      <button class="opcion" data-op="c">El − es más peligroso que el +</button>
+      <button class="opcion" data-op="d">El + prepara para la foto (git add); el − saca de la posing sin perder cambios (git restore --staged)</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> El botón 🗑️ (Discard Changes) pide confirmación. ¿Por qué es el único botón de la clase que la trae?</p>
+      <button class="opcion" data-op="a">Porque borra archivos del disco para siempre</button>
+      <button class="opcion" data-op="b">Porque descarta los cambios SIN deshacer: es un git restore que no tiene vuelta atrás</button>
+      <button class="opcion" data-op="c">Porque reinicia VS Code</button>
+      <button class="opcion" data-op="d">Porque también toca la nube</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> Modificaste dos cosas distintas en un archivo y quieres dos commits limpios. ¿La forma VS Code?</p>
+      <button class="opcion" data-op="a">Commitear todo junto con el mensaje "varios cambios"</button>
+      <button class="opcion" data-op="b">Copiar el archivo, commitear la copia y volver</button>
+      <button class="opcion" data-op="c">Abrir el diff y usar el + del gutter para preparar solo las líneas de la primera historia, commitear, y luego preparar el resto</button>
+      <button class="opcion" data-op="d">No se puede por interfaz: solo con git add -p en la terminal</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: Barra de estado →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>📊 La barra de estado: el velocímetro del repositorio</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Ramas, ↓↑ y sincronizar — todo en una franja de un centímetro"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>La franja inferior de VS Code es el lugar más denso del editor: en unos centímetros conviven la <strong>rama actual</strong> (clic → todas tus ramas), el <strong>estado de sincronización</strong> (↓n ↑n → cuánto debes bajar y subir) y el botón que en la clase 13 escribiste con manos temblorosas: <strong>publicar al remoto</strong>. Y cuando algo no tiene botón directo — como el merge — está la llave maestra: <strong>la paleta de comandos</strong> (<code>Ctrl+Shift+P</code>), que conoce TODO lo que Git sabe hacer, con nombres en español. Hoy la barra de estado deja de ser decoración: es tu tablero de vuelo.</p>
+  </div>
+
+  <h3>🔧 Anatomía de la franja</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>abajo a la izquierda, de izq. a derecha</span>
+      </div>
+    </div>
+<pre><code><span class="com">┌────────────────────────────────────────────────────────────┐</span>
+<span class="com">│  🌿 main*        ↓0 ↑2       ↻  Synchronize Changes  ⚠ 0  │</span>
+<span class="com">└────────────────────────────────────────────────────────────┘</span>
+<span class="com">     │            │            │                │</span>
+<span class="com">     │            │            │                └ problemas del proyecto</span>
+<span class="com">     │            │            └ el botón que hace pull+push</span>
+<span class="com">     │            └ ahead/behind: 2 para subir, 0 para bajar</span>
+<span class="com">     └ rama actual · el * = "tienes cambios sin commitear"</span></code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Lo que ves</th><th>Traducción de la clase 12/13</th><th>El clic que lo resuelve</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>main*</code> (asterisco)</td><td>"Hay cambios sin commitear" (<code>git status</code>)</td><td>Al panel SCM, caja + ✓ Commit</td></tr>
+        <tr><td><strong>↑2</strong> (flecha arriba)</td><td>"Ahead: 2 commits tuyos sin subir"</td><td><strong>↻ Synchronize Changes</strong> (= <code>pull</code> + <code>push</code>)</td></tr>
+        <tr><td><strong>↓1</strong> (flecha abajo)</td><td>"Behind: 1 commit en la nube que te falta" (lo subió otra persona)</td><td>El mismo <strong>↻</strong> — o <code>git pull</code> en terminal</td></tr>
+        <tr><td><strong>Publish Branch</strong></td><td>Rama nueva sin upstream, lista para la nube</td><td>Un clic = <code>git push -u origin rama</code> 🎉</td></tr>
+        <tr><td>Un número en un icono de nube con crucecita</td><td>El push fue rechazado (<code>fetch first</code>)</td><td>Sincroniza primero: el ↻ ordena el mundo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🌿 Ramas con clics (crear, cambiar, fusionar)</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>el ciclo completo de una rama, sin terminal</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># 1. CREAR: clic en el nombre de la rama (main) en la barra de estado</span>
+<span class="com">#    → aparece la lista de ramas + arriba "+ Create new branch…"</span>
+<span class="com">#    → escribe:  feature/reportes</span>
+<span class="com">#    → Enter. Ya estás EN la rama nueva (un solo paso: = git switch -c)</span>
+
+<span class="com"># 2. CAMBIAR: clic en la rama otra vez → elige de la lista.</span>
+<span class="com">#    (cambiar de rama con archivos sucios: VS Code te avisa si</span>
+<span class="com">#    algo se rompería, y ofrece "stash" — lo dejamos de bonus)</span>
+
+<span class="com"># 3. FUSIONAR: no hay botón visible… pero está la llave maestra:</span>
+<span class="com">#    Ctrl+Shift+P → escribe "merge" → "Git: Merge Branch…"</span>
+<span class="com">#    → elige feature/reportes → el mismo merge de la clase 12.</span>
+
+<span class="com"># 4. BORRAR la rama ya fusionada: en la lista de ramas,</span>
+<span class="com">#    pasa el cursor sobre la rama → 🗑️ (git branch -d).</span></code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: "no encuentro el botón" no significa "no existe"</h4>
+    <p>La interfaz cubre el 90% del día a día, pero <strong>la paleta de comandos cubre el 100%</strong>: presiona <code>Ctrl+Shift+P</code> y escribe <code>git</code> — aparecerán <em>todos</em>: <em>Git: Commit</em>, <em>Git: Push</em>, <em>Git: Pull</em>, <em>Git: Merge Branch…</em>, <em>Git: Undo Last Commit</em>, <em>Git: Show Git Output</em>… Cada uno con su nombre en español y funcionando sin instalar nada. La costumbre pro no es memorizar menús: es <strong>saber el verbo</strong> ("merge", "push", "undo") y dejar que la paleta complete la frase. La terminal sigue ahí para el resto — y sigue siendo tu red de seguridad.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Sync vs. el orden manual</h4>
+    <p>El ↻ hace <code>pull</code> y luego <code>push</code> — exactamente el orden que aprendimos en la clase 13 ("bajar antes de subir"). Si el pull trae un conflicto, el sync se detiene con el icono de advertencia y el archivo marcado con <strong>!</strong>: es la señal de pasar al módulo 5. Y si solo quieres una de las dos mitades: el <strong>▾</strong> junto al ↻ (o el menú ⋯ del panel) tiene <em>Push</em> y <em>Pull</em> por separado. Sincronizar es un atajo sano — pero saber qué contiene el atajo es la diferencia entre usarlo y depender de él.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 8 minutos</h4>
+    <ol>
+      <li>Cada uno crea la rama <code>feature/prueba-vscode</code> desde la barra de estado y le hace un commit desde el panel SCM (¡todo con clics!).</li>
+      <li>Vuelvan a main con un clic, y confirmen en el editor que el cambio "desapareció" (deberían poder explicarlo: ¿dónde vive ahora?).</li>
+      <li>Fusionen con <code>Ctrl+Shift+P</code> → "Git: Merge Branch…" y borren la rama con el 🗑️ de la lista. ¿Qué dijo la barra de estado en cada paso?</li>
+      <li>Quien tenga el repo publicado en GitHub (clase 13): miren juntos los números ↓↑, presionen el ↻, y abran el repo en el navegador para ver el commit nuevo llegar. Es la clase 13 completa, sin escribir una letra.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> La barra de estado dice <code>main* ↓0 ↑2</code>. ¿Qué significa cada señal?</p>
+      <button class="opcion" data-op="a">Estás en la rama main, con 2 commits por bajar y ninguno por subir</button>
+      <button class="opcion" data-op="b">Estás en una rama llamada "main*" con 2 errores</button>
+      <button class="opcion" data-op="c">Estás en main, hay cambios sin commitear (el *) y 2 commits tuyos esperando subirse a la nube</button>
+      <button class="opcion" data-op="d">Tienes 2 archivos modificados y 0 staged</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué hace el botón ↻ (Synchronize Changes)?</p>
+      <button class="opcion" data-op="a">Un git pull y luego un git push: baja lo nuevo de la nube y sube tus commits</button>
+      <button class="opcion" data-op="b">Solo hace push</button>
+      <button class="opcion" data-op="c">Reinicia el repositorio</button>
+      <button class="opcion" data-op="d">Copia el proyecto a la nube como zip</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Cómo se fusiona (merge) una rama si no hay botón visible en la barra de estado?</p>
+      <button class="opcion" data-op="a">No se puede desde VS Code: toca ir a la terminal</button>
+      <button class="opcion" data-op="b">Arrastrando la rama encima de main</button>
+      <button class="opcion" data-op="c">Doble clic sobre main</button>
+      <button class="opcion" data-op="d">Ctrl+Shift+P → "Git: Merge Branch…" → elegir la rama: la paleta de comandos conoce TODO Git</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> En la barra de estado aparece un botón <strong>"Publish Branch"</strong>. ¿Qué hace?</p>
+      <button class="opcion" data-op="a">Crea la carpeta .git del proyecto</button>
+      <button class="opcion" data-op="b">Sube la rama nueva a la nube y la conecta: el git push -u origin rama de la clase 13</button>
+      <button class="opcion" data-op="c">Publica el proyecto en GitHub Pages</button>
+      <button class="opcion" data-op="d">Comparte el repo con tu compañero</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73% agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>En una frase cada uno: ¿qué botón de Git de los de hoy te da más miedo… y qué comando esconde? El que lo diga en voz alta ya le quitó la mitad del miedo.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>El propio <strong>código fuente de VS Code vive en GitHub</strong> (<em>microsoft/vscode</em>): es uno de los repositorios más estrellas del mundo. Cada versión de VS Code que tienes instalada salió de un <strong>Pull Request revisado por otra persona</strong> — el mismo flujo que aprendiste en la clase 13. Y su integración con Git no es una extensión: viene incluida desde el principio. Es decir: mientras tú aprendías a usar botones de Git, estabas usando una herramienta <strong>construida con ese mismo Git</strong>. El círculo está completo. 🐙</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: Conflictos →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>⚔️ Conflictos: las marcas se vuelven botones</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Accept Current, Accept Incoming… ¿y yo qué acepto?"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>En la clase 12, un conflicto te dejaba marcas crípticas en el archivo (<code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>) y la resolución era manual: elegir la línea, borrar las marcas, commitear. En VS Code el proceso es el mismo — <strong>pero las marcas vienen con botones arriba</strong>: <em>Accept Current Change</em>, <em>Accept Incoming Change</em>, <em>Accept Both Changes</em>, <em>Compare Changes</em>. Un clic, y las líneas quedan como elegiste, <strong>sin marcas que borrar</strong>. La parte difícil no desaparece: sigue siendo <strong>tuya la decisión de qué versión queda</strong>. Los botones solo ejecutan tu decisión más rápido.</p>
+  </div>
+
+  <h3>⚔️ El conflicto, como lo ves ahora</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>así abre VS Code un archivo en conflicto</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># Tras un merge con conflicto, el editor muestra sobre la zona:</span>
+<span class="str">| Accept Current Change | Accept Incoming Change | Accept Both Changes | Compare Changes |</span>
+
+TARIFA_POR_DIA = <span class="num">800</span>          <span class="com"># ← CURRENT (HEAD): tu versión de main</span>
+TARIFA_POR_DIA = <span class="num">500</span>          <span class="com"># ← INCOMING: la versión de la otra rama</span>
+
+<span class="com"># · Accept Current:    se queda la tuya (main)</span>
+<span class="com"># · Accept Incoming:    se queda la de la otra rama</span>
+<span class="com"># · Accept Both:        se quedan las dos líneas ⚠️ (¡leer la caja villano!)</span>
+<span class="com"># · Compare Changes:    abre el diff de 3 versiones para decidir con calma</span>
+
+<span class="com"># Después de aceptar: el archivo queda SIN marcas, la letra !</span>
+<span class="com"># cambia a M… y el resto del ritual es el de siempre:</span>
+<span class="com">#   + (stage) → mensaje → ✓ Commit  →  conflicto resuelto. 🎉</span></code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Botón</th><th>Qué elige por ti</th><th>Cuándo es EL botón correcto</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Accept Current</strong></td><td>La versión de la rama donde estás (HEAD)</td><td>Sabes que tu versión es la buena (o la última decisión)</td></tr>
+        <tr><td><strong>Accept Incoming</strong></td><td>La versión de la rama que llega</td><td>La otra persona ya resolvió lo que tú no sabías</td></tr>
+        <tr><td><strong>Accept Both</strong></td><td>Deja las dos líneas, una tras otra</td><td>⚠️ Casi nunca: solo cuando las dos líneas son complementarias (y no dos versiones de lo mismo)</td></tr>
+        <tr><td><strong>Compare Changes</strong></td><td>Abre la vista de 3 versiones</td><td>No estás segur@: mira antes de decidir</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: "Accept Both Changes" con fe ciega</h4>
+    <p>"Both" suena a diplomacia, pero en un conflicto de <strong>dos versiones de la misma línea</strong> produce código roto: <code>TARIFA = 800</code> y <code>TARIFA = 500</code> una debajo de la otra, <strong>las dos activas</strong> — un bug silencioso que la última línea gana. Acepta Both solo cuando las dos líneas son cosas distintas (por ejemplo, dos imports que ambos agregaron). Ante la duda, la secuencia profesional es: <strong>Compare Changes → leer las tres versiones → decidir → luego el botón</strong>. Y siempre, SIEMPRE: después de aceptar, <strong>lee el resultado en el editor</strong> antes del commit — los botones hacen lo que dicen, no lo que soñaste.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El resto del ritual no cambió en nada</h4>
+    <ul style="margin:0.3rem 0 0 1.2rem;">
+      <li>El archivo en conflicto aparece con <strong>!</strong> y en una sección propia <em>MERGE CHANGES</em> del panel.</li>
+      <li>Tras aceptar, lo preparas con <strong>+</strong> — y cuando todos los <strong>!</strong> desaparecen, el <strong>✓ Commit</strong> cierra el merge (VS Code ya escribe el mensaje por ti).</li>
+      <li>¿Te arrepientes a mitad de camino? La paleta: <code>Ctrl+Shift+P → "Git: Abort Merge"</code>. Vuelve todo como antes de empezar — es el <code>merge --abort</code> de la clase 12.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 10 minutos</h4>
+    <p>Provocar y resolver, con botones de principio a fin:</p>
+    <ol>
+      <li>En <code>main</code>, cambia la primera línea de tu <code>README.md</code> (título) y haz commit con el panel.</li>
+      <li>Crea la rama <code>fix/conflicto-ui</code> desde la barra de estado y, en ella, cambia <strong>la misma línea</strong> a otra cosa. Commit.</li>
+      <li>Vuelve a main y fusiona con la paleta ("Git: Merge Branch…"). El panel debería mostrar el <strong>!</strong>.</li>
+      <li>Abre el archivo: usen <strong>Compare Changes</strong> primero para decidir con calma, acepten una versión y completen el commit del merge. Repitan una vez más con <strong>Accept Incoming</strong> para sentir la diferencia.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> En un conflicto, ¿qué versión es "Current" y cuál es "Incoming"?</p>
+      <button class="opcion" data-op="a">Current es la de la nube; Incoming la local</button>
+      <button class="opcion" data-op="b">Current es la versión de la rama donde estás (HEAD); Incoming la de la rama que está llegando con el merge</button>
+      <button class="opcion" data-op="c">Current es la versión más nueva; Incoming la más vieja</button>
+      <button class="opcion" data-op="d">Son la misma versión con dos nombres</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> Dos ramas cambiaron la MISMA línea (<code>TARIFA = 800</code> vs <code>TARIFA = 500</code>). Presionas "Accept Both Changes". ¿Qué queda en el archivo?</p>
+      <button class="opcion" data-op="a">Las dos versiones se combinan en una promedio</button>
+      <button class="opcion" data-op="b">La versión más reciente</button>
+      <button class="opcion" data-op="c">VS Code te pregunta cuál quieres realmente</button>
+      <button class="opcion" data-op="d">Las dos líneas, una debajo de la otra: código roto (bug silencioso) — Both es para líneas complementarias, no para versiones rivales</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> Aceptaste una versión y commiteaste el merge… pero era la incorrecta. ¿Qué fue lo que se saltó del ritual?</p>
+      <button class="opcion" data-op="a">Nada: VS Code corrige la versión automáticamente</button>
+      <button class="opcion" data-op="b">El commit --amend antes de aceptar</button>
+      <button class="opcion" data-op="c">Leer el resultado en el editor antes del commit: los botones hacen lo que dicen, no lo que soñaste</button>
+      <button class="opcion" data-op="d">Faltó hacer push antes de aceptar</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> Estás a mitad de un merge con 3 archivos en conflicto y prefieres abandonar todo. ¿Cómo?</p>
+      <button class="opcion" data-op="a">Ctrl+Shift+P → "Git: Abort Merge": el merge --abort de la clase 12, todo vuelve como estaba</button>
+      <button class="opcion" data-op="b">Cerrar VS Code sin guardar</button>
+      <button class="opcion" data-op="c">El botón 🗑️ del panel SCM</button>
+      <button class="opcion" data-op="d">Borrar la carpeta .git</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: Historial →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>🕰️ El historial, hecho visible (y Git Output: el puente)</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Graph, Timeline… y ver los comandos que esconden tus clics"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La idea central</h3>
+    <p>El álbum de la clase 12 se leía con <code>git log</code>. VS Code lo pinta entero en dos vistas: el <strong>Source Control Graph</strong> (la gráfica de commits y ramas de TODO el repositorio — la línea del tiempo con sus universos paralelos) y el <strong>Timeline</strong> (la historia de UN archivo, abajo del Explorer). Y para cerrar la clase con broche, existe una vista secreta que conecta los dos mundos del curso: <strong>Git Output</strong>, el registro donde VS Code anota <strong>el comando exacto que ejecutó cada clic tuyo</strong>. Spoiler: es la clase 12 entera, en streaming.</p>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Vista</th><th>Qué muestra</th><th>El equivalente de la terminal</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Source Control Graph</strong> <span class="mono">(dentro del panel SCM)</span></td><td>Todos los commits del repo: quién, cuándo, mensaje, rama — con puntitos de colores para cada rama</td><td><code>git log --oneline --graph --all</code></td></tr>
+        <tr><td><strong>Timeline</strong> <span class="mono">(abajo del Explorer, por archivo)</span></td><td>La historia de UN archivo: cada commit que lo tocó (y también tus guardados locales)</td><td><code>git log -- archivo</code> + <code>git show</code></td></tr>
+        <tr><td>Clic en un commit del Graph</td><td>El detalle del commit y sus cambios, lado a lado</td><td><code>git show hash</code></td></tr>
+        <tr><td>Clic en una entrada del Timeline</td><td>Ese archivo como estaba en ese commit</td><td>Una máquina del tiempo por archivo 🕰️</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>el puente entre los dos mundos: Git Output</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code><span class="com"># Presiona Ctrl+Shift+P → escribe "Git: Show Git Output"</span>
+<span class="com"># (o en el panel SCM: menú ⋯ → "Show Git Output").</span>
+<span class="com"># Se abre la pestaña OUTPUT abajo, y ahí, en vivo, aparece</span>
+<span class="com"># TODO lo que VS Code ejecuta por ti:</span>
+
+&gt; git add dominio/servicios.py          <span class="com"># ← tu clic en el +</span>
+&gt; git commit -m "Cambiar tarifa a $800" <span class="com"># ← tu clic en ✓</span>
+&gt; git push                            <span class="com"># ← tu clic en ↻</span>
+
+<span class="com"># Es literalmente la clase 12 escribiéndose sola, con cada clic</span>
+<span class="com"># tuyo traducido. Déjalo abierto un rato durante el taller:</span>
+<span class="com"># es la mejor forma de VER la regla de oro cumpliéndose. 🌉</span></code></pre>
+  </div>
+
+  <h3>🚀 Publicar a GitHub desde el editor (bonus de la clase 13)</h3>
+  <p class="lead">Si tu proyecto <strong>aún no tiene remoto</strong>, el panel SCM muestra un botón <strong>"Publish to GitHub"</strong>: un clic, eliges público o privado, y VS Code crea el repo en tu cuenta y hace el push inicial — el ciclo completo de la clase 13 sin abrir el navegador. Para crear y revisar <strong>Pull Requests</strong> desde el editor existe la extensión <em>GitHub Pull Requests and Issues</em>: la dejamos como exploración en casa — en el colegio trabajamos con lo integrado, que ya lo es casi todo.</p>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano: la fe en la vista bonita</h4>
+    <p>El Graph y el Timeline son <strong>vistas de solo lectura</strong>: mirar no cambia nada — perfecto. Pero ojo con la trampa inversa: <strong>ver el historial bonito no es entenderlo</strong>. Un repo puede tener una gráfica preciosa y mensajes tipo "cambios" por todas partes: la vista no perdona lo que el historial dice. El diagnóstico de calidad sigue siendo el de siempre: lee los mensajes de la gráfica como si fuera la autobiografía del proyecto — porque lo es.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Y el "blame"? (exploración en casa)</h4>
+    <p>El comando <code>git blame</code> — saber <strong>quién escribió cada línea</strong> y en qué commit — no viene integrado en VS Code de fábrica: lo trae la extensión <strong>GitLens</strong>, la más famosa del ecosistema Git. Si te pica la curiosidad, instálala en tu compu (Extensions → buscar "GitLens"): añade el autor con colorcitos al lado de cada línea. Pero nota la ironía: para ESTA clase no la necesitas — ya sabes hacer el 90% del trabajo diario sin instalar absolutamente nada.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 8 minutos</h4>
+    <ol>
+      <li>Abre el Graph y recórranlo juntos: ¿ven los commits de la clase 12? ¿El merge del taller? ¿Las puntitas de colores de las ramas ya borradas?</li>
+      <li>Abre <code>main.py</code> en el editor y mira su <strong>Timeline</strong> (abajo del Explorer): cli­caen la entrada más vieja — es el archivo como era en tu primer commit. Den el momento de asombro que merece. 🕰️</li>
+      <li>Ahora la prueba del puente: dejen <strong>Git Output</strong> abierto y hagan un ciclo completo (cambio → + → mensaje → ✓ → ↻). Lean en voz alta los comandos que aparecen. ¿Coinciden con lo que habrían escrito en la terminal? ¿Alguien se anima a hacer el mismo ciclo EN la terminal y comparar?</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Cuál es la diferencia entre el Source Control Graph y el Timeline?</p>
+      <button class="opcion" data-op="a">El Graph es de pago; el Timeline es gratis</button>
+      <button class="opcion" data-op="b">Son la misma vista con dos nombres</button>
+      <button class="opcion" data-op="c">El Graph muestra la historia de TODO el repo (commits y ramas); el Timeline, la historia de UN archivo</button>
+      <button class="opcion" data-op="d">El Timeline muestra la nube; el Graph, lo local</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Para qué sirve "Git: Show Git Output"?</p>
+      <button class="opcion" data-op="a">Para ver en vivo el comando exacto que VS Code ejecuta con cada clic — el puente entre botones y terminal</button>
+      <button class="opcion" data-op="b">Para mostrar los errores de tu código Python</button>
+      <button class="opcion" data-op="c">Para exportar el historial a un archivo</button>
+      <button class="opcion" data-op="d">Para limpiar la carpeta .git</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> Haces clic en una entrada vieja del Timeline de <code>main.py</code>. ¿Qué se abre?</p>
+      <button class="opcion" data-op="a">Un Pull Request</button>
+      <button class="opcion" data-op="b">Ese archivo tal como era en ese commit — la máquina del tiempo por archivo</button>
+      <button class="opcion" data-op="c">La versión actual del archivo</button>
+      <button class="opcion" data-op="d">El repo en GitHub</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Qué hace el botón "Publish to GitHub" del panel SCM?</p>
+      <button class="opcion" data-op="a">Publica tu página con GitHub Pages</button>
+      <button class="opcion" data-op="b">Solo hace git init en la nube</button>
+      <button class="opcion" data-op="c">Instala la extensión de GitHub</button>
+      <button class="opcion" data-op="d">Crea el repo en tu cuenta de GitHub (público o privado) y hace el push inicial: la clase 13 en un clic</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: la clase 12 completa, sin escribir un comando</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "Cinco retos, cero comandos (pero sabiendo cuál ejecutas)"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">El ciclo completo, 100% con clics</span>
+    </div>
+    <p>Vas a repetir el ciclo de la clase 12 — commit, staging fino, rama, conflicto, sincronización — <strong>pero esta vez toda la interfaz manda</strong>: el panel hace de terminal, la barra de estado de nube, y Git Output de testigo. La regla del taller: <strong>antes de cada clic, di en voz alta el comando que vas a ejecutar</strong> (tu pareja fiscaliza). Al terminar, habrás comprobado que la interfaz no era un atajo para "no aprender Git": era la clase 12 repuesta en tu idioma.</p>
+  </div>
+
+  <h3>🧠 Reto 1 — El commit visual</h3>
+  <p>Haz un cambio real en tu proyecto, míralo nacer en el panel SCM (letra y color), ábrelo en el diff, prepara con <strong>+</strong>, escribe el mensaje y presiona <strong>✓ Commit</strong>. Luego valida con el testigo: abre el <strong>Graph</strong> y confirma que la foto nueva está arriba de la historia. Y de yapa, en la terminal: <code>git log --oneline -1</code> — el mismo hash que en el Graph, o el taller no cuenta.</p>
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 1</h4>
+    <pre><code><span class="com"># Flujo: cambio en VS Code → Ctrl+Shift+G → clic en el archivo (diff) →</span>
+<span class="com"># + → mensaje en la caja → ✓ Commit (¡lee la etiqueta del botón!).</span>
+<span class="com"># Verifica: Source Control Graph arriba, o en terminal:</span>
+git log --oneline -1</code></pre>
+  </div>
+
+  <h3>🧠 Reto 2 — Staging fino: dos historias de un mismo archivo</h3>
+  <p>Modifica <strong>dos cosas distintas</strong> de un mismo archivo (un comentario arriba y una línea funcional en medio). Logra <strong>dos commits</strong>, uno por historia, usando el staging por líneas del gutter. La prueba: en el Graph, dos fotos con mensajes distintos que juntas suman tus dos cambios.</p>
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 2</h4>
+    <pre><code><span class="com"># Diff del archivo → + del gutter sobre las líneas de la 1ª historia</span>
+<span class="com"># → ✓ Commit ("Comentar la regla de la multa")</span>
+<span class="com"># → ahora el + del archivo entero (lo que queda) → ✓ Commit</span>
+<span class="com"># ("Cambiar validación de días negativos"). El otro archivo,</span>
+<span class="com"># si lo tocaste, tiene que seguir en CHANGES entre foto y foto.</span></code></pre>
+  </div>
+
+  <h3>🧠 Reto 3 — Una rama nace, vive y se fusiona (con clics)</h3>
+  <p>Desde la <strong>barra de estado</strong>: crea <code>feature/taller-ui</code>, hazle un commit, vuelve a main, fusiónala con la <strong>paleta</strong> ("Git: Merge Branch…") y bórrala desde la lista de ramas. Cuatro acciones de la clase 12 — <code>switch -c</code>, commit, <code>merge</code>, <code>branch -d</code> — sin tocar el teclado más que para los nombres y <code>Ctrl+Shift+P</code>.</p>
+
+  <h3>🧠 Reto 4 — Conflicto resuelto con botones</h3>
+  <p>Provoca el clásico: misma línea, dos ramas. Ábrelo con calma (<strong>Compare Changes</strong>), decide cuál versión gana, acéptala, y cierra el merge con el commit que VS Code te propone. Regla de oro del módulo 5: <strong>lee el archivo final antes del commit</strong> — y explica tu decisión a tu pareja en una frase.</p>
+  <div class="caja-tip">
+    <h4>💡 Pista Reto 4</h4>
+    <pre><code><span class="com"># main: cambia el título del README → commit ✓</span>
+<span class="com"># rama nueva: cambia LA MISMA línea → commit ✓ → vuelve a main</span>
+<span class="com"># Ctrl+Shift+P → "Git: Merge Branch…" → el panel marca el !</span>
+<span class="com"># → Compare Changes → decidir → Accept Current/Incoming →</span>
+<span class="com"># + (stage) → ✓ Commit (VS Code escribe "Merge branch…")</span></code></pre>
+  </div>
+
+  <h3>🧠 Reto 5 — La prueba del puente 🌉</h3>
+  <p>El momento filosófico del taller: abre <strong>Git Output</strong> (paleta → "Git: Show Git Output"), déjalo abierto y ejecuta un ciclo completo más (cambio → + → ✓). <strong>Lee en voz alta, con tu pareja, los comandos que aparecen</strong>. Luego, si tu repo está en GitHub (clase 13), presiona el <strong>↻</strong> y valida en el navegador que todo llegó. Si no lo está: usa el botón <strong>Publish to GitHub</strong> y publícalo hoy mismo — con dos clics.</p>
+
+  <div class="caja-importante">
+    <h4>🦹 Reflexión final</h4>
+    <p>Empezaste el módulo de Git escribiendo comandos letra por letra; terminaste haciendo lo mismo <strong>con botones que entiendes por dentro</strong>. Esa es exactamente la diferencia entre "usar una interfaz" y <strong>saber Git</strong>: los botones son rápidos, pero el mapa mental es tuyo. La terminal queda para siempre como tu red de seguridad — para el día que un botón no exista, para el script que automatiza, para el SSH de una empresa — y el editor queda como tu rutina diaria. Dos idiomas, un álbum. 🎛️</p>
+  </div>
+
+  <h3>✅ Lista de verificación del taller</h3>
+  <p class="lead">Marca cada punto a medida que lo consigues. La lista se guarda en tu navegador, así que puedes cerrar y volver.</p>
+
+  <div class="checklist" data-checklist>
+    <div class="checklist-cab">
+      <span>Verificación del ciclo con botones</span>
+      <span class="cl-avance"><strong data-cl-hechos>0</strong> / <span data-cl-total>0</span> · <span data-cl-pct>0%</span></span>
+      <button class="btn" data-cl-reset style="padding:.3rem .7rem;font-size:.7rem">reiniciar</button>
+    </div>
+
+    <label class="check-item"><input type="checkbox" data-check="c1"><span class="check-caja">✓</span><span class="check-texto"><strong>Panel SCM dominado</strong> <small>Reconoces U/M/A/D de un vistazo y sabes el comando que esconde cada botón (+, −, 🗑️, ✓).</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c2"><span class="check-caja">✓</span><span class="check-texto"><strong>Commit visual hecho</strong> <small>Cambio → diff → stage → mensaje → ✓. El Graph y <code>git log</code> muestran la misma foto nueva.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c3"><span class="check-caja">✓</span><span class="check-texto"><strong>Staging fino logrado</strong> <small>Dos commits de un mismo archivo usando el + del gutter, con mensajes que cuentan dos historias.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c4"><span class="check-caja">✓</span><span class="check-texto"><strong>El 🗑️ tratado con respeto</strong> <small>Lo probaste (o presenciaste) leyendo la confirmación en voz alta, y sabes qué pierde y qué no.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c5"><span class="check-caja">✓</span><span class="check-texto"><strong>Rama con clics</strong> <small>Creada desde la barra de estado, commiteada, fusionada con la paleta y borrada de la lista.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c6"><span class="check-caja">✓</span><span class="check-texto"><strong>Conflicto resuelto con botones</strong> <small>Compare Changes antes de decidir, Accept…, archivo final leído, merge commiteado.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c7"><span class="check-caja">✓</span><span class="check-texto"><strong>Barra de estado leída</strong> <small>Explicas main*, ↓↑ y el ↻ sin dudar — y sabes qué hace Sync por debajo.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c8"><span class="check-caja">✓</span><span class="check-texto"><strong>Git Output presenciado</strong> <small>Viste tus clics convertirse en comandos en vivo. El puente, cruzado.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c9"><span class="check-caja">✓</span><span class="check-texto"><strong>Historial explorado</strong> <small>El Graph completo y el Timeline de un archivo — con la entrada vieja abierta y el asombro correspondiente.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c10"><span class="check-caja">✓</span><span class="check-texto"><strong>Traductor de clics superado</strong> <small>7 de 7 aciertos (o reintentos hasta lograrlo): la regla de oro, certificada.</small></span></label>
+    <label class="check-item"><input type="checkbox" data-check="c11"><span class="check-caja">✓</span><span class="check-texto"><strong>El proyecto sigue funcionando</strong> <small>Arranca el servidor y recorre una pantalla: la app igual, la historia más rica. Como en toda buena clase de Git.</small></span></label>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Repaso en pareja — 6 minutos</h4>
+    <ol>
+      <li>El juego del traductor inverso: uno dice un comando de la clase 12 (<code>git restore --staged</code>, <code>git push -u origin…</code>, <code>git merge</code>…) y el otro debe decir <strong>dónde está el botón o menú</strong> que lo ejecuta. Cinco por lado.</li>
+      <li>Pregunta seria: después de hoy, ¿cuándo elegirían la terminal y cuándo los botones? Compárenlo con la regla de oro: ¿la interfaz les quitó miedo o les quitó conocimiento?</li>
+      <li>Cierre del módulo Git (clases 12, 13 y 14): cada uno nombra UNA cosa que ya puede hacer que hace tres clases le parecía magia. Con el botón o con el comando — pero que la diga en voz alta.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-quiz="7">
+    <h3>🎯 Quiz Final</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> La frase que resume la relación entre Git en la terminal y Git en VS Code:</p>
+      <button class="opcion" data-op="a">Son dos Git distintos que hay que mantener sincronizados a mano</button>
+      <button class="opcion" data-op="b">Mismo álbum, dos idiomas: el editor y la terminal usan el mismo repositorio, sin importar nada entre ellos</button>
+      <button class="opcion" data-op="c">La terminal es para principiantes y los botones para profesionales</button>
+      <button class="opcion" data-op="d">VS Code usa su propio sistema de versiones</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Vas a presionar el botón ✓ pero dice "Commit &amp; Sync". ¿Qué harías mal si presionas sin querer?</p>
+      <button class="opcion" data-op="a">Nada: Sync es solo guardar</button>
+      <button class="opcion" data-op="b">Perderías el commit</button>
+      <button class="opcion" data-op="c">Harías commit + pull + push en un clic: publicarías en la nube sin haberlo decidido hoy</button>
+      <button class="opcion" data-op="d">Borrarías la rama</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuál es el flujo correcto para resolver un conflicto con botones, sin fe ciega?</p>
+      <button class="opcion" data-op="a">Compare Changes → leer las versiones → decidir → Accept Current/Incoming → leer el resultado → + y ✓ Commit</button>
+      <button class="opcion" data-op="b">Accept Both Changes siempre y commitear rápido</button>
+      <button class="opcion" data-op="c">Presionar 🗑️ sobre el archivo en conflicto</button>
+      <button class="opcion" data-op="d">Abort Merge siempre que hay conflicto</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Qué NO puedes hacer con la interfaz integrada de VS Code (sin extensiones)?</p>
+      <button class="opcion" data-op="a">Hacer staging de líneas individuales</button>
+      <button class="opcion" data-op="b">Publicar tu repo a GitHub</button>
+      <button class="opcion" data-op="c">Ver el historial con ramas en gráfica</button>
+      <button class="opcion" data-op="d">Crear y revisar Pull Requests de GitHub</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>5.</strong> Resumen de la clase en una línea:</p>
+      <button class="opcion" data-op="a">Los botones de VS Code reemplazan a Git y lo hacen obsoleto</button>
+      <button class="opcion" data-op="b">Git es demasiado difícil: mejor solo interfaz</button>
+      <button class="opcion" data-op="c">Cada botón ejecuta un comando que ya conoces: usa la interfaz con la terminal de traductora, y nunca presiones un clic que no puedas decir en voz alta</button>
+      <button class="opcion" data-op="d">La terminal es la única forma profesional de usar Git</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 14 completada!</h2>
+    <p>El ciclo se cerró: la clase 12 te enseñó los <strong>comandos</strong>, la 13 la <strong>nube</strong>, y hoy la <strong>interfaz</strong> — sin perder el mapa. Ya manejas el panel Source Control como tu terminal visual, preparas cambios con precisión quirúrgica, lees la barra de estado como un velocímetro, resuelves conflictos con botones (y con criterio), recorres el historial en gráfica y hasta presenciaste tus clics convertirse en comandos en vivo. <strong>Mismo álbum, tres formas de conversar con él</strong> — y esa flexibilidad es exactamente lo que te espera en el mundo real: cada equipo, cada empresa, cada persona tiene su combinación. La tuya ya empezó a existir. 🎛️🖥️</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🖥️ Herramientas de Programación II · Clase 14 · Git en VS Code</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

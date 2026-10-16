@@ -121,6 +121,9 @@
   --herr-13-a:       #3fb950;   /* Clase 13 Herr — verde merge/azul link (GitHub) */
   --herr-13-b:       #58a6ff;
 
+  --herr-14-a:       #007acc;   /* Clase 14 Herr — azul VS Code/cian (Git en VS Code) */
+  --herr-14-b:       #4dd0ff;
+
   --gris:            #94a3b8;
 
   --sombra:          0 12px 40px rgba(0, 0, 0, 0.5);
@@ -551,6 +554,7 @@ main {
 .clase-card.herr-11::before { background: linear-gradient(90deg, var(--herr-11-a), var(--herr-11-b)); }
 .clase-card.herr-12::before { background: linear-gradient(90deg, var(--herr-12-a), var(--herr-12-b)); }
 .clase-card.herr-13::before { background: linear-gradient(90deg, var(--herr-13-a), var(--herr-13-b)); }
+.clase-card.herr-14::before { background: linear-gradient(90deg, var(--herr-14-a), var(--herr-14-b)); }
 
 .clase-card:hover {
   transform: translateY(-6px) scale(1.01);
@@ -603,6 +607,7 @@ main {
 .clase-card.herr-11 .clase-badge { background: linear-gradient(135deg, var(--herr-11-a), var(--herr-11-b)); color: #fff; }
 .clase-card.herr-12 .clase-badge { background: linear-gradient(135deg, var(--herr-12-a), var(--herr-12-b)); color: #000; }
 .clase-card.herr-13 .clase-badge { background: linear-gradient(135deg, var(--herr-13-a), var(--herr-13-b)); color: #fff; }
+.clase-card.herr-14 .clase-badge { background: linear-gradient(135deg, var(--herr-14-a), var(--herr-14-b)); color: #000; }
 
 .clase-badge.gris {
   background: rgba(148, 163, 184, 0.2);
