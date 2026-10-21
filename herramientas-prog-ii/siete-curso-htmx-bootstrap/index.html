@@ -193,8 +193,18 @@
       <button class="copy-btn">📋 Copiar</button>
     </div>
 <pre><code>&lt;head&gt;
-  &lt;script src="https://unpkg.com/htmx.org@2.0.10"&gt;&lt;/script&gt;
+  &lt;script src="https://unpkg.com/htmx.org@4.0.0/dist/htmx.min.js"&gt;&lt;/script&gt;
 &lt;/head&gt;</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>📌 Fija siempre la versión</h4>
+    <p>
+      La URL incluye <code>@4.0.0</code> a propósito. Si escribes solo <code>htmx.org</code>, el CDN
+      te entrega la línea 2.x, que se comporta de forma distinta en puntos importantes (por ejemplo, en
+      cómo se heredan los atributos y qué pasa con las respuestas de error). Fijar la versión es lo que
+      hace que tu aplicación se comporte igual hoy y dentro de seis meses.
+    </p>
   </div>
 
   <div class="caja-importante">
@@ -463,6 +473,22 @@
       <li>Un botón "Editar" con <code>hx-get="/autores/{id}/editar"</code>.</li>
       <li>La tabla con <code>id="tabla-autores"</code>.</li>
     </ol>
+  </div>
+
+  <div class="caja-importante">
+    <h4>⚠️ Con htmx 4, los errores también se insertan</h4>
+    <p>
+      En htmx 2, una respuesta de error (<code>404</code>, <code>500</code>) se descartaba. En
+      <strong>htmx 4 también se inserta</strong> en el destino. Eso afecta al botón «Borrar»: si el
+      servidor responde <code>404</code> con una página de error completa, esa página aterrizará dentro
+      de la tabla.
+    </p>
+    <p>
+      <strong>Solución:</strong> que el servidor responda siempre con un fragmento pequeño, o usar
+      <code>hx-status:4xx="swap:none"</code> en el botón para que los errores no se inserten. En la
+      <strong>Clase 2</strong> de este mismo módulo ves el patrón completo, con formularios y mensajes
+      de error.
+    </p>
   </div>
 
   <div class="caja-pareja">

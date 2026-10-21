@@ -1,0 +1,2375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 2 · HTMX 4.0 y formularios</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 2 · <em>HTMX 4.0 y formularios</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura y programa</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">El modelo de HTMX</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">HTMX 4.0: qué cambió</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Anatomía de un formulario</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Formularios en FastAPI</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Errores y estados</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller integrador</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> un formulario con validación de servidor y errores en línea.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>Del formulario que recarga la página al <em>fragmento que se actualiza solo</em></h2>
+    <p class="proposito">
+      La clase 1 dejó el mapa: el navegador pide, el servidor responde, el contrato es HTTP. Esta clase
+      baja ese mapa a un caso concreto y muy común —<strong>el formulario</strong>— y construye encima
+      una capa que elimina de un plumón la recarga de página: <strong>HTMX</strong>, en su versión 4,
+      que es la que se usa hoy.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: entorno listo</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · El problema que HTMX viene a resolver</h3>
+
+  <p class="primer-párrafo">
+    Consideremos el formulario más sencillo del mundo: una caja de texto, un botón de «Buscar» y una
+    lista de resultados debajo. Con HTML puro, al pulsar el botón el navegador hace lo que ha hecho
+    desde 1993: <strong>envía el formulario al servidor, recibe una página HTML completa y reemplaza
+    la página entera</strong>. El usuario pierde la posición del scroll, la página parpadea, y el
+    servidor tiene que reconstruir desde cero cosas que no cambiaron.
+  </p>
+
+  <p>
+    La alternativa clásica es escribir JavaScript a mano: interceptar el envío, llamar a
+    <code>fetch()</code>, recibir JSON, modificar el DOM. Funciona, pero se pierde algo importante:
+    <strong>el servidor deja de producir HTML</strong> y pasa a producir datos, y entonces hay que
+    reconstruir en el navegador la presentación que el servidor ya sabe generar.
+  </p>
+
+  <div class="recuadro nota">
+    <span class="rotulo">La tercera vía</span>
+    <p>
+      HTMX propone una tercera opción: <strong>mantener al servidor como productor de HTML, y limitar
+      la petición a la parte de la página que realmente cambia</strong>. El servidor sigue renvolviendo
+      HTML —con sus plantillas, sus condicionales y su lógica—, pero devuelve un fragmento en lugar de
+      una página completa, y el navegador lo coloca en el sitio exacto que le indiques.
+    </p>
+    <p>
+      La consecuencia práctica es que el JavaScript escrito a mano desaparece casi por completo: no hace
+      falta <?php echo "¿Necesitas saber más? Consulta la documentación oficial de HTMX para conocer todos los atributos disponibles." ?>
+    </p>
+  </div>
+
+  <h3>0.2 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cuadro de unidades, tiempos y productos esperados</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura, programa y entorno</td><td>20 min</td><td>Servidor FastAPI arrancando</td></tr>
+        <tr><td><strong>01</strong></td><td>El modelo de HTMX</td><td>30 min</td><td>Primer fragmento funcionando</td></tr>
+        <tr><td><strong>02</strong></td><td>HTMX 4.0: qué cambió y por qué</td><td>30 min</td><td>Guía de migración</td></tr>
+        <tr><td><strong>03</strong></td><td>Anatomía de un formulario</td><td>30 min</td><td>Formulario con validación nativa</td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Formularios en FastAPI</td><td>35 min</td><td>Ruta con validación de servidor</td></tr>
+        <tr><td><strong>06</strong></td><td>Errores, estados y control fino</td><td>35 min</td><td>Errores mostrados en línea</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller integrador</td><td>45 min</td><td>Formulario completo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.3 · Las herramientas de esta clase</h3>
+
+  <p>
+    Se trabaja con una pila concreta y deliberadamente actual. Las versiones importan: buena parte de
+    la documentación y de los tutoriales que circulan en internet describen versiones anteriores, y
+    copiarlos a ciegas produce código que no funciona.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>La pila técnica de la clase</caption>
+      <thead>
+        <tr><th>Componente</th><th>Versión</th><th>Por qué esta</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Python</strong></td><td>3.10 o superior</td><td>Versión mínima que admite FastAPI actual</td></tr>
+        <tr><td><strong>FastAPI</strong></td><td>0.156 o superior</td><td>Solo Pydantic v2, sin <code>@validator</code> ni <code>class Config</code></td></tr>
+        <tr><td><strong>Pydantic</strong></td><td>2.x</td><td>Los modelos de validación se escriben de otra manera</td></tr>
+        <tr><td><strong>Jinja2</strong></td><td>3.1 o superior</td><td>Plantillas en el servidor: es la parte «HTML sobre el cable»</td></tr>
+        <tr><td><strong>HTMX</strong></td><td>4.0 o superior</td><td>Cambios de comportamiento que hay que conocer de entrada</td></tr>
+        <tr><td><strong>uv</strong></td><td>actual</td><td>La herramienta de gestión de paquetes y entornos en Python</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia sobre las versiones de HTMX</span>
+    <p>
+      HTMX 4.0 salió el <strong>28 de agosto de 2026</strong>. En npm, la etiqueta
+      <code>latest</code> sigue apuntando a la línea 2.x a propósito, para no romper de golpe a los
+      proyectos que enlazan el CDN sin fijar versión. La línea 4.0 está publicada bajo la etiqueta
+      <code>next</code>. <strong>Consecuencia práctica:</strong> si enlazas
+      <code>htmx.org</code> sin versión, estás usando HTMX 2 aunque creas usar la última. En esta
+      clase fijamos siempre la versión.
+    </p>
+  </div>
+
+  <h3>0.4 · Preparación del entorno</h3>
+
+  <p>
+    Todo lo que sigue se hace una sola vez y sirve para el resto del módulo. Si el aula tiene equipos
+    de dos, conviene que la instalación la haga una persona del equipo y la otra vaya anotando.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — creación del proyecto</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Crear el proyecto (uv crea el entorno y el archivo de dependencias)</span>
+<span class="tk-fn">uv</span> <span class="tk-kw">new</span> biblioteca
+
+<span class="tk-fn">cd</span> biblioteca
+
+<span class="tk-cm"># El grupo "standard" trae: uvicorn, jinja2, python-multipart, fastapi-cli, httpx</span>
+<span class="tk-fn">uv</span> <span class="tk-kw">add</span> <span class="tk-str">"fastapi[standard]"</span>
+
+<span class="tk-cm"># Arrancar el servidor con recarga automática</span>
+<span class="tk-fn">uv</span> <span class="tk-kw">run</span> fastapi dev main.py</code></pre>
+  </div>
+
+  <p>
+    <code>fastapi[standard]</code> incluye <code>jinja2</code> y <code>python-multipart</code>, que
+    son justo las dos piezas que hacen falta para esta clase: plantillas y lectura de formularios.
+    No hace falta instalar nada más.
+  </p>
+
+  <p>
+    En el navegador, <code>http://127.0.0.1:8000/docs</code> muestra la documentación interactiva que
+    FastAPI genera solo: es el lugar donde se prueban las rutas. Anótalo, porque será tu banco de
+    pruebas durante toda la clase.
+  </p>
+
+  <h3>0.5 · El archivo de plantillas</h3>
+
+  <p>
+    Crea la carpeta <code>templates/</code> y, dentro, un archivo <code>base.html</code>. Esta
+    plantilla será el «esqueleto» de todas las páginas del proyecto:
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>templates/base.html</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">!DOCTYPE</span> <span class="tk-attr">html</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-tag">html</span> <span class="tk-attr">lang</span>="<span class="tk-attr">es</span>"<span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-tag">head</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">meta</span> <span class="tk-attr">charset</span>="<span class="tk-attr">utf-8</span>"<span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">title</span><span class="tk-pun">&gt;</span><span class="tk-pun">{{</span> <span class="tk-fn">titulo</span> | <span class="tk-fn">default</span>(<span class="tk-str">"Biblioteca"</span>) <span class="tk-pun">}}</span><span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">title</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">script</span> <span class="tk-attr">src</span>="<span class="tk-attr">https:</span>//<span class="tk-attr">unpkg.com</span>/<span class="tk-attr">htmx.org</span>@4.0.0/<span class="tk-attr">dist</span>/<span class="tk-attr">htmx.min.js</span>"<span class="tk-pun">&gt;</span><span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">script</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">head</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-tag">body</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">{{</span> <span class="tk-fn">contenido</span> | <span class="tk-fn">safe</span> <span class="tk-pun">}}</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">body</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">html</span><span class="tk-pun">&gt;</span></code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión sobre la versión del CDN</span>
+    <p>
+      La URL <code>https://unpkg.com/htmx.org@4.0.0/dist/htmx.min.js</code> fija la versión
+      explícitamente. Las tres piezas de esa URL importan: el paquete (<code>htmx.org</code>), la
+      versión (<code>@4.0.0</code>) y el archivo (<code>dist/htmx.min.js</code>). Si escribes
+      <code>htmx.org</code> a secas, el CDN te entregará la 2.x y todo lo que se explica en esta clase se
+      comportará de forma distinta a lo previsto.
+    </p>
+  </div>
+
+  <h3>0.6 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito estas dos preguntas:</p>
+
+  <ol>
+    <li>En un formulario HTML clásico, ¿qué parte de la página se reemplaza cuando el servidor responde?</li>
+    <li>Si el servidor devuelve la página completa, ¿por qué el usuario «pierde» la posición del scroll?</li>
+  </ol>
+
+  <p>
+    Vuelve a ellas al terminar la unidad 7. La diferencia entre tu respuesta inicial y la final es
+    exactamente lo que cambia cuando la aplicación pasa a producir fragmentos.
+  </p>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: el modelo de HTMX →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — EL MODELO DE HTMX
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · El modelo</div>
+    <h2>El modelo de HTMX: <em>el atributo como verbo</em></h2>
+    <p class="proposito">
+      HTMX tiene pocas ideas y muchos atributos. Si entiendes el modelo mental que hay detrás, los
+      atributos son solo consecuencia. Esta unidad construye ese modelo y lo aplica a un caso real.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: primer fragmento</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · La idea central</h3>
+
+  <p class="primer-párrafo">
+    HTMX pertenece a una familia de estilos llamada <strong>hipermedia</strong>: en lugar de que el
+    cliente consuma datos y los presente, el servidor produce directamente el HTML que el navegador
+    debe mostrar. La página no se «construye» en el navegador: se <em>reemplaza</em> por algo que el
+    servidor ya escribió.
+  </p>
+
+  <p>
+    De ahí se sigue todo: si el servidor produce HTML, no hace falta traducir ese HTML a JSON y
+    reconstruirlo en el cliente. Solo hace falta decidir <strong>qué fragmento</strong> se pide y
+    <strong>dónde se coloca</strong>. Eso son, respectivamente, el atributo <code>hx-get</code> (o
+    <code>hx-post</code>) y el atributo <code>hx-target</code>.
+  </p>
+
+  <figure>
+    <div class="diagrama">
+      <div class="nodo cliente">
+        <div class="rotulo-nodo">Rol 1</div>
+        <h5>Navegador</h5>
+        <p>Un elemento con <code>hx-get</code> dispara la petición. No hay JavaScript propio.</p>
+      </div>
+      <div class="flecha">
+        <span class="glifo">──▶</span>
+        <span class="etiqueta">Petición HTTP<br>como en la clase 1</span>
+      </div>
+      <div class="nodo servidor">
+        <div class="rotulo-nodo">Rol 2</div>
+        <h5>Servidor FastAPI</h5>
+        <p>Responde con un <strong>fragmento HTML</strong> renderizado desde Jinja2.</p>
+      </div>
+      <div class="flecha">
+        <span class="glifo vuelta">◀──</span>
+        <span class="etiqueta">Fragmento<br>HTML, no JSON</span>
+      </div>
+      <div class="nodo datos">
+        <div class="rotulo-nodo">Rol 1</div>
+        <h5>Navegador</h5>
+        <p>El fragmento reemplaza el objetivo. La página no se recarga.</p>
+      </div>
+    </div>
+    <figcaption class="pie-figura"><b>Figura 1</b>La petición es exactamente la de la clase 1: mismo protocolo, mismos métodos, mismos códigos de estado. Lo único que cambia es que la respuesta es un fragmento y que no hay recarga.</figcaption>
+  </figure>
+
+  <h3>1.2 · Los verbos: del método HTTP al atributo</h3>
+
+  <p>
+    El primer grupo de atributos de HTMX es casi una traducción de los métodos HTTP que estudiaste en
+    la clase 1. La correspondencia no es casual: el atributo <em>es</em> el método.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Atributos que equivalen a los métodos HTTP</caption>
+      <thead>
+        <tr><th>Atributo</th><th>Método HTTP</th><th>Uso típico</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>hx-get</code></td><td><code>GET</code></td><td>Consultar y mostrar un fragmento</td></tr>
+        <tr><td><code>hx-post</code></td><td><code>POST</code></td><td>Enviar un formulario, crear un recurso</td></tr>
+        <tr><td><code>hx-put</code></td><td><code>PUT</code></td><td>Reemplazar un recurso completo</td></tr>
+        <tr><td><code>hx-patch</code></td><td><code>PATCH</code></td><td>Modificar un recurso parcialmente</td></tr>
+        <tr><td><code>hx-delete</code></td><td><code>DELETE</code></td><td>Eliminar un recurso</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión</span>
+    <p>
+      El atributo <code>hx-get</code> no es «el botón que carga cosas»: es <em>la petición</em>. Si
+      el elemento que lo lleva es un <code>&lt;form&gt;</code>, HTMX envía el <code>GET</code> con los
+      valores del formulario como parámetros de consulta. Si el elemento es un <code>&lt;form
+      method="post"&gt;</code> con <code>hx-post</code>, el método es ese.
+    </p>
+  </div>
+
+  <h3>1.3 · Dónde y cómo se coloca la respuesta</h3>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>hx-target</code></dt>
+      <dd>El elemento que será reemplazado. Un selector CSS: <code>#resultado</code>, <code>.lista</code>, <code>closest form</code>, <code>this</code>, <code>next .error</code>.</dd>
+    </div>
+    <div>
+      <dt><code>hx-swap</code></dt>
+      <dd>Cómo se inserta la respuesta. Por defecto, <code>innerHTML</code>: se reemplaza el contenido interior del objetivo, y el objetivo en sí permanece.</dd>
+    </div>
+    <div>
+      <dt><code>hx-trigger</code></dt>
+      <dd>Qué evento dispara la petición. Por defecto, <code>click</code> para botones y enlaces, y <code>submit</code> para formularios. Puede ser <code>load</code>, <code>change</code>, <code>keyup changed delay:300ms</code>…</dd>
+    </div>
+    <div>
+      <dt><code>hx-swap-oob</code></dt>
+      <dd>Marca un fragmento de la respuesta para que se actualice <em>otro</em> elemento distinto del objetivo principal.</dd>
+    </div>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Valores de <code>hx-swap</code></caption>
+      <thead>
+        <tr><th>Valor</th><th>Qué hace exactamente</th><th>Ejemplo de uso</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>innerHTML</code></td><td>Reemplaza el contenido interior del objetivo</td><td>Actualizar una lista (por defecto)</td></tr>
+        <tr><td><code>outerHTML</code></td><td>Reemplaza el elemento completo, incluido él mismo</td><td>Reemplazar un formulario entero por su versión con errores</td></tr>
+        <tr><td><code>textContent</code></td><td>Reemplaza solo el texto, sin interpretar el HTML</td><td>Actualizar un contador o un total</td></tr>
+        <tr><td><code>beforeend</code></td><td>Inserta al final, dentro del objetivo</td><td>Añadir un elemento a una lista</td></tr>
+        <tr><td><code>afterbegin</code></td><td>Inseta al principio, dentro del objetivo</td><td>Mostrar primero el elemento más reciente</td></tr>
+        <tr><td><code>beforebegin</code></td><td>Inserta justo antes del elemento</td><td>Colocar un mensaje de aviso encima</td></tr>
+        <tr><td><code>afterend</code></td><td>Inserta justo después del elemento</td><td>Colocar un botón «editar» junto a cada fila</td></tr>
+        <tr><td><code>delete</code></td><td>Elimina el elemento del DOM</td><td>Borrar una fila de una lista</td></tr>
+        <tr><td><code>none</code></td><td>No intercambia nada</td><td>Cuando el efecto lo produce otro elemento</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>1.4 · El ciclo de una petición HTMX</h3>
+
+  <p>
+    Vale la pena mirar con detalle lo que ocurre entre que el usuario hace clic y que el fragmento
+    aparece. La comparación con la clase 1 es instructiva: allí describimos las siete fases de una
+    petición HTTP; aquí describimos las mismas, más el trabajo específico que hace HTMX.
+  </p>
+
+  <div class="ciclo">
+    <div class="ciclo-fila cliente">
+      <span class="ciclo-n">1</span>
+      <span class="ciclo-txt"><b>El evento ocurre · Cliente</b><span>Un clic, un <code>submit</code>, un <code>change</code>. HTMX intercepta el evento: se anula el comportamiento por defecto y no se recarga la página.</span></span>
+    </div>
+    <div class="ciclo-fila cliente">
+      <span class="ciclo-n">2</span>
+      <span class="ciclo-txt"><b>Se construye la petición · Cliente</b><span>Método, URL, cabeceras y — si el elemento es un formulario — los valores de sus campos. Los parámetros de la URL y las cabeceras se combinan con el cuerpo del formulario.</span></span>
+    </div>
+    <div class="ciclo-fila red">
+      <span class="ciclo-n">3</span>
+      <span class="ciclo-txt"><b>Viaje de red · Red</b><span>Las fases 2 a 4 de la clase 1: DNS, conexión TCP/TLS y envío. HTMX usa internamente <code>fetch()</code> desde la versión 4.</span></span>
+    </div>
+    <div class="ciclo-fila servidor">
+      <span class="ciclo-n">4</span>
+      <span class="ciclo-txt"><b>El servidor produce el fragmento · Servidor</b><span>Enruta, valida, ejecuta la lógica y renderiza una plantilla Jinja2. Devuelve solo la porción de HTML necesaria, con su código de estado.</span></span>
+    </div>
+    <div class="ciclo-fila servidor">
+      <span class="ciclo-n">5</span>
+      <span class="ciclo-txt"><b>La respuesta vuelve · Servidor → Cliente</b><span>El fragmento HTML llega completo. El código de estado —200, 422, 404— llega con él, y en HTMX 4 eso tiene consecuencias nuevas.</span></span>
+    </div>
+    <div class="ciclo-fila cliente">
+      <span class="ciclo-n">6</span>
+      <span class="ciclo-txt"><b>El intercambio · Cliente</b><span>HTMX coloca el fragmento en el objetivo según <code>hx-target</code> y <code>hx-swap</code>. No hay recarga: solo cambia esa porción del DOM.</span></span>
+    </div>
+    <div class="ciclo-fila cliente">
+      <span class="ciclo-n">7</span>
+      <span class="ciclo-txt"><b>El contenido nuevo se procesa · Cliente</b><span>HTMX examina el HTML que acaba de insertar: si dentro hay elementos con atributos <code>hx-*</code>, también quedan activos. Es la propiedad que hace que los fragmentos se puedan componer entre sí.</span></span>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota</span>
+    <p>
+      La fase 7 es la que casi nadie menciona y la que más sorprende. Un fragmento no es un trozo de
+      página muerto: es una página en miniatura que puede tener sus propios botones con
+      <code>hx-get</code>. Por eso los formularios que devuelven «el formulario con errores» pueden
+      seguir siendo interactivos después del intercambio.
+    </p>
+  </div>
+
+  <div class="ejemplo">
+    <div class="ejemplo-cabecera">
+      <span class="titulo">Ejemplo guiado <b>1.1</b> — El primer fragmento, de extremo a extremo</span>
+      <span class="titulo" style="color:var(--texto-3)">12 min</span>
+    </div>
+    <div class="ejemplo-cuerpo">
+      <p>
+        Vamos a construir el caso de la unidad 0: una lista de libros que se carga sin recargar la
+        página. Cuatro archivos, cuatro decisiones.
+      </p>
+
+      <div class="paso">
+        <span class="n">1</span>
+        <div class="cuerpo-paso">
+          <strong>El servidor: la ruta que devuelve un fragmento</strong>
+          <p>
+            La ruta no devuelve JSON ni una página completa: devuelve <strong>una plantilla</strong>, y
+            esa plantilla es el fragmento. Fíjate en la firma moderna de
+            <code>TemplateResponse</code>: <code>request</code> va como argumento con nombre, y el
+            contexto en un diccionario aparte.
+          </p>
+        </div>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="code-header-left">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span>main.py</span>
+          </div>
+          <button class="copy-btn">Copiar</button>
+        </div>
+<pre><code><span class="tk-kw">from</span> contextlib <span class="tk-kw">import</span> asynccontextmanager
+<span class="tk-kw">from</span> typing <span class="tk-kw">import</span> <span class="tk-cls">Annotated</span>
+
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">FastAPI</span>, <span class="tk-cls">Request</span>
+<span class="tk-kw">from</span> fastapi.responses <span class="tk-kw">import</span> <span class="tk-cls">HTMLResponse</span>
+<span class="tk-kw">from</span> fastapi.templating <span class="tk-kw">import</span> <span class="tk-cls">Jinja2Templates</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">lifespan</span>(app: <span class="tk-cls">FastAPI</span>):
+    <span class="tk-cm"># Aquí se abrirían y cerrarían recursos (base de datos, caché)</span>
+    <span class="tk-kw">yield</span>
+
+
+app = <span class="tk-cls">FastAPI</span>(lifespan=lifespan)
+templates = <span class="tk-cls">Jinja2Templates</span>(directory=<span class="tk-str">"templates"</span>)
+
+LIBROS = [
+    {<span class="tk-str">"id"</span>: <span class="tk-num">1</span>, <span class="tk-str">"titulo"</span>: <span class="tk-str">"Cien años de soledad"</span>, <span class="tk-str">"disponible"</span>: <span class="tk-kw">True</span>},
+    {<span class="tk-str">"id"</span>: <span class="tk-num">2</span>, <span class="tk-str">"titulo"</span>: <span class="tk-str">"Pedro Páramo"</span>, <span class="tk-str">"disponible"</span>: <span class="tk-kw">False</span>},
+]
+
+
+<span class="tk-attr">@app.get</span>(<span class="tk-str">"/api/libros"</span>, response_class=<span class="tk-cls">HTMLResponse</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">listar_libros</span>(request: <span class="tk-cls">Request</span>):
+    <span class="tk-kw">return</span> templates.<span class="tk-fn">TemplateResponse</span>(
+        request=request,
+        name=<span class="tk-str">"fragmento_libros.html"</span>,
+        context={<span class="tk-str">"libros"</span>: LIBROS},
+    )</code></pre>
+      </div>
+
+      <div class="paso">
+        <span class="n">2</span>
+        <div class="cuerpo-paso">
+          <strong>La plantilla del fragmento</strong>
+          <p>
+            Esta plantilla <strong>no</strong> es una página: es un trozo. Por eso no lleva
+            <code>&lt;html&gt;</code>, ni <code>&lt;head&gt;</code>, ni <code>&lt;body&gt;</code>. Solo
+            el contenido que se va a insertar.
+          </p>
+        </div>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="code-header-left">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span>templates/fragmento_libros.html</span>
+          </div>
+          <button class="copy-btn">Copiar</button>
+        </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">ul</span> <span class="tk-attr">class</span>="<span class="tk-attr">lista-libros</span>"<span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">li</span> <span class="tk-attr">class</span>="<span class="tk-attr">libro</span>"<span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">span</span> <span class="tk-attr">class</span>="<span class="tk-attr">titulo</span>"<span class="tk-pun">&gt;</span><span class="tk-pun">{{</span> <span class="tk-fn">libro</span>[<span class="tk-str">"titulo"</span>] <span class="tk-pun">}}</span><span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">span</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">span</span> <span class="tk-attr">class</span>="<span class="tk-attr">estado</span>"<span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">span</span> <span class="tk-attr">class</span>="{{ '<span class="tk-attr">disponible</span>' <span class="tk-attr">if</span> <span class="tk-attr">libro</span>['<span class="tk-attr">disponible</span>'] <span class="tk-attr">else</span> '<span class="tk-attr">prestado</span>' }}"<span class="tk-pun">&gt;</span>
+        <span class="tk-pun">{{</span> <span class="tk-str">'Disponible'</span> <span class="tk-kw">if</span> <span class="tk-fn">libro</span>[<span class="tk-str">"disponible"</span>] <span class="tk-kw">else</span> <span class="tk-str">'Prestado'</span> <span class="tk-pun">}}</span>
+      <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">span</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">span</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">li</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">ul</span><span class="tk-pun">&gt;</span></code></pre>
+      </div>
+
+      <div class="paso">
+        <span class="n">3</span>
+        <div class="cuerpo-paso">
+          <strong>La página: un contenedor que se llena solo</strong>
+          <p>
+            <code>hx-trigger="load"</code> significa «haz la petición en cuanto este elemento exista en
+            la página». El contenido inicial —«Cargando…»— es lo que el usuario ve mientras viaja la
+            petición; se reemplaza en cuanto llega el fragmento.
+          </p>
+        </div>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="code-header-left">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span>templates/index.html</span>
+          </div>
+          <button class="copy-btn">Copiar</button>
+        </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">h1</span><span class="tk-pun">&gt;</span>Catálogo<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">h1</span><span class="tk-pun">&gt;</span>
+
+&lt;div id=<span class="tk-str">"catalogo"</span>
+     hx-get=<span class="tk-str">"/api/libros"</span>
+     hx-trigger=<span class="tk-str">"load"</span>
+     hx-swap=<span class="tk-str">"innerHTML"</span>&gt;
+  <span class="tk-pun">&lt;</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>Cargando…<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span></code></pre>
+      </div>
+
+      <div class="paso">
+        <span class="n">4</span>
+        <div class="cuerpo-paso">
+          <strong>Comprobación</strong>
+          <p>
+            Añade la ruta de la página completa al <code>main.py</code> y comprueba en el navegador que
+            la lista aparece <strong>sin</strong> que la página se recargue. En las DevTools, pestaña
+            Network, la petición <code>/api/libros</code> aparecerá con tipo <code>fetch</code> y sin
+            una segunda petición al documento HTML.
+          </p>
+          <p class="observacion"><b>Observa:</b> si al recargar la página aparece la lista de inmediato en el HTML de origen, es que la ruta de la página está haciendo el trabajo de la ruta del fragmento. El fragmento debe llegar <em>después</em>, por AJAX.</p>
+        </div>
+      </div>
+
+      <div class="recuadro aplicacion" style="margin-bottom:0">
+        <span class="rotulo">Aplicación</span>
+        <p>
+          Añade un segundo botón a la página que pida el mismo fragmento con
+          <code>hx-get</code> y <code>hx-target="#catalogo"</code>. Comprueba que el contenido se
+          reemplaza y que el resto de la página (el título, el menú) no se mueve. Anota en el cuaderno
+        qué observable del modelo de la clase 1 se mantiene y cuál es nuevo.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué determina realmente la sustitución de una página completa por un fragmento?</p>
+      <button class="opcion" data-op="a">El atributo <code>hx-swap</code> por sí solo</button>
+      <button class="opcion" data-op="b">Que la respuesta del servidor tenga menos de 100 líneas</button>
+      <button class="opcion" data-op="c">Que el servidor devuelva solo la porción de HTML necesaria y HTMX la inserte en el objetivo</button>
+      <button class="opcion" data-op="d">Que el navegador use <code>fetch()</code> en lugar de <code>XMLHttpRequest</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> En una etiqueta <code>&lt;form hx-post="/api/prestamos"&gt;</code>, ¿qué se envía al servidor?</p>
+      <button class="opcion" data-op="a">Una petición POST con los valores de los campos que tienen atributo <code>name</code></button>
+      <button class="opcion" data-op="b">Una petición GET con los valores de todos los campos</button>
+      <button class="opcion" data-op="c">Solo el texto del botón pulsado</button>
+      <button class="opcion" data-op="d">El HTML completo del formulario, sin procesar</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Por qué es importante que HTMX procese el contenido nuevo después de insertarlo?</p>
+      <button class="opcion" data-op="a">Para aplicar los estilos del CSS automáticamente</button>
+      <button class="opcion" data-op="b">Porque un fragmento puede contener a su vez elementos con atributos <code>hx-*</code> que deben quedar activos</button>
+      <button class="opcion" data-op="c">Para corregir errores de sintaxis en el HTML recibido</button>
+      <button class="opcion" data-op="d">Para que el servidor reciba una segunda confirmación</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: HTMX 4.0 →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — HTMX 4.0
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · La versión</div>
+    <h2>HTMX 4.0: <em>qué cambió y por qué importa</em></h2>
+    <p class="proposito">
+      HTMX 4.0 no es una actualización menor: cambió el comportamiento por defecto de la biblioteca en
+      puntos que afectan directamente al código que escribiremos. Conocerlos no es un detalle menor:
+      es la diferencia entre que la aplicación funcione o no.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura comparada</b></span>
+      <span>🧭 <b>Producto: guía de migración</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · Las tres grandes</h3>
+
+  <p class="primer-párrafo">
+    La versión 4.0.0 se publicó el 28 de agosto de 2026. El autor resume el cambio en una frase:
+    «casi idéntico a la versión 2 para el usuario, con tres diferencias profundas». Son esas tres las
+    que cambian el código.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>1 · <code>fetch()</code> en lugar de <code>XMLHttpRequest</code></dt>
+      <dd>
+        La biblioteca reescribió su transporte interno. Para ti casi no cambia nada… salvo que todos
+        los eventos <code>htmx:xhr:*</code> desaparecieron, porque no hay <code>XHR</code> que
+        observar. Y aparecen capacidades que antes eran imposibles: el streaming de HTML y los
+        websockets, que dependían de que la biblioteca controlara la respuesta byte a byte.
+      </dd>
+    </div>
+    <div>
+      <dt>2 · La herencia es explícita</dt>
+      <dd>
+        Antes, un atributo <code>hx-target</code> en un contenedor se heredaba a todos sus
+        descendientes. Ahora <strong>no</strong>: hay que añadir el sufijo <code>:inherited</code> de
+        forma explícita. Es el cambio que más rompe cosas, y lo veremos en detalle.
+      </dd>
+    </div>
+    <div>
+      <dt>3 · Las respuestas de error también se intercambian</dt>
+      <dd>
+        En la versión 2, una respuesta <code>4xx</code> o <code>5xx</code> <em>no</em> se insertaba en
+        la página: se descartaba. En la versión 4, <strong>sí se inserta</strong> (las únicas
+        excepciones son <code>204</code> y <code>304</code>). Esto es exactamente lo que hace posible
+        mostrar los errores de validación de un formulario en línea, que es el tema central de esta
+        clase.
+      </dd>
+    </div>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — por qué esto importa para los formularios</span>
+    <p>
+      El cambio 3 es la buena noticia: el servidor puede responder <code>422</code> con un fragmento
+      HTML que contiene los mensajes de error, y ese fragmento se inserta en el formulario. Antes de
+      HTMX 4 había que hacer malabares con <code>hx-swap="none"</code> y un evento
+      <code>htmx:responseError</code> para inyectar el error a mano.
+    </p>
+  </div>
+
+  <h3>2.2 · La herencia explícita, en detalle</h3>
+
+  <p>
+    La herencia automática era cómoda y impredecible. Cómoda porque un solo atributo bastaba;
+    impredecible porque era imposible saber de un vistazo qué botón de una tabla iba a usar el
+    <code>hx-target</code> de tres niveles más arriba.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>herencia — versión 2 frente a versión 4</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code># HTMX 2: el botón heredaba hx-target y hx-swap del contenedor
+<span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">hx-get</span>="/<span class="tk-attr">api</span>/<span class="tk-attr">detalle</span>" <span class="tk-attr">hx-target</span>="#<span class="tk-attr">panel</span>"<span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>Ver detalle<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+
+# HTMX 4: hay que pedirlo explícitamente con el sufijo :inherited
+&lt;div hx-get:inherited=<span class="tk-str">"/api/detalle"</span>
+     hx-target:inherited=<span class="tk-str">"#panel"</span>&gt;
+  <span class="tk-pun">&lt;</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>Ver detalle<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span></code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el fallo silencioso</span>
+    <p>
+      El síntoma típico de olvidar el <code>:inherited</code> es desconcertante: el atributo parece
+      funcionar (el botón sí hace la petición), pero el resultado se inserta en el sitio equivocado, o
+      no se inserta en ninguno. En el caso de <code>hx-headers</code> con un token CSRF, el síntoma es
+      aún peor: el servidor empieza a responder <code>403</code> sin que nada parezca roto.
+    </p>
+    <p>
+      <strong>Regla práctica:</strong> si un atributo <code>hx-*</code> estaba en un padre y los hijos
+      lo usaban, en la versión 4 hay que añadirle <code>:inherited</code>.
+    </p>
+  </div>
+
+  <h3>2.3 · Los eventos tienen nombres nuevos</h3>
+
+  <p>
+    Los eventos de HTMX se nombran ahora con el patrón <code>htmx:fase:acción</code>. La tabla es
+    corta y la regla es fácil: donde antes había una mayúscula, ahora hay dos puntos.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Renombrado de eventos</caption>
+      <thead>
+        <tr><th>HTMX 2</th><th>HTMX 4</th><th>Cuándo se dispara</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>htmx:beforeRequest</code></td><td><code>htmx:before:request</code></td><td>Justo antes de enviar la petición</td></tr>
+        <tr><td><code>htmx:afterRequest</code></td><td><code>htmx:after:request</code></td><td>Cuando la respuesta llega</td></tr>
+        <tr><td><code>htmx:beforeSwap</code></td><td><code>htmx:before:swap</code></td><td>Antes de insertar el fragmento</td></tr>
+        <tr><td><code>htmx:afterSwap</code></td><td><code>htmx:after:swap</code></td><td>Después de insertar el fragmento</td></tr>
+        <tr><td><code>htmx:configRequest</code></td><td><code>htmx:config:request</code></td><td>Permite modificar la petición antes de enviarla</td></tr>
+        <tr><td><code>htmx:swap:finally</code></td><td><code>htmx:finally:request</code></td><td>Al terminar la petición, pase lo que pase</td></tr>
+        <tr><td><code>htmx:responseError</code></td><td><code>htmx:response:error</code></td><td>La respuesta trae un código de error</td></tr>
+        <tr><td><code>htmx:validation:halted</code></td><td><em>eliminado</em></td><td>—: ahora manda la validación nativa del navegador</td></tr>
+        <tr><td><code>htmx:xhr:*</code></td><td><em>eliminado</em></td><td>—: no hay <code>XHR</code> que observar</td></tr>
+        <tr><td>—</td><td><code>htmx:error</code></td><td>Nuevo: agrupa la mayoría de los errores internos</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>2.4 · Atributos renombrados, eliminados y reutilizados</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cambios en los atributos</caption>
+      <thead>
+        <tr><th>En HTMX 2</th><th>En HTMX 4</th><th>Motivo del cambio</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>hx-disable</code></td><td><code>hx-ignore</code></td><td>El nombre se libera para otro significado</td></tr>
+        <tr><td><code>hx-disabled-elt</code></td><td><code>hx-disable</code></td><td>Se renombró al nombre que quedó libre</td></tr>
+        <tr><td><code>hx-vars</code></td><td><code>hx-vals</code> con prefijo <code>js:</code></td><td>Se unificó con <code>hx-vals</code></td></tr>
+        <tr><td><code>hx-params</code></td><td>Evento <code>htmx:config:request</code></td><td>Se resuelve con un evento</td></tr>
+        <tr><td><code>hx-prompt</code></td><td>Extensión <code>hx-prompt</code></td><td>Pasó a ser una extensión opcional</td></tr>
+        <tr><td><code>hx-ext</code></td><td><em>eliminado</em></td><td>Las extensiones se cargan con su propio <code>&lt;script&gt;</code></td></tr>
+        <tr><td><code>hx-history</code></td><td>Extensión <code>hx-history-cache</code></td><td>El historial ya no se guarda en <code>localStorage</code></td></tr>
+        <tr><td><code>hx-trigger="… queue:all"</code></td><td><code>hx-sync</code></td><td>El modificador <code>queue</code> se eliminó</td></tr>
+        <tr><td><code>hx-delete</code> incluye el formulario</td><td>Ya no lo incluye</td><td>Coherencia con la especificación HTTP; usar <code>hx-include="closest form"</code></td></tr>
+        <tr><td>Los atributos se heredan</td><td>Solo con <code>:inherited</code></td><td>El cambio más importante de la versión</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>2.5 · Lo que no cambió</h3>
+
+  <p>
+    Es igual de importante saber qué se mantiene, porque significa que el grueso de lo que ya sabes
+    sigue siendo válido:
+  </p>
+
+  <ul>
+    <li>Los atributos principales: <code>hx-get</code>, <code>hx-post</code>, <code>hx-put</code>, <code>hx-delete</code>, <code>hx-target</code>, <code>hx-swap</code>, <code>hx-trigger</code>, <code>hx-vals</code>, <code>hx-include</code>, <code>hx-confirm</code>, <code>hx-indicator</code>, <code>hx-boost</code>.</li>
+    <li>Los valores de <code>hx-swap</code>: <code>innerHTML</code>, <code>outerHTML</code>, <code>textContent</code>, <code>beforeend</code>, <code>afterbegin</code>, <code>beforebegin</code>, <code>afterend</code>, <code>delete</code>, <code>none</code>.</li>
+    <li>La idea central: el servidor produce HTML y el navegador coloca un fragmento.</li>
+    <li>La ausencia de JavaScript propio: HTMX es una librería declarativa, se escribe HTML, no se escribe código.</li>
+  </ul>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el tamaño de la biblioteca</span>
+    <p>
+      HTMX 4 sigue siendo una librería pequeña: unos <strong>14 KB</strong> comprimidos, sin
+      dependencias. Todo lo que hace cabe en un archivo y no necesita compilación. Para un curso de
+      grado once eso es una ventaja práctica: el único «dependency» que hay que descargar es el
+      propio archivo del CDN.
+    </p>
+  </div>
+
+  <h3>2.6 · Herramientas de migración</h3>
+
+  <p>
+    Si parte de tu proyecto ya usaba HTMX 2, existen dos puentes. Ninguno es obligatorio en una
+    aplicación nueva, pero conviene conocerlos.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — verificador de actualización</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Analiza una carpeta de plantillas y señala los problemas</span>
+<span class="tk-fn">npx</span> htmx.org@4.0.0 upgrade-check -- ./templates</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>script — puentes de compatibilidad</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>// Puente 1: restaurar la herencia implícita (comportamiento de la versión 2)
+htmx.config.implicitInheritance = true;
+
+// Puente 2: volver a descartar las respuestas de error
+htmx.config.noSwap = [204, 304, <span class="tk-str">'4xx'</span>, <span class="tk-str">'5xx'</span>];
+
+// Puente 3: cargar la extensión htmx-2-compat
+// <span class="tk-pun">&lt;</span><span class="tk-tag">script</span> <span class="tk-attr">src</span>="<span class="tk-attr">https:</span>//<span class="tk-attr">unpkg.com</span>/<span class="tk-attr">htmx.org</span>@4.0.0/<span class="tk-attr">dist</span>/<span class="tk-attr">ext</span>/<span class="tk-attr">htmx-2-compat.js</span>"<span class="tk-pun">&gt;</span><span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">script</span><span class="tk-pun">&gt;</span></code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión</span>
+    <p>
+      Los puentes sirven para hacer que una aplicación de HTMX 2 siga funcionando mientras se migra
+      pieza a pieza. <strong>No son la estrategia recomendada para una aplicación nueva</strong>: si
+      empiezas hoy, escribe directamente con las reglas de la versión 4. La única excepción razonable
+      es un proyecto heredado que no puedes tocar entero.
+    </p>
+  </div>
+
+  <div class="ejemplo">
+    <div class="ejemplo-cabecera">
+      <span class="titulo">Ejemplo guiado <b>2.1</b> — Migrar un fragmento de la versión 2 a la 4</span>
+      <span class="titulo" style="color:var(--texto-3)">10 min</span>
+    </div>
+    <div class="ejemplo-cuerpo">
+      <p>
+        Partimos de un fragmento escrito para HTMX 2 y lo llevamos a la versión 4. El ejercicio sirve
+        aunque escribas desde cero: muestra qué hay que revisar en un proyecto existente.
+      </p>
+
+      <div class="paso">
+        <span class="n">1</span>
+        <div class="cuerpo-paso">
+          <strong>El código original (HTMX 2)</strong>
+          <p>
+            Un panel que carga un detalle y un botón que lo borra. El botón <strong>no declara
+            <code>hx-target</code></strong>: lo hereda del contenedor. Y el borrado usa
+            <code>hx-disable</code> para desactivar el botón mientras dura la petición.
+          </p>
+        </div>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="code-header-left">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span>antes — HTMX 2</span>
+          </div>
+          <button class="copy-btn">Copiar</button>
+        </div>
+<pre><code>&lt;div id=<span class="tk-str">"panel"</span>
+     hx-get=<span class="tk-str">"/api/detalle"</span>
+     hx-target=<span class="tk-str">"#resultado"</span>
+     hx-trigger=<span class="tk-str">"load"</span>&gt;
+
+  &lt;button hx-delete=<span class="tk-str">"/api/prestamos/7"</span>
+          hx-disabled-elt=<span class="tk-str">"this"</span>&gt;
+    Eliminar
+  <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span></code></pre>
+      </div>
+
+      <div class="paso">
+        <span class="n">2</span>
+        <div class="cuerpo-paso">
+          <strong>El código migrado (HTMX 4)</strong>
+          <p>Tres cambios y una decisión de diseño.</p>
+        </div>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="code-header-left">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span>después — HTMX 4</span>
+          </div>
+          <button class="copy-btn">Copiar</button>
+        </div>
+<pre><code>&lt;div id=<span class="tk-str">"panel"</span>
+     hx-get:inherited=<span class="tk-str">"/api/detalle"</span>
+     hx-target:inherited=<span class="tk-str">"#resultado"</span>
+     hx-trigger=<span class="tk-str">"load"</span>&gt;
+
+  &lt;button hx-delete=<span class="tk-str">"/api/prestamos/7"</span>
+          hx-disable=<span class="tk-str">"this"</span>&gt;
+    Eliminar
+  <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span></code></pre>
+      </div>
+
+      <div class="paso">
+        <span class="n">3</span>
+        <div class="cuerpo-paso">
+          <strong>El inventario de cambios</strong>
+          <p>
+            <code>hx-target</code> → <code>hx-target:inherited</code> y
+            <code>hx-get</code> → <code>hx-get:inherited</code>, porque el botón los necesita.
+            <code>hx-disabled-elt</code> → <code>hx-disable</code>, porque ese nombre ahora significa
+            otra cosa. Y una decisión: el <code>hx-delete</code> ya no incluye los valores del
+            formulario, así que si el borrado necesita algún dato, hay que añadir
+            <code>hx-include="closest form"</code>.
+          </p>
+          <p class="observacion"><b>Observa:</b> el botón no tenía <code>hx-target</code> propio. Al heredar el del contenedor, en la versión 4 el borrado insertaría su respuesta en <code>#resultado</code>… pero solo si se le dice. Sin <code>:inherited</code>, cada botón necesita su propio objetivo, que suele ser lo más claro.</p>
+        </div>
+      </div>
+
+      <div class="recuadro aplicacion" style="margin-bottom:0">
+        <span class="rotulo">Aplicación</span>
+        <p>
+          Escribe en el cuaderno una tabla con cuatro columnas: <em>Elemento</em>, <em>En HTMX 2</em>,
+          <em>En HTMX 4</em>, <em>Motivo</em>. Rellénala con los diez cambios de las unidades 2.3 y
+          2.4. Esa tabla es tu guía de referencia para el resto del módulo y para el taller final.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> En HTMX 4, ¿qué debe pasar para que un hijo herede el <code>hx-target</code> del padre?</p>
+      <button class="opcion" data-op="a">Nada: la herencia automática se mantiene</button>
+      <button class="opcion" data-op="b">El padre debe declarar el atributo con el sufijo <code>:inherited</code></button>
+      <button class="opcion" data-op="c">Debe activarse <code>htmx.config.implicitInheritance = true</code></button>
+      <button class="opcion" data-op="d">El hijo debe declarar <code>hx-target="inherit"</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Qué ocurre en HTMX 4 cuando el servidor responde <code>422</code> con un fragmento HTML?</p>
+      <button class="opcion" data-op="a">El fragmento se descarta, igual que en la versión 2</button>
+      <button class="opcion" data-op="b">El navegador recarga la página completa</button>
+      <button class="opcion" data-op="c">El fragmento se inserta en el objetivo, porque las respuestas de error ahora también se intercambian</button>
+      <button class="opcion" data-op="d">HTMX reintenta la petición con el método <code>GET</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuál de estos atributos <strong>desapareció</strong> en HTMX 4?</p>
+      <button class="opcion" data-op="a"><code>hx-ext</code></button>
+      <button class="opcion" data-op="b"><code>hx-target</code></button>
+      <button class="opcion" data-op="c"><code>hx-trigger</code></button>
+      <button class="opcion" data-op="d"><code>hx-swap</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: El modelo de HTMX</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: Anatomía de un formulario →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — ANATOMÍA DE UN FORMULARIO
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · Los datos</div>
+    <h2>Anatomía de un <em>formulario</em>: el contrato de los datos</h2>
+    <p class="proposito">
+      Un formulario no es una caja con campos: es un <strong>contrato</strong> entre el navegador y el
+      servidor sobre qué datos se envían y con qué nombre. Entender ese contrato es lo que separa
+      «el formulario no funciona» de «el navegador no envió el campo porque le falta el
+      <code>name</code>».
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>✍️ <b>Ejercicio práctico</b></span>
+      <span>🧭 <b>Producto: formulario con validación nativa</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · Las piezas de un formulario</h3>
+
+  <p class="primer-párrafo">
+    Todo formulario tiene tres capas: el <strong>contenedor</strong> (<code>&lt;form&gt;</code>), los
+    <strong>campos</strong> (<code>&lt;input&gt;</code>, <code>&lt;select&gt;</code>,
+    <code>&lt;textarea&gt;</code>) y sus <strong>etiquetas</strong> (<code>&lt;label&gt;</code>). El
+    atributo que las conecta es <code>name</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>html — un campo completo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>="<span class="tk-attr">estudiante</span>"<span class="tk-pun">&gt;</span>Nombre del estudiante<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+
+&lt;input
+  type=<span class="tk-str">"text"</span>
+  id=<span class="tk-str">"estudiante"</span>
+  name=<span class="tk-str">"estudiante"</span>
+  required
+  minlength=<span class="tk-str">"3"</span>
+  maxlength=<span class="tk-str">"80"</span>
+  autocomplete=<span class="tk-str">"name"</span>
+  placeholder=<span class="tk-str">"Ana Torres"</span>&gt;</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>name</code></dt>
+      <dd>El <strong>nombre de la clave</strong> con la que el valor viajará al servidor. Sin <code>name</code>, el campo <strong>no se envía</strong>. Es el atributo más importante del formulario y el que más se olvida.</dd>
+    </div>
+    <div>
+      <dt><code>id</code></dt>
+      <dd>El identificador <strong>dentro de la página</strong>. Lo usan el atributo <code>for</code> de la etiqueta y las reglas de CSS. No tiene relación directa con el servidor.</dd>
+    </div>
+    <div>
+      <dt><code>for</code> (de la etiqueta)</dt>
+      <dd>Apunta al <code>id</code> del campo. Al pulsarlo, el navegador coloca el cursor en el campo. Es un detalle de accesibilidad, no de funcionalidad.</dd>
+    </div>
+    <div>
+      <dt><code>type</code></dt>
+      <dd>El tipo de dato esperado. No solo cambia el aspecto: determina la <strong>validación nativa</strong> y el teclado que aparece en el móvil.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — <code>id</code> no es <code>name</code></span>
+    <p>
+      Son nombres parecidos con propósitos distintos y con una consecuencia práctica: un campo puede
+      tener <code>id="correo"</code> y <code>name="email"</code>. El servidor recibiría la clave
+      <code>email</code>, no <code>correo</code>. Cuando un formulario «no manda los datos», la
+      primera comprobación es siempre esta: ¿el campo tiene <code>name</code>? ¿y el <code>name</code>
+      es el que la ruta espera?
+    </p>
+  </div>
+
+  <figure>
+    <div class="capas">
+      <div class="capa">
+        <span class="capa-nombre">Nivel 1</span>
+        <span class="capa-desc"><b>El campo existe.</b> El navegador lo dibuja y permite escribir en él. Todavía no se ha enviado nada.</span>
+      </div>
+      <div class="capa">
+        <span class="capa-nombre">Nivel 2</span>
+        <span class="capa-desc"><b>El campo tiene <code>name</code>.</b> Ahora el navegador sabe bajo qué clave enviar su valor.</span>
+      </div>
+      <div class="capa">
+        <span class="capa-nombre">Nivel 3</span>
+        <span class="capa-desc"><b>El campo pasa la validación nativa.</b> Si no, el navegador impide el envío y muestra su propio mensaje.</span>
+      </div>
+      <div class="capa">
+        <span class="capa-nombre">Nivel 4</span>
+        <span class="capa-desc"><b>El servidor valida de nuevo.</b> Es la única validación que no se puede saltar. Lo vemos en la unidad 5.</span>
+      </div>
+    </div>
+    <figcaption class="pie-figura"><b>Figura 2</b>Los cuatro niveles por los que pasa un dato antes de ser aceptado. Un formulario moderno los recorre todos: los dos primeros en el navegador, el cuarto en el servidor.</figcaption>
+  </figure>
+
+  <h3>3.2 · La validación nativa del navegador</h3>
+
+  <p>
+    Los navegadores modernos validan los formularios por su cuenta, sin una sola línea de JavaScript.
+    Es una de las mayores-herramientas disponibles y la mayoría de los estudiantes la desconocen.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Atributos de validación nativa</caption>
+      <thead>
+        <tr><th>Atributo</th><th>Qué comprueba</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>required</code></td><td>Que no esté vacío</td><td><code>&lt;input required&gt;</code></td></tr>
+        <tr><td><code>type="email"</code></td><td>Que tenga forma de correo</td><td><code>&lt;input type="email"&gt;</code></td></tr>
+        <tr><td><code>type="number"</code></td><td>Que sea un número (y no texto)</td><td><code>&lt;input type="number"&gt;</code></td></tr>
+        <tr><td><code>min</code> / <code>max</code></td><td>Rango de valores numéricos</td><td><code>&lt;input type="number" min="1" max="30"&gt;</code></td></tr>
+        <tr><td><code>minlength</code> / <code>maxlength</code></td><td>Longitud del texto</td><td><code>&lt;input minlength="3" maxlength="80"&gt;</code></td></tr>
+        <tr><td><code>pattern</code></td><td>Una expresión regular</td><td><code>&lt;input pattern="[0-9]{3}-[0-9]{3}"&gt;</code></td></tr>
+        <tr><td><code>step</code></td><td>Los múltiplos permitidos</td><td><code>&lt;input type="number" step="5"&gt;</code></td></tr>
+        <tr><td><code>disabled</code></td><td>El campo <strong>no se envía</strong></td><td><code>&lt;input disabled&gt;</code></td></tr>
+        <tr><td><code>novalidate</code></td><td>Desactiva la validación del navegador (en el <code>&lt;form&gt;</code>)</td><td><code>&lt;form novalidate&gt;</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — <code>novalidate</code> desactiva la primera barrera</span>
+    <p>
+      Añadir <code>novalidate</code> al formulario no elimina la necesidad de validar: elimina la
+      validación <em>del navegador</em>. Si lo haces, el servidor se convierte en la única barrera, y
+      el usuario pierde la retroalimentación inmediata. Úsalo solo cuando el servidor sea capaz de
+      devolver un fragmento de error bien diseñado: que es precisamente lo que aprenderemos en la
+      unidad 6.
+    </p>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — la validación del navegador no es seguridad</span>
+    <p>
+      La validación nativa es una <strong>comodidad de experiencia de usuario</strong>: evita un viaje
+      de ida y vuelta al servidor para descubrir que faltaba un campo. No es una garantía, porque
+      quien quiere saltársela puede: la petición se puede escribir a mano, o se puede llamar a la
+      ruta directamente con <code>curl</code>. Es la misma frontera de la clase 1: <strong>la
+      verificación que importa es la del servidor</strong>.
+    </p>
+  </div>
+
+  <h3>3.3 · El formulario completo</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>html — formulario de solicitud de préstamo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>&lt;form id=<span class="tk-str">"formulario-prestamo"</span>
+      method=<span class="tk-str">"post"</span>
+      action=<span class="tk-str">"/api/prestamos"</span>&gt;
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>="<span class="tk-attr">estudiante</span>"<span class="tk-pun">&gt;</span>Estudiante<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+  &lt;input type=<span class="tk-str">"text"</span> id=<span class="tk-str">"estudiante"</span>
+         name=<span class="tk-str">"estudiante"</span> required
+         minlength=<span class="tk-str">"3"</span> maxlength=<span class="tk-str">"80"</span>&gt;
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>="<span class="tk-attr">correo</span>"<span class="tk-pun">&gt;</span>Correo institucional<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+  &lt;input type=<span class="tk-str">"email"</span> id=<span class="tk-str">"correo"</span>
+         name=<span class="tk-str">"correo"</span> required&gt;
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>="<span class="tk-attr">dias</span>"<span class="tk-pun">&gt;</span>Días de préstamo<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+  &lt;input type=<span class="tk-str">"number"</span> id=<span class="tk-str">"dias"</span>
+         name=<span class="tk-str">"dias"</span> min=<span class="tk-str">"1"</span> max=<span class="tk-str">"30"</span>
+         value=<span class="tk-str">"7"</span> required&gt;
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">button</span> <span class="tk-attr">type</span>="<span class="tk-attr">submit</span>"<span class="tk-pun">&gt;</span>Solicitar préstamo<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">form</span><span class="tk-pun">&gt;</span></code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota</span>
+    <p>
+      Fíjate en que el formulario <strong>tiene</strong> <code>method="post"</code> y
+      <code>action</code>. Con HTMX, esos dos atributos se vuelven irrelevantes mientras el
+      formulario no se envíe de la manera tradicional: los sustituyen <code>hx-post</code> y
+      <code>hx-target</code>. Pero conviene dejarlos: si el JavaScript falla o se desactiva, el
+      formulario sigue funcionando como un formulario normal. Es una degradación elegante.
+    </p>
+  </div>
+
+  <h3>3.4 · Ejercicio 3.1 · Formulario de inscripción</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>Construye el formulario de inscripción a una mesa de trabajo</h3>
+    </div>
+
+    <p>
+      El club de programación del colegio abre mesas para un taller de tres meses. Escribe, en un
+      archivo <code>inscripcion.html</code>, el formulario de inscripción con <strong>cinco campos</strong>
+      y su validación nativa completa. No uses todavía HTMX: esta unidad es solo HTML.
+    </p>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong>Cinco campos</strong> con estos datos: nombre del estudiante, correo institucional,
+        grado (selección: 10 o 11), horas disponibles a la semana (número) y motivo de participación
+        (área de texto). A cada uno le corresponde un tipo de control diferente.
+      </li>
+      <li>
+        <strong>Cada campo con <code>name</code> e <code>id</code></strong>, y su
+        <code>&lt;label&gt;</code> con el atributo <code>for</code> apuntando al <code>id</code>
+        correcto.
+      </li>
+      <li>
+        <strong>Validación nativa</strong> en los cuatro primeros campos: el nombre obligatorio y de
+        3 a 60 caracteres; el correo obligatorio y de tipo correo; el grado obligatorio; las horas
+        obligatorias, entre 2 y 10. El motivo puede quedar vacío.
+      </li>
+      <li>
+        <strong>Una lista de cotejo</strong> al final del formulario, escrita con <code>&lt;fieldset&gt;</code>
+        y <code>&lt;legend&gt;</code>, que le permita al estudiante elegir una sola opción (la de su grado).
+      </li>
+      <li>
+        <strong>El botón de envío</strong>, con su <code>type="submit"</code>.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-3-1">Ver un formulario de referencia</button>
+
+    <div class="solucion" id="solucion-3-1">
+      <pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">form</span> <span class="tk-attr">method</span>="<span class="tk-attr">post</span>" <span class="tk-attr">action</span>="/<span class="tk-attr">api</span>/<span class="tk-attr">inscripciones</span>"<span class="tk-pun">&gt;</span>
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">fieldset</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">legend</span><span class="tk-pun">&gt;</span>Datos del estudiante<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">legend</span><span class="tk-pun">&gt;</span>
+
+    <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>="<span class="tk-attr">nombre</span>"<span class="tk-pun">&gt;</span>Nombre completo<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+    &lt;input type=<span class="tk-str">"text"</span> id=<span class="tk-str">"nombre"</span> name=<span class="tk-str">"nombre"</span>
+           required minlength=<span class="tk-str">"3"</span> maxlength=<span class="tk-str">"60"</span> autocomplete=<span class="tk-str">"name"</span>&gt;
+
+    <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>="<span class="tk-attr">correo</span>"<span class="tk-pun">&gt;</span>Correo institucional<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">input</span> <span class="tk-attr">type</span>="<span class="tk-attr">email</span>" <span class="tk-attr">id</span>="<span class="tk-attr">correo</span>" <span class="tk-attr">name</span>="<span class="tk-attr">correo</span>" <span class="tk-attr">required</span><span class="tk-pun">&gt;</span>
+
+    <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>="<span class="tk-attr">grado</span>"<span class="tk-pun">&gt;</span>Grado<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">select</span> <span class="tk-attr">id</span>="<span class="tk-attr">grado</span>" <span class="tk-attr">name</span>="<span class="tk-attr">grado</span>" <span class="tk-attr">required</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">option</span> <span class="tk-attr">value</span>=""<span class="tk-pun">&gt;</span>Selecciona…<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">option</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">option</span> <span class="tk-attr">value</span>="10"<span class="tk-pun">&gt;</span>Grado 10<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">option</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">option</span> <span class="tk-attr">value</span>="11"<span class="tk-pun">&gt;</span>Grado 11<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">option</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">select</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">fieldset</span><span class="tk-pun">&gt;</span>
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">fieldset</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">legend</span><span class="tk-pun">&gt;</span>Disponibilidad<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">legend</span><span class="tk-pun">&gt;</span>
+
+    <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>="<span class="tk-attr">horas</span>"<span class="tk-pun">&gt;</span>Horas a la semana<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+    &lt;input type=<span class="tk-str">"number"</span> id=<span class="tk-str">"horas"</span> name=<span class="tk-str">"horas"</span>
+           min=<span class="tk-str">"2"</span> max=<span class="tk-str">"10"</span> value=<span class="tk-str">"4"</span> required&gt;
+
+    <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>="<span class="tk-attr">motivo</span>"<span class="tk-pun">&gt;</span>Motivo de participación (opcional)<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">textarea</span> <span class="tk-attr">id</span>="<span class="tk-attr">motivo</span>" <span class="tk-attr">name</span>="<span class="tk-attr">motivo</span>" <span class="tk-attr">rows</span>="3" <span class="tk-attr">maxlength</span>="300"<span class="tk-pun">&gt;</span><span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">textarea</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">fieldset</span><span class="tk-pun">&gt;</span>
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">button</span> <span class="tk-attr">type</span>="<span class="tk-attr">submit</span>"<span class="tk-pun">&gt;</span>Inscribirme<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">form</span><span class="tk-pun">&gt;</span></code></pre>
+      <p>
+        <strong>Para comprobarlo:</strong> abre el archivo en el navegador e intenta enviarlo vacío.
+        El navegador debe frenar el envío y señalar el primer campo con problema. Después escribe a
+        mano el cuerpo de la petición en las DevTools (pestaña Network) y comprueba que viajan
+        exactamente las claves <code>nombre</code>, <code>correo</code>, <code>grado</code>,
+        <code>horas</code> y <code>motivo</code>.
+      </p>
+      <p>
+        <strong>Criterio de dominio:</strong> se considera bien resuelto cuando el formulario no
+        envía datos vacíos, cuando el usuario recibe una indicación clara de qué está mal y cuando
+        las cinco claves que viajan son exactamente las que la ruta esperará.
+      </p>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> Un campo de formulario se escribe, pero su valor no aparece en la petición. ¿Cuál es la causa más probable?</p>
+      <button class="opcion" data-op="a">Le falta el atributo <code>name</code></button>
+      <button class="opcion" data-op="b">Le falta el atributo <code>id</code></button>
+      <button class="opcion" data-op="c">El <code>&lt;label&gt;</code> no tiene <code>for</code></button>
+      <button class="opcion" data-op="d">El formulario no tiene <code>method="post"</code></button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Por qué la validación nativa del navegador no es suficiente como garantía?</p>
+      <button class="opcion" data-op="a">Porque funciona solo en algunos navegadores</button>
+      <button class="opcion" data-op="b">Porque se ejecuta en el cliente, que el usuario controla y puede modificar</button>
+      <button class="opcion" data-op="c">Porque consume recursos del servidor</button>
+      <button class="opcion" data-op="d">Porque solo valida campos de texto</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué efecto tiene el atributo <code>disabled</code> en un campo?</p>
+      <button class="opcion" data-op="a">El navegador lo bloquea y lo pinta en gris</button>
+      <button class="opcion" data-op="b">El navegador lo borra del formulario</button>
+      <button class="opcion" data-op="c">El navegador lo bloquea <strong>y además su valor no se envía</strong></button>
+      <button class="opcion" data-op="d">El campo se valida como obligatorio</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: HTMX 4.0</button>
+    <button class="btn-siguiente" data-ir="4">Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de lectura</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija por
+      escrito lo que has leído hasta ahora.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora.
+    </p>
+
+    <div class="reglas">
+      <div class="regla">
+        <h4>Regla 20-20-20</h4>
+        <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+      </div>
+      <div class="regla">
+        <h4>Movimiento</h4>
+        <p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p>
+      </div>
+      <div class="regla">
+        <h4>Hidratación</h4>
+        <p>Un vaso de agua. La lectura densa agota más de lo que parece.</p>
+      </div>
+      <div class="regla">
+        <h4>Bitácora</h4>
+        <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora de lectura (5 minutos)</h3>
+
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿qué es un «fragmento» en el modelo de HTMX?</li>
+    <li><strong>En una frase:</strong> ¿por qué el atributo <code>name</code> es el más importante de un formulario?</li>
+    <li><strong>En una frase:</strong> ¿qué cambió en HTMX 4 con las respuestas de error?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+
+  <p>
+    Estas seis palabras aparecerán en el taller final. Léelas ahora; las definiciones son aproximadas y
+    se afinarán en las unidades siguientes.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>Fragmento</dt>
+      <dd>Porción de HTML que el servidor devuelve para que se inserte en un punto concreto de la página.</dd>
+    </div>
+    <div>
+      <dt>Swap</dt>
+      <dd>El intercambio: la operación de reemplazar el contenido de un elemento con la respuesta.</dd>
+    </div>
+    <div>
+      <dt>Target</dt>
+      <dd>El elemento que va a ser reemplazado, indicado con <code>hx-target</code>.</dd>
+    </div>
+    <div>
+      <dt>Trigger</dt>
+      <dd>El evento que dispara la petición, indicado con <code>hx-trigger</code>.</dd>
+    </div>
+    <div>
+      <dt>OOB (out of band)</dt>
+      <dd>Un fragmento que actualiza un elemento distinto del objetivo principal de la petición.</dd>
+    </div>
+    <div>
+      <dt>Indicador</dt>
+      <dd>Un elemento que se muestra mientras la petición está en camino, para que el usuario sepa que algo está pasando.</dd>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: Anatomía de un formulario</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Formularios en FastAPI →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — FORMULARIOS EN FASTAPI
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · El servidor</div>
+    <h2>Formularios en <em>FastAPI</em>: recibir y validar</h2>
+    <p class="proposito">
+      El formulario es la mitad del problema. La otra mitad es el servidor: recibir los datos con la
+      clave correcta, validarlos de verdad y responder con algo útil. Esta unidad cierra el circuito
+      con el framework moderno.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Práctica guiada</b></span>
+      <span>🧭 <b>Producto: ruta con validación</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · La pieza que faltaba: <code>python-multipart</code></h3>
+
+  <p class="primer-párrafo">
+    FastAPI no puede leer formularios por su cuenta. El parsing de <code>multipart/form-data</code> y de
+    <code>application/x-www-form-urlencoded</code> lo hace una biblioteca aparte,
+    <code>python-multipart</code>, y por eso el error que verás si la olvidas es engañoso: dice que
+    «falta python-multipart» cuando lo que falta es instalarlo.
+  </p>
+
+  <p>
+    En esta clase no hace falta instalar nada: <code>uv add "fastapi[standard]"</code> ya lo incluye.
+    Si en algún momento instalas FastAPI sin el grupo <code>standard</code>, recuerda añadir <code>uv add python-multipart</code>.
+  </p>
+
+  <h3>5.2 · Recibir los campos: <code>Form()</code> y <code>Annotated</code></h3>
+
+  <p>
+    La forma moderna de declarar un campo de formulario en FastAPI combina dos cosas: el tipo de
+    Python, que dice de qué tipo es el dato, y <code>Annotated</code>, que dice de dónde viene y con
+    qué restricciones. El valor por defecto se escribe en el lugar habitual, y la metadata va al lado.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — recibir datos del formulario</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> typing <span class="tk-kw">import</span> <span class="tk-cls">Annotated</span>
+
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">FastAPI</span>, <span class="tk-cls">Form</span>, <span class="tk-cls">Request</span>
+<span class="tk-kw">from</span> fastapi.responses <span class="tk-kw">import</span> <span class="tk-cls">HTMLResponse</span>
+
+
+<span class="tk-attr">@app.post</span>(<span class="tk-str">"/api/prestamos"</span>, response_class=<span class="tk-cls">HTMLResponse</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">crear_prestamo</span>(
+    request: <span class="tk-cls">Request</span>,
+    estudiante: <span class="tk-cls">Annotated</span>[<span class="tk-cls">str</span>, <span class="tk-cls">Form</span>(min_length=<span class="tk-num">3</span>, max_length=<span class="tk-num">80</span>)],
+    correo: <span class="tk-cls">Annotated</span>[<span class="tk-cls">str</span>, <span class="tk-cls">Form</span>(max_length=<span class="tk-num">120</span>)],
+    dias: <span class="tk-cls">Annotated</span>[<span class="tk-cls">int</span>, <span class="tk-cls">Form</span>(ge=<span class="tk-num">1</span>, le=<span class="tk-num">30</span>)],
+):
+    prestamo = {
+        <span class="tk-str">"estudiante"</span>: estudiante,
+        <span class="tk-str">"correo"</span>: correo,
+        <span class="tk-str">"dias"</span>: dias,
+    }
+    <span class="tk-kw">return</span> templates.<span class="tk-fn">TemplateResponse</span>(
+        request=request,
+        name=<span class="tk-str">"fragmento_prestamo_creado.html"</span>,
+        context={<span class="tk-str">"prestamo"</span>: prestamo},
+    )</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota</span>
+    <p>
+      Fíjate en que <code>estudiante</code>, <code>correo</code> y <code>dias</code> son los
+      <strong>nombres de los parámetros</strong> de la función, y también tienen que ser los
+      <strong>valores del atributo <code>name</code></strong> del HTML. Es la misma correspondencia
+      de la clase 1 entre la ruta y la función que la atiende. Si el HTML dice
+      <code>name="dias_prestamo"</code> y la función dice <code>dias</code>, FastAPI devolverá un
+      error de validación por campo ausente.
+    </p>
+  </div>
+
+  <h3>5.3 · Formularios con número variable de campos</h3>
+
+  <p>
+    A veces el número de campos no se conoce de antemano: un formulario dinámico generado a partir de
+    una base de datos, o un formulario con una lista de casillas repetibles. En ese caso se lee el
+    formulario completo de la petición:
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — formulario dinámico</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> starlette.datastructures <span class="tk-kw">import</span> <span class="tk-cls">FormData</span>
+
+
+<span class="tk-attr">@app.post</span>(<span class="tk-str">"/api/dinamico"</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">recibir_dinamico</span>(request: <span class="tk-cls">Request</span>):
+    formulario: <span class="tk-cls">FormData</span> = <span class="tk-kw">await</span> request.<span class="tk-fn">form</span>()
+    <span class="tk-cm"># formulario es un diccionario con múltiples valores por clave:</span>
+    <span class="tk-cm"># formulario.get("nombre") y formulario.getlist("opciones")</span>
+    <span class="tk-kw">return</span> {<span class="tk-str">"recibido"</span>: <span class="tk-cls">dict</span>(formulario)}</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión</span>
+    <p>
+      <code>request.form()</code> es una función asíncrona: hay que esperarla con
+      <code>await</code>. Y devuelve un <code>FormData</code>, que se parece a un diccionario pero
+      admite claves repetidas (útil para listas de casillas). En el 90 % de los casos, con campos
+      conocidos y de cantidad fija, la forma declarativa con <code>Form()</code> es mejor: deja que
+      FastAPI haga la validación, la conversión de tipos y la documentación automática.
+    </p>
+  </div>
+
+  <h3>5.4 · El modelo Pydantic como contrato</h3>
+
+  <p>
+    Cuando el formulario tiene varios campos con reglas relacionadas, conviene declarar un modelo
+    Pydantic y usarlo como contrato. La ventaja no es estética: es que el mismo modelo puede
+    validar <em>y</em> serializar, y que la documentación de la API se genera sola.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — modelo de formulario</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> pydantic <span class="tk-kw">import</span> <span class="tk-cls">BaseModel</span>, <span class="tk-cls">Field</span>
+
+
+<span class="tk-kw">class</span> <span class="tk-fn">PrestamoForm</span>(<span class="tk-cls">BaseModel</span>):
+    estudiante: <span class="tk-cls">Annotated</span>[<span class="tk-cls">str</span>, <span class="tk-cls">Field</span>(min_length=<span class="tk-num">3</span>, max_length=<span class="tk-num">80</span>)]
+    correo: <span class="tk-cls">Annotated</span>[<span class="tk-cls">str</span>, <span class="tk-cls">Field</span>(max_length=<span class="tk-num">120</span>)]
+    dias: <span class="tk-cls">Annotated</span>[<span class="tk-cls">int</span>, <span class="tk-cls">Field</span>(ge=<span class="tk-num">1</span>, le=<span class="tk-num">30</span>)]
+
+
+<span class="tk-attr">@app.post</span>(<span class="tk-str">"/api/prestamos/modelo"</span>, response_class=<span class="tk-cls">HTMLResponse</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">crear_con_modelo</span>(request: <span class="tk-cls">Request</span>, datos: <span class="tk-cls">Annotated</span>[PrestamoForm, <span class="tk-cls">Form</span>()]):
+    <span class="tk-kw">return</span> templates.<span class="tk-fn">TemplateResponse</span>(
+        request=request,
+        name=<span class="tk-str">"fragmento_prestamo_creado.html"</span>,
+        context={<span class="tk-str">"prestamo"</span>: datos.<span class="tk-fn">model_dump</span>()},
+    )</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — la sintaxis de Pydantic v2</span>
+    <p>
+      Si has visto tutoriales antiguos, notarás que aquí no hay <code>class Config</code> ni
+      <code>@validator</code>: ambos son de Pydantic v1 y <strong>ya no funcionan</strong>. FastAPI
+      0.126.0 eliminó el soporte de Pydantic v1 por completo. En la versión 2, la configuración se
+      escribe con <code>model_config = ConfigDict(...)</code> y las validaciones de campo con
+      <code>Field(...)</code>, que es justo lo que se ve arriba.
+    </p>
+  </div>
+
+  <h3>5.5 · Renderizar la respuesta con Jinja2</h3>
+
+  <p>
+    La firma moderna de <code>TemplateResponse</code> usa argumentos con nombre. Fíjate en el
+    orden: <code>request</code> es el primero y va con su nombre, el nombre de la plantilla va con su
+    nombre, y el contexto es un diccionario aparte. La forma antigua
+    (<code>TemplateResponse("x.html", {"request": request})</code>) está obsoleta desde
+    FastAPI 0.108.0.
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — dos datos, dos rutas</span>
+    <p>
+      En el contexto de la plantilla, <code>prestamo["estudiante"]</code> es un diccionario
+      normal de Python. Pero para el HTML, casi siempre conviene un objeto con atributos:
+      <code>prestamo.estudiante</code> se lee mejor en la plantilla y Pydantic lo ofrece con
+      <code>model_dump()</code> (diccionario) o directamente como atributo si pasas el modelo.
+    </p>
+  </div>
+
+  <h3>5.6 · Las dos capas de validación, juntas</h3>
+
+  <figure>
+    <div class="capas">
+      <div class="capa">
+        <span class="capa-nombre">Capa 1</span>
+        <span class="capa-desc"><b>El navegador</b> comprueba <code>required</code>, <code>type</code>, <code>min</code>/<code>max</code>. Si algo falla, ni sale la petición. Da una respuesta inmediata.</span>
+      </div>
+      <div class="capa">
+        <span class="capa-nombre">Capa 2</span>
+        <span class="capa-desc"><b>El servidor</b> vuelve a comprobarlo todo con <code>Form()</code> o con el modelo Pydantic. Si algo falla, devuelve <code>422</code> con el detalle de los errores.</span>
+      </div>
+    </div>
+    <figcaption class="pie-figura"><b>Figura 3</b>Las dos capas aplican las mismas reglas por razones distintas: el navegador por comodidad, el servidor por garantía. La regla del servidor es la única que no se puede eludir.</figcaption>
+  </figure>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el error 422 por defecto</span>
+    <p>
+      Cuando FastAPI rechaza los datos, su respuesta por defecto es <strong>JSON</strong>:
+      <code>{"detail":[{"type":"string_too_short","loc":["body","estudiante"],…}]}</code>. Ese JSON
+      es perfecto para un programa, pero en una página web se vería como un bloque de texto feo
+      dentro del formulario. En la unidad 6 lo cambiamos por un fragmento HTML con los mensajes de
+      error, que es justo para lo que sirve el nuevo comportamiento de HTMX 4.
+    </p>
+  </div>
+
+  <div class="ejemplo">
+    <div class="ejemplo-cabecera">
+      <span class="titulo">Ejemplo guiado <b>5.1</b> — La ruta completa, de la plantilla a la respuesta</span>
+      <span class="titulo" style="color:var(--texto-3)">12 min</span>
+    </div>
+    <div class="ejemplo-cuerpo">
+      <p>
+        Vamos a unir las tres piezas que llevamos: el formulario HTML, la ruta de FastAPI y la
+        plantilla Jinja2 con el fragmento de respuesta.
+      </p>
+
+      <div class="paso">
+        <span class="n">1</span>
+        <div class="cuerpo-paso">
+          <strong>El formulario, ahora con HTMX</strong>
+          <p>
+            Se añade <code>hx-post</code> (la ruta que atiende), <code>hx-target</code> (dónde se
+            coloca la respuesta) y <code>hx-swap</code> (cómo). El <code>action</code> y el
+            <code>method</code> se conservan como respaldo.
+          </p>
+        </div>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="code-header-left">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span>templates/index.html — el formulario</span>
+          </div>
+          <button class="copy-btn">Copiar</button>
+        </div>
+<pre><code>&lt;form id=<span class="tk-str">"formulario-prestamo"</span>
+      method=<span class="tk-str">"post"</span> action=<span class="tk-str">"/api/prestamos"</span>
+      hx-post=<span class="tk-str">"/api/prestamos"</span>
+      hx-target=<span class="tk-str">"#resultado"</span>
+      hx-swap=<span class="tk-str">"innerHTML"</span>&gt;
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>="<span class="tk-attr">estudiante</span>"<span class="tk-pun">&gt;</span>Estudiante<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+  &lt;input type=<span class="tk-str">"text"</span> id=<span class="tk-str">"estudiante"</span>
+         name=<span class="tk-str">"estudiante"</span> required minlength=<span class="tk-str">"3"</span>&gt;
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>="<span class="tk-attr">dias</span>"<span class="tk-pun">&gt;</span>Días de préstamo<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+  &lt;input type=<span class="tk-str">"number"</span> id=<span class="tk-str">"dias"</span>
+         name=<span class="tk-str">"dias"</span> min=<span class="tk-str">"1"</span> max=<span class="tk-str">"30"</span> value=<span class="tk-str">"7"</span>&gt;
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">button</span> <span class="tk-attr">type</span>="<span class="tk-attr">submit</span>"<span class="tk-pun">&gt;</span>Solicitar<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">form</span><span class="tk-pun">&gt;</span>
+
+<span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">id</span>="<span class="tk-attr">resultado</span>"<span class="tk-pun">&gt;</span><span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span></code></pre>
+      </div>
+
+      <div class="paso">
+        <span class="n">2</span>
+        <div class="cuerpo-paso">
+          <strong>La ruta y la plantilla de respuesta</strong>
+          <p>
+            La ruta valida con <code>Form()</code> y devuelve un fragmento. Fíjate en que la
+            plantilla de respuesta <strong>tampoco</strong> es una página: es solo el mensaje de
+            confirmación.
+          </p>
+        </div>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="code-header-left">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span>templates/fragmento_prestamo_creado.html</span>
+          </div>
+          <button class="copy-btn">Copiar</button>
+        </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>="<span class="tk-attr">aviso</span> <span class="tk-attr">aviso-ok</span>"<span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">strong</span><span class="tk-pun">&gt;</span>Préstamo registrado<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">strong</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">{{</span> <span class="tk-fn">prestamo</span>[<span class="tk-str">"estudiante"</span>] <span class="tk-pun">}}</span>
+    pidió <span class="tk-pun">{{</span> <span class="tk-fn">prestamo</span>[<span class="tk-str">"dias"</span>] <span class="tk-pun">}}</span> días.
+  <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span></code></pre>
+      </div>
+
+      <div class="paso">
+        <span class="n">3</span>
+        <div class="cuerpo-paso">
+          <strong>Comprobación en el navegador</strong>
+          <p>
+            Envía el formulario con datos válidos: la respuesta debe aparecer <strong>dentro</strong> de
+            <code>#resultado</code>, sin recarga. Ahora envíalo con datos inválidos (por ejemplo,
+            escribiendo el correo como «no-es-un-correo» y saltándote la validación con las DevTools):
+            quédate mirando lo que ocurre. Esa es exactamente la pregunta que responde la unidad 6.
+          </p>
+          <p class="observacion"><b>Observa:</b> con el código tal como está, un 422 inserta el JSON
+          de error dentro de <code>#resultado</code>. Funciona, pero se ve crudo. Lo arreglamos en la
+          unidad 6.</p>
+        </div>
+      </div>
+
+      <div class="recuadro aplicacion" style="margin-bottom:0">
+        <span class="rotulo">Aplicación</span>
+        <p>
+          Prueba el formulario con cuatro combinaciones: todo válido; nombre demasiado corto; días
+          fuera de rango; y un campo vacío. Anota en una tabla qué código de estado devolvió el
+          servidor en cada caso y qué se vio en la pantalla. Esa tabla es el punto de partida de la
+          unidad 6.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <h3>5.7 · Ejercicio 5.2 · La ruta que falta</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>Escribe la ruta de inscripción del ejercicio 3.1</h3>
+    </div>
+
+    <p>
+      Retoma el formulario de inscripción que construiste en el ejercicio 3.1 y escribe ahora la
+      parte del servidor. El objetivo es comprobar que el contrato que diseñaste en el HTML se
+      cumple exactamente.
+    </p>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong>Una ruta <code>POST /api/inscripciones</code></strong> en <code>main.py</code>, con
+        <code>response_class=HTMLResponse</code>.
+      </li>
+      <li>
+        <strong>Cinco parámetros <code>Form()</code></strong> con <code>Annotated</code>, cuyos
+        nombres coincidan exactamente con los atributos <code>name</code> de tu formulario, y con
+        las mismas restricciones que usaste en la validación nativa: nombre de 3 a 60 caracteres,
+        correo de 120 como máximo, horas entre 2 y 10.
+      </li>
+      <li>
+        <strong>Una plantilla de respuesta</strong> <code>fragmento_inscripcion.html</code> que
+        confirme la inscripción con los datos recibidos.
+      </li>
+      <li>
+        <strong>Una prueba documentada:</strong> con <code>curl</code>, envía el formulario con datos
+        correctos y con datos incorrectos, y anota el código de estado de cada caso.
+      </li>
+    </ol>
+
+    <div class="recuadro precision">
+      <span class="rotulo">Pista</span>
+      <p>
+        El comando de <code>curl</code> para enviar datos de formulario es
+        <code>curl -i -X POST http://127.0.0.1:8000/api/inscripciones -d "nombre=Ana Torres" -d "correo=ana@colegio.edu.co"</code>.
+        Fíjate en el <code>-i</code>: sin él no verás la línea de estado, que es justo lo que
+        necesitas comprobar.
+      </p>
+    </div>
+
+    <button class="solucion-btn" data-solucion="solucion-5-2">Ver una ruta de referencia</button>
+
+    <div class="solucion" id="solucion-5-2">
+      <pre><code>@app.post(<span class="tk-str">"/api/inscripciones"</span>, response_class=HTMLResponse)
+async def inscribir(
+    request: Request,
+    nombre: Annotated[str, Form(min_length=3, max_length=60)],
+    correo: Annotated[str, Form(max_length=120)],
+    grado: Annotated[str, Form()],
+    horas: Annotated[int, Form(ge=2, le=10)],
+    motivo: Annotated[str, Form(max_length=300)] = <span class="tk-str">""</span>,
+):
+    inscripcion = {
+        <span class="tk-str">"nombre"</span>: nombre,
+        <span class="tk-str">"correo"</span>: correo,
+        <span class="tk-str">"grado"</span>: grado,
+        <span class="tk-str">"horas"</span>: horas,
+        <span class="tk-str">"motivo"</span>: motivo,
+    }
+    return templates.TemplateResponse(
+        request=request,
+        name=<span class="tk-str">"fragmento_inscripcion.html"</span>,
+        context={<span class="tk-str">"inscripcion"</span>: inscripcion},
+    )</code></pre>
+      <p>
+        <strong>Códigos esperados:</strong> con datos válidos, <code>200</code>. Con
+        <code>horas=50</code> o con <code>nombre</code> de una letra, <code>422</code> y un cuerpo
+        JSON con el detalle del error. Ese <code>422</code> es el que la unidad 6 va a convertir en un
+        fragmento HTML con los mensajes de error.
+      </p>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Por qué es necesario instalar <code>python-multipart</code> para trabajar con formularios?</p>
+      <button class="opcion" data-op="a">Porque FastAPI necesita un servidor web aparte</button>
+      <button class="opcion" data-op="b">Porque las plantillas Jinja2 lo requieren</button>
+      <button class="opcion" data-op="c">Porque el parsing de los datos de formulario no lo hace FastAPI, sino esa biblioteca</button>
+      <button class="opcion" data-op="d">Porque sin ella no se puede usar <code>Annotated</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué ocurre cuando FastAPI rechaza los datos de un formulario por no cumplir las restricciones?</p>
+      <button class="opcion" data-op="a">Devuelve un <code>422</code> con el detalle de los errores</button>
+      <button class="opcion" data-op="b">Devuelve un <code>500</code> porque la ruta falló</button>
+      <button class="opcion" data-op="c">Devuelve un <code>200</code> con el formulario vacío</button>
+      <button class="opcion" data-op="d">No devuelve nada y la petición queda colgada</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Cuál es la firma moderna de <code>TemplateResponse</code>?</p>
+      <button class="opcion" data-op="a"><code>TemplateResponse("plantilla.html", {"request": request, ...})</code></button>
+      <button class="opcion" data-op="b"><code>TemplateResponse(request=request, name="plantilla.html", context={...})</code></button>
+      <button class="opcion" data-op="c"><code>render("plantilla.html", request)</code></button>
+      <button class="opcion" data-op="d"><code>TemplateResponse(name="plantilla.html", request=request)</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: Errores y estados →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — ERRORES, ESTADOS Y CONTROL FINO
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · El control</div>
+    <h2>Errores, estados y <em>control fino</em></h2>
+    <p class="proposito">
+      Esta es la unidad donde todo lo anterior encaja. HTMX 4 permite que el servidor responda con
+      un fragmento de error y que ese fragmento aparezca <strong>en línea</strong>, dentro del
+      formulario, sin recarga. Con eso, los demás atributos pasan a ser afinado: indicadores de
+      carga, deshabilitar botones, confirmar, sincronizar.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Práctica guiada</b></span>
+      <span>🧭 <b>Producto: errores en línea</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · El gran cambio: el error también se inserta</h3>
+
+  <p class="primer-párrafo">
+    En HTMX 2, una respuesta <code>422</code> no se insertaba en la página: HTMX la descartaba y
+    disparaba el evento <code>htmx:responseError</code>. Mostrar el error al usuario exigía
+    escribir JavaScript que inyectara el HTML a mano. En HTMX 4, la respuesta se inserta como
+    cualquier otra, y ese problema desaparece.
+  </p>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — la contrapartida</span>
+    <p>
+      Como ahora se inserta todo, <strong>también se inserta lo que no debería</strong>. Si tu servidor
+      devuelve una página de error completa de FastAPI (con su HTML, sus estilos y su menú) y esa
+      página aterriza dentro de tu formulario, el resultado es un desastre visual. La regla es
+      simple: <strong>diseña tus respuestas de error como contenido de intercambio</strong>, o usa
+      <code>hx-status</code> para dirigirlas a otro sitio.
+    </p>
+  </div>
+
+  <h3>6.2 · Dirigir la respuesta según el código: <code>hx-status</code></h3>
+
+  <p>
+    El atributo <code>hx-status</code> es nuevo en la versión 4 y resuelve ese problema. Su sintaxis
+    es <code>hx-status:CÓDIGO="clave:valor clave:valor"</code>, donde el código puede ser exacto
+    (<code>422</code>), un comodín de dos cifras (<code>50x</code>) o de una (<code>5xx</code>). Se
+    evalúan por especificidad: primero el código exacto, luego el comodín de dos, luego el de uno.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>html — directing respuestas por código</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>&lt;form hx-post=<span class="tk-str">"/api/prestamos"</span>
+      hx-target=<span class="tk-str">"#formulario"</span>
+      hx-swap=<span class="tk-str">"outerHTML"</span>
+      hx-status:422=<span class="tk-str">"target:#errores"</span>
+      hx-status:5xx=<span class="tk-str">"swap:none"</span>&gt;
+  <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">id</span>="<span class="tk-attr">errores</span>"<span class="tk-pun">&gt;</span><span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">button</span> <span class="tk-attr">type</span>="<span class="tk-attr">submit</span>"<span class="tk-pun">&gt;</span>Enviar<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">form</span><span class="tk-pun">&gt;</span></code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Modificadores que acepta <code>hx-status</code></caption>
+      <thead>
+        <tr><th>Modificador</th><th>Qué hace</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>swap</code></td><td>El estilo de intercambio para ese código</td><td><code>swap:none</code></td></tr>
+        <tr><td><code>target</code></td><td>Un objetivo distinto del principal</td><td><code>target:#errores</code></td></tr>
+        <tr><td><code>select</code></td><td>Qué parte de la respuesta se inserta</td><td><code>select:#formulario</code></td></tr>
+        <tr><td><code>push</code></td><td>Si se añade la URL al historial</td><td><code>push:false</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>6.3 · El patrón completo: formulario + fragmento de error</h3>
+
+  <p>
+    Este es el patrón central de la clase. Se compone de tres piezas: un manejador de errores de
+    validación en FastAPI que devuelve HTML en vez de JSON, una plantilla de fragmento de error, y el
+    formulario que dice dónde colocar cada respuesta.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — manejar los errores de validación como HTML</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> fastapi.exceptions <span class="tk-kw">import</span> <span class="tk-cls">RequestValidationError</span>
+
+
+<span class="tk-attr">@app.exception_handler</span>(<span class="tk-cls">RequestValidationError</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">errores_de_validacion</span>(request: <span class="tk-cls">Request</span>, exc: <span class="tk-cls">RequestValidationError</span>):
+    <span class="tk-cm"># exc.errors() trae la lista de fallos: campo, tipo de error y mensaje</span>
+    <span class="tk-kw">return</span> templates.<span class="tk-fn">TemplateResponse</span>(
+        request=request,
+        name=<span class="tk-str">"fragmento_errores.html"</span>,
+        context={<span class="tk-str">"errores"</span>: exc.<span class="tk-fn">errors</span>()},
+        status_code=<span class="tk-num">422</span>,
+    )</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>templates/fragmento_errores.html</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>="<span class="tk-attr">aviso</span> <span class="tk-attr">aviso-error</span>"<span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">strong</span><span class="tk-pun">&gt;</span>No se pudo registrar el préstamo<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">strong</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">ul</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">li</span><span class="tk-pun">&gt;</span> <span class="tk-pun">&lt;</span><span class="tk-tag">strong</span><span class="tk-pun">&gt;</span><span class="tk-pun">{{</span> <span class="tk-fn">error</span>[<span class="tk-str">"loc"</span>][-1] <span class="tk-pun">}}</span><span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">strong</span><span class="tk-pun">&gt;</span>: <span class="tk-pun">{{</span> <span class="tk-fn">error</span>[<span class="tk-str">"msg"</span>] <span class="tk-pun">}}</span><span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">li</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">ul</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span></code></pre>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — dos formas de llegar al mismo sitio</span>
+    <p>
+      La forma más directa es esta: el servidor responde <code>422</code> y, gracias a HTMX 4, el
+      fragmento de error se inserta. La forma más_controlada usa <code>hx-status:422="target:#errores"</code>
+      para dirigir el fragmento a un contenedor de errores concreto, dejando el formulario intacto para
+      que el usuario corrija. <strong>Producción la segunda; la primera es más fácil de empezar</strong>,
+      y por eso conviene entender las dos.
+    </p>
+  </div>
+
+  <h3>6.4 · El control fino: estado de espera, deshabilitar, sincronizar</h3>
+
+  <p>
+    Los atributos siguientes resuelven problemas que aparecen en cuanto la aplicación se usa de
+    verdad: el usuario hace doble clic, la petición tarda, dos elementos disparan a la vez.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Atributos de control</caption>
+      <thead>
+        <tr><th>Atributo</th><th>Para qué sirve</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>hx-indicator</code></td><td>Muestra un elemento mientras la petición está en camino</td><td><code>hx-indicator="#cargando"</code></td></tr>
+        <tr><td><code>hx-disable</code></td><td>Deshabilita el elemento durante la petición (antes era <code>hx-disabled-elt</code>)</td><td><code>hx-disable="this"</code></td></tr>
+        <tr><td><code>hx-sync</code></td><td>Define qué ocurre si llega otra petición mientras la primera sigue en camino</td><td><code>hx-sync="closest form:replace"</code></td></tr>
+        <tr><td><code>hx-include</code></td><td>Añade valores de otros elementos a la petición</td><td><code>hx-include="closest form"</code></td></tr>
+        <tr><td><code>hx-confirm</code></td><td>Pide confirmación antes de enviar</td><td><code>hx-confirm="¿Eliminar el préstamo?"</code></td></tr>
+        <tr><td><code>hx-vals</code></td><td>Añade parámetros fijos a la petición</td><td><code>hx-vals='{"origen": "web"}'</code></td></tr>
+        <tr><td><code>hx-boost</code></td><td>Convierte en AJAX todos los enlaces y formularios de la página</td><td><code>hx-boost="true"</code></td></tr>
+        <tr><td><code>hx-sync</code></td><td>Reemplaza la petición en curso en vez de ponerla en cola</td><td><code>hx-sync="this:abort"</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — el indicador necesita una clase</span>
+    <p>
+      <code>hx-indicator</code> no muestra nada por sí solo: el elemento indicado debe tener la clase
+      <code>htmx-indicator</code>, que es la que HTMX quita y pone durante la petición. El CSS típico
+      es de dos líneas:
+    </p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>css — el indicador</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>.htmx-indicator {
+  <span class="tk-attr">opacity</span>: 0;
+}
+
+.htmx-request .htmx-indicator {
+  <span class="tk-attr">opacity</span>: 1;
+}</code></pre>
+  </div>
+
+  <h3>6.5 · Actualizar varias partes a la vez</h3>
+
+  <p>
+    A veces la respuesta debe modificar más de un elemento: el formulario, un contador y una lista.
+    HTMX resuelve esto con dos mecanismos.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>Intercambio fuera de banda (<code>hx-swap-oob</code>)</dt>
+      <dd>Un elemento de la respuesta marcado con <code>hx-swap-oob="selector"</code> se actualiza en el lugar que indique el selector, sin tocar el objetivo principal. <strong>En HTMX 4, estos elementos se intercambian <em>después</em> del contenido principal</strong> (en la versión 2 se intercambiaban antes).</dd>
+    </div>
+    <div>
+      <dt><code>&lt;hx-partial&gt;</code></dt>
+      <dd>Nuevo en HTMX 4. Es una forma más clara de actualizar varios objetivos: se encierran en una etiqueta <code>&lt;hx-partial&gt;</code> y cada hijo indica su propio destino.</dd>
+    </div>
+    <div>
+      <dt>Intercambio con morphing</dt>
+      <dd>Nuevo en HTMX 4: <code>hx-swap="outerMorph"</code> o <code>"innerMorph"</code>. En lugar de borrar y recrear el contenido, <em>lo modifica</em>, y por eso conserva el foco del cursor dentro de un campo de texto. Es la diferencia entre que el usuario pierda lo que estaba escribiendo y no.</dd>
+    </div>
+  </div>
+
+  <h3>6.6 · Los eventos, con sus nombres nuevos</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>js — escuchar los eventos de HTMX 4</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm">// En HTMX 4 los eventos usan el patrón htmx:fase:acción</span>
+
+<span class="tk-cls">document</span>.body.<span class="tk-cls">addEventListener</span>(<span class="tk-str">"htmx:before:request"</span>, (e) =&gt; {
+  <span class="tk-cls">console</span>.log(<span class="tk-str">"Se va a pedir:"</span>, e.detail.requestConfig.url);
+});
+
+<span class="tk-cls">document</span>.body.<span class="tk-cls">addEventListener</span>(<span class="tk-str">"htmx:after:request"</span>, (e) =&gt; {
+  <span class="tk-cls">console</span>.log(<span class="tk-str">"Respuesta:"</span>, e.detail.xhr.status, <span class="tk-str">"o"</span>, e.detail.successful);
+});
+
+<span class="tk-cls">document</span>.body.<span class="tk-cls">addEventListener</span>(<span class="tk-str">"htmx:after:swap"</span>, (e) =&gt; {
+  <span class="tk-cls">console</span>.log(<span class="tk-str">"Ya se insertó el fragmento en:"</span>, e.detail.target.id);
+});</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión</span>
+    <p>
+      En HTMX 4, el objeto de la respuesta ya no es un <code>XMLHttpRequest</code>: la propiedad
+      <code>e.detail.xhr</code> puede no existir. Para consultar el código de estado, usa
+      <code>e.detail.xhr.status</code> solo si existe, o el nuevo
+      <code>e.detail.successful</code> y el contexto <code>e.detail.requestConfig</code>. Este es
+      otro punto donde la documentación antigua lleva a errores.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> En HTMX 4, ¿qué hace el atributo <code>hx-status:422="target:#errores"</code>?</p>
+      <button class="opcion" data-op="a">Convierte los errores 422 en un código 200</button>
+      <button class="opcion" data-op="b">Impide que se muestren los errores de validación</button>
+      <button class="opcion" data-op="c">Dirige a <code>#errores</code> el fragmento que llega con un código 422</button>
+      <button class="opcion" data-op="d">Reenvía la petición al servidor con los datos corregidos</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué el indicador de carga no aparece con solo poner <code>hx-indicator="#cargando"</code>?</p>
+      <button class="opcion" data-op="a">Porque el elemento debe tener la clase <code>htmx-indicator</code></button>
+      <button class="opcion" data-op="b">Porque hay que activarlo con JavaScript</button>
+      <button class="opcion" data-op="c">Porque el identificador debe empezar por <code>hx-</code></button>
+      <button class="opcion" data-op="d">Porque solo funciona dentro de un <code>&lt;form&gt;</code></button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Qué problema resuelve el intercambio con morphing (<code>hx-swap="outerMorph"</code>)?</p>
+      <button class="opcion" data-op="a">Reduce el tamaño de la respuesta del servidor</button>
+      <button class="opcion" data-op="b">Modifica el DOM en vez de recrearlo, conservando el foco dentro de un campo de texto</button>
+      <button class="opcion" data-op="c">Permite que el servidor envíe respuestas en streaming</button>
+      <button class="opcion" data-op="d">Evita que la petición llegue al servidor</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: Formularios en FastAPI</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller integrador →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER Y SÍNTESIS
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>Un formulario <em>completo</em>, de la validación nativa al error en línea</h2>
+    <p class="proposito">
+      Aplicación de todo lo anterior. El encargo es construir un formulario que funcione de verdad:
+      con validación en el navegador, validación en el servidor, y los errores mostrados en el lugar
+      donde el usuario los puede corregir.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Desarrollo</b></span>
+      <span>🧭 <b>Producto final de la clase</b></span>
+    </div>
+  </div>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Encargo</span>
+      <h3>Solicitud de préstamo en la biblioteca del colegio</h3>
+    </div>
+
+    <p>
+      La biblioteca quiere que el estudiante pida un préstamo sin salir de la página: elige el libro,
+      indica cuántos días lo quiere y deja su correo. Si algo está mal, el error aparece junto al
+      formulario, no en una página nueva.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr><td><strong>Campos</strong></td><td>libro (número), estudiante (texto), correo (texto), días (número)</td></tr>
+          <tr><td><strong>Reglas</strong></td><td>El nombre tiene entre 3 y 80 caracteres; el días va de 1 a 30; el libro debe ser un entero positivo</td></tr>
+          <tr><td><strong>Restricción clave</strong></td><td>Un estudiante no puede tener más de tres préstamos activos</td></tr>
+          <tr><td><strong>Restricción del taller</strong></td><td>Los datos todavía no se guardan: basta con validarlos y responder</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li>
+        <strong>El formulario HTML</strong> (<code>templates/index.html</code>): los cuatro campos con
+        su <code>name</code> e <code>id</code>, la validación nativa correspondiente a las reglas, y
+        los atributos <code>hx-post</code>, <code>hx-target</code> y <code>hx-swap</code>.
+      </li>
+      <li>
+        <strong>La ruta</strong> (<code>main.py</code>): <code>POST /api/prestamos</code> con
+        <code>Annotated</code> y <code>Form()</code>, aplicando las tres reglas con las restricciones
+        correctas.
+      </li>
+      <li>
+        <strong>Las dos respuestas</strong>: un fragmento de éxito (préstamo registrado) y un fragmento
+        de error (lista de los problemas encontrados), con su manejador de
+        <code>RequestValidationError</code> devolviendo <code>422</code> y HTML.
+      </li>
+      <li>
+        <strong>El control fino</strong>: un indicador de carga (<code>hx-indicator</code> con su
+        clase CSS) y el botón deshabilitado durante el envío (<code>hx-disable</code>).
+      </li>
+      <li>
+        <strong>Un argumento escrito</strong>: por qué el formulario valida dos veces y qué pasaría si
+        el servidor no validara.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="taller-solucion">Ver un modelo de respuesta</button>
+
+    <div class="solucion" id="taller-solucion">
+      <h4>Modelo de respuesta (extracto)</h4>
+
+      <p><strong>A. El formulario</strong></p>
+      <pre><code>&lt;form id=<span class="tk-str">"formulario-prestamo"</span> method=<span class="tk-str">"post"</span> action=<span class="tk-str">"/api/prestamos"</span>
+      hx-post=<span class="tk-str">"/api/prestamos"</span>
+      hx-target=<span class="tk-str">"#formulario-prestamo"</span>
+      hx-swap=<span class="tk-str">"outerHTML"</span>
+      hx-status:422=<span class="tk-str">"target:#errores"</span>&gt;
+
+  &lt;label for=<span class="tk-str">"estudiante"</span>&gt;Estudiante&lt;/label&gt;
+  &lt;input type=<span class="tk-str">"text"</span> id=<span class="tk-str">"estudiante"</span> name=<span class="tk-str">"estudiante"</span>
+         required minlength=<span class="tk-str">"3"</span> maxlength=<span class="tk-str">"80"</span>&gt;
+
+  &lt;label for=<span class="tk-str">"correo"</span>&gt;Correo institucional&lt;/label&gt;
+  &lt;input type=<span class="tk-str">"email"</span> id=<span class="tk-str">"correo"</span> name=<span class="tk-str">"correo"</span> required maxlength=<span class="tk-str">"120"</span>&gt;
+
+  &lt;label for=<span class="tk-str">"libro"</span>&gt;Número de libro&lt;/label&gt;
+  &lt;input type=<span class="tk-str">"number"</span> id=<span class="tk-str">"libro"</span> name=<span class="tk-str">"libro"</span> min=<span class="tk-str">"1"</span> required&gt;
+
+  &lt;label for=<span class="tk-str">"dias"</span>&gt;Días de préstamo&lt;/label&gt;
+  &lt;input type=<span class="tk-str">"number"</span> id=<span class="tk-str">"dias"</span> name=<span class="tk-str">"dias"</span> min=<span class="tk-str">"1"</span> max=<span class="tk-str">"30"</span> value=<span class="tk-str">"7"</span> required&gt;
+
+  &lt;button type=<span class="tk-str">"submit"</span> hx-disable=<span class="tk-str">"this"</span>&gt;Solicitar préstamo&lt;/button&gt;
+  &lt;span class=<span class="tk-str">"htmx-indicator"</span> id=<span class="tk-str">"cargando"</span>&gt;Enviando…&lt;/span&gt;
+&lt;/form&gt;
+
+&lt;div id=<span class="tk-str">"errores"</span>&gt;&lt;/div&gt;</code></pre>
+
+      <p><strong>B. La ruta</strong></p>
+      <pre><code>@app.post(<span class="tk-str">"/api/prestamos"</span>, response_class=HTMLResponse)
+async def crear_prestamo(
+    request: Request,
+    estudiante: Annotated[str, Form(min_length=3, max_length=80)],
+    correo: Annotated[str, Form(max_length=120)],
+    libro: Annotated[int, Form(ge=1)],
+    dias: Annotated[int, Form(ge=1, le=30)],
+):
+    # Aquí iría la regla de negocio: tres préstamos activos como máximo
+    return templates.TemplateResponse(
+        request=request,
+        name=<span class="tk-str">"fragmento_prestamo_creado.html"</span>,
+        context={<span class="tk-str">"prestamo"</span>: {...}},
+    )</code></pre>
+
+      <p><strong>C. El manejador de errores</strong></p>
+      <pre><code>@app.exception_handler(RequestValidationError)
+async def errores_de_validacion(request: Request, exc: RequestValidationError):
+    return templates.TemplateResponse(
+        request=request,
+        name=<span class="tk-str">"fragmento_errores.html"</span>,
+        context={<span class="tk-str">"errores"</span>: exc.errors()},
+        status_code=422,
+    )</code></pre>
+
+      <p><strong>D. El argumento</strong></p>
+      <p>
+        <em>Decisión:</em> validar dos veces, en el navegador y en el servidor.
+        <em>Motivo:</em> la validación del navegador da una respuesta inmediata y evita viajes
+        innecesarios; la del servidor es la única que garantiza la regla, porque el cliente es
+        controlable por el usuario.
+        <em>Consecuencia:</em> hay que escribir las restricciones dos veces, y conviene que ambas
+        coincidan exactamente; si divergen, el usuario recibe un error que el navegador creía
+        imposible.
+        <em>Alternativa descartada:</em> <code>novalidate</code> en el formulario, que elimina la
+        primera capa pero obliga a que el servidor devuelva siempre un fragmento de error bien
+        diseñado.
+      </p>
+    </div>
+  </div>
+
+  <h3>7.1 · Rúbrica de autoevaluación</h3>
+
+  <p>
+    Puntúa cada criterio de 0 a 2 y revisa los que hayas quedado en 0 o 1 antes de dar por terminado
+    el taller.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación del formulario</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Contrato de datos</td><td>Los <code>name</code> no coinciden con la ruta</td><td>Coinciden algunos campos</td><td>Todos coinciden y se puede enviar el formulario</td></tr>
+        <tr><td>Validación nativa</td><td>No hay validación en el navegador</td><td>Solo <code>required</code></td><td>Las tres reglas del enunciado, con sus límites exactos</td></tr>
+        <tr><td>Validación de servidor</td><td>La ruta no valida</td><td>Valida el tipo pero no los límites</td><td>Valida tipo y límites con las mismas restricciones que el navegador</td></tr>
+        <tr><td>Respuesta de error</td><td>Se ve el JSON crudo</td><td>Se ve un error genérico</td><td>Un fragmento que nombra cada campo y su problema</td></tr>
+        <tr><td>Estado de espera</td><td>No hay indicador</td><td>El indicador no se muestra</td><td>Se ve durante la petición y el botón se deshabilita</td></tr>
+        <tr><td>Argumentación</td><td>No hay escrito</td><td>Describe el qué, no el porqué</td><td>Decisión, motivo, consecuencia y alternativa descartada</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.2 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>HTMX no es AJAX con otro nombre: el servidor sigue produciendo HTML y el navegador coloca un fragmento.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p>El atributo es el método HTTP: <code>hx-get</code> es un <code>GET</code>, <code>hx-post</code> es un <code>POST</code>.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>En HTMX 4 la herencia es explícita: sin <code>:inherited</code>, un hijo no hereda nada.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p>El atributo <code>name</code> es el contrato del formulario: sin él, el campo no viaja.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p>La validación nativa es comodidad; la del servidor es garantía. Las dos, y en ese orden de importancia.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p>En HTMX 4 las respuestas de error también se insertan: por eso un <code>422</code> puede mostrarse en línea.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p>Un fragmento con atributos <code>hx-*</code> sigue vivo después de insertarse: por eso los formularios se pueden componer.</p>
+    </div>
+  </div>
+
+  <h3>7.3 · Puente hacia la clase 3</h3>
+
+  <p>
+    La clase 3 conectará este formulario a una base de datos real. Dos cosas que conviene tener
+    presentes al empezar:
+  </p>
+
+  <ol>
+    <li>
+      La <strong>restricción de los tres préstamos</strong> del enunciado solo se puede comprobar
+      consulting la base de datos: en el taller la simulamos, pero allí será una consulta real.
+    </li>
+    <li>
+      El <strong>manejador de errores</strong> que escribiste no cambia: seguirá siendo el punto donde
+      se decide qué se le muestra al usuario cuando los datos no sirven.
+    </li>
+  </ol>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de la próxima clase</span>
+    <p>
+      Guarda tu taller en un repositorio de Git con un mensaje de commit claro. En la clase 3 vamos a
+      necesitar volver a esta versión exacta para poder comparar el antes y el después.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 2</h2>
+    <p>
+      Has construido la capa que convierte una aplicación web en algo que se siente como una aplicación
+      de escritorio: peticiones desde el frontend que no recargan la página, formularios con
+      validación en dos capas y errores mostrados exactamente donde el usuario puede corregirlos.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: Errores y estados</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 2 · HTMX 4.0 y formularios</span>
+  <p class="pie-sub">Hipermedia sin recarga · Fragmentos de servidor · Formularios, validación y respuestas de error</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

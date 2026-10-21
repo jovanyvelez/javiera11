@@ -23,13 +23,13 @@
   --texto-3:      #6b818f;
 
   /* --- acentos --- */
-  --ci:           #56c6e6;
-  --ci-2:         #8adcf1;
-  --ci-fondo:     rgba(86, 198, 230, .10);
-  --ambar:        #dda45c;
-  --ambar-2:      #f0c48c;
-  --ambar-fondo:  rgba(221, 164, 92, .10);
-  --violeta:      #a892f5;
+  --acento:           #56c6e6;
+  --acento-claro:         #8adcf1;
+  --acento-fondo:     rgba(86, 198, 230, .10);
+  --acento-2:        #dda45c;
+  --acento-2-claro:      #f0c48c;
+  --acento-2-fondo:  rgba(221, 164, 92, .10);
+  --terciario:      #a892f5;
   --verde:        #4fc79e;
   --verde-fondo:  rgba(79, 199, 158, .10);
   --rojo:         #e0647f;
@@ -69,10 +69,10 @@ code, pre, kbd, samp { font-family: var(--mono); }
 
 ::selection { background: rgba(86, 198, 230, .32); color: #fff; }
 
-a { color: var(--ci); }
+a { color: var(--acento); }
 
 :focus-visible {
-  outline: 2px solid var(--ci);
+  outline: 2px solid var(--acento);
   outline-offset: 3px;
 }
 
@@ -106,7 +106,7 @@ a { color: var(--ci); }
   font-size: .62rem;
   letter-spacing: .18em;
   text-transform: uppercase;
-  color: var(--ambar);
+  color: var(--acento-2);
   border: 1px solid rgba(221, 164, 92, .38);
   padding: .14rem .45rem;
   border-radius: 2px;
@@ -128,7 +128,7 @@ a { color: var(--ci); }
 
 .marca h1 em {
   font-style: normal;
-  color: var(--ci);
+  color: var(--acento);
 }
 
 .instrumento {
@@ -143,7 +143,7 @@ a { color: var(--ci); }
   font-family: var(--mono);
   font-size: .72rem;
   letter-spacing: .06em;
-  color: var(--ci);
+  color: var(--acento);
   white-space: nowrap;
 }
 
@@ -172,7 +172,7 @@ a { color: var(--ci); }
 .barra-progreso-llenado {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, var(--ci), var(--ambar));
+  background: linear-gradient(90deg, var(--acento), var(--acento-2));
   transition: width .5s cubic-bezier(.22, 1, .36, 1);
 }
 
@@ -189,8 +189,8 @@ a { color: var(--ci); }
   text-transform: uppercase;
   padding: .2rem .45rem;
   border-radius: 2px;
-  background: var(--ambar-fondo);
-  color: var(--ambar-2);
+  background: var(--acento-2-fondo);
+  color: var(--acento-2-claro);
   border: 1px solid rgba(221, 164, 92, .3);
   white-space: nowrap;
 }
@@ -295,11 +295,11 @@ a { color: var(--ci); }
 
 .btn-modulo.activo {
   color: var(--texto);
-  border-left-color: var(--ci);
-  background: var(--ci-fondo);
+  border-left-color: var(--acento);
+  background: var(--acento-fondo);
 }
 
-.btn-modulo.activo .num { color: var(--ci); }
+.btn-modulo.activo .num { color: var(--acento); }
 
 .btn-modulo.completado .rotulo { color: var(--texto-2); }
 
@@ -358,7 +358,7 @@ main { min-width: 0; }
   font-size: .7rem;
   letter-spacing: .2em;
   text-transform: uppercase;
-  color: var(--ambar);
+  color: var(--acento-2);
   margin-bottom: 1rem;
   flex-wrap: wrap;
 }
@@ -366,7 +366,7 @@ main { min-width: 0; }
 .ojo .linea {
   height: 1px;
   width: 54px;
-  background: linear-gradient(90deg, var(--ambar), transparent);
+  background: linear-gradient(90deg, var(--acento-2), transparent);
 }
 
 .portada h2 {
@@ -380,7 +380,7 @@ main { min-width: 0; }
 
 .portada h2 em {
   font-style: italic;
-  color: var(--ci);
+  color: var(--acento);
 }
 
 .portada .proposito {
@@ -425,7 +425,7 @@ main { min-width: 0; }
   font-weight: 700;
   letter-spacing: .13em;
   text-transform: uppercase;
-  color: var(--ci);
+  color: var(--acento);
   margin: 1.9rem 0 .6rem;
 }
 
@@ -439,7 +439,7 @@ main { min-width: 0; }
 
 .modulo code {
   background: var(--papel-2);
-  color: var(--ci-2);
+  color: var(--acento-claro);
   padding: .12rem .38rem;
   border-radius: 3px;
   font-size: .86em;
@@ -466,7 +466,7 @@ main { min-width: 0; }
   float: left;
   line-height: .82;
   padding: .06em .12em 0 0;
-  color: var(--ci);
+  color: var(--acento);
 }
 
 /* ---- Listas de definición ---- */
@@ -485,7 +485,7 @@ main { min-width: 0; }
 
 .definiciones dt {
   font-weight: 600;
-  color: var(--ci);
+  color: var(--acento);
   font-size: .95rem;
 }
 
@@ -527,17 +527,17 @@ main { min-width: 0; }
   margin-bottom: .35rem;
 }
 
-.recuadro.nota      { border-left-color: var(--ci); background: var(--ci-fondo); }
+.recuadro.nota      { border-left-color: var(--acento); background: var(--acento-fondo); }
 .recuadro.nota h4,
-.recuadro.nota .rotulo { color: var(--ci-2); }
+.recuadro.nota .rotulo { color: var(--acento-claro); }
 
-.recuadro.distincion { border-left-color: var(--ambar); background: var(--ambar-fondo); }
+.recuadro.distincion { border-left-color: var(--acento-2); background: var(--acento-2-fondo); }
 .recuadro.distincion h4,
-.recuadro.distincion .rotulo { color: var(--ambar-2); }
+.recuadro.distincion .rotulo { color: var(--acento-2-claro); }
 
-.recuadro.precision { border-left-color: var(--violeta); background: rgba(168, 146, 245, .09); }
+.recuadro.precision { border-left-color: var(--terciario); background: rgba(168, 146, 245, .09); }
 .recuadro.precision h4,
-.recuadro.precision .rotulo { color: var(--violeta); }
+.recuadro.precision .rotulo { color: var(--terciario); }
 
 .recuadro.aplicacion { border-left-color: var(--verde); background: var(--verde-fondo); }
 .recuadro.aplicacion h4,
@@ -574,7 +574,7 @@ main { min-width: 0; }
   font-size: .72rem;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--ambar);
+  color: var(--acento-2);
 }
 
 .ejemplo-cabecera .titulo b { color: var(--texto); font-weight: 600; }
@@ -597,7 +597,7 @@ main { min-width: 0; }
 .paso .n {
   font-family: var(--mono);
   font-size: .78rem;
-  color: var(--ci);
+  color: var(--acento);
   border: 1px solid rgba(86, 198, 230, .35);
   border-radius: 50%;
   width: 1.75rem;
@@ -620,7 +620,7 @@ main { min-width: 0; }
   margin-top: .6rem;
 }
 
-.observacion b { color: var(--ci-2); font-weight: 600; }
+.observacion b { color: var(--acento-claro); font-weight: 600; }
 
 /* ============================================================
    FIGURAS Y DIAGRAMAS
@@ -647,7 +647,7 @@ figura {
 }
 
 .pie-figura b {
-  color: var(--ambar);
+  color: var(--acento-2);
   font-style: normal;
   font-weight: 600;
   letter-spacing: .06em;
@@ -693,11 +693,11 @@ figura {
 .nodo p { font-size: .84rem; color: var(--texto-3); margin: 0; line-height: 1.6; }
 
 .nodo.cliente { border-color: rgba(86, 198, 230, .42); box-shadow: inset 0 0 0 1px rgba(86, 198, 230, .1); }
-.nodo.cliente h5 { color: var(--ci); }
+.nodo.cliente h5 { color: var(--acento); }
 .nodo.servidor { border-color: rgba(221, 164, 92, .42); box-shadow: inset 0 0 0 1px rgba(221, 164, 92, .1); }
-.nodo.servidor h5 { color: var(--ambar); }
+.nodo.servidor h5 { color: var(--acento-2); }
 .nodo.datos { border-color: rgba(168, 146, 245, .42); box-shadow: inset 0 0 0 1px rgba(168, 146, 245, .1); }
-.nodo.datos h5 { color: var(--violeta); }
+.nodo.datos h5 { color: var(--terciario); }
 
 .flecha {
   display: flex;
@@ -713,10 +713,10 @@ figura {
 .flecha .glifo {
   font-size: 1.5rem;
   line-height: 1;
-  color: var(--ci);
+  color: var(--acento);
 }
 
-.flecha .glifo.vuelta { color: var(--ambar); }
+.flecha .glifo.vuelta { color: var(--acento-2); }
 
 .flecha .etiqueta {
   font-family: var(--mono);
@@ -744,13 +744,13 @@ figura {
   padding: .8rem 1.1rem;
   background: var(--papel);
   border: 1px solid var(--linea);
-  border-left: 3px solid var(--ci);
+  border-left: 3px solid var(--acento);
   border-radius: var(--radio);
 }
 
-.capa:nth-child(2) { border-left-color: var(--ambar); margin-inline: 1.6rem; }
+.capa:nth-child(2) { border-left-color: var(--acento-2); margin-inline: 1.6rem; }
 .capa:nth-child(3) { border-left-color: var(--verde); margin-inline: 3.2rem; }
-.capa:nth-child(4) { border-left-color: var(--violeta); margin-inline: 4.8rem; }
+.capa:nth-child(4) { border-left-color: var(--terciario); margin-inline: 4.8rem; }
 
 .capa .capa-nombre {
   font-family: var(--mono);
@@ -805,9 +805,9 @@ figura {
   display: block;
 }
 
-.ciclo-fila.cliente { border-left: 3px solid var(--ci); }
-.ciclo-fila.servidor { border-left: 3px solid var(--ambar); }
-.ciclo-fila.red     { border-left: 3px solid var(--violeta); }
+.ciclo-fila.cliente { border-left: 3px solid var(--acento); }
+.ciclo-fila.servidor { border-left: 3px solid var(--acento-2); }
+.ciclo-fila.red     { border-left: 3px solid var(--terciario); }
 
 /* ============================================================
    BLOQUES DE CÓDIGO
@@ -840,7 +840,7 @@ figura {
   background: var(--linea);
 }
 
-.code-dots span:first-child { background: var(--ci); }
+.code-dots span:first-child { background: var(--acento); }
 
 .code-header-left > span {
   font-family: var(--mono);
@@ -867,7 +867,7 @@ figura {
   flex-shrink: 0;
 }
 
-.copy-btn:hover { border-color: var(--ci); color: var(--ci); }
+.copy-btn:hover { border-color: var(--acento); color: var(--acento); }
 .copy-btn.ok { border-color: var(--verde); color: var(--verde); }
 
 .code-wrap pre {
@@ -880,9 +880,9 @@ figura {
 
 .code-wrap code { background: none; border: none; padding: 0; color: var(--texto); }
 
-.linea-marcada { display: block; background: rgba(86, 198, 230, .08); border-left: 2px solid var(--ci); margin: 0 -1.3rem; padding: 0 1.1rem; }
+.linea-marcada { display: block; background: rgba(86, 198, 230, .08); border-left: 2px solid var(--acento); margin: 0 -1.3rem; padding: 0 1.1rem; }
 .linea-comentario { color: var(--texto-3); font-style: italic; }
-.linea-clave { color: var(--ambar-2); }
+.linea-clave { color: var(--acento-2-claro); }
 .linea-dato { color: var(--verde); }
 
 /* ============================================================
@@ -922,7 +922,7 @@ figura {
   font-size: .66rem;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--ci);
+  color: var(--acento);
   font-weight: 500;
   background: var(--papel-2);
   border-bottom: 1px solid var(--linea);
@@ -942,10 +942,10 @@ figura {
 .tabla-compara code { font-size: .8em; white-space: nowrap; }
 
 .marca-verde  { color: var(--verde) !important; }
-.marca-ambar  { color: var(--ambar) !important; }
-.marca-ci     { color: var(--ci) !important; }
+.marca-ambar  { color: var(--acento-2) !important; }
+.marca-ci     { color: var(--acento) !important; }
 .marca-roja   { color: var(--rojo) !important; }
-.marca-violeta{ color: var(--violeta) !important; }
+.marca-violeta{ color: var(--terciario) !important; }
 
 /* ============================================================
    CUESTIONARIO DE COMPRENSIÓN
@@ -972,7 +972,7 @@ figura {
   content: "";
   width: 3px;
   height: 1.05em;
-  background: var(--ambar);
+  background: var(--acento-2);
   border-radius: 2px;
 }
 
@@ -1002,7 +1002,7 @@ figura {
   transition: var(--transicion);
 }
 
-.opcion:hover:not(:disabled) { border-color: var(--ci); color: var(--texto); background: var(--ci-fondo); }
+.opcion:hover:not(:disabled) { border-color: var(--acento); color: var(--texto); background: var(--acento-fondo); }
 
 .opcion.correcta {
   border-color: var(--verde);
@@ -1034,7 +1034,7 @@ figura {
 
 .resultado-quiz.visible { display: block; }
 .resultado-quiz.exito   { background: var(--verde-fondo); color: var(--verde); border: 1px solid rgba(79, 199, 158, .35); }
-.resultado-quiz.parcial { background: var(--ambar-fondo); color: var(--ambar-2); border: 1px solid rgba(221, 164, 92, .35); }
+.resultado-quiz.parcial { background: var(--acento-2-fondo); color: var(--acento-2-claro); border: 1px solid rgba(221, 164, 92, .35); }
 
 /* ============================================================
    EJERCICIO DE CLASIFICACIÓN (tabla estática)
@@ -1085,7 +1085,7 @@ figura {
   font-size: .7rem;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--ambar);
+  color: var(--acento-2);
 }
 
 .trazador-indice {
@@ -1115,9 +1115,9 @@ figura {
 }
 
 .trazador-panel:last-child { border-bottom: none; }
-.trazador-panel.p-cliente { border-left-color: var(--ci); }
-.trazador-panel.p-red { border-left-color: var(--violeta); }
-.trazador-panel.p-servidor { border-left-color: var(--ambar); }
+.trazador-panel.p-cliente { border-left-color: var(--acento); }
+.trazador-panel.p-red { border-left-color: var(--terciario); }
+.trazador-panel.p-servidor { border-left-color: var(--acento-2); }
 
 .trazador-panel h4 {
   margin: 0 0 .5rem;
@@ -1138,9 +1138,9 @@ figura {
   margin: 0;
 }
 
-.trazador-panel pre .k { color: var(--ci); }
+.trazador-panel pre .k { color: var(--acento); }
 .trazador-panel pre .s { color: var(--verde); }
-.trazador-panel pre .n { color: var(--ambar-2); }
+.trazador-panel pre .n { color: var(--acento-2-claro); }
 .trazador-panel pre .c { color: var(--texto-3); }
 
 /* ============================================================
@@ -1160,15 +1160,15 @@ figura {
   transition: var(--transicion);
 }
 
-.solucion-btn:hover { border-color: var(--ambar); color: var(--ambar-2); }
+.solucion-btn:hover { border-color: var(--acento-2); color: var(--acento-2-claro); }
 
 .solucion {
   display: none;
   margin-top: .9rem;
   padding: 1.1rem 1.3rem;
-  background: var(--ambar-fondo);
+  background: var(--acento-2-fondo);
   border: 1px solid rgba(221, 164, 92, .3);
-  border-left: 3px solid var(--ambar);
+  border-left: 3px solid var(--acento-2);
   border-radius: var(--radio);
   font-size: .95rem;
 }
@@ -1207,11 +1207,11 @@ figura {
   padding: 1rem 1.1rem;
   background: var(--tinta-2);
   border: 1px solid var(--linea);
-  border-top: 2px solid var(--ci);
+  border-top: 2px solid var(--acento);
   border-radius: var(--radio);
 }
 
-.regla h4 { margin: 0 0 .35rem; font-size: .74rem; letter-spacing: .1em; color: var(--ci); }
+.regla h4 { margin: 0 0 .35rem; font-size: .74rem; letter-spacing: .1em; color: var(--acento); }
 .regla p { font-size: .9rem; color: var(--texto-3); margin: 0; line-height: 1.65; }
 
 .taller {
@@ -1223,7 +1223,7 @@ figura {
     var(--papel);
   background-size: 26px 26px;
   border: 1px solid var(--linea);
-  border-top: 3px solid var(--ambar);
+  border-top: 3px solid var(--acento-2);
   border-radius: var(--radio-medio);
 }
 
@@ -1243,7 +1243,7 @@ figura {
   letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--tinta);
-  background: var(--ambar);
+  background: var(--acento-2);
   padding: .2rem .55rem;
   border-radius: 2px;
 }
@@ -1275,7 +1275,7 @@ figura {
   justify-content: center;
   font-family: var(--mono);
   font-size: .74rem;
-  color: var(--ci);
+  color: var(--acento);
   border: 1px solid rgba(86, 198, 230, .4);
   border-radius: 50%;
 }
@@ -1320,7 +1320,7 @@ figura {
   padding: 1rem 1.1rem;
   background: var(--papel);
   border: 1px solid var(--linea);
-  border-top: 2px solid var(--ci);
+  border-top: 2px solid var(--acento);
   border-radius: var(--radio);
 }
 
@@ -1328,7 +1328,7 @@ figura {
   font-family: var(--mono);
   font-size: .68rem;
   letter-spacing: .16em;
-  color: var(--ci);
+  color: var(--acento);
   margin-bottom: .4rem;
 }
 
@@ -1361,14 +1361,14 @@ figura {
 }
 
 .btn-siguiente, .btn-final {
-  background: var(--ci);
-  border-color: var(--ci);
+  background: var(--acento);
+  border-color: var(--acento);
   color: #06131a;
   font-weight: 600;
 }
 
-.btn-anterior:hover { border-color: var(--ci); color: var(--texto); }
-.btn-siguiente:hover, .btn-final:hover { background: var(--ci-2); border-color: var(--ci-2); }
+.btn-anterior:hover { border-color: var(--acento); color: var(--texto); }
+.btn-siguiente:hover, .btn-final:hover { background: var(--acento-claro); border-color: var(--acento-claro); }
 
 .cierre {
   margin-top: 3rem;
@@ -1416,7 +1416,7 @@ figura {
   background: var(--papel-3);
   color: var(--texto);
   border: 1px solid var(--linea);
-  border-left: 3px solid var(--ci);
+  border-left: 3px solid var(--acento);
   padding: .75rem 1.2rem;
   border-radius: var(--radio);
   font-size: .88rem;
@@ -1459,7 +1459,7 @@ figura {
     padding: .45rem .7rem;
   }
 
-  .btn-modulo.activo { border-bottom-color: var(--ci); border-left-color: transparent; }
+  .btn-modulo.activo { border-bottom-color: var(--acento); border-left-color: transparent; }
   .btn-modulo .rotulo { display: none; }
   .btn-modulo .num { font-size: .78rem; min-width: 0; }
   .indice-pie { display: none; }
