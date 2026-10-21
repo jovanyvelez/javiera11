@@ -1,0 +1,2314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 1 · Introducción al desarrollo web full stack</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 1 · <em>Introducción al desarrollo web full stack</em></h1>
+    <p class="subtitulo">Arquitectura cliente-servidor · El ciclo de una petición HTTP · Los roles del frontend y el backend</p>
+  </div>
+  <div class="instrumento">
+    <div class="badges" id="badges"></div>
+    <div class="lectura">
+      <strong id="unidad-actual">Unidad 0 · Apertura</strong>
+      <span id="porcentaje">0 %</span>
+    </div>
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura y programa</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">Arquitectura cliente-servidor</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">El servidor y sus capas</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">El protocolo HTTP</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">El ciclo de una petición</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Frontera: frontend y backend</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller integrador</span></button></li>
+    </ol>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> un documento de arquitectura de un sistema real.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>Por qué una aplicación web es, ante todo, un <em>problema de arquitectura</em></h2>
+    <p class="proposito">
+      Esta clase abre el módulo de <strong>Herramientas de Programación II</strong>. Su propósito no es
+      enseñarte a escribir código, sino darte el <strong>marco conceptual</strong> que hace legible todo
+      lo que escribirás después: por qué existe un servidor, qué viaja por la red, qué significa
+      «full stack» y dónde termina tu trabajo y empieza el de tu compañero de equipo.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura</b></span>
+      <span>🧭 <b>Sin entregable</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · El problema de fondo</h3>
+
+  <p class="primer-párrafo">
+    Abre cualquier aplicación que uses a diario —un messenger, una red social, un sistema de notas— y
+    observarás una sola cosa: una pantalla. Todo lo demás está oculto. Pero detrás de esa pantalla
+    hay, como mínimo, <strong>dos equipos distintos</strong> que se comunican, <strong>un protocolo</strong>
+    que fija las reglas de esa comunicación, <strong>un proceso en el servidor</strong> que decide qué
+    mostrar, y muy probablemente <strong>una base de datos</strong> donde vive la información.
+  </p>
+
+  <p>
+    La distancia entre <em>lo que el usuario ve</em> y <em>lo que realmente ocurre</em> es enorme, y esa
+    distancia es precisamente el objeto de estudio de esta clase. Un estudiante que entiende
+    <strong>qué pasa entre el instante en que presiona Enter y el instante en que aparece la respuesta</strong>
+    ya no programa «a ciegas»: sabe en qué máquina está el problema, qué capa puede tocar y qué contrato
+    debe respetar.
+  </p>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota de encuadre</span>
+    <p>
+      La arquitectura cliente-servidor no es una invención reciente ni un capricho de las redes sociales.
+      Es la forma en que se organizaron los primeros sistemas de información conectados, y sigue siendo
+      —con variantes— la arquitectura de casi todo lo que usas hoy. Entenderla no te ata a una tecnología:
+      te da el marco para entender <em>cualquier</em> tecnología.
+    </p>
+  </div>
+
+  <h3>0.2 · Propósito, alcance y límites</h3>
+
+  <div class="definiciones">
+    <div>
+      <dt>Lo que sí estudiamos</dt>
+      <dd>
+        El modelo cliente-servidor como forma de organizar un sistema distribuido; la estructura por
+        capas de un servidor; el protocolo HTTP y el ciclo completo de una petición; la frontera de
+        responsabilidades entre frontend y backend.
+      </dd>
+    </div>
+    <div>
+      <dt>Lo que dejamos para después</dt>
+      <dd>
+        La sintaxis de Python, las rutas de FastAPI, los modelos de Pydantic y el acceso a bases de
+        datos. Nada de eso se entiende sin este marco, y por eso va después.
+      </dd>
+    </div>
+    <div>
+      <dt>El supuesto de trabajo</dt>
+      <dd>
+        Suponemos que ya sabes lo que es una variable, un tipo de dato, una función y una estructura
+        condicional. Todo lo demás se explica aquí.
+      </dd>
+    </div>
+  </div>
+
+  <h3>0.3 · El programa de la clase</h3>
+
+  <p>
+    La clase está organizada en <strong>ocho unidades</strong> que suman exactamente <strong>240
+    minutos</strong>. Las unidades 1 a 6 son de lectura y análisis; la unidad 7 es un taller de
+    aplicación. El intervalo de la unidad 4 no se evalúa, pero su bitácora sí forma parte del
+    aprendizaje.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cuadro de unidades, tiempos y productos esperados</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura y programa</td><td>20 min</td><td>Mapa mental de la clase</td></tr>
+        <tr><td><strong>01</strong></td><td>La arquitectura cliente-servidor</td><td>30 min</td><td>Diagrama anotado</td></tr>
+        <tr><td><strong>02</strong></td><td>El servidor y sus capas</td><td>30 min</td><td>Traza interna de una petición</td></tr>
+        <tr><td><strong>03</strong></td><td>El protocolo HTTP</td><td>30 min</td><td>Petición y respuesta anotadas</td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones en el cuaderno</td></tr>
+        <tr><td><strong>05</strong></td><td>El ciclo completo de una petición</td><td>35 min</td><td>Lectura de un diagrama de tiempos</td></tr>
+        <tr><td><strong>06</strong></td><td>La frontera: frontend y backend</td><td>35 min</td><td>Clasificación razonada de 8 tareas</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller integrador y síntesis</td><td>45 min</td><td>Documento de arquitectura</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.4 · Las cuatro preguntas que esta clase responde</h3>
+
+  <p>
+    Si al final de la clase solo pudieras conservar cuatro respuestas, serían estas. Cada unidad
+    aporta elementos para responderlas, y la unidad 7 las usa como criteria de evaluación.
+  </p>
+
+  <ol>
+    <li><strong>¿Cómo se organizan los sistemas que usamos a diario?</strong> ¿Qué es exactamente un cliente y qué es exactamente un servidor?</li>
+    <li><strong>¿Qué ocurre entre que escribo una dirección y aparece una página?</strong> ¿Cuántas cosas pasan, en qué orden y quién las ejecuta?</li>
+    <li><strong>¿Por qué existe un «frontend» y un «backend»?</strong> ¿Qué problema resuelve separarlos y qué se pierde si se separan mal?</li>
+    <li><strong>¿Qué significa «full stack»?</strong> ¿Es un cargo, unazegocia o una forma de organizar el trabajo?</li>
+  </ol>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Advertencia terminológica</span>
+    <p>
+      «Full stack» se usa en el aula con un sentido técnico preciso (dominio de las dos capas del
+      desarrollo) y en el mercado laboral con un sentido más difuso (persona que sabe «de todo»). En
+      esta clase usamos el sentido técnico: <strong>full stack</strong> designa el conjunto de
+      responsabilidades que abarcan tanto la capa de presentación como la de lógica de negocio y datos.
+    </p>
+  </div>
+
+  <h3>0.5 · Cómo se estudia esta clase</h3>
+
+  <p>
+    Esta clase cambia de formato respecto a las clases anteriores del currículo. El contenido es más
+    conceptual y la evaluación es menos automática. Hay cuatro convenciones de lectura que usarás
+    constantemente:
+  </p>
+
+  <div class="cuadricula" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.9rem;margin:1.4rem 0">
+    <div class="recuadro nota" style="margin:0">
+      <span class="rotulo">Recuadro «Nota»</span>
+      <p style="font-size:.93rem">Aclaración de un término o de una sutileza que suele malinterpretarse.</p>
+    </div>
+    <div class="recuadro distincion" style="margin:0">
+      <span class="rotulo">Recuadro «Distinción»</span>
+      <p style="font-size:.93rem">Dos cosas que se parecen y que no deben confundirse: la diferencia importa.</p>
+    </div>
+    <div class="recuadro precision" style="margin:0">
+      <span class="rotulo">Recuadro «Precisión»</span>
+      <p style="font-size:.93rem">Matiz técnico: el término tiene un alcance más estrecho de lo que parece.</p>
+    </div>
+    <div class="recuadro aplicacion" style="margin:0">
+      <span class="rotulo">Recuadro «Aplicación»</span>
+      <p style="font-size:.93rem">Anclaje del concepto a un caso real o a una decisión de diseño.</p>
+    </div>
+  </div>
+
+  <p>
+    Además, cada unidad incluye <strong>ejemplos guiados</strong> (desarrollados paso a paso, con la
+    explicación de por qué cada paso importa) y un <strong>cuestionario de comprensión</strong> al final.
+    Los cuestionarios no llevan nota: sirven para que tú detectes qué partes del texto conviene releer.
+    Las soluciones de los talleres están disponibles, pero desplegadas bajo un botón: el esfuerzo de
+    resolver antes de mirar es parte del método.
+  </p>
+
+  <h3>0.6 · Herramienta de trabajo: las herramientas del navegador</h3>
+
+  <p>
+    A partir de la unidad 5 necesitarás observar el tráfico real de la red. Todos los navegadores
+    modernos traen una herramienta integrada para ello; en Chrome y Edge se llama
+    <strong>DevTools</strong> (teclas <kbd>F12</kbd> o <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd>).
+    En la pestaña <strong>Network</strong> se registra cada petición que hace la página: qué se pidió,
+    con qué método, cuánto tardó y qué respondió el servidor.
+  </p>
+
+  <p>
+    No necesitas instalarla ni configurar nada. Pero conviene que sepas que existe antes de empezar,
+    porque la unidad 5 es impracticable sin ella. Si el aula tiene equipos, este es un buen momento
+    para abrirla en el computador del compañero y familiarizarte con la pestaña Network.
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación</span>
+    <p>
+      Abre tu navegador, carga cualquier página que sea de tu interés y abre
+      <kbd>F12</kbd> → pestaña <strong>Network</strong>. Verás una lista de peticiones. No hace falta que
+      entiendas nada todavía: solo confirma que la herramienta está disponible. En la unidad 5 la
+      leeremos con detalle.
+    </p>
+  </div>
+
+  <h3>0.7 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde mentalmente estas tres preguntas y anota tu respuesta:</p>
+
+  <ol>
+    <li>Cuando abres una página web, ¿dónde crees que se guarda la información que ves?</li>
+    <li>¿Tu navegador guarda la página completa para no volver a pedirla, o la pide cada vez?</li>
+    <li>Si dos personas abren la misma página al mismo tiempo, ¿el servidor les responde a las dos o solo a una?</li>
+  </ol>
+
+  <p>
+    No hay respuesta correcta todavía. Vuelve a estas tres preguntas al terminar la unidad 7: la
+    diferencia entre tu respuesta inicial y tu respuesta final es, precisamente, lo que aprendiste.
+  </p>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: arquitectura cliente-servidor →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — ARQUITECTURA CLIENTE-SERVIDOR
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · Marco conceptual</div>
+    <h2>La arquitectura <em>cliente-servidor</em></h2>
+    <p class="proposito">
+      Un modelo es una forma de simplificar la realidad sin perder lo esencial. Esta unidad construye el
+      modelo que usaremos durante todo el módulo: qué roles existen, cómo se relacionan y qué
+      propiedades los definen.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y análisis</b></span>
+      <span>🧭 <b>Producto: diagrama anotado</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · Por qué hace falta un modelo</h3>
+
+  <p class="primer-párrafo">
+    Un sistema conectado por red es, por definición, un sistema <em>distribuido</em>: el trabajo se
+    reparte entre máquinas que no comparten memoria, no comparten reloj y, en muchos casos, no están
+    ni en el mismo edificio. Programar así sin un modelo mental es como construir una casa sin
+    planos: se puede hacer, pero cada error cuesta el doble.
+  </p>
+
+  <p>
+    El modelo cliente-servidor es la manera más antigua y más extendida de organizar esa distribución.
+    Su intuición central es simple: <strong>alguien pide, alguien responde</strong>. A partir de ahí, todo
+    lo demás son refinamientos.
+  </p>
+
+  <h3>1.2 · Las cuatro piezas del modelo</h3>
+
+  <div class="definiciones">
+    <div>
+      <dt>Cliente</dt>
+      <dd>
+        El proceso que <strong>inicia</strong> una interacción esperando un resultado. No produce datos:
+        los solicita. Puede ser un navegador, una aplicación móvil, otro servidor o incluso una
+        línea de comandos.
+      </dd>
+    </div>
+    <div>
+      <dt>Servidor</dt>
+      <dd>
+        El proceso que <strong>atiende</strong> solicitudes y produce respuestas. Varias instancias del
+        mismo servidor pueden atender en paralelo. Su trabajo es responder, no decidir quién pregunta.
+      </dd>
+    </div>
+    <div>
+      <dt>Red</dt>
+      <dd>
+        El medio físico y lógico que transporta los mensajes. Es inherentemente <em>no confiable</em>:
+        los paquetes pueden perderse, llegar duplicados o llegar en desorden. Los protocolos de
+        aplicación existen para sortear esa incertidumbre.
+      </dd>
+    </div>
+    <div>
+      <dt>Protocolo</dt>
+      <dd>
+        El conjunto de reglas que ambos extremos respetan: qué significa cada mensaje, qué se puede
+        pedir, en qué formato viaja la información y qué hacer cuando algo falla. <strong>HTTP</strong>
+        es el protocolo que estudiaremos.
+      </dd>
+    </div>
+  </div>
+
+  <figure>
+    <div class="diagrama">
+      <div class="nodo cliente">
+        <div class="rotulo-nodo">Rol 1</div>
+        <h5>Cliente</h5>
+        <p>Navegador, app móvil o proceso que inicia la petición y espera una respuesta.</p>
+      </div>
+      <div class="flecha">
+        <span class="glifo">──▶</span>
+        <span class="etiqueta">Petición<br>(request)</span>
+      </div>
+      <div class="flecha">
+        <span class="glifo vuelta">◀──</span>
+        <span class="etiqueta">Respuesta<br>(response)</span>
+      </div>
+      <div class="nodo servidor">
+        <div class="rotulo-nodo">Rol 2</div>
+        <h5>Servidor</h5>
+        <p>Proceso que recibe la petición, la procesa y devuelve una respuesta.</p>
+      </div>
+    </div>
+    <figcaption class="pie-figura"><b>Figura 1</b>El rol cliente y servidor no son máquinas fijas, sino dos lados de una misma interacción. Cambia el punto de vista y los papeles se invierten.</figcaption>
+  </figure>
+
+  <h3>1.3 · Una analogía y sus límites</h3>
+
+  <p>
+    La analogía clásica es la de un restaurante. El <strong>cliente</strong> es el comensal que se sienta
+    y hace un pedido; el <strong>servidor</strong> es la cocina que prepara y entrega; el <strong>mesero
+    (la red)</strong> transporta la comanda y el plato; y el <strong>menú (el protocolo)</strong> es el
+    acuerdo sobre qué se puede pedir y en qué formato.
+  </p>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión sobre la analogía</span>
+    <p>
+      La analogía es útil hasta un punto y luego empieza a mentir. Dos diferencias importan: en un
+      restaurante la cocina es una sola y atiende en fila, mientras que un servidor real puede tener
+      muchas instancias trabajando en paralelo; y el mesero nunca pierde una comanda, mientras que la
+      red sí pierde paquetes. Usaremos la analogía para introducir las ideas, no para razonar sobre los
+      detalles.
+    </p>
+  </div>
+
+  <h3>1.4 · Cuatro propiedades que definen el modelo</h3>
+
+  <div class="definiciones">
+    <div>
+      <dt>Asincronía</dt>
+      <dd>
+        El cliente no necesita estar frente al servidor mientras este trabaja: emite la petición,
+        <em>continúa haciendo otras cosas</em> y recibe la respuesta cuando llegue. En un navegador esto
+        significa que la interfaz puede seguir respondiendo mientras una imagen carga.
+      </dd>
+    </div>
+    <div>
+      <dt>Ausencia de estado</dt>
+      <dd>
+        El servidor no recuerda peticiones anteriores por sí solo. Cada petición es completa en sí
+        misma. Quien necesita recordar algo —el usuario que ha iniciado sesión— debe enviarlo en cada
+        petición, normalmente en una cabecera o en un token.
+      </dd>
+    </div>
+    <div>
+      <dt>Direccionalidad</dt>
+      <dd>
+        La comunicación se inicia siempre desde el cliente. El servidor nunca toma la iniciativa de
+        hablar por su cuenta en el modelo HTTP clásico; si quiere avisar algo, el cliente debe
+        preguntar (o el servidor debe usar un canal aparte, como las websockets).
+      </dd>
+    </div>
+    <div>
+      <dt>Petición / respuesta</dt>
+      <dd>
+        Cada interacción tiene la misma estructura: una petición con una <em>intención</em> y una
+        respuesta con un <em>resultado</em> y un <em>estado</em>. Todo lo demás —streaming, websockets,
+       pub-sub— son variantes que reorganizan estas dos piezas.
+      </dd>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota</span>
+    <p>
+      «Sin estado» (stateless) no significa que el servidor no pueda tener memoria. Significa que
+      <strong>no debe</strong> depender de ella para responder correctamente. Un servidor con caché o
+      con sesiones sigue siendo «sin estado» en términos de HTTP, siempre que pueda reconstruir el
+      contexto a partir de lo que el cliente envía.
+    </p>
+  </div>
+
+  <h3>1.5 · Los roles son relativos, no permanentes</h3>
+
+  <p>
+    «Servidor» no es una propiedad de una máquina, es un <strong>rol dentro de una interacción</strong>.
+    Tu navegador es cliente del servidor de la biblioteca. Pero ese mismo servidor, para obtener la
+    lista de libros, es cliente de la base de datos. Y esa base de datos, a su vez, es cliente del
+    servidor de archivos donde se guardan las portadas.
+  </p>
+
+  <p>
+    Esta relatividad es la razón por la que <strong>«full stack»</strong> no significa «programador que
+    sabe todos los idiomas». Significa que entiendes cómo encajan las piezas de ambos lados de la
+    frontera y puedes moverte con soltura entre ellas.
+  </p>
+
+  <figure>
+    <div class="diagrama">
+      <div class="nodo cliente">
+        <div class="rotulo-nodo">Rol 1</div>
+        <h5>Navegador</h5>
+        <p>Pide la página y ejecuta el JavaScript del frontend.</p>
+      </div>
+      <div class="flecha"><span class="glifo">──▶</span><span class="etiqueta">HTTP<br>GET /api/libros</span></div>
+      <div class="nodo servidor">
+        <div class="rotulo-nodo">Rol 2</div>
+        <h5>API (FastAPI)</h5>
+        <p>Consulta la base de datos y arma la respuesta.</p>
+      </div>
+      <div class="flecha"><span class="glifo vuelta">◀──</span><span class="etiqueta">SQL<br>SELECT…</span></div>
+      <div class="nodo datos">
+        <div class="rotulo-nodo">Rol 1</div>
+        <h5>Base de datos</h5>
+        <p>Responde con las filas; también es un servidor.</p>
+      </div>
+    </div>
+    <figcaption class="pie-figura"><b>Figura 2</b>La misma máquina puede ser cliente en una relación y servidor en otra. Al seguir una petición de extremo a extremo, los papeles van cambiando.</figcaption>
+  </figure>
+
+  <div class="ejemplo">
+    <div class="ejemplo-cabecera">
+      <span class="titulo">Ejemplo guiado <b>1.1</b> — Descomponer una interacción real</span>
+      <span class="titulo" style="color:var(--texto-3)">6 min</span>
+    </div>
+    <div class="ejemplo-cuerpo">
+      <p>
+        El enunciado es: <em>«Un estudiante escribe <code>https://biblioteca.colegio.edu.co/api/libros</code>
+        en la barra del navegador y presiona Enter. Describe, en orden, quién actúa en cada momento.»</em>
+      </p>
+
+      <div class="paso">
+        <span class="n">1</span>
+        <div class="cuerpo-paso">
+          <strong>El estudiante actúa, no el servidor</strong>
+          <p>
+            Es el único humano en el proceso, y su única acción relevante es iniciar. A partir de aquí
+            todo ocurre entre procesos. Anota esto: <em>el usuario no «entra» a la página; dispara una
+            petición</em>.
+          </p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">2</span>
+        <div class="cuerpo-paso">
+          <strong>El navegador actúa como cliente</strong>
+          <p>
+            Interpreta la URL, resuelve el nombre del dominio a una dirección IP, abre una conexión y
+            escribe una petición HTTP. Nótese que el navegador es un programa genérico: no sabe nada
+            de libros. Solo sabe hablar HTTP.
+          </p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">3</span>
+        <div class="cuerpo-paso">
+          <strong>La red transporta</strong>
+          <p>
+            Los bytes viajan en paquetes que pueden perderse, duplicarse o llegar desordenados. El
+            protocolo de transporte (TCP) se encarga de reordenarlos y entregarlos íntegros; HTTP,
+            en cambio, no se ocupa de eso: asume que debajo hay un transporte confiable.
+          </p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">4</span>
+        <div class="cuerpo-paso">
+          <strong>El servidor recibe y decide</strong>
+          <p>
+            Un servidor web acepta la conexión, lee la petición, la enruta a la función que corresponde
+            y ejecuta la lógica de negocio. En nuestro caso, esa función consulta la base de datos.
+          </p>
+          <p class="observacion"><b>Observa:</b> el servidor también es cliente de la base de datos. La
+          cadena de roles no termina en el servidor: continúa.</p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">5</span>
+        <div class="cuerpo-paso">
+          <strong>La respuesta vuelve y el navegador la consume</strong>
+          <p>
+            El servidor devuelve un código de estado, unas cabeceras y un cuerpo con los datos en JSON.
+            El navegador recibe ese texto y lo convierte en datos que el JavaScript del frontend puede
+            usar para pintar la lista de libros.
+          </p>
+          <p class="observacion"><b>Pregunta de control:</b> ¿en qué momento el estudiante ve por
+          primera vez un libro en pantalla? Razonar esa respuesta ya es trabajo de frontend y lo
+          veremos en la unidad 6.</p>
+        </div>
+      </div>
+
+      <div class="recuadro aplicacion" style="margin-bottom:0">
+        <span class="rotulo">Aplicación</span>
+        <p>
+          Escribe en tu cuaderno una tabla de dos columnas con el encabezado <em>«Momento»</em> /
+          <em>«Quién actúa y por qué»</em> y llénala con al menos seis filas a partir de los cinco pasos
+          anteriores. Añade una fila final: <em>«¿qué pasaría si el servidor no respondiera?»</em>.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <h3>1.6 · Cuadro de roles</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Comparación de los dos roles</caption>
+      <thead>
+        <tr><th>Aspecto</th><th>Cliente</th><th>Servidor</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Iniciativa</strong></td><td class="marca-ci">Inicia la interacción</td><td class="marca-ambar">Espera y responde</td></tr>
+        <tr><td><strong>Ubicación</strong></td><td>Junto al usuario, muchas veces en su dispositivo</td><td>En un centro de datos, a menudo lejano</td></tr>
+        <tr><td><strong>Conocimiento del dominio</strong></td><td>Conocimientos generales; puede ser «tonto»</td><td>Conocimiento completo del negocio</td></tr>
+        <tr><td><strong>Estado</strong></td><td class="marca-ci">Conserva el estado de la interfaz</td><td class="marca-ambar">No depende del estado previo</td></tr>
+        <tr><td><strong>Ejemplo</strong></td><td>Navegador, <code>curl</code>, app móvil</td><td>FastAPI, Nginx, PostgreSQL</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Cuál de estas afirmaciones describe correctamente el papel del cliente en el modelo cliente-servidor?</p>
+      <button class="opcion" data-op="a">Produce los datos y los envía al usuario que los pidió</button>
+      <button class="opcion" data-op="b">Es siempre un dispositivo físico ubicado junto al usuario</button>
+      <button class="opcion" data-op="c">Inicia la interacción y espera un resultado, sin producir los datos</button>
+      <button class="opcion" data-op="d">Mantiene un registro de las peticiones anteriores para responder más rápido</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué se afirma que el papel de servidor es relativo?</p>
+      <button class="opcion" data-op="a">Porque un mismo proceso puede ser cliente de un servicio y servidor de otro</button>
+      <button class="opcion" data-op="b">Porque el rol depende del sistema operativo del servidor</button>
+      <button class="opcion" data-op="c">Porque el rol cambia según la hora del día</button>
+      <button class="opcion" data-op="d">Porque todos los servidores de internet son intercambiables</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> En el modelo HTTP, ¿qué implica que el servidor sea «sin estado»?</p>
+      <button class="opcion" data-op="a">Que el servidor nunca guarda información en memoria</button>
+      <button class="opcion" data-op="b">Que no puede depender de peticiones anteriores para responder correctamente</button>
+      <button class="opcion" data-op="c">Que el servidor se reinicia después de cada respuesta</button>
+      <button class="opcion" data-op="d">Que las respuestas no llevan código de estado</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: El servidor y sus capas →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — EL SERVIDOR Y SUS CAPAS
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · Marco conceptual</div>
+    <h2>El servidor y su <em>estructura por capas</em></h2>
+    <p class="proposito">
+      En la unidad 1 vimos los dos extremos de la interacción. Ahora abrimos el servidor por dentro:
+      de qué está hecho, en qué capas se organiza y qué ocurre exactamente entre que llega una
+      petición y sale una respuesta.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y análisis</b></span>
+      <span>🧭 <b>Producto: traza interna</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · Tres sentidos de la palabra «servidor»</h3>
+
+  <p class="primer-párrafo">
+    Cuando se dice «el servidor», muchas veces se mezclan tres cosas distintas. Conviene separarlas,
+    porque cada una falla de manera diferente y se repara de manera diferente.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>Servidor (equipo)</dt>
+      <dd>
+        La máquina física: un computador con CPU, memoria, disco y tarjeta de red. En un centro de
+        datos puede haber miles,worked en conjunto.
+      </dd>
+    </div>
+    <div>
+      <dt>Servidor (software)</dt>
+      <dd>
+        El programa que atiende peticiones. Hay de distintos tipos: servidores web (Nginx, Apache),
+        servidores de aplicaciones (Uvicorn, Gunicorn), servidores de bases de datos (PostgreSQL).
+      </dd>
+    </div>
+    <div>
+      <dt>Servidor (proceso en ejecución)</dt>
+      <dd>
+        La instancia concreta del software, corriendo y escuchando en un puerto. Puedes tener varias
+        instancias del mismo software en la misma máquina, cada una en un puerto distinto.
+      </dd>
+    </div>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción</span>
+    <p>
+      «El servidor está caído» puede significar tres cosas distintas: la máquina no está encendida, el
+      software falló al arrancar, o el proceso está vivo pero nadie le está escuchando en el puerto.
+      Diagnosticar bien un sitio web caído empieza por decidir en cuál de las tres capas está el fallo.
+    </p>
+  </div>
+
+  <h3>2.2 · Las cuatro capas de un servidor de aplicaciones</h3>
+
+  <p>
+    Un servidor web moderno no es un bloque monolítico: es una pila de capas, cada una con una
+    responsabilidad y una herramienta propia. Entender la pila explica por qué existen tantas
+    piezas distintas en un proyecto real.
+  </p>
+
+  <figure>
+    <div class="capas">
+      <div class="capa">
+        <span class="capa-nombre">Red</span>
+        <span class="capa-desc"><b>TCP / IP, TLS.</b> Transporta los bytes y cifra el canal. No sabe qué es un «libro».</span>
+      </div>
+      <div class="capa">
+        <span class="capa-nombre">Servidor web</span>
+        <span class="capa-desc"><b>Nginx, Apache.</b> Acepta conexiones, sirve archivos estáticos y decide qué petición pasa a la aplicación.</span>
+      </div>
+      <div class="capa">
+        <span class="capa-nombre">Aplicación</span>
+        <span class="capa-desc"><b>FastAPI + Uvicorn.</b> Enruta la petición, ejecuta la lógica de negocio y valida los datos.</span>
+      </div>
+      <div class="capa">
+        <span class="capa-nombre">Datos</span>
+        <span class="capa-desc"><b>PostgreSQL.</b> Guarda la información de forma duradera y responde a consultas SQL.</span>
+      </div>
+    </div>
+    <figcaption class="pie-figura"><b>Figura 3</b>Cada capa habla con la de arriba mediante una interfaz estable. Cambiar Nginx por otro servidor web no debería obligarte a reescribir tu aplicación.</figcaption>
+  </figure>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota</span>
+    <p>
+      La capa de <em>datos</em> es a su vez un servidor: habla SQL, que es otro protocolo, sobre otro
+      socket, con otras reglas. Ilustra por qué el modelo cliente-servidor se repite: la base de datos
+      es cliente del servidor de archivos que guarda sus datos.
+    </p>
+  </div>
+
+  <h3>2.3 · Servidor estático y servidor dinámico</h3>
+
+  <p>
+    La distinción operativa más importante de esta unidad es la que separa un servidor que <em>entrega
+    archivos</em> de uno que <em>produce respuestas</em>.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Estático frente a dinámico</caption>
+      <thead>
+        <tr><th>Criterio</th><th>Servidor estático</th><th>Servidor dinámico</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Qué entrega</strong></td><td>Archivos ya existentes: HTML, CSS, JS, imágenes</td><td>Respuestas construidas en el momento de la petición</td></tr>
+        <tr><td><strong>De dónde saca el contenido</strong></td><td>Del disco</td><td>Del código y de la base de datos</td></tr>
+        <tr><td><strong>Ejemplo</strong></td><td>La portada del colegio, un blog estático</td><td>El listado de préstamos de cada estudiante</td></tr>
+        <tr><td><strong>Coste por petición</strong></td><td>Muy bajo: solo se sirve el archivo</td><td>Alto: se ejecuta código y quizá se consulta la base de datos</td></tr>
+        <tr><td><strong>Personalización</strong></td><td class="marca-roja">Ninguna por usuario</td><td class="marca-verde">Una respuesta distinta por petición</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación</span>
+    <p>
+      La página de inicio de un portal educativo puede ser estática y servir muy bien a 800 estudiantes
+      a la vez. En cambio, la pantalla que lista los préstamos de <em>cada</em> estudiante no puede ser
+      estática: depende de quién pregunta. En la práctica, casi todas las aplicaciones reales son
+      <strong>mezclas</strong>: el frontend se sirve como archivos estáticos y los datos pedidos por
+      JavaScript los produce un servidor dinámico.
+    </p>
+  </div>
+
+  <h3>2.4 · Qué ocurre dentro del servidor</h3>
+
+  <p>
+    Cuando una petición llega a la aplicación, se ejecuta siempre una secuencia parecida. Conocerla
+    permite localizar un error con precisión: no todo está en el mismo sitio.
+  </p>
+
+  <div class="ciclo">
+    <div class="ciclo-fila cliente">
+      <span class="ciclo-n">1</span>
+      <span class="ciclo-txt"><b>Enrutamiento</b><span>La aplicación decide qué función corresponde a esa ruta y ese método. «<code>GET /api/libros</code> → <code>listar_libros()</code>».</span></span>
+    </div>
+    <div class="ciclo-fila cliente">
+      <span class="ciclo-n">2</span>
+      <span class="ciclo-txt"><b>Validación de la entrada</b><span>Se comprueba que los datos recibidos tengan la forma y el tipo correctos, y se rechazan los que no.</span></span>
+    </div>
+    <div class="ciclo-fila servidor">
+      <span class="ciclo-n">3</span>
+      <span class="ciclo-txt"><b>Lógica de negocio</b><span>Las reglas del dominio: ¿puede este estudiante pedir este libro? ¿hay días de retraso?</span></span>
+    </div>
+    <div class="ciclo-fila servidor">
+      <span class="ciclo-n">4</span>
+      <span class="ciclo-txt"><b>Acceso a datos</b><span>Se consulta (o se modifica) la base de datos. Ojo: esto es SQL, y SQL <strong>no</strong> viaja al navegador.</span></span>
+    </div>
+    <div class="ciclo-fila servidor">
+      <span class="ciclo-n">5</span>
+      <span class="ciclo-txt"><b>Serialización y respuesta</b><span>Los datos se convierten a JSON, se les asigna un código de estado y se devuelve la respuesta HTTP.</span></span>
+    </div>
+  </div>
+
+  <div class="ejemplo">
+    <div class="ejemplo-cabecera">
+      <span class="titulo">Ejemplo guiado <b>2.1</b> — Rastrear una petición dentro del servidor</span>
+      <span class="titulo" style="color:var(--texto-3)">8 min</span>
+    </div>
+    <div class="ejemplo-cuerpo">
+      <p>
+        Seguimos la petición del ejemplo 1.1, esta vez desde que entra al servidor hasta que sale.
+        Cada paso indica <strong>en qué capa</strong> ocurre, porque esa es la información que te
+        permitirá diagnosticar.
+      </p>
+
+      <div class="paso">
+        <span class="n">1</span>
+        <div class="cuerpo-paso">
+          <strong>Capa de aplicación — enrutamiento</strong>
+          <p>
+            Llega <code>GET /api/libros</code>. El router de FastAPI busca la función registrada para
+            esa ruta y ese método. Si no encuentra ninguna, la respuesta será un <code>404</code>; si
+            encuentra la ruta pero no el método, un <code>405</code>.
+          </p>
+          <p class="observacion"><b>Diagnóstico:</b> un 404 con la URL correcta significa, casi siempre, un problema de enrutamiento.</p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">2</span>
+        <div class="cuerpo-paso">
+          <strong>Capa de aplicación — validación</strong>
+          <p>
+            La petición es un <code>GET</code> sin cuerpo, así que no hay mucho que validar. Pero
+            imaginemos que fuera <code>POST /api/prestamos</code>: el cuerpo llega como texto JSON y
+            la aplicación comprueba que tenga <code>libro_id</code>, <code>estudiante</code> y
+            <code>dias</code>, y que los tipos sean correctos. Si no lo son, la respuesta es
+            <code>422</code>.
+          </p>
+          <p class="observacion"><b>Diagnóstico:</b> un 422 significa que el problema está en los datos que envió el cliente, no en el servidor.</p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">3</span>
+        <div class="cuerpo-paso">
+          <strong>Capa de lógica de negocio</strong>
+          <p>
+            Antes de tocar la base de datos, el código aplica las reglas: «¿el libro está disponible?»,
+            «¿el student's penalty no supera el límite?». Estas reglas <strong>sólo pueden vivir en el
+            servidor</strong>, porque el cliente no es confiable.
+          </p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">4</span>
+        <div class="cuerpo-paso">
+          <strong>Capa de datos</strong>
+          <p>
+            La aplicación abre una conexión, ejecuta <code>SELECT * FROM libros WHERE disponible =
+            true</code> y recibe filas. Si la base de datos está caída o la consulta está mal escrita,
+            aquí es donde falla, y el servidor devolverá un <code>500</code>.
+          </p>
+          <p class="observacion"><b>Diagnóstico:</b> un 500 con la base de datos caída es un problema de datos, no de lógica.</p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">5</span>
+        <div class="cuerpo-paso">
+          <strong>Capa de serialización</strong>
+          <p>
+            Las filas (que son diccionarios con tipos de SQL) se convierten a JSON, se añade la
+            cabecera <code>Content-Type: application/json</code> y se responde <code>200 OK</code>. El
+            navegador recibe texto; el JavaScript del frontend lo convierte en objetos con
+            <code>JSON.parse()</code>.
+          </p>
+        </div>
+      </div>
+
+      <div class="recuadro aplicacion" style="margin-bottom:0">
+        <span class="rotulo">Aplicación</span>
+        <p>
+          Repite el ejercicio con una petición distinta: <code>POST /api/prestamos</code> con un cuerpo
+          JSON. Escribe en una tabla las cuatro diferencias entre ambos recorridos (qué se valida, qué
+          se escribe, qué código de estado se devuelve, qué método SQL se usa).
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <h3>2.5 · Desarrollo y producción no son lo mismo</h3>
+
+  <p>
+    Durante el desarrollo, FastAPI se ejecuta en tu computador y escucha en el puerto
+    <code>8000</code>. Eso significa que la dirección <code>http://localhost:8000</code> apunta a tu
+    propia máquina. Para que alguien más pueda verlo, hace falta una dirección pública, un nombre de
+    dominio y una cadena de capas (servidor web, aplicación, base de datos) desplegadas por separado.
+  </p>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión</span>
+    <p>
+      «Localhost» no es una dirección de internet: significa «esta misma máquina». Es el nombre que el
+      sistema le da a la computadora donde estás. Por eso una aplicación que funciona en
+      <code>localhost</code> puede no funcionar en un servidor, y viceversa: casi siempre la diferencia
+      está en la configuración (variables de entorno, rutas de base de datos, puertos).
+    </p>
+  </div>
+
+  <h3>2.6 · Tecnologías habituales por capa</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Alternativas frecuentes en cada capa</caption>
+      <thead>
+        <tr><th>Capa</th><th>Opción en este curso</th><th>Otras opciones</th><th>Responsabilidad</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Frontend</td><td>HTML, CSS, JavaScript</td><td>React, Vue, Svelte</td><td>Presentar e interactuar</td></tr>
+        <tr><td>Plantillas</td><td>Jinja2</td><td>Templates de Django</td><td>Generar HTML en el servidor</td></tr>
+        <tr><td>API</td><td>FastAPI</td><td>Express, Spring, Laravel</td><td>Exponer la lógica de negocio</td></tr>
+        <tr><td>Servidor</td><td>Uvicorn</td><td>Gunicorn, Hypercorn</td><td>Ejecutar la aplicación</td></tr>
+        <tr><td>Datos</td><td>PostgreSQL + asyncpg</td><td>MySQL, SQLite</td><td>Persistir y consultar</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la diferencia esencial entre un servidor estático y uno dinámico?</p>
+      <button class="opcion" data-op="a">El estático es más antiguo y el dinámico es moderno</button>
+      <button class="opcion" data-op="b">El estático entrega archivos existentes; el dinámico construye la respuesta al momento de la petición</button>
+      <button class="opcion" data-op="c">El estático usa menos memoria y el dinámico usa disco</button>
+      <button class="opcion" data-op="d">El dinámico siempre necesita más de un servidor físico</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Un usuario recibe un <code>422 Unprocessable Entity</code> al enviar un formulario. ¿Qué indica eso?</p>
+      <button class="opcion" data-op="a">Que el servidor está caído</button>
+      <button class="opcion" data-op="b">Que la ruta solicitada no existe</button>
+      <button class="opcion" data-op="c">Que los datos que envió el cliente no tienen la forma ni el tipo esperados</button>
+      <button class="opcion" data-op="d">Que la base de datos tardó demasiado</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Por qué las reglas de negocio (por ejemplo, «este libro está prestado») deben ejecutarse en el servidor y no en el navegador?</p>
+      <button class="opcion" data-op="a">Porque el cliente no es confiable: cualquiera puede modificar el código que se ejecuta en su navegador</button>
+      <button class="opcion" data-op="b">Porque el navegador no tiene acceso a la red</button>
+      <button class="opcion" data-op="c">Porque el JavaScript del navegador no puede ejecutar condiciones</button>
+      <button class="opcion" data-op="d">Porque las bases de datos no aceptan peticiones de navegadores</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: Cliente-servidor</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: El protocolo HTTP →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — EL PROTOCOLO HTTP
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · El protocolo</div>
+    <h2>HTTP: la <em>gramática</em> del intercambio</h2>
+    <p class="proposito">
+      Un protocolo es un acuerdo sobre la forma de los mensajes. Esta unidad abre HTTP y examina su
+      estructura real: qué contiene una petición, qué contiene una respuesta, qué significan los
+      métodos y los códigos de estado, y por qué esa estructura es la que permite que dos programas
+      escritos por personas distintas se entiendan.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y análisis</b></span>
+      <span>🧭 <b>Producto: petición anotada</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · Qué es un protocolo</h3>
+
+  <p class="primer-párrafo">
+    Un protocolo es una especificación: un documento que dice exactamente qué mensajes se pueden
+    intercambiar, qué estructura tienen y qué significa cada parte. Su valor no está en lo que permite
+    hacer, sino en que <strong>cualquier implementación que lo respete puede interoperar con
+    cualquier otra</strong>. Un navegador y un servidor escritos por personas que nunca se conocieron
+    se entienden porque ambos respetan HTTP.
+  </p>
+
+  <p>
+    HTTP (<em>Hypertext Transfer Protocol</em>) nació en 1989, diseñado por Tim Berners-Lee en el CERN
+    para compartir documentos entre investigadores. Su nombre original habla de «hipertexto» porque
+    los documentos contenían enlaces a otros documentos; la idea de fondo era la misma que hoy:
+    <strong>recursos</strong> identificados por direcciones, transferidos mediante peticiones y
+    respuestas.
+  </p>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota</span>
+    <p>
+      HTTP es un protocolo de <em>aplicación</em>: usa TCP (o QUIC) por debajo. Es decir, HTTP define
+      <em>qué</em> significan los bytes, no <em>cómo</em> viajan. Por eso el mismo HTTP funciona sobre
+      una red de fibra y sobre una conexión móvil inestable: el transporte inferior se encarga de
+      que los bytes lleguen.
+    </p>
+  </div>
+
+  <h3>3.2 · La anatomía de una petición</h3>
+
+  <p>Una petición HTTP tiene tres partes: una <strong>línea de petición</strong>, un conjunto de <strong>cabeceras</strong> y, opcionalmente, un <strong>cuerpo</strong>.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>petición HTTP — GET /api/libros</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="linea-clave">GET</span> <span class="linea-dato">/api/libros</span> <span class="linea-clave">HTTP/1.1</span>
+<span class="linea-comentario">Host: biblioteca.colegio.edu.co</span>
+<span class="linea-comentario">Accept: application/json</span>
+<span class="linea-comentario">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)</span>
+<span class="linea-comentario">Connection: keep-alive</span>
+<span class="linea-comentario">
+</span>
+<span class="linea-comentario">(no hay cuerpo: un GET no lleva datos)</span></code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las tres partes de una petición</caption>
+      <thead>
+        <tr><th>Parte</th><th>Ejemplo</th><th>Función</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Línea de petición</strong></td><td><code>GET /api/libros HTTP/1.1</code></td><td>Método, ruta de destino y versión del protocolo</td></tr>
+        <tr><td><strong>Cabeceras</strong></td><td><code>Accept: application/json</code></td><td>Metadatos del mensaje: qué formatos se aceptan, quién pregunta, autenticación</td></tr>
+        <tr><td><strong>Cuerpo</strong></td><td><em>ausente</em></td><td>Los datos que se envían (típicamente en <code>POST</code>, <code>PUT</code> o <code>PATCH</code>)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión sobre la ruta</span>
+    <p>
+      La ruta de la petición (<code>/api/libros</code>) no es necesariamente la URL completa que escribió
+      el usuario: normalmente es la parte posterior al dominio. Y no tiene por qué corresponder a un
+      archivo en disco. Es un <em>identificador de recurso</em> que el servidor traduce a una función
+      mediante el enrutamiento.
+    </p>
+  </div>
+
+  <h3>3.3 · Los métodos: verbos con intención</h3>
+
+  <p>
+    El método expresa <strong>qué se quiere hacer</strong> con el recurso. No es decorativo: el
+    servidor usa el método para decidir si ejecuta una consulta o una modificación, y los
+    intermediarios de la red usan el método para decidir si pueden cachear la respuesta.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Métodos HTTP y sus propiedades</caption>
+      <thead>
+        <tr><th>Método</th><th>Intención</th><th>Idempotente</th><th>Ejemplo en la biblioteca</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>GET</strong></td><td>Consultar</td><td class="marca-verde">Sí</td><td>Ver el listado de libros</td></tr>
+        <tr><td><strong>POST</strong></td><td>Crear</td><td class="marca-roja">No</td><td>Registrar un préstamo</td></tr>
+        <tr><td><strong>PUT</strong></td><td>Reemplazar por completo</td><td class="marca-verde">Sí</td><td>Actualizar los datos de un libro</td></tr>
+        <tr><td><strong>PATCH</strong></td><td>Modificar parcialmente</td><td class="marca-ambar">No garantizado</td><td>Cambiar solo el estado «disponible»</td></tr>
+        <tr><td><strong>DELETE</strong></td><td>Eliminar</td><td class="marca-verde">Sí</td><td>Retirar un libro del catálogo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción: idempotente ≠ «no se repite»</span>
+    <p>
+      Un método es <strong>idempotente</strong> cuando repetir la misma petición varias veces produce el
+      <em>mismo efecto final</em> que repetirla una. Un <code>GET</code> es idempotente: leer diez veces
+      el mismo recurso no lo altera. Un <code>POST</code> no lo es: diez <code>POST</code> crean diez
+      préstamos. Por eso, si una petición se pierde por el camino, un <code>GET</code> puede repetirse
+      sin riesgo, y un <code>POST</code> no.
+    </p>
+  </div>
+
+  <h3>3.4 · La anatomía de una respuesta</h3>
+
+  <p>Una respuesta tiene la misma estructura: línea de estado, cabeceras y cuerpo.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>respuesta HTTP — 200 OK</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="linea-clave">HTTP/1.1 200 OK</span>
+<span class="linea-comentario">Content-Type: application/json; charset=utf-8</span>
+<span class="linea-comentario">Content-Length: 96</span>
+<span class="linea-comentario">Date: Tue, 21 Oct 2026 14:03:21 GMT</span>
+<span class="linea-comentario">Server: uvicorn</span>
+<span class="linea-comentario">
+</span>
+{<span class="linea-dato">"id"</span>: <span class="linea-dato">1</span>, <span class="linea-dato">"titulo"</span>: <span class="linea-dato">"Cien años de soledad"</span>, <span class="linea-dato">"disponible"</span>: <span class="linea-dato">false</span>}</code></pre>
+  </div>
+
+  <h4>Códigos de estado: la primera cifra ya dice mucho</h4>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Familias de códigos de estado</caption>
+      <thead>
+        <tr><th>Familia</th><th>Significado</th><th>Códigos frecuentes</th><th>Qué revisar</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong class="marca-verde">2xx</strong></td><td>Éxito</td><td>200, 201, 204</td><td>Todo salió bien</td></tr>
+        <tr><td><strong class="marca-ci">3xx</strong></td><td>Redirección</td><td>301, 302, 304</td><td>El recurso está en otra parte</td></tr>
+        <tr><td><strong class="marca-ambar">4xx</strong></td><td>Error del cliente</td><td>400, 401, 403, 404, 422</td><td>La petición está mal o no está autorizada</td></tr>
+        <tr><td><strong class="marca-roja">5xx</strong></td><td>Error del servidor</td><td>500, 502, 503</td><td>El fallo es del servidor, no del cliente</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — leer el código antes de leer el mensaje</span>
+    <p>
+      Cuando una web falla, el código de estado te dice <strong>en qué lado está el problema</strong>:
+      un 4xx significa que el cliente pidió algo incorrecto o no permitido (revisar la URL, los datos
+      enviados, los permisos); un 5xx significa que el servidor falló (revisar logs, base de datos,
+      dependencias). Este es el primer paso del diagnóstico y es un hábito que te va a ahorrar horas.
+    </p>
+  </div>
+
+  <h3>3.5 · Las cabeceras que siempre aparecen</h3>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>Content-Type</code></dt>
+      <dd>El formato del cuerpo. <code>application/json</code>, <code>text/html</code>, <code>image/png</code>. Si falta o es incorrecta, el cliente no sabrá cómo interpretar los datos.</dd>
+    </div>
+    <div>
+      <dt><code>Accept</code></dt>
+      <dd>Los formatos que el cliente está dispuesto a recibir. El servidor puede responder con otro si no tiene el pedido (negociación de contenido).</dd>
+    </div>
+    <div>
+      <dt><code>Authorization</code></dt>
+      <dd>Credenciales o token de acceso. Es el mecanismo por el que un servidor «sin estado» sabe quién es el usuario que pregunta.</dd>
+    </div>
+    <div>
+      <dt><code>Cache-Control</code></dt>
+      <dd>Cuánto tiempo (y bajo qué condiciones) se puede guardar la respuesta en memoria intermedia. Una de las palancas más efectivas de rendimiento web.</dd>
+    </div>
+    <div>
+      <dt><code>Set-Cookie</code></dt>
+      <dd>La instrucción para que el cliente guarde una cookie: un pequeño fragmento de datos que el navegador enviará en las peticiones siguientes.</dd>
+    </div>
+  </div>
+
+  <h3>3.6 · Versiones del protocolo</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Evolución de HTTP</caption>
+      <thead>
+        <tr><th>Versión</th><th>Año</th><th>Cambio principal</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>HTTP/1.1</strong></td><td>1997</td><td>Peticiones persistentes, <code>Host</code>, métodos y códigos estandarizados. La base de la web durante más de 20 años.</td></tr>
+        <tr><td><strong>HTTP/2</strong></td><td>2015</td><td>Multiplexación sobre una sola conexión, compresión de cabeceras, priority. Elimina el «bloqueo de cabeza de línea».</td></tr>
+        <tr><td><strong>HTTP/3</strong></td><td>2022</td><td>Transporta HTTP sobre QUIC/UDP, con Resume cifrado por conexión y mejor comportamiento en redes con pérdida.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota</span>
+    <p>
+      HTTP/3 no cambia el modelo cliente-servidor ni la estructura de la petición que acabas de
+      estudiar. Cambia <strong>cómo se transportan</strong> los mismos mensajes. Es un buen recordatorio
+      de la lección de la unidad 1: el protocolo define el significado; el transporte define el camino.
+    </p>
+  </div>
+
+  <div class="ejemplo">
+    <div class="ejemplo-cabecera">
+      <span class="titulo">Ejemplo guiado <b>3.1</b> — Pedir y leer una respuesta real</span>
+      <span class="titulo" style="color:var(--texto-3)">9 min</span>
+    </div>
+    <div class="ejemplo-cuerpo">
+      <p>
+        La herramienta más directa para ver HTTP en crudo es <code>curl</code>, disponible en Windows 10,
+        macOS y Linux. Con <code>-i</code> (o <code>--include</code>) muestra también las cabeceras de
+        la respuesta, no solo el cuerpo.
+      </p>
+
+      <div class="code-wrap" style="margin:1rem 0">
+        <div class="code-header">
+          <div class="code-header-left">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span>terminal — curl</span>
+          </div>
+          <button class="copy-btn">Copiar</button>
+        </div>
+<pre><code><span class="linea-comentario"># Ver la respuesta completa, con cabeceras</span>
+curl -i https://biblioteca.colegio.edu.co/api/libros
+
+<span class="linea-comentario"># Enviar datos: aquí nace un POST</span>
+curl -i -X POST https://biblioteca.colegio.edu.co/api/prestamos \
+  -H "Content-Type: application/json" \
+  -d '{"libro_id": 1, "estudiante": "Ana Torres", "dias": 7}'</code></pre>
+      </div>
+
+      <div class="paso">
+        <span class="n">1</span>
+        <div class="cuerpo-paso">
+          <strong>Ejecuta el primer comando y localiza la línea de estado</strong>
+          <p>
+            En la primera línea de la respuesta verás <code>HTTP/1.1 200 OK</code>. Esa línea se compone de
+            la versión del protocolo, el <strong>código de estado</strong> y una frase corta que explica
+            el código en palabras.
+          </p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">2</span>
+        <div class="cuerpo-paso">
+          <strong>Localiza las cabeceras y el cuerpo</strong>
+          <p>
+            Las cabeceras aparecen hasta que hay una línea en blanco. Después de esa línea en blanco
+            empieza el cuerpo. <code>Content-Type: application/json</code> te dice que lo que sigue
+            puede interpretarse como JSON.
+          </p>
+          <p class="observacion"><b>Observa:</b> la línea en blanco entre cabeceras y cuerpo es un <em>separador</em> del protocolo, no un adorno. Todo lo que está por encima son metadatos; todo lo que está por debajo son datos.</p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">3</span>
+        <div class="cuerpo-paso">
+          <strong>Ejecuta el segundo comando y compara</strong>
+          <p>
+            Ahora hay una línea de petición con <code>POST</code>, una cabecera
+            <code>Content-Type</code> y un cuerpo con los datos en JSON. La respuesta probablemente sea
+            <code>201 Created</code>, con una cabecera <code>Location</code> que apunta al recurso
+            recién creado.
+          </p>
+          <p class="observacion"><b>Observa:</b> el <code>\</code> al final de una línea indica «continúa en la siguiente línea». Es de la terminal, no de HTTP.</p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">4</span>
+        <div class="cuerpo-paso">
+          <strong>Provoca un error y obsérvalo</strong>
+          <p>
+            Repite el primer comando cambiando la ruta a algo inexistente:
+            <code>curl -i https://biblioteca.colegio.edu.co/api/no-existe</code>. Ahora la línea de estado
+            dirá <code>404 Not Found</code>. Anota la diferencia entre la respuesta exitosa y la
+            fallida: el formato es el mismo, lo que cambia es el código y el cuerpo.
+          </p>
+          <p class="observacion"><b>Observa:</b> las cabeceras de error suelen añadir <code>Content-Type: text/html</code> cuando el servidor genera una página de error. No todos los errores son JSON.</p>
+        </div>
+      </div>
+
+      <div class="recuadro aplicacion" style="margin-bottom:0">
+        <span class="rotulo">Aplicación</span>
+        <p>
+          Pide al profesor o al compañero un segundo servidor real (por ejemplo una API pública de
+          clima o de libros) y repite los cuatro pasos. Entrega la comparación: método, ruta, código de
+          estado, <code>Content-Type</code> y una frase sobre el formato del cuerpo.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Qué afirmación describe mejor el papel de las cabeceras HTTP?</p>
+      <button class="opcion" data-op="a">Transportar metadatos del mensaje, como el formato del cuerpo o las credenciales</button>
+      <button class="opcion" data-op="b">Transportar únicamente el cuerpo de la respuesta</button>
+      <button class="opcion" data-op="c">Cifrar el contenido de la petición</button>
+      <button class="opcion" data-op="d">Indicar el lenguaje de programación del servidor</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> Un método es idempotente cuando…</p>
+      <button class="opcion" data-op="a">Nunca puede repetirse</button>
+      <button class="opcion" data-op="b">Repetir la misma petición produce el mismo efecto final que repetirla una sola vez</button>
+      <button class="opcion" data-op="c">Siempre devuelve el código 200</button>
+      <button class="opcion" data-op="d">Solo se puede usar con recursos que existen</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> Un cliente recibe <code>401 Unauthorized</code>. ¿Qué significa?</p>
+      <button class="opcion" data-op="a">La URL solicitada no existe</button>
+      <button class="opcion" data-op="b">El servidor tuvo un error interno</button>
+      <button class="opcion" data-op="c">El cliente no ha demostrado que tiene permiso para esa operación</button>
+      <button class="opcion" data-op="d">Los datos enviados no tienen el tipo esperado</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: El servidor y sus capas</button>
+    <button class="btn-siguiente" data-ir="4">Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de lectura</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija por
+      escrito lo que has leído hasta ahora. Las pausas también son parte del método.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora:
+      completa lo que falta.
+    </p>
+
+    <div class="reglas">
+      <div class="regla">
+        <h4>Regla 20-20-20</h4>
+        <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+      </div>
+      <div class="regla">
+        <h4>Movimiento</h4>
+        <p>Levántate, camina un minuto por el aula, estira brazos y cuello.</p>
+      </div>
+      <div class="regla">
+        <h4>Hidratación</h4>
+        <p>Un vaso de agua. El cerebro pierde foco con facilidad después de una hora de lectura densa.</p>
+      </div>
+      <div class="regla">
+        <h4>Bitácora</h4>
+        <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora de lectura (5 minutos)</h3>
+
+  <p>
+    Escribe en tu cuaderno, con tus propias palabras, las respuestas a estas tres preguntas. No copies
+    el texto: el esfuerzo de reformular es lo que consolida el aprendizaje.
+  </p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿qué distingue a un cliente de un servidor?</li>
+    <li><strong>En una frase:</strong> ¿qué diferencia hay entre un servidor estático y uno dinámico?</li>
+    <li><strong>En una frase:</strong> ¿qué le dice el código de estado <code>404</code> a quien recibe la respuesta?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario anticipatorio</h3>
+
+  <p>
+    En la unidad 6 aparecerán cuatro términos que conviene tenerlocated antes de verlos en contexto.
+    Léelos ahora; las definiciones son aproximadas y se afinarán después.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>API</dt>
+      <dd>Conjunto de operaciones que un servidor ofrece para ser usado por otros programas, con reglas y formatos pactados.</dd>
+    </div>
+    <div>
+      <dt>Endpoint</dt>
+      <dd>Cada una de esas operaciones: un par formado por un método y una ruta, que corresponde a una acción concreta.</dd>
+    </div>
+    <div>
+      <dt>JSON</dt>
+      <dd>Formato de texto estándar para representar datos estructurados (objetos y listas). Es el lenguaje habitual de las APIs.</dd>
+    </div>
+    <div>
+      <dt>REST</dt>
+      <dd>Un conjunto de convenciones de diseño para APIs web que organize los recursos alrededor de URLs y de los métodos HTTP.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota</span>
+    <p>
+      «REST» es un término que se usa con frecuencia imprecisa: a veces se confunde con «API JSON por
+      HTTP». En la unidad 6 veremos qué significa realmente y por qué muchas APIs bien hechas no son
+      REST, sin que eso las haga malas.
+    </p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: HTTP</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: El ciclo de una petición →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — EL CICLO DE UNA PETICIÓN
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · El ciclo completo</div>
+    <h2>El viaje de una petición, <em>fase por fase</em></h2>
+    <p class="proposito">
+      Ahora se arma todo lo anterior en una sola secuencia. Esta unidad describe las siete fases que
+      ocurren entre que el usuario presiona Enter y que la página aparece, y enseña a observar ese
+      viaje con las herramientas del navegador.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>🖥 <b>Práctica guiada</b></span>
+      <span>🧭 <b>Producto: lectura de tiempos</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · Las siete fases</h3>
+
+  <p class="primer-párrafo">
+    Una petición HTTP completa no es un instante: es una secuencia de fases, cada una a cargo de un
+    actor distinto y con un costo de tiempo propio. Conocer la secuencia es lo que te permite decir
+    «el problema está aquí» en lugar de «la página va lenta».
+  </p>
+
+  <div class="ciclo">
+    <div class="ciclo-fila cliente">
+      <span class="ciclo-n">1</span>
+      <span class="ciclo-txt"><b>El usuario dispara la petición · Cliente</b><span>Escribe una URL (o hace clic en un enlace) y el navegador decide qué recurso quiere obtener.</span></span>
+    </div>
+    <div class="ciclo-fila red">
+      <span class="ciclo-n">2</span>
+      <span class="ciclo-txt"><b>Resolución del nombre · Red</b><span>El nombre de dominio se traduce a una dirección IP consultando un servidor DNS. Es la primera ida y vuelta de la red.</span></span>
+    </div>
+    <div class="ciclo-fila red">
+      <span class="ciclo-n">3</span>
+      <span class="ciclo-txt"><b>Apertura de la conexión · Red</b><span>Se abre un canal TCP y, si el sitio usa HTTPS, se negocia el cifrado TLS. A partir de aquí, los dos extremos pueden hablar.</span></span>
+    </div>
+    <div class="ciclo-fila cliente">
+      <span class="ciclo-n">4</span>
+      <span class="ciclo-txt"><b>Envío de la petición · Cliente → Servidor</b><span>El navegador escribe la petición HTTP: método, ruta, cabeceras y, si hace falta, cuerpo.</span></span>
+    </div>
+    <div class="ciclo-fila servidor">
+      <span class="ciclo-n">5</span>
+      <span class="ciclo-txt"><b>Procesamiento · Servidor</b><span>Enrutamiento, validación, lógica de negocio, consulta a la base de datos y construcción de la respuesta.</span></span>
+    </div>
+    <div class="ciclo-fila servidor">
+      <span class="ciclo-n">6</span>
+      <span class="ciclo-txt"><b>Envío de la respuesta · Servidor → Cliente</b><span>El servidor devuelve la línea de estado, las cabeceras y el cuerpo con los datos.</span></span>
+    </div>
+    <div class="ciclo-fila cliente">
+      <span class="ciclo-n">7</span>
+      <span class="ciclo-txt"><b>Construcción de la página · Cliente</b><span>El navegador interpreta el HTML, descarga el CSS y el JavaScript, ejecuta el código y por fin muestra el resultado. A partir de aquí puede haber más peticiones.</span></span>
+    </div>
+  </div>
+
+  <div class="recuadro distintion">
+    <span class="rotulo">Distinción</span>
+    <p>
+      Las fases 1 a 7 ocurren <strong>una sola vez por recurso</strong>. Pero una página real dispara
+      muchas peticiones: el documento HTML, sus hojas de estilo, sus scripts, sus imágenes, y las
+      llamadas a APIs que hace el JavaScript. La fase 7 es, de hecho, el comienzo de otra ronda de
+      peticiones.
+    </p>
+  </div>
+
+  <h3>5.2 · Trazador interactivo</h3>
+
+  <p>
+    Recorre las fases del ciclo. En cada panel aparece lo que el actor correspondiente está haciendo
+    y qué se ve en el cable.
+  </p>
+
+  <div class="trazador">
+    <div class="trazador-cabecera">Traza de una petición · GET /api/libros</div>
+    <div class="trazador-indice">
+      <span>1 · Usuario</span>
+      <span>2 · DNS</span>
+      <span>3 · Conexión</span>
+      <span>4 · Petición</span>
+      <span>5 · Servidor</span>
+      <span>6 · Respuesta</span>
+      <span>7 · Render</span>
+    </div>
+
+    <div class="trazador-panel p-cliente">
+      <h4>Fase 1 · El usuario dispara la petición</h4>
+      <p>
+        El estudiante escribe la URL y presiona Enter. Todavía no ha ocurrido ninguna comunicación:
+        solo se ha registrado la intención. El navegador toma la decisión de qué recurso pedir y con
+        qué cabeceras.
+      </p>
+      <pre>dirección:  https://biblioteca.colegio.edu.co/api/libros
+acción:    Enter
+estado:    nada ha salido del equipo todavía</pre>
+    </div>
+
+    <div class="trazador-panel p-red">
+      <h4>Fase 2 · Resolución del nombre (DNS)</h4>
+      <p>
+        El nombre <code>biblioteca.colegio.edu.co</code> no es una dirección que la red entienda. Se
+        consulta a un servidor DNS, que devuelve una dirección IP. Es una ida y vuelta completa antes
+        de que pueda enviarse la petición.
+      </p>
+      <pre>pregunta:  ¿qué IP corresponde a biblioteca.colegio.edu.co?
+respuesta: 190.12.44.7
+tiempo típico: 10 – 80 ms   (se cachea en el navegador y en el sistema)</pre>
+    </div>
+
+    <div class="trazador-panel p-red">
+      <h4>Fase 3 · Apertura de la conexión</h4>
+      <p>
+        Se abre un canal TCP con un saludo de tres pasos. Si el sitio usa HTTPS, se negocia TLS y se
+        establece una clave de cifrado simétrica. A partir de aquí, todo lo que viaje es
+        indescifrable para un intermediario.
+      </p>
+      <pre>TCP:   SYN  →  SYN-ACK  →  ACK
+TLS:   ClientHello  →  ServerHello  →  certificado  →  clave de sesión
+tiempo típico: 30 – 150 ms en una conexión nueva</pre>
+    </div>
+
+    <div class="trazador-panel p-cliente">
+      <h4>Fase 4 · Envío de la petición</h4>
+      <p>
+        El navegador escribe la petición y la entrega al canal. La primera línea es la más
+        importante: método, ruta y versión. Las cabeceras que siguen transportan metadatos y, en
+        este caso, la información de quién es el usuario.
+      </p>
+      <pre><span class="k">GET</span> /api/libros <span class="k">HTTP/1.1</span>
+<span class="c">Host: biblioteca.colegio.edu.co</span>
+<span class="c">Accept: application/json</span>
+<span class="c">Authorization: Bearer eyJhbGciOiJIUzI1NiIs...</span>
+<span class="c">Connection: keep-alive</span></pre>
+    </div>
+
+    <div class="trazador-panel p-servidor">
+      <h4>Fase 5 · Procesamiento en el servidor</h4>
+      <p>
+        El servidor web recibe la petición y la entrega a la aplicación, que enruta, valida, aplica
+        las reglas de negocio y consulta la base de datos. El tiempo que se tarda aquí se conoce como
+        <strong>TTFB</strong> (<em>Time To First Byte</em>): es el tiempo que el usuario percibe como
+        «espera».
+      </p>
+      <pre>enrutamiento  →  validación  →  lógica de negocio  →  SELECT ...
+                                                       ↓
+                                              filas en memoria
+tiempo típico: 20 – 300 ms (más si la consulta es lenta o la base está lejos)</pre>
+    </div>
+
+    <div class="trazador-panel p-servidor">
+      <h4>Fase 6 · Envío de la respuesta</h4>
+      <p>
+        El servidor responde con un código, unas cabeceras y el cuerpo. El código <code>200</code>
+        confirma que todo salió bien; el <code>Content-Type</code> le dice al navegador cómo leer lo
+        que viene.
+      </p>
+      <pre><span class="k">HTTP/1.1 200 OK</span>
+<span class="c">Content-Type: application/json; charset=utf-8</span>
+<span class="c">Content-Length: 96</span>
+<span class="c">Server: uvicorn</span>
+
+[{<span class="s">"id"</span>: <span class="n">1</span>, <span class="s">"titulo"</span>: <span class="s">"Cien años de soledad"</span>, <span class="s">"disponible"</span>: <span class="n">false</span>}]</pre>
+    </div>
+
+    <div class="trazador-panel p-cliente">
+      <h4>Fase 7 · Construcción de la página</h4>
+      <p>
+        El navegador interpreta el contenido, descarga el resto de recursos y ejecuta el JavaScript. Si
+        la página es una aplicación de una sola página, este JavaScript hace una nueva petición a la
+        API y reemplaza el contenido sin recargar la página.
+      </p>
+      <pre>HTML recibido  →  parseo  →  construcción del DOM
+                 →  GET /estilos.css
+                 →  GET /app.js
+                 →  ejecución del JS  →  GET /api/libros  (otra vez, vía fetch)
+                 →  pintado final de la lista</pre>
+    </div>
+  </div>
+
+  <h3>5.3 · La cascada de tiempos: leer el diagrama</h3>
+
+  <p>
+    La pestaña Network no solo muestra qué se pidió: muestra <strong>cuándo</strong>. El diagrama de
+    tiempos descompone cada petición en fases, y cada fase tiene un significado distinto.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Columnas del diagrama de tiempos y qué indican</caption>
+      <thead>
+        <tr><th>Columna</th><th>Qué mide</th><th>Qué te dice</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Queueing</strong></td><td>Espera antes de empezar</td><td>El navegador está limitado (seis conexiones por dominio) o el servidor está ocupado</td></tr>
+        <tr><td><strong>Stalled</strong></td><td>Espera por decisión del navegador</td><td>A veces es normal: el navegador reserva la conexión antes de enviar</td></tr>
+        <tr><td><strong>DNS Lookup</strong></td><td>Resolución del nombre</td><td>Un DNS lento se nota mucho y se puede cachear</td></tr>
+        <tr><td><strong>Initial Connection</strong></td><td>Apertura de TCP y TLS</td><td>Solo aparece en la primera petición a cada dominio</td></tr>
+        <tr><td><strong>Request sent</strong></td><td>Envío de la petición</td><td>Debería ser casi instantáneo</td></tr>
+        <tr><td><strong>Waiting (TTFB)</strong></td><td>Espera del servidor</td><td>El tiempo que el usuario ve como «la página no carga»</td></tr>
+        <tr><td><strong>Content Download</strong></td><td>Descarga del cuerpo</td><td>Depende del tamaño del recurso y del ancho de banda</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — dos síntomas distintos, dos causas distintas</span>
+    <p>
+      Si el <strong>TTFB</strong> es alto, el problema está en el servidor (o en la red hasta él): una
+      consulta lenta, una base de datos saturada, un servidor sin recursos. Si el <strong>Content
+      Download</strong> es alto y el tamaño de la respuesta es enorme, el problema es de peso de la
+      respuesta, y la solución pasa por la caché o por enviar menos datos. Confundir ambos casos lleva a
+      optimizar lo que no importa.
+    </p>
+  </div>
+
+  <div class="ejemplo">
+    <div class="ejemplo-cabecera">
+      <span class="titulo">Ejemplo guiado <b>5.2</b> — Medir, comparar e interpretar</span>
+      <span class="titulo" style="color:var(--texto-3)">12 min</span>
+    </div>
+    <div class="ejemplo-cuerpo">
+      <p>
+        El objetivo no es «encontrar el sitio más rápido», sino <strong>practicar el procedimiento de
+        medición e interpretación</strong>. Ese procedimiento es el mismo en un trabajo real.
+      </p>
+
+      <div class="paso">
+        <span class="n">1</span>
+        <div class="cuerpo-paso">
+          <strong>Prepara la herramienta</strong>
+          <p>
+            Abre las DevTools (<kbd>F12</kbd>), ve a la pestaña <strong>Network</strong> y activa la
+            casilla <strong>Preserve log</strong> (o «Conservar registro»), para que no se borren las
+            peticiones al recargar.
+          </p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">2</span>
+        <div class="cuerpo-paso">
+          <strong>Recarga y observa la cascada</strong>
+          <p>
+            Recarga la página (o navega a ella). Verás una barra de tiempo: primero el documento HTML, y
+            debajo, en paralelo, el CSS y el JavaScript. Fíjate en <strong>cuántas</strong> peticiones
+            hubo en total: ese número ya es un dato.
+          </p>
+          <p class="observacion"><b>Observa:</b> una página sencilla de una aplicación moderna puede superar fácilmente las 30 peticiones. Muchas de ellas son a terceros (fuentes, analítica, publicidad).</p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">3</span>
+        <div class="cuerpo-paso">
+          <strong>Identifica la petición más pesada</strong>
+          <p>
+            Ordena por tamaño o por tiempo y selecciona la primera. Se abrirá un panel lateral con las
+            pestañas <em>Headers</em>, <em>Preview</em>, <em>Response</em> y <em>Timing</em>. En
+            <strong>Timing</strong> descompón las fases.
+          </p>
+          <p class="observacion"><b>Observa:</b> en <em>Headers</em> puedes ver la línea de petición completa, con método, ruta y cabeceras. Es exactamente lo que estudiaste en la unidad 3, pero de una página real.</p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">4</span>
+        <div class="cuerpo-paso">
+          <strong>Repite con un segundo y un tercer sitio</strong>
+          <p>
+            Repite los pasos 2 y 3 con al menos dos sitios distintos: uno de una institución o medio
+            que conozcas y otro muy conocido. Anota para cada uno: número de peticiones, peso total
+            transferido y el TTFB de la petición principal.
+          </p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">5</span>
+        <div class="cuerpo-paso">
+          <strong>Escribe la interpretación, no solo los números</strong>
+          <p>
+            Completa esta fórmula: <em>«En el sitio X, la mayor parte del tiempo se fue en ___ porque
+            ___»</em>. Si no puedes llenarla, vuelve al paso 3 y revisa la columna de tiempos.
+          </p>
+          <p class="observacion"><b>Observa:</b> el análisis termina cuando puedes <em>explicar</em> el dato, no cuando lo tienes anotado.</p>
+        </div>
+      </div>
+
+      <div class="recuadro aplicacion" style="margin-bottom:0">
+        <span class="rotulo">Aplicación</span>
+        <p>
+          Entrega en el cuaderno una tabla con las tres páginas medidas y la interpretación de una frase
+          para cada una. Guarda además una captura (o una copia de las cifras) del panel <em>Timing</em>
+          de la petición más pesada: la usaremos en el taller de la unidad 7.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué fase ocurre <em>antes</em> de que el navegador pueda enviar la petición HTTP?</p>
+      <button class="opcion" data-op="a">La interpretación del HTML recibido</button>
+      <button class="opcion" data-op="b">La ejecución del JavaScript del frontend</button>
+      <button class="opcion" data-op="c">La resolución del nombre de dominio y la apertura de la conexión</button>
+      <button class="opcion" data-op="d">La consulta a la base de datos</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> En el diagrama de tiempos de las DevTools, un TTFB muy alto y un peso de respuesta pequeño apuntan a…</p>
+      <button class="opcion" data-op="a">Un problema en el servidor o en la red hasta él</button>
+      <button class="opcion" data-op="b">Una respuesta demasiado pesada</button>
+      <button class="opcion" data-op="c">Demasiadas peticiones a terceros</button>
+      <button class="opcion" data-op="d">Un error en el JavaScript del cliente</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Por qué una página puede generar treinta o más peticiones?</p>
+      <button class="opcion" data-op="a">Porque el servidor duplica las respuestas para mayor seguridad</button>
+      <button class="opcion" data-op="b">Porque cada recurso —documento, estilos, scripts, imágenes y llamadas a la API— se pide por separado</button>
+      <button class="opcion" data-op="c">Porque cada usuario conectado genera una copia de la página</button>
+      <button class="opcion" data-op="d">Porque el protocolo HTTP lo exige desde su creación</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: Frontend y backend →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — LA FRONTERA
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · La frontera</div>
+    <h2>Frontend y backend: <em>dos responsabilidades, un contrato</em></h2>
+    <p class="proposito">
+      Con el mapa completo de la petición, esta unidad delimita las dos mitades del desarrollo web:
+      qué corresponde a cada una, cómo se comunican y por qué esa separación es una decisión de diseño,
+      no una casualidad histórica.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>🧪 <b>Práctica guiada</b></span>
+      <span>🧭 <b>Producto: clasificación razonada</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · Una frontera, dos ambientes</h3>
+
+  <p class="primer-párrafo">
+    «Frontend» y «backend» no son dos programas que se hablan: son dos ambientes de ejecución, en dos
+    máquinas (generalmente distintas), que se comunican únicamente mediante el protocolo HTTP. Todo lo
+    que uno necesita saber del otro está en el <strong>contrato</strong>: la lista de operaciones, sus
+    parámetros y sus respuestas.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>Frontend</dt>
+      <dd>
+        La capa de <strong>presentación e interacción</strong>. Se ejecuta en el dispositivo del
+        usuario. Recibe eventos (clics, escritura, scroll), mantiene el estado visual de la interfaz y
+        pide datos al backend cuando los necesita. Puede existir sin backend (una web estática), pero
+        no puede decidir por sí mismo nada que dependa de los datos del negocio.
+      </dd>
+    </div>
+    <div>
+      <dt>Backend</dt>
+      <dd>
+        La capa de <strong>lógica de negocio y datos</strong>. Se ejecuta en el servidor. Valida las
+        entradas de verdad, aplica las reglas, accede a la base de datos, decide qué se puede ver y
+        qué no, y devuelve resultados. Puede existir sin frontend (una API consumida por una app móvil),
+        pero no tiene sentido sin datos que proteger.
+      </dd>
+    </div>
+    <div>
+      <dt>API</dt>
+      <dd>
+        La <strong>superficie de contacto</strong> del backend: el conjunto de operaciones que ofrece y
+        que otros programas pueden invocar siguiendo el contrato. En este curso, siempre vía HTTP.
+      </dd>
+    </div>
+  </div>
+
+  <h3>6.2 · Cuadro comparativo</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las dos mitades, línea por línea</caption>
+      <thead>
+        <tr><th>Dimensión</th><th>Frontend</th><th>Backend</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Dónde se ejecuta</strong></td><td>En el navegador del usuario</td><td>En el servidor</td></tr>
+        <tr><td><strong>Responsabilidad central</strong></td><td>Mostrar e interactuar</td><td>Decidir y proteger</td></tr>
+        <tr><td><strong>Conoce las reglas del negocio</strong></td><td class="marca-roja">No (y no debe)</td><td class="marca-verde">Sí, en su totalidad</td></tr>
+        <tr><td><strong>Acceso a datos</strong></td><td class="marca-roja">Nunca directamente</td><td class="marca-verde">Exclusivo</td></tr>
+        <tr><td><strong>Tecnologías típicas</strong></td><td>HTML, CSS, JavaScript</td><td>Python/FastAPI, PostgreSQL</td></tr>
+        <tr><td><strong>Qué produce</strong></td><td>Interfaz y eventos</td><td>Respuestas HTTP con datos</td></tr>
+        <tr><td><strong>Qué consume</strong></td><td>Respuestas HTTP</td><td>Peticiones HTTP y SQL</td></tr>
+        <tr><td><strong>Si se rompe</strong></td><td>La interfaz falla o se ve fea</td><td>Los datos se filtran o las reglas se evaden</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>6.3 · Por qué la frontera importa: tres razones</h3>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Razón 1 — Seguridad</span>
+    <p>
+      Todo lo que se ejecuta en el navegador es visible y modificable por el usuario. Si el frontend
+      decide si un estudiante puede ver el carnet de otro, basta con abrir la consola y saltarse la
+      comprobación. La única verificación que no se puede evadir es la que hace el servidor.
+    </p>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Razón 2 — Integridad de los datos</span>
+    <p>
+      El navegador puede estar desactualizado, tener una caché vieja o estar manipulado. Si el precio de
+      un producto se calcula en el cliente, alguien puede enviar un precio distinto. Las reglas que
+      afectan a los datos deben ejecutarse donde los datos viven.
+    </p>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Razón 3 — Escala y mantenimiento</span>
+    <p>
+      Separar las capas permite que cada una crezca a su ritmo: se pueden añadir servidores de aplicación
+      sin tocar la interfaz, y rediseñar la interfaz sin tocar la lógica. Además, cada equipo puede
+      trabajar en paralelo sobre un contrato estable.
+    </p>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión</span>
+    <p>
+      «Las reglas no van en el frontend» no significa «el frontend nunca valida nada». El frontend sí
+      debe validar para dar <em>experiencia de usuario</em>: avisar de inmediato que el correo está mal
+      escrito, sin molestar al servidor. La diferencia es que esa validación es <strong>una comodidad</strong>,
+      y la del servidor es <strong>una garantía</strong>. Ambas coexisten.
+    </p>
+  </div>
+
+  <h3>6.4 · El contrato: endpoints, métodos y JSON</h3>
+
+  <p>
+    La forma más común de contractualizar el backend es una lista de <strong>endpoints</strong>. Cada
+    endpoint es un par método + ruta que corresponde a una operación del negocio, y su contrato especifica
+    qué datos exige y qué devuelve.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Contrato de ejemplo: API de la biblioteca</caption>
+      <thead>
+        <tr><th>Endpoint</th><th>Operación</th><th>Entrada</th><th>Salida</th><th>Códigos</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>GET /api/libros</code></td><td>Listar libros</td><td>Parámetros de filtro</td><td>Lista de objetos JSON</td><td>200</td></tr>
+        <tr><td><code>GET /api/libros/{id}</code></td><td>Ver un libro</td><td>Identificador en la ruta</td><td>Objeto JSON</td><td>200, 404</td></tr>
+        <tr><td><code>POST /api/prestamos</code></td><td>Registrar un préstamo</td><td>Objeto JSON en el cuerpo</td><td>Objeto JSON del préstamo creado</td><td>201, 400, 422</td></tr>
+        <tr><td><code>DELETE /api/prestamos/{id}</code></td><td>Registrar la devolución</td><td>Identificador en la ruta</td><td>Mensaje de confirmación</td><td>200, 404</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — las dos familias de estilos de API</span>
+    <p>
+      Las APIs <strong>orientadas a recursos</strong> (como la de arriba) organizan todo alrededor de
+      nouns —<code>/libros</code>, <code>/prestamos</code>— y dejan la intención en el método HTTP. Las
+      APIs <strong>orientadas a acciones</strong> usan verbos en la ruta
+      (<code>/prestamos/crear</code>). Las primeras son más idiomáticas en HTTP y permiten usar la caché
+      del navegador; las segundas a veces son más explícitas. Ambas son válidas si el contrato es claro.
+    </p>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — REST no es lo mismo que «API JSON»</span>
+    <p>
+      REST es un <em>estilo arquitectónico</em> con criterios más específicos: recursos identificables,
+      interfaces uniformes, ausencia de estado, caché negociable y un modelo jerárquico de recursos. Una
+      API puede usar JSON y HTTP sin ser REST, y puede ser REST sin usar JSON. Conocer los criterios
+      permite evaluar bien un contrato, pero en este módulo trabajaremos con APIs HTTP que usan JSON.
+    </p>
+  </div>
+
+  <h3>6.5 · Tres formas de organizar el conjunto</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cómo se combina frontend y backend en la práctica</caption>
+      <thead>
+        <tr><th>Estrategia</th><th>Dónde se construye el HTML</th><th>Ventaja</th><th>Costo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>SSR</strong><br><span class="marca-ci">Renderizado en el servidor</span></td>
+          <td>En el servidor, en cada petición</td>
+          <td>El HTML llega listo; ideal para SEO y primer contenido</td>
+          <td>Cada navegación vuelve a pedir y renderizar</td>
+        </tr>
+        <tr>
+          <td><strong>CSR</strong><br><span class="marca-ci">Renderizado en el cliente</span></td>
+          <td>En el navegador, con JavaScript</td>
+          <td>Interacción fluida; el servidor solo entrega datos</td>
+          <td>La página tarda más en mostrar algo</td>
+        </tr>
+        <tr>
+          <td><strong>SSG</strong><br><span class="marca-ci">Generación estática</span></td>
+          <td>Antes, en tiempo de compilación</td>
+          <td>Muy rápido y muy barato de servir</td>
+          <td>El contenido se actualiza al reconstruir</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precison" style="border-left-color:var(--violeta);background:rgba(168,146,245,.09)">
+    <span class="rotulo" style="color:var(--violeta)">Precisión</span>
+    <p>
+      Estas tres estrategias no son religiones: se combinan. Una tienda puede tener un catálogo generado
+      estáticamente (SSG) y un carrito con renderizado en el cliente (CSR), todo sobre el mismo backend.
+      La elección depende de qué parte de la página cambia, para quién y con qué frecuencia.
+    </p>
+  </div>
+
+  <h3>6.6 · Ejercicio: clasificar responsabilidades</h3>
+
+  <p>
+    Cada fila describe una tarea real de un proyecto web. Decide en qué capa se ejecuta y justifícalo.
+    Este tipo de razonamiento es más valioso que la respuesta misma: cuando en un proyecto real la
+    ubicación de una tarea no es obvia, el criterio que decides defender es lo que sostiene el
+    argumento.
+  </p>
+
+  <div class="laboratorio">
+    <h3>Ejercicio 6.1 — Clasificar responsabilidades</h3>
+    <p class="instruccion">
+      Completa la segunda columna de la tabla indicando en qué capa se ejecuta cada tarea y por qué no
+      podría ejecutarse en la otra. Después contrasta tus respuestas con el modelo desplegable al pie.
+    </p>
+
+    <div class="contenedor-tabla" style="margin:0">
+      <table class="tabla-compara">
+        <thead>
+          <tr><th style="width:58%">Tarea</th><th>¿Dónde se ejecuta y por qué?</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Maquetar la página con una rejilla de dos columnas y elegir las tipografías</td><td class="casilla"></td></tr>
+          <tr><td>Rechazar la petición si el estudiante debe más de tres préstamos activos</td><td class="casilla"></td></tr>
+          <tr><td>Consultar en la base de datos los préstamos que están vencidos</td><td class="casilla"></td></tr>
+          <tr><td>Reproducir una animación al pulsar el botón de guardar</td><td class="casilla"></td></tr>
+          <tr><td>Calcular el saldo de multas de cada estudiante del curso</td><td class="casilla"></td></tr>
+          <tr><td>Pintar la lista de libros con su portada y su disponibilidad</td><td class="casilla"></td></tr>
+          <tr><td>Guardar un libro nuevo con su ISBN en la base de datos</td><td class="casilla"></td></tr>
+          <tr><td>Mostrar el mensaje de error cuando el servidor responde con un 404</td><td class="casilla"></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:1.2rem">
+      <button class="solucion-btn" data-solucion="lab-frontera">Ver las respuestas razonadas</button>
+    </div>
+
+    <div class="solucion" id="lab-frontera">
+      <ol>
+        <li><strong>Frontend.</strong> Maquetar no requiere datos ni reglas de negocio: es presentación pura, y el navegador tiene todo lo necesario para hacerla.</li>
+        <li><strong>Backend.</strong> Es una regla de negocio. Si se comprobara en el navegador, el estudiante podría saltársela modificando el código.</li>
+        <li><strong>Backend.</strong> Acceder a la base de datos es tarea exclusiva del servidor; el navegador no tiene esa conexión.</li>
+        <li><strong>Frontend.</strong> Es una interacción puramente visual, sin efecto sobre los datos.</li>
+        <li><strong>Backend.</strong> El cálculo requiere todos los préstamos del estudiante, no solo los que el navegador tiene cargados.</li>
+        <li><strong>Frontend.</strong> El frontend ya recibió la lista como JSON en el paso anterior; solo tiene que dibujarla.</li>
+        <li><strong>Backend.</strong> Escribir en la base de datos es, por definición, tarea del servidor.</li>
+        <li><strong>Frontend.</strong> El frontend recibe la respuesta con su código de estado y decide qué mostrar. Detectar el 404 no es una regla de negocio, es una reacción a la respuesta.</li>
+      </ol>
+      <p>
+        <strong>Patrón que resume el ejercicio:</strong> la pregunta que decide la capa no es «¿qué código
+        escribo?» sino «¿esta tarea necesita datos que solo el servidor tiene, o protege una regla que no
+        puede confiarse del cliente?».
+      </p>
+    </div>
+  </div>
+
+  <div class="ejemplo">
+    <div class="ejemplo-cabecera">
+      <span class="titulo">Ejemplo guiado <b>6.1</b> — El viaje de un dato</span>
+      <span class="titulo" style="color:var(--texto-3)">10 min</span>
+    </div>
+    <div class="ejemplo-cuerpo">
+      <p>
+        Sigamos un dato concreto —<em>«¿cuántos préstamos tiene Ana Torres?»</em>— a través de las dos
+        capas. Es el ejercicio que une todo lo studied en las seis unidades anteriores.
+      </p>
+
+      <div class="paso">
+        <span class="n">1</span>
+        <div class="cuerpo-paso">
+          <strong>El frontend decide que necesita el dato</strong>
+          <p>
+            La interfaz tiene un botón «Ver mis préstamos». Al pulsarlo, el JavaScript llama a
+            <code>fetch('/api/prestamos?estudiante=ana')</code>. Esa llamada es una petición HTTP
+            ordinary: mismo protocolo, mismo formato, mismas reglas que las que estudiaste en la
+            unidad 3.
+          </p>
+          <p class="observacion"><b>Observa:</b> el frontend no sabe de dónde sale el dato ni qué reglas se aplican. Solo conoce la ruta.</p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">2</span>
+        <div class="cuerpo-paso">
+          <strong>El backend recibe, valida y autoriza</strong>
+          <p>
+            La ruta <code>/api/prestamos</code> se enruta a su función. Se comprueba quién es el
+            usuario (token), se valida el parámetro <code>estudiante</code> y se decide si esa persona
+            puede ver ese dato. Aquí es donde un <code>403</code> o un <code>401</code> detienen la
+            operación.
+          </p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">3</span>
+        <div class="cuerpo-paso">
+          <strong>El backend consulta y aplica las reglas</strong>
+          <p>
+            Se ejecuta una consulta SQL con un filtro por estudiante, y se calculan datos derivados
+            (¿multa por retraso?, ¿días pendientes?). Estas preguntas de negocio no se pueden responder
+            en el navegador: necesitarían todos los préstamos, no solo los de esa persona.
+          </p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">4</span>
+        <div class="cuerpo-paso">
+          <strong>El backend responde con un contrato fijo</strong>
+          <p>
+            Serializa a JSON, elige el código de estado (<code>200</code>) y devuelve. El contrato
+            garantiza una forma estable: una lista de objetos con las mismas claves, siempre.
+          </p>
+          <p class="observacion"><b>Observa:</b> si mañana el backend cambia la base de datos y la<br> consulta, el frontend no se entera: siempre recibe el mismo JSON.</p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">5</span>
+        <div class="cuerpo-paso">
+          <strong>El frontend recibe y presenta</strong>
+          <p>
+            <code>response.json()</code> convierte el texto en objetos, y el código dibuja la lista en
+            el DOM. Si la respuesta fue un error, el frontend muestra un mensaje adecuado en lugar de
+            una pantalla rota.
+          </p>
+          <p class="observacion"><b>Observa:</b> la responsabilidad del frontend termina en <em>presentar</em> la respuesta. No la interpreta: la recibe.</p>
+        </div>
+      </div>
+
+      <div class="recuadro aplicacion" style="margin-bottom:0">
+        <span class="rotulo">Aplicación</span>
+        <p>
+          Dibuja este recorrido en una sola tira horizontal de cinco casillas, y escribe bajo cada
+          casilla qué actor actúa, qué protocolo usa y qué datos viajan. Luego señala con una flecha en
+          qué punto exacto un usuario malintencionado intentaría saltarse una regla, y explica por qué
+          no puede.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál de estas tareas <strong>debe</strong> ejecutarse en el backend?</p>
+      <button class="opcion" data-op="a">Resaltar el campo obligatorio que el usuario dejó vacío</button>
+      <button class="opcion" data-op="b">Comprobar si el estudiante tiene derecho a pedir ese libro</button>
+      <button class="opcion" data-op="c">Mostrar una animación mientras se espera la respuesta</button>
+      <button class="opcion" data-op="d">Adaptar el diseño a pantallas pequeñas</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Por qué el frontend puede validar los datos aunque no sea la única validación?</p>
+      <button class="opcion" data-op="a">Porque el navegador es más rápido que el servidor</button>
+      <button class="opcion" data-op="b">Porque el backend no puede leer lo que recibe</button>
+      <button class="opcion" data-op="c">Porque la validación del navegador mejora la experiencia, pero solo la del servidor garantiza las reglas</button>
+      <button class="opcion" data-op="d">Porque las reglas del negocio cambian según el dispositivo</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> En una API orientada a recursos, ¿qué expresa el método de una petición?</p>
+      <button class="opcion" data-op="a">La intención sobre el recurso: consultar, crear, reemplazar o eliminar</button>
+      <button class="opcion" data-op="b">El lenguaje de programación del servidor</button>
+      <button class="opcion" data-op="c">El formato de la respuesta</button>
+      <button class="opcion" data-op="d">La ubicación física del servidor</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: El ciclo de una petición</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller integrador →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER Y SÍNTESIS
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>Documento de arquitectura de un <em>sistema real</em></h2>
+    <p class="proposito">
+      Aplicación de todo lo anterior. El encargo es redactar el documento de arquitectura de un sistema
+      con el que te familiarizas, siguiendo la estructura con la que se documentan estos sistemas en la
+      vida profesional.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>📝 <b>Documento escrito</b></span>
+      <span>🧭 <b>Producto final de la clase</b></span>
+    </div>
+  </div>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Encargo</span>
+      <h3>Sistema de préstamos de la biblioteca del colegio</h3>
+    </div>
+
+    <p>
+      El colegio quiere una aplicación donde los estudiantes consulten el catálogo, pidan préstamos y
+      los devuelvan, y donde los coordinadores vean los morosos y el estado de cada ejemplar. El
+      equipo de desarrollo (dos estudiantes de grado once) necesita un <strong>documento de
+      arquitectura</strong> antes de escribir la primera línea de código.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr><td><strong>Usuarios</strong></td><td>Estudiantes de grado once y coordinadores de biblioteca</td></tr>
+          <tr><td><strong>Datos</strong></td><td>Libros, ejemplares, préstamos, estudiantes, multas</td></tr>
+          <tr><td><strong>Consultas frecuentes</strong></td><td>Ver catálogo, ver mis préstamos, pedir un libro, devolver un libro, listar morosos</td></tr>
+          <tr><td><strong>Restricción clave</strong></td><td>Un estudiante no puede ver el historial de préstamos de otro</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li>
+        <strong>Inventario de componentes.</strong> Identifica y nombra cada pieza del sistema y su
+        papel: qué corre en el navegador, qué corre en el servidor, dónde viven los datos y qué
+        protocolo une cada par. Justifica la separación frontend / backend con una razón del negocio,
+        no una razón técnica.
+      </li>
+      <li>
+        <strong>Contrato de la API.</strong> Escribe la tabla de endpoints: método, ruta, qué hace y
+        qué devuelve. Incluye al menos una operación de lectura y una de escritura, y el caso de un
+        estudiante que intenta ver los préstamos de otro (con su código de estado).
+      </li>
+      <li>
+        <strong>Traza de una petición.</strong> Elige una de las consultas frecuentes y dibuja el
+        recorrido completo, con las fases y los actores: desde que el usuario hace clic hasta que ve
+        el resultado en pantalla. Identifica en qué fase se consulta la base de datos.
+      </li>
+      <li>
+        <strong>Decisión de diseño argumentada.</strong> Escoge una decisión (por ejemplo: SSR o CSR,
+        dónde se valida, qué se cachea) y escríbela con el formato
+        <em>«Decisión: X. Motivo: Y. Consecuencia: Z. Alternativa descartada: W.»</em>
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="taller-solucion">Ver un modelo de respuesta</button>
+
+    <div class="solucion" id="taller-solucion">
+      <h4>Modelo de respuesta (extracto)</h4>
+
+      <p><strong>A. Inventario de componentes</strong></p>
+      <ul>
+        <li><strong>Navegador (frontend):</strong> catálogo, formularios, sesión del usuario. Comunica con la API por HTTP/JSON.</li>
+        <li><strong>API Python/FastAPI (backend):</strong> reglas de préstamo, autorización, cálculo de multas. Es cliente de PostgreSQL por SQL.</li>
+        <li><strong>PostgreSQL:</strong> libros, ejemplares, préstamos, estudiantes.</li>
+      </ul>
+      <p>
+        <em>Justificación de negocio:</em> la restricción «un estudiante no puede ver el historial de
+        otro» solo puede garantizarse en el servidor, porque el navegador es propiedad del usuario y
+        su código es modificable.
+      </p>
+
+      <p><strong>B. Contrato de la API (extracto)</strong></p>
+      <ul>
+        <li><code>GET /api/libros</code> → lista de libros disponibles. <code>200</code>.</li>
+        <li><code>GET /api/prestamos?estudiante=…</code> → préstamos del estudiante indicado. <code>200</code> si es el propio, <code>403</code> si es otro y no es coordinador.</li>
+        <li><code>POST /api/prestamos</code> → registra un préstamo. Cuerpo JSON. <code>201</code>, o <code>422</code> si el cuerpo no cumple el contrato, o <code>409</code> si no hay ejemplares disponibles.</li>
+        <li><code>POST /api/prestamos/{id}/devolucion</code> → registra la devolución y recalcula multas.</li>
+      </ul>
+
+      <p><strong>C. Traza de «Pedir un libro»</strong></p>
+      <ol>
+        <li><em>Cliente:</em> el estudiante pulsa «Pedir»; el JavaScript envía un <code>POST</code> con el cuerpo JSON.</li>
+        <li><em>Red:</em> resolución DNS y apertura de conexión (ya abierta, por lo general).</li>
+        <li><em>Cliente → Servidor:</em> llega la petición HTTP con la cabecera de autenticación.</li>
+        <li><em>Servidor:</em> enrutamiento, validación del cuerpo, verificación de la sesión y de las reglas de préstamo.</li>
+        <li><em>Servidor → datos:</em> se ejecuta un <code>SELECT</code> de ejemplares disponibles y un <code>INSERT</code> del préstamo.</li>
+        <li><em>Servidor → Cliente:</em> <code>201 Created</code> con el préstamo en JSON y la cabecera <code>Location</code>.</li>
+        <li><em>Cliente:</em> el JavaScript muestra la confirmación y actualiza la lista.</li>
+      </ol>
+
+      <p><strong>D. Decisión de diseño</strong></p>
+      <p>
+        <em>Decisión:</em> SSR para el catálogo y CSR para el panel de préstamos.
+        <em>Motivo:</em> el catálogo cambia poco y debe ser visible para quien busca; el panel es
+        personalised y exige interacción.
+        <em>Consecuencia:</em> dos mecanismos de renderizado que mantener.
+        <em>Alternativa descartada:</em> CSR para todo, descartada porque el catálogo perdería visibilidad
+        en buscadores y tardaría más en mostrar.
+      </p>
+    </div>
+  </div>
+
+  <h3>7.1 · Rúbrica de autoevaluación</h3>
+
+  <p>
+    Usa esta tabla para revisar tu propio documento antes de entregarlo. Puntúa cada criterio de 0 a 2
+    y revisa los que hayas quedado en 0 o 1.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación del documento de arquitectura</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Componentes</td><td>No identifica los componentes</td><td>Identifica algunos, con roles confusos</td><td>Identifica todos y explica el papel de cada uno</td></tr>
+        <tr><td>Justificación de la frontera</td><td>No la justifica</td><td>Da una razón técnica genérica</td><td>Da una razón de negocio concreta y verificable</td></tr>
+        <tr><td>Contrato de la API</td><td>No define endpoints</td><td>Define endpoints sin métodos ni respuestas</td><td>Método, ruta, propósito y respuesta con código de estado</td></tr>
+        <tr><td>Traza de la petición</td><td>Es un relato sin actores</td><td>Identifica actores pero omite fases</td><td>Secuencia con actores, fases y dónde ocurre la consulta SQL</td></tr>
+        <tr><td>Decisión argumentada</td><td>No hay decisión</td><td>Hay decisión sin motivo ni consecuencia</td><td>Decisión, motivo, consecuencia y alternativa descartada</td></tr>
+        <tr><td>Precisión técnica</td><td>Confunde términos</td><td>Uso correcto pero impreciso</td><td>Usa el vocabulario con precisión y lo justifica</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.2 · Síntesis: siete ideas para llevarse</h3>
+
+  <p>
+    Si tu documento quedó sólido, es porque estas siete ideas están detrás. Consérvalas: son el
+    andamiaje conceptual sobre el que se construyen las trece clases restantes del módulo.
+  </p>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>Todo sistema conectado se organiza como una interacción entre quien pide y quien responde.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p>El papel de servidor es relativo: cada proceso puede ser cliente de otro y servidor de otro.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>Un servidor real son capas: red, servidor web, aplicación y datos.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p>HTTP es un contrato: línea de petición, cabeceras y cuerpo; y su respuesta tiene la misma forma.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p>El código de estado dice en qué lado está el problema: 4xx es del cliente, 5xx es del servidor.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p>Entre la pulsación del usuario y la página hay siete fases; medir es el primer paso para diagnosticar.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p>La frontera entre frontend y backend protege los datos: las reglas se aplican donde los datos viven.</p>
+    </div>
+  </div>
+
+  <h3>7.3 · Puente hacia la clase 2</h3>
+
+  <p>
+    En la próxima clase escribirás tu primera aplicación con <strong>FastAPI</strong>. Todo lo de esta
+    clase se там­bién there, pero ya con código. Dos cosas que conviene tener presentes al empezar:
+  </p>
+
+  <ol>
+    <li>
+      Una <strong>ruta</strong> de FastAPI es exactamente el «endpoint» del contrato que acabas de
+      diseñar. El decorador <code>@app.get("/api/libros")</code> es la materialización de una fila de tu
+      tabla.
+    </li>
+    <li>
+      Un <code>return</code> de un diccionario en FastAPI se convierte solo en una respuesta JSON con
+      código <code>200</code>. Es el punto 4 de la traza de la unidad 2, hecho visible en una línea.
+    </li>
+  </ol>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de la próxima clase</span>
+    <p>
+      Trae tu documento de arquitectura. Lo usaremos como especificación: escribiremos las primeras
+      rutas del sistema que diseñaste y verificaremos que coincidan con el contrato que redactaste.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 1</h2>
+    <p>
+      Has construido el marco conceptual del desarrollo web full stack: la arquitectura cliente-servidor,
+      el ciclo completo de una petición HTTP y la frontera de responsabilidades entre frontend y
+      backend. En la próxima clase ese marco se convierte en código que corre.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: Frontend y backend</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 1 · Introducción al desarrollo web full stack</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
