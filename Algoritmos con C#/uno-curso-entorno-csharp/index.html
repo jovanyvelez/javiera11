@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛠️ Herramientas Algorítmicas II · Clase 1 · VS Code + .NET</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🛠️</span>
+    <div>
+      <h1>Herramientas Algorítmicas II · Clase 1</h1>
+      <p class="subtitulo">C# moderno · VS Code + .NET 10 (SDK LTS) · del Hello World al depurador</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">🧠 Lenguaje</button>
+  <button class="btn-modulo" data-modulo="2">🖥️ VS Code</button>
+  <button class="btn-modulo" data-modulo="3">⚙️ .NET 10</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🐞 Depurar</button>
+  <button class="btn-modulo" data-modulo="6">🏗️ Estructura</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🛠️ C# sin miedo: monta tu taller de programación</h2>
+    <p class="lead">Durante las próximas <strong>10 clases</strong> vas a construir aplicaciones de consola reales en C#. Hoy el paso más importante: dejar el computador <strong>listo para programar</strong> con las herramientas que usa la industria: <strong>Visual Studio Code + el SDK de .NET 10</strong> (la versión <em>Long Term Support</em> que Microsoft mantiene hasta noviembre de 2028).</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — estudiante@colegio</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">estudiante@colegio:~$</span> <span class="cmd">dotnet --version</span></div>
+        <div class="out">10.0.113</div>
+        <div><span class="prompt">estudiante@colegio:~$</span> <span class="cmd">dotnet new console -n MiApp</span></div>
+        <div class="out">La plantilla "aplicación de consola" se creó correctamente.</div>
+        <div><span class="prompt">estudiante@colegio:~/MiApp$</span> <span class="cmd">dotnet run</span></div>
+        <div class="out">Hello, World!</div>
+        <div><span class="prompt">estudiante@colegio:~/MiApp$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3 h 45 min en 8 módulos, con descanso a mitad. Trabaja en pareja con tu compañero/a de computadora.</p>
+    </div>
+    <div class="tarjeta tarjeta-verde">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Instalar VS Code con <strong>C# Dev Kit</strong>, instalar el <strong>SDK de .NET 10</strong>, crear tu primer proyecto, ejecutarlo y depurarlo paso a paso.</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>El SDK que no está instalado, el aviso rojo de "no se encuentra el proyecto", el punto y coma que nadie ve, y el programa que compila pero no hace nada.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · Lenguaje</td><td style="color:var(--a)">Qué es un lenguaje de programación</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>02 · VS Code</td><td style="color:var(--b)">Editor + C# Dev Kit</td><td style="color:var(--rosa)">Extensión que falta</td><td>100 XP</td></tr>
+        <tr><td>03 · .NET 10</td><td style="color:var(--a)">SDK, proyecto y ejecución</td><td style="color:var(--rosa)">SDK no encontrado</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · Depurar</td><td style="color:var(--verde)">Terminal, F5 y breakpoints</td><td style="color:var(--rosa)">Programa que no arranca</td><td>100 XP</td></tr>
+        <tr><td>05 · Estructura</td><td style="color:var(--b)">Cómo está hecho un programa C#</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>06 · Taller</td><td style="color:var(--a)">Tu ficha de estudiante</td><td style="color:var(--rosa)">Consola en blanco</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Antes de instalar nada, respondan: ¿qué herramientas usan hoy en el computador para "programar" (aunque sea una página web o un bloque de notas)? ¿Quién de los dos ha instalado un programa desde la terminal? Es normal que nadie lo haya hecho: <strong>hoy se los va a saber</strong>.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué C# y por qué VS Code?</h4>
+    <p><strong>C#</strong> es un lenguaje creado por Microsoft, moderno, con tipado estático y usado en la industria: apps de escritorio, juegos con Unity, backend con ASP.NET Core y, por supuesto, aplicaciones de consola — que es lo que pide esta guía de la asignatura. <strong>Visual Studio Code</strong> es un editor <em>gratuito</em> y liviano; con la extensión oficial <strong>C# Dev Kit</strong> se convierte en un IDE completo: IntelliSense, depurador, gestión de soluciones y terminal integrada.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: el lenguaje →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>🧠 ¿Qué es un lenguaje de programación?</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "El idioma que habla con el computador"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La definición que sí sirve</h3>
+    <p>Un <strong>lenguaje de programación</strong> es un lenguaje formal (con reglas estrictas) para escribir instrucciones que el computador ejecuta. Cada lenguaje tiene su <strong>estructura</strong> (cómo se escriben las cosas) y sus <strong>funciones</strong> (las piezas que hacen el trabajo). C# es uno de esos lenguajes: hoy lo vas a ver completo en un solo archivo.</p>
+  </div>
+
+  <h3>🏗️ La estructura de todo programa</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-verde">
+      <span class="emoji">🎤</span>
+      <h3>Entrada</h3>
+      <p>Los datos que recibe el programa: lo que el usuario escribe con el teclado o lo que viene de un archivo.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">⚙️</span>
+      <h3>Proceso</h3>
+      <p>Las operaciones: sumar, comparar, contar, decidir. Aquí viven las <strong>funciones</strong>.</p>
+    </div>
+    <div class="tarjeta tarjeta-ambar">
+      <span class="emoji">📤</span>
+      <h3>Salida</h3>
+      <p>El resultado que se muestra: por pantalla, en un archivo o en otro programa.</p>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — entrada, proceso y salida</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ENTRADA: el usuario escribe su nombre
+Console.Write("Escribe tu nombre: ");
+string nombre = Console.ReadLine() ?? "";
+
+// PROCESO: una función que transforma el texto
+string saludo = GenerarSaludo(nombre);
+
+// SALIDA: el resultado
+Console.WriteLine(saludo);
+
+// Una FUNCIÓN: recibe un dato, devuelve un resultado
+static string GenerarSaludo(string nombre)
+{
+    return $"Hola, {nombre}! Bienvenido a C#.";
+}</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Función = nombre + parámetros + retorno</h4>
+    <p>Acabas de usar tu primera función: <code>GenerarSaludo</code>. Recibe un <strong>parámetro de entrada</strong> (<code>nombre</code>), hace un proceso y <strong>devuelve un valor</strong> (<code>return</code>). Toda la clase 8 está dedicada a esto: funciones con parámetros, retorno, paso por valor y por referencia.</p>
+  </div>
+
+  <h3>🔤 Palabras clave y tipos: el vocabulario de C#</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Elemento</th><th>Ejemplo</th><th>¿Para qué sirve?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Palabra clave</strong></td><td><code>class</code>, <code>if</code>, <code>return</code></td><td>Palabras reservadas: C# las usa para su estructura y no te deja usarlas como nombres.</td></tr>
+        <tr><td><strong>Tipo</strong></td><td><code>int</code>, <code>double</code>, <code>string</code>, <code>bool</code></td><td>La "forma" del dato: número entero, decimal, texto o verdadero/falso.</td></tr>
+        <tr><td><strong>Identificador</strong></td><td><code>edad</code>, <code>GenerarSaludo</code></td><td>Los nombres que tú inventas para tus variables y funciones.</td></tr>
+        <tr><td><strong>Literal</strong></td><td><code>17</code>, <code>"Ana"</code>, <code>true</code></td><td>El dato tal cual está escrito en el código.</td></tr>
+        <tr><td><strong>Comentario</strong></td><td><code>// texto</code></td><td>Nota para los humanos. El computador la ignora.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: las mayúsculas importan</h4>
+    <p>C# <strong>distingue mayúsculas de minúsculas</strong>: <code>Console</code> no es lo mismo que <code>console</code>, y <code>edad</code> no es lo mismo que <code>Edad</code>. Además, cada línea de instrucción termina con <strong>punto y coma <code>;</code></strong>. Olvidar el punto y coma es el error número 1 de todo programador principiante.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Escriban en el papel la estructura de un programa que calcule el promedio de 3 notas: ¿cuál es la <strong>entrada</strong>, cuál el <strong>proceso</strong> y cuál la <strong>salida</strong>? ¿Qué datos habría que guardar en variables?</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué partes tiene siempre un programa?</p>
+      <button class="opcion" data-op="a">Solo salida</button>
+      <button class="opcion" data-op="b">Entrada, proceso y salida</button>
+      <button class="opcion" data-op="c">Solo un botón de compilar</button>
+      <button class="opcion" data-op="d">Un archivo .exe</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> En <code>static string GenerarSaludo(string nombre)</code>, ¿qué es <code>string nombre</code>?</p>
+      <button class="opcion" data-op="a">El valor devuelto</button>
+      <button class="opcion" data-op="b">El nombre de la función</button>
+      <button class="opcion" data-op="c">Un parámetro de entrada</button>
+      <button class="opcion" data-op="d">Una clase</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué pasa si olvidas el punto y coma al final de una instrucción?</p>
+      <button class="opcion" data-op="a">El programa no compila y te muestra el error</button>
+      <button class="opcion" data-op="b">No pasa nada, es opcional</button>
+      <button class="opcion" data-op="c">El programa se reinicia solo</button>
+      <button class="opcion" data-op="d">Windows lo arregla</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: instalar VS Code →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>🖥️ Visual Studio Code + C# Dev Kit</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El editor donde vive tu código"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 Editor vs. IDE</h3>
+    <p>Un <strong>editor de texto</strong> (como el Bloc de notas) solo escribe letras. Un <strong>IDE</strong> (Integrated Development Environment) además <em>entiende</em> tu código: te autocompleta, te marca errores mientras escribes, te deja ejecutar con un botón y depurar línea por línea. <strong>Visual Studio Code</strong> nació como editor, pero con la extensión oficial de C# se convierte en un IDE completo.</p>
+  </div>
+
+  <h3>🧩 ¿Qué es "C# Dev Kit"?</h3>
+  <div class="compare">
+    <div class="compare-card a">
+      <h4>🔌 C# extension</h4>
+      <p>El motor del lenguaje: IntelliSense, navegación, refactorización y diagnósticos. La publica Microsoft y se mantiene por separado.</p>
+    </div>
+    <div class="compare-card b">
+      <h4>🧰 C# Dev Kit</h4>
+      <p>La capa de productividad: vista de solución, plantillas de proyecto, ejecución, depuración integrada y descubrimiento de pruebas.</p>
+    </div>
+    <div class="compare-card c">
+      <h4>🤖 IntelliCode (opcional)</h4>
+      <p>Sugerencias de código potenciadas por IA. Se instala aparte y es <em>muy</em> recomendable, pero no es obligatoria.</p>
+    </div>
+  </div>
+
+  <h3>📋 Paso a paso: deja VS Code listo</h3>
+  <ol class="pasos">
+    <li><strong>Descarga VS Code</strong> desde <code>code.visualstudio.com</code> (Windows, macOS o Linux) e instálalo con las opciones por defecto.</li>
+    <li><strong>Abre la vista de Extensiones</strong>: haz clic en el ícono de cuadritos de la barra lateral o presiona <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">X</span> (en macOS: <span class="kbd">⌘</span>+<span class="kbd">⇧</span>+<span class="kbd">X</span>).</li>
+    <li><strong>Busca "C# Dev Kit"</strong> y pulsa <em>Install</em>. Fíjate que el editor de Microsoft dice <em>Microsoft</em> y no "unverified".</li>
+    <li><strong>Instala también "IntelliCode for C# Dev Kit"</strong> (opcional pero recomendado) y, si quieres F# o notebooks, el <em>.NET Extension Pack</em>.</li>
+    <li><strong>Acepta la sesión iniciada</strong>: C# Dev Kit pide iniciar sesión con una cuenta de Visual Studio para activar todas las funciones. Si el colegio tiene licenciamiento (Professional o Educator), usa el correo institucional.</li>
+    <li><strong>Abre el walkthrough</strong>: <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">P</span> → escribe <em>Welcome: Open Walkthrough</em> → <em>Get Started with C# Dev Kit</em>. Desde ahí puedes instalar el SDK de .NET en un clic.</li>
+  </ol>
+
+  <div class="nota-version">
+    <span>📌</span>
+    <p><strong>Versiones que usamos en el curso:</strong> Visual Studio Code 1.10x (la actual), <strong>C# Dev Kit</strong> (extensión oficial de Microsoft) y el <strong>SDK de .NET 10.0</strong> con el lenguaje <strong>C# 14</strong>. .NET 10 es una versión <em>Long Term Support</em>: Microsoft le da mantenimiento hasta <strong>noviembre de 2028</strong>, así que es la versión estable que se debe aprender en el colegio (la .NET 11 que sale en noviembre de 2026 todavía es <em>preview</em>).</p>
+  </div>
+
+  <h3>⌨️ Atajos que vas a usar todo el tiempo</h3>
+  <div class="chips">
+    <span class="chip k">Ctrl+Shift+P</span>
+    <span class="chip k">Ctrl+Shift+X</span>
+    <span class="chip v">Ctrl+`</span>
+    <span class="chip b">F5</span>
+    <span class="chip b">Ctrl+F5</span>
+    <span class="chip">Ctrl+S</span>
+    <span class="chip">Ctrl+/</span>
+    <span class="chip">Shift+Alt+F</span>
+    <span class="chip">Ctrl+B</span>
+  </div>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead><tr><th>Atajo</th><th>Qué hace</th></tr></thead>
+      <tbody>
+        <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">P</span></td><td>Paleta de comandos: <em>todo</em> lo que VS Code puede hacer se busca aquí.</td></tr>
+        <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">X</span></td><td>Abre las extensiones.</td></tr>
+        <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">`</span></td><td>Abre/cierra la <strong>terminal integrada</strong> (la que vive dentro de VS Code).</td></tr>
+        <tr><td><span class="kbd">F5</span></td><td>Compila, ejecuta y <strong>depurra</strong> el programa (con puntos de parada).</td></tr>
+        <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">F5</span></td><td>Compila y ejecuta <strong>sin</strong> depurar (más rápido).</td></tr>
+        <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">/</span></td><td>Comenta o descomenta la línea.</td></tr>
+        <tr><td><span class="kbd">Shift</span>+<span class="kbd">Alt</span>+<span class="kbd">F</span></td><td>Formatea el código con el estilo oficial de C#.</td></tr>
+        <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">B</span></td><td>Muestra u oculta la barra lateral.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: la paleta de comandos es tu mejor amiga</h4>
+    <p>Si no te acuerdas de un atajo, abre <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">P</span> y escribe lo que quieres hacer en español o inglés: <em>"crear proyecto"</em>, <em>"compilar"</em>, <em>"terminal"</em>. VS Code entiende lo que escribas. Además, el archivo <code>settings.json</code> (Ctrl+Shift+P → <em>Preferences: Open User Settings (JSON)</em>) te deja dejar el tema oscuro, la fuente más grande y el formato de tabulación a tu gusto.</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Qué extensión instala Microsoft para programar C# en VS Code?</p>
+      <button class="opcion" data-op="a">C# Dev Kit</button>
+      <button class="opcion" data-op="b">C++ Builder</button>
+      <button class="opcion" data-op="c">JavaScript Pro</button>
+      <button class="opcion" data-op="d">Pythonium</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Para qué sirve el atajo <span class="kbd">F5</span>?</p>
+      <button class="opcion" data-op="a">Borrar todo el proyecto</button>
+      <button class="opcion" data-op="b">Guardar sin compilar</button>
+      <button class="opcion" data-op="c">Compilar, ejecutar y depurar</button>
+      <button class="opcion" data-op="d">Abrir el explorador de archivos</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Por qué se recomienda la versión .NET 10 y no la 11?</p>
+      <button class="opcion" data-op="a">Porque .NET 11 no existe</button>
+      <button class="opcion" data-op="b">Porque .NET 10 es LTS y la 11 todavía está en preview</button>
+      <button class="opcion" data-op="c">Porque .NET 11 pide tarjeta de crédito</button>
+      <button class="opcion" data-op="d">Porque .NET 10 es gratis y la 11 es de pago</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: instalar .NET 10 →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>⚙️ El SDK de .NET 10 y tu primer proyecto</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "Instalar, crear, ejecutar"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 SDK, runtime y compilador</h3>
+    <p>El <strong>SDK</strong> (Software Development Kit) es la caja de herramientas completa: incluye el compilador de C#, el runtime (lo que ejecuta el programa), las plantillas de proyecto y el comando <code>dotnet</code>. Instalar el <strong>SDK</strong> es como instalar "el programa completo"; instalar solo el runtime es como tener el reproductor de música sin las canciones.</p>
+  </div>
+
+  <h3>📥 Instalar el SDK</h3>
+  <ol class="pasos">
+    <li>Entra a <code>dotnet.microsoft.com/download/dotnet/10.0</code> y descarga el instalador de tu sistema operativo (Windows: <em>.exe</em> · macOS: <em>.pkg</em> · Linux: <em>.deb</em>/<em>.tar.gz</em>).</li>
+    <li>Windows: abre el instalador y acepta las opciones por defecto. macOS: abre el <em>.pkg</em>. Linux: <code>sudo apt install dotnet-sdk-10.0</code> (o el paquete de tu distribución).</li>
+    <li>Alternativa sin salir de VS Code: en el walkthrough de C# Dev Kit, <em>Set up your environment</em> → <em>Install .NET SDK</em> → <em>Install</em>.</li>
+    <li><strong>Reinicia la terminal</strong> (cerrarla y abrirla otra vez) para que el sistema reconozca el comando <code>dotnet</code>.</li>
+  </ol>
+
+  <div class="terminal">
+    <div class="terminal-head"><span>🖥️ Verificar la instalación</span><span>bash</span></div>
+    <div class="terminal-body">
+      <div><span class="prompt">$</span> <span class="cmd">dotnet --version</span></div>
+      <div class="out">10.0.113</div>
+      <div><span class="prompt">$</span> <span class="cmd">dotnet --list-sdks</span></div>
+      <div class="out">10.0.113 [/usr/share/dotnet/sdk]</div>
+      <div><span class="prompt">$</span> <span class="cmd">dotnet --info</span></div>
+      <div class="out">Host (useful for support):<br>Version: 10.0.113</div>
+    </div>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: "dotnet no se reconoce como comando"</h4>
+    <p>Ese mensaje significa que el <strong>SDK no está instalado</strong> o que la terminal no se reinició después de instalarlo. Solución: cierra <em>todas</em> las terminales (incluida la integrada de VS Code), abre una nueva y repite <code>dotnet --version</code>. Si sigue fallando, reinstala el SDK marcando la opción de agregarlo al <code>PATH</code>.</p>
+  </div>
+
+  <h3>🚀 Crear y ejecutar tu primer proyecto</h3>
+  <div class="terminal">
+    <div class="terminal-head"><span>🛠️ Crear el proyecto</span><span>bash</span></div>
+    <div class="terminal-body">
+      <div><span class="prompt">$</span> <span class="cmd">mkdir Proyectos &amp;&amp; cd Proyectos</span></div>
+      <div><span class="prompt">$</span> <span class="cmd">dotnet new console -n MiApp</span></div>
+      <div class="out">La plantilla "aplicación de consola" se creó correctamente.</div>
+      <div><span class="prompt">$</span> <span class="cmd">cd MiApp</span></div>
+      <div><span class="prompt">$</span> <span class="cmd">dotnet run</span></div>
+      <div class="out">Hello, World!</div>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Tres formas de crear el proyecto</h4>
+    <ol>
+      <li><strong>Desde la terminal</strong> (la que acabas de usar): <code>dotnet new console -n MiApp</code>.</li>
+      <li><strong>Desde VS Code</strong>: <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">P</span> → <em>.NET: New Project</em> → <em>Console app</em> → nombre.</li>
+      <li><strong>Desde el explorador</strong>: en la vista <em>Explorer</em>, botón <em>Create .NET Project</em> (aparece con C# Dev Kit instalado).</li>
+    </ol>
+    <p>Las tres hacen exactamente lo mismo: crear la carpeta con los archivos del proyecto. Y siempre termina con <code>dotnet run</code>.</p>
+  </div>
+
+  <h3>🗂️ Anatomía de tu proyecto</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead><tr><th>Elemento</th><th>¿Qué es?</th><th>¿Lo toco?</th></tr></thead>
+      <tbody>
+        <tr><td><code>Program.cs</code></td><td>El archivo con <strong>tu código</strong>. Es el único que editas hoy.</td><td style="color:var(--verde)">✅ Sí, siempre</td></tr>
+        <tr><td><code>MiApp.csproj</code></td><td>El "manifiesto" del proyecto: qué versión de .NET usa, si activa <code>Nullable</code>, etc.</td><td style="color:var(--naranja)">⚠️ Solo si te lo piden</td></tr>
+        <tr><td><code>bin/</code></td><td>Donde queda el programa compilado (el <code>.exe</code> o el <code>.dll</code>).</td><td style="color:var(--rosa)">❌ No</td></tr>
+        <tr><td><code>obj/</code></td><td>Archivos temporales del compilador. Se regeneran solos.</td><td style="color:var(--rosa)">❌ No</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>xml — MiApp.csproj (lo que crea la plantilla)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre data-lang="text"><code>&lt;Project Sdk="Microsoft.NET.Sdk"&gt;
+
+  &lt;PropertyGroup&gt;
+    &lt;OutputType&gt;Exe&lt;/OutputType&gt;
+    &lt;TargetFramework&gt;net10.0&lt;/TargetFramework&gt;
+    &lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;
+    &lt;Nullable&gt;enable&lt;/Nullable&gt;
+  &lt;/PropertyGroup&gt;
+
+&lt;/Project&gt;</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Qué significa cada línea?</h4>
+    <ul>
+      <li><code>net10.0</code>: la versión del framework donde va a correr tu programa.</li>
+      <li><code>ImplicitUsings</code>: agrega automáticamente los <code>using</code> más comunes (System, System.Linq…), por eso <code>Console</code> funciona sin escribir nada más.</li>
+      <li><code>Nullable</code>: activa la advertencia de "esto puede ser nulo" — es la adelantada del C# moderno y te va a salvar de muchos errores.</li>
+    </ul>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué comando verifica qué versión del SDK tienes?</p>
+      <button class="opcion" data-op="a">dotnet --version</button>
+      <button class="opcion" data-op="b">dotnet --new</button>
+      <button class="opcion" data-op="c">dotnet --list-sdks</button>
+      <button class="opcion" data-op="d">version dotnet</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cuál es el archivo donde escribes tu código?</p>
+      <button class="opcion" data-op="a">Program.cs</button>
+      <button class="opcion" data-op="b">MiApp.csproj</button>
+      <button class="opcion" data-op="c">obj/</button>
+      <button class="opcion" data-op="d">bin/</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Para qué sirve la carpeta <code>obj/</code>?</p>
+      <button class="opcion" data-op="a">Guardar tus notas del curso</button>
+      <button class="opcion" data-op="b">Guardar archivos temporales del compilador</button>
+      <button class="opcion" data-op="c">Guardar las imágenes del proyecto</button>
+      <button class="opcion" data-op="d">Guardar el ejecutable final</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira los brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73 % agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Cuéntale a tu compañero/a qué te costó más: instalar el SDK o crear el proyecto. 1 min.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>El nombre <strong>C#</strong> se pronuncia "C sharp" (C sostenido) y el símbolo <code>#</code> se elige porque es el "hash" de la música: C# es la versión afinada de C. C# fue creado por <strong>Anders Hejlsberg</strong> (el mismo que creó TypeScript y Turbo Pascal) y su primera versión salió en el año 2000 con .NET Framework 1.0. Hoy <strong>C# 14</strong> es la versión que acompaña a .NET 10.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: depurar →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>🐞 VS Code a fondo: terminal, ejecución y depuración</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "Encuentra el error antes de que te encuentre"</p>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el programa que no arranca</h4>
+    <p>"Funcionaba y hoy no" es el drama clásico. La causa casi siempre es una de estas: un <strong>punto y coma</strong> faltante, una <strong>llave</strong> desbalanceada, un <strong>nombre escrito diferente</strong> en mayúsculas o minúsculas, o un error de compilación en una línea anterior. Para eso existe el <strong>depurador</strong>: te deja parar el programa en una línea exacta y ver qué hay en cada variable.</p>
+  </div>
+
+  <h3>⌨️ La terminal integrada</h3>
+  <p>Con <span class="kbd">Ctrl</span>+<span class="kbd">`</span> abres una terminal <strong>dentro</strong> de VS Code, en la carpeta del proyecto abierto. Todo lo que harías en el "Símbolo del sistema" de Windows o en la Terminal de macOS lo puedes hacer aquí.</p>
+
+  <div class="terminal">
+    <div class="terminal-head"><span>🧰 Comandos que usarás siempre</span><span>bash</span></div>
+    <div class="terminal-body">
+      <div><span class="prompt">$</span> <span class="cmd">dotnet run</span> <span class="com"># compila y ejecuta</span></div>
+      <div><span class="prompt">$</span> <span class="cmd">dotnet build</span> <span class="com"># solo compila (para ver errores)</span></div>
+      <div><span class="prompt">$</span> <span class="cmd">dotnet build --configuration Release</span> <span class="com"># compila optimizado</span></div>
+      <div><span class="prompt">$</span> <span class="cmd">dotnet clean</span> <span class="com"># borra bin/ y obj/</span></div>
+      <div><span class="prompt">$</span> <span class="cmd">dotnet new list</span> <span class="com"># plantillas disponibles</span></div>
+      <div><span class="prompt">$</span> <span class="cmd">dotnet run --project MiApp</span> <span class="com"># ejecuta otro proyecto</span></div>
+    </div>
+  </div>
+
+  <h3>🐞 Depurar paso a paso</h3>
+  <ol class="pasos">
+    <li><strong>Escribe</strong> tu programa en <code>Program.cs</code> y guárdalo con <span class="kbd">Ctrl</span>+<span class="kbd">S</span>.</li>
+    <li><strong> Pon un punto de parada</strong>: haz clic en la barra vertical izquierda de la línea donde quieras parar. Aparece un círculo rojo.</li>
+    <li><strong>Pulsa <span class="kbd">F5</span></strong>. VS Code compila y arranca el programa; al llegar a esa línea, se pausa.</li>
+    <li><strong>Inspecciona</strong>: en el panel izquierdo (<em>Variables</em>) ves el valor de cada variable en ese instante. Pasa el mouse por encima de una variable y verás su valor en un tooltip.</li>
+    <li><strong>Avanza paso a paso</strong>: <span class="kbd">F10</span> = siguiente línea, <span class="kbd">F11</span> = entrar a la función, <span class="kbd">Shift</span>+<span class="kbd">F11</span> = salir de la función, <span class="kbd">Shift</span>+<span class="kbd">F5</span> = detener.</li>
+    <li><strong>Observa la terminal</strong>: abajo aparece la consola del programa. Si pides un dato con <code>Console.ReadLine()</code>, puedes escribirlo ahí mismo sin cambiar de ventana.</li>
+  </ol>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — un programa para depurar (pon un breakpoint en la línea 5)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Programa de ejemplo para practicar el depurador
+Console.Write("Ingresa un número: ");
+int numero = int.Parse(Console.ReadLine() ?? "0");
+
+int doble = numero * 2;
+Console.WriteLine($"El doble de {numero} es {doble}");
+
+if (doble &gt; 100)
+{
+    Console.WriteLine("Wow, es un número grande.");
+}</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El aviso que verás la primera vez</h4>
+    <p>Cuando abres una carpeta con un proyecto por primera vez, VS Code avisa: <em>"Required assets to build and debug are missing. Add them?"</em>. Pulsa <strong>Yes</strong>: eso crea la carpeta <code>.vscode/</code> con <code>launch.json</code> (cómo depurar) y <code>tasks.json</code> (cómo compilar). Si lo cierras por error, puedes recrearlo con <em>.NET: Generate Assets</em> en la paleta de comandos.</p>
+  </div>
+
+  <h3>🧱 Fijar la versión del SDK con global.json</h3>
+  <p>Si en el salón hay compañeros con distintas versiones del SDK, puedes "anclar" la versión del proyecto con un archivo <code>global.json</code>:</p>
+
+  <div class="terminal">
+    <div class="terminal-head"><span>📌 Anclar el SDK</span><span>bash</span></div>
+    <div class="terminal-body">
+      <div><span class="prompt">$</span> <span class="cmd">dotnet new globaljson --sdk-version 10.0.113 --roll-forward latestFeature</span></div>
+      <div class="out">La plantilla "archivo global.json" se creó correctamente.</div>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>json — global.json</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre data-lang="text"><code>{
+  "sdk": {
+    "rollForward": "latestFeature",
+    "version": "10.0.113"
+  }
+}</code></pre>
+  </div>
+
+  <div class="checklist">
+    <h4>✅ Checklist del entorno (márcala en tu cuaderno)</h4>
+    <ul>
+      <li>VS Code instalado y abierto.</li>
+      <li>Extensión <strong>C# Dev Kit</strong> instalada (con sesión iniciada).</li>
+      <li><code>dotnet --version</code> responde con <code>10.0.x</code>.</li>
+      <li>Creaste el proyecto <code>MiApp</code> y <code>dotnet run</code> imprimió "Hello, World!".</li>
+      <li>Sabes abrir la terminal integrada y el panel de depuración.</li>
+    </ul>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué atajo abre la terminal integrada?</p>
+      <button class="opcion" data-op="a">Ctrl+Shift+X</button>
+      <button class="opcion" data-op="b">Ctrl+`</button>
+      <button class="opcion" data-op="c">Ctrl+S</button>
+      <button class="opcion" data-op="d">F11</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> En el depurador, ¿qué hace <span class="kbd">F10</span>?</p>
+      <button class="opcion" data-op="a">Guarda el archivo</button>
+      <button class="opcion" data-op="b">Entra dentro de la función</button>
+      <button class="opcion" data-op="c">Ejecuta la siguiente línea</button>
+      <button class="opcion" data-op="d">Termina el programa</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Para qué sirve un punto de parada (breakpoint)?</p>
+      <button class="opcion" data-op="a">Para pausar el programa en esa línea y ver las variables</button>
+      <button class="opcion" data-op="b">Para terminar el programa</button>
+      <button class="opcion" data-op="c">Para compilar más rápido</button>
+      <button class="opcion" data-op="d">Para borrar el código anterior</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: estructura de un programa →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>🏗️ ¿Cómo está hecho un programa en C#?</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Del archivo vacío a la primera clase"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 Dos formas de escribir el mismo programa</h3>
+    <p>Desde .NET 6, la plantilla de consola usa <strong>instrucciones de nivel superior</strong> (<em>top-level statements</em>): escribes las instrucciones directamente, sin envolverlas en una clase. C# las convierte por ti en un programa con una clase y un método <code>Main</code>. Antes se escribía todo a mano: <code>namespace</code>, <code>class</code> y <code>static void Main</code>. <strong>Las dos formas son válidas</strong>; la primera es la moderna y la que usa la plantilla de .NET 10.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — forma moderna (top-level statements)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Este archivo es el programa completo.
+// No hay namespace, no hay class, no hay Main: C# los pone por ti.
+
+Console.WriteLine("Hola, grado once!");
+
+int edad = 17;
+Console.WriteLine($"Tu edad es {edad} años.");</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — forma clásica (namespace + class + Main)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>using System;   // habilita Console, Math, String...
+
+namespace MiApp   // el espacio de nombres del proyecto
+{
+    class Program   // la clase del programa
+    {
+        static void Main(string[] args)   // el punto de entrada
+        {
+            Console.WriteLine("Hola, grado once!");
+        }
+    }
+}</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead><tr><th>Pieza</th><th>¿Qué hace?</th><th>¿Se escribe hoy?</th></tr></thead>
+      <tbody>
+        <tr><td><code>using</code></td><td>Importa espacios de nombres (como <code>System</code>) para no escribir el nombre completo.</td><td>Ya no: <code>ImplicitUsings</code> lo hace por ti.</td></tr>
+        <tr><td><code>namespace</code></td><td>Agrupa tus clases bajo un "paquete" de nombres.</td><td>No, si usas top-level statements.</td></tr>
+        <tr><td><code>class Program</code></td><td>La clase que contiene el programa.</td><td>No, se genera sola.</td></tr>
+        <tr><td><code>static void Main</code></td><td>El <strong>punto de entrada</strong>: por aquí arranca todo.</td><td>No, se genera solo.</td></tr>
+        <tr><td><code>Console.WriteLine</code></td><td>Escribe un texto en la consola y <strong>salta a la línea</strong>.</td><td>Sí, todos los días.</td></tr>
+        <tr><td><code>Console.Write</code></td><td>Escribe <strong>sin</strong> salto de línea (ideal para pedir datos).</td><td>Sí, para menús.</td></tr>
+        <tr><td><code>Console.ReadLine()</code></td><td>Lee una línea que escribe el usuario (vuelve como texto).</td><td>Sí, para entrada.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>📏 Convenciones de nombres (las que usa Microsoft)</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-verde">
+      <span class="emoji">🔠</span>
+      <h3>PascalCase</h3>
+      <p>Clases, métodos y propiedades: <code>MiApp</code>, <code>CalcularPromedio</code>, <code>NombreCompleto</code>.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🔡</span>
+      <h3>camelCase</h3>
+      <p>Variables locales y parámetros: <code>edad</code>, <code>totalPagar</code>, <code>nombreCompleto</code>.</p>
+    </div>
+    <div class="tarjeta tarjeta-ambar">
+      <span class="emoji">_camelCase</span>
+      <h3>Con guion bajo</h3>
+      <p>Campos privados: <code>_contador</code>. En C# moderno es más común usar <code>private</code> + propiedades.</p>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Detalle moderno: la interpolación de strings</h4>
+    <p>Fíjate en <code>$"Tu edad es {edad} años."</code>. El signo <code>$</code> delante de las comillas convierte el texto en una <strong>cadena interpolada</strong>: dentro de las llaves <code>{ }</code> puedes escribir cualquier expresión de C# (una variable, una suma, una llamada a función). Es la forma moderna de concatenar; la vieja era <code>"Tu edad es " + edad + " años."</code>.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — un programa completo que ya compila</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Ficha del estudiante
+Console.WriteLine("=== FICHA DEL ESTUDIANTE ===");
+
+Console.Write("Nombre: ");
+string nombre = Console.ReadLine() ?? "";
+
+Console.Write("Edad: ");
+int edad = int.Parse(Console.ReadLine() ?? "0");
+
+Console.WriteLine($"Nombre: {nombre}");
+Console.WriteLine($"Edad: {edad}");
+Console.WriteLine(edad &gt;= 18 ? "Es mayor de edad" : "Es menor de edad");</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Ojo con <code>int.Parse</code></h4>
+    <p>Si el usuario escribe "hola" en lugar de un número, <code>int.Parse</code> lanza una excepción y el programa se cae con un error rojo. En la clase 9 aprenderemos a usar <code>int.TryParse</code>, que pregunta "¿es un número?" y devuelve <code>true</code> o <code>false</code> sin romperse. De momento, escribe números válidos para probar.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Abran el proyecto <code>MiApp</code> y hagan esto juntos: (1) cambien el mensaje de saludo; (2) añadan una variable <code>string</code> con el nombre del colegio; (3) impriman las dos cosas usando interpolación. Después háganlo <strong>cada uno por su lado</strong> añadiendo una línea diferente. Comparen los resultados: ¿mismo resultado? Perfecto, el computador es determinista.</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué significa <code>$"Hola {nombre}"</code>?</p>
+      <button class="opcion" data-op="a">Un comentario</button>
+      <button class="opcion" data-op="b">Una variable especial</button>
+      <button class="opcion" data-op="c">Una cadena interpolada</button>
+      <button class="opcion" data-op="d">Una llamada al sistema</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cuál es la diferencia entre <code>Console.Write</code> y <code>Console.WriteLine</code>?</p>
+      <button class="opcion" data-op="a">WriteLine salta a la línea siguiente, Write no</button>
+      <button class="opcion" data-op="b">No hay diferencia</button>
+      <button class="opcion" data-op="c">Write es más rápido</button>
+      <button class="opcion" data-op="d">Write solo sirve para números</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> Con las "top-level statements", ¿qué archivo se escribe?</p>
+      <button class="opcion" data-op="a">Hay que crear 4 archivos</button>
+      <button class="opcion" data-op="b">Solo Program.cs</button>
+      <button class="opcion" data-op="c">Un archivo .sln</button>
+      <button class="opcion" data-op="d">Un archivo global.json</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: tu ficha de estudiante en consola</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "Aplica todo lo aprendido"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">La ficha del estudiante</span>
+    </div>
+    <p>El colegio necesita un programa que pida los datos de un estudiante y los muestre en un formato ordenado. Tu misión: construir <strong>FichaEstudiante</strong>, una aplicación de consola que funcione de principio a fin.</p>
+  </div>
+
+  <h3>📋 Requisitos del taller</h3>
+  <ol class="pasos">
+    <li>Crea el proyecto: <code>dotnet new console -n FichaEstudiante</code> y ábrelo en VS Code (<code>code .</code>).</li>
+    <li>El programa debe pedir: <strong>nombre</strong> (texto), <strong>edad</strong> (número), <strong>promedio</strong> (número decimal) y <strong>ciudad</strong> (texto).</li>
+    <li>Muestra los datos con <strong>interpolación</strong>, uno por línea, con un título y una línea separadora.</li>
+    <li>Si el promedio es <code>&gt;= 3.0</code> muestra <em>"🎓 Aprobado"</em>; si no, <em>"📚 Debe repetir"</em>.</li>
+    <li>Agrega <strong>un comentario</strong> al inicio del archivo explicando qué hace el programa.</li>
+    <li>Ejecuta con <code>dotnet run</code>, pruébalo con <strong>datos reales</strong> y con un promedio bajo (2.1) para ver las dos ramas.</li>
+  </ol>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — guía de estilo (no es la solución, es el molde)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ============================================
+// FICHA DEL ESTUDIANTE
+// Pide datos y los muestra en un formato ordenado.
+// ============================================
+
+Console.WriteLine("=== FICHA DEL ESTUDIANTE ===");
+
+// 1. Entrada
+Console.Write("Nombre: ");
+string nombre = Console.ReadLine() ?? "";
+
+Console.Write("Edad: ");
+int edad = int.Parse(Console.ReadLine() ?? "0");
+
+Console.Write("Promedio: ");
+double promedio = double.Parse(Console.ReadLine() ?? "0");
+
+// 2. Proceso (decisión)
+string estado = promedio &gt;= 3.0 ? "Aprobado" : "Debe repetir";
+
+// 3. Salida
+Console.WriteLine("------------------------------");
+Console.WriteLine($"Nombre:   {nombre}");
+Console.WriteLine($"Edad:     {edad}");
+Console.WriteLine($"Promedio: {promedio:F2}");
+Console.WriteLine($"Estado:   {estado}");
+Console.WriteLine("------------------------------");</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Tu salida se parece a esta?</h4>
+    <p><code>{promedio:F2}</code> es el formato numérico: muestra el doble con <strong>exactamente 2 decimales</strong> (3.5 → <code>3.50</code>). Es un detalle de "presentation" que se nota en los trabajos finales.</p>
+  </div>
+
+  <button class="btn-solucion" data-solucion="sol-taller">👁️ Ver solución completa</button>
+  <div class="solucion" id="sol-taller">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-header-left">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span>csharp — solución del taller</span>
+        </div>
+        <button class="copy-btn">📋 Copiar</button>
+      </div>
+<pre><code>// Ficha del estudiante — solución del taller
+Console.WriteLine("=== FICHA DEL ESTUDIANTE ===");
+
+Console.Write("Nombre: ");
+string nombre = Console.ReadLine() ?? "";
+
+Console.Write("Edad: ");
+int edad = int.Parse(Console.ReadLine() ?? "0");
+
+Console.Write("Promedio: ");
+double promedio = double.Parse(Console.ReadLine() ?? "0");
+
+Console.Write("Ciudad: ");
+string ciudad = Console.ReadLine() ?? "";
+
+string estado = promedio &gt;= 3.0 ? "Aprobado" : "Debe repetir";
+
+Console.WriteLine("------------------------------");
+Console.WriteLine($"Nombre:   {nombre}");
+Console.WriteLine($"Edad:     {edad}");
+Console.WriteLine($"Promedio: {promedio:F2}");
+Console.WriteLine($"Ciudad:   {ciudad}");
+Console.WriteLine($"Estado:   {estado}");
+Console.WriteLine("------------------------------");</code></pre>
+    </div>
+  </div>
+
+  <div class="checklist">
+    <h4>✅ Antes de entregar, verifica</h4>
+    <ul>
+      <li>El proyecto se llama <code>FichaEstudiante</code> y corre con <code>dotnet run</code>.</li>
+      <li>Tiene un <strong>comentario</strong> al inicio del archivo.</li>
+      <li>Usa <strong>interpolación</strong> para mostrar los datos (no concatenación con <code>+</code>).</li>
+      <li>Las dos ramas del <code>promedio &gt;= 3.0</code> funcionan (prueba con 4.5 y con 2.1).</li>
+      <li>Guardaste el proyecto en la carpeta <code>Proyectos/</code> de tu computador.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Cada uno muestra su programa al otro. El compañero debe probarlo <strong>sin leer el código</strong>: solo siguiendo lo que dice la consola. Si se entiende, el programa está bien hecho. Si se enreda, es señal de que falta un mensaje más claro.</p>
+  </div>
+
+  <div class="quiz" data-quiz="7">
+    <h3>🎯 Mini-Quiz del Módulo 7</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué comando crea un proyecto de consola llamado <code>Juego</code>?</p>
+      <button class="opcion" data-op="a">dotnet run -n Juego</button>
+      <button class="opcion" data-op="b">dotnet new console -n Juego</button>
+      <button class="opcion" data-op="c">dotnet create console Juego</button>
+      <button class="opcion" data-op="d">dotnet build -n Juego</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Si <code>dotnet run</code> dice "dotnet no se reconoce", ¿qué haces?</p>
+      <button class="opcion" data-op="a">Reinstalar VS Code</button>
+      <button class="opcion" data-op="b">Borrar el proyecto</button>
+      <button class="opcion" data-op="c">Instalar el SDK de .NET y abrir una terminal nueva</button>
+      <button class="opcion" data-op="d">Cambiar de lenguaje a Python</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 1 completada!</h2>
+    <p>Ya tienes el entorno listo y un programa propio que corre en consola. En la <strong>Clase 2</strong> estudiaremos los <strong>tipos de variables</strong>: <code>int</code>, <code>double</code>, <code>decimal</code>, <code>string</code>, <code>bool</code> y los tipos <em>nullable</em> del C# moderno.</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🛠️ Herramientas Algorítmicas II · Clase 1 de 10</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · Código TL007</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

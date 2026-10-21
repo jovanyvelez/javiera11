@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧠 Herramientas Algorítmicas II · Clase 4 · Condicionales</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🧠</span>
+    <div>
+      <h1>Herramientas Algorítmicas II · Clase 4</h1>
+      <p class="subtitulo">C# moderno · if · else · else if · switch · switch expression · patrones</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">🔀 if</button>
+  <button class="btn-modulo" data-modulo="2">🧩 else y else if</button>
+  <button class="btn-modulo" data-modulo="3">🎛️ switch</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🪆 Anidados</button>
+  <button class="btn-modulo" data-modulo="6">🧬 Patrones</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🔀 Tu programa aprende a decidir</h2>
+    <p class="lead">Hasta hoy tus programas siempre hacían lo mismo: una línea tras otra, sin preguntar. Hoy les damos <strong>sentencias de control condicional</strong>: la capacidad de <em>elegir</em>. Si llueve, llevo paraguas; si no, llevo la camiseta. En C# esas decisiones se escriben con <strong>if</strong>, <strong>else</strong>, <strong>else if</strong> y <strong>switch</strong>, y hoy las vamos a usar en su versión moderna: <strong>switch expressions</strong> y <strong>pattern matching</strong>.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — estudiante@colegio</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">estudiante@colegio:~$</span> <span class="cmd">dotnet new console -n SistemaNotas</span></div>
+        <div class="out">La plantilla "aplicación de consola" se creó correctamente.</div>
+        <div><span class="prompt">estudiante@colegio:~/SistemaNotas$</span> <span class="cmd">dotnet run</span></div>
+        <div class="out">Ingresa la nota: 85<br>Escala: B — Muy bien</div>
+        <div><span class="prompt">estudiante@colegio:~/SistemaNotas$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3 h 45 min en 8 módulos, con descanso a mitad. Trabaja en pareja con tu compañero/a de computador.</p>
+    </div>
+    <div class="tarjeta tarjeta-verde">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Escribir <strong>condicionales</strong> en C#: <code>if</code>, <code>else</code>, <code>else if</code>, <code>switch</code> clásico, <strong>switch expression</strong> y <strong>patrones modernos</strong>, sin caer en el "if hell".</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>La condición que no es <code>bool</code>, el <code>if</code> sin llaves que se come la línea de abajo, el <code>else</code> sospechoso que nunca se ejecuta, y el <em>if hell</em>: un <code>if</code> dentro de otro <code>if</code> dentro de otro <code>if</code>… hasta que nadie entiende nada.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · if</td><td style="color:var(--a)">La decisión más básica: ¿sí o no?</td><td style="color:var(--rosa)">Condición que no es bool</td><td>100 XP</td></tr>
+        <tr><td>02 · else y else if</td><td style="color:var(--b)">Las otras salidas y la cadena de opciones</td><td style="color:var(--rosa)">else que nunca se ejecuta</td><td>100 XP</td></tr>
+        <tr><td>03 · switch</td><td style="color:var(--verde)">switch clásico y switch expression</td><td style="color:var(--rosa)">case sin break</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · Anidados</td><td style="color:var(--a)">El if hell y cómo aplanarlo</td><td style="color:var(--rosa)">If hell</td><td>100 XP</td></tr>
+        <tr><td>05 · Patrones</td><td style="color:var(--b)">is not null, rangos y property patterns</td><td style="color:var(--rosa)">Patrón mal escrito</td><td>100 XP</td></tr>
+        <tr><td>06 · Taller</td><td style="color:var(--verde)">Sistema de notas con switch expression</td><td style="color:var(--rosa)">Escala mal calculada</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Piensa en <strong>cinco decisiones</strong> que tú tomas todos los días: si está lloviendo, si te llamaron del colegio, si te alcanza la plata, si el bus viene lleno, si ya comiste. Para cada una escríbele la <strong>condición</strong> en español (por ejemplo: "si llueve" o "si el bus está lleno") y la <strong>acción</strong>. ¿Cuál de las cinco es la más difícil de escribir como código? Esa va a ser tu primer <code>if</code>.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué esta clase es la bisagra del curso?</h4>
+    <p>Hasta la Clase 3 aprendiste <em>operaciones</em>: sumar, comparar, unir texto. Hoy aprendes <em>estructura de control</em>: el programa deja de ser una lista recta y se vuelve un <strong>árbol de decisiones</strong>. Todo lo que viene después —arreglos, funciones, menús, POO— se apoya en esto. Si el <code>if</code> te queda claro, el 80 % del programador ya estás.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: la decisión con if →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>🔀 El <code>if</code>: la decisión más básica</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "Si cumple, haz esto; si no, seguimos de largo"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es un condicional?</h3>
+    <p>Un <strong>condicional</strong> es una instrucción que le dice al programa: <em>evalúa esta pregunta y, según la respuesta, haz esto o aquello</em>. La pregunta se llama <strong>condición</strong> y SIEMPRE es una pregunta de sí o no: en C# eso es un <code>bool</code>, o sea <code>true</code> o <code>false</code>. Piensa en un guardián en la puerta del colegio: si tu carné está bien, pasas; si no, no. La condición del guardián es <code>tieneCarné</code>.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — un if sencillo</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// La condición DEBE ser un bool: true o false.
+int edad = 17;
+
+if (edad &gt;= 18)
+{
+    Console.WriteLine("Ya puede sacar la licencia de conducir.");
+}
+
+Console.WriteLine("El programa sigue hacia abajo.");</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Qué hace?</h4>
+    <p><strong>Qué hace:</strong> evalúa <code>edad &gt;= 18</code>. Como da <code>false</code> (17 no es mayor que 18), el bloque entre llaves <strong>no se ejecuta</strong> y el programa sigue de largo. <strong>Por qué funciona:</strong> el <code>if</code> es una <strong>sentencia de control</strong>: no siempre se ejecuta, depende del dato. Por eso el computador no puede "saltarse" la decisión ni la condición: siempre tiene que preguntar.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Villano número 1: la condición que no es <code>bool</code></h4>
+    <p>C# es <strong>estrictamente tipado</strong>: la condición de un <code>if</code> tiene que ser <code>bool</code>. Si le pasas un <code>int</code>, el compilador te frena con el error <strong>CS0029</strong>: <em>"no se puede convertir de 'int' a 'bool'"</em>. Fíjate que C# no adivina: en otros lenguajes un número distinto de cero es "verdadero", pero en C# eso NO existe.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — este bloque NO compila (error CS0029)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre data-lang="csharp-error"><code>int edad = 17;
+
+// ERROR CS0029: no se puede convertir de 'int' a 'bool'
+if (edad)
+{
+    Console.WriteLine("Esto nunca compila.");
+}
+
+// La forma correcta es preguntar con un operador de comparación:
+if (edad != 0)
+{
+    Console.WriteLine("Ahora sí compila.");
+}</code></pre>
+  </div>
+
+  <h3>🧱 Las llaves: no son decorativas</h3>
+  <p>Si escribes el <code>if</code> sin llaves, C# toma <strong>solo la siguiente instrucción</strong> como el cuerpo del <code>if</code>. Las demás líneas se ejecutan siempre, se cumple o no. Es el error que más apoyazos causa en clase.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — el if sin llaves (error de lógica, no de sintaxis)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre data-lang="csharp-error"><code>int edad = 17;
+
+// Sin llaves, SOLO la línea siguiente es el cuerpo del if.
+// La segunda línea se ejecuta SIEMPRE, haya o no verdadera la condición.
+if (edad &gt;= 18)
+    Console.WriteLine("Ya puede sacar la licencia.");
+    Console.WriteLine("Este mensaje sale siempre.");</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — la versión correcta, con llaves</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int edad = 17;
+
+// Con llaves, TODO el bloque depende de la condición.
+if (edad &gt;= 18)
+{
+    Console.WriteLine("Ya puede sacar la licencia.");
+}
+else
+{
+    Console.WriteLine("Todavía le faltan años.");
+}
+
+// Regla del curso: SIEMPRE llaves, aunque el bloque tenga una línea.
+// LaTe indentamos con 4 espacios y el código queda como una torre de control.</code></pre>
+  </div>
+
+  <h3>🧮 Comparar: los operadores relacionales</h3>
+  <p>Para preguntar, C# te da operadores que <strong>comparan dos valores y devuelven un <code>bool</code></strong>:</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Operador</th><th>Significa</th><th>Ejemplo</th><th>Resultado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>==</code></td><td>igual a</td><td><code>nota == 5.0</code></td><td><code>true</code> / <code>false</code></td></tr>
+        <tr><td><code>!=</code></td><td>diferente de</td><td><code>nota != 5.0</code></td><td><code>true</code> / <code>false</code></td></tr>
+        <tr><td><code>&lt;</code> · <code>&gt;</code></td><td>menor que · mayor que</td><td><code>nota &lt; 3.0</code></td><td><code>true</code> / <code>false</code></td></tr>
+        <tr><td><code>&lt;=</code> · <code>&gt;=</code></td><td>menor o igual · mayor o igual</td><td><code>nota &gt;= 3.0</code></td><td><code>true</code> / <code>false</code></td></tr>
+        <tr><td><code>&amp;&amp;</code></td><td><strong>y</strong> (las dos cosas)</td><td><code>nota &gt;= 3.0 &amp;&amp; asistencia &gt;= 70</code></td><td><code>true</code> solo si ambas se cumplen</td></tr>
+        <tr><td><code>||</code></td><td><strong>o</strong> (con que una se cumpla)</td><td><code>nota &lt; 3.0 || asistencia &lt; 50</code></td><td><code>true</code> si alguna se cumple</td></tr>
+        <tr><td><code>!</code></td><td>niega (da la vuelta)</td><td><code>!aprobado</code></td><td>invierte <code>true</code> y <code>false</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — &amp;&amp;, || y el bool como variable de decisión</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int nota = 72;
+int asistencia = 80;
+
+// &amp;&amp;  = "y": las DOS condiciones tienen que cumplirse.
+bool aprobado = nota &gt;= 60 &amp;&amp; asistencia &gt;= 75;
+
+// ||  = "o": con que UNA se cumpla, ya es true.
+bool urgente = nota &lt; 40 || asistencia &lt; 50;
+
+// Guardar la decisión en un bool con nombre hace el código legible:
+// "aprobado" explica MUCHO más que "nota &gt;= 60 &amp;&amp; asistencia &gt;= 75".
+if (aprobado)
+{
+    Console.WriteLine($"Aprobó. Nota {nota}, asistencia {asistencia}%, excelente: {nota &gt;= 90}");
+}
+
+if (urgente)
+{
+    Console.WriteLine("¡Caso urgente: hay que llamar al tutor!");
+}</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 El "if invertido" y la guardaClause</h4>
+    <p>Cuando lo que <strong>no</strong> se cumple es lo raro, invierte la pregunta: en vez de <code>if (cumple) { hago } else { aviso }</code>, escribe <code>if (NO cumple) { aviso y me devuelvo }</code>. Ese "me devuelvo" es el <strong><code>return</code> temprano</strong>, y el bloque que valida se llama <strong>guardClause</strong> (una "guardia" que frena el programa si algo está mal). El resultado es un código más plano, sin <code>else</code> giganticotes. Lo vas a ver a fondo en el Módulo 5.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — el if invertido con return temprano (guardClause)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// El "if invertido": primero descartas lo inválido, luego sigues.
+// Cada return temprano es una "guardia" que frena el programa.
+static bool EsMayorDeEdad(int edad)
+{
+    if (edad &lt; 0)
+    {
+        Console.WriteLine("Edad inválida.");
+        return false;
+    }
+
+    if (edad &lt; 18)
+    {
+        Console.WriteLine("Es menor de edad.");
+        return false;
+    }
+
+    // Si llegamos aquí, todo está bien: no hace falta else.
+    return true;
+}
+
+Console.WriteLine(EsMayorDeEdad(20));</code></pre>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban en el cuaderno <strong>cinco condicionales</strong> de la vida diaria, pero con la <em>condición</em> escrita como una comparación de C# (con <code>==</code>, <code>&gt;</code>, <code>&amp;&amp;</code>…). Ejemplo: "si tengo más de 15 años <code>and</code> ya tengo cédula" → <code>edad &gt; 15 &amp;&amp; tieneCedula</code>. Después marquen cuál de las cinco se escribiría mejor con un <code>switch</code> en vez de un <code>if</code>.</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué error da el compilador si escribes <code>if (edad)</code> donde <code>edad</code> es un <code>int</code>?</p>
+      <button class="opcion" data-op="a">CS0029: no se puede convertir de 'int' a 'bool'</button>
+      <button class="opcion" data-op="b">CS0163: la condición no es constante</button>
+      <button class="opcion" data-op="c">CS0161: la etiqueta 'case' está fuera de un switch</button>
+      <button class="opcion" data-op="d">Ningún error: en C# un número distinto de cero es verdadero</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué se recomienda poner siempre llaves en el <code>if</code>?</p>
+      <button class="opcion" data-op="a">Porque sin llaves solo el <code>if</code> controla la línea siguiente y las demás se ejecutan siempre</button>
+      <button class="opcion" data-op="b">Porque las llaves son obligatorias por ley en C#</button>
+      <button class="opcion" data-op="c">Porque sin llaves el programa no compila</button>
+      <button class="opcion" data-op="d">Porque las llaves hacen el programa más rápido</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> Si <code>nota = 72</code> y <code>asistencia = 80</code>, ¿qué vale <code>nota &gt;= 60 &amp;&amp; asistencia &gt;= 75</code>?</p>
+      <button class="opcion" data-op="a">Es <code>false</code>, porque el <code>&amp;&amp;</code> necesita que las dos condiciones se cumplan y aquí una no se cumple</button>
+      <button class="opcion" data-op="b">Es <code>true</code>, porque las dos condiciones se cumplen</button>
+      <button class="opcion" data-op="c">Es <code>false</code>, porque el <code>&amp;&amp;</code> siempre da <code>false</code></button>
+      <button class="opcion" data-op="d">Da error: no se puede comparar con <code>&amp;&amp;</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: else y else if →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>🧩 <code>else</code> y <code>else if</code>: las otras salidas</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "La primera condición que se cumple gana"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 Dos caminos, y luego muchos</h3>
+    <p>Un <code>if</code> solo tiene <strong>una salida</strong>: la del "sí". El <code>else</code> agrega la salida del "no": <em>"si no, haz esto otro"</em>. Y cuando hay <strong>más de dos opciones</strong>, se encadena con <code>else if</code>: un <code>if</code> seguido de <code>else if</code> seguidos de un <code>else</code> final. En una cadena, <strong>gana la primera condición que se cumple</strong> y las demás ya no se miran.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — if / else if / else</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int nota = 74;
+
+if (nota &gt;= 90)
+{
+    Console.WriteLine("A — Excelente");
+}
+else if (nota &gt;= 80)
+{
+    Console.WriteLine("B — Muy bien");
+}
+else if (nota &gt;= 70)
+{
+    Console.WriteLine("C — Bien");
+}
+else
+{
+    Console.WriteLine("D — Debe reforzar");
+}</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Qué hace?</h4>
+    <p><strong>Qué hace:</strong> como 74 no es <code>&gt;= 90</code>, ni <code>&gt;= 80</code>, ni <code>&gt;= 70</code>, se cae hasta el <code>else</code> final. <strong>Por qué funciona:</strong> la cadena se evalúa <strong>de arriba hacia abajo</strong> y en cuanto una condición da <code>true</code>, se ejecuta ese bloque y <strong>se salta todo lo demás</strong>. Por eso el orden importa muchísimo: si pones primero <code>nota &gt;= 60</code>, el 74 se iría por ahí y las otras escalas nunca se verían.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — el orden de evaluación se nota</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int puntos = 85;
+Console.WriteLine("1. Reviso la primera condición...");
+
+if (puntos &gt;= 90)
+{
+    Console.WriteLine("A");
+}
+else if (puntos &gt;= 80)
+{
+    Console.WriteLine("2. La segunda se cumplió: B");
+}
+else if (puntos &gt;= 70)
+{
+    Console.WriteLine("3. Esta NO se revisa: la cadena ya ganó");
+}
+
+Console.WriteLine("4. Fin de la cadena.");</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El <code>else</code> sospechoso</h4>
+    <p>Se llama <strong><code>else</code> sospechoso</strong> a un <code>else</code> que <em>nunca se ejecuta</em>, porque la condición del <code>if</code> ya cubre todos los casos posibles. Ejemplo clásico: <code>if (nota &gt;= 0) { ... } else { Console.WriteLine("nota negativa"); }</code> — si notas siempre son de 0 a 100, ese <code>else</code> es un adorno. Otro clásico es el <code>else</code> que repite lo que ya dijo el <code>if</code>. La solución no es borrar el <code>else</code> a ciegas: es <strong>preguntarse si la condición realmente puede ser falsa</strong>.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — else sospechoso y else de último recurso</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// El "else sospechoso": la condición ya era una pregunta completa.
+int edad = 17;
+
+if (edad &gt;= 0 &amp;&amp; edad &lt;= 120)
+{
+    Console.WriteLine("Edad válida.");
+}
+else
+{
+    // ¿Cuándo se ejecuta esto? Solo si el usuario miente de casual.
+    Console.WriteLine("¿Edad qué?");
+}
+
+// El "else de último recurso": SIEMPRE tiene sentido como defecto.
+Console.Write("Escribe 1 para la matriz o 2 para la lista: ");
+string opcion = Console.ReadLine() ?? "";
+
+if (opcion == "1")
+{
+    Console.WriteLine("Mostrando la matriz...");
+}
+else
+{
+    // Aquí el else es el plan B, no un adorno.
+    Console.WriteLine("Mostrando la lista...");
+}</code></pre>
+  </div>
+
+  <h3>🎛️ Entra <code>switch</code>: cuando las opciones son muchas</h3>
+  <p>Cuando las opciones son <strong>muchas y todas del mismo tipo</strong> (un día de la semana, un menú, un código), una cadena de <code>else if</code> se vuelve larga y fea. Para eso existe el <strong><code>switch</code> clásico</strong>:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — switch clásico: case, break, default</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>Console.Write("Escribe el día de la semana (1-7): ");
+string entrada = Console.ReadLine() ?? "";
+int dia = int.TryParse(entrada, out int numero) ? numero : 0;
+
+switch (dia)
+{
+    case 1:
+        Console.WriteLine("Lunes");
+        break;                 // break SALTA a lo que sigue del switch
+    case 2:
+    case 3:
+    case 4:
+    case 5:                    // cases agrupados: comparten el mismo bloque
+        Console.WriteLine("Día hábil de colegio");
+        break;
+    case 6:
+    case 7:
+        Console.WriteLine("Fin de semana");
+        break;
+    default:                    // se ejecuta si NINGÚN case coincidió
+        Console.WriteLine("Día no válido");
+        break;
+}</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Pieza</th><th>Para qué sirve</th><th>Error típico</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>case 1:</code></td><td>Una de las opciones posibles del <code>switch</code>.</td><td style="color:var(--rosa)">Meter un <code>if</code> dentro de un <code>case</code> por descuido.</td></tr>
+        <tr><td><code>break;</code></td><td>Termina ese <code>case</code> y sale del <code>switch</code>.</td><td style="color:var(--rosa)">Olvidarlo: el programa "se cae" al siguiente <code>case</code>.</td></tr>
+        <tr><td><code>case 2: case 3:</code></td><td><strong>Agrupar</strong> varios valores en el mismo bloque.</td><td style="color:var(--rosa)">Repetir el mismo código 5 veces en vez de agrupar.</td></tr>
+        <tr><td><code>default:</code></td><td>El caso "por si nada de lo anterior coincidió".</td><td style="color:var(--rosa)">Dejarlo de lado: el programa no avisa del dato inválido.</td></tr>
+        <tr><td><code>goto case 2;</code></td><td>Salta a otro <code>case</code> (se usa para no repetir un bloque).</td><td style="color:var(--rosa)">Usarlo mucho: el código se vuelve un laberinto.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — goto case: reutilizar un bloque</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int opcion = 2;
+
+switch (opcion)
+{
+    case 1:
+        Console.WriteLine("Cargando datos...");
+        goto case 2;        // cae al case 2 y ejecuta su bloque
+    case 2:
+        Console.WriteLine("Datos cargados.");
+        break;
+    default:
+        Console.WriteLine("Opción desconocida.");
+        break;
+}</code></pre>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban un <code>switch</code> de <strong>menú de restaurante</strong> con 4 opciones (bebida caliente, jugo, combo y postre). Después <strong>reescriban ese mismo menú</strong> con <code>if</code> / <code>else if</code> / <code>else</code>. ¿Cuál de las dos versiones les queda más fácil de leer? Ese es el criterio real para elegir.</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> En una cadena <code>if / else if / else if / else</code>, ¿qué pasa si se cumplen dos condiciones?</p>
+      <button class="opcion" data-op="a">Gana la primera condición que se cumple y las demás no se evalúan</button>
+      <button class="opcion" data-op="b">Se ejecutan los dos bloques</button>
+      <button class="opcion" data-op="c">Gana la última condición que se cumple</button>
+      <button class="opcion" data-op="d">Da error de compilación</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Para qué sirve el <code>break;</code> dentro de un <code>case</code>?</p>
+      <button class="opcion" data-op="a">Para terminar el programa</button>
+      <button class="opcion" data-op="b">Para salir de ese <code>case</code> y seguir después del <code>switch</code></button>
+      <button class="opcion" data-op="c">Para volver a evaluar la condición</button>
+      <button class="opcion" data-op="d">Para declarar una variable dentro del <code>case</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué hace el <code>default</code> en un <code>switch</code>?</p>
+      <button class="opcion" data-op="a">Se ejecuta siempre, antes que los <code>case</code></button>
+      <button class="opcion" data-op="b">Es el <code>case</code> por defecto del menú</button>
+      <button class="opcion" data-op="c">Se ejecuta cuando ningún <code>case</code> coincidió</button>
+      <button class="opcion" data-op="d">Marca el final del <code>switch</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: switch expression →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>🎛️ <code>switch</code> clásico vs. <code>switch expression</code></h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Del switch de 20 líneas a una expresión de 7"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 Dos maneras de decir lo mismo</h3>
+    <p>El <strong><code>switch</code> clásico</strong> es una <em>sentencia</em>: recibe un valor, lo compara con cada <code>case</code> y ejecuta el que coincida. La <strong><code>switch expression</code></strong> (C# 8 en adelante) es una <em>expresión</em>: <strong>devuelve un valor</strong>. Se escribe con el operador <code>=&gt;</code> (la flecha) y termina con un <code>_</code> que dice "si no era ninguno de los anteriores, devuelve esto". ¿Por qué importa? Porque una expresión se puede <strong>guardar en una variable</strong> o <strong>usar dentro de otra línea</strong>.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — el switch clásico (sentencia) completo</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int nota = 84;
+string escala;
+
+switch (nota)
+{
+    case &gt;= 90:                       // el switch clásico SÍ admite relaciones
+        escala = "A — Excelente";
+        break;
+    case &gt;= 80:
+        escala = "B — Muy bien";
+        break;
+    case &gt;= 70:
+        escala = "C — Bien";
+        break;
+    case &gt;= 60:
+        escala = "D — Suficiente";
+        break;
+    default:
+        escala = "E — Insuficiente";
+        break;
+}
+
+Console.WriteLine(escala);</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — la misma lógica como switch expression</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int nota = 84;
+
+string escala = nota switch
+{
+    &gt;= 90 =&gt; "A — Excelente",
+    &gt;= 80 =&gt; "B — Muy bien",
+    &gt;= 70 =&gt; "C — Bien",
+    &gt;= 60 =&gt; "D — Suficiente",
+    _    =&gt; "E — Insuficiente"          // el "_" es el "si no fue ninguno"
+};
+
+Console.WriteLine(escala);
+
+// Y como es una EXPRESIÓN, se puede usar al vuelo:
+Console.WriteLine(nota switch
+{
+    &gt;= 90 =&gt; "¡Excelente!",
+    _ =&gt; "A seguir practicando"
+});</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Qué hace?</h4>
+    <p><strong>Qué hace:</strong> las dos versiones devuelven lo mismo, pero la <em>expresión</em> tiene la mitad de líneas, no necesita <code>break</code>, no necesita declarar la variable antes y se puede usar dentro de otra expresión. <strong>Por qué funciona:</strong> el <code>switch expression</code> evalúa los patrones <strong>de arriba hacia abajo</strong> y devuelve el valor del primer patrón que coincide. El <code>_</code> (patrón "comodín") es <strong>obligatorio</strong>: garantiza que la expresión siempre tenga un valor, aunque el dato sea raro.</p>
+  </div>
+
+  <h3>🧬 <code>switch expression</code> con patrones</h3>
+  <p>Aquí está lo bueno: los <code>case</code> de una <code>switch expression</code> no son solo valores, son <strong>patrones</strong>. Puedes preguntar por el <strong>tipo</strong> (como <code>is string</code>), por el <strong>rango</strong> (como <code>is &gt; 10</code>) o por la <strong>forma</strong> del dato, y el compilador te da la respuesta con el dato <strong>ya convertido al tipo correcto</strong>:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — switch expression con patrones de tipo y de rango</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>object dato = "Hola";
+
+string descripcion = dato switch
+{
+    int n when n &gt; 100 =&gt; "Un entero grande",
+    int n =&gt; $"Un entero: {n}",
+    double d =&gt; $"Un decimal: {d}",
+    string s when s.Length &gt; 5 =&gt; $"Texto largo: {s}",
+    string s =&gt; $"Texto corto: {s}",
+    null =&gt; "Nulo",
+    _ =&gt; "Tipo desconocido"
+};
+
+Console.WriteLine(descripcion);</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — switch con tuplas (patrón posicional)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int x = 3;
+int y = 4;
+
+// (x, y) es una TUPLA: un par de valores que viaja junto.
+string resultado = (x, y) switch
+{
+    (0, 0) =&gt; "El origen",
+    (var a, 0) =&gt; $"Sobre el eje X, en {a}",
+    (0, var b) =&gt; $"Sobre el eje Y, en {b}",
+    (var a, var b) when a == b =&gt; $"Sobre la diagonal ({a})",
+    _ =&gt; $"Punto normal ({x}, {y})"
+};
+
+Console.WriteLine(resultado);</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 La Exhaustividad: tu mejor aliado</h4>
+    <p>La <strong>exhaustividad</strong> es la promesa de la <code>switch expression</code>: si te olvidas de un caso, el compilador te avisa. Desde <strong>C# 8</strong>, cuando la <code>switch expression</code> trabaja con un <code>enum</code> y no cubre todos sus valores, el compilador muestra el aviso <strong>CS8509</strong> (<em>"la expresión switch no controla todos los valores posibles"</em>). Ese aviso es oro: te dice <strong>antes de ejecutar</strong> que te falta un caso.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — el aviso CS8509 cuando falta un caso</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// FALTA el caso "Viernes": el compilador avisa CS8509.
+DiaSemana dia = ObtenerDia();
+
+string nombre = dia switch
+{
+    DiaSemana.Lunes =&gt; "Lunes",
+    DiaSemana.Martes =&gt; "Martes",
+    DiaSemana.Miercoles =&gt; "Miércoles",
+    DiaSemana.Jueves =&gt; "Jueves"
+};
+
+Console.WriteLine(nombre);
+
+static DiaSemana ObtenerDia() =&gt; DiaSemana.Viernes;
+
+enum DiaSemana { Lunes, Martes, Miercoles, Jueves, Viernes }</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Aspecto</th><th><code>switch</code> clásico</th><th><code>switch expression</code></th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Qué es</td><td>Sentencia: <strong>hace</strong> algo</td><td>Expresión: <strong>devuelve</strong> un valor</td></tr>
+        <tr><td>Flecha</td><td><code>case 1: ... break;</code></td><td><code>1 =&gt; valor,</code></td></tr>
+        <tr><td><code>break</code></td><td>Obligatorio (salvo el último)</td><td>No existe: cada <code>=&gt;</code> ya es su propio final</td></tr>
+        <tr><td>Se usa como</td><td>Sentencia suelta</td><td>Variable, argumento o parte de otra expresión</td></tr>
+        <tr><td><strong>Patrones avanzados</strong></td><td>Solo comparaciones</td><td>Tipos, rangos, tuplas, <code>when</code>, <code>is</code></td></tr>
+        <tr><td>Se puede usar como valor</td><td>No</td><td><strong>Sí</strong>: <code>string s = x switch { ... };</code></td></tr>
+        <tr><td>Avisa si falta un caso</td><td>No (salvo el <code>default</code>)</td><td><strong>Sí</strong> (CS8509 en enums)</td></tr>
+        <tr><td>Cuándo usarlo</td><td>Cuando vas a <em>hacer</em> varias cosas</td><td>Cuando vas a <em>calcular</em> un valor</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Escriban la <strong>versión clásica</strong> y la <strong>versión expresión</strong> de un <code>switch</code> que convierte un número del 1 al 5 en el nombre del día de la semana. Pongan las dos versiones lado a lado y cuéntenle al otro grupo: ¿cuál se lee más rápido? Después inventen un caso donde el <code>switch expression</code> gane <em>claramente</em> (pista: cuando el resultado se guarda en una variable o se pasa como argumento).</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace el <code>_</code> (guion bajo) en una <code>switch expression</code>?</p>
+      <button class="opcion" data-op="a">Es un comodín que se ignora al compilar</button>
+      <button class="opcion" data-op="b">Es el patrón "si no coincidió ninguno de los anteriores"</button>
+      <button class="opcion" data-op="c">Es una variable vacía que se puede reutilizar</button>
+      <button class="opcion" data-op="d">Marca el final del <code>switch</code>, como el <code>break</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Cuál es la diferencia clave entre <code>switch</code> clásico y <code>switch expression</code>?</p>
+      <button class="opcion" data-op="a">La expresión solo funciona con números</button>
+      <button class="opcion" data-op="b">El clásico no admite <code>default</code></button>
+      <button class="opcion" data-op="c">La expresión <strong>devuelve un valor</strong> y se puede usar dentro de otra expresión</button>
+      <button class="opcion" data-op="d">El clásico es más rápido en tiempo de ejecución</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué pasa si a una <code>switch expression</code> sobre un <code>enum</code> le falta un caso?</p>
+      <button class="opcion" data-op="a">El compilador avisa con CS8509 que no se cubren todos los valores posibles</button>
+      <button class="opcion" data-op="b">El programa compila y devuelve <code>null</code></button>
+      <button class="opcion" data-op="c">Da un error en tiempo de ejecución</button>
+      <button class="opcion" data-op="d">No pasa nada: el <code>default</code> siempre salva</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira los brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73 % agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Cuéntale a tu compañero/a qué te costó más: el <code>if</code> sin llaves o el <code>_</code> del switch expression. 1 min.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>La palabra <strong><code>if</code></strong> viene del inglés <em>"if"</em>, que en español es "si", y el <code>else</code> es "si no". El <code>switch</code> se llama así porque el programa "cambia" de caso según el dato, como un interruptor de luz. Y el <code>switch expression</code> nació porque a los programadores de C# les molestaba tanto escribir <code>break;</code> que en 2019 (C# 8) Microsoft lo rediseñó: el resultado fue tan popular que hoy casi nadie escribe <code>switch</code> clásico a mano.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: condicionales anidados →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>🪆 Condicionales anidados: el "if hell"</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "Cuando el if se mete dentro del if…"</p>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el <em>if hell</em></h4>
+    <p>Cuando metes un <code>if</code> dentro de otro <code>if</code> dentro de otro <code>if</code>, el código se vuelve un <strong>laberinto de llaves</strong>: hay que contar cuántas llaves abres y cuántas cierras, y para saber qué hace una línea toca leer 40 líneas hacia arriba. A ese monstruo lo llaman <strong><em>if hell</em></strong>. No es un error de compilación: el programa funciona. Solo que ya nadie lo entiende — y eso también es un error.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — un if hell (compila, pero nadie lo entiende)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int nota = 78;
+int asistencia = 92;
+
+if (nota &gt;= 60)
+{
+    if (asistencia &gt;= 70)
+    {
+        if (nota &gt;= 90)
+        {
+            Console.WriteLine("Excelente");
+        }
+        else
+        {
+            Console.WriteLine("Bien");
+        }
+    }
+    else
+    {
+        Console.WriteLine("Falta asistencia");
+    }
+}
+else
+{
+    Console.WriteLine("Reprobó");
+}</code></pre>
+  </div>
+
+  <h3>🪓 Tres formas de aplanar el infierno</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Técnica</th><th>En qué consiste</th><th>Cuándo usarla</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Return temprano</strong></td><td>Si algo está mal, <code>return</code> de una vez y sal del método.</td><td>Cuando hay varios "si no, no sigas".</td></tr>
+        <tr><td><strong>GuardClause</strong></td><td>Las validaciones al principio, cada una con su propio <code>if</code> plano.</td><td>Al principio de un método: valida y descarta.</td></tr>
+        <tr><td><strong>Condición compuesta</strong></td><td>Juntar con <code>&amp;&amp;</code> lo que siempre va junto.</td><td>Cuando las dos mitades se cumplan siempre juntas.</td></tr>
+        <tr><td><strong>Switch expression</strong></td><td>Una tabla de "valor de entrada → valor de salida".</td><td>Cuando hay varias opciones del mismo tipo.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — aplanado con return temprano y guard clauses</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Versión plana: cada "guardia" descarta el caso inválido y sale.
+static string Clasificar(int nota, int asistencia)
+{
+    if (nota &lt; 0 || nota &gt; 100) return "Nota inválida";
+    if (asistencia &lt; 0 || asistencia &gt; 100) return "Asistencia inválida";
+    if (nota &lt; 60) return "Reprobó";
+    if (asistencia &lt; 70) return "Falta asistencia";
+
+    return nota &gt;= 90 ? "Excelente" : "Bien";
+}
+
+Console.WriteLine(Clasificar(85, 90));</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — aplanado con switch expression y patrones de tupla</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int nota = 78;
+int asistencia = 92;
+
+// La tupla (nota, asistencia) viaja junta: una sola pregunta, un solo resultado.
+string nivel = (nota, asistencia) switch
+{
+    (&lt; 60, _) =&gt; "Reprobó",
+    (_, &lt; 70) =&gt; "Falta asistencia",
+    (&gt;= 90, &gt;= 90) =&gt; "Excelente",
+    _ =&gt; "Bien"
+};
+
+Console.WriteLine(nivel);</code></pre>
+  </div>
+
+  <h3>💰 La decisión del monto: un condicional de la vida real</h3>
+  <p>Los descuentos de una tienda son un condicional disfrazado de tabla. Mira cómo la <code>switch expression</code> convierte la política del negocio en <strong>5 líneas legibles</strong>:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — decisión del monto de compra</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>double total = 185000;
+
+// La política del negocio escrita como una tabla de patrones.
+double descuento = total switch
+{
+    &gt;= 500000 =&gt; 0.20,
+    &gt;= 300000 =&gt; 0.15,
+    &gt;= 150000 =&gt; 0.10,
+    _ =&gt; 0
+};
+
+double precioFinal = total * (1 - descuento);
+
+Console.WriteLine($"Total: {total:C0}");
+Console.WriteLine($"Descuento: {descuento:P0}");
+Console.WriteLine($"Pagas: {precioFinal:C0}");</code></pre>
+  </div>
+
+  <h3>🗺️ El diagrama de flujo del <code>if</code></h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>text — diagrama de flujo de un if</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre data-lang="text"><code>   ┌────────────────┐
+   │  contador = 1   │
+   └───────┬────────┘
+           ▼
+   ┌────────────────────┐   NO   ┌──────────┐
+   │ ¿contador &lt;= 10 ? ├────────►│  SALIR   │
+   └─────────┬──────────┘         └──────────┘
+             │ SÍ
+             ▼
+   ┌────────────────────┐
+   │ Mostrar contador   │
+   └─────────┬──────────┘
+             ▼
+   ┌────────────────────┐
+   │ contador = cont +1 │
+   └─────────┬──────────┘
+             │
+             └────────────► (vuelve a la condición)
+
+Reglas del diagrama:
+  · El rombo (◆) es la CONDICIÓN: siempre tiene SÍ y NO.
+  · El rectángulo (▭) es una ACCIÓN.
+  · Solo hay UNA flecha de salida del programa: el "SALIR".</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: el if hell se ve venir</h4>
+    <p>Cuando estés escribiendo un <code>if</code> y notes que dentro hay <strong>otro <code>if</code> que no comparte nada</strong> con la condición de afuera, casi siempre es un caso para un <strong><code>return</code> temprano</strong>. Y si lo que tienes es una lista de "valor → texto", lo que necesitas es un <strong><code>switch expression</code></strong>. Ponle nombre a las reglas: si puedes decir la decisión en una frase, puedes escribirla en una línea de código.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Tomen el <code>if hell</code> de arriba y reescribanlo de <strong>tres maneras distintas</strong>: (1) con <code>return</code> temprano, (2) con una <code>switch expression</code> de tupla y (3) con dos <code>bool</code> con nombre (por ejemplo <code>aprobado</code> y <code>excelente</code>). Midan cuántos <code>if</code> tiene cada versión: la que tenga menos es la más legible. ¿Cuál les gusta más y por qué?</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Qué es una <em>guardClause</em> (guarda)?</p>
+      <button class="opcion" data-op="a">Una validación al principio de un método que, si falla, termina el método con <code>return</code></button>
+      <button class="opcion" data-op="b">Un <code>if</code> que siempre se cumple</button>
+      <button class="opcion" data-op="c">Una clase que protege los datos privados</button>
+      <button class="opcion" data-op="d">Un tipo de variable de tipo <code>bool</code></button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Por qué se dice que el "if hell" es un problema aunque compile bien?</p>
+      <button class="opcion" data-op="a">Porque ocupa mucha memoria</button>
+      <button class="opcion" data-op="b">Porque es muy lento: cada <code>if</code> anidado tarda más</button>
+      <button class="opcion" data-op="c">Porque hace que el programa se reinicie</button>
+      <button class="opcion" data-op="d">Porque impide usar el <code>switch</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Cuál de estas es la mejor forma de aplanar un <code>if</code> anidado?</p>
+      <button class="opcion" data-op="a">Meter todo en un <code>while (true)</code></button>
+      <button class="opcion" data-op="b">Sustituir el <code>if</code> por un <code>Console.WriteLine</code></button>
+      <button class="opcion" data-op="c">Usar <code>return</code> temprano (guard clauses) o una <code>switch expression</code></button>
+      <button class="opcion" data-op="d">Indentar más el código</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: patrones modernos →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>🧬 Patrones modernos: <code>is</code>, rangos y formas</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Preguntar por el tipo, por el rango y por la forma"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 El <em>pattern matching</em> (C# 7 en adelante)</h3>
+    <p>Un <strong>patrón</strong> es una forma de preguntarle algo a un dato: "¿eres un texto?", "¿estás entre 0 y 10?", "¿tiene más de 5 letras?". Antes tenías que esconder la respuesta con <code>as</code>, <code>is</code> y conversiones manuales; hoy preguntas directo y el compilador te da la respuesta <strong>con el dato ya convertido al tipo correcto</strong>. Eso se llama <strong><em>pattern matching</em></strong>.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — is not null y el patrón en el if</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>string? nombre = null;
+
+// "is not null" = "no es nulo". Evita el clásico != null.
+if (nombre is not null)
+{
+    Console.WriteLine($"Hola {nombre}");
+}
+else
+{
+    Console.WriteLine("No hay nombre");
+}
+
+// Y con el patrón, C# además TE SOBRA el tipo: no necesitas convertirlo.
+object dato = "C#";
+if (dato is string texto &amp;&amp; texto.Length &gt; 2)
+{
+    Console.WriteLine($"Es un texto largo: {texto}");
+}</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — rangos: is &gt; 0 and &lt; 10</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int nota = 7;
+
+// "and" une dos condiciones: mayor que 0 Y menor que 10.
+if (nota is &gt; 0 and &lt; 10)
+{
+    Console.WriteLine("Nota baja pero positiva.");
+}
+
+// También sirve "or" y el signo de exclamación para negar.
+if (nota is not (0 or 10))
+{
+    Console.WriteLine("No es 0 ni 10.");
+}
+
+// Patrón de rango con dos puntos (C# 11 en adelante).
+if (nota is &gt;= 0 and &lt;= 100)
+{
+    Console.WriteLine("Dentro del rango válido de una nota.");
+}</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — property patterns: is { Length: &gt; 5 }</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Un "property pattern" pregunta por las PROPIEDADES del objeto.
+string? usuario = "Julián";
+
+if (usuario is { Length: &gt; 5 })
+{
+    Console.WriteLine($"El nombre tiene más de 5 letras: {usuario}");
+}
+
+// También puedes combinar varias propiedades y comprobar que no sea null.
+if (usuario is { Length: &gt; 5, Length: &lt; 20 })
+{
+    Console.WriteLine("Nombre razonable para una base de datos.");
+}
+
+// Y con el patrón de tipo + propiedad, todo junto:
+if (usuario is { Length: &gt; 0 } texto)
+{
+    Console.WriteLine($"Texto no vacío: {texto}");
+}</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — case null y case not null</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>object? valor = null;
+
+// En el switch, "null" y "not null" son patrones de primera clase.
+string descripcion = valor switch
+{
+    null =&gt; "No hay valor",
+    not null =&gt; $"Hay valor: {valor}"
+};
+
+Console.WriteLine(descripcion);
+
+// Y con "when" puedes filtrar dentro de un case.
+int? edad = 22;
+
+string categoria = edad switch
+{
+    null =&gt; "Sin edad",
+    &lt; 0 =&gt; "Edad inválida",
+    not null when edad &lt; 18 =&gt; "Menor de edad",
+    _ =&gt; "Mayor de edad"
+};
+
+Console.WriteLine(categoria);</code></pre>
+  </div>
+
+  <h3>🎚️ <code>when</code>: el filtro del <code>case</code></h3>
+  <p>En el <code>switch</code> <strong>clásico</strong>, cada <code>case</code> es un valor exacto. Si necesitas una <strong>condición extra</strong>, le pegas <code>when</code>:</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — switch clásico con when</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int edad = 22;
+
+switch (edad)
+{
+    case &lt; 0:
+        Console.WriteLine("Edad inválida");
+        break;
+    case &gt; 0 when edad &lt; 18:      // "&gt; 0" Y ADEMÁS "&lt; 18"
+        Console.WriteLine("Menor de edad");
+        break;
+    case &gt; 0:
+        Console.WriteLine("Mayor de edad");
+        break;
+}</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 La trampa de C# 14: <code>?.</code> sí asigna, <code>?.=</code> no existe</h4>
+    <p>C# 14 (el lenguaje de .NET 10) permite usar <code>?.</code> como <strong>destino de una asignación</strong>: <code>persona?.Nombre = "Ana";</code> asigna el valor <strong>solo si <code>persona</code> no es null</strong>. Antes había que escribir un <code>if (persona is not null)</code> de tres líneas. Ojo: lo que <strong>no</strong> existe es el operador <code>?.=</code> — si lo escribes, el compilador responde <code>CS1001: se esperaba un identificador</code>. Es un malentendido muy común, porque en los blogs de la versión <em>preview</em> se mencionaba con otra notación.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — este bloque NO compila (?.= no es un operador de C#)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre data-lang="csharp-error"><code>// ERROR CS1001: el compilador no reconoce el operador ?.=
+int? puntos = null;
+puntos?.= 10;
+
+// Cómo se hace de verdad en C# 14:
+// 1) con el patrón "is not null" (la "guardia" moderna)
+int? otros = null;
+
+if (otros is not null)
+{
+    otros = 10;
+}
+
+// 2) con el operador ?? (nulo-coalescente): "si es null, pon este valor".
+int? contador = null;
+int resultado = contador ?? 0;</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — C# 14: ?. como destino de la asignación (esto SÍ funciona)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+    <pre><code>// Novedad de C# 14: asignar a una propiedad SOLO si el objeto no es null.
+Persona? persona = null;
+persona?.Nombre = "Ana";          // si persona es null, no pasa nada (no revienta)
+
+Persona? otra = new Persona("Luis", 30);
+otra?.Nombre = "Luis Andrés";     // sí asigna: otra no es null
+Console.WriteLine(otra.Nombre);    // Luis Andrés
+
+public class Persona
+{
+    public string Nombre { get; set; }
+    public int Edad { get; set; }
+}</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — ?. y ??: el acceso condicional que sí existe</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>string? usuario = "Julián";
+
+// ?. = "si NO es null, accede". Si es null, devuelve null y no revienta.
+Console.WriteLine(usuario?.Length);
+Console.WriteLine(usuario?.ToUpper() ?? "SIN USUARIO");
+
+// ?? = "si es null, usa este plan B".
+string nombre = usuario ?? "Invitado";
+Console.WriteLine(nombre);
+
+// Con esto YA puedes hacer la asignación condicional que antes se "!=":
+Perfil? perfil = null;
+
+if (perfil is null)
+{
+    perfil = new Perfil { Nombre = "Ana" };
+}
+
+Console.WriteLine(perfil.Nombre);
+
+class Perfil
+{
+    public string Nombre { get; set; } = "";
+}</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Patrón / operador</th><th>Pregunta que hace</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>is not null</code></td><td>¿El dato existe?</td><td><code>if (dato is not null)</code></td></tr>
+        <tr><td><code>is &gt; 0 and &lt; 10</code></td><td>¿Está en el rango?</td><td><code>if (nota is &gt; 0 and &lt; 10)</code></td></tr>
+        <tr><td><code>is { Length: &gt; 5 }</code></td><td>¿Cumple esa propiedad?</td><td><code>if (texto is { Length: &gt; 5 })</code></td></tr>
+        <tr><td><code>is string texto</code></td><td>¿Es de ese tipo? (y te lo da convertido)</td><td><code>if (dato is string s)</code></td></tr>
+        <tr><td><code>case null</code></td><td>El caso "no hay dato".</td><td><code>null =&gt; "Vacío"</code></td></tr>
+        <tr><td><code>case not null</code></td><td>El caso "sí hay dato".</td><td><code>not null =&gt; "Lleno"</code></td></tr>
+        <tr><td><code>when</code></td><td>Filtro extra dentro de un <code>case</code>.</td><td><code>case &gt; 0 when edad &lt; 18</code></td></tr>
+        <tr><td><code>?.</code></td><td>Accede solo si no es null.</td><td><code>usuario?.Length</code></td></tr>
+        <tr><td><code>??</code></td><td>Valor de reemplazo si es null.</td><td><code>nombre ?? "Invitado"</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Escriban un programa que pida el <strong>nombre</strong> y la <strong>edad</strong> de un estudiante y lo valide con patrones: que el nombre tenga <strong>entre 3 y 20 letras</strong> (<code>is { Length: &gt; 2 and &lt; 20 }</code>) y que la edad esté <strong>entre 15 y 25</strong> (<code>is &gt;= 15 and &lt;= 25</code>). Cada validación con su propio mensaje de error. Después reemplacen los <code>if</code> por un <code>switch expression</code> que devuelva el mensaje final. ¿Cuál versión les gusta más?</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la forma <strong>moderna (C# 14)</strong> de asignar a una propiedad <strong>solo si</strong> el objeto no es null?</p>
+      <button class="opcion" data-op="a"><code>x?.= 5;</code> (ese operador no existe)</button>
+      <button class="opcion" data-op="b"><code>persona?.Nombre = "Ana";</code></button>
+      <button class="opcion" data-op="c"><code>x = x ?? 5;</code> (asigna 5 cuando x ES null)</button>
+      <button class="opcion" data-op="d"><code>if (x is null) { x = 5; }</code> (al revés)</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué significa el patrón <code>nota is &gt; 0 and &lt; 10</code>?</p>
+      <button class="opcion" data-op="a">Que la nota es mayor que 0 y menor que 10</button>
+      <button class="opcion" data-op="b">Que la nota es mayor que 0 o menor que 10</button>
+      <button class="opcion" data-op="c">Que la nota vale 10</button>
+      <button class="opcion" data-op="d">Que la nota debe ser un número entero</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Para qué sirve un <code>property pattern</code> como <code>texto is { Length: &gt; 5 }</code>?</p>
+      <button class="opcion" data-op="a">Para contar los caracteres del texto</button>
+      <button class="opcion" data-op="b">Para cambiar el texto a mayúsculas</button>
+      <button class="opcion" data-op="c">Para comprobar una propiedad del objeto en la misma pregunta</button>
+      <button class="opcion" data-op="d">Para declarar una variable de tipo <code>string</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: sistema de notas del colegio</h2>
+  <p class="meta-modulo">⏱️ 45 minutos · "Decide bien: usa switch expression y valida la entrada"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">Sistema de notas con escala A–E</span>
+    </div>
+    <p>El colegio necesita un programa que reciba la <strong>nota</strong> y la <strong>asistencia</strong> de un estudiante y le diga en qué escala quedó y si aprobó. Tu misión: construir <strong>SistemaNotas</strong>, una aplicación de consola que use <code>if</code>, <code>switch expression</code> y validación de entrada sin romperse nunca.</p>
+  </div>
+
+  <h3>📋 Requisitos del taller</h3>
+  <ol class="pasos">
+    <li>Crea el proyecto: <code>dotnet new console -n SistemaNotas</code> y ábrelo en VS Code (<code>code .</code>).</li>
+    <li>Pide la <strong>nota</strong> (decimal de 0 a 100) y la <strong>asistencia</strong> (entero de 0 a 100).</li>
+    <li>Valida la entrada con <code>double.TryParse</code> y <code>int.TryParse</code>: si el dato no es un número o está fuera del rango, avisa y <strong>no continues</strong> con datos inventados.</li>
+    <li>Clasifica la nota en la escala <strong>A (90-100) · B (80-89) · C (70-79) · D (60-69) · E (0-59)</strong> usando una <strong><code>switch expression</code></strong>.</li>
+    <li>Decide el estado final <strong>combinando nota y asistencia</strong> en un condicional que antes habría sido un <code>if</code> anidado: aquí lo resuelves con una <code>switch expression</code> sobre la <strong>tupla</strong> <code>(nota, asistencia)</code>.</li>
+    <li>Muestra un resumen con interpolación: nota, asistencia, escala y estado.</li>
+  </ol>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — guía de estilo (no es la solución, es el molde)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ============================================
+// SISTEMA DE NOTAS — molde
+// ============================================
+
+Console.WriteLine("=== SISTEMA DE NOTAS ===");
+
+// 1. ENTRADA: pide la nota y la asistencia
+Console.Write("Ingresa la nota (0 a 100): ");
+Console.Write("Ingresa la asistencia (0 a 100): ");
+
+// 2. VALIDACIÓN: TryParse devuelve true si el texto era un número
+bool notaOk = double.TryParse(Console.ReadLine() ?? "", out double nota);
+bool asistenciaOk = int.TryParse(Console.ReadLine() ?? "", out int asistencia);
+
+if (!notaOk || !asistenciaOk)
+{
+    Console.WriteLine("❌ Datos inválidos.");
+    return;
+}
+
+// 3. DECISIÓN: aquí va tu switch expression con la escala A/B/C/D/E
+string escala = "?";
+
+// 4. SALIDA
+Console.WriteLine($"Escala: {escala}");</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Pista para el paso 5</h4>
+    <p>La tupla <code>(nota, asistencia)</code> permite preguntar por las dos cosas a la vez: <code>(nota, asistencia) switch { (&lt; 60, _) =&gt; "Reprobado por nota", (_, &lt; 75) =&gt; "Reprobado por asistencia", _ =&gt; "Aprobado" }</code>. El <code>_</code> significa "me da igual este valor". Así el "if hell" del enunciado se vuelve <strong>una sola tabla de tres filas</strong>.</p>
+  </div>
+
+  <button class="btn-solucion" data-solucion="sol-taller">👁️ Ver solución completa</button>
+  <div class="solucion" id="sol-taller">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-header-left">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span>csharp — solución del taller</span>
+        </div>
+        <button class="copy-btn">📋 Copiar</button>
+      </div>
+<pre><code>// ============================================
+// SISTEMA DE NOTAS — solución del taller
+// ============================================
+
+Console.WriteLine("=== SISTEMA DE NOTAS ===");
+
+// --- 1. ENTRADA ---
+Console.Write("Ingresa la nota (0 a 100): ");
+string entradaNota = Console.ReadLine() ?? "";
+
+Console.Write("Ingresa la asistencia (0 a 100): ");
+string entradaAsistencia = Console.ReadLine() ?? "";
+
+// --- 2. VALIDACIÓN (TryParse no se cae nunca) ---
+bool notaOk = double.TryParse(entradaNota, out double nota) &amp;&amp; nota is &gt;= 0 and &lt;= 100;
+bool asistenciaOk = int.TryParse(entradaAsistencia, out int asistencia) &amp;&amp; asistencia is &gt;= 0 and &lt;= 100;
+
+if (!notaOk || !asistenciaOk)
+{
+    Console.WriteLine("❌ Los datos no son válidos. Revisa e intenta de nuevo.");
+    return;
+}
+
+// --- 3. ESCALA con switch expression ---
+string escala = nota switch
+{
+    &gt;= 90 =&gt; "A — Excelente",
+    &gt;= 80 =&gt; "B — Muy bien",
+    &gt;= 70 =&gt; "C — Bien",
+    &gt;= 60 =&gt; "D — Suficiente",
+    _ =&gt; "E — Insuficiente"
+};
+
+// --- 4. ESTADO: el if anidado resuelto con una tupla ---
+string estado = (nota, asistencia) switch
+{
+    (&lt; 60, _) =&gt; "Reprobado por nota",
+    (_, &lt; 75) =&gt; "Reprobado por asistencia",
+    _ =&gt; "Aprobado"
+};
+
+// --- 5. SALIDA ---
+Console.WriteLine("------------------------------");
+Console.WriteLine($"Nota:       {nota:F1}");
+Console.WriteLine($"Asistencia: {asistencia}%");
+Console.WriteLine($"Escala:     {escala}");
+Console.WriteLine($"Estado:     {estado}");
+Console.WriteLine("------------------------------");</code></pre>
+    </div>
+  </div>
+
+  <div class="checklist">
+    <h4>✅ Antes de entregar, verifica</h4>
+    <ul>
+      <li>El proyecto se llama <code>SistemaNotas</code> y corre con <code>dotnet run</code>.</li>
+      <li>Si escribes letras en vez de números, el programa avisa y <strong>no se cae</strong>.</li>
+      <li>La escala se calcula con una <strong><code>switch expression</code></strong> (con <code>=&gt;</code> y <code>_</code>).</li>
+      <li>El estado final usa una <strong>tupla</strong> <code>(nota, asistencia)</code>, no un <code>if</code> anidado.</li>
+      <li>Probaste los 5 caminos: notas 95, 85, 75, 65, 40 y una asistencia baja (por ejemplo 50).</li>
+      <li>La salida usa interpolación y una línea separadora.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Cada uno le entrega el programa al otro <strong>sin mostrarle el código</strong>. El compañero debe probarlo con estos datos: <code>85</code> y <code>90</code> (aprueba), <code>55</code> y <code>90</code> (reprobado por nota), <code>85</code> y <code>60</code> (reprobado por asistencia) y <code>abc</code> y <code>90</code> (dato inválido). Si el otro logra entender qué hace sin leer una línea, tu programa está bien hecho.</p>
+  </div>
+
+  <div class="quiz" data-quiz="7">
+    <h3>🎯 Mini-Quiz del Módulo 7</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Por qué usamos <code>double.TryParse</code> en vez de <code>double.Parse</code> en un programa que recibe datos del usuario?</p>
+      <button class="opcion" data-op="a">Porque <code>TryParse</code> devuelve <code>true</code> o <code>false</code> en vez de lanzar una excepción y tumbar el programa</button>
+      <button class="opcion" data-op="b">Porque <code>Parse</code> no convierte texto a número</button>
+      <button class="opcion" data-op="c">Porque <code>TryParse</code> es más rápido</button>
+      <button class="opcion" data-op="d">Porque <code>Parse</code> solo funciona con enteros</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> En la escala A–E del taller, ¿qué nota recibe la escala "B — Muy bien"?</p>
+      <button class="opcion" data-op="a">De 90 a 100</button>
+      <button class="opcion" data-op="b">De 80 a 89</button>
+      <button class="opcion" data-op="c">De 70 a 79</button>
+      <button class="opcion" data-op="d">De 60 a 69</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué logras al reemplazar un <code>if</code> anidado por una <code>switch expression</code> sobre la tupla <code>(nota, asistencia)</code>?</p>
+      <button class="opcion" data-op="a">Que el programa use menos memoria</button>
+      <button class="opcion" data-op="b">Que el programa acepte más tipos de dato</button>
+      <button class="opcion" data-op="c">Que las reglas queden visibles como una tabla y el código sea más legible</button>
+      <button class="opcion" data-op="d">Que el <code>switch</code> sea obligatorio en C#</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 4 completada!</h2>
+    <p>Ya sabes tomar decisiones: <code>if</code>, <code>else</code>, <code>else if</code>, <code>switch</code> clásico y <strong>switch expression</strong> con patrones. En la <strong>Clase 5</strong> estudiaremos los <strong>ciclos</strong>: <code>while</code>, <code>do-while</code>, <code>for</code> y <code>foreach</code>, para que el programa repita lo que le pidas: contar, sumar, recorrer arreglos y tablas de multiplicar.</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🧠 Herramientas Algorítmicas II · Clase 4 de 10</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · Código TL007</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -28,6 +28,28 @@
   --csharp-2:        #fd79a8;
   --csharp-3:        #00cec9;
 
+  /* Clases de Algoritmos en C# (paletas de cada minicurso) */
+  --cs-1-a:          #8b5cf6;   /* Clase 1 C# — violeta/cian — VS Code + .NET */
+  --cs-1-b:          #06b6d4;
+  --cs-2-a:          #10b981;   /* Clase 2 C# — esmeralda/lima — variables */
+  --cs-2-b:          #84cc16;
+  --cs-3-a:          #f59e0b;   /* Clase 3 C# — ámbar/naranja — operadores */
+  --cs-3-b:          #f97316;
+  --cs-4-a:          #3b82f6;   /* Clase 4 C# — azul/índigo — condicionales */
+  --cs-4-b:          #6366f1;
+  --cs-5-a:          #14b8a6;   /* Clase 5 C# — teal/cian — ciclos */
+  --cs-5-b:          #06b6d4;
+  --cs-6-a:          #ec4899;   /* Clase 6 C# — rosa/rojo — acumuladores */
+  --cs-6-b:          #f43f5e;
+  --cs-7-a:          #a855f7;   /* Clase 7 C# — morado/fucsia — arreglos */
+  --cs-7-b:          #d946ef;
+  --cs-8-a:          #0ea5e9;   /* Clase 8 C# — celeste/índigo — funciones */
+  --cs-8-b:          #6366f1;
+  --cs-9-a:          #f97316;   /* Clase 9 C# — naranja/rojo — menús */
+  --cs-9-b:          #ef4444;
+  --cs-10-a:          #22c55e;   /* Clase 10 C# — verde/esmeralda — POO */
+  --cs-10-b:          #059669;
+
   --ad-1-a:          #1d4e89;
   --ad-1-b:          #fbbf24;
 
@@ -578,6 +600,26 @@ main {
 }
 
 .clase-card.csharp .clase-badge { background: linear-gradient(135deg, var(--csharp-1), var(--csharp-2)); color: #fff; }
+.clase-card.cs-1::before  { background: linear-gradient(90deg, var(--cs-1-a), var(--cs-1-b)); }
+.clase-card.cs-1 .clase-badge { background: linear-gradient(135deg, var(--cs-1-a), var(--cs-1-b)); color: #fff; }
+.clase-card.cs-2::before  { background: linear-gradient(90deg, var(--cs-2-a), var(--cs-2-b)); }
+.clase-card.cs-2 .clase-badge { background: linear-gradient(135deg, var(--cs-2-a), var(--cs-2-b)); color: #fff; }
+.clase-card.cs-3::before  { background: linear-gradient(90deg, var(--cs-3-a), var(--cs-3-b)); }
+.clase-card.cs-3 .clase-badge { background: linear-gradient(135deg, var(--cs-3-a), var(--cs-3-b)); color: #0a0f0d; }
+.clase-card.cs-4::before  { background: linear-gradient(90deg, var(--cs-4-a), var(--cs-4-b)); }
+.clase-card.cs-4 .clase-badge { background: linear-gradient(135deg, var(--cs-4-a), var(--cs-4-b)); color: #fff; }
+.clase-card.cs-5::before  { background: linear-gradient(90deg, var(--cs-5-a), var(--cs-5-b)); }
+.clase-card.cs-5 .clase-badge { background: linear-gradient(135deg, var(--cs-5-a), var(--cs-5-b)); color: #fff; }
+.clase-card.cs-6::before  { background: linear-gradient(90deg, var(--cs-6-a), var(--cs-6-b)); }
+.clase-card.cs-6 .clase-badge { background: linear-gradient(135deg, var(--cs-6-a), var(--cs-6-b)); color: #0a0f0d; }
+.clase-card.cs-7::before  { background: linear-gradient(90deg, var(--cs-7-a), var(--cs-7-b)); }
+.clase-card.cs-7 .clase-badge { background: linear-gradient(135deg, var(--cs-7-a), var(--cs-7-b)); color: #fff; }
+.clase-card.cs-8::before  { background: linear-gradient(90deg, var(--cs-8-a), var(--cs-8-b)); }
+.clase-card.cs-8 .clase-badge { background: linear-gradient(135deg, var(--cs-8-a), var(--cs-8-b)); color: #fff; }
+.clase-card.cs-9::before  { background: linear-gradient(90deg, var(--cs-9-a), var(--cs-9-b)); }
+.clase-card.cs-9 .clase-badge { background: linear-gradient(135deg, var(--cs-9-a), var(--cs-9-b)); color: #fff; }
+.clase-card.cs-10::before  { background: linear-gradient(90deg, var(--cs-10-a), var(--cs-10-b)); }
+.clase-card.cs-10 .clase-badge { background: linear-gradient(135deg, var(--cs-10-a), var(--cs-10-b)); color: #0a0f0d; }
 .clase-card.ad-1 .clase-badge   { background: linear-gradient(135deg, var(--ad-1-a), var(--ad-1-b));     color: #1a1a1a; }
 .clase-card.ad-2 .clase-badge   { background: linear-gradient(135deg, var(--ad-2-a), var(--ad-2-b));     color: #fff; }
 .clase-card.ad-3 .clase-badge   { background: linear-gradient(135deg, var(--ad-3-a), var(--ad-3-b));     color: #fff; }

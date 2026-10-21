@@ -22,10 +22,20 @@ Está pensado, escrito y diseñado para que un estudiante pueda recorrerlo solo,
 
 ### ⚡ Curso 1 — Algoritmos en C#
 
+Ruta completa de **10 clases** construida con **Visual Studio Code + .NET 10 (C# 14)**. Cada clase dura ~3 h 45 min, incluye taller final y sigue los subtemas de la guía de la asignatura (código TL007).
+
 | Clase | Tema | Estado |
 |-------|------|--------|
-| **Clase 12** | Funciones en C# (definición, parámetros, retorno, valor vs. referencia, talleres matemáticos y algoritmos modulares) | ✅ Disponible |
-| *Otras clases* | A lo largo del año se irán añadiendo | 🔜 En desarrollo |
+| **Clase 1** | VS Code + .NET 10: instalar C# Dev Kit y el SDK, crear y ejecutar el primer proyecto, terminal, depurador con F5 | ✅ Disponible |
+| **Clase 2** | Tipos de variables: int, double, decimal, char, string, bool, var, tipos nullable y conversiones | ✅ Disponible |
+| **Clase 3** | Operadores aritméticos, de comparación y lógicos + precedencia, asignación compuesta y trampas | ✅ Disponible |
+| **Clase 4** | Condicionales: if, else, else if, switch clásico, switch expression y patrones modernos | ✅ Disponible |
+| **Clase 5** | Ciclos: while, do-while, for, foreach, break/continue y ciclos anidados | ✅ Disponible |
+| **Clase 6** | Acumuladores, contadores y banderas: inicializar, recorrer, acumular y decidir | ✅ Disponible |
+| **Clase 7** | Vectores y matrices: arreglos 1D/2D, recorridos, búsquedas, List\<T\>, LINQ | ✅ Disponible |
+| **Clase 8** | Funciones: parámetros, retorno, paso por valor vs. referencia, sobrecarga y recursión | ✅ Disponible |
+| **Clase 9** | Menús de consola con funciones: while + switch, modularización, validación de entrada | ✅ Disponible |
+| **Clase 10** | POO: clases, objetos, atributos, métodos, constructores, herencia y composición | ✅ Disponible |
 
 ### 📐 Curso 2 — Análisis y Diseño de Software
 
@@ -36,10 +46,10 @@ Está pensado, escrito y diseñado para que un estudiante pueda recorrerlo solo,
 | **Clase 3** | Elicitación de requerimientos · Entrevistas, encuestas y observación · Juego de roles cliente-analista | ✅ Disponible |
 | **Clase 4** | Documentación de requerimientos · Casos de uso · Estándar IEEE 830 · Revisión cruzada | ✅ Disponible |
 
-### 🔮 Cursos por venir
+### 🔮 Otros cursos
 
-- 🗄️ **Bases de Datos** — Modelo entidad-relación, SQL, normalización, consultas.
-- 🛠️ **Herramientas de Programación II** — Git, depuración, frameworks modernos.
+- 🗄️ **Bases de Datos** (9 clases) — Modelo entidad-relación, SQL, normalización, consultas.
+- 🛠️ **Herramientas de Programación II** (14 clases) — Python, FastAPI, Git y GitHub.
 
 ---
 
@@ -67,14 +77,21 @@ Está pensado, escrito y diseñado para que un estudiante pueda recorrerlo solo,
 once/
 ├── 🎓 index.html, estilos.css, app.js     ← Página principal (hub)
 │
-├── ⚡ Algoritmos con C#/
-│   └── doce-curso-funciones-csharp/       ← Clase 12: Funciones
+├── ⚡ Algoritmos con C#/                    ← 10 clases (C# 14 / .NET 10)
+│   ├── uno-curso-entorno-csharp/           ← Clase 1: VS Code + .NET 10
+│   ├── dos-curso-variables-csharp/         ← Clase 2: tipos de variables
+│   ├── tres-curso-operadores-csharp/       ← Clase 3: operadores
+│   ├── cuatro-curso-condicionales-csharp/  ← Clase 4: condicionales
+│   ├── cinco-curso-ciclos-csharp/          ← Clase 5: ciclos
+│   ├── seis-curso-acumuladores-csharp/     ← Clase 6: acumuladores
+│   ├── siete-curso-arreglos-csharp/        ← Clase 7: vectores y matrices
+│   ├── ocho-curso-funciones-csharp/        ← Clase 8: funciones
+│   ├── nueve-curso-menus-csharp/           ← Clase 9: menús
+│   └── diez-curso-poo-csharp/              ← Clase 10: POO
 │
-└── 📐 analisis-diseno/
-    ├── uno-curso-analisis-diseno/         ← Clase 1
-    ├── dos-curso-requerimientos/          ← Clase 2
-    ├── tres-curso-elicitacion/            ← Clase 3
-    └── cuatro-curso-documentacion/        ← Clase 4
+├── 📐 analisis-diseno/                     ← 7 clases
+├── 🗄️ bases-de-datos/                      ← 9 clases
+└── 🛠️ herramientas-prog-ii/                ← 14 clases
 ```
 
 ### Filosofía: "tres archivos por curso"
@@ -111,7 +128,7 @@ Cada curso tiene una paleta diferente para que sean fáciles de distinguir:
 
 | Curso | Tema visual | Colores principales |
 |-------|-------------|---------------------|
-| Algoritmos en C# | Energía y código | Morado · Rosa · Cyan |
+| Algoritmos en C# (clases 1‑10) | Código y energía | Violeta · Cian · Esmeralda · Ámbar · Rosa · Morado |
 | Análisis y Diseño (Clase 1) | Plano arquitectónico | Azul profundo · Dorado |
 | Requerimientos (Clase 2) | Documentación técnica | Esmeralda · Ámbar |
 | Elicitación (Clase 3) | Detective / Investigación | Violeta · Dorado · Rosa |
@@ -157,6 +174,13 @@ node -c ruta/app.js
 python3 -c "c=open('ruta/estilos.css').read(); print(c.count('{'), c.count('}'))"
 ```
 
+Además, en las clases de **C#** se compila cada bloque de código con el SDK de .NET 10 (C# 14) para que ningún ejemplo roto llegue al estudiante:
+
+```bash
+python3 /tmp/opencode/gen/check_cs.py "Algoritmos con C#"/*/index.html
+# → RESUMEN: N compilan, M fragmentos dependientes, 0 fallan
+```
+
 ---
 
 ## 🤝 Cómo agregar una nueva clase
@@ -179,9 +203,9 @@ Para detalles técnicos finos, revisa el archivo `CLAUDE.md` en la raíz del rep
 
 ## 📂 Estado actual
 
-- ✅ **5 clases interactivas** completamente funcionales
-- ⏱️ **~18 horas** de material de estudio
-- 🎯 **2 cursos activos** + **2 cursos en desarrollo**
+- ✅ **40 clases interactivas** completamente funcionales
+- ⏱️ **~140 horas** de material de estudio
+- 🎯 **4 cursos activos**: Algoritmos en C# (10), Análisis y Diseño (7), Bases de Datos (9) y Herramientas de Programación II (14)
 
 ---
 

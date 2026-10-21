@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📦 Herramientas Algorítmicas II · Clase 2 · Tipos de variables</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">📦</span>
+    <div>
+      <h1>Herramientas Algorítmicas II · Clase 2</h1>
+      <p class="subtitulo">C# moderno · <code>int</code>, <code>double</code>, <code>decimal</code>, <code>string</code>, <code>bool</code> y los tipos <em>nullable</em></p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">📦 Declarar variables</button>
+  <button class="btn-modulo" data-modulo="2">🔢 Números y decimal</button>
+  <button class="btn-modulo" data-modulo="3">🔤 Texto y booleanos</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🧠 var e tipos inferidos</button>
+  <button class="btn-modulo" data-modulo="6">🛡️ Nullables y conversiones</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>📦 Tipos de variables: dale una caja a cada dato</h2>
+    <p class="lead">En la Clase 1 montaste el taller. Hoy le ponemos <strong>etiquetas a los datos</strong>: cada variable es una caja con un tipo que decide qué cabe dentro, cuánto ocupa y qué operaciones puedes hacer con ella. Vas a aprender <code>int</code>, <code>double</code>, <code>decimal</code>, <code>string</code>, <code>bool</code>, la inferencia con <code>var</code> y los <em>nullables</em> del C# moderno.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — estudiante@colegio</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">estudiante@colegio:~$</span> <span class="cmd">dotnet new console -n TiposDeVariables</span></div>
+        <div class="out">La plantilla "aplicación de consola" se creó correctamente.</div>
+        <div><span class="prompt">estudiante@colegio:~/TiposDeVariables$</span> <span class="cmd">code .</span></div>
+        <div><span class="prompt">estudiante@colegio:~/TiposDeVariables$</span> <span class="cmd">dotnet run</span></div>
+        <div class="out">Hello, World!</div>
+        <div><span class="prompt">estudiante@colegio:~/TiposDeVariables$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3 h 45 min en 8 módulos, con descanso a mitad. Practica en pareja: uno programa y el otro hace de "cliente malicioso" que escribe basura en la consola.</p>
+    </div>
+    <div class="tarjeta tarjeta-verde">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Declarar variables con el tipo correcto, entender la diferencia entre <code>double</code> y <code>decimal</code>, usar <code>var</code> con criterio y manejar valores que todavía no existen (<em>null</em>).</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>El <code>0.1 + 0.2</code> que no da <code>0.3</code>, el <code>null</code> que revienta el programa, el <code>double</code> usado para dinero, y el <code>var</code> que alguien usa como si fuera "cualquier cosa".</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · Declarar</td><td style="color:var(--a)">Cajas, <code>const</code> y tipado estático</td><td style="color:var(--rosa)">El <code>;</code> que falta</td><td>100 XP</td></tr>
+        <tr><td>02 · Números</td><td style="color:var(--b)"><code>int</code>, <code>double</code>, <code>decimal</code></td><td style="color:var(--rosa)">Desbordamiento</td><td>100 XP</td></tr>
+        <tr><td>03 · Texto</td><td style="color:var(--a)"><code>string</code>, <code>char</code>, <code>bool</code></td><td style="color:var(--rosa)">La <code>@</code> y la <code>$</code></td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · <code>var</code></td><td style="color:var(--verde)">Inferencia de tipos, <code>object</code>, <code>dynamic</code></td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>05 · Nullables</td><td style="color:var(--b)"><code>null</code>, <code>?</code>, <code>??</code>, <code>TryParse</code></td><td style="color:var(--rosa)">El <code>NullReferenceException</code></td><td>100 XP</td></tr>
+        <tr><td>06 · Taller</td><td style="color:var(--a)">La Caja del Estudiante</td><td style="color:var(--rosa)">Entrada inválida</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Antes de leer nada: cada uno piensa <strong>5 variables</strong> que usaría en un programa de la vida real (la edad, el precio de un almuerzo, tu nombre, si aprobaste...). ¿Qué tipo le pondría cada una: <code>int</code>, <code>double</code>, <code>decimal</code>, <code>string</code> o <code>bool</code>? Compárenlas: casi siempre van a discrepar en el precio, y ahí está escondida la lección del <code>decimal</code>.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué importa tanto el tipo?</h4>
+    <p>En C# el tipo no es solo una etiqueta: es una <strong>promesa</strong>. Si declaras <code>int edad</code>, el compilador te promete que ahí solo cabe un número entero y que siempre habrá valor. Esa promesa es la que te salva de los <em>bugs</em> más caros de la programación, y por eso C# se llama un lenguaje de <strong>tipado estático</strong>.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: declarar variables →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>📦 Declarar variables: la caja con etiqueta</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "Cada dato merece su propia caja"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es una variable?</h3>
+    <p>Una <strong>variable</strong> es un pedazo de memoria con nombre donde guardas un dato para usarlo más tarde. Piénsala como una <strong>caja etiquetada</strong> en un depósito: la etiqueta dice qué tipo de cosa cabe (números, texto, sí/no) y qué tan grande es la caja. En la etiqueta también va el nombre, para poder encontrar la caja después sin adivinar.</p>
+    <p>En C# la etiqueta se escribe con dos palabras: el <strong>tipo</strong> y el <strong>nombre</strong>. Y como todo dato guardado, hay que <strong>declararlo</strong> (decidir su tipo y su nombre) e <strong>inicializarlo</strong> (darle el primer valor).</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — declarar e inicializar variables</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Declarar E inicializar en una sola línea (lo normal).
+int edad = 17;
+double altura = 1.72;
+string nombre = "María";
+
+// Declarar primero e inicializar después: también es válido.
+int asistencia;
+asistencia = 20;
+
+// Los textos se escriben entre comillas dobles, los caracteres entre comillas simples.
+char inicial = 'M';
+
+// Interpolación: el $ permite meter variables dentro del texto.
+Console.WriteLine($"Nombre: {nombre}, edad: {edad}, altura: {altura}");
+Console.WriteLine($"Inicial: {inicial} · Asistencia: {asistencia} clases");</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Declarar ≠ Inicializar</h4>
+    <p><strong>Declarar</strong> es poner la etiqueta: "aquí hay una caja para enteros llamada <code>edad</code>". <strong>Inicializar</strong> es abrir la caja y meter el primer valor: <code>edad = 17</code>. En C# el compilador te obliga a inicializar antes de usar una variable local: si escribes <code>Console.WriteLine(edad);</code> sin haberle puesto valor, el programa ni compila.</p>
+  </div>
+
+  <h3>📝 Las cuatro piezas de una declaración</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Pieza</th><th>Ejemplo</th><th>¿Para qué sirve?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Tipo</strong></td><td><code>int</code></td><td>La forma del dato: entero, decimal, texto o verdadero/falso.</td></tr>
+        <tr><td><strong>Nombre</strong></td><td><code>edad</code></td><td>La etiqueta con la que lo vas a encontrar después.</td></tr>
+        <tr><td><strong>Valor inicial</strong></td><td><code>= 17</code></td><td>El primer dato que guardas en la caja.</td></tr>
+        <tr><td><strong>Modificadores</strong></td><td><code>const</code>, <code>readonly</code></td><td>Reglas extra: "esto no se toca" o "esto se fija una vez".</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🔒 <code>const</code> y <code>readonly</code>: cajas selladas</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — constantes y campos de solo lectura</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// CONSTANTE: el valor NUNCA cambia. Lo fija el compilador.
+const int MaxIntentos = 3;
+const decimal IVA = 0.19m;
+const string CodigoPais = "COL";
+
+Console.WriteLine($"Intentos: {MaxIntentos} · IVA: {IVA:P0} · País: {CodigoPais}");
+
+// READONLY: el valor se define UNA vez (al construir el objeto) y después solo se lee.
+var estudiante = new Estudiante(1042);
+Console.WriteLine($"Código interno (readonly): {estudiante.Codigo}");
+
+public class Estudiante
+{
+    public int Codigo { get; }
+
+    public Estudiante(int codigo)
+    {
+        Codigo = codigo;
+    }
+}</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th></th><th><code>const</code></th><th><code>readonly</code></th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>¿Cuándo se fija el valor?</strong></td><td>Al escribir el código.</td><td>En el constructor del objeto.</td></tr>
+        <tr><td><strong>¿Se puede cambiar después?</strong></td><td style="color:var(--rosa)">Nunca.</td><td style="color:var(--rosa)">Nunca.</td></tr>
+        <tr><td><strong>Ejemplo real</strong></td><td><code>const int MaxIntentos = 3;</code></td><td><code>readonly DateTime FechaCreacion;</code></td></tr>
+        <tr><td><strong>La diferencia clave</strong></td><td>El compilador hasta reemplaza el valor por la constante al compilar.</td><td>El valor se calcula en tiempo de ejecución, pero queda congelado.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: ¿por qué C# es de <strong>tipado estático</strong>?</h4>
+    <p>"Estático" significa que <strong>el tipo se decide antes de que el programa ejecute</strong>, mientras compila. Si declaras <code>int edad</code>, el compilador ya sabe que ahí solo hay enteros: no te deja meter texto, no te deja restarlo de una cadena y te avisa <em>antes</em> de que el programa corra. Eso se llama <strong>comprobación de tipos en tiempo de compilación</strong>, y es la razón por la que los programas en C# se rompen menos.</p>
+    <p>El precio: tienes que declarar el tipo. Pero el beneficio es enorme, y por eso la mayoría de lenguajes modernos (TypeScript, Kotlin, Swift, Rust) hacen lo mismo.</p>
+  </div>
+
+  <h3>🔤 Convenciones de nombres (las que usa Microsoft)</h3>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-verde">
+      <span class="emoji">🔡</span>
+      <h3>camelCase</h3>
+      <p><strong>Variables locales y parámetros</strong>: <code>edad</code>, <code>totalPagar</code>, <code>nombreCompleto</code>. Primera palabra en minúscula, sin guiones.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">🔠</span>
+      <h3>PascalCase</h3>
+      <p><strong>Clases, métodos y propiedades</strong>: <code>Estudiante</code>, <code>CalcularPromedio</code>. Primera palabra en mayúscula.</p>
+    </div>
+    <div class="tarjeta tarjeta-ambar">
+      <span class="emoji">🚫</span>
+      <h3>Lo que nunca se hace</h3>
+      <p>No uses <code>Mi_Edad</code>, <code>mi-edad</code> ni <code>EDAD</code> para variables. Y jamás escribas <code>Edad</code> y <code>edad</code> en el mismo programa: son dos cajas distintas.</p>
+    </div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: usa nombres que se explican solos</h4>
+    <p>Compara <code>int a = 17; int b = 5;</code> con <code>int edad = 17; int cantidadHijos = 5;</code>. Los dos programas hacen lo mismo, pero el segundo se lee solo. Tu yo del futuro (el que depura a las 11 de la noche) te lo va a agradecer. 💛</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Creen el proyecto <code>TiposDeVariables</code> y declaren <strong>8 variables</strong>: nombre, edad, peso (decimal), altura (double), año de nacimiento (int), esEstudiante (bool), inicial (char) y una constante con el nombre del colegio. Compilen con <code>dotnet run</code> e imprímanlas todas con una sola cadena interpolada. Después cambien <strong>un tipo</strong> por el incorrecto a propósito (por ejemplo, la edad como <code>string</code>) y lean el error que da el compilador: eso es el tipado estático en acción. 🎯</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace esta línea: <code>const int MaxIntentos = 3;</code>?</p>
+      <button class="opcion" data-op="a">Declara una variable normal que se puede cambiar cuando quieras</button>
+      <button class="opcion" data-op="b">Declara una constante: su valor no cambia nunca una vez fijado</button>
+      <button class="opcion" data-op="c">Declara una variable que vale 3 solo al compilar y 0 al ejecutar</button>
+      <button class="opcion" data-op="d">Es un error de sintaxis: <code>const</code> no existe en C#</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cuál de estos nombres sigue la convención de C# para variables locales?</p>
+      <button class="opcion" data-op="a">totalPagar</button>
+      <button class="opcion" data-op="b">TotalPagar</button>
+      <button class="opcion" data-op="c">total_pagar</button>
+      <button class="opcion" data-op="d">TOTAL_PAGAR</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué significa que C# sea un lenguaje de <strong>tipado estático</strong>?</p>
+      <button class="opcion" data-op="a">Que los tipos se pueden cambiar en tiempo de ejecución</button>
+      <button class="opcion" data-op="b">Que el programa necesita internet para conocer los tipos</button>
+      <button class="opcion" data-op="c">Que el tipo se decide al compilar y el compilador revisa que todo encaje</button>
+      <button class="opcion" data-op="d">Que solo se pueden declarar variables de texto</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: los números →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>🔢 Números y <code>decimal</code>: cuánto cabe en la caja</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El número que eliges decide lo que pasa después"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 No todos los números son iguales</h3>
+    <p>En la vida real usas números para cosas muy distintas: la cantidad de personas en el salón, la temperatura, el peso de un paquete, el precio de un celular. Cada uso necesita <strong>precisión</strong> y <strong>rango</strong> distintos, así que C# te da una caja distinta para cada caso. Elegir mal la caja no es "casi lo mismo": es la causa de los errores de redondeo en las cuentas y de los desbordamientos que rompen el programa.</p>
+  </div>
+
+  <h3>📊 La tabla de los tipos numéricos</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Tipo</th><th>Rango</th><th>Memoria</th><th>Uso típico</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>byte</code></td><td>0 a 255</td><td>1 byte</td><td>Edades, número de할os, bytes de un archivo.</td></tr>
+        <tr><td><code>sbyte</code></td><td>-128 a 127</td><td>1 byte</td><td>Igual que <code>byte</code> pero con negativos.</td></tr>
+        <tr><td><code>short</code></td><td>-32 768 a 32 767</td><td>2 bytes</td><td>Years, días de la semana, datos de sensores.</td></tr>
+        <tr><td><code>ushort</code></td><td>0 a 65 535</td><td>2 bytes</td><td>Sin negativos y un poco más grande que <code>short</code>.</td></tr>
+        <tr><td><code>int</code></td><td>-2 147 483 648 a 2 147 483 647</td><td>4 bytes</td><td><strong>El entero por defecto.</strong> Edad, cantidad, índice, contador.</td></tr>
+        <tr><td><code>uint</code></td><td>0 a 4 294 967 295</td><td>4 bytes</td><td>Sin negativos, el doble de rango que <code>int</code>.</td></tr>
+        <tr><td><code>long</code></td><td>±9 223 372 036 854 775 808</td><td>8 bytes</td><td>IDs enormes, fechas en milisegundos, dinero en centavos.</td></tr>
+        <tr><td><code>ulong</code></td><td>0 a 18 446 744 073 709 551 615</td><td>8 bytes</td><td>Sin negativos y gigante.</td></tr>
+        <tr><td><code>float</code></td><td>±3.4 × 10³⁸ (7 dígitos)</td><td>4 bytes</td><td>Gráficos y finanzas de bajo impacto. Poco preciso.</td></tr>
+        <tr><td><code>double</code></td><td>±1.7 × 10³⁰⁸ (15-16 dígitos)</td><td>8 bytes</td><td><strong>El decimal por defecto.</strong> Cálculo científico, medidas.</td></tr>
+        <tr><td><code>decimal</code></td><td>±7.9 × 10²⁸ (28-29 dígitos)</td><td>16 bytes</td><td><strong>Dinero y contabilidad.</strong> Preciso y sin sorpresas.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — sufijos: le dices a C# qué tipo quieres</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Sufijos: le dicen a C# qué tipo quieres exactamente.
+int entero = 10;
+long grande = 10L;
+double real = 10.5;
+float flotante = 10.5f;
+decimal dinero = 10.5m;
+
+// Sin sufijo, un número con decimal es double; con "m" es decimal.
+Console.WriteLine($"double  10.5  = {10.5}");
+Console.WriteLine($"float   10.5f = {10.5f}");
+Console.WriteLine($"decimal 10.5m = {10.5m}");
+Console.WriteLine($"long    10L   = {10L}");
+
+// También se puede escribir un entero en otras bases.
+int binario = 0b1010;       // 10 en base 2
+int hexadecimal = 0xFF;     // 255 en base 16
+Console.WriteLine($"0b1010 = {binario} · 0xFF = {hexadecimal}");</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>💰 El gran debate: ¿<code>double</code> o <code>decimal</code>?</h4>
+    <p><strong>Usa <code>decimal</code> para dinero.</strong> Los <code>double</code> guardan el número en base 2 (binario), y muchos decimales —como <code>0.1</code>— no se pueden representar exactamente: son como la letra "A" que en un tablero de ajedrez de 8×8 no cabe. El <code>decimal</code> guarda el número en base 10, exactamente como lo escribes tú, y por eso suma <code>0.1m + 0.2m</code> dando <code>0.3m</code> sin sorpresas.</p>
+    <p>Regla práctica: <code>double</code> para física, gráficos y aproximaciones; <code>decimal</code> para precios, salaries y porcentajes de dinero; <code>int</code> para contar cosas.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — checked y unchecked: el desbordamiento</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int maximo = int.MaxValue;
+Console.WriteLine($"int.MaxValue = {maximo}");
+
+// UNCHECKED (es el comportamiento por defecto): la cuenta "da la vuelta"
+// y el programa sigue como si nada. ¡Cuidado con esto!
+int desbordado = unchecked(maximo + 1);
+Console.WriteLine($"unchecked → {desbordado}");
+
+// CHECKED: el desbordamiento lanza OverflowException y te avisa.
+try
+{
+    int controlado = checked(maximo + 1);
+    Console.WriteLine(controlado);
+}
+catch (OverflowException)
+{
+    Console.WriteLine("¡Overflow! checked detectó que el valor no cabe en un int.");
+}
+
+// Si el dato es grande de verdad, usa long: ahí sí cabe.
+long enorme = (long)maximo + 1;
+Console.WriteLine($"En long sí cabe: {enorme}");</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: pon siempre el sufijo</h4>
+    <p>Escribes <code>decimal total = 1000m;</code> y no <code>decimal total = 1000;</code>. Aunque C# te dejaría compilarlo (convierte el entero sin problema), con el sufijo <code>m</code> queda clarísimo de un vistazo que esa caja es de <code>decimal</code> y nadie lo confunde con un <code>int</code>.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban un programa que guarde: (1) la cantidad de cuadernos (<code>int</code>); (2) la nota final como <code>decimal</code>; (3) la estatura como <code>float</code>; (4) un código de estudiante como <code>long</code>. Después sumen 1 al <code>int</code> máximo y miren qué pasa con <code>checked</code> y sin él. Discutan: ¿cuál de los cuatro datos de la vida real podría "darse la vuelta" sin avisar?</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué tipo de dato vas a usar para guardar el <strong>precio</strong> de un producto?</p>
+      <button class="opcion" data-op="a">double</button>
+      <button class="opcion" data-op="b">float</button>
+      <button class="opcion" data-op="c">decimal</button>
+      <button class="opcion" data-op="d">int</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Qué resultado da <code>5 / 2</code> en C# si los dos números son <code>int</code>?</p>
+      <button class="opcion" data-op="a">2.5</button>
+      <button class="opcion" data-op="b">2 (división entera: se descarta la parte decimal)</button>
+      <button class="opcion" data-op="c">2.0</button>
+      <button class="opcion" data-op="d">Da error de compilación</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Para qué sirve el sufijo <code>m</code> en <code>10.5m</code>?</p>
+      <button class="opcion" data-op="a">Para indicar que el número es de tipo <code>decimal</code></button>
+      <button class="opcion" data-op="b">Para indicar que el número está en metros</button>
+      <button class="opcion" data-op="c">Para multiplicar el número por 1000</button>
+      <button class="opcion" data-op="d">Para redondearlo a dos decimales</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: texto y booleanos →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>🔤 Texto y booleanos: letras, frases y sí/no</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "Lo que escribes, el computador lo cuenta"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 Tres cajas para el lenguaje</h3>
+    <p><code>char</code> es <strong>una sola letra</strong> (o símbolo): la inicial de tu nombre, la letra de un turno. <code>string</code> es una <strong>frase completa</strong>: tu nombre, un mensaje, un código de barras. <code>bool</code> es una <strong>respuesta de sí o no</strong>: ¿aprobaste?, ¿es mayor de edad?, ¿el usuario sigue conectado?</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — char, string y bool</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// char: UNA sola letra, entre comillas simples.
+char inicial = 'M';
+char grado = 'A';
+
+// string: una frase, entre comillas dobles.
+string nombre = "María";
+string gradoTexto = "11°";
+
+// bool: solo true o false (en minúscula, sin comillas).
+bool aprobado = true;
+bool mayorDeEdad = false;
+
+Console.WriteLine($"Inicial: {inicial} (código {((int)inicial)})");
+Console.WriteLine($"Nombre: {nombre} · Grado: {gradoTexto}");
+Console.WriteLine($"Largo del nombre: {nombre.Length} caracteres");
+Console.WriteLine($"¿Aprobó? {aprobado} · ¿Mayor de edad? {mayorDeEdad}");
+
+// Concatenación clásica con + (la vieja forma).
+string saludo = "Hola, " + nombre + "!";
+Console.WriteLine(saludo);</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 La diferencia entre `'M'` y <code>"M"</code></h4>
+    <p>Las comillas <strong>simples</strong> son para <code>char</code> (un carácter). Las comillas <strong>dobles</strong> son para <code>string</code> (texto). Si escribes <code>char c = "M";</code> el compilador te regaña: el tipo no calza. Y ojo: <code>'11°'</code> tampoco es un <code>char</code> válido, porque tiene tres caracteres: para eso usas <code>string</code>.</p>
+  </div>
+
+  <h3>🎨 Tres maneras de escribir texto</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — interpolada, verbatim y cruda</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// 1. INTERPOLADA ($): la modernita. Mete variables dentro del texto.
+string nombre = "Ana";
+int edad = 17;
+Console.WriteLine($"Hola {nombre}, tienes {edad} años.");
+
+// 2. VERBATIM (@): desactiva los escapes. Ideal para rutas de Windows.
+string ruta = @"C:\Users\Ana\Documentos";
+Console.WriteLine(ruta);
+
+// Para poner comillas dobles dentro, se repiten: ""Hola""
+// string frase = @"Ella dijo: ""¡Hola!""";
+
+// 3. CRUDA ("""): comillas triples, sin escapes, con saltos de línea reales.
+// Sirve para textos largos como un menú o una plantilla.
+string menu = """
+    === TIENDA ESCOLAR ===
+    1) Cuadernos
+    2) Lápices
+    """;
+Console.WriteLine(menu);</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el <code>string</code> es INMUTABLE</h4>
+    <p>Un <code>string</code> en C# <strong>no se puede modificar</strong>. Cada vez que "cambias" un texto, en realidad C# crea <strong>una cadena nueva</strong> en memoria. Por eso <code>miTexto[0] = 'X';</code> da error de compilación: estás intentando modificar algo que es de solo lectura.</p>
+    <p>Esto no es un defecto: hace que los textos sean seguros de compartir. Pero si vas a concatenar miles de veces (en un bucle), el rendimiento se cae. Para eso existe <code>StringBuilder</code>, que sí es mutable y guarda todo en un solo búfer.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — StringBuilder para concatenar muchas veces</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Concatenar con + dentro de un bucle: crea una cadena nueva cada vuelta.
+string lista = "";
+for (int i = 1; i &lt;= 5; i++)
+{
+    lista += i + " ";
+}
+Console.WriteLine($"Con +: {lista}");
+
+// StringBuilder: un solo búfer que va creciendo. Es la forma eficiente.
+var builder = new System.Text.StringBuilder();
+for (int i = 1; i &lt;= 5; i++)
+{
+    builder.Append(i).Append(" ");
+}
+Console.WriteLine($"Con StringBuilder: {builder}");</code></pre>
+  </div>
+
+  <h3>🧰 Métodos de <code>string</code> que vas a usar siempre</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Método</th><th>Ejemplo</th><th>¿Qué hace?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>.Length</code></td><td><code>nombre.Length</code></td><td>Cantidad de caracteres del texto.</td></tr>
+        <tr><td><code>.ToUpper()</code> / <code>.ToLower()</code></td><td><code>nombre.ToUpper()</code></td><td>Devuelve una copia en mayúsculas o minúsculas.</td></tr>
+        <tr><td><code>.Contains()</code></td><td><code>nombre.Contains("an")</code></td><td><code>true</code> si el texto contiene esa parte.</td></tr>
+        <tr><td><code>.StartsWith()</code> / <code>.EndsWith()</code></td><td><code>email.StartsWith("ana")</code></td><td><code>true</code> si empieza o termina con eso.</td></tr>
+        <tr><td><code>.Replace()</code></td><td><code>texto.Replace("a", "o")</code></td><td>Reemplaza todas las apariciones.</td></tr>
+        <tr><td><code>.Split()</code></td><td><code>"a,b".Split(',')</code></td><td>Corta el texto y devuelve un arreglo de partes.</td></tr>
+        <tr><td><code>.Trim()</code></td><td><code>entrada.Trim()</code></td><td>Quita los espacios sobrantes de los dos lados.</td></tr>
+        <tr><td><code>.IsNullOrEmpty()</code></td><td><code>string.IsNullOrEmpty(entrada)</code></td><td><code>true</code> si el texto está vacío o es <code>null</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban un programa que pida el nombre completo y el código del estudiante, y luego muestre: el nombre en MAYÚSCULAS, la primera letra, cuántos caracteres tiene, y si el código termina en "A" (usa <code>EndsWith</code>). Cada quien le agrega un método diferente de la tabla y lo explica al otro. 💬</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué tipo usas para un valor que solo puede ser <code>true</code> o <code>false</code>?</p>
+      <button class="opcion" data-op="a">char</button>
+      <button class="opcion" data-op="b">string</button>
+      <button class="opcion" data-op="c">bool</button>
+      <button class="opcion" data-op="d">object</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Cuál es la forma moderna de meter texto y variables en una misma cadena?</p>
+      <button class="opcion" data-op="a"><code>"Hola " + nombre</code></button>
+      <button class="opcion" data-op="b"><code>$"Hola {nombre}"</code></button>
+      <button class="opcion" data-op="c"><code>@"Hola {nombre}"</code></button>
+      <button class="opcion" data-op="d"><code>"Hola %s" &lt; nombre</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> En C#, un <code>string</code> es...</p>
+      <button class="opcion" data-op="a">Inmutable: cada "cambio" crea un texto nuevo en memoria</button>
+      <button class="opcion" data-op="b">Modificable: puedes cambiar una letra en el sitio</button>
+      <button class="opcion" data-op="c">Un tipo numérico reservado para textos</button>
+      <button class="opcion" data-op="d">Un tipo que solo puede guardar números</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira los brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73 % agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Cuéntale a tu compañero/a qué tipo te costó más: <code>decimal</code>, <code>string</code> o <code>bool</code>. 1 min.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>El <code>bool</code> en C# ocupa <strong>1 byte</strong> y solo puede tener dos estados. Toda la lógica de un programa (si, si no, mientras) se apoya en esa pregunta de sí o no. Y hay un detalle curioso: el tipo <code>bool</code> en C# se puede convertir a <code>int</code> con <code>(int)true</code>, y da <code>1</code>. ¡Los booleanos también se pueden contar! 🔢</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: var e inferencia →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>🧠 <code>var</code> y los tipos inferidos</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "var no es 'cualquier cosa': es el compilador adivinando bien"</p>
+
+  <div class="caja-importante">
+    <h4>🦹 El gran malentendido: <code>var</code> NO es "cualquier cosa"</h4>
+    <p>Mucha gente cree que <code>var</code> significa "ponle el tipo que quieras". <strong>Falso.</strong> <code>var</code> es <strong>inferencia de tipo</strong>: el compilador mira el valor inicial y <em>deduce</em> el tipo exacto. C# sigue siendo de tipado estático: por dentro, <code>var edad = 17;</code> es <strong>exactamente lo mismo</strong> que <code>int edad = 17;</code>. Solo le estás diciendo al compilador "dedúcelo tú".</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — var: el compilador deduce el tipo</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// var NO es "cualquier cosa": el compilador deduce el tipo ESTÁTICO.
+var edad = 17;              // deduce: int
+var precio = 19999.5;       // deduce: double
+var nombre = "Camilo";      // deduce: string
+var aprobado = true;        // deduce: bool
+var saldo = 1500.75m;       // deduce: decimal
+
+// Esto NO compila: sin valor inicial no hay nada de dónde deducir el tipo.
+// var contador;        ← error CS0815
+
+// Y esto tampoco: el tipo queda fijado para siempre.
+// edad = "diecisiete";        ← error CS0029
+
+Console.WriteLine($"{edad} · {precio} · {nombre} · {aprobado} · {saldo}");</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — object, dynamic y boxing</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// object: el comodín. Puede guardar cualquier cosa, pero pierdes la seguridad de tipos.
+object dato = 42;
+Console.WriteLine(dato.GetType().Name);   // Int32
+
+// BOXING: al meter un int en un object, C# lo envuelve en una "caja" de objeto.
+int numero = 7;
+object caja = numero;
+Console.WriteLine(caja.GetType().Name);   // Int32
+
+// is: pregunta "¿es de este tipo?" sin riesgo de excepción.
+if (caja is int)
+{
+    int recuperado = (int)caja;   // conversión explícita (cast)
+    Console.WriteLine($"Era un int: {recuperado}");
+}
+
+// as: convierte y, si NO puede, devuelve null en vez de romper el programa.
+object texto = "hola";
+string? posible = texto as string;
+Console.WriteLine(posible ?? "(no era texto)");
+
+// typeof y nameof: información sobre tipos y nombres, sin "texto mágico".
+Console.WriteLine(typeof(int).Name);       // Int32
+Console.WriteLine(nameof(Console));        // Console</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — dynamic: el tipo se decide al ejecutar</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// dynamic: el compilador NO revisa el tipo; se decide en TIEMPO DE EJECUCIÓN.
+dynamic valor = "hola";
+Console.WriteLine(valor.Length);   // 4
+
+// Por eso dynamic no se lleva bien con var: aquí el tipo se vuelve "desconocido".
+dynamic total = 10;
+total = "ahora soy texto";   // el compilador no se queja
+Console.WriteLine(total);
+
+// Regla de oro: en un proyecto real casi nunca se usa dynamic.
+// Se usa cuando el tipo REALMENTE se conoce solo en ejecución,
+// por ejemplo cuando hablas con una base de datos o un JSON.
+Console.WriteLine($"¿Es dynamic? {valor is string}");</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th></th><th><code>var</code></th><th><code>object</code></th><th><code>dynamic</code></th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>¿Cuándo se decide el tipo?</strong></td><td>Al compilar (por inferencia).</td><td>Al compilar: es <code>object</code>.</td><td>Al ejecutar.</td></tr>
+        <tr><td><strong>¿Hay seguridad de tipos?</strong></td><td style="color:var(--verde)">Total.</td><td>Hay que revisar con <code>is</code>/<code>as</code>.</td><td style="color:var(--rosa)">Ninguna: los errores aparecen al ejecutar.</td></tr>
+        <tr><td><strong>Ejemplo</strong></td><td><code>var edad = 17;</code></td><td><code>object dato = 42;</code></td><td><code>dynamic valor = "hola";</code></td></tr>
+        <tr><td><strong>¿Se usa en el aula?</strong></td><td style="color:var(--verde)">Sí, con criterio.</td><td>Cuando necesitas guardar datos de tipos distintos.</td><td style="color:var(--rosa)">Casi nunca.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Cuándo usar <code>var</code> y cuándo no?</h4>
+    <p>Úsalo cuando el tipo es <strong>evidente a simple vista</strong>: <code>var lista = new List&lt;int&gt;();</code> (el tipo es larguísimo y ya lo estás diciendo). <strong>No</strong> lo uses cuando el tipo quede escondido: si lees <code>var total = 0;</code> no sabes si es <code>int</code>, <code>double</code> o <code>decimal</code> — y para dinero esa diferencia importa. La regla de oro de Microsoft: <em>si no puedes deducir el tipo leyendo la línea, escribe el tipo</em>.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban el mismo programa dos veces: una con <code>var</code> y otra con los tipos explícitos. Después, por cada variable, pregúntense: <strong>"¿se entiende el tipo leyendo la línea?"</strong>. El que diga "no", cámbielo a tipo explícito. Discutan en cuál versión se entiende mejor el programa a los 5 meses.</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace exactamente <code>var edad = 17;</code>?</p>
+      <button class="opcion" data-op="a">Crea una variable de tipo "cualquiera", decided en runtime</button>
+      <button class="opcion" data-op="b">Crea una variable <code>int</code>: el compilador deduce el tipo del valor inicial</button>
+      <button class="opcion" data-op="c">Es un error: <code>var</code> no existe en C#</button>
+      <button class="opcion" data-op="d">Crea una variable de tipo texto</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Cuál es la diferencia entre <code>object</code> y <code>dynamic</code>?</p>
+      <button class="opcion" data-op="a">No hay ninguna diferencia</button>
+      <button class="opcion" data-op="b"><code>object</code> se resuelve en ejecución y <code>dynamic</code> al compilar</button>
+      <button class="opcion" data-op="c"><code>object</code> se resuelve al compilar; <code>dynamic</code>, al ejecutar</button>
+      <button class="opcion" data-op="d"><code>object</code> solo sirve para guardar texto</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué significa "boxing" en C#?</p>
+      <button class="opcion" data-op="a">Guardar un tipo de valor (como <code>int</code>) dentro de un <code>object</code></button>
+      <button class="opcion" data-op="b">Romper el programa a propósito</button>
+      <button class="opcion" data-op="c">Empaquetar el código en un archivo ejecutable</button>
+      <button class="opcion" data-op="d">Ordenar las variables automáticamente</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: nullables y conversiones →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>🛡️ Nullables y conversiones: cuando el dato todavía no existe</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "La caja vacía y el truco del ?"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 El problema de la caja vacía</h3>
+    <p><code>null</code> significa "no hay valor". El problema es que en los años 2000 C# no te avisaba: podías escribir <code>Console.WriteLine(nombre.Length);</code> con <code>nombre</code> en <code>null</code> y el programa se caía con un <code>NullReferenceException</code> en la mitad de la ejecución. Hoy C# te <strong>avisa mientras compila</strong> si declaras que algo puede ser <code>null</code>, y te da herramientas para manejarlo sin romperse.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — null, ??, ??= y ?.</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// NULL: la variable todavía no tiene valor.
+string? nombre = null;
+int? edad = null;
+
+Console.WriteLine($"nombre es null: {nombre is null}");
+Console.WriteLine($"edad es null: {edad is null}");
+
+// ?? (null-coalescing): si la izquierda es null, usa la derecha.
+Console.WriteLine($"Hola, {nombre ?? "visitante"}");
+
+// ??= (null-coalescing assignment): asigna SOLO si era null.
+nombre ??= "Ana";
+Console.WriteLine($"Ahora el nombre es: {nombre}");
+
+// ?. (null-conditional): la llamada solo ocurre si el objeto NO es null.
+Console.WriteLine($"Largo del nombre: {nombre?.Length}");</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — Nullable&lt;T&gt;: el int que puede no existir</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// int? es, por dentro, un Nullable&lt;int&gt;: un int que puede no tener valor.
+int? edad = null;
+Console.WriteLine($"HasValue: {edad.HasValue}");
+
+edad = 17;
+Console.WriteLine($"HasValue: {edad.HasValue} · Value: {edad.Value}");
+
+// GetValueOrDefault evita el ".Value" cuando puede ser null.
+int? vacio = null;
+Console.WriteLine($"Por defecto: {vacio.GetValueOrDefault()}");
+Console.WriteLine($"Por defecto con alternativa: {vacio.GetValueOrDefault(18)}");
+
+// Cuidado: pedir ".Value" a un int? que es null lanza InvalidOperationException.
+// int peligroso = vacio.Value;   ← no lo hagas sin revisar HasValue</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — int.TryParse: leer sin romperse</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// TryParse: pregunta "¿esto es un número?" y NO rompe el programa.
+Console.Write("Escribe tu edad: ");
+string entrada = Console.ReadLine() ?? "";
+
+if (int.TryParse(entrada, out int edad))
+{
+    Console.WriteLine($"Edad registrada: {edad}");
+}
+else
+{
+    Console.WriteLine("Eso no es un número válido.");
+}
+
+// Ojo: si no usas el valor, el compilador se queja (warning CS0219).
+// En ese caso escribe: _ = int.TryParse(entrada, out _);
+// TryParse devuelve true/false y además entrega el número convertido.</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — C# 14: la palabra clave field y la asignación con ??=</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Operador ??= (C# 8 en adelante): si la variable es null, asígnale este valor.
+// Evita el clásico "if (x is null) { x = valor; }"
+Persona? persona = null;
+persona ??= new Persona("Ana", 17);
+Console.WriteLine($"Nombre: {persona.Nombre}");   // Ana
+
+// C# 14: la palabra clave "field" guarda el valor real de una propiedad.
+var termometro = new Termometro { Celsius = 36.6 };
+Console.WriteLine($"Celsius: {termometro.Celsius}");
+
+public class Persona
+{
+    public string Nombre { get; }
+    public int Edad { get; set; }
+
+    public Persona(string nombre, int edad)
+    {
+        Nombre = nombre;
+        Edad = edad;
+    }
+}
+
+public class Termometro
+{
+    public double Celsius
+    {
+        get;
+        set
+        {
+            if (value &lt; -273.15)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
+            field = value;   // aquí vive el valor real de la propiedad
+        }
+    }
+}</code></pre>
+  </div>
+
+  <h3>🔄 Conversiones: de una caja a otra</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — conversiones implícitas y explícitas</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// IMPLÍCITA: el tipo "cabe" en el otro, no se pierde información.
+int numero = 100;
+long grande = numero;       // int -&gt; long
+double real = numero;       // int -&gt; double
+decimal exacto = numero;    // int -&gt; decimal
+
+// EXPLÍCITA: hay que decirlo con un cast (entre paréntesis).
+double pequeno = 9.99;
+int truncado = (int)pequeno;            // 9  (se pierde la parte decimal)
+int redondeado = (int)Math.Round(pequeno);   // 10
+
+Console.WriteLine($"grande: {grande} · real: {real} · exacto: {exacto}");
+Console.WriteLine($"truncado: {truncado} · redondeado: {redondeado}");
+
+// Y al revés NO se puede sin cast:
+// int mal = pequeno;   ← error CS0266</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Operador</th><th>Qué hace</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>??</code></td><td>Si la izquierda es <code>null</code>, usa la derecha.</td><td><code>texto ?? "vacío"</code></td></tr>
+        <tr><td><code>??=</code></td><td>Asigna la derecha solo si la izquierda es <code>null</code>.</td><td><code>nombre ??= "Ana"</code></td></tr>
+        <tr><td><code>?.</code></td><td>Llama al método solo si el objeto no es <code>null</code>.</td><td><code>persona?.Nombre</code></td></tr>
+        <tr><td><code>x?.Prop = v</code> <em>(C# 14)</em></td><td>Asigna a la propiedad solo si el objeto no es <code>null</code> (no existe el operador <code>?.=</code>).</td><td><code>persona?.Nombre = "Ana"</code></td></tr>
+        <tr><td><code>?</code> en el tipo</td><td>Declara que el valor puede no existir.</td><td><code>string? nombre</code></td></tr>
+        <tr><td><code>is</code></td><td>Pregunta por el tipo, sin riesgo de error.</td><td><code>if (dato is int)</code></td></tr>
+        <tr><td><code>as</code></td><td>Convierte; si no puede, devuelve <code>null</code>.</td><td><code>dato as string</code></td></tr>
+        <tr><td><code>(cast)</code></td><td>Convierte de forma explícita (puede truncarse).</td><td><code>(int)9.99</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: <code>int.TryParse</code> es tu mejor amigo</h4>
+    <p>Siempre que leas un número del teclado usa <code>TryParse</code> en vez de <code>Parse</code>. <code>Parse</code> lanza <code>FormatException</code> si el usuario escribe "hola" y el programa se cae; <code>TryParse</code> te devuelve <code>false</code> y tú decides qué hacer. Es la diferencia entre un programa que se cae y uno que sigue politely. 🤝</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Escriban un programa que pida: edad (<code>int</code>), estatura en metros (<code>double</code>) y "¿tiene beca?" (<code>bool</code>, aceptando "s" o "n"). Usen <code>TryParse</code> para los números y <code>??</code> para los textos. Después agreguen: si la edad no se pudo leer, que el programa use 0 y avise. Y prueben los tres casos: número válido, número inválido y entrada vacía (solo "Enter").</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Qué significa <code>string? nombre;</code>?</p>
+      <button class="opcion" data-op="a">Es un texto que puede estar vacío (<code>null</code>), o sea, "todavía sin valor"</button>
+      <button class="opcion" data-op="b">Es un texto con signo de interrogación en el nombre</button>
+      <button class="opcion" data-op="c">Es un error de compilación: no se puede declarar así</button>
+      <button class="opcion" data-op="d">Es un texto que no se puede imprimir en consola</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Qué hace el operador <code>??</code>?</p>
+      <button class="opcion" data-op="a">Divide el valor de la variable en dos partes</button>
+      <button class="opcion" data-op="b">Usa el operando de la derecha cuando el de la izquierda es <code>null</code></button>
+      <button class="opcion" data-op="c">Convierte cualquier valor a texto</button>
+      <button class="opcion" data-op="d">Marca la variable como <code>const</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué devuelve <code>int.TryParse("hola", out int n)</code>?</p>
+      <button class="opcion" data-op="a"><code>true</code> y <code>n</code> vale 0</button>
+      <button class="opcion" data-op="b">Lanza una excepción porque "hola" no es número</button>
+      <button class="opcion" data-op="c"><code>false</code> y <code>n</code> queda en 0</button>
+      <button class="opcion" data-op="d">El número 0</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: La Caja del Estudiante</h2>
+  <p class="meta-modulo">⏱️ 45 minutos · "Aplica todo lo aprendido"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">La Caja del Estudiante</span>
+    </div>
+    <p>En el colegio hay una pequeña tienda que vende cuadernos y lápices. Tu misión: construir <strong>CajaEstudiante</strong>, una aplicación de consola que pida los datos de la compra, calcule el total con <strong>descuento</strong> e <strong>IVA</strong>, y que <strong>nunca se caiga</strong> aunque el usuario escriba basura. Aquí se juntan <code>int</code>, <code>decimal</code>, <code>double</code>, <code>string</code>, <code>bool</code>, <code>char</code>, <code>TryParse</code> y <code>??</code>.</p>
+  </div>
+
+  <h3>📋 Requisitos del taller</h3>
+  <ol class="pasos">
+    <li>Crea el proyecto: <code>dotnet new console -n CajaEstudiante</code> y ábrelo en VS Code (<code>code .</code>).</li>
+    <li>Pide el <strong>nombre</strong> del estudiante (<code>string</code>), la <strong>cantidad de cuadernos</strong> (<code>int</code>) y la <strong>cantidad de lápices</strong> (<code>int</code>).</li>
+    <li>Usa <code>int.TryParse</code> para leer las cantidades: si el usuario escribe algo que no es número, <strong>avisa y usa 0</strong> en vez de romperte.</li>
+    <li>Pregunta si el cliente tiene <strong>cupón de descuento</strong> y guárdalo en un <code>bool</code> (respuesta "s" o "n").</li>
+    <li>Usa <code>const</code> para los precios (<code>decimal</code>) y para el porcentaje del IVA y del descuento.</li>
+    <li>Calcula: subtotal, descuento (15 % si tiene cupón), base imponible, IVA (19 %) y total.</li>
+    <li>Muestra todo con <strong>interpolación</strong>, y el total con el formato <code>{total:N0}</code> para que se vea con separadores de miles.</li>
+    <li>Agrega la inicial del nombre (<code>char</code>) y el precio promedio por artículo (<code>double</code>) en el resumen.</li>
+    <li>Ejecuta con <code>dotnet run</code> y pruébalo con datos válidos, con una cantidad inválida ("abc") y sin cupón.</li>
+  </ol>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — guía de estilo (no es la solución, es el molde)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ============================================
+// LA CAJA DEL ESTUDIANTE
+// Tienda escolar: total de la compra con descuento e IVA.
+// ============================================
+
+// Constantes: los precios NUNCA cambian.
+const decimal PrecioCuaderno = 3500m;
+const decimal PrecioLapiz = 800m;
+const decimal PorcentajeDescuento = 0.15m;
+const decimal IVA = 0.19m;
+
+Console.WriteLine("=== LA CAJA DEL ESTUDIANTE ===");
+
+// 1. ENTRADA
+Console.Write("Nombre del estudiante: ");
+string nombre = Console.ReadLine() ?? "";
+
+Console.Write("Cantidad de cuadernos: ");
+int cuadernos = 0;
+if (!int.TryParse(Console.ReadLine(), out cuadernos))
+{
+    Console.WriteLine("Dato inválido: se asume 0 cuadernos.");
+}
+
+Console.Write("Cantidad de lápices: ");
+int lapices = 0;
+if (!int.TryParse(Console.ReadLine(), out lapices))
+{
+    Console.WriteLine("Dato inválido: se asumen 0 lápices.");
+}
+
+Console.Write("¿Tiene cupón de descuento? (s/n): ");
+string cupon = (Console.ReadLine() ?? "").Trim().ToLower();
+bool tieneCupon = cupon == "s";
+
+// 2. PROCESO
+decimal subtotal = (cuadernos * PrecioCuaderno) + (lapices * PrecioLapiz);
+decimal descuento = tieneCupon ? subtotal * PorcentajeDescuento : 0m;
+decimal baseImponible = subtotal - descuento;
+decimal iva = baseImponible * IVA;
+decimal total = baseImponible + iva;
+
+// 3. SALIDA
+Console.WriteLine("------------------------------");
+Console.WriteLine($"Cliente: {nombre}");
+Console.WriteLine($"Subtotal:  {subtotal:N0} COP");
+Console.WriteLine($"Descuento: -{descuento:N0} COP");
+Console.WriteLine($"IVA 19%:   {iva:N0} COP");
+Console.WriteLine($"TOTAL:    {total:N0} COP");
+Console.WriteLine("------------------------------");</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Tu salida se parece a esta?</h4>
+    <p><code>{subtotal:N0}</code> es el formato numérico: muestra el número con <strong>separadores de miles</strong> (3500 → <code>3.500</code>). Y fíjate en el <code>?? ""</code> del <code>ReadLine</code>: si el usuario cierra la consola sin escribir nada, no se rompe nada. Y en el <code>ternario</code> <code>tieneCupon ? ... : 0m</code>: un solo <code>if</code> decides el descuento.</p>
+  </div>
+
+  <button class="btn-solucion" data-solucion="sol-taller">👁️ Ver solución completa</button>
+  <div class="solucion" id="sol-taller">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-header-left">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span>csharp — solución del taller</span>
+        </div>
+        <button class="copy-btn">📋 Copiar</button>
+      </div>
+<pre><code>// ============================================
+// LA CAJA DEL ESTUDIANTE — solución del taller
+// Tienda escolar: total de la compra con descuento e IVA.
+// ============================================
+
+const decimal PrecioCuaderno = 3500m;
+const decimal PrecioLapiz = 800m;
+const decimal PorcentajeDescuento = 0.15m;
+const decimal IVA = 0.19m;
+
+Console.WriteLine("=== LA CAJA DEL ESTUDIANTE ===");
+
+// ---------- 1. ENTRADA ----------
+Console.Write("Nombre del estudiante: ");
+string nombre = Console.ReadLine() ?? "";
+
+Console.Write("Cantidad de cuadernos: ");
+int cuadernos = 0;
+if (!int.TryParse(Console.ReadLine(), out cuadernos))
+{
+    Console.WriteLine("Dato inválido: se asume 0 cuadernos.");
+}
+
+Console.Write("Cantidad de lápices: ");
+int lapices = 0;
+if (!int.TryParse(Console.ReadLine(), out lapices))
+{
+    Console.WriteLine("Dato inválido: se asumen 0 lápices.");
+}
+
+Console.Write("¿Tiene cupón de descuento? (s/n): ");
+string cupon = (Console.ReadLine() ?? "").Trim().ToLower();
+bool tieneCupon = cupon == "s";
+
+// ---------- 2. PROCESO ----------
+decimal subtotal = (cuadernos * PrecioCuaderno) + (lapices * PrecioLapiz);
+decimal descuento = tieneCupon ? subtotal * PorcentajeDescuento : 0m;
+decimal baseImponible = subtotal - descuento;
+decimal iva = baseImponible * IVA;
+decimal total = baseImponible + iva;
+
+int articulos = cuadernos + lapices;
+double precioPromedio = articulos &gt; 0 ? (double)total / articulos : 0;
+char inicial = string.IsNullOrWhiteSpace(nombre) ? '?' : char.ToUpper(nombre[0]);
+
+// ---------- 3. SALIDA ----------
+Console.WriteLine("------------------------------");
+Console.WriteLine($"Cliente: {nombre} ({inicial})");
+Console.WriteLine($"Artículos:      {articulos}");
+Console.WriteLine($"Subtotal:      {subtotal:N0} COP");
+Console.WriteLine($"Descuento 15%: -{descuento:N0} COP");
+Console.WriteLine($"IVA 19%:        {iva:N0} COP");
+Console.WriteLine($"TOTAL:         {total:N0} COP");
+Console.WriteLine($"Promedio:      {precioPromedio:N0} COP por artículo");
+Console.WriteLine("------------------------------");</code></pre>
+    </div>
+  </div>
+
+  <div class="checklist">
+    <h4>✅ Antes de entregar, verifica</h4>
+    <ul>
+      <li>El proyecto se llama <code>CajaEstudiante</code> y corre con <code>dotnet run</code>.</li>
+      <li>Los precios y porcentajes están en <code>const</code> y son de tipo <code>decimal</code>.</li>
+      <li>Las cantidades se leen con <code>int.TryParse</code> y el programa <strong>no se cae</strong> si escriben "abc".</li>
+      <li>El descuento solo se aplica cuando el cupón es "s" (el <code>bool</code> decide).</li>
+      <li>El IVA se calcula sobre el valor <strong>después</strong> del descuento.</li>
+      <li>El total se muestra con <code>:N0</code> y todas las líneas usan interpolación.</li>
+      <li>Pruebaste las tres rutas: con cupón, sin cupón y con datos inválidos.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Intercambien el teclado: el compañero escribe en la consola cosas raras ("hola", "", "-5", "3.7") y el programador debe explicar <strong>por qué</strong> el programa no se rompe. Después revisen juntos una diferencia: ¿qué pasaría si el precio fuera <code>double</code> en vez de <code>decimal</code>? Busquen un caso donde el total se vea distinto. Esa es la Clase 2 en acción. 🎯</p>
+  </div>
+
+  <div class="quiz" data-quiz="7">
+    <h3>🎯 Mini-Quiz del Módulo 7</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Para qué se usa <code>int.TryParse</code> en el taller?</p>
+      <button class="opcion" data-op="a">Para convertir el texto del usuario en número sin romper el programa</button>
+      <button class="opcion" data-op="b">Para redondear el total de la compra</button>
+      <button class="opcion" data-op="c">Para ordenar los productos por precio</button>
+      <button class="opcion" data-op="d">Para mostrar el nombre en mayúsculas</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Por qué los precios del taller usan <code>decimal</code> y no <code>double</code>?</p>
+      <button class="opcion" data-op="a">Porque <code>decimal</code> ocupa menos memoria</button>
+      <button class="opcion" data-op="b">Porque <code>decimal</code> guarda el valor exacto de los decimales: es el tipo del dinero</button>
+      <button class="opcion" data-op="c">Porque <code>decimal</code> siempre es más rápido</button>
+      <button class="opcion" data-op="d">Porque <code>double</code> no admite números negativos</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> Si el usuario escribe "abc" en la cantidad de cuadernos, el programa debe…</p>
+      <button class="opcion" data-op="a">Terminar con un error para que el usuario se entere</button>
+      <button class="opcion" data-op="b">Preguntar eternamente hasta que escriba un número</button>
+      <button class="opcion" data-op="c">Avisar que el dato no es válido y usar un valor por defecto</button>
+      <button class="opcion" data-op="d">Ignorar la entrada sin avisar nada</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 2 completada!</h2>
+    <p>Ya sabes declarar variables, elegir el tipo correcto (¡y sabrás que <code>decimal</code> es el rey del dinero!), usar <code>var</code> con criterio y manejar el <code>null</code> sin que el programa se caiga. En la <strong>Clase 3</strong> atacamos los <strong>operadores</strong>: aritméticos, de comparación y lógicos, y la <strong>precedencia</strong>, esa regla que decide si <code>2 + 3 * 4</code> da 14 o 20.</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">📦 Herramientas Algorítmicas II · Clase 2 de 10</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · Código TL007</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

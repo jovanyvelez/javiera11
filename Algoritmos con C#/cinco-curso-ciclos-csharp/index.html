@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧠 Herramientas Algorítmicas II · Clase 5 · Ciclos</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🧠</span>
+    <div>
+      <h1>Herramientas Algorítmicas II · Clase 5</h1>
+      <p class="subtitulo">C# moderno · while · do-while · for · foreach · break y continue</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">🔁 while</button>
+  <button class="btn-modulo" data-modulo="2">🔂 for</button>
+  <button class="btn-modulo" data-modulo="3">📦 foreach</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🛑 break / continue</button>
+  <button class="btn-modulo" data-modulo="6">🪆 Anidados</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🔁 El programa que repite: ciclos en C#</h2>
+    <p class="lead">Hasta hoy tus programas hacían <strong>una sola pasada</strong>: línea 1, línea 2, línea 3… y terminaban. Hoy les enseñamos a <strong>repetir</strong>. Con <code>while</code>, <code>do-while</code>, <code>for</code> y <code>foreach</code> puedes contar del 1 al 100, pedir 10 notas, recorrer un arreglo o imprimir la tabla de multiplicar sin copiar y pegar 25 veces. La Clase 6 será el turno de los <strong>acumuladores</strong> y los <strong>contadores</strong>: hoy montamos la maquinaria.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — estudiante@colegio</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">estudiante@colegio:~$</span> <span class="cmd">dotnet new console -n TablaMultiplicar</span></div>
+        <div class="out">La plantilla "aplicación de consola" se creó correctamente.</div>
+        <div><span class="prompt">estudiante@colegio:~/TablaMultiplicar$</span> <span class="cmd">dotnet run</span></div>
+        <div class="out">Tabla del 7:<br>7 x 1 = 7<br>7 x 2 = 14<br>7 x 3 = 21</div>
+        <div><span class="prompt">estudiante@colegio:~/TablaMultiplicar$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3 h 45 min en 8 módulos, con descanso a mitad. Trabaja en pareja con tu compañero/a de computador.</p>
+    </div>
+    <div class="tarjeta tarjeta-verde">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Escribir <strong>ciclos</strong> en C#: <code>while</code>, <code>do-while</code>, <code>for</code> y <code>foreach</code>; controlarlos con <code>break</code> y <code>continue</code>; y anidarlos para construir tablas y matrices.</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>El <strong>bucle infinito</strong> que congela el computador, la condición mal escrita que nunca se vuelve falsa, el <code>continue</code> colocado antes del incremento (y el programa que nunca termina), y el <code>break</code> puesto en el bucle equivocado.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · while</td><td style="color:var(--a)">Repetir mientras se cumpla</td><td style="color:var(--rosa)">Bucle infinito</td><td>100 XP</td></tr>
+        <tr><td>02 · for</td><td style="color:var(--b)">Repetir un número exacto de veces</td><td style="color:var(--rosa)">Límites mal puestos</td><td>100 XP</td></tr>
+        <tr><td>03 · foreach</td><td style="color:var(--verde)">Recorrer colecciones sin índices</td><td style="color:var(--rosa)">Índice fuera de rango</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · break y continue</td><td style="color:var(--a)">Salir o saltar una vuelta</td><td style="color:var(--rosa)">continue antes del i++</td><td>100 XP</td></tr>
+        <tr><td>05 · Anidados</td><td style="color:var(--b)">Tablas y matrices de notas</td><td style="color:var(--rosa)">O(n²) innecesario</td><td>100 XP</td></tr>
+        <tr><td>06 · Taller</td><td style="color:var(--verde)">Promedios de una clase</td><td style="color:var(--rosa)">Promedio mal calculado</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Piensen en <strong>tres cosas que en su vida se repiten</strong> y las describan como un ciclo: "mientras tenga tareas, las hago" (while), "repito 5 veces" (for), "recorro cada nota de la lista" (foreach). Para cada una, digan <strong>qué es lo que se evalúa</strong> (la condición) y <strong>qué es lo que cambia</strong> en cada vuelta. Con esas dos respuestas ya tienes un ciclo escrito.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué esta clase es la bisagra del curso?</h4>
+    <p>Un condicional (Clase 4) decide <strong>una vez</strong>; un ciclo decide <strong>muchas veces</strong>. Todo lo que viene después se apoya en esto: recorrer arreglos (Clase 7), menús que repiten (Clase 9) y la Programación Orientada a Objetos (Clase 10). Además, el <strong>acumulador</strong> —la variable que suma todo lo que pasa por el ciclo— es el tema central de la Clase 6, así que hoy vas a montar la base sin saberlo todavía.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: while y do-while →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>🔁 <code>while</code> y <code>do-while</code></h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "Mientras se cumpla, repite (y repito por lo menos una vez)"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 El ciclo con tres piezas</h3>
+    <p>Todo ciclo tiene las mismas tres piezas: <strong>una condición</strong> que dice si sigues o te paras, <strong>un cuerpo</strong> con lo que haces cada vuelta y <strong>algo que cambia</strong> para que la condición algún día se vuelva falsa. El <code>while</code> es el más simple: <em>mientras la condición sea verdadera, ejecuta el cuerpo</em>. Piensa en una bolsa de gomitas: sigues sacando mientras haya en la bolsa… y si nunca vacías la bolsa, nunca sales. 😱</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — el while: pregunta primero</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// El while PREGUNTA PRIMERO y después hace.
+int contador = 1;
+
+Console.Write("¿Hasta dónde contamos? ");
+int limite = int.TryParse(Console.ReadLine() ?? "", out int n) ? n : 5;
+
+while (contador &lt;= limite)
+{
+    Console.WriteLine($"Número {contador}");
+    contador++;      // sin esta línea, el bucle nunca termina
+}</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Qué hace?</h4>
+    <p><strong>Qué hace:</strong> revisa <code>contador &lt;= limite</code>; mientras sea verdadera, imprime y suma 1. <strong>Por qué funciona:</strong> el <code>contador++</code> es el motor del ciclo: en algún momento <code>contador</code> supera a <code>limite</code>, la condición da <code>false</code> y el <code>while</code> termina. <strong>Ojo:</strong> si el contador nunca cambia, el ciclo es infinito.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — el do-while: hace primero, pregunta después</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// El do-while HACE PRIMERO y después pregunta.
+string opcion;
+
+do
+{
+    Console.WriteLine("1. Saludar   2. Salir");
+    opcion = Console.ReadLine() ?? "";
+    Console.WriteLine(opcion == "1" ? "¡Hola!" : "Chao...");
+} while (opcion != "2");
+
+Console.WriteLine("Aquí siempre llegas: te hayas equivocado o no.");</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Aspecto</th><th><code>while</code></th><th><code>do-while</code></th></tr>
+      </thead>
+      <tbody>
+        <tr><td>¿Cuándo pregunta?</td><td>Antes de ejecutar el cuerpo</td><td>Después de ejecutar el cuerpo</td></tr>
+        <tr><td>¿Ejecuta el cuerpo?</td><td>Puede que <strong>ninguna</strong> vez</td><td><strong>Siempre al menos una vez</strong></td></tr>
+        <tr><td>Se usa para…</td><td>Procesar una lista que puede estar vacía</td><td>Menús y diálogos: siempre hay que mostrar la opción</td></tr>
+        <tr><td>Ejemplo típico</td><td>Leer datos hasta que el usuario escriba "salir"</td><td>Menú de la cantina del colegio</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el bucle infinito</h4>
+    <p>Un <strong>bucle infinito</strong> es un ciclo cuya condición <strong>nunca se vuelve falsa</strong>. El programa se queda trabajando y la terminal no responde: ni el mouse ni el teclado. <strong>¿Cómo salir?</strong> Con <span class="kbd">Ctrl</span>+<span class="kbd">C</span> en la terminal: le mandas la señal de "para" al proceso. Y en el código, la única forma de salir de un bucle infinito es con un <code>break</code> (Módulo 5).</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — bucle infinito con una única salida: el break</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// while (true) dice: "mientras sea verdad, repite" (y SIEMPRE lo es).
+int intentos = 0;
+
+while (true)
+{
+    intentos++;
+    Console.WriteLine($"Intento {intentos}");
+
+    if (intentos &gt;= 3)
+    {
+        break;      // la única salida del bucle
+    }
+}
+
+Console.WriteLine("Salí del bucle infinito.");</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — la condición mal puesta (error de lógica: el bucle no termina)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre data-lang="csharp-error"><code>// ERROR DE LÓGICA: la condición nunca se vuelve falsa.
+// i solo toma 0, 2, 4, 6... nunca llega a 5: el bucle NO termina.
+int i = 0;
+
+while (i != 5)
+{
+    Console.WriteLine(i);
+    i += 2;
+}
+
+// La forma segura: comparar con "&gt;=" y no con "!="
+// while (i &lt; 5) { ... i++; }  →  sí termina</code></pre>
+  </div>
+
+  <h3>🗺️ Diagramas de flujo de los dos ciclos</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>text — while y do-while comparados</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre data-lang="text"><code>WHILE (pregunta primero)          DO-WHILE (hace primero)
+
+   ┌──────────────┐                   ┌──────────────┐
+   │  contador=1  │                   │  Mostrar     │
+   └──────┬───────┘                   │  mensaje     │
+          ▼                           └──────┬───────┘
+   ┌──────────────────┐  NO                ▼
+   │ ¿contador &lt;= 5 ?├──────►  SALIR  ┌──────────────────┐
+   └─────────┬────────┘                   │ ¿contador &lt;= 5 ?├──────►  SALIR
+             │ SÍ                        └─────────┬────────┘
+             ▼                                    │ SÍ
+   ┌──────────────────┐                          │
+   │ Mostrar contador │                          └─────────┐
+   └─────────┬────────┘                                    │
+             ▼                                             │
+   ┌──────────────────┐                                    │
+   │ contador = cont+1 │                                   │
+   └─────────┬────────┘                                    │
+             └──────────► (vuelve a la condición)          └──────────► (vuelve al cuerpo)
+
+
+La diferencia está en el primer rombo: el while puede saltarse
+el cuerpo COMPLETAMENTE; el do-while siempre entra una vez.</code></pre>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban <strong>un programa que pida números hasta que el usuario escriba 0</strong> y que vaya mostrando el total acumulado. Después escríbelo con <code>while</code> y con <code>do-while</code>. ¿En cuál versión el total acumulado necesita inicializarse en 0 <em>antes</em> del ciclo? Pista: la respuesta es "en las dos", pero pregúntense <strong>por qué</strong>.</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Cuál es la diferencia clave entre <code>while</code> y <code>do-while</code>?</p>
+      <button class="opcion" data-op="a">El <code>while</code> puede no ejecutarse nunca; el <code>do-while</code> se ejecuta al menos una vez</button>
+      <button class="opcion" data-op="b">El <code>do-while</code> es más rápido</button>
+      <button class="opcion" data-op="c">El <code>while</code> no admite condición</button>
+      <button class="opcion" data-op="d">No hay diferencia: son sinónimos</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Un <code>while</code> se queda infinito y la terminal no responde. ¿Cómo lo detienes?</p>
+      <button class="opcion" data-op="a">Con <span class="kbd">Ctrl</span>+<span class="kbd">S</span></button>
+      <button class="opcion" data-op="b">Cerrando el computador</button>
+      <button class="opcion" data-op="c">Con <span class="kbd">Ctrl</span>+<span class="kbd">C</span> en la terminal</button>
+      <button class="opcion" data-op="d">Esperando a que termine solo</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Por qué un <code>while</code> puede quedarse infinito?</p>
+      <button class="opcion" data-op="a">Porque C# no sabe contar</button>
+      <button class="opcion" data-op="b">Porque su condición nunca se vuelve falsa (nada cambia dentro del ciclo)</button>
+      <button class="opcion" data-op="c">Porque el <code>while</code> necesita un <code>break</code> siempre</button>
+      <button class="opcion" data-op="d">Porque la consola no aguanta muchas vueltas</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: el for →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>🔂 El <code>for</code>: repetir un número exacto de veces</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "Inicio, condición, incremento: las tres piezas del for"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 El <code>for</code> es un <code>while</code> con la estructura apretada</h3>
+    <p>El <code>while</code> te obliga a separar el avance del contador en otra línea. El <code>for</code> mete las tres cosas —<strong>inicio</strong>, <strong>condición</strong> e <strong>incremento</strong>— en la misma línea, entre paréntesis y separadas por punto y coma: <code>for (inicio; condición; incremento)</code>. Cuando ya sabes cuántas vueltas vas a dar, el <code>for</code> es más corto y más legible.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — el for clásico y sus tres piezas</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// for (inicio; condición; incremento)
+for (int i = 1; i &lt;= 10; i++)
+{
+    Console.WriteLine($"Número {i}");
+}
+
+// Las tres piezas, por separado:
+//   int i = 1   → INICIO: se ejecuta UNA sola vez, antes de la primera vuelta
+//   i &lt;= 10     → CONDICIÓN: se revisa en cada vuelta (si da false, se sale)
+//   i++         → INCREMENTO: se ejecuta al final de cada vuelta</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — while y for son el mismo ciclo</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Con for
+for (int i = 0; i &lt; 5; i++)
+{
+    Console.WriteLine(i);
+}
+
+// Con while (exactamente lo mismo, pero en dos líneas más)
+int j = 0;
+while (j &lt; 5)
+{
+    Console.WriteLine(j);
+    j++;
+}</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Los límites son excluyentes: cuidado con el <code>&lt;</code> o el <code>&lt;=</code></h4>
+    <p>Si escribes <code>for (int i = 0; i &lt; 5; i++)</code>, el <code>i</code> vale 0, 1, 2, 3 y 4: <strong>5 vueltas</strong>. Si escribes <code>i &lt;= 5</code>, son <strong>6 vueltas</strong> (aparece el 5). El <code>&lt;</code> es exclusivo, el <code>&lt;=</code> es inclusivo. Esta es la fuente número uno de "me faltan un número" y "me sobra un número" en las notas de un parcial.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — for con decremento, saltos y var</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Contar hacia atrás
+for (int i = 10; i &gt; 0; i--)
+{
+    Console.Write(i + " ");
+}
+Console.WriteLine();
+
+// De dos en dos
+for (int i = 0; i &lt; 20; i += 2)
+{
+    Console.Write(i + " ");
+}
+Console.WriteLine();
+
+// Con var: el tipo se deduce solo. i++ y ++i dan el MISMO resultado
+// en la parte del incremento de un for: el valor que se guarda es el mismo.
+for (var i = 0; i &lt; 3; ++i)
+{
+    Console.WriteLine(i);
+}</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — el for infinito: for (;;)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// for (;;) es un bucle infinito: no tiene condición, no se evalúa nada.
+int i = 0;
+
+for (;;)
+{
+    Console.WriteLine($"Vuelta {i}");
+    i++;
+
+    if (i == 3)
+    {
+        break;      // la única salida
+    }
+}
+
+Console.WriteLine("Fin.");</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Ciclo</th><th>Ideal para…</th><th>Se para cuando…</th><th>Riesgo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>while</code></td><td>No sabes cuántas vueltas son</td><td>La condición da <code>false</code></td><td style="color:var(--rosa)">Bucle infinito</td></tr>
+        <tr><td><code>do-while</code></td><td>Menús y diálogos</td><td>La condición da <code>false</code> (después de la primera vuelta)</td><td style="color:var(--rosa)">Olvidar el <code>;</code> final</td></tr>
+        <tr><td><code>for</code></td><td>Sabes cuántas vueltas son (contar del 1 al 10)</td><td>El contador pasa el límite</td><td style="color:var(--rosa)">Límite mal puesto</td></tr>
+        <tr><td><code>foreach</code></td><td>Recorrer una colección completa</td><td>Se acaba la colección</td><td style="color:var(--rosa)">No puedes cambiar el tamaño mientras recorres</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban un programa que imprima la tabla de multiplicar del 7 (del 1 al 10). Después reescríbanlo con <code>while</code>. Comparen las dos versiones: ¿cuál se lee mejor? Ahora háganlo al revés: den el <code>for</code> y escríbanlo con <code>while</code>, y al final midan cuántos caracteres ocupa cada versión. Esa diferencia es la que hace que en el trabajo real se elija el <code>for</code>.</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> En <code>for (int i = 0; i &lt; 5; i++)</code>, ¿cuántas vueltas da el ciclo?</p>
+      <button class="opcion" data-op="a">6 vueltas (i vale de 0 a 5)</button>
+      <button class="opcion" data-op="b">5 vueltas (i vale de 0 a 4)</button>
+      <button class="opcion" data-op="c">4 vueltas</button>
+      <button class="opcion" data-op="d">5 vueltas, pero el <code>i</code> se revisa una sola vez</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Cuántas veces se ejecuta la <strong>condición</strong> de un <code>for</code>?</p>
+      <button class="opcion" data-op="a">Una sola vez, al principio</button>
+      <button class="opcion" data-op="b">Nunca: el for no tiene condición</button>
+      <button class="opcion" data-op="c">En cada vuelta, antes de entrar al cuerpo</button>
+      <button class="opcion" data-op="d">Solo cuando el incremento es par</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué hace <code>for (;;)</code>?</p>
+      <button class="opcion" data-op="a">Es un bucle infinito: no tiene condición</button>
+      <button class="opcion" data-op="b">Da error de compilación</button>
+      <button class="opcion" data-op="c">Repite tres veces</button>
+      <button class="opcion" data-op="d">Es un <code>for</code> con el límite vacío</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: foreach →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>📦 <code>foreach</code>: recorrer sin índices</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Pásame cada elemento, uno por uno"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La colección se encarga del índice</h3>
+    <p>El <code>foreach</code> es un <code>for</code> que te quita el trabajo de manejar el índice. Tú dices: "por cada elemento de esta lista, haz esto" y ya. C# se encarga de saber cuál es el siguiente, cuándo se acaba y de sacar el valor. Por eso es el ciclo <strong>más seguro</strong>: no puedes equivocarte escribiendo <code>arreglo[i]</code> ni pasarte del final.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — foreach sobre un string (recorre caracteres)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Un string es una colección de caracteres.
+string frase = "Hola";
+
+foreach (char letra in frase)
+{
+    Console.WriteLine($"'{letra}'");
+}
+
+// También sirve para contar letras sin usar el índice:
+string palabra = "colegio";
+int vocales = 0;
+
+foreach (char letra in palabra)
+{
+    if (letra is 'a' or 'e' or 'i' or 'o' or 'u')
+    {
+        vocales++;
+    }
+}
+
+Console.WriteLine($"Vocales: {vocales}");</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — foreach sobre un arreglo</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// La colección de C# moderno: corchetes, sin "new int[]".
+double[] notas = [4.5, 3.8, 2.9];
+
+foreach (double nota in notas)
+{
+    Console.WriteLine($"Nota: {nota:F1}");
+}
+
+// Con var también funciona, y el tipo se deduce solo.
+foreach (var nota in notas)
+{
+    Console.WriteLine(nota);
+}</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — foreach sobre un List&lt;T&gt;</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Un List&lt;T&gt; es una lista que CRECE: puedes agregarle cosas.
+List&lt;string&gt; materias = ["Matemáticas", "Física", "Química"];
+
+foreach (string materia in materias)
+{
+    Console.WriteLine($"Materia: {materia}");
+}
+
+// Y el clásico: agregar al final, quitar, contar.
+materias.Add("Biología");
+materias.Remove("Física");
+Console.WriteLine($"Total: {materias.Count} materias");</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — foreach sobre un Dictionary (con desestructuración)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Un Dictionary guarda pares CLAVE → VALOR.
+Dictionary&lt;string, int&gt; asistencia = new()
+{
+    ["Ana"] = 18,
+    ["Julián"] = 15,
+    ["Sara"] = 20
+};
+
+// Versión 1: foreach con "par" (clave y valor juntos)
+foreach (var par in asistencia)
+{
+    Console.WriteLine($"{par.Key}: {par.Value} días de asistencia");
+}
+
+// Versión 2: DESESTRUCTURACIÓN: el par se abre en dos variables.
+// (nombre, dias) es una forma de escribir (par.Key, par.Value).
+foreach (var (nombre, dias) in asistencia)
+{
+    Console.WriteLine($"{nombre} faltó {20 - dias} día(s)");
+}</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — foreach sobre un Span (lo moderno)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Un ReadOnlySpan es una "ventana" sobre la memoria: no copia el texto.
+// En C# moderno se usa para trabajar con pedazos de cadenas sin copiarlos.
+ReadOnlySpan&lt;char&gt; trozo = "Hola mundo"[..4];
+
+foreach (char c in trozo)
+{
+    Console.Write(c);
+}
+Console.WriteLine();
+
+// Y sobre un arreglo, el Span evita copiarlo.
+int[] numeros = [1, 2, 3, 4, 5];
+Span&lt;int&gt; ventana = numeros.AsSpan(0, 3);
+
+foreach (int n in ventana)
+{
+    Console.Write(n + " ");
+}
+Console.WriteLine();</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Colección</th><th>Se declara como</th><th>Qué recorre</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>string</code></td><td><code>string texto = "Hola";</code></td><td>Sus caracteres (<code>char</code>)</td></tr>
+        <tr><td>Arreglo</td><td><code>int[] nums = [1, 2, 3];</code></td><td>Sus elementos</td></tr>
+        <tr><td>Lista</td><td><code>List&lt;int&gt; nums = [1, 2, 3];</code></td><td>Sus elementos (y puede crecer)</td></tr>
+        <tr><td>Diccionario</td><td><code>Dictionary&lt;string, int&gt; d = new();</code></td><td>Sus pares clave-valor</td></tr>
+        <tr><td>Span</td><td><code>ReadOnlySpan&lt;char&gt; s = "Hola".AsSpan();</code></td><td>Sus caracteres, sin copiar el texto</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 <code>foreach</code> vs. <code>for</code>: ¿cuál uso?</h4>
+    <p><strong>Usa <code>foreach</code></strong> cuando solo quieres <em>ver</em> los datos: imprimir, sumar, buscar. Es más corto, no tiene índice que se te pueda salir y el compilador te avisa si intentas modificar la colección mientras la recorres. <strong>Usa <code>for</code></strong> cuando necesitas el <strong>número de la posición</strong> (mostrar "1.Ana, 2.Julián…"), cuando vas a <strong>modificar</strong> la colección, o cuando necesitas <strong>salir antes de tiempo</strong> con un <code>break</code> condicional. ¿Legibilidad? Gana el <code>foreach</code> casi siempre.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Escriban un programa que recorra un arreglo de <strong>5 notas</strong> y muestre cada nota con su posición ("Nota 1: 4.5"), y que al final imprima el promedio. Haganlo <strong>primero con <code>foreach</code></strong> y luego <strong>con <code>for</code></strong>. ¿Cuál fue más fácil de escribir? ¿En cuál no se pueden equivocar con los límites? Esa comparación es la que te va a servir en la Clase 7 con los arreglos.</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la gran ventaja del <code>foreach</code> frente al <code>for</code>?</p>
+      <button class="opcion" data-op="a">Es mucho más rápido siempre</button>
+      <button class="opcion" data-op="b">No necesitas manejar el índice: C# se encarga de la posición</button>
+      <button class="opcion" data-op="c">Permite modificar el arreglo mientras lo recorres</button>
+      <button class="opcion" data-op="d">Solo funciona con arreglos de números</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Qué recorre exactamente <code>foreach (char letra in "Hola")</code>?</p>
+      <button class="opcion" data-op="a">Las palabras de la cadena</button>
+      <button class="opcion" data-op="b">Los números del 1 al 4</button>
+      <button class="opcion" data-op="c">Los caracteres de la cadena, uno por uno</button>
+      <button class="opcion" data-op="d">Un error, porque <code>char</code> no existe</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> En <code>foreach (var (clave, valor) in dic)</code>, ¿qué está pasando?</p>
+      <button class="opcion" data-op="a">Se desestructura cada par clave-valor en dos variables</button>
+      <button class="opcion" data-op="b">Se está llamando al diccionario de forma recursiva</button>
+      <button class="opcion" data-op="c">Se está contando el número de elementos</button>
+      <button class="opcion" data-op="d">Se está creando un diccionario nuevo</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira los brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73 % agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Cuéntale a tu compañero/a: ¿cuál ciclo se te hizo más difícil, el <code>while</code> o el <code>for</code>? 1 min.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>En 1960 Ada Lovelace le escribió a Charles Babbage un algoritmo para calcular las Bernoulli usando la "máquina analítica" — y tenía un <strong>ciclo dentro</strong>: repetía una serie de operaciones para refinar aproximaciones. O sea: <strong>el primer programa de la historia ya tenía un bucle</strong>. Y el <code>foreach</code> se inventó después de <code>for</code> justamente porque los programadores se cansaron de escribir el índice a mano una y otra vez.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: break y continue →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>🛑 <code>break</code> y <code>continue</code>: el control del ciclo</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "Salir del todo o saltar esta vuelta"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 Dos palabras que manejan el ciclo por dentro</h3>
+    <p>Hasta ahora los ciclos solo se paran porque la condición deja de cumplirse. Pero a veces quieres <strong>salir antes</strong> (ya encontré lo que buscaba) o <strong>saltarte una vuelta</strong> (este dato no me interesa). Para eso: <code>break</code> <strong>rompe</strong> el ciclo y sale; <code>continue</code> <strong>continúa</strong> con la siguiente vuelta, saltándose el resto del cuerpo.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — break: sale del bucle</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// break: sale COMPLETAMENTE del bucle.
+for (int i = 1; i &lt;= 10; i++)
+{
+    if (i == 5)
+    {
+        break;              // aquí el ciclo se detiene
+    }
+
+    Console.WriteLine(i);   // imprime 1, 2, 3, 4
+}
+
+Console.WriteLine("Después del ciclo");</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — continue: salta a la siguiente vuelta</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// continue: salta a la SIGUIENTE iteración.
+// Lo que queda del cuerpo NO se ejecuta en esa vuelta.
+for (int i = 1; i &lt;= 10; i++)
+{
+    if (i % 2 == 0)
+    {
+        continue;           // los pares se saltan
+    }
+
+    Console.WriteLine(i);   // imprime 1, 3, 5, 7, 9
+}
+
+// continue también sirve para descartar datos inválidos:
+int[] datos = [5, -3, 8, 0, 12];
+int positivos = 0;
+
+foreach (int numero in datos)
+{
+    if (numero &lt;= 0)
+    {
+        continue;           // este dato no cuenta
+    }
+
+    positivos++;
+}
+
+Console.WriteLine($"Positivos: {positivos}");</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — return dentro de un bucle</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// return sale del MÉTODO entero, no solo del bucle.
+static int PrimerNumeroPar(int[] numeros)
+{
+    foreach (int n in numeros)
+    {
+        if (n % 2 == 0)
+        {
+            return n;        // se acabó: el for también y el método también
+        }
+    }
+
+    return -1;               // no había ningún par
+}
+
+Console.WriteLine(PrimerNumeroPar([3, 7, 8, 2]));</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Peligro 1: el <code>continue</code> antes del avance</h4>
+    <p>En un <code>while</code>, el <code>continue</code> salta directo a la condición. Si el avance del contador estaba <strong>después</strong> del <code>continue</code>, el contador nunca cambia y el ciclo no termina nunca. La regla de oro: <strong>pon el avance (o el <code>i++</code>) al principio del cuerpo</strong>, antes de cualquier <code>continue</code>.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — el continue peligroso (error de lógica: el programa no termina)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre data-lang="csharp-error"><code>// ERROR DE LÓGICA: el continue salta el i++ y el bucle NO termina.
+int i = 0;
+
+while (i &lt; 5)
+{
+    if (i == 2)
+    {
+        continue;        // aquí i nunca se vuelve 3: bucle infinito
+    }
+
+    i++;
+    Console.WriteLine(i);
+}</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — la forma segura: el avance va primero</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// La forma segura: el avance va PRIMERO, antes del continue.
+int i = 0;
+
+while (i &lt; 5)
+{
+    i++;                  // el avance nunca se salta
+
+    if (i == 2)
+    {
+        continue;         // ahora sí: salta solo el Console.WriteLine
+    }
+
+    Console.WriteLine(i); // imprime 1, 3, 4, 5
+}</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Peligro 2: el <code>break</code> en el bucle equivocado</h4>
+    <p>Cuando hay <strong>dos ciclos anidados</strong>, el <code>break</code> solo rompe el <strong>bucle más interno</strong> (el que está más cerca). Si querías salir de los dos, un solo <code>break</code> no alcanza: necesitas una bandera (<code>bool</code>) o el <code>return</code>. Y ojo con el <code>break</code> "mal puesto": si lo dejas fuera del <code>if</code> que debía protegerlo, el ciclo se rompe en la primera vuelta y tu programa no hace nada.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — a cuál bucle afecta el break</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>for (int fila = 1; fila &lt;= 3; fila++)
+{
+    for (int columna = 1; columna &lt;= 3; columna++)
+    {
+        if (columna == 2)
+        {
+            break;   // sale SOLO del bucle interno (el de columnas)
+        }
+
+        Console.Write($"{fila}{columna} ");
+    }
+}
+
+Console.WriteLine("Fin");
+
+// Salida: 11 21 31 Fin
+// El bucle externo siguió: solo se detuvo el interno.</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Palabra</th><th>¿Qué hace?</th><th>¿A qué nivel sale?</th><th>Uso típico</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>break</code></td><td>Termina el ciclo</td><td>Al bucle más interno</td><td>Encontré lo que buscaba</td></tr>
+        <tr><td><code>continue</code></td><td>Salta a la siguiente vuelta</td><td>Se queda en el mismo ciclo</td><td>Descartar un dato que no me sirve</td></tr>
+        <tr><td><code>return</code></td><td>Sale del método y devuelve el valor</td><td>Sale de todos los ciclos del método</td><td>Encontrar el resultado y terminar</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Escriban un programa que recorra los números del 1 al 20 y que <strong>se detenga en el primer múltiplo de 7</strong> (con <code>break</code>) y que <strong>se salte los múltiplos de 3</strong> (con <code>continue</code>). Después háganlo al revés: uno usa <code>break</code> y el otro <code>continue</code> en el mismo programa, y comparen las salidas. ¿Cuál de las dos combinaciones da la lista más limpia?</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace el <code>break</code> dentro de un ciclo?</p>
+      <button class="opcion" data-op="a">Salta a la siguiente vuelta del ciclo</button>
+      <button class="opcion" data-op="b">Termina el ciclo y el programa sigue después de él</button>
+      <button class="opcion" data-op="c">Termina todo el programa</button>
+      <button class="opcion" data-op="d">Vuelve a evaluar la condición</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué hace el <code>continue</code>?</p>
+      <button class="opcion" data-op="a">Salta a la siguiente vuelta, sin ejecutar el resto del cuerpo</button>
+      <button class="opcion" data-op="b">Sale del ciclo por completo</button>
+      <button class="opcion" data-op="c">Termina el método</button>
+      <button class="opcion" data-op="d">Ejecuta el cuerpo dos veces</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> Con dos ciclos anidados, ¿a cuál afecta un <code>break</code>?</p>
+      <button class="opcion" data-op="a">Al ciclo externo</button>
+      <button class="opcion" data-op="b">A los dos a la vez</button>
+      <button class="opcion" data-op="c">Solo al más interno (el más cercano al <code>break</code>)</button>
+      <button class="opcion" data-op="d">A ninguno: el <code>break</code> no funciona en ciclos anidados</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: ciclos anidados →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>🪆 Ciclos anidados: tablas y matrices</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Un ciclo dentro de otro ciclo: la tabla de multiplicar nace aquí"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 Dos datos que varían, dos ciclos</h3>
+    <p>Un ciclo anidado es un ciclo <strong>dentro</strong> del cuerpo de otro ciclo. ¿Cuándo lo necesitas? Cuando tienes <strong>dos cosas que cambian al mismo tiempo</strong>: la fila y la columna de una tabla, el estudiante y sus tres cortes, la tabla de multiplicar del 1 al 5. El ciclo de afuera maneja una variable y el de adentro la otra.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — la tabla de multiplicar con for anidado</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// La tabla de multiplicar del 1 al 5.
+for (int fila = 1; fila &lt;= 5; fila++)
+{
+    for (int columna = 1; columna &lt;= 5; columna++)
+    {
+        Console.Write($"{fila * columna,4}");   // el 4 alinea las columnas
+    }
+
+    Console.WriteLine();   // salto de línea al final de cada fila
+}</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th><code>fila</code></th><th><code>columna</code></th><th>Salida</th><th>Estado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>1 → 2 → 3 → 4 → 5</td><td>1 2 3 4 5</td><td style="color:var(--verde)">fila terminada</td></tr>
+        <tr><td>2</td><td>1 → 2 → 3 → 4 → 5</td><td>2 4 6 8 10</td><td style="color:var(--verde)">fila terminada</td></tr>
+        <tr><td>3</td><td>1 → 2 → 3 → 4 → 5</td><td>3 6 9 12 15</td><td style="color:var(--verde)">fila terminada</td></tr>
+        <tr><td>4</td><td>1 → 2 → 3 → 4 → 5</td><td>4 8 12 16 20</td><td style="color:var(--verde)">fila terminada</td></tr>
+        <tr><td>5</td><td>1 → 2 → 3 → 4 → 5</td><td>5 10 15 20 25</td><td style="color:var(--verde)">fila terminada</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — matriz de notas: estudiante por corte</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Una "matriz" de notas: una fila por estudiante y una columna por corte.
+double[,] notas = new double[,]
+{
+    { 3.5, 4.0, 2.8 },
+    { 4.2, 4.5, 4.8 },
+    { 1.5, 2.0, 3.0 }
+};
+
+for (int i = 0; i &lt; notas.GetLength(0); i++)
+{
+    double suma = 0;
+
+    for (int j = 0; j &lt; notas.GetLength(1); j++)
+    {
+        suma += notas[i, j];        // acumula los cortes del estudiante
+    }
+
+    double promedio = suma / notas.GetLength(1);
+    Console.WriteLine($"Estudiante {i + 1}: {promedio:F2}");
+}
+
+// Salida esperada:
+// Estudiante 1: 3.43
+// Estudiante 2: 4.50
+// Estudiante 3: 2.17</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Ojo con el rendimiento: O(n²)</h4>
+    <p>Un ciclo dentro de otro ciclo hace <strong>el doble de trabajo</strong>: si el de afuera da 100 vueltas y el de adentro 100, se ejecutan <strong>10 000</strong> iteraciones. Eso se llama <strong>complejidad O(n²)</strong>. A veces es justo lo que quieres (una tabla), pero muchas veces estás haciendo que el computador busque lo mismo una y otra vez. <strong>Regla práctica:</strong> antes de anidar, pregúntate si el trabajo se puede hacer en <strong>una sola pasada</strong>.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — O(n²) innecesario frente a una sola pasada</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int[] numeros = [4, 8, 15, 16, 23, 42];
+int buscado = 15;
+bool existe = false;
+
+// Versión torpe: dos ciclos, 36 comparaciones para 6 datos.
+for (int i = 0; i &lt; numeros.Length; i++)
+{
+    for (int j = 0; j &lt; numeros.Length; j++)
+    {
+        if (numeros[i] == numeros[j])
+        {
+            existe = true;
+        }
+    }
+}
+
+// Versión eficiente: una sola pasada, 6 comparaciones.
+bool existeRapido = numeros.Contains(buscado);
+
+Console.WriteLine($"Lento: {existe}, rápido: {existeRapido}");</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Adelanto: el acumulador y el contador (Clase 6)</h4>
+    <p>En el ejemplo de las notas apareció algo nuevo: <code>suma += cortes[j]</code>. Esa variable <code>suma</code> es un <strong>acumulador</strong>: guarda la suma de todo lo que pasa por el ciclo. Y el <code>i</code> y el <code>j</code> son <strong>contadores</strong>: cuentan vueltas. En la <strong>Clase 6</strong> vamos a estudiarlos a fondo, con banderas y más patrones. Por hoy, solo mira que el acumulador <strong>se inicializa en 0 antes del ciclo</strong> y <strong>se reinicia</strong> en el lugar correcto (en el ejemplo, dentro del ciclo de estudiantes).</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Dibujen en el cuaderno la <strong>tabla de control</strong> del doble ciclo: una tabla con tres columnas (<code>fila</code>, <code>columna</code>, <code>salida</code>) y las 25 combinaciones en orden. Después, uno de los dos le dice al otro "escribe el for anidado que produce esta tabla" y el otro lo hace sin mirar el cuaderno. Si la tabla no cuadra, revisen el <code>Console.WriteLine()</code> final (el salto de línea).</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Por qué la tabla de multiplicar necesita <strong>dos</strong> ciclos?</p>
+      <button class="opcion" data-op="a">Porque hay dos datos que cambian: la fila y la columna</button>
+      <button class="opcion" data-op="b">Porque un solo ciclo no puede imprimir 25 números</button>
+      <button class="opcion" data-op="c">Porque el <code>for</code> no puede ir dentro de un <code>for</code></button>
+      <button class="opcion" data-op="d">Porque el <code>while</code> no sirve para tablas</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> Si un ciclo de 100 vueltas tiene otro de 100 dentro, ¿cuántas iteraciones se ejecutan?</p>
+      <button class="opcion" data-op="a">200</button>
+      <button class="opcion" data-op="b">10 000 (es la complejidad O(n²))</button>
+      <button class="opcion" data-op="c">100</button>
+      <button class="opcion" data-op="d">10 000 000</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué es un <strong>acumulador</strong> en un ciclo?</p>
+      <button class="opcion" data-op="a">La variable que cuenta las vueltas del ciclo</button>
+      <button class="opcion" data-op="b">La variable que guarda el resultado final, fuera del ciclo</button>
+      <button class="opcion" data-op="c">La variable que guarda la suma de todo lo que pasa por el ciclo</button>
+      <button class="opcion" data-op="d">Un tipo de dato que solo existe dentro del <code>for</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: promedios de una clase</h2>
+  <p class="meta-modulo">⏱️ 45 minutos · "while para leer, for anidado para la tabla"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">Promedios de una clase + tabla de multiplicar</span>
+    </div>
+    <p>El departamento académico quiere un programa que reciba las notas de un curso, calcule el promedio y muestre la escala. Tu misión: construir <strong>PromediosClase</strong>, una aplicación de consola con <code>while</code> + <code>TryParse</code> para leer, y un <code>for</code> anidado para la tabla de multiplicar.</p>
+  </div>
+
+  <h3>📋 Requisitos del taller</h3>
+  <ol class="pasos">
+    <li>Crea el proyecto: <code>dotnet new console -n PromediosClase</code> y ábrelo en VS Code (<code>code .</code>).</li>
+    <li>Pide <strong>cuántas notas</strong> se van a promediar. Si el número no es válido o es cero, avisa y termina.</li>
+    <li>Lee las notas con un <strong><code>while</code></strong> y valida cada una con <code>double.TryParse</code>: solo cuentan las notas entre 0 y 5. Las demás se descartan con un <strong><code>continue</code></strong>.</li>
+    <li>Permite que el usuario escriba <strong>"fin"</strong> para terminar antes de tiempo (usa un <strong><code>break</code></strong> con sentido).</li>
+    <li>Calcula el <strong>promedio</strong> (solo de las notas válidas) y clasifícala en escala A–D con una <code>switch expression</code>.</li>
+    <li>Al final, imprime la <strong>tabla de multiplicar del 1 al 5</strong> con un <strong><code>for</code> anidado</strong>.</li>
+  </ol>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — guía de estilo (no es la solución, es el molde)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ============================================
+// PROMEDIOS DE UNA CLASE — molde
+// ============================================
+
+Console.Write("¿Cuántas notas vas a promediar? ");
+int cantidad = int.TryParse(Console.ReadLine() ?? "", out int n) &amp;&amp; n &gt; 0 ? n : 0;
+
+// Acumulador y contador (esto lo vemos a fondo en la Clase 6)
+double suma = 0;
+int notasValidas = 0;
+int i = 1;
+
+// 1. LEE LAS NOTAS CON UN while
+while (i &lt;= cantidad)
+{
+    Console.Write($"Nota {i}: ");
+    string entrada = Console.ReadLine() ?? "";
+    i++;
+
+    // 2. DESCARTA LO QUE NO ES UNA NOTA VÁLIDA
+    if (!double.TryParse(entrada, out double nota) || nota is &lt; 0 or &gt; 5)
+    {
+        continue;
+    }
+
+    suma += nota;
+    notasValidas++;
+}
+
+// 3. PROMEDIO
+double promedio = notasValidas &gt; 0 ? suma / notasValidas : 0;
+
+// 4. TABLA DE MULTIPLICAR CON for ANIDADO
+for (int fila = 1; fila &lt;= 5; fila++)
+{
+    for (int columna = 1; columna &lt;= 5; columna++)
+    {
+        Console.Write($"{fila * columna,4}");
+    }
+    Console.WriteLine();
+}</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 La trampa del <code>i++</code></h4>
+    <p>En el molde el <code>i++</code> está <strong>justo después de leer</strong>, antes del <code>continue</code>. ¿Por qué? Porque el <code>continue</code> salta directo a la condición del <code>while</code>: si el <code>i++</code> quedara más abajo, una nota inválida dejaría el contador congelado y el programa nunca terminaría de pedir notas. <strong>Avance primero, después decide.</strong></p>
+  </div>
+
+  <button class="btn-solucion" data-solucion="sol-taller">👁️ Ver solución completa</button>
+  <div class="solucion" id="sol-taller">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-header-left">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span>csharp — solución del taller</span>
+        </div>
+        <button class="copy-btn">📋 Copiar</button>
+      </div>
+<pre><code>// ============================================
+// PROMEDIOS DE UNA CLASE — solución del taller
+// ============================================
+
+Console.Write("¿Cuántas notas vas a promediar? ");
+int cantidad = int.TryParse(Console.ReadLine() ?? "", out int n) &amp;&amp; n &gt; 0 ? n : 0;
+
+if (cantidad == 0)
+{
+    Console.WriteLine("Debes indicar al menos una nota.");
+    return;
+}
+
+Console.WriteLine("Escribe cada nota (de 0 a 5). Escribe 'fin' para terminar antes.");
+
+double suma = 0;          // ACUMULADOR
+int notasValidas = 0;     // CONTADOR
+int i = 1;
+
+// --- 1. LECTURA CON while ---
+while (i &lt;= cantidad)
+{
+    Console.Write($"Nota {i}: ");
+    string entrada = Console.ReadLine() ?? "";
+    i++;                                  // el avance va PRIMERO
+
+    // --- 2. break: el usuario quiere parar ---
+    if (entrada.Trim().Equals("fin", StringComparison.OrdinalIgnoreCase))
+    {
+        Console.WriteLine("  ⏹️ Terminó la entrada de notas.");
+        break;
+    }
+
+    // --- 3. continue: esta nota no cuenta ---
+    if (!double.TryParse(entrada, out double nota) || nota is &lt; 0 or &gt; 5)
+    {
+        Console.WriteLine("  ⚠️ Nota no válida: se descarta.");
+        continue;
+    }
+
+    suma += nota;
+    notasValidas++;
+    Console.WriteLine($"  ✅ Nota {nota:F1} registrada.");
+}
+
+// --- 4. PROMEDIO ---
+if (notasValidas == 0)
+{
+    Console.WriteLine("No se registró ninguna nota válida.");
+    return;
+}
+
+double promedio = suma / notasValidas;
+
+string escala = promedio switch
+{
+    &gt;= 4.5 =&gt; "A — Excelente",
+    &gt;= 4.0 =&gt; "B — Muy bien",
+    &gt;= 3.0 =&gt; "C — Bien",
+    _ =&gt; "D — Insuficiente"
+};
+
+Console.WriteLine();
+Console.WriteLine("=== RESULTADO ===");
+Console.WriteLine($"Notas válidas: {notasValidas} de {cantidad}");
+Console.WriteLine($"Promedio: {promedio:F2}");
+Console.WriteLine($"Escala: {escala}");
+
+// --- 5. TABLA DE MULTIPLICAR con for ANIDADO ---
+Console.WriteLine();
+Console.WriteLine("=== TABLA DE MULTIPLICAR DEL 1 AL 5 ===");
+
+for (int fila = 1; fila &lt;= 5; fila++)
+{
+    for (int columna = 1; columna &lt;= 5; columna++)
+    {
+        Console.Write($"{fila * columna,4}");
+    }
+    Console.WriteLine();
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="checklist">
+    <h4>✅ Antes de entregar, verifica</h4>
+    <ul>
+      <li>El proyecto se llama <code>PromediosClase</code> y corre con <code>dotnet run</code>.</li>
+      <li>Las notas se leen con un <strong><code>while</code></strong> y el <code>i++</code> está <strong>antes</strong> del <code>continue</code>.</li>
+      <li>Si escribes "fin", el programa <strong>termina la lectura</strong> con <code>break</code> y calcula el promedio con lo que lleva.</li>
+      <li>Una nota inválida (letra o número mayor que 5) se descarta <strong>sin tumbar el programa</strong>.</li>
+      <li>El promedio se calcula solo con las notas <strong>válidas</strong> (revisa que no dividas entre <code>cantidad</code>).</li>
+      <li>La tabla de multiplicar sale cuadrada: 5 filas de 5 números.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>El compañero/a prueba tu programa con estos datos: 3 notas → <code>4.5</code>, <code>abc</code>, <code>5</code>. Debe registrar 2 notas válidas (promedio 4.75, escala A) y avisar que una se descartó. Después prueba con "fin" a la segunda nota. Si el resultado no cuadra, revisen el <code>continue</code> y el <code>break</code>: casi siempre el error está en <strong>dónde</strong> pusiste el avance del contador.</p>
+  </div>
+
+  <div class="quiz" data-quiz="7">
+    <h3>🎯 Mini-Quiz del Módulo 7</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Por qué el <code>i++</code> debe ir <strong>antes</strong> del <code>continue</code> en el <code>while</code>?</p>
+      <button class="opcion" data-op="a">Porque el <code>continue</code> salta a la condición: si el avance queda después, el contador nunca avanza y el bucle no termina</button>
+      <button class="opcion" data-op="b">Porque el <code>continue</code> borra las variables</button>
+      <button class="opcion" data-op="c">Porque el <code>i++</code> debe estar junto al <code>while</code></button>
+      <button class="opcion" data-op="d">No importa: el compilador lo reordena solo</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> Si de 5 notas solo 3 son válidas, ¿sobre cuántas se calcula el promedio?</p>
+      <button class="opcion" data-op="a">Sobre 5, para que el resultado no cambie</button>
+      <button class="opcion" data-op="b">Sobre 3, porque las notas válidas son las que se acumularon</button>
+      <button class="opcion" data-op="c">Sobre 2, porque una se descartó con <code>continue</code></button>
+      <button class="opcion" data-op="d">Sobre 0, porque el promedio no se puede calcular</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Para qué se usa el <code>for</code> anidado en el taller?</p>
+      <button class="opcion" data-op="a">Para leer las notas con <code>TryParse</code></button>
+      <button class="opcion" data-op="b">Para calcular el promedio</button>
+      <button class="opcion" data-op="c">Para imprimir la tabla de multiplicar (una vuelta por fila y otra por columna)</button>
+      <button class="opcion" data-op="d">Para terminar el programa antes de tiempo</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 5 completada!</h2>
+    <p>Ya sabes repetir: <code>while</code>, <code>do-while</code>, <code>for</code> y <code>foreach</code>, y controlarlos con <code>break</code> y <code>continue</code>. En la <strong>Clase 6</strong> vamos a formalizar lo que ya usaste sin darte cuenta: <strong>acumuladores, contadores y banderas</strong>. Con eso tus programas dejan de contar y empiezan a <em>razonar</em>.</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🧠 Herramientas Algorítmicas II · Clase 5 de 10</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · Código TL007</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

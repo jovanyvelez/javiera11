@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧠 Herramientas Algorítmicas II · Clase 8 · Funciones</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🧠</span>
+    <div>
+      <h1>Herramientas Algorítmicas II · Clase 8</h1>
+      <p class="subtitulo">C# moderno · Funciones: entrada, retorno y referencias · valor vs referencia · recursión</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">🧠 Función</button>
+  <button class="btn-modulo" data-modulo="2">📥 Parámetros</button>
+  <button class="btn-modulo" data-modulo="3">🔗 Valor vs ref</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🧬 Sobrecarga</button>
+  <button class="btn-modulo" data-modulo="6">♻️ out y recursión</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🧠 Funciones: el superpoder de no repetirte</h2>
+    <p class="lead">Hoy tu programa va a dejar de ser un bloque gigante de instrucciones y va a empezar a parecerse a una <strong>receta de cocina</strong>: recetas con nombre, que reciben ingredientes (<strong>parámetros</strong>) y entregan un plato (<strong>retorno</strong>). Vas a aprender a escribir funciones, a pasarles datos <strong>por valor y por referencia</strong> y a construir programas cortos y ordenados. 👨‍🍳</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — estudiante@colegio</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">estudiante@colegio:~$</span> <span class="cmd">dotnet new console -n Funciones</span></div>
+        <div class="out">La plantilla "aplicación de consola" se creó correctamente.</div>
+        <div><span class="prompt">estudiante@colegio:~/Funciones$</span> <span class="cmd">dotnet run</span></div>
+        <div class="out">Promedio: 4.43</div>
+        <div><span class="prompt">estudiante@colegio:~/Funciones$</span> <span class="cmd">code .</span></div>
+        <div><span class="prompt">estudiante@colegio:~/Funciones$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3 h 45 min en 8 módulos, con descanso a mitad. Todo con el mismo proyecto <code>Funciones</code> que abriste en la terminal.</p>
+    </div>
+    <div class="tarjeta tarjeta-verde">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Escribir funciones con parámetros de entrada y retorno, entender el paso <strong>por valor</strong> y <strong>por referencia</strong>, y modularizar un programa completo.</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>El <code>static</code> olvidado, la función que "no le hace caso" a la variable original, el <code>out</code> sin inicializar y la recursión que nunca termina. 😱</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · Función</td><td style="color:var(--a)">Anatomía de una función</td><td style="color:var(--rosa)">Falta el <code>static</code></td><td>100 XP</td></tr>
+        <tr><td>02 · Parámetros</td><td style="color:var(--b)">Entrada, retorno, tuplas</td><td style="color:var(--rosa)">Argumentos cambiados</td><td>100 XP</td></tr>
+        <tr><td>03 · Valor vs ref</td><td style="color:var(--a)">Copias y referencias</td><td style="color:var(--rosa)">"¡Pero yo lo modifiqué!"</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>05 · Sobrecarga</td><td style="color:var(--verde)">Sobrecarga, lambdas</td><td style="color:var(--rosa)">Ambigüedad</td><td>100 XP</td></tr>
+        <tr><td>06 · out y recursión</td><td style="color:var(--b)">out, ref, in, recursión</td><td style="color:var(--rosa)">Pila infinita</td><td>100 XP</td></tr>
+        <tr><td>07 · Taller</td><td style="color:var(--a)">Calculadora estadística</td><td style="color:var(--rosa)">Programa enredado</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Piensa en tu casa: ¿qué recetas repites siempre? Anota <strong>3 recetas</strong> y para cada una anota <strong>qué entra</strong> (los ingredientes) y <strong>qué sale</strong> (el plato). Eso es exactamente una función: <em>entrada → proceso → salida</em>. 🔪</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué esta clase es la bisagra del curso?</h4>
+    <p>Desde aquí en adelante todo se arma con piezas pequeñas: la <strong>Clase 9</strong> programa un menú de consola, la <strong>Clase 10</strong> usa clases y objetos, y al final tu código va a parecer un programa de verdad, no un cuaderno de notas. Hoy aprendes la pieza fundamental. 🧩</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: ¿qué es una función? →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>🧠 ¿Qué es una función?</h2>
+  <p class="meta-modulo">⏱️ 25 minutos · "Un pedazo de código con nombre"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 La definición que sí sirve</h3>
+    <p>Una <strong>función</strong> (en C# también se le dice <strong>método</strong> cuando vive dentro de una clase) es un <strong>bloque de código con nombre</strong> que hace <em>una sola cosa</em>, recibe datos (<strong>parámetros</strong>) y devuelve un resultado (<strong>valor de retorno</strong>). Es la unidad con la que se construyen los programas grandes: en vez de escribir 300 líneas, escribes 15 funciones de 15 líneas. 🔨</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — la anatomía de una función</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Anatomía de una función
+static double CalcularPromedio(double[] notas)   // ← firma
+{
+    if (notas.Length == 0)
+        return 0;                                // ← cuerpo
+
+    double suma = 0;
+    foreach (double nota in notas)
+        suma += nota;
+
+    return suma / notas.Length;
+}
+
+// Cómo se usa
+double[] notas = [4.5, 3.8, 5.0];
+double promedio = CalcularPromedio(notas);
+Console.WriteLine($"El promedio es {promedio:F2}");</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Parte</th><th>En el ejemplo</th><th>¿Para qué sirve?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Tipo de retorno</strong></td><td><code>double</code></td><td>Qué tipo de dato devuelve la función. Si no devuelve nada, es <code>void</code>.</td></tr>
+        <tr><td><strong>Nombre</strong></td><td><code>CalcularPromedio</code></td><td>La etiqueta con la que la llamas. Se escribe en <strong>PascalCase</strong>.</td></tr>
+        <tr><td><strong>Parámetros</strong></td><td><code>double[] notas</code></td><td>Los datos que recibe. Cada uno necesita tipo y nombre.</td></tr>
+        <tr><td><strong>Cuerpo</strong></td><td><code>{ ... }</code></td><td>Las instrucciones. Si el tipo de retorno no es <code>void</code>, debe terminar con <code>return</code>.</td></tr>
+        <tr><td><strong>Modificador</strong></td><td><code>static</code></td><td>La función no depende de ningún objeto: se puede llamar sin crear nada.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🏠 ¿Dónde vive una función?</h3>
+  <p>Hay dos lugares posibles, y ninguno de los dos es "el lugar correcto" por ley: lo importante es que lo entiendas.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — función local vs. método de clase</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// 1) Función LOCAL: vive dentro de otra función.
+//    Solo se puede usar desde adentro. Ideal para un dato auxiliar.
+static void MostrarReporte()
+{
+    static string Formatear(double valor) =&gt; $"$ {valor:N2}";
+
+    Console.WriteLine(Formatear(1250.5));
+}
+
+MostrarReporte();
+
+// 2) Método de clase: vive en una clase y se llama con el nombre de la clase.
+//    Se puede reutilizar desde cualquier parte del programa.
+Console.WriteLine(Calculadora.Sumar(2, 3));
+
+class Calculadora
+{
+    public static int Sumar(int a, int b) =&gt; a + b;
+}</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Y por qué <code>static</code>?</h4>
+    <p><code>static</code> significa "esta función no necesita de un objeto para funcionar". Una calculadora de área no necesita de nadie: la llamas directo. En la <strong>Clase 10</strong> (POO) verás funciones <em>sin</em> <code>static</code>, que usan los datos del objeto. Por ahora: <strong>todas tus funciones van con <code>static</code></strong>. 👌</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: una función sin <code>static</code> en un programa de consola</h4>
+    <p>Si escribes <code>double CalcularPromedio(double[] notas)</code> (sin <code>static</code>) dentro de un programa con instrucciones de nivel superior, el compilador te responde <em>"no se puede acceder a un miembro no estático sin una instancia"</em>. La solución: agrega <code>static</code> delante. Es el error número uno de esta clase. ⚠️</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban en el papel una función <code>Saludar</code> que reciba un <code>string nombre</code> y devuelva un <code>string</code> con el saludo. Luego escríbanla en el computador y llámenla dos veces con nombres distintos. ¿Qué cambiarían para que saludara en español y en inglés? 💬</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué partes tiene siempre una función en C#?</p>
+      <button class="opcion" data-op="a">Solo el nombre</button>
+      <button class="opcion" data-op="b">Tipo de retorno, nombre, parámetros y cuerpo</button>
+      <button class="opcion" data-op="c">Solo el cuerpo</button>
+      <button class="opcion" data-op="d">Nombre, cuerpo y comentario</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> En <code>static double CalcularPromedio(double[] notas)</code>, ¿qué significa <code>static</code>?</p>
+      <button class="opcion" data-op="a">Que la función es rápida</button>
+      <button class="opcion" data-op="b">Que la función no devuelve nada</button>
+      <button class="opcion" data-op="c">Que la función no depende de ningún objeto</button>
+      <button class="opcion" data-op="d">Que la función es privada</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cómo se escribe el nombre de una función según la convención de C#?</p>
+      <button class="opcion" data-op="a">PascalCase: <code>CalcularPromedio</code></button>
+      <button class="opcion" data-op="b">Todo en mayúsculas: <code>CALCULARPROMEDIO</code></button>
+      <button class="opcion" data-op="c">camelCase: <code>calcularPromedio</code></button>
+      <button class="opcion" data-op="d">Con guiones bajos: <code>calcular_promedio</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: parámetros y retorno →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>📥 Parámetros de entrada y retorno</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "Los ingredientes y el plato"</p>
+
+  <div class="caja-concepto">
+    <h3>📦 Un parámetro es un espacio con nombre</h3>
+    <p>Un <strong>parámetro</strong> es una variable que la función recibe por la puerta. Al invocarla, le entregas los datos: por <strong>posición</strong> (el primero va al primero) o <strong>por nombre</strong> (<code>CalcularArea(ancho: 5, alto: 3)</code>), que es mucho más fácil de leer. El <strong>retorno</strong> es lo que la función te devuelve con <code>return</code>. 🍽️</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — argumentos con nombre y parámetros opcionales</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Parámetros con nombre: el orden deja de importar
+static double CalcularArea(double ancho, double alto) =&gt; ancho * alto;
+
+// Parámetro opcional: tiene un valor por defecto
+static int Sumar(int a, int b = 10) =&gt; a + b;
+
+Console.WriteLine(CalcularArea(ancho: 5, alto: 3));   // 15
+Console.WriteLine(Sumar(5));      // 5 + 10 = 15
+Console.WriteLine(Sumar(5, 2));   // 7</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — `params`: muchos argumentos sin crear un arreglo</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Con `params` puedes pasar los valores directo, sin llaves
+static int Sumar(params int[] numeros)
+{
+    int total = 0;
+    foreach (int numero in numeros)
+        total += numero;
+
+    return total;
+}
+
+Console.WriteLine(Sumar(1, 2, 3));   // 6
+Console.WriteLine(Sumar(10, 20));    // 30
+Console.WriteLine(Sumar());          // 0</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — `void`, tuplas y retorno temprano</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// `void` = la función no devuelve nada (solo hace cosas)
+static void MostrarBienvenida(string nombre)
+{
+    Console.WriteLine($"¡Bienvenido, {nombre}!");
+}
+
+// Una tupla: la función devuelve DOS valores de una vez
+static (int suma, int resta) Dividir(int a, int b)
+{
+    return (a + b, a - b);
+}
+
+// Retorno temprano: sales de la función antes de llegar al final
+static string EvaluarNota(double nota)
+{
+    if (nota &lt; 0 || nota &gt; 10)
+        return "Nota inválida";
+
+    if (nota &gt;= 7)
+        return "Aprobó";
+
+    return "Debe repetir";
+}
+
+MostrarBienvenida("Ana");
+
+// Puedes descomponer la tupla con paréntesis
+(int suma, int resta) = Dividir(10, 4);
+Console.WriteLine($"Suma: {suma} | Resta: {resta}");
+
+// ...o con `var` y otro estilo de nombres
+var (producto, cociente) = Dividir(10, 4);
+Console.WriteLine($"{producto} / {cociente}");
+
+Console.WriteLine(EvaluarNota(8.5));</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Tipo de parámetro</th><th>Ejemplo</th><th>¿Qué hace?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Posicional</strong></td><td><code>CalcularArea(5, 3)</code></td><td>El primer argumento va al primer parámetro.</td></tr>
+        <tr><td><strong>Con nombre</strong></td><td><code>CalcularArea(alto: 3, ancho: 5)</code></td><td>El orden deja de importar y se lee mejor.</td></tr>
+        <tr><td><strong>Opcional</strong></td><td><code>int b = 10</code></td><td>Si no lo mandas, se usa el valor por defecto.</td></tr>
+        <tr><td><strong><code>params</code></strong></td><td><code>params int[] numeros</code></td><td>Recibe cero, uno o muchos argumentos.</td></tr>
+        <tr><td><strong><code>out</code></strong></td><td><code>out int resultado</code></td><td>Devuelve un dato <em>adicional</em> (lo vemos en el módulo 6).</td></tr>
+        <tr><td><strong><code>ref</code> / <code>in</code></strong></td><td><code>ref int nota</code></td><td>Modificar el dato original o solo leerlo (módulo 3 y 6).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: <code>base</code> es palabra reservada</h4>
+    <p>Querías escribir <code>CalcularArea(base: 5, altura: 3)</code>, pero <code>base</code> es una palabra reservada de C# (sirve para las clases que heredan) y el compilador te lo rechaza. La solución es renombrar: <code>CalcularArea(ancho: 5, alto: 3)</code>. Un buen nombre de parámetro es un seguro contra errores. 🛡️</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: el retorno temprano</h4>
+    <p>Si tienes muchos <code>if</code> anidados, prueba a invertir el orden: primero <strong>saca los casos raros</strong> con <code>return</code> temprano, y deja el caso normal al final, sin <em>else</em>. El código queda plano y se lee de arriba hacia abajo, como una lista de reglas. 🪜</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban una función <code>CalcularIMC(double pesoKg, double alturaCm)</code> que devuelva el índice de masa corporal. Después otra <code>ClasificarIMC(double imc)</code> que devuelva el texto ("Bajo peso", "Normal", "Sobrepeso"). ¿Cuántas funciones usaste? ¿Se puede resolver con una sola? 🧮</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué pasa si a una función con <code>int b = 10</code> la llamas con <code>Sumar(5)</code>?</p>
+      <button class="opcion" data-op="a">Da error: falta un argumento</button>
+      <button class="opcion" data-op="b">Devuelve 5</button>
+      <button class="opcion" data-op="c">Devuelve 15, porque <code>b</code> vale 10 por defecto</button>
+      <button class="opcion" data-op="d">Devuelve 10</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cuál es el resultado de <code>Sumar()</code> en una función con <code>params int[] numeros</code>?</p>
+      <button class="opcion" data-op="a">0, porque no recibió ningún número</button>
+      <button class="opcion" data-op="b">Falla al compilar</button>
+      <button class="opcion" data-op="c">1</button>
+      <button class="opcion" data-op="d">Es un error en tiempo de ejecución</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Cuántos valores puede devolver una función normal con un solo <code>return</code>?</p>
+      <button class="opcion" data-op="a">Los que quieras, separados por comas</button>
+      <button class="opcion" data-op="b">Ninguno, solo con <code>void</code></button>
+      <button class="opcion" data-op="c">Dos, si usas <code>out</code></button>
+      <button class="opcion" data-op="d">Uno (si necesitas varios, usas una tupla)</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: valor vs referencia →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>🔗 Valor vs. referencia: el corazón de la clase</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "El fotocopiador vs. la casa con la dirección"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 Dos formas de "entregar" un dato a una función</h3>
+    <p>Cuando pasas un dato a una función, C# hace una de dos cosas: <strong>copiar el dato</strong> (el fotocopiador) o <strong>copiar la dirección</strong> (la casa con la dirección en un sobre). En el primer caso, los cambios se quedan en la copia. En el segundo, los cambios se ven desde ambos lados. 🔑</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — el experimento que lo aclara todo</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Tipo de VALOR (int): la función recibe una COPIA
+static void SubirNota(int nota)
+{
+    nota += 1;   // sube la copia, no la variable original
+}
+
+// Tipo de REFERENCIA (int[]): la función recibe la DIRECCIÓN del arreglo
+static void DuplicarNotas(int[] notas)
+{
+    for (int i = 0; i &lt; notas.Length; i++)
+        notas[i] *= 2;   // sí cambia el arreglo original
+}
+
+int nota = 5;
+SubirNota(nota);
+Console.WriteLine($"La nota sigue en {nota}");   // 5  (¡no cambió!)
+
+int[] notas = [4, 6, 8];
+DuplicarNotas(notas);
+Console.WriteLine($"La primera nota ahora es {notas[0]}");   // 8  (¡sí cambió!)</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Tipo de dato</th><th>Ejemplos</th><th>Al pasarlo a una función…</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Tipo de valor</strong></td><td><code>int</code>, <code>double</code>, <code>bool</code>, <code>char</code>, <code>struct</code>, <code>enum</code></td><td>Se <strong>copia</strong> el dato. Cambios dentro = cambios solo dentro.</td></tr>
+        <tr><td><strong>Tipo de referencia</strong></td><td><code>string</code>, <code>class</code>, <code>record</code>, <code>int[]</code>, <code>List&lt;T&gt;</code></td><td>Se <strong>copia la dirección</strong>. Cambios dentro = cambios fuera (salvo en <code>string</code>, que es inmutable).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🏠 La analogía de la casa</h3>
+  <div class="compare">
+    <div class="compare-card a">
+      <h4>📄 El fotocopiador (por valor)</h4>
+      <p>Le entregas una <strong>copia</strong> del papel a la función. Si ella le escribe encima, tu papel original queda intacto. Así funciona un <code>int</code>.</p>
+    </div>
+    <div class="compare-card b">
+      <h4>🏡 El sobre con la dirección (por referencia)</h4>
+      <p>Le entregas el <strong>sobre con la dirección</strong> de la casa. La función puede entrar y pintar la casa: tu casa original queda pintada. Así funciona un arreglo o un objeto.</p>
+    </div>
+    <div class="compare-card c">
+      <h4>🔧 Cuando quieres modificar de verdad</h4>
+      <p>Si necesitas que la función <strong>modifique la variable original</strong>, pásala con <code>ref</code>: <code>SubirNota(ref nota)</code>. Como el <code>int</code> es una caja chiquita, copiarlo no cuesta nada… pero <code>ref</code> te da el poder de modificarlo. 🪄</p>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — `ref` modifica la variable original</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>static void SubirNota(ref int nota)
+{
+    nota += 1;   // con `ref` se modifica la variable original
+}
+
+int nota = 5;
+SubirNota(ref nota);
+Console.WriteLine(nota);   // 6 (¡ahora sí cambió!)</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — con una clase propia: objeto vs. copia</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// 1) La función recibe el OBJETO y lo modifica
+Estudiante ana = new Estudiante { Nombre = "Ana", Promedio = 3.5 };
+SubirPromedio(ana, 4.8);
+Console.WriteLine($"{ana.Nombre} tiene {ana.Promedio}");   // Ana tiene 4.8
+
+// 2) "Copiar" un objeto copia la DIRECCIÓN: los dos nombres
+//    apuntan al mismo objeto
+Estudiante copia = ana;
+copia.Nombre = "Copia";
+Console.WriteLine(ana.Nombre);   // "Copia" -&gt; es el MISMO objeto
+
+// 3) Para una copia REAL hay que crear un objeto nuevo
+Estudiante copiaReal = new Estudiante { Nombre = "Real", Promedio = ana.Promedio };
+copiaReal.Nombre = "Otra";
+Console.WriteLine(ana.Nombre);   // "Copia" -&gt; el original no cambió
+
+static void SubirPromedio(Estudiante e, double valor)
+{
+    e.Promedio = valor;   // cambia el objeto original
+}
+
+// En un archivo con instrucciones de nivel superior,
+// las clases se declaran AL FINAL del archivo.
+class Estudiante
+{
+    public string Nombre { get; set; } = "";
+    public double Promedio { get; set; }
+}</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — `in`: solo lectura y sin copias</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// `in` = la función puede LEER el dato, pero no cambiarlo.
+// Además evita hacer una copia, así es útil con structs grandes.
+static double CalcularIMC(in double peso, in double altura)
+{
+    double metros = altura / 100.0;
+    return peso / (metros * metros);
+}
+
+double peso = 68.5;
+double altura = 172;
+double imc = CalcularIMC(in peso, in altura);
+Console.WriteLine($"IMC: {imc:F2}");</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Modo</th><th>Ejemplo</th><th>¿Puede cambiar el dato original?</th><th>¿Hace copia?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Por valor</strong> (el normal)</td><td><code>SubirNota(nota)</code></td><td style="color:var(--rosa)">No</td><td>Sí</td></tr>
+        <tr><td><strong>Por referencia</strong></td><td><code>SubirNota(ref nota)</code></td><td style="color:var(--verde)">Sí</td><td>No</td></tr>
+        <tr><td><strong>Solo lectura</strong></td><td><code>CalcularIMC(in peso, in altura)</code></td><td style="color:var(--rosa)">No</td><td>No</td></tr>
+        <tr><td><strong>Arreglo / <code>List</code></strong></td><td><code>DuplicarNotas(notas)</code></td><td style="color:var(--verde)">Sí (los elementos)</td><td>No (copia la dirección)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Ojo con <code>string</code>: es de referencia, pero no se puede modificar</h4>
+    <p><code>string</code> es un tipo de referencia, pero los textos son <strong>inmutables</strong>: no existen "textos mutables". Por eso <code>texto += "!"</code> no modifica el texto original, crea <strong>uno nuevo</strong> en memoria y lo asigna a la variable. Si necesitas "cambiar" un texto, siempre estás creando otro texto. 🧊</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco para no equivocarte: pregúntate "¿el tipo es una caja o es una dirección?"</h4>
+    <p><code>int</code>, <code>double</code>, <code>bool</code> y los <code>struct</code> son cajas: se copian. Las clases, los arreglos y las listas son direcciones: se comparten. Si la variable es una dirección y quieres otra copia de verdad, crea el objeto de nuevo (como <code>copiaReal</code> en el ejemplo). 📦</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Construyan un arreglo de 3 notas (<code>double[] notas = [3.0, 4.0, 5.0]</code>) y una función <code>SubirTodas(ref double[] notas)</code> que le sume 1 a cada elemento. Prueben qué versión funciona (¿con <code>ref</code> o sin <code>ref</code>?). Explíquense en voz alta por qué. 🗣️</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> Si una función recibe un <code>int</code> sin <code>ref</code> y le suma 1, ¿qué pasa con la variable original?</p>
+      <button class="opcion" data-op="a">Cambia a 1 más, porque las variables son globales</button>
+      <button class="opcion" data-op="b">No cambia: la función trabajó sobre una copia</button>
+      <button class="opcion" data-op="c">Cambia, pero solo si es <code>static</code></button>
+      <button class="opcion" data-op="d">El programa deja de compilar</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Cuál de estos tipos es de <strong>referencia</strong>?</p>
+      <button class="opcion" data-op="a"><code>int</code></button>
+      <button class="opcion" data-op="b"><code>double</code></button>
+      <button class="opcion" data-op="c"><code>int[]</code></button>
+      <button class="opcion" data-op="d"><code>bool</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Para qué sirve el parámetro <code>in</code>?</p>
+      <button class="opcion" data-op="a">Permite leer el dato sin copiarlo y sin poder modificarlo</button>
+      <button class="opcion" data-op="b">Permite modificar el dato original</button>
+      <button class="opcion" data-op="c">Permite devolver dos valores</button>
+      <button class="opcion" data-op="d">Convierte el tipo del dato</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira los brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro está cansado de pensar en copias y referencias: hidrátalo.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Cuéntale a tu compañero/a el ejemplo de la "casa con la dirección". 1 min.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>En C# existe un modificador de parámetros que casi nadie conoce: <code>ref readonly</code>, que permite <strong>devolver una referencia que no se puede modificar</strong> (un <code>ref readonly int</code>). Se usa mucho en las APIs modernas de .NET para exponer datos sin ceder el control. Se ve en detalle en el módulo 6. 🧊</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: sobrecarga y lambdas →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>🧬 Sobrecarga, funciones locales y lambdas</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "El mismo nombre, distinto disfraz"</p>
+
+  <div class="caja-concepto">
+    <h3>🧬 Sobrecarga: mismo nombre, distinta firma</h3>
+    <p>La <strong>sobrecarga</strong> (<em>overload</em>) es tener varios métodos con el <strong>mismo nombre</strong> pero <strong>diferentes parámetros</strong>. El compilador elige solo cuál usar según los argumentos que le pases. Como un <em>"imprenta"</em>: escribes "texto" y sale un cartel; escribes "número" y sale una matriz. 🖨️</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — sobrecarga de métodos</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Tres versiones de "Calcular" con el mismo nombre
+Console.WriteLine(Calculadora.Calcular(2, 3));      // 5    -&gt; versión int
+Console.WriteLine(Calculadora.Calcular(2.5, 3.5));  // 6    -&gt; versión double
+Console.WriteLine(Calculadora.Calcular(2, 3, 4));   // 9    -&gt; versión de 3 parámetros
+
+static class Calculadora
+{
+    public static int Calcular(int a, int b) =&gt; a + b;
+
+    public static double Calcular(double a, double b) =&gt; a + b;
+
+    public static int Calcular(int a, int b, int c) =&gt; a + b + c;
+}</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: las funciones locales NO se pueden sobrecargar</h4>
+    <p>Si declaras dos funciones locales con el mismo nombre, el compilador responde <em>"ya se ha definido en este ámbito"</em> (error <code>CS0128</code>). Para sobrecargar, la función debe ser un <strong>método de una clase</strong>, como el ejemplo de arriba. Regla práctica: <em>si vas a sobrecargar, mete las funciones en una clase</em>. 🎭</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — lambdas: funciones sin nombre</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Una lambda es una función SIN nombre, escrita en una línea.
+// `Func` significa "devuelve un valor"; `Action` significa "no devuelve nada".
+Func&lt;int, int&gt; cuadrado = x =&gt; x * x;
+Func&lt;double, double&gt; mitad = x =&gt; x / 2;
+Action&lt;string&gt; saludar = nombre =&gt; Console.WriteLine($"Hola, {nombre}!");
+Action&lt;int, int&gt; sumar = (a, b) =&gt; Console.WriteLine(a + b);
+
+Console.WriteLine(cuadrado(7));   // 49
+Console.WriteLine(mitad(10));     // 5
+saludar("Ana");
+sumar(3, 4);</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — curiosidad: bloques `extension` de C# 14</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// C# 14 agrega los bloques `extension`: permiten agregar
+// métodos a cualquier tipo, sin heredar de nada.
+Console.WriteLine("Hola Colegio".ConteoVocales());
+Console.WriteLine(1234.5678.Redondeado(2));
+
+static class Extensiones
+{
+    extension(string texto)
+    {
+        public int ConteoVocales()
+        {
+            int total = 0;
+            foreach (char c in texto)
+                if ("aeiou".Contains(c))
+                    total++;
+
+            return total;
+        }
+    }
+
+    extension(double numero)
+    {
+        public double Redondeado(int decimales) =&gt; Math.Round(numero, decimales);
+    }
+}</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Forma</th><th>Ejemplo</th><th>¿Cuándo usarla?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Función local</strong></td><td><code>static void MostrarReporte()</code></td><td>Ayudante que solo se usa dentro de otra función.</td></tr>
+        <tr><td><strong>Método de clase</strong></td><td><code>Calculadora.Sumar(2, 3)</code></td><td>Cuando lo vas a reutilizar en varias partes del programa.</td></tr>
+        <tr><td><strong>Sobrecarga</strong></td><td><code>Calcular(int,int)</code> y <code>Calcular(double,double)</code></td><td>Cuando el mismo concepto se usa con distintos tipos de datos.</td></tr>
+        <tr><td><strong>Lambda</strong></td><td><code>var cuadrado = x =&gt; x * x;</code></td><td>Para pasar una función como dato, o para eventos y <code>LINQ</code>.</td></tr>
+        <tr><td><strong><code>Func</code> / <code>Action</code></strong></td><td><code>Func&lt;int,int&gt;</code> · <code>Action</code></td><td>El "molde" que le pones a una lambda para que el compilador sepa qué esperar.</td></tr>
+        <tr><td><strong><code>extension</code> (C# 14)</strong></td><td><code>"Hola".ConteoVocales()</code></td><td>Curiosidad moderna: métodos extra para cualquier tipo.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: una lambda con más de una línea se vuelve una función local</h4>
+    <p>Si la lambda crece (varias instrucciones), lo más limpio es convertirla en una <strong>función local</strong> con nombre, porque un nombre propio se documenta solo. Las lambdas brillan cuando son <strong>pequeñas</strong>: un cálculo, una comparación, un mensaje. ✨</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban una clase <code>Descuentos</code> con tres métodos sobrecargados: <code>Calcular(int precio)</code>, <code>Calcular(int precio, int porcentaje)</code> y <code>Calcular(double precio, double porcentaje)</code>. Prueben que el compilador elige la versión correcta en cada llamada. 🎪</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué es la sobrecarga de métodos?</p>
+      <button class="opcion" data-op="a">Repetir el mismo método varias veces en el archivo</button>
+      <button class="opcion" data-op="b">Heredar un método de otra clase</button>
+      <button class="opcion" data-op="c">Varios métodos con el mismo nombre y distintas listas de parámetros</button>
+      <button class="opcion" data-op="d">Copiar el código de una función dentro de otra</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cuál es el tipo correcto para una lambda que <strong>no</strong> devuelve valor?</p>
+      <button class="opcion" data-op="a"><code>Action</code></button>
+      <button class="opcion" data-op="b"><code>Func</code></button>
+      <button class="opcion" data-op="c"><code>void</code></button>
+      <button class="opcion" data-op="d"><code>object</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Por qué las funciones locales no se pueden sobrecargar?</p>
+      <button class="opcion" data-op="a">Porque deben ser <code>static</code></button>
+      <button class="opcion" data-op="b">Porque no admiten <code>return</code></button>
+      <button class="opcion" data-op="c">Porque el compilador las borra</button>
+      <button class="opcion" data-op="d">Porque en un mismo ámbito no puede haber dos funciones locales con el mismo nombre</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: out, ref y recursión →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>♻️ <code>out</code>, <code>ref</code> y recursión</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "Devolver dos cosas y llamarse a sí misma"</p>
+
+  <div class="caja-concepto">
+    <h3>📤 <code>out</code>: la función te entrega un dato extra</h3>
+    <p>Normalmente una función devuelve <strong>un</strong> valor. Con <code>out</code> puede entregar <strong>otro por la puerta de atrás</strong>: el dato vuelve por el mismo <code>out</code> que le pasaste. Se usa mucho cuando la función dice "esto funcionó <em>y</em> este es el resultado". 📬</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — `out`: un resultado adicional</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Devuelve true/false (¿funcionó?) Y el resultado por `out`
+static bool IntentarDividir(int a, int b, out int cociente)
+{
+    if (b == 0)
+    {
+        cociente = 0;   // hay que asignarlo SIEMPRE, aunque no sirva
+        return false;
+    }
+
+    cociente = a / b;
+    return true;
+}
+
+if (IntentarDividir(10, 2, out int resultado))
+    Console.WriteLine($"10 / 2 = {resultado}");
+else
+    Console.WriteLine("No se puede dividir entre cero");
+
+if (IntentarDividir(10, 0, out int otro))
+    Console.WriteLine(otro);
+else
+    Console.WriteLine("No se puede dividir entre cero");</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — `ref`, `in` y `ref readonly` juntos</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// `ref`: modificar las dos variables originales
+static void Intercambiar(ref int a, ref int b)
+{
+    (a, b) = (b, a);
+}
+
+// `in`: solo leer, sin hacer copias
+static double Area(in double ancho, in double alto) =&gt; ancho * alto;
+
+// `ref readonly`: devuelve una referencia que NO se puede modificar
+static ref readonly int Primero(ref int[] datos) =&gt; ref datos[0];
+
+int x = 3;
+int y = 7;
+Intercambiar(ref x, ref y);
+Console.WriteLine($"{x} y {y}");   // 7 y 3
+
+double area = Area(4, 5);
+Console.WriteLine(area);          // 20
+
+int[] datos = [10, 20, 30];
+ref readonly int primero = ref Primero(ref datos);
+Console.WriteLine(primero);       // 10</code></pre>
+  </div>
+
+  <h3>🪆 La recursión: la función que se llama a sí misma</h3>
+  <p>Una función <strong>recursiva</strong> es la que se llama a sí misma con un problema <strong>más pequeño</strong>, hasta llegar a un caso que puede resolver de una. Ese último caso es la <strong>condición de parada</strong>: si falta, la función se llama para siempre y el programa se cae con un error de pila (<code>StackOverflowException</code>). 🪜</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — recursión: factorial, Fibonacci y suma de dígitos</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Cada llamada resuelve un problema más pequeño
+static long Factorial(int n)
+{
+    if (n &lt;= 1)              // ← CONDICIÓN DE PARADA
+        return 1;
+
+    return n * Factorial(n - 1);
+}
+
+static int Fibonacci(int n)
+{
+    if (n &lt; 2)
+        return n;
+
+    return Fibonacci(n - 1) + Fibonacci(n - 2);
+}
+
+static int SumaDigitos(int numero)
+{
+    if (numero == 0)
+        return 0;
+
+    return numero % 10 + SumaDigitos(numero / 10);
+}
+
+Console.WriteLine($"5! = {Factorial(5)}");
+Console.WriteLine($"Fibonacci(10) = {Fibonacci(10)}");
+Console.WriteLine($"Suma de dígitos de 2026 = {SumaDigitos(2026)}");</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — el error clásico: recursión sin condición de parada</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ⚠️ CÓDIGO PELIGROSO: esta función se llama a sí misma
+//    SIN condición de parada. La pila de llamadas crece sin
+//    control hasta que el programa se cae (StackOverflow).
+static int CuentaInfinita(int n)
+{
+    Console.WriteLine(n);
+    return CuentaInfinita(n + 1);
+}
+
+// NO descomentes la línea siguiente: el programa se cae.
+// Console.WriteLine(CuentaInfinita(0));
+
+Console.WriteLine("Todo bien");</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — curiosidad de C# 14: `params ReadOnlySpan&lt;T&gt;`</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// C# 13+ permite `params` con un ReadOnlySpan: la función recibe
+// los valores SIN crear un arreglo temporal en memoria.
+static int Resumir(params ReadOnlySpan&lt;int&gt; numeros)
+{
+    int total = 0;
+    foreach (int numero in numeros)
+        total += numero;
+
+    return total;
+}
+
+Console.WriteLine(Resumir(1, 2, 3, 4));   // 10
+Console.WriteLine(Resumir());             // 0</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Modificador</th><th>Ejemplo</th><th>Sirve para…</th><th>¿Obliga a escribirlo al llamar?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>out</code></td><td><code>out int resultado</code></td><td>Devolver un valor adicional (la función <strong>siempre</strong> lo asigna).</td><td>No: <code>out int r</code> al llamar.</td></tr>
+        <tr><td><code>ref</code></td><td><code>ref int nota</code></td><td>Modificar la variable original.</td><td>Sí: <code>ref nota</code>.</td></tr>
+        <tr><td><code>in</code></td><td><code>in double peso</code></td><td>Solo lectura y sin copias (ideal con <code>struct</code> grandes).</td><td>No (pero se recomienda ponerlo).</td></tr>
+        <tr><td><code>ref readonly</code></td><td><code>ref readonly int p</code></td><td>Devolver una referencia que no se puede modificar.</td><td>Sí: <code>ref</code> + declaración <code>ref readonly</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: la recursión siempre es una escalera más profunda</h4>
+    <p>Imagina una escalera de <strong>escalones</strong>: la recursión es subir un escalón y volver a llamar a la función con un escalón menos de altura. Cuando llegas al suelo (la condición de parada), devuelves la respuesta y vas bajando: cada escalón recibe el resultado del de abajo y lo usa. La <strong>pila de llamadas</strong> es justamente esa escalera de escalones. 🪜</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Escriban una función recursiva <code>ContarDigitos(int n)</code> que diga cuántos dígitos tiene un número, y otra <code>Potencia(int base, int exponente)</code> que calcule <code>base^exponente</code> <strong>sin</strong> usar <code>Math.Pow</code>. ¿Cuál de las dos se parece más a lo que estudiaron en el colegio? 🏫</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> En una función con <code>out int resultado</code>, ¿qué está obligado a hacer?</p>
+      <button class="opcion" data-op="a">Devolver el resultado con <code>return resultado</code></button>
+      <button class="opcion" data-op="b">Asignarle un valor al parámetro <code>resultado</code> en todos los caminos</button>
+      <button class="opcion" data-op="c">Declararlo con <code>var</code></button>
+      <button class="opcion" data-op="d">Nada: es opcional</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Qué es la condición de parada de una función recursiva?</p>
+      <button class="opcion" data-op="a">El <code>while</code> que la envuelve</button>
+      <button class="opcion" data-op="b">El nombre de la función</button>
+      <button class="opcion" data-op="c">El caso simple que devuelve la respuesta sin volver a llamarse</button>
+      <button class="opcion" data-op="d">La cantidad de parámetros</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué pasa si una función recursiva nunca cumple su condición de parada?</p>
+      <button class="opcion" data-op="a">La pila de llamadas crece sin control y el programa se cae</button>
+      <button class="opcion" data-op="b">El programa se queda pensando para siempre, sin caerse</button>
+      <button class="opcion" data-op="c">Devuelve 0 automáticamente</button>
+      <button class="opcion" data-op="d">No compila</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: calculadora estadística modularizada</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "Todo lo de hoy en un solo programa"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">Calculadora estadística</span>
+    </div>
+    <p>El colegio necesita una <strong>calculadora estadística</strong> que resuelva varios cálculos con funciones limpias. Tu misión: modularizar el programa en funciones y demostrar, con el arreglo y con un <code>ref</code>, cómo funciona el paso por valor y por referencia. 🧮</p>
+  </div>
+
+  <h3>📋 Requisitos del taller</h3>
+  <ol class="pasos">
+    <li>Crea el proyecto: <code>dotnet new console -n CalculadoraEstadistica</code> y ábrelo con <code>code .</code>.</li>
+    <li>Escribe <strong>una función por cada cálculo</strong>: área de un rectángulo, perímetro, IMC, conversión de °C a °F y promedio de un arreglo de notas.</li>
+    <li>El programa principal pide los datos y llama a las funciones: ninguna operación matemática se escribe dos veces.</li>
+    <li>Demuestra el paso <strong>por valor</strong>: una función que recibe un <code>int</code> y le suma 1 <strong>sin</strong> <code>ref</code> (el original no cambia).</li>
+    <li>Demuestra el paso <strong>por referencia</strong>: la misma operación pero con <code>ref</code> (el original sí cambia), y otra que duplica un arreglo recibido como parámetro.</li>
+    <li>Usa <strong>interpolación</strong> y formato <code>:F2</code> para todos los resultados.</li>
+    <li>Ejecuta con <code>dotnet run</code> y comprueba que el arreglo <strong>sí</strong> cambia y el <code>int</code> <strong>no</strong>.</li>
+  </ol>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — guía de estilo (es el molde, no la solución)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ============================================
+// CALCULADORA ESTADÍSTICA
+// Cada cálculo vive en su propia función.
+// ============================================
+
+// 1. Datos del rectángulo
+Console.Write("Ancho del rectángulo: ");
+double ancho = 5;
+Console.Write("Alto del rectángulo: ");
+double alto = 3;
+
+// 2. Se llaman las funciones
+Console.WriteLine($"Área: {CalcularArea(ancho, alto):F2}");
+Console.WriteLine($"Perímetro: {CalcularPerimetro(ancho, alto):F2}");
+
+// 3. Se demuestra el paso por valor y por referencia
+int nota = 5;
+SubirNotaPorValor(nota);
+Console.WriteLine($"Por valor la nota sigue en {nota}");
+
+// Las funciones que debes escribir (aquí solo van los huecos):
+static double CalcularArea(double ancho, double alto) =&gt; 0;
+static double CalcularPerimetro(double ancho, double alto) =&gt; 0;
+static void SubirNotaPorValor(int nota) =&gt; nota += 1;</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Pista: el orden de las funciones no importa</h4>
+    <p>Puedes escribir <code>CalcularArea</code> antes o después de usarla: C# las encuentra igual. Pero por costumbre, pon las funciones <strong>al final del archivo</strong>, con el programa principal arriba. Se lee como una receta: primero qué haces, después cómo. 📖</p>
+  </div>
+
+  <button class="btn-solucion" data-solucion="sol-taller">👁️ Ver solución completa</button>
+  <div class="solucion" id="sol-taller">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-header-left">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span>csharp — solución del taller</span>
+        </div>
+        <button class="copy-btn">📋 Copiar</button>
+      </div>
+<pre><code>// ============================================
+// CALCULADORA ESTADÍSTICA — solución del taller
+// ============================================
+
+Console.WriteLine("=== CALCULADORA ESTADÍSTICA ===");
+
+// 1. ÁREA Y PERÍMETRO DE UN RECTÁNGULO
+Console.Write("Ancho del rectángulo: ");
+double ancho = double.Parse(Console.ReadLine() ?? "0");
+Console.Write("Alto del rectángulo: ");
+double alto = double.Parse(Console.ReadLine() ?? "0");
+Console.WriteLine($"Área: {CalcularArea(ancho, alto):F2}");
+Console.WriteLine($"Perímetro: {CalcularPerimetro(ancho, alto):F2}");
+
+// 2. IMC
+Console.Write("Peso (kg): ");
+double peso = double.Parse(Console.ReadLine() ?? "0");
+Console.Write("Altura (cm): ");
+double altura = double.Parse(Console.ReadLine() ?? "0");
+Console.WriteLine($"IMC: {CalcularIMC(peso, altura):F2}");
+
+// 3. CONVERSIÓN DE TEMPERATURA
+Console.Write("Temperatura en °C: ");
+double celsius = double.Parse(Console.ReadLine() ?? "0");
+Console.WriteLine($"En °F: {CelsiusAFahrenheit(celsius):F2}");
+
+// 4. PROMEDIO DE UN ARREGLO
+double[] notas = [4.5, 3.8, 4.2];
+Console.WriteLine($"Promedio: {CalcularPromedio(notas):F2}");
+
+// 5. VALOR VS REFERENCIA
+int nota = 5;
+SubirNotaPorValor(nota);
+Console.WriteLine($"Por valor la nota sigue en {nota}");
+
+SubirNotaPorReferencia(ref nota);
+Console.WriteLine($"Por referencia la nota quedó en {nota}");
+
+int[] lista = [4, 6, 8];
+DuplicarNotas(lista);
+Console.WriteLine($"La primera nota ahora es {lista[0]}");
+
+// ============================================
+// LAS FUNCIONES
+// ============================================
+static double CalcularArea(double ancho, double alto) =&gt; ancho * alto;
+
+static double CalcularPerimetro(double ancho, double alto) =&gt; 2 * (ancho + alto);
+
+static double CalcularIMC(double pesoKg, double alturaCm)
+{
+    double metros = alturaCm / 100.0;
+    return pesoKg / (metros * metros);
+}
+
+static double CelsiusAFahrenheit(double celsius) =&gt; celsius * 9 / 5 + 32;
+
+static double CalcularPromedio(double[] notas)
+{
+    if (notas.Length == 0)
+        return 0;
+
+    double suma = 0;
+    foreach (double nota in notas)
+        suma += nota;
+
+    return suma / notas.Length;
+}
+
+// Por valor: el original NO cambia
+static void SubirNotaPorValor(int nota)
+{
+    nota += 1;
+}
+
+// Por referencia: el original SÍ cambia
+static void SubirNotaPorReferencia(ref int nota)
+{
+    nota += 1;
+}
+
+// El arreglo es un tipo de referencia: el original SÍ cambia
+static void DuplicarNotas(int[] notas)
+{
+    for (int i = 0; i &lt; notas.Length; i++)
+        notas[i] *= 2;
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="checklist">
+    <h4>✅ Antes de entregar, verifica</h4>
+    <ul>
+      <li>El proyecto se llama <code>CalculadoraEstadistica</code> y corre con <code>dotnet run</code>.</li>
+      <li>Hay <strong>una función por cada cálculo</strong> y ninguna operación matemática está escrita dos veces.</li>
+      <li>Todas las funciones llevan <code>static</code> y devuelven el tipo correcto (<code>double</code>, <code>void</code>).</li>
+      <li>El <code>int</code> <strong>no</strong> cambia con <code>SubirNotaPorValor</code> y <strong>sí</strong> cambia con <code>ref</code>.</li>
+      <li>El arreglo <strong>sí</strong> queda duplicado después de <code>DuplicarNotas</code>.</li>
+      <li>Todos los resultados se muestran con interpolación y <code>:F2</code>.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Cada uno le explica al otro su programa <strong>sin leer el código</strong>: solo con lo que dice la consola. El compañero inventa un dato nuevo (por ejemplo, peso 80 y altura 165) y lo mete. Si el programa responde bien con datos que nunca probaron, ¡la modularización quedó bien! 🤝</p>
+  </div>
+
+  <div class="quiz" data-quiz="7">
+    <h3>🎯 Mini-Quiz del Módulo 7</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué se reemplaza mejor con una función?</p>
+      <button class="opcion" data-op="a">El mensaje de bienvenida del programa</button>
+      <button class="opcion" data-op="b">Un cálculo que se repite en varias partes</button>
+      <button class="opcion" data-op="c">El nombre del proyecto</button>
+      <button class="opcion" data-op="d">Los comentarios del código</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> En el taller, al pasar un arreglo a una función, el arreglo original…</p>
+      <button class="opcion" data-op="a">Sí cambia, porque es un tipo de referencia</button>
+      <button class="opcion" data-op="b">No cambia, hay que usar <code>ref</code></button>
+      <button class="opcion" data-op="c">Se copia y el original queda vacío</button>
+      <button class="opcion" data-op="d">Cambia solo si es de tipo <code>double</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Por qué es buena idea modularizar un programa largo?</p>
+      <button class="opcion" data-op="a">Porque el computador lo ejecuta más rápido</button>
+      <button class="opcion" data-op="b">Porque ocupa menos memoria en disco</button>
+      <button class="opcion" data-op="c">Porque cada parte se puede probar y corregir por separado</button>
+      <button class="opcion" data-op="d">Porque C# no permite programas largos</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 8 completada!</h2>
+    <p>Ya sabes escribir funciones, pasarles datos por valor y por referencia y modularizar un programa completo. En la <strong>Clase 9</strong> armamos un <strong>menú de consola</strong>: la aplicación por excelencia del tema "consola", hecha con <code>while</code>, <code>switch</code> y funciones que se llaman entre sí. 🍽️</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🧠 Herramientas Algorítmicas II · Clase 8 de 10</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · Código TL007</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

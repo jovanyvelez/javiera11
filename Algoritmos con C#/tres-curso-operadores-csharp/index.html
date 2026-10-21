@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>➗ Herramientas Algorítmicas II · Clase 3 · Operadores y precedencia</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">➗</span>
+    <div>
+      <h1>Herramientas Algorítmicas II · Clase 3</h1>
+      <p class="subtitulo">C# moderno · Aritméticos · comparación · lógicos · precedencia y trampas</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">➗ Operadores aritméticos</button>
+  <button class="btn-modulo" data-modulo="2">⚖️ Comparación</button>
+  <button class="btn-modulo" data-modulo="3">🔀 Lógicos y precedencia</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🔗 Asignación compuesta</button>
+  <button class="btn-modulo" data-modulo="6">🪤 Trampas del lenguaje</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>➗ Operadores y precedencia: las reglas del juego</h2>
+    <p class="lead">Ya sabes guardar datos. Hoy aprendes a <strong>operarlos</strong>: sumar, dividir, comparar y decidir. Y lo más importante: a entender el <strong>orden</strong> en que el computador hace esas cuentas, porque casi todos los errores raros de programación no son de sintaxis… son de <strong>precedencia</strong>.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — estudiante@colegio</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">estudiante@colegio:~$</span> <span class="cmd">dotnet new console -n Operadores</span></div>
+        <div class="out">La plantilla "aplicación de consola" se creó correctamente.</div>
+        <div><span class="prompt">estudiante@colegio:~/Operadores$</span> <span class="cmd">code .</span></div>
+        <div><span class="prompt">estudiante@colegio:~/Operadores$</span> <span class="cmd">dotnet run</span></div>
+        <div class="out">Hello, World!</div>
+        <div><span class="prompt">estudiante@colegio:~/Operadores$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3 h 45 min en 8 módulos, con descanso a mitad. Hoy se calcula en pareja: uno inventa la expresión, el otro la predice <strong>antes</strong> de ejecutarla.</p>
+    </div>
+    <div class="tarjeta tarjeta-verde">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Usar los operadores aritméticos, de comparación y lógicos, dominar la <strong>tabla de precedencia</strong> y esquivar las trampas clásicas: división entre cero, desbordamiento de <code>int</code> y el famoso <code>0.1 + 0.2</code>.</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>La división entera que trunca decimales, el <code>&amp;&amp;</code> que evalúa de más, el <code>++</code> escondido en la condición, y el <code>2 + 3 * 4</code> que da 14 cuando todos esperaban 20.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · Aritméticos</td><td style="color:var(--a)"><code>+ - * / %</code> y <code>Math</code></td><td style="color:var(--rosa)">La división entera</td><td>100 XP</td></tr>
+        <tr><td>02 · Comparación</td><td style="color:var(--b)"><code>==</code>, <code>&lt;</code>, <code>&gt;</code> y compañía</td><td style="color:var(--rosa)">Comparar flotantes</td><td>100 XP</td></tr>
+        <tr><td>03 · Lógicos</td><td style="color:var(--a)"><code>&amp;&amp;</code>, <code>||</code>, <code>!</code> y precedencia</td><td style="color:var(--rosa)">El orden de las operaciones</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>04 · Asignación</td><td style="color:var(--verde)"><code>+=</code>, <code>-=</code>, <code>??=</code></td><td style="color:var(--rosa)">El <code>++</code> en la condición</td><td>100 XP</td></tr>
+        <tr><td>05 · Trampas</td><td style="color:var(--b)">Errores que muerden</td><td style="color:var(--rosa)">Dividir entre cero</td><td>100 XP</td></tr>
+        <tr><td>06 · Taller</td><td style="color:var(--a)">Calculadora BLACKFRIDAY</td><td style="color:var(--rosa)">Precios imposibles</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Escriban en un papel la respuesta de estas tres expresiones <strong>sin</strong> ejecutarlas: (1) <code>2 + 3 * 4</code>, (2) <code>(2 + 3) * 4</code>, (3) <code>10 / 4</code>. Luego ejecútenlas en la consola y comparen. El que falló en alguna ya tiene su primer villano en mente: la <strong>precedencia</strong>. 👀</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué las reglas de precedencia existen?</h4>
+    <p>Porque en las matemáticas nadie escribe <code>2 + 3 * 4</code> queriendo decir <code>20</code>. Todos leemos primero el <code>4 * 3</code> y después sumamos. C# hace exactamente lo mismo, y esa tabla de precedencia es el <strong>acuerdo silencioso</strong> entre el que escribe el código y el que lo lee. Entenderla es un superpoder. 🦸</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: aritmética →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>➗ Operadores aritméticos: la calculadora de C#</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Cinco símbolos que hacen todo el trabajo"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 Los cinco operadores básicos</h3>
+    <p>C# trae una <strong>calculadora integrada</strong>: los operadores aritméticos <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code> y <code>%</code>. Con esos cinco (más el <code>++</code> y el <code>--</code>) resuelves la mayoría de los cálculos de la vida real: promedios, totales, porcentajes y el resto de una división…</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — las cinco operaciones básicas</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Las cinco operaciones básicas
+int a = 17;
+int b = 5;
+
+Console.WriteLine($"{a} + {b} = {a + b}");   // 22
+Console.WriteLine($"{a} - {b} = {a - b}");   // 12
+Console.WriteLine($"{a} * {b} = {a * b}");   // 85
+Console.WriteLine($"{a} / {b} = {a / b}");   // 3   (división ENTERA)
+Console.WriteLine($"{a} % {b} = {a % b}");   // 2   (residuo o módulo)</code></pre>
+  </div>
+
+  <h3>✂️ División entera vs. división real: el gran engaño</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — ojo con la división entera</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Si los DOS operandos son int, la división es ENTERA: se descarta el decimal.
+Console.WriteLine($"5 / 2 = {5 / 2}");       // 2
+Console.WriteLine($"5.0 / 2 = {5.0 / 2}");   // 2.5
+Console.WriteLine($"7 / 2.0 = {7 / 2.0}");   // 3.5
+
+// La regla: si AL MENOS uno es double, el resultado es double.
+int cantidad = 3;
+double precio = 19999.0;
+Console.WriteLine($"Total: {cantidad * precio}");
+
+// Y ojo con el orden: la división va primero que la multiplicación.
+Console.WriteLine($"3 / 2 * 2 = {3 / 2 * 2}");       // 2  (primero 3/2 = 1, luego 1*2)
+Console.WriteLine($"3.0 / 2 * 2 = {3.0 / 2 * 2}");   // 3  (primero 1.5, luego 1.5*2)</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: <code>5 / 2</code> da 2, no 2.5</h4>
+    <p>Cuando ambos números son <code>int</code>, C# hace <strong>división entera</strong>: tira la parte decimal sin avisar. Esto no es un error, es el comportamiento correcto para contar cosas (¿cuántas cajas completas de 5 caben en 17? → 3). Pero si estabas pensando en un promedio o un porcentaje, el resultado te va a sorprender. <strong>Regla práctica:</strong> si el resultado puede tener decimales, mete al menos un <code>double</code> o un <code>decimal</code> en la cuenta.</p>
+  </div>
+
+  <h3>⬆️ <code>++</code> y <code>--</code>: antes o después</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — prefijo vs. postfijo</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// POSTFIJO (x++): primero USA el valor, después suma 1.
+int x = 5;
+int y = x++;
+Console.WriteLine($"x = {x}, y = {y}");   // x = 6, y = 5
+
+// PREFIJO (++x): primero suma 1, después usa el valor nuevo.
+int a = 5;
+int b = ++a;
+Console.WriteLine($"a = {a}, b = {b}");   // a = 6, b = 6
+
+// El decremento funciona exactamente igual.
+int contador = 3;
+contador--;
+Console.WriteLine($"contador = {contador}");   // 2</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Expresión</th><th>Valor de <code>x</code> antes</th><th>Valor que recibe la variable</th><th>Valor de <code>x</code> después</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>int y = x++;</code></td><td>5</td><td><strong>5</strong> (el viejo)</td><td>6</td></tr>
+        <tr><td><code>int y = ++x;</code></td><td>5</td><td><strong>6</strong> (el nuevo)</td><td>6</td></tr>
+        <tr><td><code>x--;</code> (solo)</td><td>5</td><td>—</td><td>4</td></tr>
+        <tr><td><code>--x;</code> (solo)</td><td>5</td><td>—</td><td>4</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🔁 El módulo <code>%</code>: el residuo que responde preguntas</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — par, impar y múltiplos con %</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// El módulo (%) devuelve el RESIDUO de la división.
+int numero = 17;
+
+if (numero % 2 == 0)
+{
+    Console.WriteLine($"{numero} es PAR.");
+}
+else
+{
+    Console.WriteLine($"{numero} es IMPAR.");
+}
+
+// También sirve para saber si es múltiplo de 3, 5, 10...
+int diaDelMes = 15;
+Console.WriteLine($"¿Es múltiplo de 5? {diaDelMes % 5 == 0}");
+Console.WriteLine($"¿Es múltiplo de 3? {diaDelMes % 3 == 0}");
+
+// Y para repartir: ¿cuántos grupos de 4 caben en 10? → 2 grupos, sobran 2.
+Console.WriteLine($"10 / 4 = {10 / 4} grupos, sobran {10 % 4}");</code></pre>
+  </div>
+
+  <h3>🧰 La clase <code>Math</code>: atajos matemáticos</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — Math.Abs, Round, Max, Min, Sqrt y Pow</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// La clase Math trae las herramientas matemáticas listas para usar.
+double nota = 3.7;
+double negativo = -8.5;
+
+Console.WriteLine($"Math.Abs({negativo}) = {Math.Abs(negativo)}");   // 8.5
+Console.WriteLine($"Math.Round({nota}) = {Math.Round(nota)}");         // 4
+Console.WriteLine($"Math.Max(3, 7) = {Math.Max(3, 7)}");               // 7
+Console.WriteLine($"Math.Min(3, 7) = {Math.Min(3, 7)}");               // 3
+Console.WriteLine($"Math.Sqrt(81) = {Math.Sqrt(81)}");                 // 9
+Console.WriteLine($"Math.Pow(2, 10) = {Math.Pow(2, 10)}");             // 1024
+
+// Math.Round con MidpointRounding decide qué hacer cuando el decimal es 0.5 exacto.
+// Por defecto usa "ToEven" (redondea al par más cercano: 2.5 -&gt; 2, 3.5 -&gt; 4).
+Console.WriteLine($"Math.Round(2.5) = {Math.Round(2.5)}");
+Console.WriteLine($"Math.Round(3.5) = {Math.Round(3.5)}");
+
+// Con AwayFromZero el 0.5 siempre sube: 2.5 -&gt; 3.
+Console.WriteLine($"Math.Round(2.5, MidpointRounding.AwayFromZero) = {Math.Round(2.5, MidpointRounding.AwayFromZero)}");</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: <code>Math.Round</code> siempre redondea, nunca trunca</h4>
+    <p><code>(int)3.9</code> da <code>3</code> (trunca) pero <code>Math.Round(3.9)</code> da <code>4</code> (redondea). Para notas y promedio usa siempre <code>Math.Round</code>, y si quieres ver exactamente dos decimales, escribe <code>Math.Round(nota, 2)</code>. Y si necesitas el 0.5 siempre hacia arriba (como cuando se reparte el IVA), usa <code>MidpointRounding.AwayFromZero</code>. 🧮</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban un programa "Calculadora de aula" que pida dos números (usando <code>double</code>) y muestre: suma, resta, multiplicación, división, módulo, si el primero es par, y el promedio redondeado a un decimal. Antes de ejecutarlo, <strong>escriban a mano</strong> el resultado que esperan de la división. Si no coincide, revisen el tipo del dato. 📝</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué resultado da <code>5 / 2</code> en C# si los dos números son <code>int</code>?</p>
+      <button class="opcion" data-op="a">2.5</button>
+      <button class="opcion" data-op="b">2 (división entera: se descarta la parte decimal)</button>
+      <button class="opcion" data-op="c">2.0</button>
+      <button class="opcion" data-op="d">Da error de compilación</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Para qué sirve el operador módulo <code>%</code>?</p>
+      <button class="opcion" data-op="a">Para dividir y sacar el resultado decimal</button>
+      <button class="opcion" data-op="b">Para multiplicar dos números</button>
+      <button class="opcion" data-op="c">Para obtener el residuo (sobrante) de una división</button>
+      <button class="opcion" data-op="d">Para comparar dos valores</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> Si <code>int x = 5;</code> y luego <code>int y = x++;</code>, ¿qué valor queda en <code>y</code>?</p>
+      <button class="opcion" data-op="a">5</button>
+      <button class="opcion" data-op="b">6</button>
+      <button class="opcion" data-op="c">0</button>
+      <button class="opcion" data-op="d">Da error de compilación</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: comparación →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>⚖️ Operadores de comparación: ¿igual o no igual?</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "La pregunta que decide el rumbo del programa"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 Comparar es preguntar</h3>
+    <p>Los operadores de comparación <strong>responden con <code>true</code> o <code>false</code></strong>. Son la base de todas las decisiones del programa: si la nota es mayor o igual a 3, si la edad es menor que 18, si el nombre es igual al guardado. Su resultado es un <code>bool</code>, y ese <code>bool</code> es lo que después se combina con <code>&amp;&amp;</code>, <code>||</code> y <code>!</code>.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — los seis operadores de comparación</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int edad = 17;
+int limite = 18;
+
+Console.WriteLine(edad == limite);   // igual          → False
+Console.WriteLine(edad != limite);   // distinto      → True
+Console.WriteLine(edad &gt; limite);    // mayor         → False
+Console.WriteLine(edad &lt; limite);    // menor         → True
+Console.WriteLine(edad &gt;= limite);   // mayor o igual → False
+Console.WriteLine(edad &lt;= limite);   // menor o igual → True
+
+// Ojo con el orden: == es "comparar", = es "asignar".
+int contador = 0;
+contador = 5;         // asignar (guarda 5)
+bool iguales = contador == 5;   // comparar (pregunta)
+Console.WriteLine($"iguales = {iguales}");</code></pre>
+  </div>
+
+  <h3>🔤 Comparar textos: no es lo mismo que comparar números</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — ==, Equals, Compare y CompareTo</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>string a = "juan";
+string b = "JuaN";
+
+// == en strings compara el CONTENIDO, y distingue mayúsculas.
+Console.WriteLine($"a == b                   → {a == b}");   // False
+Console.WriteLine($"a.Equals(b)             → {a.Equals(b)}");   // False
+Console.WriteLine($"OrdinalIgnoreCase       → {a.Equals(b, StringComparison.OrdinalIgnoreCase)}");   // True
+
+// string.Compare devuelve un NÚMERO: menor, igual o mayor.
+Console.WriteLine($"string.Compare(\"a\", \"b\") → {string.Compare("a", "b")}");   // -1 (a va antes)
+Console.WriteLine($"string.Compare(\"b\", \"a\") → {string.Compare("b", "a")}");   // 1  (b va después)
+Console.WriteLine($"string.Compare(\"a\", \"a\") → {string.Compare("a", "a")}");   // 0  (son iguales)
+
+// CompareTo hace lo mismo, pero como método del propio texto.
+Console.WriteLine($"\"a\".CompareTo(\"b\")      → {"a".CompareTo("b")}");   // -1</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Ordinal vs. cultura: dos maneras de ordenar</h4>
+    <p><strong>Ordinal</strong> compara carácter por carácter según su código: la "B" (66) va antes que la "a" (97). Es rápido y predecible, ideal para códigos y claves. <strong>Cultura</strong> usa las reglas del idioma configurado, como lo haría una persona: "Álvarez" va antes que "Bautista" y "ana" va antes que "Beto". Para listas de nombres de personas usa cultura; para identificadores técnicos, ordinal. 🎓</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — char, double y NaN: comparar con cuidado</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Los char se comparan por su código: 'A' (65) va antes que 'a' (97).
+char inicial = 'M';
+char otra = 'a';
+Console.WriteLine($"'M' &lt; 'a' → {inicial &lt; otra}");   // True
+Console.WriteLine($"Código de 'M' → {(int)inicial}");       // 77
+
+// Con NÚMEROS DECIMALES, el == es peligroso: no compares doubles con ==.
+double x = 0.1 + 0.2;
+double y = 0.3;
+Console.WriteLine($"0.1 + 0.2 == 0.3 → {x == y}");   // False (¡sorpresa!)
+
+// La forma segura: comparar la diferencia con una tolerancia.
+Console.WriteLine($"¿Son iguales? → {Math.Abs(x - y) &lt; 0.0001}");   // True
+
+// NaN significa "Not a Number": no es igual ni a sí mismo.
+double nan = double.NaN;
+Console.WriteLine($"NaN == NaN → {nan == double.NaN}");                    // False
+Console.WriteLine($"double.IsNaN(nan) → {double.IsNaN(nan)}");             // True</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — comparar un int? (nullable)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Un int? puede estar "vacío". Las comparaciones siguen funcionando:
+int? edad = null;
+
+Console.WriteLine($"edad &gt; 18 → {edad &gt; 18}");          // False (null no es mayor que 18)
+Console.WriteLine($"edad == null → {edad == null}");        // True
+Console.WriteLine($"edad is null → {edad is null}");        // True
+
+// Con HasValue y Value lo manejas como un entero normal.
+edad = 17;
+Console.WriteLine($"edad &gt; 18 → {edad &gt; 18}");          // False
+Console.WriteLine($"edad.Value → {edad.Value}");            // 17
+Console.WriteLine($"edad.HasValue → {edad.HasValue}");      // True</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: <code>double</code> comparado con <code>==</code></h4>
+    <p>Un <code>double</code> guarda el número en binario, y muchos decimales no se pueden representar exactos. Por eso <code>0.1 + 0.2</code> da un numero <em>cercanísimo</em> a <code>0.3</code>, pero no exactamente igual, y el <code>==</code> responde <code>false</code>. La solución profesional es comparar la diferencia con una tolerancia: <code>Math.Abs(a - b) &lt; 0.0001</code>. Con <code>decimal</code> esto no pasa (por eso es el tipo del dinero).</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban un programa que pida dos nombres y diga si son iguales, ignorando mayúsculas (con <code>OrdinalIgnoreCase</code>), y que los ordene de mayor a menor con <code>string.Compare</code>. Luego repitan la comparación con dos <code>double</code> usando <code>==</code> y con <code>Math.Abs</code>, y comparen los dos resultados. La diferencia los va a sorprender. 😮</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué devuelve <code>string.Equals("hola", "HOLA", StringComparison.OrdinalIgnoreCase)</code>?</p>
+      <button class="opcion" data-op="a">False</button>
+      <button class="opcion" data-op="b">True</button>
+      <button class="opcion" data-op="c">0</button>
+      <button class="opcion" data-op="d">Da error de compilación</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Por qué no conviene comparar dos <code>double</code> con <code>==</code>?</p>
+      <button class="opcion" data-op="a">Porque <code>double</code> no admite el signo igual</button>
+      <button class="opcion" data-op="b">Porque <code>==</code> solo funciona con enteros</button>
+      <button class="opcion" data-op="c">Porque los decimales se guardan de forma aproximada y puede haber diferencias mínimas</button>
+      <button class="opcion" data-op="d">Porque es muy lento de ejecutar</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué resultado da <code>double.NaN == double.NaN</code>?</p>
+      <button class="opcion" data-op="a">False</button>
+      <button class="opcion" data-op="b">True</button>
+      <button class="opcion" data-op="c">Null</button>
+      <button class="opcion" data-op="d">Da error de compilación</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: lógicos y precedencia →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>🔀 Operadores lógicos y precedencia</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "La tabla que decide el orden de todo"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 Tres operadores, todo un mundo</h3>
+    <p><code>&amp;&amp;</code> es "y" (las dos cosas tienen que ser ciertas), <code>||</code> es "o" (con que una sea cierta basta) y <code>!</code> es "no" (da la vuelta al booleano). Con esos tres puedes expresar cualquier decisión. Pero C# no solo te da esos: también existen <code>&amp;</code> y <code>|</code>, que son operadores <strong>de bits</strong> y funcionan de forma distinta.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — &amp;&amp;, || y !</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Los tres operadores lógicos
+bool mayorDeEdad = true;
+bool tieneBoleto = false;
+
+Console.WriteLine($"mayorDeEdad &amp;&amp; tieneBoleto → {mayorDeEdad &amp;&amp; tieneBoleto}");   // False
+Console.WriteLine($"mayorDeEdad || tieneBoleto → {mayorDeEdad || tieneBoleto}");   // True
+Console.WriteLine($"!mayorDeEdad → {!mayorDeEdad}");                                 // False
+
+// El resultado SIEMPRE es un bool, nunca el dato original.
+Console.WriteLine($"&amp;&amp; devuelve: {true &amp;&amp; false} (tipo bool)");
+Console.WriteLine($"|| devuelve: {true || false} (tipo bool)");</code></pre>
+  </div>
+
+  <h3>⚡ El cortocircuito: tu mejor aliado</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — cortocircuito: no evaluar lo que no hace falta</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Con &amp;&amp;, si el primer operando es FALSE, el segundo NI SE EVALÚA.
+int divisor = 0;
+int numero = 10;
+
+// Primero se pregunta "¿divisor es distinto de cero?" → False → se detiene ahí.
+bool divisionSegura = divisor != 0 &amp;&amp; numero / divisor &gt; 1;
+Console.WriteLine($"división segura: {divisionSegura}");   // False, y NO hubo error
+
+// Si el orden fuera el revés, el programa se caería con DivideByZeroException.
+// bool peligro = numero / divisor &gt; 1 &amp;&amp; divisor != 0;   ← ¡error en ejecución!
+
+// Con || el cortocircuito es al revés: si el primero es TRUE, el segundo no se evalúa.
+int cero = 0;
+bool segunda = true;
+bool resultado = segunda || 10 / cero &gt; 1;
+Console.WriteLine($"resultado con || → {resultado}");   // True, sin error</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: <code>&amp;&amp;</code> primero lo "barato", <code>||</code> primero lo "certeza"</h4>
+    <p>En <code>a &amp;&amp; b</code>, pon primero la <strong>condición más barata y segura</strong>: la que puede fallar (dividir por cero) va a la derecha. En <code>a || b</code>, pon primero la <strong>condición que casi siempre es cierta</strong>. Esta costumbre te va a ahorrar exceptions en el futuro. ⚡</p>
+  </div>
+
+  <h3>🧮 La tabla de precedencia de C# (de mayor a menor)</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>#</th><th>Categoría</th><th>Operadores</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><strong>Primaria</strong></td><td><code>x.y</code>, <code>f(x)</code>, <code>new</code>, <code>typeof</code>, <code>x++</code>, <code>x--</code></td><td><code>Console.WriteLine(2 + 3)</code></td></tr>
+        <tr><td>2</td><td><strong>Unaria</strong></td><td><code>+</code>, <code>-</code>, <code>!</code>, <code>~</code>, <code>++x</code>, <code>--x</code>, <em>cast</em></td><td><code>-x</code>, <code>!activo</code></td></tr>
+        <tr><td>3</td><td><strong>Multiplicativo</strong></td><td><code>*</code>, <code>/</code>, <code>%</code></td><td><code>2 * 3 % 4</code></td></tr>
+        <tr><td>4</td><td><strong>Aditivo</strong></td><td><code>+</code>, <code>-</code></td><td><code>2 + 3 - 1</code></td></tr>
+        <tr><td>5</td><td><strong>Desplazamiento</strong></td><td><code>&lt;&lt;</code>, <code>&gt;&gt;</code></td><td><code>1 &lt;&lt; 4</code></td></tr>
+        <tr><td>6</td><td><strong>Relacional y de tipo</strong></td><td><code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>is</code>, <code>as</code></td><td><code>a &lt; b</code></td></tr>
+        <tr><td>7</td><td><strong>Igualdad</strong></td><td><code>==</code>, <code>!=</code></td><td><code>a == b</code></td></tr>
+        <tr><td>8</td><td><strong>AND (bitwise)</strong></td><td><code>&amp;</code></td><td><code>a &amp; b</code></td></tr>
+        <tr><td>9</td><td><strong>XOR (bitwise)</strong></td><td><code>^</code></td><td><code>a ^ b</code></td></tr>
+        <tr><td>10</td><td><strong>OR (bitwise)</strong></td><td><code>|</code></td><td><code>a | b</code></td></tr>
+        <tr><td>11</td><td><strong>AND condicional</strong></td><td><code>&amp;&amp;</code></td><td><code>a &amp;&amp; b</code></td></tr>
+        <tr><td>12</td><td><strong>OR condicional</strong></td><td><code>||</code></td><td><code>a || b</code></td></tr>
+        <tr><td>13</td><td><strong>Condicional</strong></td><td><code>? :</code></td><td><code>esMayor ? "sí" : "no"</code></td></tr>
+        <tr><td>14</td><td><strong>Asignación</strong></td><td><code>=</code>, <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>, <code>%=</code>, <code>??=</code></td><td><code>total += 10</code></td></tr>
+        <tr><td>15</td><td><strong>Lambda</strong></td><td><code>=&gt;</code></td><td><code>x =&gt; x * 2</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — los paréntesis mandan</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// SIN paréntesis, * y / ganan sobre + y -.
+Console.WriteLine($"2 + 3 * 4 = {2 + 3 * 4}");          // 14
+
+// CON paréntesis, cambias el resultado.
+Console.WriteLine($"(2 + 3) * 4 = {(2 + 3) * 4}");      // 20
+
+// Unario también gana: el signo se aplica primero.
+int x = 5;
+Console.WriteLine($"-x + 2 = {-x + 2}");                // -3
+Console.WriteLine($"-(x + 2) = {-(x + 2)}");            // -7
+
+// Regla de oro: si tienes dudas, pon paréntesis.
+// Se lee peor que el código sin paréntesis... no. Se lee MEJOR.
+Console.WriteLine($"{((2 + 3) * 4) - 5}");</code></pre>
+  </div>
+
+  <h3>🧷 <code>&amp;</code> vs <code>&amp;&amp;</code> (y <code>|</code> vs <code>||</code>)</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — operadores de bits</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// &amp; y | son operadores de BITS: trabajan con el 0 y el 1 de cada byte.
+int a = 6;   // 0110
+int b = 3;   // 0011
+Console.WriteLine($"6 &amp; 3 = {a &amp; b}");   // 0010 → 2
+Console.WriteLine($"6 | 3 = {a | b}");   // 0111 → 7
+Console.WriteLine($"6 ^ 3 = {a ^ b}");   // 0101 → 5
+
+// Con bool, &amp; y | también funcionan, PERO evalúan los dos lados siempre.
+bool primero = false;
+bool segundo = true;
+Console.WriteLine($"false &amp; true = {primero &amp; segundo}");   // False
+Console.WriteLine($"false &amp;&amp; true = {primero &amp;&amp; segundo}");   // False
+
+// OJO: con &amp; NO hay cortocircuito, así que esto se rompe:
+int divisor = 0;
+int numero = 10;
+// bool peligro = numero / divisor &gt; 1 &amp; primero;   ← DivideByZeroException
+Console.WriteLine("El programa llegó aquí sin romperse.");</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Por qué C# tiene dos "y" y dos "o"</h4>
+    <p><code>&amp;&amp;</code> y <code>||</code> son para <strong>decisiones</strong>: cortocircuitan, trabajan con booleanos y devuelven un <code>bool</code>. <code>&amp;</code> y <code>|</code> son para <strong>bits</strong>: miran cada bit de los números y no cortocircuitan. Si los usas por error (un <code>&amp;</code> donde iba un <code>&amp;&amp;</code>), el programa compila, pero te puede tirar un error feo en tiempo de ejecución.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Escriban 8 expresiones mezclando <code>+</code>, <code>*</code>, <code>&amp;&amp;</code>, <code>||</code> y paréntesis. <strong>Uno las calcula mentalmente y el otro las ejecuta</strong> en la consola. Después comparen. Cada diferencia es una discusión sobre precedencia. 🔎</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace el cortocircuito en <code>divisor != 0 &amp;&amp; numero / divisor &gt; 2</code>?</p>
+      <button class="opcion" data-op="a">Divide siempre, sin importar el resultado de la primera parte</button>
+      <button class="opcion" data-op="b">Evalúa la segunda parte solo si la primera resulta verdadera</button>
+      <button class="opcion" data-op="c">Ejecuta las dos partes al mismo tiempo</button>
+      <button class="opcion" data-op="d">Convierte el resultado a texto</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Qué resultado tiene <code>2 + 3 * 4</code> en C#?</p>
+      <button class="opcion" data-op="a">20</button>
+      <button class="opcion" data-op="b">24</button>
+      <button class="opcion" data-op="c">14</button>
+      <button class="opcion" data-op="d">9</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> En C#, ¿qué diferencia hay entre <code>&amp;</code> y <code>&amp;&amp;</code>?</p>
+      <button class="opcion" data-op="a"><code>&amp;</code> evalúa siempre los dos lados; <code>&amp;&amp;</code> hace cortocircuito</button>
+      <button class="opcion" data-op="b">No hay ninguna diferencia</button>
+      <button class="opcion" data-op="c"><code>&amp;&amp;</code> es mucho más rápido</button>
+      <button class="opcion" data-op="d"><code>&amp;</code> solo se puede usar con números</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira los brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>El cerebro es 73 % agua. Un vaso mejora la concentración 30 min.</p></div>
+    <div class="descanso-card"><span class="big-icon">🧮</span><h3>Piensa en la tabla</h3><p>Sin computador, escribe la tabla de precedencia de memoria. Es el mejor ejercicio de estos 15 min. 🧠</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>Los operadores de C# vienen de una familia: C, C++, Java, JavaScript y TypeScript usan <strong>exactamente la misma tabla de precedencia</strong>. Si la aprendes en C#, la vas a usar en todos lados. Y un dato curioso: el <code>%</code> se llama "módulo" en matemáticas (el resto de la división euclidiana) y en C# es el operador más antiguo de todos los lenguajes: viene literalmente de los años 60. 📜</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: asignación compuesta →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>🔗 Asignación compuesta: atajos que hacen más</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "Sumar sin que el nombre de la variable cambie"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 <code>x = x + 5</code> es cansón</h3>
+    <p>Cuando a una variable le sumas, le restas o la multiplicas <strong>usando su propio valor</strong>, C# te da un atajo: <code>x += 5</code> significa exactamente <code>x = x + 5</code>. No es magia: es <strong>azúcar sintáctico</strong>, una forma más corta de escribir lo mismo. Y tiene un detalle muy importante: la <strong>asignación devuelve el valor asignado</strong>, así que se puede encadenar.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — los operadores de asignación compuestos</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int total = 0;
+total += 15;    // total = total + 15
+total -= 5;     // total = total - 5
+total *= 2;     // total = total * 2
+total /= 4;     // total = total / 4
+total %= 5;     // total = total % 5
+
+Console.WriteLine($"total final = {total}");
+
+// La asignación devuelve el valor asignado, así que se puede encadenar:
+int x = 0;
+int y = (x += 10);   // x queda en 10 y y también vale 10
+Console.WriteLine($"x = {x}, y = {y}");</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Atajo</th><th>Equivale a</th><th>Atajo</th><th>Equivale a</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>x += 5</code></td><td><code>x = x + 5</code></td><td><code>x /= 5</code></td><td><code>x = x / 5</code></td></tr>
+        <tr><td><code>x -= 5</code></td><td><code>x = x - 5</code></td><td><code>x %= 5</code></td><td><code>x = x % 5</code></td></tr>
+        <tr><td><code>x *= 5</code></td><td><code>x = x * 5</code></td><td><code>x ??= 5</code></td><td>si <code>x</code> es <code>null</code>, vale 5</td></tr>
+        <tr><td><code>x++</code></td><td><code>x = x + 1</code></td><td><code>x &amp;^= m</code></td><td>operación de bits (poco usada)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🧵 La asignación se evalúa de derecha a izquierda</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — += con texto y ??=</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ??= asigna SOLO si la variable es null. Ideal para valores por defecto.
+string? nombre = null;
+nombre ??= "Visitante";
+Console.WriteLine($"nombre = {nombre}");
+
+// El += con TEXTO es una concatenación.
+string saludo = "Hola";
+saludo += ", ";
+saludo += "María";
+Console.WriteLine(saludo);
+
+// Y con números funciona igual de bien.
+int contador = 0;
+contador += 1;
+contador += 1;
+Console.WriteLine($"contador = {contador}");</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El bug clásico: el <code>++</code> escondido en la condición</h4>
+    <p>El <code>++</code> dentro del <code>while</code> se ejecuta <strong>antes</strong> de la comparación, y eso desplaza todos los valores. Es el error que hace que un contador empiece en 1, o que un bucle termine una vuelta antes de tiempo. La regla: <strong>el incremento va en una línea aparte</strong>, al final del bloque.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — el ++ escondido (bug) y su solución</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// BUG: el ++ está en la condición, así que se evalúa ANTES de comparar.
+int i = 0;
+Console.WriteLine("Con i++ en la condición:");
+while (i++ &lt; 3)
+{
+    Console.WriteLine($"  i = {i}");
+}
+// Imprime 1, 2, 3 → se salta el 0 y se pasa un número.
+
+// La forma CORRECTA: comparar y luego incrementar.
+int j = 0;
+Console.WriteLine("Con j++ dentro del bloque:");
+while (j &lt; 3)
+{
+    Console.WriteLine($"  j = {j}");
+    j++;
+}
+// Imprime 0, 1, 2 ✅</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: <code>+=</code> es tu mejor aliado en los bucles</h4>
+    <p>Un acumulador se escribe siempre igual: <code>total += valor;</code>. Como la asignación <strong>devuelve el valor</strong>, también sirve para cosas curiosas como <code>contador++</code> dentro de una condición, pero mejor no: ya vimos que es una trampa. Y ojo: <code>total += 5</code> es más rápido que <code>total = total + 5</code>, porque el compilador lo optimiza por ti. 🚀</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban un programa que sume los números del 1 al 10 con un acumulador (<code>total += i</code>), y luego la versión "mala" con el <code>i++</code> en la condición del <code>while</code>. Comparen los dos resultados y discutan cuál está bien y por qué. Después sumen los números pares con <code>i += 2</code> en vez de <code>i++</code>. 🔁</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Qué hace <code>total += 10;</code>?</p>
+      <button class="opcion" data-op="a">Suma 10 al valor que ya tenía <code>total</code></button>
+      <button class="opcion" data-op="b">Comprueba si <code>total</code> es 10</button>
+      <button class="opcion" data-op="c">Multiplica <code>total</code> por 10</button>
+      <button class="opcion" data-op="d">Deja <code>total</code> valiendo 10</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Si <code>total = 5;</code> y luego <code>total += 3;</code> y <code>total *= 2;</code>, ¿qué valor queda?</p>
+      <button class="opcion" data-op="a">10</button>
+      <button class="opcion" data-op="b">13</button>
+      <button class="opcion" data-op="c">16</button>
+      <button class="opcion" data-op="d">8</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Cuál es la forma correcta de recorrer con <code>while</code> los valores 0, 1 y 2?</p>
+      <button class="opcion" data-op="a"><code>while (i++ &lt; 3) { ... }</code></button>
+      <button class="opcion" data-op="b"><code>while (i &lt; 3) { ... i++; }</code></button>
+      <button class="opcion" data-op="c"><code>while (i = 0; i &lt; 3;) { ... }</code></button>
+      <button class="opcion" data-op="d"><code>while (i &lt;= 3) { ... }</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: trampas del lenguaje →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>🪤 Trampas del lenguaje: las que muerden</h2>
+  <p class="meta-modulo">⏱️ 35 minutos · "Los errores que no son de sintaxis"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 El peor tipo de error</h3>
+    <p>Un error de sintaxis te lo señala el compilador con el número de la línea: no duele. Los errores de esta clase <strong>compilan perfecto</strong> y se descubren cuando el programa ya está corriendo (o peor: cuando el resultado sale mal). Son los que se quedan en producción. Hoy los cazamos todos. 🪤</p>
+  </div>
+
+  <h3>💥 Trampa 1: dividir entre cero</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — división entre cero: excepción vs. Infinity</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int divisor = 0;
+int numero = 10;
+
+// Con int, esto LANZA DivideByZeroException y el programa se cae:
+// int resultado = numero / divisor;
+
+try
+{
+    int resultado = numero / divisor;
+    Console.WriteLine(resultado);
+}
+catch (DivideByZeroException)
+{
+    Console.WriteLine("No se puede dividir entre cero (villano derrotado 🦹).");
+}
+
+// Con double NO hay excepción: el resultado es Infinity.
+double d = 10;
+double cero = 0;
+Console.WriteLine($"{d} / {cero} = {d / cero}");
+Console.WriteLine($"¿Es infinito? {double.IsInfinity(d / cero)}");
+
+// Ojo: 0.0 / 0.0 da NaN, no Infinity.
+Console.WriteLine($"0.0 / 0.0 = {cero / cero} · ¿Es NaN? {double.IsNaN(cero / cero)}");</code></pre>
+  </div>
+
+  <h3>💥 Trampa 2: el <code>int</code> que se desborda</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — desbordamiento (overflow) de int</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int maximo = int.MaxValue;
+Console.WriteLine($"int.MaxValue = {maximo}");
+
+// UNCHECKED (por defecto): la cuenta "da la vuelta" y el programa sigue
+// como si nada. ¡Esta es la trampa más silenciosa!
+int desbordado = unchecked(maximo + 1);
+Console.WriteLine($"unchecked → {desbordado}");
+
+// CHECKED: el desbordamiento lanza OverflowException y te avisa.
+try
+{
+    int controlado = checked(maximo + 1);
+    Console.WriteLine(controlado);
+}
+catch (OverflowException)
+{
+    Console.WriteLine("Overflow detectado: el valor no cabe en un int.");
+}
+
+// Si el dato es grande de verdad, usa long: ahí sí cabe.
+long enorme = (long)maximo + 1;
+Console.WriteLine($"En long sí cabe: {enorme}");</code></pre>
+  </div>
+
+  <h3>💥 Trampa 3: <code>0.1 + 0.2</code> no es <code>0.3</code></h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — la trampa de los decimales binarios</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Los double guardan el número en base 2, y 0.1 no se puede escribir exacto ahí.
+double suma = 0.1 + 0.2;
+double esperado = 0.3;
+
+Console.WriteLine($"0.1 + 0.2 = {suma}");
+Console.WriteLine($"0.1 + 0.2 == 0.3 → {suma == esperado}");   // False
+
+// La comparación correcta: mirar la diferencia, no el signo igual.
+Console.WriteLine($"¿Son iguales? → {Math.Abs(suma - esperado) &lt; 0.0000001}");
+
+// Con decimal la aritmética es decimal exacta: aquí sí da True.
+decimal sumaDecimal = 0.1m + 0.2m;
+Console.WriteLine($"0.1m + 0.2m == 0.3m → {sumaDecimal == 0.3m}");   // True</code></pre>
+  </div>
+
+  <h3>💥 Trampa 4: la precedencia que sorprende</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — sorpresas de precedencia</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// * gana sobre +: el resultado NO es 20.
+Console.WriteLine($"2 + 3 * 4 = {2 + 3 * 4}");            // 14
+Console.WriteLine($"(2 + 3) * 4 = {(2 + 3) * 4}");        // 20
+
+// &amp;&amp; gana sobre ||: el resultado NO es el que parece.
+bool a = true;
+bool b = true;
+bool c = false;
+
+Console.WriteLine($"a || b &amp;&amp; c = {a || b &amp;&amp; c}");          // True  → true || (true &amp;&amp; false)
+Console.WriteLine($"(a || b) &amp;&amp; c = {(a || b) &amp;&amp; c}");      // False → (true || true) &amp;&amp; false
+
+// Para que no haya dudas, escribe SIEMPRE los paréntesis.
+Console.WriteLine($"a || (b &amp;&amp; c) = {a || (b &amp;&amp; c)}");       // True
+
+// Y el signo pegado al número cambia el resultado:
+Console.WriteLine($"-2 * 3 = {-2 * 3}");      // -6
+Console.WriteLine($"-(2 * 3) = {-(2 * 3)}");   // -6 (pero ojo con la suma)
+Console.WriteLine($"-2 + 3 = {-2 + 3}");      // 1</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 La regla de oro de las trampas</h4>
+    <p><strong>Pon paréntesis siempre que combines operadores de distintas familias.</strong> El computador nunca se equivoca: la ambigüedad la pones tú. Y cuando un resultado te sorprenda, no lo arregles a ojo: <strong>parte la expresión en varios pasos</strong> y revisa cada paso. 🕵️</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Cada uno escribe un programa con <strong>un error a propósito</strong> de los de hoy (dividir entre cero, sumar al máximo, comparar flotantes, olvidarse de paréntesis) y se lo pasa al compañero. El compañero tiene que encontrar el error <strong>sin leer el código</strong>, solo mirando la salida. Quien lo encuentre, gana un punto. Luego lo arreglan juntos. 🎯</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué ocurre al dividir dos <code>int</code> entre cero?</p>
+      <button class="opcion" data-op="a">Devuelve 0</button>
+      <button class="opcion" data-op="b">Devuelve Infinity</button>
+      <button class="opcion" data-op="c">Lanza <code>DivideByZeroException</code> y el programa se detiene</button>
+      <button class="opcion" data-op="d">Devuelve NaN</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué <code>0.1 + 0.2</code> puede no ser igual a <code>0.3</code> cuando son <code>double</code>?</p>
+      <button class="opcion" data-op="a">Porque <code>double</code> guarda los decimales en base 2, de forma aproximada</button>
+      <button class="opcion" data-op="b">Porque el signo <code>+</code> está mal escrito</button>
+      <button class="opcion" data-op="c">Porque los números tienen que ser <code>decimal</code></button>
+      <button class="opcion" data-op="d">Porque <code>0.3</code> está mal escrito</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> En C#, un <code>int</code> que se desborda dentro de <code>unchecked</code>…</p>
+      <button class="opcion" data-op="a">Lanza <code>OverflowException</code></button>
+      <button class="opcion" data-op="b">Da la vuelta silenciosamente, sin avisar</button>
+      <button class="opcion" data-op="c">Detiene el programa inmediatamente</button>
+      <button class="opcion" data-op="d">Pide confirmación al usuario</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: Calculadora BLACKFRIDAY</h2>
+  <p class="meta-modulo">⏱️ 45 minutos · "Aritmética, comparación, lógicos y validación en un solo programa"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">Calculadora BLACKFRIDAY</span>
+    </div>
+    <p>La tienda del colegio tiene su gran día de descuentos y necesita un programa que calcule el total de cada compra, con <strong>descuentos por tramos</strong>, <strong>IVA del 19 %</strong>, <strong>envío</strong> y validación de entrada. Tu misión: construir <strong>BlackFriday</strong>, una aplicación de consola que use aritmética, comparación, operadores lógicos, precedencia y <code>TryParse</code> sin fallar nunca. 🛍️</p>
+  </div>
+
+  <h3>📋 Requisitos del taller</h3>
+  <ol class="pasos">
+    <li>Crea el proyecto: <code>dotnet new console -n BlackFriday</code> y ábrelo en VS Code (<code>code .</code>).</li>
+    <li>Pide el <strong>nombre del cliente</strong> (<code>string</code>), el <strong>precio unitario</strong> (<code>decimal</code>) y la <strong>cantidad</strong> (<code>int</code>).</li>
+    <li>Valida con <code>decimal.TryParse</code> e <code>int.TryParse</code>: si el precio no es un número <strong>o es negativo</strong>, avisa y usa 0. Si la cantidad es inválida o menor que 1, avisa y usa 1.</li>
+    <li>Pregunta si es <strong>día Black Friday</strong> (<code>bool</code>, leyendo "s" o "n").</li>
+    <li>Calcula el <strong>subtotal</strong> (<code>precio * cantidad</code>).</li>
+    <li>Aplica el descuento: <strong>30 %</strong> si es Black Friday, <strong>5 %</strong> si no. Y súmele <strong>5 % extra</strong> si el subtotal supera los 500 000 COP.</li>
+    <li>Calcula el <strong>IVA</strong> (19 %) sobre el valor ya descontado, y el <strong>total</strong>.</li>
+    <li>El <strong>envío</strong> cuesta 15 000 COP, pero es <strong>gratis</strong> si el total (con IVA) supera 300 000 COP.</li>
+    <li>Muestra todo con interpolación y el formato <code>{total:N0}</code>. Si el total quedó en 0, muestra un aviso de "compra no válida".</li>
+    <li>Prueba el programa con: compra normal, compra Black Friday grande (que activa el 5 % extra), precio escrito como texto ("abc") y cantidad 0.</li>
+  </ol>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — guía de estilo (no es la solución, es el molde)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ============================================
+// CALCULADORA BLACKFRIDAY
+// Descuentos por tramos + IVA + envío + validación.
+// ============================================
+
+const decimal IVA = 0.19m;
+const decimal DescuentoNormal = 0.05m;
+const decimal DescuentoBlackFriday = 0.30m;
+const decimal ExtraPorCompraGrande = 0.05m;
+const decimal ValorEnvio = 15000m;
+const decimal EnvioGratisDesde = 300000m;
+
+Console.WriteLine("=== BLACKFRIDAY · Calculadora de descuentos ===");
+
+// 1. ENTRADA
+Console.Write("Nombre del cliente: ");
+string nombre = Console.ReadLine() ?? "";
+
+Console.Write("Precio unitario: ");
+decimal precio = 0m;
+if (!decimal.TryParse(Console.ReadLine(), out precio) || precio &lt;= 0m)
+{
+    Console.WriteLine("Precio inválido: se asume 0.");
+    precio = 0m;
+}
+
+Console.Write("Cantidad: ");
+int cantidad = 0;
+if (!int.TryParse(Console.ReadLine(), out cantidad) || cantidad &lt; 1)
+{
+    Console.WriteLine("Cantidad inválida: se asume 1.");
+    cantidad = 1;
+}
+
+Console.Write("¿Es día Black Friday? (s/n): ");
+string respuesta = (Console.ReadLine() ?? "").Trim().ToLower();
+bool esBlackFriday = respuesta == "s";
+
+// 2. PROCESO
+decimal subtotal = precio * cantidad;
+decimal porcentaje = esBlackFriday ? DescuentoBlackFriday : DescuentoNormal;
+decimal extra = subtotal &gt;= 500000m ? ExtraPorCompraGrande : 0m;
+decimal descuento = (porcentaje + extra) * subtotal;
+decimal baseImponible = subtotal - descuento;
+decimal iva = baseImponible * IVA;
+decimal totalSinEnvio = baseImponible + iva;
+decimal envio = totalSinEnvio &gt;= EnvioGratisDesde ? 0m : ValorEnvio;
+decimal total = totalSinEnvio + envio;
+
+// 3. SALIDA
+Console.WriteLine("--------------------------------");
+Console.WriteLine($"Cliente: {nombre}");
+Console.WriteLine($"Subtotal:  {subtotal:N0} COP");
+Console.WriteLine($"TOTAL:     {total:N0} COP");
+Console.WriteLine("--------------------------------");</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Mira bien el ternario anidado</h4>
+    <p><code>esBlackFriday ? DescuentoBlackFriday : DescuentoNormal</code> es un <strong>operador condicional</strong> (el <code>? :</code> de la tabla de precedencia): una forma compacta de escribir un <code>if</code> que solo tiene dos caminos. Y el <code>subtotal &gt;= 500000m</code> es un <strong>operador de comparación</strong>. Un solo renglón, tres conceptos. 🎯</p>
+  </div>
+
+  <button class="btn-solucion" data-solucion="sol-taller">👁️ Ver solución completa</button>
+  <div class="solucion" id="sol-taller">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-header-left">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span>csharp — solución del taller</span>
+        </div>
+        <button class="copy-btn">📋 Copiar</button>
+      </div>
+<pre><code>// ============================================
+// CALCULADORA BLACKFRIDAY — solución del taller
+// Descuentos por tramos + IVA + envío + validación.
+// ============================================
+
+const decimal IVA = 0.19m;
+const decimal DescuentoNormal = 0.05m;
+const decimal DescuentoBlackFriday = 0.30m;
+const decimal ExtraPorCompraGrande = 0.05m;
+const decimal ValorEnvio = 15000m;
+const decimal EnvioGratisDesde = 300000m;
+const decimal UmbralCompraGrande = 500000m;
+
+Console.WriteLine("=== BLACKFRIDAY · Calculadora de descuentos ===");
+
+// ---------- 1. ENTRADA ----------
+Console.Write("Nombre del cliente: ");
+string nombre = Console.ReadLine() ?? "";
+
+Console.Write("Precio unitario: ");
+decimal precio = 0m;
+if (!decimal.TryParse(Console.ReadLine(), out precio) || precio &lt;= 0m)
+{
+    Console.WriteLine("⚠ Precio inválido: se asume 0.");
+    precio = 0m;
+}
+
+Console.Write("Cantidad: ");
+int cantidad = 0;
+if (!int.TryParse(Console.ReadLine(), out cantidad) || cantidad &lt; 1)
+{
+    Console.WriteLine("⚠ Cantidad inválida: se asume 1.");
+    cantidad = 1;
+}
+
+Console.Write("¿Es día Black Friday? (s/n): ");
+string respuesta = (Console.ReadLine() ?? "").Trim().ToLower();
+bool esBlackFriday = respuesta == "s";
+
+// ---------- 2. PROCESO ----------
+decimal subtotal = precio * cantidad;
+
+// El descuento depende del día (operador condicional ? :).
+decimal porcentaje = esBlackFriday ? DescuentoBlackFriday : DescuentoNormal;
+
+// Si la compra es grande, hay un 5 % extra (comparación con &amp;&amp;).
+decimal extra = subtotal &gt;= UmbralCompraGrande ? ExtraPorCompraGrande : 0m;
+
+decimal descuento = (porcentaje + extra) * subtotal;
+decimal baseImponible = subtotal - descuento;
+decimal iva = baseImponible * IVA;
+decimal totalSinEnvio = baseImponible + iva;
+
+// El envío es gratis si el total ya supera el umbral (comparación simple).
+decimal envio = totalSinEnvio &gt;= EnvioGratisDesde ? 0m : ValorEnvio;
+decimal total = totalSinEnvio + envio;
+
+// Un double para el promedio por unidad (no es dinero, es un cálculo).
+double promedioUnidad = cantidad &gt; 0 ? (double)total / cantidad : 0;
+
+// ---------- 3. SALIDA ----------
+Console.WriteLine("--------------------------------");
+Console.WriteLine($"Cliente: {nombre}");
+Console.WriteLine($"Subtotal:            {subtotal:N0} COP");
+Console.WriteLine($"Descuento ({porcentaje * 100:N0}% + {extra * 100:N0}%): -{descuento:N0} COP");
+Console.WriteLine($"Base imponible:      {baseImponible:N0} COP");
+Console.WriteLine($"IVA 19%:             {iva:N0} COP");
+Console.WriteLine($"Envío:               {envio:N0} COP");
+Console.WriteLine($"TOTAL:               {total:N0} COP");
+Console.WriteLine($"Promedio por unidad: {promedioUnidad:N0} COP");
+
+if (total &lt;= 0m)
+{
+    Console.WriteLine("⚠ Compra no válida: revisa el precio y la cantidad.");
+}
+Console.WriteLine("--------------------------------");</code></pre>
+    </div>
+  </div>
+
+  <div class="checklist">
+    <h4>✅ Antes de entregar, verifica</h4>
+    <ul>
+      <li>El proyecto se llama <code>BlackFriday</code> y corre con <code>dotnet run</code>.</li>
+      <li>Los porcentajes y el IVA son <code>const decimal</code> y están escritos con la letra <code>m</code>.</li>
+      <li>La entrada se valida con <code>TryParse</code>: el programa <strong>no se cae</strong> si escriben "abc" o un precio negativo.</li>
+      <li>El descuento del 30 % solo se aplica cuando es Black Friday (el <code>bool</code> decide).</li>
+      <li>El 5 % extra se suma <strong>al porcentaje</strong>, no se aplica sobre el subtotal ya descontado.</li>
+      <li>El IVA se calcula sobre el valor <strong>después</strong> del descuento, y el envío se decide sobre el total con IVA.</li>
+      <li>El envío sale gratis solo cuando el total supera los 300 000 COP.</li>
+      <li>Todas las líneas de salida usan interpolación y <code>:N0</code>.</li>
+      <li>Pruebaste las cuatro rutas: compra normal, Black Friday grande, precio inválido y cantidad 0.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Cada quien le da un caso de prueba diferente al otro: uno compra un portátil de 1 200 000 COP el día BLACKFRIDAY, el otro escribe "mil" en el precio y "-3" en la cantidad. <strong>Calculen a mano</strong> el total esperado y compárenlo con el del programa. Si no coinciden, busquen juntos: ¿es un error de validación, de fórmula o de precedencia? Esa búsqueda es la habilidad que más se paga en el mundo real. 🕵️</p>
+  </div>
+
+  <div class="quiz" data-quiz="7">
+    <h3>🎯 Mini-Quiz del Módulo 7</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué devuelve <code>int.TryParse("abc", out int n)</code>?</p>
+      <button class="opcion" data-op="a"><code>true</code> y <code>n</code> vale 0</button>
+      <button class="opcion" data-op="b"><code>false</code> y <code>n</code> queda en 0</button>
+      <button class="opcion" data-op="c">Lanza una excepción porque "abc" no es número</button>
+      <button class="opcion" data-op="d">El número 0</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Por qué se calcula el IVA <strong>después</strong> del descuento?</p>
+      <button class="opcion" data-op="a">Porque así el programa corre más rápido</button>
+      <button class="opcion" data-op="b">Porque es un requisito de C#</button>
+      <button class="opcion" data-op="c">Porque el IVA se aplica sobre el valor que queda después de descontar</button>
+      <button class="opcion" data-op="d">Porque el IVA siempre va primero</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> Si el usuario escribe un precio negativo, el programa debe…</p>
+      <button class="opcion" data-op="a">Avisar que el dato no es válido y usar un precio válido</button>
+      <button class="opcion" data-op="b">Calcular el total negativo sin avisar</button>
+      <button class="opcion" data-op="c">Terminar con un error de ejecución</button>
+      <button class="opcion" data-op="d">Pedir la contraseña del usuario</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 3 completada!</h2>
+    <p>Ya puedes calcular, comparar y decidir con operadores, y lo más importante: sabes <strong>en qué orden</strong> hace el computador las cuentas y cómo escribir un programa que no se caiga ni con datos absurdos. En la <strong>Clase 4</strong> llega lo que todos queremos: <strong>sentencias de control condicionales</strong> (<code>if</code>, <code>else</code>, <code>else if</code> y <code>switch</code>), para que el programa tome caminos distintos según lo que pase. 🚦</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">➗ Herramientas Algorítmicas II · Clase 3 de 10</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · Código TL007</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

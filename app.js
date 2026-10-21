@@ -103,10 +103,17 @@ function configurarAcordeon() {
 function cargarProgresoPorClase() {
   // Total de módulos por clase (para calcular porcentaje correctamente)
   const TOTALES_MODULOS = {
-    'curso-csharp-funciones':   7,   // 0..6 (m7 es opcional/final)
-    'curso-csharp-funciones-7': 8,   // 0..7 (m8 es opcional/final)
-    'curso-csharp-poo-10':      9,   // 0..8 (m9 es opcional/final)
-    'curso-csharp-arreglos-11': 8,   // 0..7 (m8 es opcional/final)
+    // Clases de "Algoritmos en C#": 8 módulos (0 inicio, 4 descanso, 1/2/3/5/6/7 completables)
+    'curso-csharp-1':  6,
+    'curso-csharp-2':  6,
+    'curso-csharp-3':  6,
+    'curso-csharp-4':  6,
+    'curso-csharp-5':  6,
+    'curso-csharp-6':  6,
+    'curso-csharp-7':  6,
+    'curso-csharp-8':  6,
+    'curso-csharp-9':  6,
+    'curso-csharp-10': 6,
     'curso-analisis-diseno':    7,
     'curso-requerimientos':     7,
     'curso-elicitacion':        8,
@@ -197,7 +204,7 @@ function calcularProgresoCurso(key, totalMods) {
     // Cursos de Bases de Datos y Herramientas: m0 (inicio) y m4 (descanso) no cuentan;
     // sólo suman los módulos de contenido completables 1,2,3,5,6,7.
     const completablesBD = [1, 2, 3, 5, 6, 7];
-    const completados = (key.startsWith('curso-bd-') || key.startsWith('curso-herr-'))
+    const completados = (key.startsWith('curso-bd-') || key.startsWith('curso-herr-') || key.startsWith('curso-csharp-'))
       ? (datos.completados || []).filter(m => completablesBD.includes(m))
       : (datos.completados || []).filter(m => m <= totalMods - 1);
     return Math.round((completados.length / totalMods) * 100);
@@ -231,11 +238,11 @@ function actualizarBarraClase(card, pct) {
 function animarStats() {
   // Los 3 primeros son fijos
   animarNumero(document.getElementById('stat-cursos'),  0, 6,  800);
-  animarNumero(document.getElementById('stat-clases'), 0, 34, 900);
+  animarNumero(document.getElementById('stat-clases'), 0, 40, 900);
   // El cuarto (horas) tiene "+" al final
   const elHoras = document.getElementById('stat-horas');
   if (elHoras) {
-    animarNumero(elHoras, 0, 120, 1000, valor => valor + '+');
+    animarNumero(elHoras, 0, 140, 1000, valor => valor + '+');
   }
   // El de progreso ya se actualiza en cargarProgresoPorClase
 }
@@ -278,18 +285,17 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('keydown', (e) => {
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
 
+  // Atajos con Shift: clases 1..10 de "Algoritmos en C#"
+  if (e.shiftKey && /^Digit[0-9]$/.test(e.code)) {
+    const numero = e.code === 'Digit0' ? 10 : parseInt(e.code.slice(5), 10);
+    const card = document.querySelector('a.clase-card[data-storage="curso-csharp-' + numero + '"]');
+    if (card) card.click();
+    return;
+  }
+
   // Atajos numéricos
   if (e.key === '1') {
-    const card = document.querySelector('a.clase-card[data-storage="curso-csharp-funciones-7"]');
-    if (card) card.click();
-  } else if (e.key === '2') {
-    const card = document.querySelector('a.clase-card[data-storage="curso-csharp-poo-10"]');
-    if (card) card.click();
-  } else if (e.key === '3') {
-    const card = document.querySelector('a.clase-card[data-storage="curso-csharp-arreglos-11"]');
-    if (card) card.click();
-  } else if (e.key === '4') {
-    const card = document.querySelector('a.clase-card[data-storage="curso-csharp-funciones"]');
+    const card = document.querySelector('.clase-card.ad-1');
     if (card) card.click();
   } else if (e.key === '5') {
     const card = document.querySelector('.clase-card.ad-1');
@@ -387,8 +393,10 @@ document.addEventListener('keydown', (e) => {
 /* ---------- TOAST DE BIENVENIDA SI HAY PROGRESO ---------- */
 window.addEventListener('load', () => {
   // Verifica si el usuario ha avanzado en alguna clase
-  const keys = ['curso-csharp-funciones-7', 'curso-csharp-poo-10', 'curso-csharp-arreglos-11',
-                'curso-csharp-funciones', 'curso-analisis-diseno', 'curso-requerimientos',
+  const keys = ['curso-csharp-1', 'curso-csharp-2', 'curso-csharp-3', 'curso-csharp-4',
+                'curso-csharp-5', 'curso-csharp-6', 'curso-csharp-7', 'curso-csharp-8',
+                'curso-csharp-9', 'curso-csharp-10',
+                'curso-analisis-diseno', 'curso-requerimientos',
                 'curso-elicitacion', 'curso-documentacion', 'curso-introduccion-diseno',
                  'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3', 'curso-herr-4', 'curso-herr-5', 'curso-herr-6', 'curso-herr-7', 'curso-herr-8', 'curso-herr-9-repetitivas', 'curso-herr-10-funciones', 'curso-herr-11-estructura', 'curso-herr-12-git', 'curso-herr-13-github', 'curso-herr-14-git-vscode'];
 
@@ -411,7 +419,7 @@ window.addEventListener('load', () => {
     }, 600);
   } else {
     setTimeout(() => {
-      mostrarToast('💡 Tip: usa las teclas 1-9 y 0 para saltar rápido a una clase.');
+      mostrarToast('💡 Tip: Shift+1…0 abre las clases de C#, y 1-9/0 las de Análisis y Diseño.');
     }, 1200);
   }
 });

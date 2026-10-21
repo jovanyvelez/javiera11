@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧮 Herramientas Algorítmicas II · Clase 6 · Acumuladores y banderas</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🧮</span>
+    <div>
+      <h1>Herramientas Algorítmicas II · Clase 6</h1>
+      <p class="subtitulo">C# moderno · .NET 10 (SDK LTS) · contadores, acumuladores y banderas</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">🔢 Contadores</button>
+  <button class="btn-modulo" data-modulo="2">🧺 Acumuladores</button>
+  <button class="btn-modulo" data-modulo="3">🚩 Banderas</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🧬 Los tres juntos</button>
+  <button class="btn-modulo" data-modulo="6">🪤 Trampas y decisiones</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🧮 Contadores, acumuladores y banderas</h2>
+    <p class="lead">Hasta ahora tus programas <strong>leen, deciden y repiten</strong>. Hoy agregas las tres herramientas que convierten un programa en un <strong>algoritmo de verdad</strong>: el <strong>contador</strong> (llevar la cuenta), el <strong>acumulador</strong> (juntar muchos datos en uno) y la <strong>bandera</strong> (recordar que algo ya pasó). Con estas tres armas resuelves el 90 % de los ejercicios de la guía.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — estudiante@colegio</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">estudiante@colegio:~$</span> <span class="cmd">dotnet new console -n Acumuladores</span></div>
+        <div><span class="out">La plantilla "aplicación de consola" se creó correctamente.</span></div>
+        <div><span class="prompt">estudiante@colegio:~/Acumuladores$</span> <span class="cmd">code .</span></div>
+        <div><span class="prompt">estudiante@colegio:~/Acumuladores$</span> <span class="cmd">dotnet run</span></div>
+        <div class="out">Hello, World!</div>
+        <div><span class="prompt">estudiante@colegio:~/Acumuladores$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3 h 45 min en 8 módulos, con descanso a mitad. Todo en el computador, con tu compañero/a de al lado.</p>
+    </div>
+    <div class="tarjeta tarjeta-verde">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Declarar y usar correctamente <strong>contadores</strong>, <strong>acumuladores</strong> y <strong>banderas</strong> dentro de bucles, y detectar los errores típicos que hacen que un programa "cuente mal".</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">🦹</span>
+      <h3>Los villanos de hoy</h3>
+      <p>El contador reiniciado dentro del bucle (siempre queda en 1), el acumulador que nunca se inicializa, la bandera que nace en <code>true</code> y el doble conteo que infla tus resultados.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · Contadores</td><td style="color:var(--a)">Llevar la cuenta</td><td style="color:var(--rosa)">Contador que se reinicia</td><td>100 XP</td></tr>
+        <tr><td>02 · Acumuladores</td><td style="color:var(--b)">Juntar muchos valores</td><td style="color:var(--rosa)">Promedio sin cantidad</td><td>100 XP</td></tr>
+        <tr><td>03 · Banderas</td><td style="color:var(--a)">Recordar con un <code>bool</code></td><td style="color:var(--rosa)">Bandera en <code>true</code></td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>05 · Los tres juntos</td><td style="color:var(--verde)">El algoritmo de 5 pasos</td><td style="color:var(--rosa)">Doble conteo</td><td>100 XP</td></tr>
+        <tr><td>06 · Trampas</td><td style="color:var(--b)">Los 6 errores classics</td><td style="color:var(--rosa)">—</td><td>100 XP</td></tr>
+        <tr><td>07 · Taller</td><td style="color:var(--a)">Reporte de calificaciones</td><td style="color:var(--rosa)">Consola en blanco</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Piensa en algo que cuentas todos los días: las salvadas de un grupo, las vueltas en una pista, los minutos de un partido. Escribe en el papel <strong>qué variable usarías</strong> para llevar esa cuenta y <strong>dónde la declararías</strong>. Ahora anticipa: ¿dentro o fuera del bucle? Compara tu respuesta con la de tu compañero/a.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué esta clase es tan importante?</h4>
+    <p>En los años 60, FORTRAN —el lenguaje de los mainframes— repetía con <code>DO 100 I = 1, 100</code>. Ese <code>I</code> era un contador, y el <code>100</code> era su acumulador. Cuatro décadas después seguimos usando la <strong>misma idea</strong>, pero con C# moderno, <code>decimal</code> para los promedios y un compilador que te avisa cuando te equivocas. Lo que aprendes hoy sirve para cualquier lenguaje que uses después.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: contadores →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>🔢 Contadores: llevar la cuenta sin perderla</h2>
+  <p class="meta-modulo">⏱️ 25 minutos · "Contar es la base de todo lo demás"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es un contador?</h3>
+    <p>Un <strong>contador</strong> es una variable que acumula <strong>de uno en uno</strong>: cada vez que el programa da una vuelta, le suma 1. Con él respondes preguntas como <em>"¿cuántas veces...?"</em>, <em>"¿cuántos estudiantes aprobaron...?"</em> o <em>"¿en qué vuelta estamos...?"</em>.</p>
+    <p><strong>Analogía:</strong> es el contador de visitas de una página web. Empieza en 0 y cada persona que entra le suma 1. Nadie borra el número, solo se acumula.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>📌 Regla de oro: se declara FUERA del bucle, en 0</h4>
+    <p>Si declaras el contador <strong>dentro</strong> del bucle, en cada vuelta C# crea una variable <strong>nueva</strong> (y al terminar la vuelta esa variable desaparece). El resultado: tu contador siempre vale 1. El contador que "cuenta" debe vivir <strong>por encima</strong> del bucle, inicializado en <code>0</code>.</p>
+  </div>
+
+  <h3>🔁 Contador con <code>while</code></h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — contador con while</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// El contador se declara FUERA del bucle y vale 0
+int contador = 0;
+
+Console.Write("¿Cuántas veces saludamos? ");
+int veces = int.Parse(Console.ReadLine() ?? "0");
+
+while (contador &lt; veces)
+{
+    Console.WriteLine($"Saludo #{contador + 1}");
+    contador = contador + 1;   // el contador avanza 1
+}
+
+Console.WriteLine($"Total de saludos: {contador}");</code></pre>
+  </div>
+
+  <p><strong>Qué hace:</strong> repite el saludo tantas veces como el usuario pida. <strong>Por qué funciona:</strong> el <code>while</code> mira <code>contador &lt; veces</code>; mientras sea verdad, el cuerpo se ejecuta y el contador sube. Cuando el contador llega a <code>veces</code>, la condición se vuelve falsa y el bucle termina. <strong>Ojo:</strong> si borras la línea <code>contador = contador + 1;</code>, el programa se queda repetir para siempre (bucle infinito).</p>
+
+  <h3>🔂 Contador con <code>for</code></h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — contador con for</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// El for trae su propio contador: la variable i
+int total = 0;
+
+for (int i = 1; i &lt;= 5; i++)
+{
+    total += i;          // 1 + 2 + 3 + 4 + 5
+    Console.WriteLine($"Vuelta {i}, total parcial: {total}");
+}
+
+Console.WriteLine($"Suma: {total}");</code></pre>
+  </div>
+
+  <p><strong>Qué hace:</strong> el <code>for</code> tiene tres tres partes: <code>int i = 1</code> (inicio), <code>i &lt;= 5</code> (condición) e <code>i++</code> (actualización). El <code>i</code> <strong>sí</strong> se reinicia en cada vuelta del bucle, y está bien: aquí no necesitamos el total de vueltas, necesitamos el <strong>total de la suma</strong>, y eso lo lleva <code>total</code>, que vive fuera.</p>
+
+  <div class="caja-importante">
+    <h4>🦹 Trampa 1: el contador que vive dentro del <code>if</code></h4>
+    <p>Cuando el dato que cuenta solo aparece a veces (los números pares, los aprobados...), es tentador declarar el contador dentro del <code>if</code>. No funciona: esa variable nace y muere en cada vuelta.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — error típico: contador dentro del if (siempre 1)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ⚠️ MAL: el contador nace dentro del if
+for (int i = 1; i &lt;= 10; i++)
+{
+    if (i % 2 == 0)
+    {
+        int pares = 0;      // variable nueva en cada vuelta
+        pares = pares + 1;
+        Console.WriteLine($"Pares vistos: {pares}");   // siempre 1
+    }
+}
+
+// ✅ BIEN: el contador vive fuera del if
+int totalPares = 0;
+for (int i = 1; i &lt;= 10; i++)
+{
+    if (i % 2 == 0)
+    {
+        totalPares = totalPares + 1;
+    }
+}
+Console.WriteLine($"Pares vistos: {totalPares}");   // 5</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 Trampa 2: reiniciar el contador dentro del bucle</h4>
+    <p>Esta es la más traicionera: el código <em>compila</em>, el programa <em>corre</em> y el resultado está mal. Si escribes <code>contador = 0;</code> dentro del bucle, estás borrando lo que llevabas.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — error típico: reiniciar dentro del bucle</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ⚠️ MAL: el contador se reinicia en cada vuelta
+int contador = 0;
+for (int i = 0; i &lt; 5; i++)
+{
+    contador = 0;              // se borra lo acumulado
+    contador = contador + 1;   // vuelve a valer 1
+    Console.WriteLine($"Vuelta {i + 1}: contador = {contador}");
+}
+Console.WriteLine($"Al final el contador es {contador}");   // 1, no 5</code></pre>
+  </div>
+
+  <h3>📍 ¿Dónde se declara y qué valor tiene?</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Dónde declaras el contador</th><th>Después de 1 vuelta</th><th>Después de 5 vueltas</th><th>¿Sirve?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Fuera del bucle</strong> (antes de la línea del <code>while</code>/<code>for</code>)</td><td>1</td><td>5 ✅</td><td style="color:var(--verde)">✅ Correcto</td></tr>
+        <tr><td><strong>Dentro del bucle</strong></td><td>1</td><td>1</td><td style="color:var(--rosa)">❌ Se reinicia</td></tr>
+        <tr><td><strong>Dentro del <code>if</code></strong></td><td>1</td><td>1</td><td style="color:var(--rosa)">❌ Además desaparece</td></tr>
+        <tr><td>Declarado en el <code>for</code> (<code>int i = 0</code>)</td><td>0</td><td>4</td><td style="color:var(--verde)">✅ Correcto <em>para contar vueltas</em></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: <code>contador++</code> es lo mismo que <code>contador = contador + 1</code></h4>
+    <p>Son exactamente la misma instrucción: la forma corta (<code>++</code>) suma 1, y la forma larga te deja sumar otra cosa, como <code>contador += 5;</code> o <code>contador -= 2;</code>. Igual funciona con <code>total--</code> para restar de a uno.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Un tablero digital de un bus pide el número de asientos y muestra "Quedan N asientos". Escriban el programa completo: qué variable usan, dónde la declaran y qué línea la actualiza. Después cámbienlo para que el contador <em>baje</em> desde 50 en lugar de subir desde 0.</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Dónde debe declararse un contador que cuenta cuántos elementos procesaste?</p>
+      <button class="opcion" data-op="a">Dentro del bucle, justo antes de usarlo</button>
+      <button class="opcion" data-op="b">Fuera del bucle, inicializado en 0</button>
+      <button class="opcion" data-op="c">Después del bucle</button>
+      <button class="opcion" data-op="d">Dentro del <code>if</code> que decide</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Un contador declarado <strong>dentro</strong> del bucle, al que se le suma 1 en cada vuelta, ¿qué valor tendrá?</p>
+      <button class="opcion" data-op="a">El número de vueltas</button>
+      <button class="opcion" data-op="b">La suma de todas las vueltas</button>
+      <button class="opcion" data-op="c">Siempre 1</button>
+      <button class="opcion" data-op="d">Va a fallar al compilar</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué diferencia hay entre <code>contador++</code> y <code>contador = contador + 1</code>?</p>
+      <button class="opcion" data-op="a">Ninguna: hacen exactamente lo mismo</button>
+      <button class="opcion" data-op="b">La primera suma 2 y la segunda suma 1</button>
+      <button class="opcion" data-op="c">La primera solo sirve en el <code>for</code></button>
+      <button class="opcion" data-op="d">La segunda es más rápida</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: acumuladores →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>🧺 Acumuladores: la alcancía de los datos</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "Juntar muchos datos en uno"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es un acumulador?</h3>
+    <p>Un <strong>acumulador</strong> guarda el <strong>resultado parcial</strong> de una operación mientras el programa avanza: la suma de muchos valores, el producto, un texto que vas armando. La diferencia clave con el contador: el contador <strong>siempre suma 1</strong>, el acumulador <strong>suma el valor que sea</strong>.</p>
+    <p><strong>Analogía:</strong> el contador es el ayudante que dice "van tres"; el acumulador es la <strong>alcancía</strong> donde vas guardando cada billete. La alcancía arranca en 0 y en cada vuelta le metes el billete del día, no un billete fijo.</p>
+  </div>
+
+  <div class="caja-importante">
+    <h4>📌 La línea que lo cambia todo: <code>total += valor;</code></h4>
+    <p>El <code>+=</code> es una abreviatura de "sumar y guardar en la misma variable": <code>total = total + valor;</code>. El acumulador <strong>se reinicia una sola vez</strong>, al empezar el programa (por eso va fuera del bucle, en 0); en cada vuelta se le <strong>suma</strong> el dato nuevo. Si lo reinicias dentro del bucle, vuelve al error del módulo anterior.</p>
+  </div>
+
+  <h3>💰 Acumulador de suma</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — acumulador de suma (el caso clásico)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// El acumulador se inicializa UNA vez, antes del bucle
+decimal total = 0m;      // la alcancía
+int cantidad = 0;        // un contador: cuántas notas entraron
+
+Console.Write("¿Cuántas notas vas a entrar? ");
+int n = int.Parse(Console.ReadLine() ?? "0");
+
+for (int i = 0; i &lt; n; i++)
+{
+    Console.Write($"Nota {i + 1}: ");
+    double entrada = 0;
+
+    // TryParse no se cae si el usuario escribe letras
+    if (double.TryParse(Console.ReadLine(), out entrada))
+    {
+        total += (decimal)entrada;   // acumula la suma
+        cantidad++;                  // cuenta cuántas son
+    }
+    else
+    {
+        Console.WriteLine("Dato inválido, se ignora esta nota.");
+    }
+}
+
+if (cantidad &gt; 0)
+{
+    decimal promedio = total / cantidad;
+    Console.WriteLine($"Total: {total}");
+    Console.WriteLine($"Promedio: {promedio:F2}");
+}</code></pre>
+  </div>
+
+  <p><strong>Qué hace:</strong> suma las notas válidas y calcula el promedio. <strong>Por qué funciona:</strong> <code>total</code> arranca en 0 y va guardando la suma parcial; <code>cantidad</code> lleva la cuenta de cuántas notas entraron de verdad; al final se divide una por otra. Fíjate en el <code>if (cantidad &gt; 0)</code>: sin él, si el usuario no digita ninguna nota, dividirías entre cero y el programa se caería.</p>
+
+  <div class="cuadricula cuadricula-2">
+    <div class="tarjeta tarjeta-ambar">
+      <span class="emoji">✖️</span>
+      <h3>Acumulador de producto</h3>
+      <p>En vez de sumar, <strong>multiplica</strong>: <code>total *= valor;</code>. Ojo: este <strong>empieza en 1</strong>, no en 0 (multiplicar por 0 siempre da 0).</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">📝</span>
+      <h3>Acumulador de texto</h3>
+      <p>Guarda <strong>palabras</strong>: <code>texto += nombre;</code>. Sirve para armar un listado o un resumen.</p>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — acumuladores de producto y de texto</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ===== Acumulador de PRODUCTO =====
+// ⚠️ Se inicializa en 1: multiplicar por 0 siempre da 0
+long total = 1;
+int[] precios = [12000, 8000, 15000];
+
+foreach (int precio in precios)
+{
+    total *= precio;      // acumula multiplicando
+}
+Console.WriteLine($"Total a pagar: {total}");   // 1440000000000
+
+// ===== Acumulador de TEXTO =====
+// Sirve para armar un listado a partir de muchos datos
+string lista = "";
+string[] nombres = ["Ana", "Beto", "Cami"];
+
+foreach (string nombre in nombres)
+{
+    lista += nombre + ", ";   // acumula texto
+}
+
+Console.WriteLine($"Participantes: {lista}");</code></pre>
+  </div>
+
+  <div class="caja-concepto">
+    <h3>📊 El acumulador del promedio: por qué necesitas dos</h3>
+    <p>Un promedio <strong>nunca</strong> se puede calcular con un solo acumulador. Si solo guardas el total (20) no sabes si dividir entre 1, entre 4 o entre 20: el resultado sería 20, 5 o 1. Por eso el promedio <strong>siempre</strong> usa <strong>dos variables</strong>: un <strong>acumulador</strong> (la suma) y un <strong>contador</strong> (la cantidad). Dividir es el último paso.</p>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Tipo de acumulador</th><th>Instrucción</th><th>Se inicializa en</th><th>Ejemplo de uso</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Suma</strong></td><td><code>total += valor;</code></td><td>0</td><td>Total de notas, total de gastos</td></tr>
+        <tr><td><strong>Producto</strong></td><td><code>total *= valor;</code></td><td>1</td><td>Total a pagar, factorial</td></tr>
+        <tr><td><strong>Texto</strong></td><td><code>texto += palabra;</code></td><td><code>""</code></td><td>Listado de nombres, resumen</td></tr>
+        <tr><td><strong>Promedio</strong></td><td><code>suma += valor;</code> + <code>cantidad++;</code></td><td>0 y 0</td><td>Promedio de notas, de precios</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>⚖️ Contador vs. acumulador</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Pregunta</th><th>Contador</th><th>Acumulador</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>¿Qué guarda?</td><td>Cuántas veces pasó algo</td><td>La suma (o producto, o texto) de muchos valores</td></tr>
+        <tr><td>¿Cuánto suma?</td><td>Siempre 1</td><td>El valor que sea</td></tr>
+        <tr><td>¿Dónde se declara?</td><td>Fuera del bucle, en 0</td><td>Fuera del bucle, en 0 (o en 1 si es producto)</td></tr>
+        <tr><td>Ejemplo</td><td><code>aprobados++;</code></td><td><code>suma += nota;</code></td></tr>
+        <tr><td>Pregunta que responde</td><td>"¿Cuántos...?"</td><td>"¿Cuánto suman...?"</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Usa <code>decimal</code> para promedios y dinero</h4>
+    <p><code>double</code> guarda números con decimales "aproximados": <code>0.1 + 0.2</code> da <code>0.30000000000000004</code>. <code>decimal</code> guarda decimales exactos, así que <code>7.2m + 1.1m</code> da justo <code>8.3</code>. La <em>m</em> final (<code>8.3m</code>) significa "literal decimal". Para notas y precios, <code>decimal</code> es la respuesta correcta.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban un programa que pida 5 precios de productos y muestre: (a) el total a pagar, (b) el precio promedio, (c) el nombre del producto más caro. ¿Qué variable es acumulador y cuál es contador en cada caso? Escriban la respuesta antes de programar.</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la diferencia entre un contador y un acumulador?</p>
+      <button class="opcion" data-op="a">El contador va dentro del bucle y el acumulador fuera</button>
+      <button class="opcion" data-op="b">El contador siempre suma 1; el acumulador suma el valor que sea</button>
+      <button class="opcion" data-op="c">El acumulador solo sirve con números decimales</button>
+      <button class="opcion" data-op="d">No hay diferencia: son dos nombres para lo mismo</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Para calcular el promedio de N notas, además de la suma ¿qué necesitas?</p>
+      <button class="opcion" data-op="a">Un arreglo de notas</button>
+      <button class="opcion" data-op="b">Una bandera</button>
+      <button class="opcion" data-op="c">La cantidad de notas que entraron</button>
+      <button class="opcion" data-op="d">Un <code>double</code> en vez de un <code>decimal</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Dónde debe inicializarse un acumulador?</p>
+      <button class="opcion" data-op="a">Antes del bucle, en 0 (o en 1 si es un producto)</button>
+      <button class="opcion" data-op="b">Dentro del bucle, en cada vuelta</button>
+      <button class="opcion" data-op="c">Justo antes de imprimir el resultado</button>
+      <button class="opcion" data-op="d">Da igual, el compilador lo arregla</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: banderas →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>🚩 Banderas: la memoria booleana del programa</h2>
+  <p class="meta-modulo">⏱️ 25 minutos · "Un cartel que dice si algo ya pasó"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es una bandera?</h3>
+    <p>Una <strong>bandera</strong> es una variable <code>bool</code> que <strong>recuerda si algo ya pasó</strong>. Solo tiene dos estados: <code>true</code> (encendida) y <code>false</code> (apagada). Cuando ocurre el evento que te interesa, la enciendes; cuando no, la dejas apagada.</p>
+    <p><strong>Analogía:</strong> la bandera del árbitro en un partido de fútbol. Un solo cartel, rojo o verde. Nadie grita "¡FOUL! ¡FOUL! ¡FOUL!" en cada jugada: el árbitro levanta el cartel una vez y todos entienden que la falta ya se sancionó.</p>
+  </div>
+
+  <h3>🔎 La bandera "encontrado"</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — la bandera "encontrado"</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// La bandera arranca APAGADA: todavía no hemos buscado nada
+bool encontrado = false;
+
+Console.Write("Busca un número del 1 al 10: ");
+int objetivo = int.Parse(Console.ReadLine() ?? "0");
+
+int[] datos = [4, 7, 2, 9, 7];
+
+for (int i = 0; i &lt; datos.Length; i++)
+{
+    if (datos[i] == objetivo)
+    {
+        encontrado = true;   // ¡encontrado! se enciende la bandera
+    }
+}
+
+// La bandera decide qué muestro
+if (encontrado)
+{
+    Console.WriteLine($"Sí, {objetivo} está en la lista.");
+}
+else
+{
+    Console.WriteLine($"No aparece {objetivo}.");
+}</code></pre>
+  </div>
+
+  <p><strong>Qué hace:</strong> busca un número y avisa si lo encontró. <strong>Por qué funciona:</strong> la bandera nace en <code>false</code> ("no lo he visto"). Si el número aparece, se pone en <code>true</code> y así se queda. Al final, una sola pregunta decide qué imprimir. <strong>Detalle importante:</strong> aunque el número esté repetido, la bandera no se apaga: si alguna vez fue cierto, sigue siendo cierto.</p>
+
+  <h3>🚦 La bandera para "saltar" trabajo</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — bandera para validar la entrada</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// La bandera evita repetir la validación
+bool datosValidos = true;
+
+Console.Write("Ingresa tu edad: ");
+int edad = 0;
+
+if (!int.TryParse(Console.ReadLine(), out edad) || edad &lt; 0 || edad &gt; 130)
+{
+    datosValidos = false;   // el dato no sirve
+}
+
+if (datosValidos)
+{
+    Console.WriteLine($"Edad registrada: {edad} años");
+}
+else
+{
+    Console.WriteLine("Dato inválido, vuelve a intentarlo.");
+}</code></pre>
+  </div>
+
+  <p><strong>Por qué funciona:</strong> <code>int.TryParse</code> devuelve <code>false</code> si lo escrito no es un número, y el operador <code>||</code> (o) corta el resto de la condición: con que una de las tres cosas falle (no es número, es negativo o es mayor de 130), la bandera se apaga. <strong>La bandera sirve para "saltar" el trabajo</strong>: el bloque importante (guardar la edad) solo se ejecuta si todo salió bien.</p>
+
+  <div class="caja-importante">
+    <h4>🦹 Trampa 3: la bandera que nace en <code>true</code></h4>
+    <p>Si inicializas la bandera en <code>true</code>, el programa cree que el evento <strong>ya ocurrió</strong> y entra siempre a la rama. El resultado: tu programa responde "sí, hay negativos" aunque no haya ni uno.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — error típico: bandera inicializada en true</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ⚠️ MAL: la bandera nace encendida
+bool hayNegativos = true;
+
+int[] numeros = [5, 8, 3];
+
+foreach (int numero in numeros)
+{
+    if (numero &lt; 0)
+    {
+        hayNegativos = true;   // nunca se apaga
+    }
+}
+
+Console.WriteLine($"¿Hay negativos? {hayNegativos}");   // siempre True
+
+// ✅ BIEN: la bandera nace apagada y solo se enciende si corresponde
+bool hayNegativos2 = false;
+
+foreach (int numero in numeros)
+{
+    if (numero &lt; 0)
+    {
+        hayNegativos2 = true;
+    }
+}
+
+Console.WriteLine($"¿Hay negativos? {hayNegativos2}");   // False</code></pre>
+  </div>
+
+  <h3>🚩 Bandera vs. <code>break</code></h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th></th><th>Bandera</th><th><code>break</code></th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>¿Qué es?</strong></td><td>Una variable <code>bool</code> que recuerda</td><td>Una palabra clave que rompe el bucle</td></tr>
+        <tr><td><strong>¿Cuándo la usas?</strong></td><td>Cuando quieres saber <em>si</em> algo pasó, pero <strong>seguir</strong> después del bucle</td><td>Cuando quieres salir del bucle <strong>ya</strong> y nada más</td></tr>
+        <tr><td><strong>Después del bucle</strong></td><td>Revisas la bandera y decides qué hacer</td><td>El bucle terminó; no te queda ningún dato</td></tr>
+        <tr><td><strong>Ejemplo típico</strong></td><td>Buscar un número y avisar si apareció</td><td>Dejar de pedir datos cuando el usuario escribe "salir"</td></tr>
+        <tr><td><strong>¿Se puede usar con <code>continue</code>?</strong></td><td>Sí: la bandera evita procesar el resto de los datos</td><td>No: <code>break</code> y <code>continue</code> son excluyentes</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: la bandera y <code>break</code> no son enemigos</h4>
+    <p>Muchas veces se combinan: <code>break</code> para salir del bucle apenas lo encuentras (ahorra trabajo) y la bandera para <strong>saber después</strong> que sí lo encontraste. Es el patrón "buscar y salir": <code>if (datos[i] == objetivo) { encontrado = true; break; }</code>.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Un juego de adivinar el número: el programa piensa un número del 1 al 20 y el jugador intenta. ¿Qué bandera usarías para saber si el jugador ya acertó? ¿Y para saber si se le acabaron los intentos? Escriban los dos <code>bool</code> y dónde los inicializan.</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿De qué tipo es una bandera en C#?</p>
+      <button class="opcion" data-op="a"><code>int</code></button>
+      <button class="opcion" data-op="b"><code>bool</code></button>
+      <button class="opcion" data-op="c"><code>string</code></button>
+      <button class="opcion" data-op="d"><code>decimal</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Por qué la bandera <code>encontrado</code> se inicializa en <code>false</code>?</p>
+      <button class="opcion" data-op="a">Porque C# no permite empezar en <code>true</code></button>
+      <button class="opcion" data-op="b">Porque <code>false</code> pesa menos en memoria</button>
+      <button class="opcion" data-op="c">Porque todavía no hemos buscado nada: el valor "verdadero" solo aparece si lo encontramos</button>
+      <button class="opcion" data-op="d">Para que el programa termine más rápido</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> Si una bandera se inicializa en <code>true</code> y nunca se apaga, ¿qué pasa?</p>
+      <button class="opcion" data-op="a">El programa siempre entra a la rama de "sí"</button>
+      <button class="opcion" data-op="b">El programa no compila</button>
+      <button class="opcion" data-op="c">La bandera se apaga sola en la primera vuelta</button>
+      <button class="opcion" data-op="d">El bucle se vuelve infinito</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Levanta los brazos al techo 10 segundos.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>Tu cerebro funciona con agua: un vaso y notas la diferencia en 20 minutos.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Cuéntale a tu compañero/a</h3><p>¿Qué se te hizo más difícil: el contador, el acumulador o la bandera? 1 minuto.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>El nombre <strong>acumulador</strong> viene de los <strong>mainframes</strong>: en los años 60, FORTRAN repetía con <code>DO 100 I = 1, 100</code> y guardaba la suma parcial en una variable que llamaban <em>accumulator</em>. Ese <code>I</code> es el contador y ese total parcial es tu acumulador. La idea tiene más de 60 años y sigue siendo el corazón de los algoritmos de hoy — incluyendo los que usa tu teléfono para calcular las rutas.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: los tres juntos →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>🧬 Los tres juntos: el algoritmo clásico de 5 pasos</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "Inicializar, leer, procesar, actualizar, mostrar"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 Casi todos los algoritmos tienen la misma anatomía</h3>
+    <p>Cuando te pidan "el promedio de las notas de N estudiantes", "cuántos aprobaron" o "el mayor valor", la estructura es siempre la misma: <strong>1) inicializar</strong> los contadores, acumuladores y banderas <strong>2) leer</strong> el dato <strong>3) procesarlo</strong> (aplicar la regla del problema) <strong>4) actualizar</strong> el estado (sumar, contar, encender) y <strong>5) mostrar</strong> los resultados. Si respetas el orden, el programa casi siempre compila y funciona a la primera.</p>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Paso</th><th>¿Qué haces?</th><th>En el ejemplo del reporte de notas</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>1. Inicializar</strong></td><td>Declaras contadores, acumuladores y banderas <strong>fuera</strong> del bucle</td><td><code>decimal suma = 0m;</code> · <code>int aprobados = 0;</code> · <code>bool hayPerfecto = false;</code></td></tr>
+        <tr><td><strong>2. Leer</strong></td><td>Pides el dato al usuario y lo conviertes al tipo correcto</td><td><code>double.TryParse(Console.ReadLine(), out entrada)</code></td></tr>
+        <tr><td><strong>3. Procesar</strong></td><td>Aplicas la regla: comparaciones, <code>if</code>, <code>switch</code></td><td><code>if (nota &gt;= 3.0m) { aprobados++; }</code></td></tr>
+        <tr><td><strong>4. Actualizar</strong></td><td>Acumulas y guardas el estado</td><td><code>suma += nota;</code> · <code>if (nota &gt; mayor) { mayor = nota; }</code></td></tr>
+        <tr><td><strong>5. Mostrar</strong></td><td>Imprimes los resultados (¡y no se te olvida el acumulador!)</td><td><code>Console.WriteLine($"Promedio: {promedio:F2}");</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>📦 El ejemplo completo</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — promedio, aprobados y mayor nota (los tres juntos)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// =============================================
+// REPORTE DE NOTAS: contador + acumulador + bandera
+// =============================================
+Console.WriteLine("=== REPORTE DE NOTAS ===");
+
+Console.Write("¿Cuántos estudiantes hay? ");
+int n = int.Parse(Console.ReadLine() ?? "0");
+
+// 1. INICIALIZAR
+decimal suma = 0m;        // ACUMULADOR: la suma de las notas
+int aprobados = 0;        // CONTADOR: cuántos aprobaron
+decimal mayor = 0m;        // "el mejor nota hasta ahora"
+bool hayPerfecto = false;  // BANDERA: ¿alguien sacó 5.0?
+
+// 2. LEER + 3. PROCESAR + 4. ACTUALIZAR
+for (int i = 0; i &lt; n; i++)
+{
+    Console.Write($"Nota del estudiante {i + 1}: ");
+    double entrada = 0;
+
+    if (!double.TryParse(Console.ReadLine(), out entrada))
+    {
+        Console.WriteLine("Dato inválido, se toma 0.");
+        entrada = 0;
+    }
+
+    decimal nota = (decimal)entrada;
+
+    suma += nota;                  // ACTUALIZAR el acumulador
+
+    if (nota &gt;= 3.0m)            // PROCESAR la regla del aprobado
+    {
+        aprobados++;                // ACTUALIZAR el contador
+    }
+
+    if (nota &gt; mayor)            // ¿es la más alta hasta ahora?
+    {
+        mayor = nota;
+    }
+
+    if (nota == 5.0m)              // ¿alguien sacó 5.0?
+    {
+        hayPerfecto = true;         // ENCENDER la bandera
+    }
+}
+
+// 5. MOSTRAR
+if (n &gt; 0)
+{
+    decimal promedio = suma / n;   // dividir es el último paso
+    Console.WriteLine("------------------------------");
+    Console.WriteLine($"Promedio general: {promedio:F2}");
+    Console.WriteLine($"Aprobados: {aprobados} de {n}");
+    Console.WriteLine($"Mayor nota: {mayor:F2}");
+    Console.WriteLine(hayPerfecto ? "¡Hubo un 5.0 perfecto!" : "Nadie sacó 5.0");
+}</code></pre>
+  </div>
+
+  <p><strong>Qué hace:</strong> lee N notas y entrega el promedio, cuántos aprobaron, la mayor nota y si alguien sacó 5.0. <strong>Por qué funciona:</strong> cada variable hace <strong>un solo trabajo</strong>: <code>suma</code> acumula, <code>aprobados</code> cuenta, <code>mayor</code> recuerda el récord, <code>hayPerfecto</code> avisa. Y todas se inicializan antes del bucle, así que sobreviven a todas las vueltas.</p>
+
+  <div class="caja-tip">
+    <h4>💡 El truco de <code>mayor</code></h4>
+    <p>Para hallar el mayor valor no necesitas un arreglo: mantienes una variable <code>mayor</code> que va guardando "el mejor de los que he visto". Se inicializa en <code>0</code> (porque las notas van de 0 a 5) y en cada vuelta se actualiza solo si la nota nueva la supera. Al final, <code>mayor</code> es la máxima. Esto se llama <strong>variable "candidata"</strong> y se usa en todos los algoritmos de mínimo y máximo.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — versión compacta con while y validación de la entrada</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// El mismo algoritmo, con while y con la entrada validada
+decimal suma = 0m;
+int cantidad = 0;
+decimal menor = 5.0m;
+decimal mayor = 0.0m;
+bool entradaValida = true;
+
+Console.Write("¿Cuántas notas? ");
+int n = int.Parse(Console.ReadLine() ?? "0");
+
+int i = 0;
+while (i &lt; n)
+{
+    Console.Write($"Nota {i + 1}: ");
+    double entrada = 0;
+    entradaValida = double.TryParse(Console.ReadLine(), out entrada);
+
+    if (!entradaValida)
+    {
+        Console.WriteLine("Eso no es un número, se descarta.");
+    }
+    else
+    {
+        decimal nota = (decimal)entrada;
+        suma += nota;
+        cantidad++;
+
+        if (nota &gt; mayor)
+        {
+            mayor = nota;
+        }
+
+        if (nota &lt; menor)
+        {
+            menor = nota;
+        }
+    }
+
+    i++;   // el contador también avanza cuando el dato se descarta
+}
+
+if (cantidad &gt; 0)
+{
+    Console.WriteLine($"Promedio: {(suma / cantidad):F2}");
+    Console.WriteLine($"Mayor: {mayor:F2}   Menor: {menor:F2}");
+}</code></pre>
+  </div>
+
+  <p><strong>Detalle importante:</strong> el <code>i++</code> está <strong>fuera</strong> del <code>else</code>, así que la vuelta avanza aunque el dato se descarte. Si lo dejaras dentro del <code>else</code>, un dato inválido volvería a pedir la misma nota (y si el usuario nunca escribiera algo válido, el bucle no terminaría nunca).</p>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Escriban el <strong>diagrama</strong> del algoritmo "promedio de N notas" en un papel: una caja por cada variable, con su valor inicial, y las flechas del flujo. Después compárenlo con el código del módulo. ¿Qué variable inicializaron diferente? Esa es la que hay que revisar.</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> En el algoritmo clásico, ¿en qué paso se inicializan el contador, el acumulador y la bandera?</p>
+      <button class="opcion" data-op="a">Antes del bucle, con su valor inicial (0 o false)</button>
+      <button class="opcion" data-op="b">Dentro del bucle, en la primera vuelta</button>
+      <button class="opcion" data-op="c">Justo antes de imprimir</button>
+      <button class="opcion" data-op="d">Da igual: el compilador los inicializa solo</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Para hallar la mayor nota sin guardar todas las notas, ¿qué variable se usa?</p>
+      <button class="opcion" data-op="a">Un arreglo de tamaño 100</button>
+      <button class="opcion" data-op="b">Una bandera que se enciende cada vez</button>
+      <button class="opcion" data-op="c">Una variable "candidata" que se actualiza si la nueva la supera</button>
+      <button class="opcion" data-op="d">Un <code>double</code> con valor 5.0</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> En el ejemplo del reporte, ¿por qué se usa <code>decimal</code> y no <code>double</code> para el promedio?</p>
+      <button class="opcion" data-op="a">Porque <code>decimal</code> ocupa menos memoria</button>
+      <button class="opcion" data-op="b">Porque <code>decimal</code> guarda decimales exactos, sin errores de redondeo</button>
+      <button class="opcion" data-op="c">Porque <code>double</code> no admite sumas</button>
+      <button class="opcion" data-op="d">Porque el <code>Console.WriteLine</code> no acepta <code>double</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: trampas →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>🪤 Trampas: los 6 errores que te hacen perder el punto</h2>
+  <p class="meta-modulo">⏱️ 25 minutos · "Compila, corre… y está mal"</p>
+
+  <div class="caja-importante">
+    <h4>🦹 Lo peor de un algoritmo mal escrito</h4>
+    <p>Un programa con errores de sintaxis es el mejor caso: el compilador te avisa y ahí se acabó la programación a ciegas. El problema son los errores de <strong>lógica</strong>: el programa compila, corre, imprime un número y ese número está mal. Aquí no hay salvavidas: solo la prueba y la revisión. Por eso vamos a ver las trampas una por una.</p>
+  </div>
+
+  <h3>🪤 Trampa 1 · Reiniciar dentro del bucle</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — trampa 1: reiniciar el acumulador en cada vuelta</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ⚠️ MAL: el acumulador se borra en cada vuelta
+decimal total = 0m;
+for (int i = 0; i &lt; 4; i++)
+{
+    double entrada = 0;
+    double.TryParse(Console.ReadLine(), out entrada);
+
+    total = 0m;                    // ← aquí está la trampa
+    total += (decimal)entrada;
+}
+Console.WriteLine($"Total: {total}");   // solo la ÚLTIMA nota
+
+// ✅ BIEN: el acumulador se reinicia UNA vez, antes del bucle
+decimal total2 = 0m;
+for (int i = 0; i &lt; 4; i++)
+{
+    double entrada = 0;
+    double.TryParse(Console.ReadLine(), out entrada);
+    total2 += (decimal)entrada;
+}
+Console.WriteLine($"Total: {total2}");   // la SUMA de las 4 notas</code></pre>
+  </div>
+
+  <h3>🪤 Trampa 2 · Acumular en el lugar equivocado</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — trampa 2: sumar texto en vez de números</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ⚠️ MAL: el acumulador es texto, entonces C# concatena
+string total = "";
+int[] notas = [4, 5, 6];
+
+foreach (int nota in notas)
+{
+    total += nota;      // "4" + "5" + "6" = "456"
+}
+Console.WriteLine($"Total: {total}");   // 456 (¡no es la suma!)
+
+// ✅ BIEN: el acumulador es numérico
+int totalNumerico = 0;
+foreach (int nota in notas)
+{
+    totalNumerico += nota;   // 4 + 5 + 6 = 15
+}
+Console.WriteLine($"Total: {totalNumerico}");   // 15</code></pre>
+  </div>
+
+  <h3>🪤 Trampa 3 · Olvidar imprimir el acumulador</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — trampa 3: calcular y no mostrar</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ⚠️ MAL: el programa calcula perfecto... y no dice nada
+decimal total = 0m;
+int[] notas = [80, 90, 70];
+foreach (int nota in notas)
+{
+    total += nota;
+}
+
+// ✅ BIEN: el paso 5 del algoritmo es MOSTRAR
+Console.WriteLine($"Total: {total}");
+Console.WriteLine($"Promedio: {total / notas.Length}");</code></pre>
+  </div>
+
+  <h3>🪤 Trampa 4 · La bandera mal puesta</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — trampa 4: la bandera al revés</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ⚠️ MAL: la bandera dice "no hay 5.0" pero nunca se apaga
+bool hayPerfecto = false;
+int[] notas = [5, 3, 4];
+
+foreach (int nota in notas)
+{
+    if (nota != 5)          // la condición está al revés
+    {
+        hayPerfecto = true; // se enciende con cualquier nota que NO sea 5
+    }
+}
+
+Console.WriteLine($"¿Hubo un 5.0? {hayPerfecto}");   // True, ¡pero es mentira!
+
+// ✅ BIEN: la condición pregunta exactamente lo que buscamos
+bool hayPerfecto2 = false;
+foreach (int nota in notas)
+{
+    if (nota == 5)
+    {
+        hayPerfecto2 = true;
+    }
+}
+Console.WriteLine($"¿Hubo un 5.0? {hayPerfecto2}");   // True, y es verdad</code></pre>
+  </div>
+
+  <h3>🪤 Trampa 5 · El acumulador que nunca se inicializa</h3>
+  <div class="caja-importante">
+    <h4>📌 Buena noticia: en C# esto NO compila</h4>
+    <p>En otros lenguajes, usar una variable sin inicializar te da un valor basura y el programa sigue corriendo (el clásico <code>0</code> o «nada» silencioso). <strong>C# es más estricto</strong>: el compilador te frena con el error <code>CS0165</code> — <em>"uso de la variable local 'total' sin asignar"</em>. Es decir: el villano no aparece, porque el lenguaje te protege.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp-error — este código NO compila (error CS0165)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre data-lang="csharp-error"><code>decimal total;          // declarada pero SIN valor inicial
+for (int i = 0; i &lt; 3; i++)
+{
+    total += 10m;       // ERROR CS0165: se usa "total" sin asignar
+}
+
+Console.WriteLine(total);</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — la versión correcta</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>decimal total = 0m;      // valor inicial: 0
+for (int i = 0; i &lt; 3; i++)
+{
+    total += 10m;       // ahora sí: 10 + 10 + 10 = 30
+}
+
+Console.WriteLine(total);   // 30</code></pre>
+  </div>
+
+  <h3>🪤 Trampa 6 · El doble conteo</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — trampa 6: contar el mismo dato dos veces</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ⚠️ MAL: el mismo dato se cuenta dos veces
+int[] notas = [45, 20, 50];
+int cantidad = 0;
+decimal suma = 0m;
+
+foreach (double nota in notas)
+{
+    cantidad++;              // 1er conteo
+    suma += (decimal)nota;
+
+    if (nota &gt; 0)
+    {
+        cantidad++;          // 2do conteo del MISMO dato
+    }
+}
+
+Console.WriteLine($"Cantidad de notas: {cantidad}");   // 6 en vez de 3
+
+// ✅ BIEN: cada dato se toca una sola vez para contar
+int cantidad2 = 0;
+decimal suma2 = 0m;
+
+foreach (double nota in notas)
+{
+    cantidad2++;
+    suma2 += (decimal)nota;
+}
+
+Console.WriteLine($"Cantidad de notas: {cantidad2}");   // 3</code></pre>
+  </div>
+
+  <h3>🗺️ Mapa de trampas</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Trampa</th><th>Síntoma (lo que ves)</th><th>Solución</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Reiniciar dentro del bucle</td><td>El resultado es el del último dato</td><td>Inicializa el acumulador <strong>una sola vez</strong>, antes del bucle</td></tr>
+        <tr><td>Acumular texto en vez de número</td><td>Sale "456" donde debías ver 15</td><td>Declara el acumulador con el tipo numérico</td></tr>
+        <tr><td>No imprimir el acumulador</td><td>El programa no dice nada</td><td>Cierra con el paso 5: <strong>mostrar</strong></td></tr>
+        <tr><td>Bandera al revés</td><td>La respuesta es correcta a medias… o falsa</td><td>Escribe la condición preguntando <strong>exactamente</strong> lo que preguntas</td></tr>
+        <tr><td>Acumulador sin inicializar</td><td>Error de compilación <code>CS0165</code></td><td>Inicializa en <code>0</code> (o en <code>1</code> si es producto)</td></tr>
+        <tr><td>Doble conteo</td><td>Los números salen inflados</td><td>Cada dato se cuenta <strong>una sola vez</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Checklist de 30 segundos antes de entregar</h4>
+    <p>Pregúntate, en este orden: (1) ¿Inicialicé el acumulador <strong>fuera</strong> del bucle? (2) ¿El contador suma 1 o suma el dato? (3) ¿La bandera nació en <code>false</code>? (4) ¿Conté cada dato una sola vez? (5) ¿Imprimí todos los resultados, incluido el del acumulador? Si las cinco respuestas son "sí", tu algoritmo está sano. 🩺</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> En C#, declaras <code>decimal total;</code> y lo usas sin inicializarlo. ¿Qué pasa?</p>
+      <button class="opcion" data-op="a">El programa imprime 0 y sigue normal</button>
+      <button class="opcion" data-op="b">Imprime un valor basura como en otros lenguajes</button>
+      <button class="opcion" data-op="c">No compila: error CS0165, "uso de variable local no asignada"</button>
+      <button class="opcion" data-op="d">El programa se cae en tiempo de ejecución</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> Un contador que se reinicia en cada vuelta del bucle, ¿qué valor muestra al final?</p>
+      <button class="opcion" data-op="a">1</button>
+      <button class="opcion" data-op="b">El número de vueltas</button>
+      <button class="opcion" data-op="c">0</button>
+      <button class="opcion" data-op="d">El número de elementos del arreglo</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Cómo se evita el doble conteo?</p>
+      <button class="opcion" data-op="a">Dividiendo el total entre 2</button>
+      <button class="opcion" data-op="b">Contando cada dato una sola vez, en un solo lugar del bucle</button>
+      <button class="opcion" data-op="c">Usando <code>double</code> en vez de <code>decimal</code></button>
+      <button class="opcion" data-op="d">Reiniciando el contador al final del bucle</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: reporte de calificaciones del salón</h2>
+  <p class="meta-modulo">⏱️ 40 minutos · "Aplica contadores, acumuladores y banderas"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">Reporte de calificaciones del salón</span>
+    </div>
+    <p>El coordinador del colegio necesita el reporte del salón de grado once: cuántas notas entraron, el promedio general, la mayor y la menor nota, cuántos aprobaron y si alguien sacó 5.0. Tu misión: construir <strong>ReporteCalificaciones</strong> usando <strong>contadores, acumuladores y banderas</strong> — y sin ninguna trampa del módulo 6.</p>
+  </div>
+
+  <h3>📋 Requisitos del taller</h3>
+  <ol class="pasos">
+    <li>Crea el proyecto: <code>dotnet new console -n ReporteCalificaciones</code> y ábrelo con <code>code .</code>.</li>
+    <li>El programa pregunta <strong>cuántos estudiantes</strong> hay y lee esa cantidad con un <strong>contador</strong> que sirva para el bucle.</li>
+    <li>Para cada estudiante pide la nota (de 0 a 5) y la <strong>valida</strong>: si el usuario escribe letras o un número fuera del rango, el programa avisa y vuelve a pedir. Usa <code>double.TryParse</code>.</li>
+    <li>Calcula con un <strong>acumulador</strong> <code>decimal</code> el <strong>total</strong> y el <strong>promedio</strong> general, y con otro acumulador y un contador la <strong>mayor</strong> y la <strong>menor</strong> nota.</li>
+    <li>Cuenta con un <strong>contador</strong> cuántos <strong>aprobaron</strong> (nota <code>&gt;= 3.0</code>) y cuántos reprobaron.</li>
+    <li>Usa una <strong>bandera</strong> (<code>bool</code>) para detectar si <strong>alguien sacó 5.0</strong> y muestra un mensaje distinto en cada caso.</li>
+    <li>Muestra el reporte con <strong>interpolación</strong> y formato <code>:F2</code> en los decimales. Al final, imprime cuántas notas se leyeron (para que se note el dato inválido).</li>
+  </ol>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — guía de estilo (es el molde, no la solución)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// =============================================
+// REPORTE DE CALIFICACIONES — molde del taller
+// =============================================
+
+// 1. INICIALIZAR (fuera del bucle, siempre)
+decimal total = 0m;          // acumulador de la suma
+int notasLeidas = 0;         // contador de notas válidas
+int aprobados = 0;           // contador de aprobados
+bool hayPerfecto = false;    // bandera
+
+// 2. LEER
+Console.Write("¿Cuántos estudiantes hay? ");
+int n = int.Parse(Console.ReadLine() ?? "0");
+
+// 3. y 4. PROCESAR + ACTUALIZAR
+for (int i = 0; i &lt; n; i++)
+{
+    Console.Write($"Nota del estudiante {i + 1}: ");
+    // ← AQUÍ va la lectura validada de la nota (double.TryParse)
+    // ← AQUÍ va el acumulador: total += nota;
+    // ← AQUÍ va el contador: notasLeidas++; y aprobados++;
+    // ← AQUÍ va la bandera: if (nota == 5.0m) { hayPerfecto = true; }
+}
+
+// 5. MOSTRAR
+if (notasLeidas &gt; 0)
+{
+    decimal promedio = total / notasLeidas;
+    Console.WriteLine($"Promedio: {promedio:F2}");
+    Console.WriteLine($"Aprobados: {aprobados}");
+    Console.WriteLine(hayPerfecto ? "¡Hay un 5.0!" : "Nadie sacó 5.0");
+}</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Cuidado con el <code>mayor</code> y el <code>menor</code></h4>
+    <p>Las notas van de 0 a 5, así que inicializa <code>mayor = 0m</code> y <code>menor = 5m</code>. Si inicializas <code>menor</code> en 0, nunca va a cambiar (nada es menor que 0) y tu programa dirá que la menor nota es 0 aunque todos sacaron 4. Esa es la trampa de la <strong>variable candidata</strong>: su valor inicial debe ser "peor" que cualquier dato posible.</p>
+  </div>
+
+  <button class="btn-solucion" data-solucion="sol-taller">👁️ Ver solución completa</button>
+  <div class="solucion" id="sol-taller">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-header-left">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span>csharp — solución del taller</span>
+        </div>
+        <button class="copy-btn">📋 Copiar</button>
+      </div>
+<pre><code>// =============================================
+// REPORTE DE CALIFICACIONES DEL SALÓN
+// Contador + Acumulador + Bandera
+// =============================================
+Console.WriteLine("=== REPORTE DE CALIFICACIONES DEL SALÓN ===");
+
+// 1. INICIALIZAR
+decimal total = 0m;          // acumulador: suma de todas las notas
+int notasLeidas = 0;         // contador: cuántas notas válidas entraron
+int aprobados = 0;           // contador: cuántos aprobaron
+int reprobados = 0;           // contador: cuántos reprobaron
+decimal mayor = 0m;           // la mejor nota hasta ahora
+decimal menor = 5.0m;         // la peor nota hasta ahora
+bool hayPerfecto = false;    // bandera: ¿alguien sacó 5.0?
+int posicionPerfecto = -1;    // en qué posición estaba ese 5.0
+
+// 2. LEER
+Console.Write("¿Cuántos estudiantes hay? ");
+int n = int.Parse(Console.ReadLine() ?? "0");
+
+// 3. PROCESAR + 4. ACTUALIZAR
+for (int i = 0; i &lt; n; i++)
+{
+    // Validación: vuelve a pedir la nota si no es válida
+    decimal nota = 0m;
+    bool notaValida = false;
+
+    while (!notaValida)
+    {
+        Console.Write($"Nota del estudiante {i + 1}: ");
+        double entrada = 0;
+
+        if (double.TryParse(Console.ReadLine(), out entrada) &amp;&amp; entrada &gt;= 0 &amp;&amp; entrada &lt;= 5)
+        {
+            nota = (decimal)entrada;
+            notaValida = true;
+        }
+        else
+        {
+            Console.WriteLine("Nota inválida. Debe ser un número de 0 a 5.");
+        }
+    }
+
+    total += nota;             // ACUMULADOR
+    notasLeidas++;             // CONTADOR
+
+    if (nota &gt;= 3.0m)         // regla del aprobado
+    {
+        aprobados++;
+    }
+    else
+    {
+        reprobados++;
+    }
+
+    if (nota &gt; mayor)         // variable candidata: el mayor
+    {
+        mayor = nota;
+    }
+
+    if (nota &lt; menor)         // variable candidata: el menor
+    {
+        menor = nota;
+    }
+
+    if (nota == 5.0m &amp;&amp; !hayPerfecto)   // BANDERA
+    {
+        hayPerfecto = true;
+        posicionPerfecto = i + 1;
+    }
+}
+
+// 5. MOSTRAR
+Console.WriteLine("------------------------------");
+
+if (notasLeidas &gt; 0)
+{
+    decimal promedio = total / notasLeidas;
+    Console.WriteLine($"Notas leídas:     {notasLeidas}");
+    Console.WriteLine($"Total:            {total}");
+    Console.WriteLine($"Promedio general: {promedio:F2}");
+    Console.WriteLine($"Mayor nota:       {mayor:F2}");
+    Console.WriteLine($"Menor nota:       {menor:F2}");
+    Console.WriteLine($"Aprobados:        {aprobados}");
+    Console.WriteLine($"Reprobados:       {reprobados}");
+
+    if (hayPerfecto)
+    {
+        Console.WriteLine($"🎉 ¡Hubo un 5.0! (estudiante {posicionPerfecto})");
+    }
+    else
+    {
+        Console.WriteLine("Nadie sacó 5.0 😕");
+    }
+}
+else
+{
+    Console.WriteLine("No se leyeron notas: no hay nada que promediar.");
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="checklist">
+    <h4>✅ Antes de entregar, verifica</h4>
+    <ul>
+      <li>El proyecto se llama <code>ReporteCalificaciones</code> y corre con <code>dotnet run</code>.</li>
+      <li>El acumulador (<code>total</code>) se declara <strong>fuera</strong> del bucle y en 0.</li>
+      <li>Los contadores (<code>notasLeidas</code>, <code>aprobados</code>, <code>reprobados</code>) valen 0 al empezar y suben de a 1.</li>
+      <li>La bandera <code>hayPerfecto</code> nace en <code>false</code>.</li>
+      <li><code>mayor</code> empieza en 0 y <code>menor</code> en 5.0 (el "peor caso posible").</li>
+      <li>Si el usuario escribe letras o una nota fuera de 0 a 5, el programa <strong>vuelve a pedir</strong> el dato.</li>
+      <li>Pruebo los dos caminos de la bandera: con un 5.0 y sin ningún 5.0.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Uno le dicta al otro un caso de prueba raro: "escribe 'hola' como nota", "escribe 7", "escribe 5.0 en el segundo estudiante". El que programa ejecuta y el otro anota en el cuaderno qué línea de su programa se rompió. Al final comparen: ¿a quién le tocó una trampa del módulo 6?</p>
+  </div>
+
+  <div class="quiz" data-quiz="7">
+    <h3>🎯 Mini-Quiz del Módulo 7</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Por qué <code>menor</code> se inicializa en <code>5.0m</code> en el taller?</p>
+      <button class="opcion" data-op="a">Porque 5 es el número de estudiantes del salón</button>
+      <button class="opcion" data-op="b">Porque debe empezar con un valor "peor" que cualquier nota, así la primera nota real lo reemplaza</button>
+      <button class="opcion" data-op="c">Porque <code>decimal</code> no acepta el 0</button>
+      <button class="opcion" data-op="d">Porque así el promedio siempre da 5</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Si el usuario escribe "hola" en el lugar de una nota, la mejor forma de manejarlo es:</p>
+      <button class="opcion" data-op="a"><code>int.Parse(Console.ReadLine())</code> y ya</button>
+      <button class="opcion" data-op="b">Dejar la nota en 0 y seguir</button>
+      <button class="opcion" data-op="c"><code>double.TryParse</code> y volver a pedir el dato si no se pudo convertir</button>
+      <button class="opcion" data-op="d">Terminar el programa con <code>return</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué variable de este taller es la bandera?</p>
+      <button class="opcion" data-op="a"><code>bool hayPerfecto</code></button>
+      <button class="opcion" data-op="b"><code>decimal total</code></button>
+      <button class="opcion" data-op="c"><code>int n</code></button>
+      <button class="opcion" data-op="d"><code>decimal promedio</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 6 completada!</h2>
+    <p>Ya sabes contar, acumular y recordar: los tres dedos que hacen que un algoritmo funcione. En la <strong>Clase 7</strong> cambiaremos de escala: guardaremos <strong>todos los datos en arreglos y matrices</strong>, aprenderemos a recorrerlos, buscarlos, ordenarlos y filtrarlos. ¡Adiós variable suelta, hola <code>int[]</code>! 📦</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🧮 Herramientas Algorítmicas II · Clase 6 de 10</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · Código TL007</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

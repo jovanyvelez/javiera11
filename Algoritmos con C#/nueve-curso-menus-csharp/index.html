@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎛️ Herramientas Algorítmicas II · Clase 9 · Menús de consola</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">🎛️</span>
+    <div>
+      <h1>Herramientas Algorítmicas II · Clase 9</h1>
+      <p class="subtitulo">C# moderno · Menús de consola con funciones · while + switch · validación de entrada</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">🎛️ Diseñar</button>
+  <button class="btn-modulo" data-modulo="2">🔁 while + switch</button>
+  <button class="btn-modulo" data-modulo="3">🧩 Modularizar</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🛡️ Validar</button>
+  <button class="btn-modulo" data-modulo="6">🏗️ Menú + lista</button>
+  <button class="btn-modulo" data-modulo="7">🏆 Taller final</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>🎛️ Menús de consola: tu programa por fin tiene un mostrador</h2>
+    <p class="lead">Hasta hoy tus programas sonaban como una lista de preguntas: "dame el dato, hago esto, se acabó". Un <strong>menú</strong> cambia todo: el programa te muestra las opciones, tú eliges una, el programa trabaja y <strong>vuelve a mostrarte el menú</strong>. Eso es, literalmente, lo que hace un cajero del banco, un menú del restaurante o el tablero de un videojuego. 🎮</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — estudiante@colegio</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">estudiante@colegio:~$</span> <span class="cmd">dotnet new console -n MenuColegio</span></div>
+        <div class="out">La plantilla "aplicación de consola" se creó correctamente.</div>
+        <div><span class="prompt">estudiante@colegio:~/MenuColegio$</span> <span class="cmd">dotnet run</span></div>
+        <div class="out">===== MENÚ PRINCIPAL =====</div>
+        <div class="out">1. Registrar estudiante</div>
+        <div class="out">2. Listar estudiantes</div>
+        <div class="out">0. Salir</div>
+        <div><span class="prompt">estudiante@colegio:~/MenuColegio$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3 h 45 min en 8 módulos, con descanso a mitad. Trabaja en el proyecto <code>MenuColegio</code> que ya creaste.</p>
+    </div>
+    <div class="tarjeta tarjeta-verde">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Diseñar un menú de consola, armarlo con <code>while</code> + <code>switch</code>, <strong>modularizarlo con funciones</strong> y validar lo que el usuario escribe.</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">🦹</span>
+      <h3>Los "villanos" de hoy</h3>
+      <p>El menú infinito del que no se puede salir, el <code>int.Parse</code> que se cae con letras, el <code>switch</code> sin <code>break</code> y el <code>default</code> que nunca se ejecuta. 😱</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · Diseñar</td><td style="color:var(--a)">Anatomía de un menú</td><td style="color:var(--rosa)">Menú sin salida</td><td>100 XP</td></tr>
+        <tr><td>02 · while + switch</td><td style="color:var(--b)">El esqueleto clásico</td><td style="color:var(--rosa)">Falta un <code>break</code></td><td>100 XP</td></tr>
+        <tr><td>03 · Modularizar</td><td style="color:var(--a)">Una función por opción</td><td style="color:var(--rosa)">Programa de 200 líneas</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>05 · Validar</td><td style="color:var(--verde)"><code>TryParse</code> y rangos</td><td style="color:var(--rosa)">"Ingrese un número"</td><td>100 XP</td></tr>
+        <tr><td>06 · Menú + lista</td><td style="color:var(--b)">Administrar estudiantes</td><td style="color:var(--rosa)">Lista que no crece</td><td>100 XP</td></tr>
+        <tr><td>07 · Taller</td><td style="color:var(--a)">Sistema de matrícula</td><td style="color:var(--rosa)">Código enredado</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Piensa en un lugar que ya conoces: el menú del restaurante, el horario del bus o el menú de un videojuego. Anota <strong>5 opciones</strong> y cuál es la que dice "salir". Todos los programas de consola empiezan con esa misma idea. 🍔</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué menús en consola?</h4>
+    <p>Porque la guía de la asignatura pide <strong>"aplicaciones tipo consola"</strong>: programas que se ejecutan en una terminal y se controlan con el teclado. Un menú es la forma más natural de darle opciones a alguien que está frente a una pantalla negra sin botones ni ratón. 🖥️</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: diseñar un menú →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>🎛️ Diseñar un menú (en papel primero)</h2>
+  <p class="meta-modulo">⏱️ 25 minutos · "Dibujar antes de programar"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es un menú?</h3>
+    <p>Un <strong>menú</strong> es una lista de <strong>opciones numeradas</strong> que el programa le muestra al usuario. El usuario escribe el número de la opción que quiere, el programa ejecuta esa acción y <strong>vuelve a mostrar el menú</strong>. Tres piezas y ya tienes un programa de verdad: <strong>mostrar → leer → actuar</strong>. 🍽️</p>
+  </div>
+
+  <h3>✏️ Paso 1: el dibujo en papel</h3>
+  <p>Nunca programes un menú sin dibujarlo antes. En el cuaderno (o en un comentario al inicio del archivo) escribe exactamente lo que el usuario va a ver:</p>
+
+  <div class="terminal">
+    <div class="terminal-head"><span>🖥️ Así se ve el menú en la consola</span><span>bash</span></div>
+    <div class="terminal-body">
+      <div class="out">========== MENÚ PRINCIPAL ==========</div>
+      <div class="out">1. Calcular el área de un rectángulo</div>
+      <div class="out">2. Calcular el IMC</div>
+      <div class="out">3. Convertir temperatura</div>
+      <div class="out">0. Salir</div>
+      <div class="out">=====================================</div>
+      <div><span class="prompt">&gt;</span> <span class="cmd">2</span></div>
+      <div class="out">Peso (kg): 68.5</div>
+      <div class="out">Altura (cm): 172</div>
+      <div class="out">IMC: 23.15</div>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — la función que dibuja el menú</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Una función = un pedazo del menú
+static void MostrarMenu()
+{
+    Console.Clear();   // borra lo anterior para que el menú se vea limpio
+    Console.WriteLine("========== MENÚ PRINCIPAL ==========");
+    Console.WriteLine("1. Calcular el área de un rectángulo");
+    Console.WriteLine("2. Calcular el IMC");
+    Console.WriteLine("3. Convertir temperatura");
+    Console.WriteLine("0. Salir");
+    Console.WriteLine("=====================================");
+}
+
+MostrarMenu();
+Console.Write("Elige una opción: ");</code></pre>
+  </div>
+
+  <h3>🔄 Paso 2: el flujo</h3>
+  <p>Un menú es un <strong>ciclo</strong>. Se repite siempre el mismo camino:</p>
+  <div class="cuadricula">
+    <div class="tarjeta tarjeta-verde">
+      <span class="emoji">1️⃣</span>
+      <h3>Mostrar</h3>
+      <p>Se dibuja el menú. Aquí se llama a <code>MostrarMenu()</code>.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="emoji">2️⃣</span>
+      <h3>Leer</h3>
+      <p>Se lee la opción con <code>Console.ReadLine()</code>. El usuario escribe un número.</p>
+    </div>
+    <div class="tarjeta tarjeta-ambar">
+      <span class="emoji">3️⃣</span>
+      <h3>Actuar</h3>
+      <p>Un <code>switch</code> decide qué hacer según el número. Al final, se vuelve al paso 1.</p>
+    </div>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Elemento del menú</th><th>Ejemplo</th><th>¿Por qué importa?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Título</strong></td><td><code>===== MENÚ PRINCIPAL =====</code></td><td>Le dice al usuario de qué se trata.</td></tr>
+        <tr><td><strong>Opciones numeradas</strong></td><td><code>1. Registrar estudiante</code></td><td>Los números son fáciles de escribir y de comparar.</td></tr>
+        <tr><td><strong>Opción de salir</strong></td><td><code>0. Salir</code></td><td>Sin ella el menú es una jaula: el usuario nunca puede terminar.</td></tr>
+        <tr><td><strong>Prompt</strong></td><td><code>Console.Write("Elige: ")</code></td><td>Le dice qué escribir. Sin <code>WriteLine</code>, para que la respuesta quede en la misma línea.</td></tr>
+        <tr><td><strong>Limpieza</strong></td><td><code>Console.Clear()</code></td><td>Evita que el menú se acumule una y otra vez.</td></tr>
+        <tr><td><strong>Confirmación</strong></td><td><code>¡Hasta luego!</code></td><td>Una despedida amable antes de cerrar el programa.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: dibuja el menú en una <strong>función</strong>, no en el medio del programa</h4>
+    <p>Cuando el menú está en <code>MostrarMenu()</code>, cambiar un texto es cambiar <strong>una línea</strong>, no buscarla entre 200. Además el programa principal queda corto y legible. La <em>deuda técnica</em> empieza cuando el mismo bloque de código aparece en tres sitios distintos. 🧹</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Diseñen en el papel un menú de <strong>6 opciones</strong> para el programa que ustedes quieran: la biblioteca del colegio, el transporte, las notas o el tema que se les ocurra. Escriban también el título y qué pasa si el usuario escribe un número que no existe. 📝</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Cuáles son las tres acciones de un menú de consola?</p>
+      <button class="opcion" data-op="a">Compilar, ejecutar y cerrar</button>
+      <button class="opcion" data-op="b">Dibujar, borrar y guardar</button>
+      <button class="opcion" data-op="c">Mostrar, leer la opción y actuar</button>
+      <button class="opcion" data-op="d">Preguntar, pensar y responder</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué el menú debe incluir siempre una opción de salir?</p>
+      <button class="opcion" data-op="a">Porque si no, el usuario queda atrapado en un ciclo infinito</button>
+      <button class="opcion" data-op="b">Porque el computador la exige</button>
+      <button class="opcion" data-op="c">Para que el programa se vea más bonito</button>
+      <button class="opcion" data-op="d">Porque todas las opciones deben ser mayores que 0</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Para qué sirve <code>Console.Clear()</code> dentro de la función del menú?</p>
+      <button class="opcion" data-op="a">Para borrar el archivo <code>Program.cs</code></button>
+      <button class="opcion" data-op="b">Para limpiar la memoria del computador</button>
+      <button class="opcion" data-op="c">Para cerrar la consola</button>
+      <button class="opcion" data-op="d">Para limpiar la pantalla y que el menú se vea ordenado</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: while + switch →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>🔁 <code>while</code> + <code>switch</code>: el esqueleto</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "El ciclo que mantiene el menú vivo"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 El esqueleto clásico de un menú</h3>
+    <p>Todo menú de consola se arma con las mismas tres piezas: un <strong><code>while</code></strong> que repite, un <strong><code>switch</code></strong> que decide y una <strong>variable bandera</strong> (<code>salir</code>) que le dice al <code>while</code> "ya está". Es un esqueleto reutilizable: lo aprendes una vez y lo usas para siempre. 🍔</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — el esqueleto completo de un menú</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>bool salir = false;   // la bandera: mientras sea false, el menú sigue
+
+while (!salir)
+{
+    MostrarMenu();
+    Console.Write("Elige una opción: ");
+    string opcion = Console.ReadLine() ?? "";
+
+    switch (opcion)
+    {
+        case "1":
+            Console.WriteLine("Calculando el área...");
+            break;      // sin break se cae al siguiente caso
+        case "2":
+            Console.WriteLine("Calculando el IMC...");
+            break;
+        case "3":
+            Console.WriteLine("Convirtiendo temperatura...");
+            break;
+        case "0":
+            salir = true;    // el while va a terminar
+            Console.WriteLine("¡Hasta luego!");
+            break;
+        default:
+            Console.WriteLine("Opción inválida. Escribe un número del menú.");
+            break;
+    }
+}
+
+static void MostrarMenu()
+{
+    Console.Clear();
+    Console.WriteLine("========== MENÚ PRINCIPAL ==========");
+    Console.WriteLine("1. Calcular el área de un rectángulo");
+    Console.WriteLine("2. Calcular el IMC");
+    Console.WriteLine("3. Convertir temperatura");
+    Console.WriteLine("0. Salir");
+    Console.WriteLine("=====================================");
+}</code></pre>
+  </div>
+
+  <h3>🔢 La opción: ¿<code>string</code> o <code>int</code>?</h3>
+  <p><code>Console.ReadLine()</code> <strong>siempre</strong> devuelve texto. Si comparas con <code>case "1"</code> (con comillas) comparas texto; si comparas con <code>case 1</code> comparas números. Lo mejor es <strong>convertir una sola vez</strong> con <code>int.TryParse</code> y trabajar con números el resto del programa.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — de texto a número, y el `switch` moderno</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>Console.Write("Opción: ");
+string texto = Console.ReadLine() ?? "";
+
+// Convertimos UNA vez y con seguridad
+int opcion = -1;
+if (int.TryParse(texto, out int valor))
+    opcion = valor;
+
+switch (opcion)
+{
+    case 1:
+        Console.WriteLine("Área de un rectángulo");
+        break;
+    case 2:
+        Console.WriteLine("Índice de masa corporal");
+        break;
+    case 0:
+        Console.WriteLine("Saliendo del programa");
+        break;
+    default:
+        Console.WriteLine($"La opción '{texto}' no existe");
+        break;
+}
+
+// La versión moderna: `switch` como EXPRESIÓN (devuelve un valor)
+string mensaje = opcion switch
+{
+    1 =&gt; "Área de un rectángulo",
+    2 =&gt; "Índice de masa corporal",
+    0 =&gt; "Saliendo del programa",
+    _ =&gt; "Opción inválida"
+};
+
+Console.WriteLine(mensaje);</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Elemento</th><th>Cómo se usa aquí</th><th>¿Cuándo usarlo?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>while (!salir)</code></td><td>Repite el menú hasta que la bandera se active.</td><td>Siempre: es el corazón del menú.</td></tr>
+        <tr><td><code>while (true)</code></td><td>Repite <strong>para siempre</strong>: hay que romperlo con <code>break</code>.</td><td>Solo si usas un <code>break</code> interno para salir.</td></tr>
+        <tr><td><code>switch</code></td><td>Una <code>case</code> por opción del menú.</td><td>Cuando las opciones son valores <strong>exactos</strong>.</td></tr>
+        <tr><td><code>default</code></td><td>Lo que pasa si el usuario escribe cualquier otra cosa.</td><td><strong>Siempre</strong>: es tu red de seguridad.</td></tr>
+        <tr><td><code>break</code></td><td>Sale de ese <code>case</code>.</td><td><strong>Siempre</strong> al final de cada <code>case</code>, o se ejecutan todos juntos.</td></tr>
+        <tr><td><code>Console.ReadLine()</code></td><td>Lee la opción escrita por el usuario.</td><td>Con <code>?? ""</code> para no trabajar con nulos.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: el menú infinito del que no se puede salir</h4>
+    <p>Si usas <code>while (true)</code> y en el <code>case "0"</code> solo escribes <code>break</code>, el <code>break</code> solo sale del <code>switch</code>: el <code>while</code> sigue dando vueltas y el menú nunca se cierra. La salida correcta es <strong>activar la bandera</strong> (<code>salir = true;</code>) <strong>y</strong> hacer <code>break</code>. 🔁</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: la bandera también puede ser un <code>bool</code> que le preguntas al final</h4>
+    <p>Si prefieres no usar <code>salir</code>, puedes escribir <code>while (true)</code> y, al final de cada vuelta, preguntar <code>if (!Continuar()) break;</code>. Pero la bandera <code>salir</code> es más fácil de entender y de depurar: siempre sabes en qué parte del código se apaga el programa. 🚦</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban un menú de 3 opciones (una de ellas debe ser "Salir") usando <code>while</code> + <code>switch</code> con la opción como <code>int</code>. <strong>Pruébenlo mal a propósito:</strong> escriban "abc" y "12" y miren qué hace el <code>default</code>. ¿Qué tiene que pasar? 🤔</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Para qué sirve la variable <code>salir</code> en un menú?</p>
+      <button class="opcion" data-op="a">Guarda la opción que escribió el usuario</button>
+      <button class="opcion" data-op="b">Le avisa al <code>while</code> que debe terminar el ciclo</button>
+      <button class="opcion" data-op="c">Borra la pantalla de la consola</button>
+      <button class="opcion" data-op="d">Cuenta cuántas veces se repite el menú</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Qué pasa si un <code>case</code> no tiene <code>break</code>?</p>
+      <button class="opcion" data-op="a">El programa no compila</button>
+      <button class="opcion" data-op="b">Solo se ejecuta ese caso</button>
+      <button class="opcion" data-op="c">El flujo cae al siguiente <code>case</code> y se ejecuta también</button>
+      <button class="opcion" data-op="d">El <code>default</code> se ejecuta</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuál es el papel del <code>default</code> en el <code>switch</code> del menú?</p>
+      <button class="opcion" data-op="a">Atender la entrada inválida: lo que escribió y no es ninguna opción</button>
+      <button class="opcion" data-op="b">Marcar el final del programa</button>
+      <button class="opcion" data-op="c">Repetir el menú</button>
+      <button class="opcion" data-op="d">Convertir el texto en número</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: modularizar con funciones →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>🧩 Modularizar: una función por opción</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "El menú mandón y sus ayudantes"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 El menú no hace el trabajo: lo pide</h3>
+    <p>Un buen menú se limita a <strong>preguntar</strong> y <strong>delegar</strong>: cada opción del <code>switch</code> llama a una <strong>función</strong> que hace el trabajo. El programa principal queda corto y legible, y cada función se puede probar sola. 🧩</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — el programa modularizado completo</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ============================================
+// PROGRAMA PRINCIPAL: solo pregunta y delegan
+// ============================================
+bool salir = false;
+
+while (!salir)
+{
+    MostrarMenu();
+    Console.Write("Elige una opción: ");
+
+    if (int.TryParse(Console.ReadLine(), out int opcion))
+    {
+        switch (opcion)
+        {
+            case 1:
+                CalcularArea();
+                break;
+            case 2:
+                CalcularIMC();
+                break;
+            case 3:
+                ListarEstudiantes();
+                break;
+            case 4:
+                BuscarEstudiante();
+                break;
+            case 0:
+                Salir();
+                salir = true;
+                break;
+            default:
+                Console.WriteLine("Opción inválida.");
+                break;
+        }
+    }
+    else
+    {
+        Console.WriteLine("Debes escribir un número.");
+    }
+}
+
+// ============================================
+// LAS FUNCIONES: aquí vive el trabajo de verdad
+// ============================================
+static void MostrarMenu()
+{
+    Console.Clear();
+    Console.WriteLine("1. Calcular el área");
+    Console.WriteLine("2. Calcular el IMC");
+    Console.WriteLine("3. Listar estudiantes");
+    Console.WriteLine("4. Buscar estudiante");
+    Console.WriteLine("0. Salir");
+}
+
+static void CalcularArea()
+{
+    Console.Write("Ancho: ");
+    double ancho = double.Parse(Console.ReadLine() ?? "0");
+    Console.Write("Alto: ");
+    double alto = double.Parse(Console.ReadLine() ?? "0");
+
+    Console.WriteLine($"Área: {ancho * alto:F2}");
+}
+
+static void CalcularIMC()
+{
+    Console.Write("Peso (kg): ");
+    double peso = double.Parse(Console.ReadLine() ?? "0");
+    Console.Write("Altura (cm): ");
+    double altura = double.Parse(Console.ReadLine() ?? "0");
+
+    double metros = altura / 100.0;
+    Console.WriteLine($"IMC: {peso / (metros * metros):F2}");
+}
+
+static void ListarEstudiantes()
+{
+    Console.WriteLine("No hay estudiantes registrados todavía.");
+}
+
+static void BuscarEstudiante()
+{
+    Console.Write("Nombre: ");
+    string nombre = Console.ReadLine() ?? "";
+
+    Console.WriteLine($"Buscando a {nombre}...");
+}
+
+static void Salir()
+{
+    Console.WriteLine("¡Hasta luego!");
+}</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Problema</th><th>Sin funciones</th><th>Con funciones</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Programa largo</td><td>Todo seguido, difícil de leer.</td><td>Cada bloque con su nombre.</td></tr>
+        <tr><td>Bug en la opción 3</td><td>Buscas a mano entre 200 líneas.</td><td>Miras <code>ListarEstudiantes()</code> y listo.</td></tr>
+        <tr><td>Probar una opción</td><td>Tienes que recorrer todo el menú.</td><td>La llamas directo desde el depurador.</td></tr>
+        <tr><td>Reutilizar código</td><td>Copiar y pegar (y se desincronizan).</td><td>La llamas por donde quieras.</td></tr>
+        <tr><td>Trabajar en pareja</td><td>Los dos editando las mismas líneas.</td><td>Cada uno hace una función.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Qué tamaño tiene que tener una función?</h4>
+    <p>La regla práctica: si la función no cabe en <strong>una pantalla</strong> o tienes que desplazarte para leerla, probablemente hay que partirla. Y si el nombre no explica lo que hace, hay que renombrarla: <code>CalcularIMC</code> sí dice algo, <code>Proceso2</code> no. 📏</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Cada uno escribe <strong>una función</strong> del menú (por ejemplo, <code>CalcularArea()</code> y <code>CalcularIMC()</code>) y las conectan en el mismo <code>switch</code>. ¿Tienen que <strong>coordinar</strong> el <em>nombre</em> de las funciones? ¿Y el <em>orden</em>? ¿Qué pasa si cada uno llama a su función con un nombre diferente? 🤝</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Cuál es la ventaja principal de modularizar un menú en funciones?</p>
+      <button class="opcion" data-op="a">El programa se lee mejor y cada parte se puede probar por separado</button>
+      <button class="opcion" data-op="b">El programa se ejecuta más rápido</button>
+      <button class="opcion" data-op="c">El menú se ve más bonito</button>
+      <button class="opcion" data-op="d">Ya no hace falta el <code>while</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> En el <code>switch</code> modularizado, ¿qué hace <code>case 1: CalcularArea(); break;</code>?</p>
+      <button class="opcion" data-op="a">Define la función <code>CalcularArea</code></button>
+      <button class="opcion" data-op="b">Muestra el menú por segunda vez</button>
+      <button class="opcion" data-op="c">Llama a la función que calcula el área y luego sale del <code>case</code></button>
+      <button class="opcion" data-op="d">Guarda el resultado en una variable global</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Qué debería estar en el <code>switch</code> principal?</p>
+      <button class="opcion" data-op="a">Todos los cálculos del programa</button>
+      <button class="opcion" data-op="b">Todas las variables del programa</button>
+      <button class="opcion" data-op="c">El <code>while</code> y el <code>Console.Clear()</code></button>
+      <button class="opcion" data-op="d">Solo llamadas a funciones y el control de la opción elegida</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira el cuello 5 veces a cada lado. Estira los brazos al techo 10 s.</p></div>
+    <div class="descanso-card"><span class="big-icon">💧</span><h3>Toma agua</h3><p>La cabeza está llena de menús y <code>switch</code>: dale agua para que fluya. 🧠</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Habla con alguien</h3><p>Le inventas a tu compañero/a el menú de un restaurante. 1 min. 🍔</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>Los menús de consola son tan viejos como la propia terminal: el primer <strong>UNIX</strong> (1969) ya usaba <code>vi</code> para editar archivos con un teclado y una pantalla de texto. Todo programa que se ejecuta en una terminal es, en el fondo, un menú que invita a que escribas algo. ⌨️</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: validar la entrada →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>🛡️ Validar la entrada del usuario</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "El usuario siempre gana: prepárate"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 El usuario va a escribir basura (y va a hacerlo con cariño)</h3>
+    <p>Si tu programa dice "escribe tu edad" y alguien escribe <em>"dieisiete"</em>, tu programa se cae con un error rojo. Un programa bien hecho <strong>no se cae</strong>: pregunta de nuevo con un mensaje amigable hasta obtener un dato válido. Eso se llama <strong>validar la entrada</strong>. 🛡️</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp-error — así se cae el programa (por eso NO lo uses)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre data-lang="csharp-error"><code>// ⚠️ ESTE CÓDIGO ESTÁ MAL A PROPÓSITO.
+// Si el usuario escribe letras, el programa revienta con
+// una excepción (FormatException) y se cierra.
+Console.Write("Escribe tu edad: ");
+int edad = int.Parse(Console.ReadLine() ?? "0");
+
+Console.WriteLine($"Tu edad es {edad}");</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — la versión que no se cae: `int.TryParse`</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// TryParse PREGUNTA "¿esto es un número?" y devuelve true o false.
+// Nunca lanza excepciones.
+Console.Write("Escribe tu edad: ");
+string texto = Console.ReadLine() ?? "";
+
+if (int.TryParse(texto, out int edad))
+    Console.WriteLine($"Tu edad es {edad}");
+else
+    Console.WriteLine("Eso no es un número. Intenta de nuevo.");</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — la función que repregunta hasta obtener un dato válido</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Valida un número entero dentro de un rango
+static int LeerEntero(string mensaje, int minimo, int maximo)
+{
+    while (true)
+    {
+        Console.Write(mensaje);
+        string texto = Console.ReadLine() ?? "";
+
+        if (int.TryParse(texto, out int valor) &amp;&amp; valor &gt;= minimo &amp;&amp; valor &lt;= maximo)
+            return valor;
+
+        Console.WriteLine($"Dato inválido. Escribe un número entre {minimo} y {maximo}.");
+    }
+}
+
+// Valida una nota de 0 a 10
+static double LeerNota(string mensaje)
+{
+    while (true)
+    {
+        Console.Write(mensaje);
+        string texto = Console.ReadLine() ?? "";
+
+        if (double.TryParse(texto, out double nota) &amp;&amp; nota &gt;= 0 &amp;&amp; nota &lt;= 10)
+            return nota;
+
+        Console.WriteLine("La nota debe estar entre 0 y 10.");
+    }
+}
+
+int nota = LeerEntero("Nota (0 a 10): ", 0, 10);
+int cantidad = LeerEntero("Cantidad de notas: ", 1, 20);
+Console.WriteLine($"{nota} y {cantidad}");</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Situación</th><th>Con <code>Parse</code></th><th>Con <code>TryParse</code></th></tr>
+      </thead>
+      <tbody>
+        <tr><td>El usuario escribe "25"</td><td>Funciona</td><td>Funciona</td></tr>
+        <tr><td>El usuario escribe "hola"</td><td style="color:var(--rosa)">Excepción: el programa se cae</td><td style="color:var(--verde)">Devuelve <code>false</code> y tú avisas</td></tr>
+        <tr><td>El usuario escribe "-3" (fuera de rango)</td><td>Funciona, pero el dato no sirve</td><td>Tú lo rechazas con <code>if</code></td></tr>
+        <tr><td>El usuario no escribe nada</td><td>Excepción</td><td style="color:var(--verde)">Mensaje de "dato inválido"</td></tr>
+        <tr><td><code>int</code> vs <code>double</code></td><td><code>int.Parse("4.5")</code> falla</td><td>Usa <code>double.TryParse</code> para notas</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: leer dos veces la misma línea</h4>
+    <p>Si escribes <code>int.TryParse(Console.ReadLine(), out int n)</code> y después <code>Console.ReadLine()</code> otra vez, la segunda lectura se queda <strong>vacía</strong>: el usuario ya había escrito. Nunca le pidas al usuario la misma información dos veces: léela <strong>una vez</strong>, guárdala en una variable y trabaja con esa variable. ♻️</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: el mensaje de error también es parte del programa</h4>
+    <p>Un error amigable dice <strong>qué pasó y qué hacer</strong>: "Dato inválido. Escribe un número entre 0 y 10." es mil veces mejor que "Error de formato". Y el <code>while (true)</code> con <code>return</code> dentro es el patrón universal para "repreguntar hasta que esté bien". 🔁</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Escriban una función <code>LeerTexto(string mensaje)</code> que no acepte textos vacíos (que el usuario no deje solo el espacio). ¿Cómo se comprueba que un <code>string</code> está vacío? Pista: <code>Trim()</code> quita los espacios de los dos lados. 🔍</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace <code>int.TryParse("hola", out int n)</code>?</p>
+      <button class="opcion" data-op="a">Lanza una excepción y el programa se cae</button>
+      <button class="opcion" data-op="b">Devuelve <code>false</code> y el programa sigue vivo</button>
+      <button class="opcion" data-op="c">Convierte "hola" en 0</button>
+      <button class="opcion" data-op="d">Devuelve <code>true</code> porque todo texto es convertible</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Por qué conviene validar el rango (por ejemplo, una nota entre 0 y 10)?</p>
+      <button class="opcion" data-op="a">Porque el <code>TryParse</code> no valida el rango</button>
+      <button class="opcion" data-op="b">Para que el programa use menos memoria</button>
+      <button class="opcion" data-op="c">Porque un número puede ser válido como tipo y aun así no servir</button>
+      <button class="opcion" data-op="d">Porque el <code>while</code> no funciona con decimales</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuál es el error de novato más común al validar?</p>
+      <button class="opcion" data-op="a">Leer la misma línea del teclado dos veces</button>
+      <button class="opcion" data-op="b">Usar <code>TryParse</code> en vez de <code>Parse</code></button>
+      <button class="opcion" data-op="c">Poner un mensaje de error amigable</button>
+      <button class="opcion" data-op="d">Usar un <code>while (true)</code> con un <code>return</code> dentro</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: menú + arreglos →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>🏗️ Menú + arreglos: administrar datos de verdad</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "Un menú que recuerda a quién registraste"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 El menú que guarda datos</h3>
+    <p>Hasta ahora tus menús hacían cálculos y se olvidaban. Un programa serio <strong>guarda</strong>: los estudiantes registrados, las ventas del día, los libros prestados. Para eso usas un <strong>arreglo</strong> o una <strong>lista</strong>, y el menú elige qué función trabaja con ella. 🗂️</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — menú que administra una lista de estudiantes</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// La lista vive FUERA del while: así no se borra al reiniciar el menú
+List&lt;string&gt; estudiantes = [];
+bool salir = false;
+
+while (!salir)
+{
+    Console.Clear();
+    Console.WriteLine("=== MENÚ DE ESTUDIANTES ===");
+    Console.WriteLine("1. Registrar estudiante");
+    Console.WriteLine("2. Listar estudiantes");
+    Console.WriteLine("3. Buscar estudiante");
+    Console.WriteLine("4. Eliminar estudiante");
+    Console.WriteLine("0. Salir");
+    Console.Write("Elige una opción: ");
+
+    int opcion = int.TryParse(Console.ReadLine(), out int valor) ? valor : -1;
+
+    switch (opcion)
+    {
+        case 1:
+            RegistrarEstudiante(estudiantes);
+            break;
+        case 2:
+            ListarEstudiantes(estudiantes);
+            break;
+        case 3:
+            BuscarEstudiante(estudiantes);
+            break;
+        case 4:
+            EliminarEstudiante(estudiantes);
+            break;
+        case 0:
+            salir = true;
+            Console.WriteLine("¡Chao!");
+            break;
+        default:
+            Console.WriteLine("Opción inválida.");
+            break;
+    }
+}
+
+static void RegistrarEstudiante(List&lt;string&gt; lista)
+{
+    Console.Write("Nombre del estudiante: ");
+    string nombre = Console.ReadLine() ?? "";
+
+    if (nombre.Length == 0)
+    {
+        Console.WriteLine("El nombre no puede estar vacío.");
+        return;
+    }
+
+    lista.Add(nombre);
+    Console.WriteLine($"Estudiante registrado: {nombre}");
+}
+
+static void ListarEstudiantes(List&lt;string&gt; lista)
+{
+    if (lista.Count == 0)
+    {
+        Console.WriteLine("No hay estudiantes registrados.");
+        return;
+    }
+
+    Console.WriteLine("--- LISTA DE ESTUDIANTES ---");
+    for (int i = 0; i &lt; lista.Count; i++)
+        Console.WriteLine($"{i + 1}. {lista[i]}");
+}
+
+static void BuscarEstudiante(List&lt;string&gt; lista)
+{
+    Console.Write("Nombre a buscar: ");
+    string busqueda = Console.ReadLine() ?? "";
+
+    bool encontrado = false;
+    foreach (string nombre in lista)
+    {
+        if (nombre.Contains(busqueda, StringComparison.OrdinalIgnoreCase))
+        {
+            Console.WriteLine($"Encontrado: {nombre}");
+            encontrado = true;
+        }
+    }
+
+    if (!encontrado)
+        Console.WriteLine("No se encontró ese estudiante.");
+}
+
+static void EliminarEstudiante(List&lt;string&gt; lista)
+{
+    Console.Write("Nombre a eliminar: ");
+    string busqueda = Console.ReadLine() ?? "";
+
+    int indice = -1;
+    for (int i = 0; i &lt; lista.Count; i++)
+    {
+        if (lista[i].Equals(busqueda, StringComparison.OrdinalIgnoreCase))
+        {
+            indice = i;
+            break;
+        }
+    }
+
+    if (indice &gt;= 0)
+    {
+        Console.WriteLine($"Se eliminó a {lista[indice]}.");
+        lista.RemoveAt(indice);
+    }
+    else
+    {
+        Console.WriteLine("Ese estudiante no está en la lista.");
+    }
+}</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Herramienta</th><th>Ejemplo</th><th>Ventaja</th><th>Desventaja</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Arreglo</strong></td><td><code>string[] nombres = new string[3];</code></td><td>Muy rápido y simple.</td><td>Tamaño fijo: si te quedan 3 cupos, los desperdicias.</td></tr>
+        <tr><td><strong><code>List&lt;T&gt;</code></strong></td><td><code>List&lt;string&gt; nombres = [];</code></td><td><strong>Crece solito</strong> con <code>Add</code> y <code>RemoveAt</code>.</td><td>Usa un poquito más de memoria.</td></tr>
+        <tr><td><strong><code>Add</code></strong></td><td><code>lista.Add("Ana");</code></td><td>Agrega al final.</td><td>—</td></tr>
+        <tr><td><strong><code>Count</code></strong></td><td><code>if (lista.Count == 0)</code></td><td>¿Cuántos hay?</td><td>—</td></tr>
+        <tr><td><strong><code>RemoveAt</code></strong></td><td><code>lista.RemoveAt(1);</code></td><td>Borra por posición.</td><td>Si la posición no existe, se cae.</td></tr>
+        <tr><td><strong><code>IndexOf</code></strong></td><td><code>int i = lista.IndexOf("Ana");</code></td><td>Te dice dónde está un dato.</td><td>Devuelve -1 si no está.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-importante">
+    <h4>🦹 El villano: la lista declarada dentro del <code>while</code></h4>
+    <p>Si escribes <code>List&lt;string&gt; estudiantes = [];</code> <strong>dentro</strong> del <code>while</code>, la lista se crea de cero en cada vuelta: registras a Ana, el menú vuelve a empezar y <strong>Ana desaparece</strong>. La lista (y cualquier dato que deba vivir) se declara <strong>fuera</strong> del ciclo. 🧷</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: pásale la lista a las funciones, no la declares adentro</h4>
+    <p>Cuando una función necesita la lista, la recibe como <strong>parámetro</strong> (<code>ListarEstudiantes(List&lt;string&gt; lista)</code>). Recuerda la <strong>Clase 8</strong>: las listas son tipos de referencia, así que la función trabaja sobre <strong>la misma lista</strong> del programa principal. Si le haces cambios, se ven afuera. 🔗</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Agreguen una opción <strong>5. Contar estudiantes</strong> al menú y la función <code>ContarEstudiantes</code>. Después piensen: ¿qué pasaría si la lista fuera un <code>int[]</code> de tamaño 3 y registran 4 personas? ¿Cómo lo resolverían? 📦</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Por qué la lista debe declararse fuera del <code>while</code>?</p>
+      <button class="opcion" data-op="a">Porque dentro del <code>while</code> no se pueden declarar variables</button>
+      <button class="opcion" data-op="b">Porque <code>List</code> solo funciona fuera de los ciclos</button>
+      <button class="opcion" data-op="c">Porque si no, se recrea en cada vuelta y se pierden los datos</button>
+      <button class="opcion" data-op="d">Para que el menú se vea más ordenado</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué método agrega un elemento al final de una lista?</p>
+      <button class="opcion" data-op="a"><code>Add</code></button>
+      <button class="opcion" data-op="b"><code>Push</code></button>
+      <button class="opcion" data-op="c"><code>Insert</code></button>
+      <button class="opcion" data-op="d"><code>Set</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> Cuando una función recibe una <code>List&lt;string&gt;</code> como parámetro y le hace <code>Add</code>, ¿qué pasa en el programa principal?</p>
+      <button class="opcion" data-op="a">La lista principal se queda igual</button>
+      <button class="opcion" data-op="b">El programa deja de compilar</button>
+      <button class="opcion" data-op="c">La función pierde los cambios al salir</button>
+      <button class="opcion" data-op="d">La lista principal también queda con el nuevo elemento</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller final →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🏆 Taller final: sistema de matrícula del colegio</h2>
+  <p class="meta-modulo">⏱️ 45 minutos · "Tu primera aplicación de consola de verdad"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🏆 Taller final</span>
+      <span class="challenge-title">Sistema de matrícula</span>
+    </div>
+    <p>El colegio necesita un programa para matricular estudiantes: registrar, listar, buscar, cambiar el grado, eliminar y ver promedios. Cada opción del menú va en <strong>su propia función</strong>, los datos se guardan en una lista y todas las entradas del usuario se <strong>validan</strong>. 🎓</p>
+  </div>
+
+  <h3>📋 Requisitos del taller</h3>
+  <ol class="pasos">
+    <li>Crea el proyecto: <code>dotnet new console -n MatriculaColegio</code> y ábrelo con <code>code .</code>.</li>
+    <li>El menú tiene <strong>6 opciones</strong> (registrar, listar, buscar, cambiar grado, eliminar, ver promedio) más la opción <code>0</code> para salir.</li>
+    <li>Cada opción llama a <strong>una función propia</strong>: <code>RegistrarEstudiante</code>, <code>ListarEstudiantes</code>, <code>BuscarEstudiante</code>, <code>CambiarGrado</code>, <code>EliminarEstudiante</code> y <code>VerPromedio</code>.</li>
+    <li>Los datos se guardan en una <strong>lista</strong> declarada <strong>fuera</strong> del <code>while</code>, y las funciones la reciben como parámetro.</li>
+    <li>Valida <strong>todo</strong>: el código no puede estar vacío, no puede repetirse y las notas van de 0 a 10 (usa <code>TryParse</code>).</li>
+    <li>Usa un <strong><code>record</code></strong> para el estudiante (<code>Codigo</code>, <code>Nombre</code>, <code>Grado</code>, <code>Notas</code>) y aprovecha <code>with</code> para cambiar el grado sin romper nada.</li>
+    <li>Muestra la lista numerada y el promedio de cada estudiante con <code>:F2</code>.</li>
+    <li>Prueba el programa de punta a punta: registra dos estudiantes, búscalos, cámbiales el grado y elimina uno.</li>
+  </ol>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — guía de estilo (es el molde, no la solución)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// ============================================
+// SISTEMA DE MATRÍCULA — molde
+// El menú pregunta, las funciones trabajan.
+// ============================================
+
+List&lt;Estudiante&gt; estudiantes = [];
+bool salir = false;
+
+while (!salir)
+{
+    Console.Clear();
+    Console.WriteLine("===== SISTEMA DE MATRÍCULA =====");
+    Console.WriteLine("1. Registrar estudiante");
+    Console.WriteLine("2. Listar estudiantes");
+    Console.WriteLine("3. Buscar estudiante");
+    Console.WriteLine("4. Cambiar el grado");
+    Console.WriteLine("5. Eliminar estudiante");
+    Console.WriteLine("6. Promedio de un estudiante");
+    Console.WriteLine("0. Salir");
+    Console.Write("Elige una opción: ");
+
+    int opcion = int.TryParse(Console.ReadLine(), out int valor) ? valor : -1;
+
+    switch (opcion)
+    {
+        case 1:
+            RegistrarEstudiante(estudiantes);
+            break;
+        case 2:
+            ListarEstudiantes(estudiantes);
+            break;
+        // ...las demás opciones van aquí
+        case 0:
+            salir = true;
+            Console.WriteLine("¡Hasta la próxima!");
+            break;
+        default:
+            Console.WriteLine("Opción inválida.");
+            break;
+    }
+}
+
+// Las funciones que debes escribir (aquí solo van los huecos):
+static void RegistrarEstudiante(List&lt;Estudiante&gt; lista) { }
+static void ListarEstudiantes(List&lt;Estudiante&gt; lista) { }
+
+// El record va AL FINAL del archivo
+record Estudiante(string Codigo, string Nombre, string Grado, List&lt;double&gt; Notas);</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Pista: el truco del <code>with</code></h4>
+    <p>Los <strong>records</strong> de C# traen un detalle muy útil: <code>lista[i] = lista[i] with { Grado = nuevoGrado };</code> te crea una <strong>copia con un dato cambiado</strong> y la deja en la lista, sin tocar las notas. Es la forma moderna de "modificar" un registro inmutable. 🎁</p>
+  </div>
+
+  <button class="btn-solucion" data-solucion="sol-taller">👁️ Ver solución completa</button>
+  <div class="solucion" id="sol-taller">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-header-left">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span>csharp — solución del taller</span>
+        </div>
+        <button class="copy-btn">📋 Copiar</button>
+      </div>
+<pre><code>// ============================================
+// SISTEMA DE MATRÍCULA DEL COLEGIO — solución
+// ============================================
+
+List&lt;Estudiante&gt; estudiantes = [];
+bool salir = false;
+
+while (!salir)
+{
+    Console.Clear();
+    Console.WriteLine("===== SISTEMA DE MATRÍCULA =====");
+    Console.WriteLine("1. Registrar estudiante");
+    Console.WriteLine("2. Listar estudiantes");
+    Console.WriteLine("3. Buscar estudiante");
+    Console.WriteLine("4. Cambiar el grado");
+    Console.WriteLine("5. Eliminar estudiante");
+    Console.WriteLine("6. Promedio de un estudiante");
+    Console.WriteLine("0. Salir");
+    Console.Write("Elige una opción: ");
+
+    int opcion = int.TryParse(Console.ReadLine(), out int valor) ? valor : -1;
+
+    switch (opcion)
+    {
+        case 1:
+            RegistrarEstudiante(estudiantes);
+            break;
+        case 2:
+            ListarEstudiantes(estudiantes);
+            break;
+        case 3:
+            BuscarEstudiante(estudiantes);
+            break;
+        case 4:
+            CambiarGrado(estudiantes);
+            break;
+        case 5:
+            EliminarEstudiante(estudiantes);
+            break;
+        case 6:
+            VerPromedio(estudiantes);
+            break;
+        case 0:
+            salir = true;
+            Console.WriteLine("¡Hasta la próxima!");
+            break;
+        default:
+            Console.WriteLine("Opción inválida. Escribe un número del 0 al 6.");
+            break;
+    }
+}
+
+// ============================================
+// FUNCIONES
+// ============================================
+static void RegistrarEstudiante(List&lt;Estudiante&gt; lista)
+{
+    Console.Write("Código: ");
+    string codigo = Console.ReadLine() ?? "";
+
+    if (codigo.Length == 0)
+    {
+        Console.WriteLine("El código no puede estar vacío.");
+        return;
+    }
+
+    foreach (Estudiante e in lista)
+    {
+        if (e.Codigo.Equals(codigo, StringComparison.OrdinalIgnoreCase))
+        {
+            Console.WriteLine("Ese código ya está registrado.");
+            return;
+        }
+    }
+
+    Console.Write("Nombre: ");
+    string nombre = Console.ReadLine() ?? "";
+
+    Console.Write("Grado (ej. 11A): ");
+    string grado = Console.ReadLine() ?? "";
+
+    List&lt;double&gt; notas = [];
+    for (int i = 0; i &lt; 3; i++)
+        notas.Add(LeerNota($"Nota {i + 1}: "));
+
+    lista.Add(new Estudiante(codigo, nombre, grado, notas));
+    Console.WriteLine($"{nombre} quedó matriculado en {grado}.");
+}
+
+static void ListarEstudiantes(List&lt;Estudiante&gt; lista)
+{
+    if (lista.Count == 0)
+    {
+        Console.WriteLine("No hay estudiantes matriculados.");
+        return;
+    }
+
+    Console.WriteLine("--- ESTUDIANTES MATRICULADOS ---");
+    for (int i = 0; i &lt; lista.Count; i++)
+    {
+        Estudiante e = lista[i];
+        Console.WriteLine($"{i + 1}. {e.Codigo} | {e.Nombre} | {e.Grado} | Promedio: {CalcularPromedio(e.Notas):F2}");
+    }
+}
+
+static void BuscarEstudiante(List&lt;Estudiante&gt; lista)
+{
+    Console.Write("Código a buscar: ");
+    string codigo = Console.ReadLine() ?? "";
+
+    foreach (Estudiante e in lista)
+    {
+        if (e.Codigo.Equals(codigo, StringComparison.OrdinalIgnoreCase))
+        {
+            Console.WriteLine($"Encontrado: {e.Nombre} - Grado {e.Grado}");
+            return;
+        }
+    }
+
+    Console.WriteLine("No hay nadie con ese código.");
+}
+
+static void CambiarGrado(List&lt;Estudiante&gt; lista)
+{
+    Console.Write("Código: ");
+    string codigo = Console.ReadLine() ?? "";
+    Console.Write("Nuevo grado: ");
+    string grado = Console.ReadLine() ?? "";
+
+    for (int i = 0; i &lt; lista.Count; i++)
+    {
+        if (lista[i].Codigo.Equals(codigo, StringComparison.OrdinalIgnoreCase))
+        {
+            lista[i] = lista[i] with { Grado = grado };
+            Console.WriteLine($"Grado actualizado a {grado}.");
+            return;
+        }
+    }
+
+    Console.WriteLine("No se encontró el estudiante.");
+}
+
+static void EliminarEstudiante(List&lt;Estudiante&gt; lista)
+{
+    Console.Write("Código a eliminar: ");
+    string codigo = Console.ReadLine() ?? "";
+
+    for (int i = 0; i &lt; lista.Count; i++)
+    {
+        if (lista[i].Codigo.Equals(codigo, StringComparison.OrdinalIgnoreCase))
+        {
+            Console.WriteLine($"Se eliminó a {lista[i].Nombre}.");
+            lista.RemoveAt(i);
+            return;
+        }
+    }
+
+    Console.WriteLine("Ese estudiante no está matriculado.");
+}
+
+static void VerPromedio(List&lt;Estudiante&gt; lista)
+{
+    Console.Write("Código: ");
+    string codigo = Console.ReadLine() ?? "";
+
+    foreach (Estudiante e in lista)
+    {
+        if (e.Codigo.Equals(codigo, StringComparison.OrdinalIgnoreCase))
+        {
+            Console.WriteLine($"{e.Nombre} tiene un promedio de {CalcularPromedio(e.Notas):F2}");
+            return;
+        }
+    }
+
+    Console.WriteLine("No se encontró el estudiante.");
+}
+
+static double CalcularPromedio(List&lt;double&gt; notas)
+{
+    if (notas.Count == 0)
+        return 0;
+
+    double suma = 0;
+    foreach (double nota in notas)
+        suma += nota;
+
+    return suma / notas.Count;
+}
+
+static double LeerNota(string mensaje)
+{
+    while (true)
+    {
+        Console.Write(mensaje);
+        string texto = Console.ReadLine() ?? "";
+
+        if (double.TryParse(texto, out double nota) &amp;&amp; nota &gt;= 0 &amp;&amp; nota &lt;= 10)
+            return nota;
+
+        Console.WriteLine("La nota debe ser un número entre 0 y 10.");
+    }
+}
+
+// El record se declara al final del archivo
+record Estudiante(string Codigo, string Nombre, string Grado, List&lt;double&gt; Notas);</code></pre>
+    </div>
+  </div>
+
+  <div class="checklist">
+    <h4>✅ Antes de entregar, verifica</h4>
+    <ul>
+      <li>El proyecto se llama <code>MatriculaColegio</code> y corre con <code>dotnet run</code>.</li>
+      <li>El menú tiene 6 opciones + la opción <code>0</code> para salir, y el <code>default</code> atiende lo inválido.</li>
+      <li>Cada opción llama a <strong>su propia función</strong> (y el <code>while</code> no hace el trabajo).</li>
+      <li>La lista está declarada <strong>fuera</strong> del <code>while</code>: los datos sobreviven al menú.</li>
+      <li>Ningún dato se pide con <code>int.Parse</code> o <code>double.Parse</code>: todo pasa por <code>TryParse</code>.</li>
+      <li>El código no puede estar vacío ni repetirse, y las notas se validan entre 0 y 10.</li>
+      <li>La salida es limpia: el menú se vuelve a dibujar con <code>Console.Clear()</code> y el programa despide con un mensaje.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 6 minutos</h4>
+    <p>Uno hace de <strong>usuario</strong>: ejecuta el programa del otro e intenta romperlo. Escribe letras donde pide un número, pide notas de 99, mete el mismo código dos veces, escribe 0 y "-" en la opción. El <strong>programador</strong> anota cada falla y la arregla frente al otro. Al final, intercambien roles. 🛠️</p>
+  </div>
+
+  <div class="quiz" data-quiz="7">
+    <h3>🎯 Mini-Quiz del Módulo 7</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace que un menú sea "robusto" (que no se caiga)?</p>
+      <button class="opcion" data-op="a">Tener muchas opciones</button>
+      <button class="opcion" data-op="b">Validar la entrada del usuario y atender el <code>default</code></button>
+      <button class="opcion" data-op="c">Usar <code>Console.Clear()</code></button>
+      <button class="opcion" data-op="d">Tener todas las funciones en una sola línea</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Por qué la lista de estudiantes se declara fuera del <code>while</code>?</p>
+      <button class="opcion" data-op="a">Porque C# no permite <code>List</code> dentro de un ciclo</button>
+      <button class="opcion" data-op="b">Porque si no, el menú no se dibuja</button>
+      <button class="opcion" data-op="c">Porque si no, se recrea en cada vuelta y los datos se pierden</button>
+      <button class="opcion" data-op="d">Porque las listas solo se usan en la opción 1</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuál es la función que decide qué hacer con la opción que escribió el usuario?</p>
+      <button class="opcion" data-op="a">El <code>switch</code></button>
+      <button class="opcion" data-op="b"><code>Console.ReadLine()</code></button>
+      <button class="opcion" data-op="c"><code>Console.Clear()</code></button>
+      <button class="opcion" data-op="d"><code>dotnet run</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 9 completada!</h2>
+    <p>Acabas de construir una <strong>aplicación de consola</strong> completa: menú, funciones, validación y datos guardados. Eso es exactamente lo que pide la guía de la asignatura. En la <strong>Clase 10</strong> entras al mundo de la <strong>POO</strong>: clases, objetos, constructores y atributos, para que tu código sea aún más ordenado y reutilizable. 🧱</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">🎛️ Herramientas Algorítmicas II · Clase 9 de 10</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · Código TL007</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

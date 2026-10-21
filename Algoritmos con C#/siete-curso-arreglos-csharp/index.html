@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📦 Herramientas Algorítmicas II · Clase 7 · Arreglos y matrices</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="logo">
+    <span class="emoji-logo">📦</span>
+    <div>
+      <h1>Herramientas Algorítmicas II · Clase 7</h1>
+      <p class="subtitulo">C# moderno · .NET 10 (SDK LTS) · arreglos, matrices y listas</p>
+    </div>
+  </div>
+  <div class="progreso-cont">
+    <div class="progreso-info">
+      <span id="modulo-actual">Módulo 0</span>
+      <span><strong id="xp-display">0 / 640 XP</strong> · <span id="porcentaje">0%</span></span>
+    </div>
+    <div class="barra-progreso">
+      <div class="barra-progreso-llenado" id="barra"></div>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</header>
+
+<nav class="menu-modulos">
+  <button class="btn-modulo activo" data-modulo="0">🏁 Inicio</button>
+  <button class="btn-modulo" data-modulo="1">📚 Arreglos unidimensionales</button>
+  <button class="btn-modulo" data-modulo="2">🔎 Recorrer y buscar</button>
+  <button class="btn-modulo" data-modulo="3">🟪 Matrices</button>
+  <button class="btn-modulo descanso" data-modulo="4">☕ Descanso</button>
+  <button class="btn-modulo" data-modulo="5">🗃️ List&lt;T&gt; y colecciones</button>
+  <button class="btn-modulo" data-modulo="6">🧹 Ordenar y filtrar</button>
+  <button class="btn-modulo" data-modulo="7">🛠️ Taller</button>
+</nav>
+
+<main>
+
+<!-- ==================== MÓDULO 0 ==================== -->
+<section class="modulo activo" data-modulo="0">
+  <div class="hero">
+    <h2>📦 Arreglos y matrices: cuando un dato no basta</h2>
+    <p class="lead">Hasta hoy guardabas <strong>un dato por variable</strong>. ¿Y si necesitas 40 notas? ¿40 variables? Hoy aprenderás el <strong>arreglo</strong>: una fila de cajas numeradas donde caben muchos datos del mismo tipo, y su prima gorda, la <strong>matriz</strong>, que son varias filas y columnas. Con esto ya puedes construir el <strong>tablero de notas</strong>, el <strong>inventario</strong> o el <strong>juego del ahorcado</strong>.</p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-head">⌘ terminal — estudiante@colegio</div>
+      <div class="hero-terminal-body">
+        <div><span class="prompt">estudiante@colegio:~$</span> <span class="cmd">dotnet new console -n Arreglos</span></div>
+        <div><span class="out">La plantilla "aplicación de consola" se creó correctamente.</span></div>
+        <div><span class="prompt">estudiante@colegio:~/Arreglos$</span> <span class="cmd">code .</span></div>
+        <div><span class="prompt">estudiante@colegio:~/Arreglos$</span> <span class="cmd">dotnet run</span></div>
+        <div class="out">Hello, World!</div>
+        <div><span class="prompt">estudiante@colegio:~/Arreglos$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cuadricula">
+    <div class="tarjeta">
+      <span class="emoji">⏱️</span>
+      <h3>Duración total</h3>
+      <p>3 h 45 min en 8 módulos, con descanso a mitad. Hoy se programs más que se lee: la consola va a tener más datos.</p>
+    </div>
+    <div class="tarjeta tarjeta-verde">
+      <span class="emoji">🎯</span>
+      <h3>Objetivo</h3>
+      <p>Declarar, recorrer, buscar, ordenar y filtrar <strong>arreglos</strong>; usar <strong>matrices</strong> para datos de dos dimensiones; y conocer <code>List&lt;T&gt;</code>, la colección que <strong>crece</strong> cuando le hace falta.</p>
+    </div>
+    <div class="tarjeta tarjeta-magenta">
+      <span class="emoji">🦹</span>
+      <h3>Los villanos de hoy</h3>
+      <p>El índice que empieza en 0 (y tú en 1), el <code>IndexOutOfRangeException</code>, las filas cambiadas por las columnas y el <code>Length</code> que nadie mira.</p>
+    </div>
+  </div>
+
+  <h3>🗺️ Tu ruta de misiones</h3>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Misión</th><th>Tema</th><th>Villano</th><th>XP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 · Arreglos</td><td style="color:var(--a)">Cajas numeradas de tamaño fijo</td><td style="color:var(--rosa)">Índice fuera de rango</td><td>100 XP</td></tr>
+        <tr><td>02 · Recorrer y buscar</td><td style="color:var(--b)"><code>for</code>, <code>foreach</code> y búsquedas</td><td style="color:var(--rosa)">Contar de más</td><td>100 XP</td></tr>
+        <tr><td>03 · Matrices</td><td style="color:var(--a)">Filas y columnas</td><td style="color:var(--rosa)">Filas por columnas</td><td>100 XP</td></tr>
+        <tr><td>☕ Descanso</td><td style="color:var(--naranja)">Pausa</td><td>—</td><td>—</td></tr>
+        <tr><td>05 · List&lt;T&gt;</td><td style="color:var(--verde)">La lista que crece</td><td style="color:var(--rosa)">Olvidar el <code>Count</code></td><td>100 XP</td></tr>
+        <tr><td>06 · Ordenar y filtrar</td><td style="color:var(--b)"><code>Sort</code>, LINQ y burbuja</td><td style="color:var(--rosa)">Ordenar dos veces</td><td>100 XP</td></tr>
+        <tr><td>07 · Taller</td><td style="color:var(--a)">Tablero de calificaciones</td><td style="color:var(--rosa)">Tablero que no cuadra</td><td>140 XP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 3 minutos</h4>
+    <p>Piensa en un programa del colegio que hoy te pide "un dato" y que en realidad debería pedir "muchos datos": la lista de asistencia, el menú del restaurante, el tablero de notas. Escribe <strong>qué tipo de variable usarías</strong> para cada uno (número, texto o arreglo) y <strong>cuántas casillas</strong> necesitarías como máximo.</p>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Por qué los arreglos son tan importantes?</h4>
+    <p>Un arreglo no es solo "muchas variables": es <strong>memoria contigua</strong>, es decir, los datos están pegados uno tras otro en la memoria del computador. Por eso el computador puede saltar directo a la posición 57. Esa misma idea (datos contiguos y acceso directo por posición) es la base de las bases de datos, de las imágenes, del audio y de los motores de los videojuegos. Tú hoy estás usando la misma idea que un motor de Fortnite.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Empezar Módulo 1: arreglos →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 1 ==================== -->
+<section class="modulo" data-modulo="1">
+  <h2>📚 Arreglos unidimensionales: la fila de cajas</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "Many boxes, one number"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es un arreglo?</h3>
+    <p>Un <strong>arreglo</strong> es un bloque de variables del <strong>mismo tipo</strong>, numeradas y colocadas en fila. Cada casilla tiene un <strong>índice</strong>: su número de posición. Se declara con los corchetes <code>[]</code> después del tipo y su <strong>tamaño es fijo</strong>: si nace con 5 casillas, siempre tendrá 5 casillas.</p>
+    <p><strong>Analogía:</strong> la fila de casilleros del colegio. Casillero 0, casillero 1, casillero 2… cada casillero guarda una cosa, todos guardan cosas del mismo tipo (o todos cuadernos, o todos los lápices). Si cambias de salón, cambias la fila completa: no puedes "añadir" un casillero nuevo en la mitad del año.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — un arreglo y sus casillas</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Un arreglo: cajas numeradas, una al lado de la otra
+int[] notas = new int[5];      // 5 casillas, todas con 0
+
+notas[0] = 85;
+notas[1] = 90;
+notas[2] = 78;
+
+Console.WriteLine(notas[0]);       // 85
+Console.WriteLine(notas[3]);       // 0 (nunca le escribimos)
+Console.WriteLine($"Casillas: {notas.Length}");   // 5
+
+// Las casillas que no escribas valen el valor "cero" del tipo
+string[] nombres = new string[3];
+Console.WriteLine(nombres[0] == null);   // True: en un string vacío es null</code></pre>
+  </div>
+
+  <p><strong>Qué hace:</strong> reserva 5 casillas de tipo <code>int</code> y deja que escribamos en cada una con su número. <strong>Por qué funciona:</strong> <code>notas[0]</code> no es una variable nueva: es "la casilla 0 del arreglo". Por eso solo funciona con números entre 0 y 4.</p>
+
+  <div class="caja-importante">
+    <h4>📌 Los índices empiezan en 0</h4>
+    <p>Un arreglo de 5 casillas se numera <strong>0, 1, 2, 3, 4</strong>. No existe la casilla 5. Tu ojo humano cuenta desde 1, el computador cuenta desde 0: es la diferencia entre "el primer estudiante" (índice 0) y "el último" (índice 4).</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp-error — salirse del rango (error IndexOutOfRangeException)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre data-lang="csharp-error"><code>int[] notas = [85, 90, 78];
+
+Console.WriteLine(notas[3]);   // ERROR: solo existen las casillas 0, 1 y 2
+                               // Se lanza: IndexOutOfRangeException</code></pre>
+  </div>
+
+  <h3>✍️ Las cuatro formas de crear un arreglo</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — las cuatro formas de declarar un arreglo</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// 1. Con el tamaño: todas las casillas valen cero
+int[] a = new int[3];
+
+// 2. Con los valores desde el principio (forma clásica)
+int[] b = new int[] { 10, 20, 30 };
+
+// 3. Expresión de colección (C# 12 en adelante): la forma moderna
+int[] c = [85, 90, 78];
+
+// 4. Con var: C# deduce el tipo del contenido
+var d = new int[] { 1, 2, 3 };
+
+Console.WriteLine($"{a[0]} {b[0]} {c[0]} {d[0]}");
+Console.WriteLine($"Tamaños: {a.Length}, {b.Length}, {c.Length}, {d.Length}");
+
+// Ojo: var d = [1, 2, 3]; NO compila.
+// Con una expresión de colección, C# necesita saber el tipo de destino:
+// siempre escribe int[] d = [1, 2, 3];</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: <code>var</code> y las expresiones de colección</h4>
+    <p>Con <code>var</code> y un <code>new</code> todo bien: <code>var a = new int[5];</code>. Pero <code>var d = [1, 2, 3];</code> <strong>no compila</strong> (error <code>CS9176</code>): con una expresión de colección, C# necesita saber de antemano el tipo donde va a guardar los datos. La solución es fácil: escribe el tipo, <code>int[] d = [1, 2, 3];</code>.</p>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Forma</th><th>Código</th><th>¿Cuándo usarla?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Con tamaño</td><td><code>int[] a = new int[5];</code></td><td>Cuando vas a llenarla después (por ejemplo, leyendo datos)</td></tr>
+        <tr><td>Con valores (clásica)</td><td><code>int[] b = new int[] { 1, 2, 3 };</code></td><td>Cuando ya tienes los datos escritos</td></tr>
+        <tr><td><strong>Expresión de colección</strong> (C# 12)</td><td><code>int[] c = [1, 2, 3];</code></td><td>La forma más corta y moderna. Úsala siempre que puedas</td></tr>
+        <tr><td>Con <code>var</code></td><td><code>var d = new int[] { 1, 2, 3 };</code></td><td>Cuando el tipo se deduce solo del contenido (pero con la expresión de colección debes escribir el tipo)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>📏 Tamaño fijo vs. tamaño variable</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — arreglo rectangular y arreglo irregular (jagged)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Rectangular: todas las filas tienen EXACTAMENTE el mismo tamaño
+int[,] tablero = new int[3, 4];
+tablero[1, 2] = 7;
+
+Console.WriteLine($"Tablero: {tablero.GetLength(0)} filas x {tablero.GetLength(1)} columnas");
+
+// Irregular (jagged): cada fila puede tener un tamaño distinto
+int[][] filas = new int[3][];
+filas[0] = [1, 2, 3];
+filas[1] = [4, 5];
+filas[2] = [6];
+
+Console.WriteLine($"Fila 1 tiene {filas[1].Length} números");
+Console.WriteLine($"Fila 2 tiene {filas[2].Length} números");</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: <code>Length</code> en vez de un número mágico</h4>
+    <p>Nunca escribas <code>for (int i = 0; i &lt; 5; i++)</code> si el arreglo tiene 5 casillas: si mañana le agregas una casilla, tu programa se rompe. Escribe siempre <code>i &lt; notas.Length</code>. El computador ya sabe cuántas casillas hay: pregunta, no adivines.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban en el papel un arreglo de 6 enteros que represente las notas de un parcial (de 0 a 100) y llenen 4 casillas. Después inventen un arreglo de 5 cadenas con los nombres de los compañeros. ¿Qué pasa si quieren agregar una sixth casilla después? ¿Y si quieren guardar el nombre y la nota de cada uno en la misma estructura?</p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>🎯 Mini-Quiz del Módulo 1</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> Si declaras <code>int[] notas = new int[5];</code>, ¿qué índices son válidos?</p>
+      <button class="opcion" data-op="a">Del 1 al 5</button>
+      <button class="opcion" data-op="b">Del 0 al 5</button>
+      <button class="opcion" data-op="c">Del 0 al 4</button>
+      <button class="opcion" data-op="d">Cualquier número, el arreglo se agranda solo</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cuál es la forma moderna (C# 12) de crear un arreglo con los valores <code>85, 90, 78</code>?</p>
+      <button class="opcion" data-op="a"><code>int[] notas = [85, 90, 78];</code></button>
+      <button class="opcion" data-op="b"><code>int[] notas = new int[85, 90, 78];</code></button>
+      <button class="opcion" data-op="c"><code>int notas = [85, 90, 78];</code></button>
+      <button class="opcion" data-op="d"><code>var notas = { 85, 90, 78 };</code></button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Qué pasa si el arreglo tiene 3 casillas y escribes <code>notas[3]</code>?</p>
+      <button class="opcion" data-op="a">Se agrega una casilla nueva</button>
+      <button class="opcion" data-op="b">Se lanza <code>IndexOutOfRangeException</code> y el programa se cae</button>
+      <button class="opcion" data-op="c">El arreglo queda con un 0 en esa casilla</button>
+      <button class="opcion" data-op="d">No pasa nada, C# lo corrige solo</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Anterior</button>
+    <button class="btn-siguiente" data-ir="2">Siguiente: recorrer y buscar →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 2 ==================== -->
+<section class="modulo" data-modulo="2">
+  <h2>🔎 Recorrer y buscar: leer todo el arreglo</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "Un recorrido con y sin índice"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 Recorrer es pasar por cada casilla</h3>
+    <p>Un arreglo solo sirve si lo <strong>recorres</strong>. Existen dos formas clásicas: con <code>for</code>, cuando necesitas el <strong>índice</strong> (para saber en qué posición estás), y con <code>foreach</code>, cuando solo necesitas el <strong>valor</strong> de cada casilla.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — recorrer con for y con foreach</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int[] notas = [85, 90, 78, 92, 60];
+
+// Con for: NECESITO el índice (para saber la posición)
+Console.WriteLine("Con for:");
+for (int i = 0; i &lt; notas.Length; i++)
+{
+    Console.WriteLine($"Posición {i}: {notas[i]}");
+}
+
+// Con foreach: solo necesito el valor de cada casilla
+Console.WriteLine("Con foreach:");
+foreach (int nota in notas)
+{
+    Console.WriteLine(nota);
+}</code></pre>
+  </div>
+
+  <p><strong>Por qué funciona:</strong> <code>notas.Length</code> vale 5, así que el <code>for</code> recorre los índices 0, 1, 2, 3 y 4. En el <code>foreach</code>, C# te da <strong>una variable nueva</strong> (<code>nota</code>) que en cada vuelta toma el valor de la siguiente casilla. Ojo: el <code>foreach</code> es de solo lectura: si escribes <code>nota = 0</code>, el arreglo no cambia.</p>
+
+  <h3>🎯 Buscar un elemento</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — buscar y devolver el índice (o -1)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int[] notas = [85, 90, 78, 92, 60];
+int objetivo = 92;
+
+// El -1 es el código de "no lo encontré"
+int indice = -1;
+
+for (int i = 0; i &lt; notas.Length; i++)
+{
+    if (notas[i] == objetivo)
+    {
+        indice = i;
+        break;      // ya lo encontramos: no hace falta seguir buscando
+    }
+}
+
+if (indice &gt;= 0)
+{
+    Console.WriteLine($"Encontrado en la posición {indice}");
+}
+else
+{
+    Console.WriteLine("No está en el arreglo");
+}</code></pre>
+  </div>
+
+  <p><strong>Por qué funciona:</strong> la bandera negativa (<code>-1</code>) se inicializa para el caso "no encontrado". Si el dato aparece, la bandera se reemplaza por su posición real. Es el mismo esquema del <strong>módulo 6</strong>: inicializar, buscar, decidir.</p>
+
+  <h3>🧮 Calcular cosas con el arreglo</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — suma, promedio, mayor, menor y cuántos aprobaron</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int[] notas = [85, 90, 78, 92, 60];
+
+int suma = 0;            // ACUMULADOR (clase 6)
+int mayor = notas[0];     // variable candidata: arranca con un dato real
+int menor = notas[0];
+int aprobados = 0;        // CONTADOR
+
+foreach (int nota in notas)
+{
+    suma += nota;
+
+    if (nota &gt; mayor)
+    {
+        mayor = nota;
+    }
+
+    if (nota &lt; menor)
+    {
+        menor = nota;
+    }
+
+    if (nota &gt;= 70)
+    {
+        aprobados++;
+    }
+}
+
+decimal promedio = (decimal)suma / notas.Length;
+Console.WriteLine($"Suma: {suma}");
+Console.WriteLine($"Promedio: {promedio:F2}");
+Console.WriteLine($"Mayor: {mayor}   Menor: {menor}");
+Console.WriteLine($"Aprobados: {aprobados}");</code></pre>
+  </div>
+
+  <p><strong>Ojo con un detalle:</strong> <code>mayor</code> y <code>menor</code> arrancan con <code>notas[0]</code> (no con 0), porque <code>0</code> siempre es menor que cualquier nota: si arrancaran en 0, el "menor" nunca se actualiza. Es la misma trampa de la variable candidata del módulo 6.</p>
+
+  <h3>🧰 Las herramientas que ya trae C#</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — buscar con Array.IndexOf, Contains y Array.Exists</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int[] notas = [85, 90, 78, 92, 60];
+
+// Array.IndexOf: devuelve la posición, o -1 si no está
+int posicion = Array.IndexOf(notas, 92);
+Console.WriteLine($"El 92 está en la posición {posicion}");
+
+// Contains: ¿existe ese valor en el arreglo?
+bool existe = notas.Contains(85);
+Console.WriteLine($"¿Existe el 85? {existe}");
+
+// Array.Exists: ¿existe ALGO que cumpla una condición?
+bool algunoAlto = Array.Exists(notas, nota =&gt; nota &gt;= 90);
+Console.WriteLine($"¿Alguien sacó 90 o más? {algunoAlto}");
+
+// Y con LINQ puedes contar sin traversing a mano
+int cuantosAprobaron = notas.Count(nota =&gt; nota &gt;= 70);
+Console.WriteLine($"Aprobados: {cuantosAprobaron}");</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th>Quiero…</th><th>Cómo se hace</th><th>Devuelve</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Recorrer con el índice</td><td><code>for (int i = 0; i &lt; a.Length; i++)</code></td><td>—</td></tr>
+        <tr><td>Recorrer sin el índice</td><td><code>foreach (int x in a)</code></td><td>—</td></tr>
+        <tr><td>Buscar un valor</td><td><code>Array.IndexOf(a, valor)</code></td><td>La posición, o <code>-1</code></td></tr>
+        <tr><td>Saber si existe</td><td><code>a.Contains(valor)</code></td><td><code>true</code> / <code>false</code></td></tr>
+        <tr><td>Saber si alguien cumple algo</td><td><code>Array.Exists(a, x =&gt; x &gt; 5)</code></td><td><code>true</code> / <code>false</code></td></tr>
+        <tr><td>Contar cuántos cumplen algo</td><td><code>a.Count(x =&gt; x &gt; 5)</code></td><td>Un entero</td></tr>
+        <tr><td>Sumar / promediar</td><td><code>a.Sum()</code>, <code>a.Average()</code></td><td>Un número</td></tr>
+        <tr><td>Mayor / menor</td><td><code>a.Max()</code>, <code>a.Min()</code></td><td>Un número</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: la biblioteca te ahorra el 80 % del trabajo</h4>
+    <p>Escribe el <code>foreach</code> a mano para <strong>entender</strong> el algoritmo (es lo que te preguntan en las pruebas), pero en tus programas reales usa <code>Sum()</code>, <code>Max()</code> y <code>Average()</code>: son más cortos y no se pueden equivocar. <strong>En C# el trabajo pesado lo hacen los métodos de LINQ</strong> (vienen con <code>using System.Linq;</code>, que la plantilla ya trae).</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban un programa que pida 8 precios de productos en un arreglo y muestre: el total, el promedio, el más caro, el más barato y cuántos superan los 50.000. Luego busquen un precio puntual con <code>Array.IndexOf</code> y muestren su posición.</p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>🎯 Mini-Quiz del Módulo 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuándo conviene usar <code>foreach</code> en vez de <code>for</code>?</p>
+      <button class="opcion" data-op="a">Cuando necesitas saber la posición exacta de cada elemento</button>
+      <button class="opcion" data-op="b">Cuando solo necesitas el valor de cada casilla y no el índice</button>
+      <button class="opcion" data-op="c">Cuando el arreglo tiene más de 100 elementos</button>
+      <button class="opcion" data-op="d">Cuando vas a modificar el arreglo</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> <code>Array.IndexOf(notas, 92)</code> devuelve <code>-1</code> cuando…</p>
+      <button class="opcion" data-op="a">el arreglo está vacío</button>
+      <button class="opcion" data-op="b">la nota 92 está repetida</button>
+      <button class="opcion" data-op="c">el 92 no existe en el arreglo</button>
+      <button class="opcion" data-op="d">el arreglo tiene menos de 92 casillas</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Por qué <code>mayor</code> y <code>menor</code> se inicializan con <code>notas[0]</code> en lugar de 0?</p>
+      <button class="opcion" data-op="a">Porque 0 siempre es menor que cualquier nota, entonces nunca se actualizarían</button>
+      <button class="opcion" data-op="b">Porque <code>notas[0]</code> es el número más grande</button>
+      <button class="opcion" data-op="c">Porque C# no permite inicializar con 0</button>
+      <button class="opcion" data-op="d">Porque <code>Length</code> no funciona en la declaración</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Anterior</button>
+    <button class="btn-siguiente" data-ir="3">Siguiente: matrices →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 3 ==================== -->
+<section class="modulo" data-modulo="3">
+  <h2>🟪 Matrices: arreglos de dos dimensiones</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "Tablas con filas y columnas"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 ¿Qué es una matriz?</h3>
+    <p>Una <strong>matriz</strong> es un arreglo de dos dimensiones: tiene <strong>filas</strong> y <strong>columnas</strong>, y cada casilla se ubica con <strong>dos</strong> números: <code>matriz[fila, columna]</code>. Se declara con <strong>dos comas</strong> dentro de los corchetes: <code>int[,]</code>.</p>
+    <p><strong>Analogía:</strong> el tablero del juego de batalla naval o la tabla de parciales del salón: para encontrar una nota no basta con el número de la casilla, necesitas <strong>en qué fila</strong> y <strong>en qué columna</strong> está.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — declarar e inicializar una matriz</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Matriz rectangular: 3 filas x 4 columnas
+int[,] tabla = new int[3, 4];
+
+tabla[0, 0] = 10;
+tabla[1, 2] = 25;
+
+Console.WriteLine(tabla[0, 0]);   // 10
+Console.WriteLine(tabla[1, 2]);   // 25
+
+// Inicializarla con todos los valores de una sola vez
+int[,] notaFinal = new int[,]
+{
+    { 3, 8, 4, 7 },
+    { 2, 9, 5, 1 },
+    { 6, 0, 8, 3 }
+};
+
+Console.WriteLine(notaFinal[2, 2]);                                  // 8
+Console.WriteLine($"Filas: {notaFinal.GetLength(0)}, columnas: {notaFinal.GetLength(1)}");</code></pre>
+  </div>
+
+  <p><strong>Qué hace:</strong> reserva 3 filas de 4 columnas (12 casillas) y permite escribir en cada una con <code>[fila, columna]</code>. <strong>Por qué funciona:</strong> <code>GetLength(0)</code> devuelve el número de <strong>filas</strong> y <code>GetLength(1)</code> el de <strong>columnas</strong>. Ojo: un arreglo normal usa <code>Length</code>; una matriz usa <code>GetLength(0)</code> y <code>GetLength(1)</code>.</p>
+
+  <div class="caja-importante">
+    <h4>📌 La regla de oro de la matriz</h4>
+    <p>En <code>matriz[f, c]</code>, la <strong>primera</strong> posición es siempre la <strong>fila</strong> y la <strong>segunda</strong> es la <strong>columna</strong>. Igual que en cualquier tablero: primero la fila, después la columna. Es la convención de C# (y de casi todos los lenguajes).</p>
+  </div>
+
+  <h3>🔁 Recorrer una matriz: dos <code>for</code> anidados</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — llenar y mostrar una matriz</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int[,] tabla = new int[3, 3];
+int contador = 1;
+
+// Llenar la matriz: un for por cada dimensión
+for (int i = 0; i &lt; tabla.GetLength(0); i++)      // recorre las FILAS
+{
+    for (int j = 0; j &lt; tabla.GetLength(1); j++)  // recorre las COLUMNAS
+    {
+        tabla[i, j] = contador;
+        contador++;
+    }
+}
+
+// Mostrarla
+for (int i = 0; i &lt; tabla.GetLength(0); i++)
+{
+    for (int j = 0; j &lt; tabla.GetLength(1); j++)
+    {
+        Console.Write($"{tabla[i, j],4}");   // alineado en 4 columnas
+    }
+    Console.WriteLine();   // salto de línea al terminar cada fila
+}</code></pre>
+  </div>
+
+  <p><strong>Por qué funciona:</strong> el <code>for</code> externo da la fila y el interno camina por las columnas de esa fila. Al terminar la fila, el <code>Console.WriteLine()</code> baja a la siguiente línea. Los dos <code>for</code> juntos recorren <strong>todas</strong> las casillas: en este caso, 3 x 3 = 9.</p>
+
+  <h3>🦯 Rectangular vs. irregular</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — arreglo irregular (jagged): cada fila con su tamaño</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Cada fila puede tener un tamaño distinto
+int[][] filas = new int[3][];
+
+filas[0] = [1, 2, 3];
+filas[1] = [4, 5];
+filas[2] = [6, 7, 8, 9];
+
+for (int i = 0; i &lt; filas.Length; i++)
+{
+    Console.Write($"Fila {i}: ");
+    for (int j = 0; j &lt; filas[i].Length; j++)
+    {
+        Console.Write($"{filas[i][j]} ");
+    }
+    Console.WriteLine();
+}</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th></th><th>Rectangular <code>int[,]</code></th><th>Irregular <code>int[][]</code></th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Acceso</strong></td><td><code>m[0, 1]</code></td><td><code>m[0][1]</code></td></tr>
+        <tr><td><strong>Tamaños</strong></td><td>Todas las filas iguales</td><td>Cada fila puede ser distinta</td></tr>
+        <tr><td><strong>Medir</strong></td><td><code>GetLength(0)</code> y <code>GetLength(1)</code></td><td><code>Length</code> (filas) y <code>m[i].Length</code> (columnas de esa fila)</td></tr>
+        <tr><td><strong>Cuándo usarla</strong></td><td>Tableros, notas por parcial, sudoku</td><td>Listas donde cada grupo tiene diferente cantidad de datos</td></tr>
+        <tr><td><strong>Peligro</strong></td><td>Confundir filas con columnas</td><td>Una fila sin inicializar queda en <code>null</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp-error — el error típico: cambiar filas por columnas</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre data-lang="csharp-error"><code>int[,] tabla = new int[3, 4];   // 3 filas, 4 columnas
+
+Console.WriteLine(tabla[4, 0]);   // ERROR: la fila 4 no existe (solo hay 0, 1 y 2)
+Console.WriteLine(tabla[0, 4]);   // ERROR: la columna 4 no existe (solo hay 0 a 3)</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: dibuja la matriz antes de escribir el código</h4>
+    <p>En el cuaderno dibuja el tablero con los números de fila y columna arriba y a la izquierda. Si el índice no cabe en la matriz, el compilador te avisará. Y recuerda: <code>GetLength(0)</code> = filas, <code>GetLength(1)</code> = columnas. Si los mezclas, el error típico es "mi tablero sale con 4 filas y 3 columnas".</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Cada uno dibuja en el papel una matriz de 4 filas x 3 columnas y le asigna un valor a cada casilla (notas de un parcial). Después escriban el código que llena esa matriz y el código que la muestra en pantalla con formato de tabla. Comparen las dos tablas: ¿coinciden?</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>🎯 Mini-Quiz del Módulo 3</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> En una matriz <code>int[,] tabla = new int[3, 4];</code>, ¿qué devuelve <code>tabla.GetLength(0)</code>?</p>
+      <button class="opcion" data-op="a">4 (las columnas)</button>
+      <button class="opcion" data-op="b">12 (el total de casillas)</button>
+      <button class="opcion" data-op="c">3 (las filas)</button>
+      <button class="opcion" data-op="d">0 (porque el arreglo está vacío)</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cómo se escribe el valor de la fila 2, columna 3?</p>
+      <button class="opcion" data-op="a"><code>matriz[2, 3]</code></button>
+      <button class="opcion" data-op="b"><code>matriz[3, 2]</code></button>
+      <button class="opcion" data-op="c"><code>matriz[2][3]</code></button>
+      <button class="opcion" data-op="d"><code>matriz(2, 3)</code></button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Cuál es la diferencia entre una matriz rectangular y un arreglo irregular?</p>
+      <button class="opcion" data-op="a">La rectangular usa <code>int[]</code> y la irregular <code>int[,]</code></button>
+      <button class="opcion" data-op="b">En la rectangular todas las filas tienen el mismo tamaño; en la irregular cada fila puede tener uno distinto</button>
+      <button class="opcion" data-op="c">La irregular no se puede recorrer con dos <code>for</code></button>
+      <button class="opcion" data-op="d">La rectangular no se puede declarar con <code>new</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Anterior</button>
+    <button class="btn-siguiente" data-ir="4">Siguiente: ☕ Descanso →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 4 ==================== -->
+<section class="modulo" data-modulo="4">
+  <div class="descanso-hero">
+    <h2>☕ ¡Hora del descanso!</h2>
+    <p class="lead">15 minutos para recargar. <strong>Obligatorios</strong>: pararse, mirar lejos y estirar.</p>
+  </div>
+
+  <div class="descanso-grid">
+    <div class="descanso-card"><span class="big-icon">👀</span><h3>Regla 20-20-20</h3><p>Mira a <strong>20 pies (6 m)</strong> durante <strong>20 segundos</strong>. Repite 3 veces.</p></div>
+    <div class="descanso-card"><span class="big-icon">🤸</span><h3>Estira el cuerpo</h3><p>Párate. Gira los hombros 5 veces. Levanta los brazos al techo 10 segundos.</p></div>
+    <div class="descanso-card"><span class="big-icon">🧠</span><h3>Repasa en tu cabeza</h3><p>Piensa en un problema real: ¿lo resolverías con un arreglo, con una matriz o con una lista? 1 minuto.</p></div>
+    <div class="descanso-card"><span class="big-icon">🗣️</span><h3>Cuéntaselo a tu compañero/a</h3><p>¿Qué se te hizo más difícil: los índices o las filas y columnas? 1 minuto.</p></div>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 ¿Sabías que…?</h4>
+    <p>La palabra <strong>arreglo</strong> viene del español <em>arreglar</em> (poner en orden). Y en inglés, <em>array</em>, es un invento de <strong>John von Neumann</strong> en 1945, que inventó también la forma de guardar los números en el computador. C# 12 (2023) le puso el nombre moderno: <strong>expresión de colección</strong>, esa forma tan elegante de escribir <code>int[] notas = [85, 90, 78];</code>. Antes de C# 12 había que escribir <code>new int[] { 85, 90, 78 }</code> sí o sí.</p>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Anterior</button>
+    <button class="btn-siguiente" data-ir="5">Siguiente: List&lt;T&gt; →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 5 ==================== -->
+<section class="modulo" data-modulo="5">
+  <h2>🗃️ List&lt;T&gt; y colecciones: la lista que crece</h2>
+  <p class="meta-modulo">⏱️ 25 minutos · "Cuando no sabes cuántos datos van a ser"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 El problema del tamaño fijo</h3>
+    <p>Un arreglo nace con un tamaño que <strong>no cambia</strong>. Pero casi siempre no sabes de antemano cuántos datos vas a tener: cuántos productos quiere el cliente, cuántos jugadores hay en la partida, cuántas notas se leen. Para eso existe <code>List&lt;T&gt;</code>: una lista que <strong>crece sola</strong> a medida que le agregas elementos.</p>
+    <p><strong>Analogía:</strong> el arreglo es un casillero de tamaño fijo (una sola fila, siempre igual) y la lista es un <strong>bolsillo sin fondo</strong>: le metes hoja tras hoja y siempre cabe una más. Y con la diferencia clave: la lista te avisa cuántos elementos tiene con <code>Count</code>, mientras que el arreglo lo dice con <code>Length</code>.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — los métodos de List&lt;int&gt;</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// La lista arranca vacía y crece cuando le hace falta
+var notas = new List&lt;int&gt;();
+
+notas.Add(85);                 // agregar uno
+notas.AddRange([90, 78]);       // agregar varios de una vez
+
+Console.WriteLine($"Cuántas hay: {notas.Count}");   // 3
+Console.WriteLine($"La primera: {notas[0]}");        // 85
+Console.WriteLine($"¿Está el 78? {notas.Contains(78)}");
+Console.WriteLine($"Posición del 90: {notas.IndexOf(90)}");
+
+notas.Insert(0, 60);   // insertar al principio
+notas.Remove(90);      // quitar la PRIMERA coincidencia
+notas.RemoveAt(0);     // quitar la posición 0
+
+Console.WriteLine(string.Join(", ", notas));
+
+notas.Sort();           // de menor a mayor
+notas.Reverse();        // al revés
+notas.Clear();          // vaciar la lista
+
+Console.WriteLine($"Al final quedan: {notas.Count}");</code></pre>
+  </div>
+
+  <p><strong>Qué hace:</strong> la lista es un arreglo que sabe crecer. <strong>Por qué funciona:</strong> <code>List&lt;T&gt;</code> guarda los datos <strong>por dentro</strong> y, cuando necesita más espacio, pide uno nuevo y copia (por eso <code>Add</code> es un poquito más lenta que <code>notas[i] = valor</code>).</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — listas de texto y creación moderna</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// Una lista de nombres
+var nombres = new List&lt;string&gt; { "Ana", "Beto", "Cami" };
+
+Console.WriteLine($"¿Está Beto? {nombres.Contains("Beto")}");
+Console.WriteLine($"Posición de Cami: {nombres.IndexOf("Cami")}");
+Console.WriteLine($"Primero: {nombres[0]}");
+
+// Expresión de colección (C# 12): la forma moderna de crearla
+List&lt;int&gt; edades = [15, 16, 17];
+
+Console.WriteLine($"Edades: {string.Join(" - ", edades)}");
+
+// Y también sirve para leer datos que no conocemos de antemano
+var productos = new List&lt;string&gt;();
+Console.Write("Producto 1 (o \"salir\"): ");
+string? entrada = Console.ReadLine();
+
+while (entrada is not null &amp;&amp; entrada != "salir")
+{
+    productos.Add(entrada);
+
+    Console.Write("Producto (o \"salir\"): ");
+    entrada = Console.ReadLine();
+}
+
+Console.WriteLine($"Productos: {productos.Count}");
+Console.WriteLine(string.Join(", ", productos));</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <thead>
+        <tr><th></th><th>Arreglo <code>int[]</code></th><th>Lista <code>List&lt;int&gt;</code></th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Tamaño</strong></td><td>Fijo, se decide al crear</td><td>Cambia: crece y se puede reducir</td></tr>
+        <tr><td><strong>¿Cuántos hay?</strong></td><td><code>notas.Length</code></td><td><code>notas.Count</code></td></tr>
+        <tr><td><strong>Agregar</strong></td><td>No se puede (hay que conocer el tamaño)</td><td><code>notas.Add(x)</code>, <code>AddRange(...)</code></td></tr>
+        <tr><td><strong>Quitar</strong></td><td>No se puede</td><td><code>Remove(x)</code>, <code>RemoveAt(i)</code>, <code>Clear()</code></td></tr>
+        <tr><td><strong>Buscar</strong></td><td><code>Array.IndexOf(a, x)</code></td><td><code>notas.IndexOf(x)</code>, <code>notas.Contains(x)</code></td></tr>
+        <tr><td><strong>Ordenar</strong></td><td><code>Array.Sort(a)</code> (es una copia)</td><td><code>notas.Sort()</code> (la ordena en el sitio)</td></tr>
+        <tr><td><strong>¿Cuándo usarla?</strong></td><td>Cuando ya sabes cuántos datos hay</td><td>Cuando no sabes cuántos datos habrá</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: <code>var</code> con listas</h4>
+    <p>Escribe <code>var notas = new List&lt;int&gt;();</code> y no <code>List&lt;int&gt; notas = new List&lt;int&gt;();</code>. Con <code>var</code> el tipo se deduce y tu código queda más corto. Igual funciona con los arreglos: <code>var notas = new int[] { 85, 90, 78 };</code>. Solo usa <code>var</code> cuando el tipo queda clarísimo a simple vista.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban un programa que pida nombres de estudiantes hasta que el usuario escriba "salir" y los vaya guardando. Al final muestren cuántos son y el listado completo. Ahora háganlo con un arreglo de tamaño 10 y comparen: ¿qué pasa si hay más de 10 estudiantes?</p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>🎯 Mini-Quiz del Módulo 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la diferencia principal entre un arreglo y una <code>List&lt;T&gt;</code>?</p>
+      <button class="opcion" data-op="a">La lista solo puede guardar textos</button>
+      <button class="opcion" data-op="b">El arreglo tiene tamaño fijo; la lista puede crecer y reducirse</button>
+      <button class="opcion" data-op="c">La lista es más rápida en todas las operaciones</button>
+      <button class="opcion" data-op="d">No hay diferencia: son lo mismo</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Cómo sabes cuántos elementos tiene una lista?</p>
+      <button class="opcion" data-op="a"><code>lista.Length</code></button>
+      <button class="opcion" data-op="b"><code>lista.Size</code></button>
+      <button class="opcion" data-op="c"><code>lista.Count</code></button>
+      <button class="opcion" data-op="d"><code>lista.Count()</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué hace <code>notas.Remove(90)</code>?</p>
+      <button class="opcion" data-op="a">Quita la primera aparición del 90</button>
+      <button class="opcion" data-op="b">Pone un 90 al final de la lista</button>
+      <button class="opcion" data-op="c">Borra toda la lista</button>
+      <button class="opcion" data-op="d">Devuelve <code>true</code> o <code>false</code> solamente</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Anterior</button>
+    <button class="btn-siguiente" data-ir="6">Siguiente: ordenar y filtrar →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 6 ==================== -->
+<section class="modulo" data-modulo="6">
+  <h2>🧹 Ordenar y filtrar: del desorden al orden claro</h2>
+  <p class="meta-modulo">⏱️ 30 minutos · "Sort, Where, Select"</p>
+
+  <div class="caja-concepto">
+    <h3>🧠 Dos operaciones que cambian todo</h3>
+    <p><strong>Ordenar</strong> es acomodar los datos de menor a mayor (o al revés) para poder buscarlos rápido y entenderlos de un vistazo. <strong>Filtrar</strong> es quedarse solo con los datos que cumplen una condición. Son las dos operaciones que más se repiten en los programas del mundo real.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — ordenar con Array.Sort y Array.Reverse</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int[] notas = [85, 90, 78, 92, 60];
+
+Console.WriteLine($"Sin ordenar: {string.Join(", ", notas)}");
+
+Array.Sort(notas);      // de menor a mayor (85, 78, 60, 90, 92)
+Console.WriteLine($"Ordenado:   {string.Join(", ", notas)}");
+
+Array.Reverse(notas);   // al revés: de mayor a menor
+Console.WriteLine($"Invertido:  {string.Join(", ", notas)}");
+
+// Ojo: Array.Sort modifica el arreglo original
+// Si no quieres perderlo, primero haz una copia:
+int[] copia = [85, 90, 78, 92, 60];
+Array.Sort(copia);
+Console.WriteLine($"El original sigue igual: {string.Join(", ", notas)}");</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — mayor, menor, suma y promedio con LINQ</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int[] notas = [85, 90, 78, 92, 60];
+double[] decimales = [4.5, 3.0, 5.0];
+
+Console.WriteLine($"Mayor: {notas.Max()}");
+Console.WriteLine($"Menor: {notas.Min()}");
+Console.WriteLine($"Suma: {notas.Sum()}");
+Console.WriteLine($"Promedio: {notas.Average():F2}");
+
+Console.WriteLine($"Promedio con decimales: {decimales.Average():F2}");
+Console.WriteLine($"Suma con decimales: {decimales.Sum():F2}");</code></pre>
+  </div>
+
+  <div class="caja-importante">
+    <h4>📌 Dato técnico: <code>Max</code>, <code>Min</code>, <code>Sum</code> y <code>Average</code> son de LINQ</h4>
+    <p>No existen como métodos de la clase <code>Array</code>: son <strong>métodos de extensión</strong> de LINQ (vienen con <code>using System.Linq;</code>, que la plantilla ya incluye) y funcionan tanto con arreglos como con listas. <code>Array.Sort</code>, <code>Array.Reverse</code>, <code>Array.IndexOf</code> y <code>Array.Exists</code>, en cambio, sí son métodos propios de <code>Array</code>.</p>
+  </div>
+
+  <h3>🫧 El ordenamiento burbuja, a mano</h3>
+  <p>El <code>Array.Sort</code> es rapidísimo, pero no te enseña nada. El <strong>algoritmo burbuja</strong> sí: compara vecinos y los va "subiendo" como burbujas hasta que el arreglo queda ordenado. Sirve para entender por qué los algoritmos lentos existen.</p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — ordenamiento burbuja (O(n²))</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int[] numeros = [64, 34, 25, 12, 22, 11, 90];
+
+// Pasadas: una por cada elemento menos el último
+for (int i = 0; i &lt; numeros.Length - 1; i++)
+{
+    // Comparaciones: hasta donde todavía no está ordenado
+    for (int j = 0; j &lt; numeros.Length - 1 - i; j++)
+    {
+        if (numeros[j] &gt; numeros[j + 1])
+        {
+            // Intercambio: el grande baja, el pequeño sube
+            int temporal = numeros[j];
+            numeros[j] = numeros[j + 1];
+            numeros[j + 1] = temporal;
+        }
+    }
+}
+
+Console.WriteLine(string.Join(", ", numeros));   // 11, 12, 22, 25, 34, 64, 90</code></pre>
+  </div>
+
+  <p><strong>Por qué funciona:</strong> en cada pasada, el número más grande queda al final de la parte sin ordenar. Por eso la pasada <code>i</code> ya no necesita comparar las últimas <code>i</code> casillas. El precio: hace <strong>n x n comparaciones</strong> (se dice <strong>O(n²)</strong>): con 10 datos son 100 comparaciones, con 1000 serían un millón. Por eso en la vida real usamos <code>Array.Sort</code> o <code>List.Sort</code>, que son mucho más listos.</p>
+
+  <h3>🔗 LINQ: filtrar y transformar en una línea</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — Where, OrderBy y Select</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int[] notas = [85, 90, 78, 92, 60];
+string[] estudiantes = ["Ana", "Beto", "Cami", "Dani", "Eva"];
+
+// Where: quedarse solo con lo que cumple la condición
+var aprobados = notas.Where(nota =&gt; nota &gt;= 70).ToArray();
+Console.WriteLine($"Aprobados: {string.Join(", ", aprobados)}");
+
+// OrderBy: ordenar de menor a mayor (OrderByDescending hace el revés)
+var ordenadas = notas.OrderBy(nota =&gt; nota).ToArray();
+Console.WriteLine($"Ordenadas: {string.Join(", ", ordenadas)}");
+
+// Select: transformar cada dato en algo nuevo
+var conEstado = notas.Select(nota =&gt; nota &gt;= 70 ? $"aprobó ({nota})" : $"falló ({nota})").ToArray();
+Console.WriteLine(string.Join(" | ", conEstado));
+
+// Los tres juntos, como una tubería
+var resumen = estudiantes
+    .Where((estudiante, i) =&gt; notas[i] &gt;= 80)
+    .Select((estudiante, i) =&gt; $"{estudiante}: {notas[i]}")
+    .ToArray();
+
+Console.WriteLine(string.Join(", ", resumen));</code></pre>
+  </div>
+
+  <p><strong>Qué hace:</strong> <code>Where</code> filtra, <code>OrderBy</code> ordena y <code>Select</code> transforma. <strong>Por qué funciona:</strong> cada una devuelve una <strong>colección nueva</strong> (por eso al final usas <code>.ToArray()</code> o <code>.ToList()</code> para guardarla). Encadenarlos es como una tubería: entra el arreglo, sale el resultado.</p>
+
+  <h3>🗑️ "Borrar" un elemento de un arreglo</h3>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — borrar con Array.IndexOf y Array.Copy</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>int[] datos = [10, 20, 30, 40, 50];
+int valorABorrar = 30;
+
+int posicion = Array.IndexOf(datos, valorABorrar);
+
+if (posicion &gt;= 0)
+{
+    // Armamos un arreglo un poquito más corto
+    int[] nuevo = new int[datos.Length - 1];
+
+    // Copiamos lo que está ANTES del elemento
+    Array.Copy(datos, 0, nuevo, 0, posicion);
+    // Copiamos lo que está DESPUÉS del elemento
+    Array.Copy(datos, posicion + 1, nuevo, posicion, datos.Length - posicion - 1);
+
+    Console.WriteLine(string.Join(", ", nuevo));   // 10, 20, 40, 50
+}
+else
+{
+    Console.WriteLine("Ese valor no existe");
+}
+
+// Alternativa corta cuando solo quieres agregar espacio al final
+int[] otro = [1, 2, 3];
+Array.Resize(ref otro, 5);
+otro[3] = 4;
+otro[4] = 5;
+Console.WriteLine(string.Join(", ", otro));   // 1, 2, 3, 4, 5</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Truco: si vas a borrar mucho, usa una lista</h4>
+    <p>Quitar elementos de un arreglo es molesto (hay que copiar). En una lista es una línea: <code>notas.Remove(30);</code>. Por eso, si tu programa va a borrar mucho, <strong>nace como <code>List&lt;T&gt;</code> y al final lo conviertes a arreglo</strong> con <code>notas.ToArray()</code>.</p>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 4 minutos</h4>
+    <p>Escriban un programa con un arreglo de 10 precios aleatorios (escribanlos a mano). Ordenenlos con <code>Array.Sort</code>, muestren el menor y el mayor, y filtren con <code>Where</code> solo los que superen 30.000. Después repasen el mismo resultado usando <code>foreach</code> a mano: ¿cuántas líneas se ahorraron?</p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>🎯 Mini-Quiz del Módulo 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace <code>Array.Sort(notas);</code>?</p>
+      <button class="opcion" data-op="a">Crea una copia ordenada y deja el arreglo original intacto</button>
+      <button class="opcion" data-op="b">Ordena el arreglo original de menor a mayor</button>
+      <button class="opcion" data-op="c">Pone los números repetidos al final</button>
+      <button class="opcion" data-op="d">Devuelve el arreglo ordenado pero sin cambiar el original</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> En el ordenamiento burbuja, ¿por qué el <code>for</code> interno llega hasta <code>Length - 1 - i</code>?</p>
+      <button class="opcion" data-op="a">Porque así el programa no se demora</button>
+      <button class="opcion" data-op="b">Porque las últimas casillas siempre valen 0</button>
+      <button class="opcion" data-op="c">Porque en cada pasada el elemento más grande ya quedó ordenado al final</button>
+      <button class="opcion" data-op="d">Porque <code>Length</code> no funciona dentro de un <code>for</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> En LINQ, ¿qué hace <code>notas.Where(n =&gt; n &gt;= 70)</code>?</p>
+      <button class="opcion" data-op="a">Devuelve una colección nueva solo con las notas que cumplen la condición</button>
+      <button class="opcion" data-op="b">Ordena las notas de mayor a menor</button>
+      <button class="opcion" data-op="c">Cambia cada nota por la que cumple la condición</button>
+      <button class="opcion" data-op="d">Cuenta cuántas notas cumplen la condición</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Anterior</button>
+    <button class="btn-siguiente" data-ir="7">Siguiente: Taller →</button>
+  </div>
+</section>
+
+<!-- ==================== MÓDULO 7 ==================== -->
+<section class="modulo" data-modulo="7">
+  <h2>🛠️ Taller: tablero de calificaciones</h2>
+  <p class="meta-modulo">⏱️ 45 minutos · "Arreglos, matrices y listas en un solo programa"</p>
+
+  <div class="challenge">
+    <div class="challenge-head">
+      <span class="challenge-badge">🛠️ Taller final</span>
+      <span class="challenge-title">Tablero de calificaciones del grado once</span>
+    </div>
+    <p>La coordinadora te pide un programa que junte dos cosas: una <strong>matriz</strong> con las notas de tres estudiantes en tres parciales, y un <strong>arreglo</strong> con las notas de todo el salón. Tu misión: construir <strong>TableroCalificaciones</strong>, un programa que use <strong>arreglos, matrices y una lista</strong> en el mismo archivo.</p>
+  </div>
+
+  <h3>📋 Requisitos del taller</h3>
+  <ol class="pasos">
+    <li>Crea el proyecto: <code>dotnet new console -n TableroCalificaciones</code> y ábrelo con <code>code .</code>.</li>
+    <li><strong>La matriz:</strong> una matriz <code>int[,]</code> de <strong>3 filas x 3 columnas</strong> (3 estudiantes, 3 parciales). Pide las 9 notas y <strong>valida</strong> cada una (un número de 0 a 100; si no es, vuelve a pedirla).</li>
+    <li>Muestra el <strong>tablero</strong> en formato de tabla: nombre del estudiante, las 3 notas y su <strong>promedio</strong> (suma de sus 3 notas entre 3, con <code>decimal</code>).</li>
+    <li><strong>El arreglo:</strong> pide cuántos estudiantes hay y lee esa cantidad de notas en un arreglo <code>int[]</code>.</li>
+    <li>Con un <strong>recorrido</strong> del arreglo calcula: total, promedio general, mayor nota y menor nota.</li>
+    <li><strong>La búsqueda:</strong> pide una nota y usa <code>Array.IndexOf</code> para decir en qué posición está (o que no aparece).</li>
+    <li><strong>La lista:</strong> guarda en una <code>List&lt;int&gt;</code> todas las notas aprobadas (mayores o iguales a 60), ordénalas con <code>Sort()</code> y muéstralas.</li>
+    <li>Al final muestra un resumen con todos los resultados. Usa <strong>interpolación</strong> y <code>:F2</code> en los decimales.</li>
+  </ol>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>csharp — guía de estilo (es el molde, no la solución)</span>
+      </div>
+      <button class="copy-btn">📋 Copiar</button>
+    </div>
+<pre><code>// =============================================
+// TABLERO DE CALIFICACIONES — molde del taller
+// =============================================
+Console.WriteLine("=== TABLERO DE CALIFICACIONES ===");
+
+// ---------- 1. LA MATRIZ (3 estudiantes x 3 parciales) ----------
+string[] estudiantes = ["Ana", "Beto", "Cami"];
+int[,] parciales = new int[3, 3];
+decimal[] promedios = new decimal[3];
+
+for (int f = 0; f &lt; parciales.GetLength(0); f++)
+{
+    decimal acumulado = 0m;
+
+    for (int c = 0; c &lt; parciales.GetLength(1); c++)
+    {
+        Console.Write($"Nota de {estudiantes[f]} (parcial {c + 1}): ");
+        int nota = 0;   // ← AQUÍ va la lectura validada (int.TryParse)
+        parciales[f, c] = nota;
+        acumulado += nota;
+    }
+
+    promedios[f] = acumulado / parciales.GetLength(1);
+}
+
+// Mostrar el tablero con dos for anidados
+for (int f = 0; f &lt; parciales.GetLength(0); f++)
+{
+    Console.Write($"{estudiantes[f],-10}");
+    for (int c = 0; c &lt; parciales.GetLength(1); c++)
+    {
+        Console.Write($"{parciales[f, c],6}");
+    }
+    Console.WriteLine($"{promedios[f],10:F2}");
+}
+
+// ---------- 2. EL ARREGLO DEL SALÓN ----------
+Console.Write("¿Cuántos estudiantes hay? ");
+int n = int.Parse(Console.ReadLine() ?? "0");
+int[] notas = new int[n];
+
+int suma = 0;        // ACUMULADOR
+int mayor = 0;        // variable candidata
+int menor = 100;
+
+// ← AQUÍ va el for que llena el arreglo y actualiza suma, mayor y menor
+
+// ---------- 3. LA BÚSQUEDA ----------
+Console.Write("¿Qué nota buscas? ");
+int objetivo = int.Parse(Console.ReadLine() ?? "0");
+int posicion = Array.IndexOf(notas, objetivo);
+
+// ---------- 4. LA LISTA DE APROBADOS ----------
+List&lt;int&gt; aprobados = new List&lt;int&gt;();
+// ← AQUÍ va el recorrido que guarda las notas mayores o iguales a 60
+aprobados.Sort();</code></pre>
+  </div>
+
+  <div class="caja-tip">
+    <h4>💡 Cuidado con el <code>menor</code></h4>
+    <p>Las notas van de 0 a 100, así que el <code>menor</code> debe iniciar en <strong>100</strong> (el peor caso posible). Si lo inicias en 0, nunca va a cambiar y tu programa dirá que la menor nota es 0 aunque todos sacaran 80. Y recuerda: si el usuario dice que hay 0 estudiantes, no divides: revisa con un <code>if (n &gt; 0)</code> antes de calcular el promedio.</p>
+  </div>
+
+  <button class="btn-solucion" data-solucion="sol-taller">👁️ Ver solución completa</button>
+  <div class="solucion" id="sol-taller">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-header-left">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span>csharp — solución del taller</span>
+        </div>
+        <button class="copy-btn">📋 Copiar</button>
+      </div>
+<pre><code>// =============================================
+// TABLERO DE CALIFICACIONES DEL GRADO ONCE
+// Matriz + Arreglo + Lista
+// =============================================
+Console.WriteLine("=== TABLERO DE CALIFICACIONES ===");
+
+// ---------- 1. LA MATRIZ: 3 estudiantes x 3 parciales ----------
+string[] estudiantes = ["Ana", "Beto", "Cami"];
+int[,] parciales = new int[3, 3];
+decimal[] promedios = new decimal[3];
+
+for (int f = 0; f &lt; parciales.GetLength(0); f++)
+{
+    decimal acumulado = 0m;
+
+    for (int c = 0; c &lt; parciales.GetLength(1); c++)
+    {
+        int nota = 0;
+        bool notaValida = false;
+
+        while (!notaValida)
+        {
+            Console.Write($"Nota de {estudiantes[f]} (parcial {c + 1}): ");
+            int entrada = 0;
+
+            if (int.TryParse(Console.ReadLine(), out entrada) &amp;&amp; entrada &gt;= 0 &amp;&amp; entrada &lt;= 100)
+            {
+                nota = entrada;
+                notaValida = true;
+            }
+            else
+            {
+                Console.WriteLine("Nota inválida: debe ser un número de 0 a 100.");
+            }
+        }
+
+        parciales[f, c] = nota;
+        acumulado += nota;
+    }
+
+    promedios[f] = acumulado / parciales.GetLength(1);
+}
+
+// ---------- Mostrar el tablero ----------
+Console.WriteLine();
+Console.WriteLine($"{"Estudiante",-12}{"P1",6}{"P2",6}{"P3",6}{"Promedio",10}");
+
+for (int f = 0; f &lt; parciales.GetLength(0); f++)
+{
+    Console.Write($"{estudiantes[f],-12}");
+    for (int c = 0; c &lt; parciales.GetLength(1); c++)
+    {
+        Console.Write($"{parciales[f, c],6}");
+    }
+    Console.WriteLine($"{promedios[f],10:F2}");
+}
+
+// ---------- 2. EL ARREGLO CON TODAS LAS NOTAS DEL SALÓN ----------
+Console.WriteLine();
+Console.Write("¿Cuántos estudiantes hay en el salón? ");
+int n = int.Parse(Console.ReadLine() ?? "0");
+int[] notas = new int[n];
+
+int suma = 0;        // ACUMULADOR
+int mayor = 0;        // variable candidata
+int menor = 100;      // variable candidata
+
+for (int i = 0; i &lt; n; i++)
+{
+    int nota = 0;
+    bool notaValida = false;
+
+    while (!notaValida)
+    {
+        Console.Write($"Nota {i + 1}: ");
+        int entrada = 0;
+
+        if (int.TryParse(Console.ReadLine(), out entrada) &amp;&amp; entrada &gt;= 0 &amp;&amp; entrada &lt;= 100)
+        {
+            nota = entrada;
+            notaValida = true;
+        }
+        else
+        {
+            Console.WriteLine("Nota inválida: debe ser un número de 0 a 100.");
+        }
+    }
+
+    notas[i] = nota;
+    suma += nota;
+
+    if (nota &gt; mayor)
+    {
+        mayor = nota;
+    }
+
+    if (nota &lt; menor)
+    {
+        menor = nota;
+    }
+}
+
+// ---------- 3. LA BÚSQUEDA ----------
+Console.Write("¿Qué nota quieres buscar? ");
+int objetivo = int.Parse(Console.ReadLine() ?? "0");
+int posicion = Array.IndexOf(notas, objetivo);
+
+// ---------- 4. LA LISTA DE APROBADOS ----------
+List&lt;int&gt; aprobados = new List&lt;int&gt;();
+
+foreach (int nota in notas)
+{
+    if (nota &gt;= 60)
+    {
+        aprobados.Add(nota);
+    }
+}
+
+aprobados.Sort();
+
+// ---------- 5. EL RESUMEN ----------
+Console.WriteLine();
+Console.WriteLine("=== RESUMEN DEL SALÓN ===");
+
+if (n &gt; 0)
+{
+    decimal promedioGeneral = (decimal)suma / n;
+    Console.WriteLine($"Notas leídas:      {n}");
+    Console.WriteLine($"Total:             {suma}");
+    Console.WriteLine($"Promedio general:  {promedioGeneral:F2}");
+    Console.WriteLine($"Mayor nota:        {mayor}");
+    Console.WriteLine($"Menor nota:        {menor}");
+}
+else
+{
+    Console.WriteLine("No se leyeron notas: no hay nada que promediar.");
+}
+
+if (posicion &gt;= 0)
+{
+    Console.WriteLine($"La nota {objetivo} está en la posición {posicion}.");
+}
+else
+{
+    Console.WriteLine($"La nota {objetivo} no aparece en la lista.");
+}
+
+Console.WriteLine($"Notas aprobadas ({aprobados.Count}): {string.Join(", ", aprobados)}");</code></pre>
+    </div>
+  </div>
+
+  <div class="checklist">
+    <h4>✅ Antes de entregar, verifica</h4>
+    <ul>
+      <li>El proyecto se llama <code>TableroCalificaciones</code> y corre con <code>dotnet run</code>.</li>
+      <li>La matriz es de <strong>3 filas x 3 columnas</strong> y el tablero se muestra completo (las 9 casillas).</li>
+      <li>Los promedios por estudiante salen en <strong>decimal</strong> con <code>:F2</code>.</li>
+      <li>El arreglo se llena con <strong>exactamente</strong> los datos que pidió el usuario.</li>
+      <li>Si el usuario escribe letras o una nota fuera de 0 a 100, el programa <strong>vuelve a pedir</strong> el dato.</li>
+      <li>La búsqueda dice la <strong>posición</strong> y no solo "sí" o "no".</li>
+      <li>Las notas aprobadas quedan <strong>ordenadas</strong> en la lista.</li>
+      <li>El programa no se cae cuando el usuario dice que hay 0 estudiantes.</li>
+    </ul>
+  </div>
+
+  <div class="caja-pareja">
+    <h4>🔄 Actividad en pareja — 5 minutos</h4>
+    <p>Uno le dicta al otro un caso de prueba: "escribe 'hola' en la primera nota", "di que hay 0 estudiantes", "busca una nota que no existe". El que programa ejecuta y el otro anota qué parte del programa se rompió. Luego comparen las respuestas con la solución de arriba: ¿qué le faltó?</p>
+  </div>
+
+  <div class="quiz" data-quiz="7">
+    <h3>🎯 Mini-Quiz del Módulo 7</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué devuelve <code>notas.Length</code> en un arreglo de 12 notas?</p>
+      <button class="opcion" data-op="a">El valor de la última nota</button>
+      <button class="opcion" data-op="b">12, la cantidad de casillas</button>
+      <button class="opcion" data-op="c">La posición de la nota más alta</button>
+      <button class="opcion" data-op="d">0, porque el arreglo está vacío</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Por qué una matriz se recorre con dos <code>for</code> anidados?</p>
+      <button class="opcion" data-op="a">Porque C# no permite recorrer arreglos de otra forma</button>
+      <button class="opcion" data-op="b">Porque cada fila necesita un arreglo propio</button>
+      <button class="opcion" data-op="c">Porque tiene dos dimensiones: uno para las filas y otro para las columnas</button>
+      <button class="opcion" data-op="d">Porque <code>GetLength</code> solo funciona con dos parámetros</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuál es la diferencia entre un arreglo y una <code>List&lt;T&gt;</code>?</p>
+      <button class="opcion" data-op="a">El arreglo tiene tamaño fijo; la lista puede crecer y quitarse elementos</button>
+      <button class="opcion" data-op="b">La lista no tiene índice, la lista solo se recorre</button>
+      <button class="opcion" data-op="c">El arreglo guarda números y la lista guarda textos</button>
+      <button class="opcion" data-op="d">No hay diferencia: <code>List&lt;T&gt;</code> es un alias de <code>int[]</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="cierre">
+    <h2>🎉 ¡Clase 7 completada!</h2>
+    <p>Ya guardas muchos datos, los recorres, los buscas, los ordenas y los filtres: los arreglos y las matrices son la base de casi todos los programas reales. En la <strong>Clase 8</strong> aprenderás <strong>funciones</strong>: bloques de código con nombre que reciben datos y devuelven resultados, para que tu programa deje de ser un bloque gigante y empiece a ser un programa <strong>ordenado y reutilizable</strong>. 🧩</p>
+    <button class="btn-final" data-reiniciar>🔄 Volver al inicio</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <span class="fb">📦 Herramientas Algorítmicas II · Clase 7 de 10</span>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · Código TL007</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
