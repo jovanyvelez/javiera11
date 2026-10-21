@@ -140,7 +140,7 @@ function actualizarUI() {
   if (barra) barra.style.width = pct + '%';
 
   const ptxt = document.getElementById('porcentaje');
-  if (ptxt) ptxt.textContent = pct + ' % · ' + completos + '/' + total + ' unidades';
+  if (ptxt) ptxt.textContent = pct + ' %';
 
   const mAct = document.getElementById('unidad-actual');
   if (mAct) {
@@ -158,6 +158,9 @@ function actualizarUI() {
       badgesCont.appendChild(span);
     });
   }
+
+  const vacio = document.querySelector('.constancias-vacio');
+  if (vacio) vacio.classList.toggle('oculto', estado.badges.size > 0);
 
   document.querySelectorAll('.btn-modulo').forEach(btn => {
     const m = parseInt(btn.dataset.modulo, 10);
