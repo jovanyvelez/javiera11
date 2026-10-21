@@ -133,7 +133,7 @@ function cargarProgresoPorClase() {
     'curso-herr-1': 6,                        // 0..7 (m0 inicio y m4 descanso no cuentan)
     'curso-herr-2': 6,
     'curso-herr-3-css': 6,                   // clase 3: CSS para diseño responsivo
-    'curso-herr-4': 6,
+    'curso-herr-4-python': 6,               // clase 4: Introducción al lenguaje backend (Python)
     'curso-herr-5': 6,
     'curso-herr-6': 6,
     'curso-herr-8': 6,
@@ -394,7 +394,7 @@ window.addEventListener('load', () => {
                 'curso-csharp-9', 'curso-csharp-10',
                 'curso-analisis-diseno', 'curso-requerimientos',
                 'curso-elicitacion', 'curso-documentacion', 'curso-introduccion-diseno',
-                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3-css', 'curso-herr-4', 'curso-herr-5', 'curso-herr-6', 'curso-herr-8', 'curso-herr-9-repetitivas', 'curso-herr-10-funciones', 'curso-herr-11-estructura', 'curso-herr-12-git', 'curso-herr-13-github', 'curso-herr-14-git-vscode'];
+                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3-css', 'curso-herr-4-python', 'curso-herr-5', 'curso-herr-6', 'curso-herr-8', 'curso-herr-9-repetitivas', 'curso-herr-10-funciones', 'curso-herr-11-estructura', 'curso-herr-12-git', 'curso-herr-13-github', 'curso-herr-14-git-vscode'];
 
   let tienePrograma = false;
   let ultimaClase = null;

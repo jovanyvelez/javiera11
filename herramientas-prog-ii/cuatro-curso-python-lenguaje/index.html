@@ -1,0 +1,2803 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 4 · Introducción al lenguaje backend (Python)</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 4 · <em>Introducción al lenguaje backend (Python)</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura y programa</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">Variables y tipos de datos</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">Sintaxis esencial de Python</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Estructuras de control</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Ejercicio: calculadora</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Ejercicio: analizador</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller integrador</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> un módulo de Python con tipos anotados, control del flujo y manejo de errores.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>El lenguaje que vive <em>detrás</em> de la página</h2>
+    <p class="proposito">
+      Las tres clases anteriores construyeron la parte que el usuario ve y toca: el mapa de la web,
+      los fragmentos que se actualizan solos, el diseño que se adapta a cualquier pantalla. Todas
+      ellas hablan con un servidor. Esta clase baja a ese servidor y escribe el lenguaje que lo
+      gobierna: <strong>Python</strong>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: entorno listo</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · Dónde vive cada cosa</h3>
+
+  <p class="primer-párrafo">
+    Una aplicación web tiene tres capas, y cada una habla un idioma distinto. En las clases 1 a 3
+    escribiste la primera. La segunda —la que decides ahora— es la que decide de verdad.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>El navegador</dt>
+      <dd>HTML, CSS y JavaScript. Es lo que el usuario ve y con lo que interactúa. Todo lo que vive aquí es público: cualquiera que abra las herramientas de desarrollo lo puede leer y modificar.</dd>
+    </div>
+    <div>
+      <dt>El servidor</dt>
+      <dd>Python. Aquí viven las reglas: qué datos son válidos, cuánto cuesta un préstamo, si el estudiante puede pedir tres libros o cinco. <strong>Nadie ve este código desde fuera</strong>, y por eso es el lugar donde se decide lo que es verdad.</dd>
+    </div>
+    <div>
+      <dt>La base de datos</dt>
+      <dd>Dónde se guardan los registros. El servidor le pregunta y el servidor responde; el navegador nunca habla con ella directamente.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — por qué el backend necesita un lenguaje «de verdad»</span>
+    <p>
+      En el navegador, un error en JavaScript molesta a un usuario. En el servidor, un error en la
+      validación puede <strong>dejar sin registrar un préstamo, duplicar un cobro o dejar abierta
+      una puerta que no debería estarlo</strong>. Por eso el lenguaje del servidor se elige pensando
+      en cómo se lee, en cómo se detectan los errores y en cómo se documenta. Python fue diseñado
+      con esa prioridad desde el principio: se lee casi como una frase.
+    </p>
+  </div>
+
+  <h3>0.2 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cuadro de unidades, tiempos y productos esperados</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura, programa y entorno</td><td>20 min</td><td>Intérprete instalado y consola abierta</td></tr>
+        <tr><td><strong>01</strong></td><td>Variables y tipos de datos</td><td>30 min</td><td>Tabla de tipos y anotaciones</td></tr>
+        <tr><td><strong>02</strong></td><td>Sintaxis esencial de Python</td><td>30 min</td><td>Script con entrada y salida</td></tr>
+        <tr><td><strong>03</strong></td><td>Estructuras de control</td><td>30 min</td><td>Decisiones, ciclos y comprensiones</td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Ejercicio 5.1 · Calculadora de préstamos</td><td>35 min</td><td>Script de consola con validación</td></tr>
+        <tr><td><strong>06</strong></td><td>Ejercicio 6.1 · Analizador de registros</td><td>35 min</td><td>Programa que resume un mes de préstamos</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller integrador</td><td>45 min</td><td>Módulo <code>prestamos.py</code> completo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.3 · La versión de Python que vas a usar</h3>
+
+  <p>
+    La versión importa tanto como en las clases anteriores, por la misma razón: buena parte de los
+    tutoriales que circulan describen versiones antiguas y sus ejemplos no funcionan.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Versiones de Python relevantes en 2026</caption>
+      <thead>
+        <tr><th>Versión</th><th>Publicada</th><th>Estado</th><th>Para esta clase</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>3.13</strong></td>
+          <td>octubre de 2024</td>
+          <td>Recibe correcciones hasta 2029</td>
+          <td>Sirve, pero no teaches lo más nuevo</td>
+        </tr>
+        <tr>
+          <td><strong>3.14</strong></td>
+          <td>octubre de 2025</td>
+          <td>Estable y madura; 3.14.8 publicada el 30 de septiembre de 2026</td>
+          <td><strong>La recomendada para el aula</strong></td>
+        </tr>
+        <tr>
+          <td><strong>3.15</strong></td>
+          <td>9 de octubre de 2026</td>
+          <td>La más reciente, publicada hace días</td>
+          <td>Sirve; todo lo de la clase funciona igual</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — «la más nueva» no siempre es «la más conveniente»</span>
+    <p>
+      Python 3.15 es la versión estable más reciente, pero salió el <strong>9 de octubre de 2026</strong>,
+      hace pocos días. En un trabajo que debe durarte un semestre conviene elegir la línea 3.14,
+      que ya ha recibido ocho revisiones de corrección, y <strong>fijar la versión</strong> en el
+      proyecto para que todo el equipo use la misma. La 3.15 trae novedades interesantes —importaciones
+      perezosas, los tipos <code>frozendict</code> y <code>sentinel</code>— pero ninguna de ellas
+      es necesaria para esta clase.
+    </p>
+  </div>
+
+  <h3>0.4 · Preparación del entorno</h3>
+
+  <p>
+    En la clase 2 se usó <code>uv</code> para gestionar el proyecto. Esta clase solo necesita el
+    intérprete, así que la instalación cabe en dos órdenes.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — instalar e iniciar el intérprete</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Instalar la versión que vamos a usar</span>
+<span class="tk-fn">uv</span> <span class="tk-kw">python install</span> <span class="tk-num">3.14</span>
+
+<span class="tk-cm"># Crear el proyecto (uv crea el entorno y el archivo de dependencias)</span>
+<span class="tk-fn">uv</span> <span class="tk-kw">new</span> prestamos
+
+<span class="tk-fn">cd</span> prestamos
+
+<span class="tk-cm"># Abrir el intérprete interactivo dentro del proyecto</span>
+<span class="tk-fn">uv</span> <span class="tk-kw">run</span> python</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — <code>uv run python</code> es el intérprete, con el entorno del proyecto</span>
+    <p>
+      No ejecutes <code>python</code> a secas: eso abre el intérprete del sistema, que puede ser
+      otro y tener otros paquetes. <code>uv run python</code> garantiza que estás usando la
+      versión y las dependencias del proyecto. Si el comando se queja de que no hay un proyecto,
+      estás en una carpeta equivocada: ejecuta <code>uv new prestamos</code> primero.
+    </p>
+  </div>
+
+  <h3>0.5 · Tu primera conversación con el intérprete</h3>
+
+  <p>
+    El intérprete de Python es una <strong>consola interactiva</strong>: escribe una expresión y
+    el intérprete la evalúa y te devuelve el resultado. Es el mejor banco de pruebas del lenguaje,
+    y por eso en esta clase se usa antes de escribir archivos.
+  </p>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>consola — uv run python</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">edad = 17</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada">type(edad)</div>
+      <div class="consola-salida">&lt;class 'int'&gt;</div>
+      <div class="consola-entrada">edad + 1</div>
+      <div class="consola-salida">18</div>
+      <div class="consola-entrada">nombre = "Ana Torres"</div>
+      <div class="consola-entrada">f"{nombre} tiene {edad} años"</div>
+      <div class="consola-salida">Ana Torres tiene 17 años</div>
+      <div class="consola-entrada">edad = "quince"</div>
+      <div class="consola-salida">&nbsp;</div>
+      <div class="consola-entrada">type(edad)</div>
+      <div class="consola-salida">&lt;class 'str'&gt;</div>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — lo que acaba de pasar en la última línea</span>
+    <p>
+      La variable <code>edad</code> contenía un número y ahora contiene un texto, y Python no se
+      quejó. Esto se llama <strong>tipado dinámico</strong>: el tipo no es una propiedad de la
+      variable, sino del <em>valor</em> que la variable apunta en este momento. Es una decisión de
+      diseño del lenguaje, y tiene una consecuencia práctica que dedicaremos la unidad 1 entera a
+      entender: <strong>nada te impide escribir un programa con errores de tipo</strong>, y por eso
+      existen las anotaciones y las herramientas que las comprueban.
+    </p>
+  </div>
+
+  <h3>0.6 · La estructura del proyecto</h3>
+
+  <p>
+    A lo largo de la clase vas a construir un archivo, <code>prestamos.py</code>, con la lógica de
+    los préstamos de la biblioteca. La estructura del proyecto queda así:
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>estructura del proyecto</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>prestamos/
+├── pyproject.toml          ← el proyecto y sus dependencias
+├── .python-version         ← la versión de Python fijada
+├── prestamos.py            ← el módulo que vas a escribir
+└── tests/
+    └── test_prestamos.py    ← las pruebas del módulo</code></pre>
+  </div>
+
+  <p>
+    El archivo <code>.python-version</code> es la forma de <strong>fijar la versión</strong>: todo
+    el equipo, y el servidor donde se despliegue, usarán exactamente la misma.
+  </p>
+
+  <h3>0.7 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito estas dos preguntas:</p>
+
+  <ol>
+    <li>¿Qué parte de una aplicación web se escribe en Python y qué parte no?</li>
+    <li>Si una variable contiene el número <code>17</code> y más tarde contiene el texto <code>"diecisiete"</code>, ¿qué ha cambiado realmente?</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: variables y tipos de datos →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — VARIABLES Y TIPOS DE DATOS
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · Los datos</div>
+    <h2>Variables y <em>tipos de datos</em></h2>
+    <p class="proposito">
+      Todo lo que un programa hace es guardar datos y transformarlos. Esta unidad construye el
+      vocabulario con el que se nombran esos datos, explica de qué tipos existen y qué significa
+      exactamente que Python no te obligue a declararlos.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: tabla de tipos</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · Una variable es una etiqueta</h3>
+
+  <p class="primer-párrafo">
+    En Python, una variable no es una caja con un contenido: es <strong>una etiqueta pegada a un
+    valor</strong>. El valor puede ser un número, un texto, una lista. La etiqueta se puede mover:
+    apuntar a otro valor, o dejar de apuntar al anterior.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la etiqueta se mueve</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">Estudiante</span>:
+    <span class="tk-kw">def</span> <span class="tk-fn">__init__</span>(<span class="tk-kw">self</span>, nombre: <span class="tk-cls">str</span>, edad: <span class="tk-cls">int</span>):
+        <span class="tk-kw">self</span>.nombre = nombre
+        <span class="tk-kw">self</span>.edad = edad
+
+
+estudiante = <span class="tk-cls">Estudiante</span>(<span class="tk-str">"Ana Torres"</span>, <span class="tk-num">17</span>)
+
+<span class="tk-cm"># La etiqueta "otro" se mueve; "estudiante" sigue apuntando al primero</span>
+otro = estudiante
+otro = <span class="tk-cls">Estudiante</span>(<span class="tk-str">"Luis Díaz"</span>, <span class="tk-num">18</span>)
+
+<span class="tk-fn">print</span>(estudiante.nombre)   <span class="tk-cm"># Ana Torres — "otro" no lo cambió</span>
+<span class="tk-fn">print</span>(otro.nombre)         <span class="tk-cm"># Luis Díaz</span></code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt>Nombre válido</dt>
+      <dd>Letras, dígitos y guiones bajos; no puede empezar por un dígito; no puede ser una palabra reservada. La convención de Python es <code>snake_case</code>: <code>dias_solicitados</code>.</dd>
+    </div>
+    <div>
+      <dt>Palabras reservadas</dt>
+      <dd><code>if</code>, <code>else</code>, <code>for</code>, <code>while</code>, <code>class</code>, <code>def</code>, <code>import</code>, <code>return</code>, <code>True</code>, <code>False</code>, <code>None</code>… No se pueden usar como nombre.</dd>
+    </div>
+    <div>
+      <dt>Constante</dt>
+      <dd>Una variable que no debería cambiar. No hay ninguna palabra clave que lo imponga: es una convención escribirla en mayúsculas, <code>MAX_DIAS = 30</code>.</dd>
+    </div>
+  </div>
+
+  <h3>1.2 · Los tipos que vas a usar todos los días</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Los tipos básicos del lenguaje</caption>
+      <thead>
+        <tr><th>Tipo</th><th>Qué representa</th><th>Ejemplo</th><th>Operación que sorprende</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="familia">int</span></td>
+          <td>Números enteros, sin decimales. Sin límite de tamaño.</td>
+          <td><code>dias = 7</code></td>
+          <td><code>7 / 2</code> da <code>3.5</code>, no <code>3</code></td>
+        </tr>
+        <tr>
+          <td><span class="familia">float</span></td>
+          <td>Números con decimales.</td>
+          <td><code>precio = 3.5</code></td>
+          <td><code>0.1 + 0.2</code> no es exactamente <code>0.3</code></td>
+        </tr>
+        <tr>
+          <td><span class="familia">str</span></td>
+          <td>Texto. Es una cadena de caracteres, inmutable.</td>
+          <td><code>titulo = "El principito"</code></td>
+          <td><code>"5" + 5</code> es un error: no se puede sumar texto y número</td>
+        </tr>
+        <tr>
+          <td><span class="familia">bool</span></td>
+          <td>Verdadero o falso. Solo hay dos valores: <code>True</code> y <code>False</code>.</td>
+          <td><code>disponible = True</code></td>
+          <td><code>True</code> es un <code>int</code> disfrazado: <code>True + True</code> da <code>2</code></td>
+        </tr>
+        <tr>
+          <td><span class="familia">NoneType</span></td>
+          <td>La ausencia de valor. Su único valor es <code>None</code>.</td>
+          <td><code>prestamo = None</code></td>
+          <td><code>None</code> no es lo mismo que <code>0</code> ni que <code>""</code></td>
+        </tr>
+        <tr>
+          <td><span class="familia">list</span></td>
+          <td>Una secuencia ordenada y modificable.</td>
+          <td><code>prestamos = ["Ana", "Luis"]</code></td>
+          <td>El primer elemento es el de índice <code>0</code></td>
+        </tr>
+        <tr>
+          <td><span class="familia">dict</span></td>
+          <td>Un conjunto de pares clave-valor. Las claves son únicas.</td>
+          <td><code>{"titulo": "El principito"}</code></td>
+          <td>Acceder a una clave que no existe lanza <code>KeyError</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>bool</code> es un <code>int</code> disfrazado</span>
+    <p>
+      En Python, <code>bool</code> es una subclase de <code>int</code>. Eso significa que
+      <code>True</code> vale <code>1</code> y <code>False</code> vale <code>0</code>, y que
+      <code>True + True</code> da <code>2</code>. No es un error: es una consecuencia de la
+      jerarquía de tipos del lenguaje, y aparece al principio de casi cualquier curso de Python.
+      Sirve para lo que parece: <code>len(disponible)</code> da <code>1</code> cuando el libro
+      está disponible, y <code>0</code> cuando no.
+    </p>
+  </div>
+
+  <h3>1.3 · Operadores: los que no son de álgebra</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Los operadores aritméticos y lo que devuelven</caption>
+      <thead>
+        <tr><th>Operador</th><th>Significado</th><th><code>7</code> y <code>2</code></th><th><code>7.0</code> y <code>2</code></th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>/</code></td><td>División real</td><td><code>3.5</code></td><td><code>3.5</code></td></tr>
+        <tr><td><code>//</code></td><td>División entera (descarta la parte decimal)</td><td><code>3</code></td><td><code>3.0</code></td></tr>
+        <tr><td><code>%</code></td><td>Resto de la división</td><td><code>1</code></td><td><code>1.0</code></td></tr>
+        <tr><td><code>**</code></td><td>Potencia</td><td><code>49</code></td><td><code>49.0</code></td></tr>
+        <tr><td><code>//</code> y <code>%</code> juntos</td><td><code>divmod(7, 2)</code> devuelve <code>(3, 1)</code></td><td colspan="2">Útil para repartir horas entre días y saber el sobrante</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Los operadores de comparación y lógicos</caption>
+      <thead>
+        <tr><th>Operador</th><th>Devuelve</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>==</code> <code>!=</code></td><td><code>bool</code></td><td><code>dias == 7</code></td></tr>
+        <tr><td><code>&lt;</code> <code>&lt;=</code> <code>&gt;</code> <code>&gt;=</code></td><td><code>bool</code></td><td><code>dias &gt; 30</code></td></tr>
+        <tr><td><code>in</code></td><td><code>bool</code></td><td><code>"texto" in titulo</code></td></tr>
+        <tr><td><code>is</code></td><td><code>bool</code> — identidad, no igualdad</td><td><code>prestamo is None</code></td></tr>
+        <tr><td><code>and</code> <code>or</code> <code>not</code></td><td><code>bool</code></td><td><code>disponible and not vencido</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — las comparaciones se pueden encadenar</span>
+    <p>
+      Python permite escribir <code>0 &lt;= dias &lt;= 30</code> en una sola línea, y funciona
+      exactamente como parece: se cumple si las dos condiciones se cumplen. En la mayoría de
+      lenguajes habría que escribir <code>dias &gt;= 0 and dias &lt;= 30</code>. Se lee tan bien
+      que conviene usarlo siempre que se pueda.
+    </p>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>==</code> no es <code>=</code></span>
+    <p>
+      <code>=</code> asigna: <code>dias = 7</code> guarda el valor 7 en la variable. <code>==</code>
+      compara: <code>dias == 7</code> pregunta si lo que hay dentro de la variable es 7, y devuelve
+      <code>True</code> o <code>False</code>. Es el error más frecuente de quien empieza, y el
+      mensaje de error que produce Python ayuda: <code>SyntaxError</code> apunta a la línea exacta.
+    </p>
+  </div>
+
+  <h3>1.4 · La verdad y la falsedad</h3>
+
+  <p>
+    En Python no hace falta escribir <code>if disponible == True</code>. Basta con <code>if
+    disponible</code>. El intérprete decide si un valor es «verdadero» o «falsy» usando una regla
+    sencilla: <strong>solo unos pocos valores son falsos</strong>.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Los valores falsos de Python</caption>
+      <thead>
+        <tr><th>Valor</th><th>Tipo</th><th>Por qué es falso</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>False</code></td><td><span class="familia">bool</span></td><td>El propio valor falso</td></tr>
+        <tr><td><code>None</code></td><td><span class="familia">NoneType</span></td><td>No hay valor</td></tr>
+        <tr><td><code>0</code></td><td><span class="familia">int</span></td><td>El cero</td></tr>
+        <tr><td><code>0.0</code></td><td><span class="familia">float</span></td><td>El cero decimal</td></tr>
+        <tr><td><code>""</code></td><td><span class="familia">str</span></td><td>La cadena vacía</td></tr>
+        <tr><td><code>[]</code>, <code>{}</code>, <code>set()</code></td><td><span class="familia">list</span>, <span class="familia">dict</span>, conjunto</td><td>Las colecciones vacías</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — la regla que más se usa en un backend</span>
+    <p>
+      Todo lo demás es verdadero. Y esa regla es la que hace que el código de servidor sea corto:
+      <code>if not nombre:</code> significa «si el nombre vino vacío». <code>if not prestamos:</code>
+      significa «si la lista de préstamos está vacía». <code>if resultado is None:</code> es la
+      forma correcta de preguntar «¿la consulta no devolvió nada?», porque <code>None</code> es
+      el valor ausente y no un cero.
+    </p>
+  </div>
+
+  <h3>1.5 · Convertir texto en número</h3>
+
+  <p>
+    La función <code>input()</code> devuelve <strong>siempre texto</strong>, aunque el usuario
+    escriba <code>7</code>. Eso es deliberado: el teclado solo produce caracteres. Convertir es
+    responsabilidad del programa.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — leer y convertir</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>dias = <span class="tk-fn">input</span>(<span class="tk-str">"¿Cuántos días quieres? "</span>)
+<span class="tk-fn">print</span>(<span class="tk-fn">type</span>(dias))          <span class="tk-cm"># &lt;class 'str'&gt; — siempre texto</span>
+
+dias = <span class="tk-fn">int</span>(dias)                      <span class="tk-cm"># ahora sí es un entero</span>
+<span class="tk-fn">print</span>(dias + <span class="tk-num">1</span>)                  <span class="tk-cm"># 8</span></code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — lo que pasa si el usuario escribe letras</span>
+    <p>
+      <code>int("siete")</code> no da <code>0</code>: lanza un <code>ValueError</code> y el
+      programa se detiene. Y <code>int("3.5")</code> también lanza el error, porque el texto
+      <code>"3.5"</code> no representa un entero. Este error es tan común que merece una regla:
+      <strong>siempre que leas un número del usuario, espera un <code>ValueError</code></strong>. En
+      la unidad 3 se ve cómo capturarlo.
+    </p>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>round()</code> no redondea como en la escuela</span>
+    <p>
+      Python redondea al par más cercano, no siempre hacia arriba: <code>round(0.5)</code> da
+      <code>0</code>, <code>round(1.5)</code> da <code>2</code> y <code>round(2.5)</code> da
+      <code>2</code>. Se llama «redondeo del banquero» y evita el sesgo sistemático de siempre
+      subir. No es un error: es una decisión deliberada. Si necesitas el redondeo escolar, escribe
+      <code>math.floor(valor + 0.5)</code>.
+    </p>
+    <p>
+      Y una segunda precisión, de la misma familia: los decimales se guardan en binario, así que
+      <code>0.1 + 0.2</code> no da exactamente <code>0.3</code>. Por eso, cuando se comparan
+      decimales, hay que comparar con una tolerancia, no con igualdad.
+    </p>
+  </div>
+
+  <h3>1.6 · Anotaciones de tipo: el contrato</h3>
+
+  <p>
+    Como Python no obliga a declarar el tipo, nada te impide equivocarte al escribirlo. Las
+    <strong>anotaciones de tipo</strong> son la forma moderna de declararlo: se añaden después
+    del nombre, con dos puntos.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — anotaciones modernas</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>titulo: <span class="tk-cls">str</span> = <span class="tk-str">"El principito"</span>
+dias: <span class="tk-cls">int</span> = <span class="tk-num">7</span>
+precio: <span class="tk-cls">float</span> = <span class="tk-num">3.5</span>
+disponible: <span class="tk-cls">bool</span> = <span class="tk-kw">True</span>
+
+<span class="tk-cm"># "int o nada": se escribe con | desde Python 3.10</span>
+prestamo_pendiente: <span class="tk-cls">int</span> | <span class="tk-kw">None</span> = <span class="tk-kw">None</span>
+
+<span class="tk-cm"># Las anotaciones de colecciones también son modernas</span>
+prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">str</span>] = []
+indice: <span class="tk-cls">dict</span>[<span class="tk-cls">str</span>, <span class="tk-cls">int</span>] = {}</code></pre>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — anotar no es convertir</span>
+    <p>
+      La anotación <strong>no convierte nada</strong>. Si escribes <code>edad: int = "17"</code>,
+      Python no da ningún error al ejecutar el programa: la variable contiene un texto y punto. La
+      anotación es una <em>declaración de intenciones</em> que lees tú y, sobre todo, leen las
+      herramientas de análisis estático.
+    </p>
+    <p>
+      <strong>Consecuencia práctica:</strong> las anotaciones solo dan resultado cuando hay
+      alguien —o algo— que las compruebe. En Python 3.14 las anotaciones se evalúan de forma
+      perezosa por defecto, así que escribir <code>list[str]</code> no cuesta nada aunque el
+      entorno no tenga esa versión.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué tipo tiene el valor de <code>dias = 7</code>?</p>
+      <button class="opcion" data-op="a">El tipo es <code>str</code> porque <code>input()</code> devuelve texto</button>
+      <button class="opcion" data-op="b">El tipo es <code>int</code> porque la anotación lo declara</button>
+      <button class="opcion" data-op="c">El tipo es <code>int</code> porque el valor literal <code>7</code> es un entero</button>
+      <button class="opcion" data-op="d">El tipo cambia según el valor que tenga la variable en cada momento</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Cuál de estas expresiones es <strong>falsa</strong> en Python?</p>
+      <button class="opcion" data-op="a"><code>0</code></button>
+      <button class="opcion" data-op="b"><code>"0"</code></button>
+      <button class="opcion" data-op="c"><code>[]</code></button>
+      <button class="opcion" data-op="d"><code>None</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué devuelve <code>7 / 2</code> y qué devuelve <code>7 // 2</code>?</p>
+      <button class="opcion" data-op="a"><code>3.5</code> y <code>3</code></button>
+      <button class="opcion" data-op="b"><code>3</code> y <code>3</code></button>
+      <button class="opcion" data-op="c"><code>3.5</code> y <code>3.5</code></button>
+      <button class="opcion" data-op="d"><code>4</code> y <code>3</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Qué hace la anotación <code>prestamo: int | None = None</code>?</p>
+      <button class="opcion" data-op="a">Convierte el valor <code>None</code> en el número 0</button>
+      <button class="opcion" data-op="b">Hace que el programa no acepte ningún valor</button>
+      <button class="opcion" data-op="c">Declara una variable obligatoria que siempre debe ser un entero</button>
+      <button class="opcion" data-op="d">Declara que la variable puede contener un entero o nada, y es una declaración de intenciones</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: Sintaxis esencial →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — SINTAXIS ESENCIAL
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · La forma</div>
+    <h2>Sintaxis esencial de <em>Python</em></h2>
+    <p class="proposito">
+      Un lenguaje es un contrato de forma. Esta unidad recorre lo mínimo imprescindible para que
+      un archivo de Python sea legible por otra persona: cómo se marcan los bloques, cómo se
+      escriben los textos, cómo se entra y se sale, y qué herramientas trae el lenguaje ya
+      incorporadas.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: script con entrada y salida</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · La indentación es la sintaxis</h3>
+
+  <p class="primer-párrafo">
+    En la mayoría de los lenguajes, un bloque se delimbra con llaves: <code>{ }</code>. En Python no
+    hay llaves: <strong>el bloque se delimita con la indentación</strong>. Lo que está sangrado
+    pertenece a la instrucción que lo precede.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el bloque y la sangría</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>prestamos_disponibles = <span class="tk-num">3</span>
+
+<span class="tk-kw">if</span> prestamos_disponibles &gt; <span class="tk-num">0</span>:
+    <span class="tk-fn">print</span>(<span class="tk-str">"Hay libros disponibles"</span>)
+    <span class="tk-kw">if</span> prestamos_disponibles &gt; <span class="tk-num">2</span>:
+        <span class="tk-fn">print</span>(<span class="tk-str">"Y son varios"</span>)
+<span class="tk-kw">else</span>:
+    <span class="tk-fn">print</span>(<span class="tk-str">"No hay ninguno"</span>)</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt>Los dos puntos</dt>
+      <dd>El <code>:</code> al final de la línea abre un bloque. Lo que viene después, más sangrado, es su contenido.</dd>
+    </div>
+    <div>
+      <dt>Cuatro espacios</dt>
+      <dd>Es la convención de Python (PEP 8). Nunca mezcles tabuladores y espacios: Python lanza un <code>TabError</code> y no te deja adivinar qué quiso decir el archivo.</dd>
+    </div>
+    <div>
+      <dt>El final de un bloque</dt>
+      <dd>Se deduce de la siguiente línea con menos sangrado. No hay llaves ni palabra de cierre: la sangría dice dónde acaba.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — la sangría es una decisión del editor, no tuya</span>
+    <p>
+      Nunca escribas los espacios a mano. Configura el editor para que <code>Enter</code> añada
+      automáticamente la sangría del bloque anterior, y para que la tecla de tabulación inserte
+      espacios. En VS Code, el ajuste es <em>Espacios: 4</em> en la barra de estado. La mayoría de
+      los editores modernos traen un formateador que deja el archivo bien indentado con un comando.
+    </p>
+  </div>
+
+  <h3>2.2 · Comentarios y documentación</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — comentarios y cadena de documentación</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Un comentario: empieza con almohadilla y acaba en el salto de línea</span>
+MAX_DIAS = <span class="tk-num">30</span>  <span class="tk-cm"># también puede ir al final de una línea</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">dias_permitidos</span>(tipo: <span class="tk-cls">str</span>) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">"""Devuelve cuántos días se pueden pedir según el tipo de libro.
+
+    Las cadenas de documentación se abren con tres comillas y son el
+    texto que muestra help() y los editores de código.
+    """</span>
+    <span class="tk-kw">if</span> tipo == <span class="tk-str">"normal"</span>:
+        <span class="tk-kw">return</span> <span class="tk-num">15</span>
+    <span class="tk-kw">return</span> <span class="tk-num">30</span></code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — la diferencia entre un comentario y una cadena de documentación</span>
+    <p>
+      Un comentario con <code>#</code> es para quien lee el código. Una cadena de documentación —las
+      tres comillas— es documentación <em>del objeto</em>: queda guardada en el programa, aparece
+      con <code>help(dias_permitidos)</code> y la lee cualquier herramienta que genere
+      automáticamente la referencia de la API. En un proyecto de backend, esa documentación es lo
+      que verá el equipo que use tu código. Se escribe en la primera línea de la función o de la
+      clase, y explica <strong>qué hace</strong>, no cómo está hecho.
+    </p>
+  </div>
+
+  <h3>2.3 · Las cadenas y las cadenas con formato</h3>
+
+  <p>
+    Un texto en Python va entre comillas. Da igual si son simples (<code>'texto'</code>) o dobles
+    (<code>"texto"</code>); lo único que no se puede es empezar con una y terminar con la otra.
+    Las tres comillas permiten escribir texto de varias líneas.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — cadenas con formato</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>titulo = <span class="tk-str">"El principito"</span>
+autor = <span class="tk-str">"Antonio Machado"</span>
+dias = <span class="tk-num">15</span>
+precio = <span class="tk-num">3.5</span>
+
+<span class="tk-cm"># La forma moderna: la cadena con formato, marcada con f delante</span>
+<span class="tk-fn">print</span>(<span class="tk-str">f"{titulo}, de {autor}"</span>)
+<span class="tk-fn">print</span>(<span class="tk-str">f"{dias} días"</span>)
+
+<span class="tk-cm"># Formato de un número con dos decimales</span>
+<span class="tk-fn">print</span>(<span class="tk-str">f"Precio: {precio:.2f}"</span>)
+
+<span class="tk-cm"># Alineación a la derecha en 12 columnas</span>
+<span class="tk-fn">print</span>(<span class="tk-str">f"{titulo:&gt;12}"</span>)
+
+<span class="tk-cm"># Separador de millares</span>
+<span class="tk-fn">print</span>(<span class="tk-str">f"{1234567:,}"</span>)
+
+<span class="tk-cm"># El especificador = muestra además el nombre de la variable</span>
+<span class="tk-fn">print</span>(<span class="tk-str">f"{dias=}"</span>)   <span class="tk-cm"># dias=15</span></code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — las llaves admiten expresiones, y a veces hay que alternar las comillas</span>
+    <p>
+      Dentro de las llaves de una cadena con formato se puede escribir cualquier expresión, no solo
+      un nombre: <code>f"{len(titulo)} caracteres"</code>. Si la expresión contiene comillas, hay
+      que tener cuidado con las comillas exteriores. Desde Python 3.12 se puede repetir la misma
+      comilla sin problema —<code>f"{d['clave']}"</code>—, pero en versiones anteriores había que
+      alternar: esa forma no era válida y había que escribir <code>f'{d["clave"]}'</code>. La clase
+      usa siempre la forma que funciona en cualquier versión reciente.
+    </p>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Operaciones con cadenas que vas a usar</caption>
+      <thead>
+        <tr><th>Operación</th><th>Qué hace</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>len(texto)</code></td><td>Número de caracteres</td><td><code>len("hola")</code> → 4</td></tr>
+        <tr><td><code>texto.upper()</code> / <code>.lower()</code></td><td>Mayúsculas y minúsculas</td><td><code>"hola".upper()</code> → "HOLA"</td></tr>
+        <tr><td><code>texto.strip()</code></td><td>Quita los espacios de los extremos</td><td><code>" hola ".strip()</code> → "hola"</td></tr>
+        <tr><td><code>texto.split(",")</code></td><td>Parte el texto en una lista</td><td><code>"a,b,c".split(",")</code> → ["a","b","c"]</td></tr>
+        <tr><td><code>texto.replace(a, b)</code></td><td>Reemplaza un fragmento</td><td><code>"a-b".replace("-", " ")</code> → "a b"</td></tr>
+        <tr><td><code>"x" in texto</code></td><td>¿Contiene el fragmento?</td><td><code>"prin" in "principito"</code> → True</td></tr>
+        <tr><td><code>texto[0]</code> / <code>texto[-1]</code></td><td>Primer y último carácter</td><td><code>"hola"[-1]</code> → "a"</td></tr>
+        <tr><td><code>texto[0:4]</code></td><td>Una rebanada, del 0 al 3</td><td><code>"hola"[0:4]</code> → "hola"</td></tr>
+        <tr><td><code>texto.splitlines()</code></td><td>Parte un texto multilínea en una lista</td><td>Útil para leer archivos</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>2.4 · Entrada y salida</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — leer y mostrar</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>nombre = <span class="tk-fn">input</span>(<span class="tk-str">"Nombre del estudiante: "</span>).<span class="tk-fn">strip</span>()
+grado = <span class="tk-fn">input</span>(<span class="tk-str">"Grado: "</span>)
+
+<span class="tk-fn">print</span>(<span class="tk-str">f"{nombre}, de grado {grado}"</span>)
+<span class="tk-fn">print</span>(<span class="tk-str">"Linea 1"</span>, <span class="tk-str">"Linea 2"</span>, <span class="tk-kw">sep</span>=<span class="tk-str">" | "</span>)
+<span class="tk-fn">print</span>(<span class="tk-str">"Sin salto de linea"</span>, <span class="tk-kw">end</span>=<span class="tk-str">" "</span>)
+<span class="tk-fn">print</span>(<span class="tk-str">"en la misma linea"</span>)</code></pre>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — por qué <code>.strip()</code> va siempre después de <code>input()</code></span>
+    <p>
+      El usuario escribe «Ana Torres⏎» y el teclado manda también el salto de línea. Sin
+      <code>.strip()</code>, la variable contiene un espacio invisible al principio y otro al
+      final, y cualquier comparación con el nombre exacto fallará. Es un detalle de una línea que
+      evita un error de una hora.
+    </p>
+  </div>
+
+  <h3>2.5 · Desempaquetado y herramientas ya incorporadas</h3>
+
+  <p>
+    Python trae muchas operaciones resueltas. No hace falta escribirlas: solo hay que llamarlas
+    bien.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — desempaquetado y funciones incorporadas</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Desempaquetar: un valor a la vez, sin posiciones</span>
+a, b = <span class="tk-num">1</span>, <span class="tk-num">2</span>
+a, b = b, a                       <span class="tk-cm"># intercambio en una sola línea</span>
+
+<span class="tk-cm"># Recorrer con el número de posición</span>
+<span class="tk-kw">for</span> posicion, titulo <span class="tk-kw">in</span> <span class="tk-fn">enumerate</span>([<span class="tk-str">"A"</span>, <span class="tk-str">"B"</span>], <span class="tk-kw">start</span>=<span class="tk-num">1</span>):
+    <span class="tk-fn">print</span>(<span class="tk-str">f"{posicion}. {titulo}"</span>)
+
+<span class="tk-cm"># Recorrer dos listas a la vez</span>
+<span class="tk-kw">for</span> titulo, dias <span class="tk-kw">in</span> <span class="tk-fn">zip</span>([<span class="tk-str">"A"</span>, <span class="tk-str">"B"</span>], [<span class="tk-num">7</span>, <span class="tk-num">15</span>]):
+    <span class="tk-fn">print</span>(<span class="tk-str">f"{titulo}: {dias} días"</span>)
+
+<span class="tk-fn">print</span>(<span class="tk-fn">sum</span>([<span class="tk-num">3</span>, <span class="tk-num">7</span>, <span class="tk-num">15</span>]))     <span class="tk-cm"># 25</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">max</span>([<span class="tk-num">3</span>, <span class="tk-num">7</span>]))             <span class="tk-cm"># 7</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">sorted</span>([<span class="tk-str">"b"</span>, <span class="tk-str">"a"</span>]))        <span class="tk-cm"># ['a', 'b']</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">abs</span>(<span class="tk-num">-5</span>))                     <span class="tk-cm"># 5</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">divmod</span>(<span class="tk-num">7</span>, <span class="tk-num">2</span>))                <span class="tk-cm"># (3, 1) — cociente y resto</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">any</span>([<span class="tk-kw">False</span>, <span class="tk-kw">True</span>]))            <span class="tk-cm"># True — alguno es verdadero</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">all</span>([<span class="tk-kw">True</span>, <span class="tk-kw">True</span>]))             <span class="tk-cm"># True — todos son verdaderos</span></code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — <code>sorted()</code> no modifica la lista original</span>
+    <p>
+      <code>sorted(lista)</code> devuelve <em>una lista nueva</em> y deja la original intacta; para
+      cambiar la original hay que escribir <code>lista.sort()</code>. La diferencia importa cuando
+      la lista es un dato que viene de otro sitio: <code>sorted()</code> es más seguro, porque no
+      puede sorprender a quien la pasó.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué marca el comienzo de un bloque en Python?</p>
+      <button class="opcion" data-op="a">Las llaves <code>{ }</code></button>
+      <button class="opcion" data-op="b">Los dos puntos y la indentación de las líneas siguientes</button>
+      <button class="opcion" data-op="c">La palabra <code>begin</code></button>
+      <button class="opcion" data-op="d">Una línea en blanco antes del bloque</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Qué imprime <code>f"{3.14159:.2f}"</code>?</p>
+      <button class="opcion" data-op="a"><code>3.14159</code></button>
+      <button class="opcion" data-op="b"><code>3</code></button>
+      <button class="opcion" data-op="c"><code>3.14</code></button>
+      <button class="opcion" data-op="d">Un error, porque <code>f</code> no admite dos puntos</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Por qué se escribe <code>input().strip()</code> al leer un nombre?</p>
+      <button class="opcion" data-op="a">Porque el salto de línea del teclado queda dentro del texto</button>
+      <button class="opcion" data-op="b">Porque <code>input()</code> devuelve números</button>
+      <button class="opcion" data-op="c">Porque <code>strip()</code> convierte el texto en un número</button>
+      <button class="opcion" data-op="d">Porque sin eso el programa no arranca</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Qué diferencia hay entre <code>sorted(lista)</code> y <code>lista.sort()</code>?</p>
+      <button class="opcion" data-op="a">Ninguna: hacen exactamente lo mismo</button>
+      <button class="opcion" data-op="b"><code>sorted()</code> modifica la lista y <code>.sort()</code> devuelve una copia</button>
+      <button class="opcion" data-op="c"><code>.sort()</code> solo funciona con listas de texto</button>
+      <button class="opcion" data-op="d"><code>sorted()</code> devuelve una lista nueva y <code>.sort()</code> modifica la original</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: Variables y tipos de datos</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: Estructuras de control →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — ESTRUCTURAS DE CONTROL
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · El control</div>
+    <h2>Estructuras de <em>control</em></h2>
+    <p class="proposito">
+      Un programa que solo calcula en línea recta no decide nada. Esta unidad le da las tres
+      herramientas que necesita: decidir, repetir y agrupar. Y cierra con la manera correcta de
+      reaccionar cuando algo sale mal.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: control del flujo completo</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · Decidir: <code>if</code>, <code>elif</code>, <code>else</code></h3>
+
+  <p class="primer-párrafo">
+    La estructura más básica del lenguaje. La condición se evalúa: si resulta verdadera, se
+    ejecuta el bloque; si no, se busca el siguiente <code>elif</code>, y si ninguno se cumple, se
+    ejecuta el <code>else</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la decisión completa</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>dias = <span class="tk-num">20</span>
+
+<span class="tk-kw">if</span> dias &gt; <span class="tk-num">30</span>:
+    <span class="tk-fn">print</span>(<span class="tk-str">"El préstamo es demasiado largo"</span>)
+<span class="tk-kw">elif</span> dias &gt; <span class="tk-num">15</span>:
+    <span class="tk-fn">print</span>(<span class="tk-str">"Préstamo largo: pide autorización"</span>)
+<span class="tk-kw">elif</span> dias &gt; <span class="tk-num">0</span>:
+    <span class="tk-fn">print</span>(<span class="tk-str">"Préstamo normal"</span>)
+<span class="tk-kw">else</span>:
+    <span class="tk-fn">print</span>(<span class="tk-str">"No hay préstamo"</span>)</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>elif</code>, nunca <code>else if</code></span>
+    <p>
+      En C, Java o JavaScript se escribe <code>else if</code>. En Python no: se escribe
+      <code>elif</code>. Y el orden importa, porque <strong>se evalúa de arriba abajo y se detiene en
+      la primera condición que se cumple</strong>. Si el primer <code>if</code> fuera
+      <code>dias &gt; 0</code>, los otros dos bloques nunca se ejecutarían. Al escribir una cadena
+      de condiciones, conviene ordenarlas de la más restrictiva a la más general.
+    </p>
+  </div>
+
+  <h3>3.2 · <code>match</code>: cuando el valor tiene pocas formas posibles</h3>
+
+  <p>
+    Cuando un valor puede estar en un conjunto pequeño y conocido de estados, el
+    <code>match</code> se lee mejor que una cadena de <code>if</code>. Está disponible desde
+    Python 3.10.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el estado de un préstamo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>estado = <span class="tk-str">"devuelto_tarde"</span>
+
+<span class="tk-kw">match</span> estado:
+    <span class="tk-kw">case</span> <span class="tk-str">"en_prestamo"</span>:
+        <span class="tk-fn">print</span>(<span class="tk-str">"El libro está fuera de la biblioteca"</span>)
+    <span class="tk-kw">case</span> <span class="tk-str">"devuelto"</span>:
+        <span class="tk-fn">print</span>(<span class="tk-str">"El libro ya volvió"</span>)
+    <span class="tk-kw">case</span> <span class="tk-str">"devuelto_tarde"</span>:
+        <span class="tk-fn">print</span>(<span class="tk-str">"Hay que pagar la multa"</span>)
+    <span class="tk-kw">case</span> _:
+        <span class="tk-fn">print</span>(<span class="tk-str">"Estado desconocido"</span>)</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>case _</code></dt>
+      <dd>El comodín: se cumple si ningún caso anterior coincidió. Es el equivalente al <code>else</code> final.</dd>
+    </div>
+    <div>
+      <dt>Sin <code>break</code></dt>
+      <dd>A diferencia de C o JavaScript, <strong>no hay salto entre casos</strong>: al terminar un <code>case</code> se sale del <code>match</code>. No se puede «caer» al siguiente caso por accidente.</dd>
+    </div>
+    <div>
+      <dt>Guardas</dt>
+      <dd><code>case _ if dias &gt; 30:</code> añade una condición extra a un caso.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — cuándo usar <code>match</code> y cuándo <code>if</code></span>
+    <p>
+      <code>match</code> funciona bien cuando comparas <strong>un valor</strong> contra casos
+      concretos. <code>if</code> funciona bien cuando lo que evalúas son <strong>condiciones
+      distintas</strong> (<code>dias &gt; 30</code>, <code>dias &gt; 15</code>). No es que uno sea
+      mejor: es que cada uno dice algo distinto. Y las dos cosas se pueden mezclar sin problema.
+    </p>
+  </div>
+
+  <h3>3.3 · Repetir: <code>for</code> y <code>while</code></h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Dos formas de repetir</caption>
+      <thead>
+        <tr><th></th><th><code>for</code></th><th><code>while</code></th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Se usa cuando</strong></td><td>Se recorre una colección y se sabe cuántas veces hay que hacerlo</td><td>Se repite hasta que una condición deje de cumplirse</td></tr>
+        <tr><td><strong>Ejemplo</strong></td><td><code>for libro in prestamos:</code></td><td><code>while intentos &lt; 3:</code></td></tr>
+        <tr><td><strong>Riesgo</strong></td><td>Ninguno: el número de vueltas está claro</td><td>Si la condición nunca deja de cumplirse, el ciclo no termina</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — los dos ciclos y el rango</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>prestamos = [<span class="tk-str">"El principito"</span>, <span class="tk-str">"Cien años"</span>, <span class="tk-str">"Pedro Páramo"</span>]
+
+<span class="tk-kw">for</span> titulo <span class="tk-kw">in</span> prestamos:
+    <span class="tk-fn">print</span>(<span class="tk-str">f"Prestado: {titulo}"</span>)
+
+<span class="tk-cm"># range(inicio, fin, paso): el final queda fuera</span>
+<span class="tk-kw">for</span> numero <span class="tk-kw">in</span> <span class="tk-fn">range</span>(<span class="tk-num">1</span>, <span class="tk-num">4</span>):
+    <span class="tk-fn">print</span>(numero)          <span class="tk-cm"># 1, 2, 3 — nunca el 4</span>
+
+<span class="tk-kw">for</span> numero <span class="tk-kw">in</span> <span class="tk-fn">range</span>(<span class="tk-num">0</span>, <span class="tk-num">10</span>, <span class="tk-kw">step</span>=<span class="tk-num">2</span>):
+    <span class="tk-fn">print</span>(numero)          <span class="tk-cm"># 0, 2, 4, 6, 8</span>
+
+<span class="tk-cm"># El while repite mientras la condición sea verdadera</span>
+intentos = <span class="tk-num">0</span>
+<span class="tk-kw">while</span> intentos &lt; <span class="tk-num">3</span>:
+    <span class="tk-fn">print</span>(<span class="tk-str">f"Intento {intentos + 1}"</span>)
+    intentos += <span class="tk-num">1</span></code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — <code>while True</code> sin salida es un ciclo infinito</span>
+    <p>
+      Si la condición de un <code>while</code> nunca deja de cumplirse, el programa se queda
+      colgado. La forma segura es escribir siempre un <code>break</code> dentro. Y un detalle
+      práctico: si el programa no parece terminar, comprueba primero si te has olvidado de
+      <strong>actualizar</strong> la variable de control —el <code>intentos += 1</code> del
+      ejemplo—, porque eso es lo que hace avanzar el ciclo.
+    </p>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las tres palabras que controlan un ciclo</caption>
+      <thead>
+        <tr><th>Palabra</th><th>Qué hace</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>break</code></td><td>Sale del ciclo más interno</td></tr>
+        <tr><td><code>continue</code></td><td>Salta a la siguiente vuelta, ignorando el resto del cuerpo</td></tr>
+        <tr><td><code>else</code> (del ciclo)</td><td>Se ejecuta <strong>solo si el ciclo terminó sin <code>break</code></strong>. Es la forma de detectar «no encontré nada»</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el <code>else</code> del ciclo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">for</span> titulo <span class="tk-kw">in</span> prestamos:
+    <span class="tk-kw">if</span> titulo == <span class="tk-str">"Cien años"</span>:
+        <span class="tk-fn">print</span>(<span class="tk-str">"Encontrado"</span>)
+        <span class="tk-kw">break</span>
+<span class="tk-kw">else</span>:
+    <span class="tk-fn">print</span>(<span class="tk-str">"No estaba en la lista"</span>)</code></pre>
+  </div>
+
+  <h3>3.4 · Las comprensiones</h3>
+
+  <p>
+    Una comprensión es un ciclo escrito en una sola línea, que produce una lista. Se lee de izquierda
+    a derecha: «<strong>toma esto, y para cada elemento, guarda esto</strong>».
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — comprensiones</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>prestamos = [<span class="tk-str">"El principito"</span>, <span class="tk-str">"Cien años"</span>, <span class="tk-str">"Pedro Páramo"</span>]
+dias = [<span class="tk-num">15</span>, <span class="tk-num">7</span>, <span class="tk-num">30</span>]
+
+<span class="tk-cm"># Lista: cada título en mayúsculas</span>
+mayusculas = [titulo.<span class="tk-fn">upper</span>() <span class="tk-kw">for</span> titulo <span class="tk-kw">in</span> prestamos]
+
+<span class="tk-cm"># Lista con una condición</span>
+largos = [d <span class="tk-kw">for</span> d <span class="tk-kw">in</span> dias <span class="tk-kw">if</span> d &gt; <span class="tk-num">10</span>]
+
+<span class="tk-cm"># Diccionario: de título a días</span>
+indice = {titulo: d <span class="tk-kw">for</span> titulo, d <span class="tk-kw">in</span> <span class="tk-fn">zip</span>(prestamos, dias)}
+
+<span class="tk-fn">print</span>(mayusculas)
+<span class="tk-fn">print</span>(largos)
+<span class="tk-fn">print</span>(indice[<span class="tk-str">"Cien años"</span>])</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — cuándo <em>no</em> usar una comprensión</span>
+    <p>
+      Una comprensión sustituye a un ciclo <strong>de una sola instrucción</strong>. Si el cuerpo
+      necesita dos o más pasos —un <code>if</code> y una llamada, por ejemplo— ya no cabe, y la
+      versión con comprensión se vuelve ilegible. La regla práctica: si tienes que escribir la
+      comprensión en dos líneas, escribe el ciclo normal. Una comprensión larga es difícil de
+      leer y más difícil de depurar.
+    </p>
+  </div>
+
+  <h3>3.5 · El operador morsa</h3>
+
+  <p>
+    A veces la condición que decide el bucle es un cálculo que te gustaría reutilizar. El operador
+    morsa <code>:=</code> asigna y devuelve el valor en una sola expresión.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el operador morsa</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>texto = <span class="tk-str">"El principito"</span>
+
+<span class="tk-kw">if</span> (longitud := <span class="tk-fn">len</span>(texto)) &gt; <span class="tk-num">10</span>:
+    <span class="tk-fn">print</span>(<span class="tk-str">f"{longitud} caracteres: es un título largo"</span>)</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el nombre en inglés</span>
+    <p>
+      El operador <code>:=</code> se llama «morsa» (<em>walrus operator</em>, en inglés), por su
+      forma de sideways. Su uso más común es exactamente el del ejemplo: evitar calcular dos veces
+      lo mismo. Se escribe <code>:=</code> sin espacios y solo puede usarse dentro de una
+      expresión, entre paréntesis.
+    </p>
+  </div>
+
+  <h3>3.6 · Cuando algo sale mal: <code>try</code></h3>
+
+  <p>
+    Un backend recibe datos de desconocidos. Algún día alguien escribirá «quince» donde esperaba un
+    número. Si el programa no está preparado, se cae entero; si está preparado, responde con un
+    mensaje claro. Eso es lo que hace el bloque <code>try</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — las cuatro partes del manejo de errores</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">try</span>:
+    dias = <span class="tk-fn">int</span>(<span class="tk-fn">input</span>(<span class="tk-str">"Días: "</span>))
+<span class="tk-kw">except</span> <span class="tk-cls">ValueError</span>:
+    <span class="tk-fn">print</span>(<span class="tk-str">"Eso no es un número. Escribe un entero."</span>)
+<span class="tk-kw">else</span>:
+    <span class="tk-fn">print</span>(<span class="tk-str">f"Préstamo de {dias} días registrado"</span>)
+<span class="tk-kw">finally</span>:
+    <span class="tk-fn">print</span>(<span class="tk-str">"Fin de la operación"</span>)</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>try</code></dt>
+      <dd>El bloque que puede fallar. Solo lo que está dentro.</dd>
+    </div>
+    <div>
+      <dt><code>except</code></dt>
+      <dd>Lo que se hace cuando falla. Se escribe el <strong>tipo de error concreto</strong>: <code>ValueError</code>, <code>TypeError</code>, <code>KeyError</code>, <code>ZeroDivisionError</code>.</dd>
+    </div>
+    <div>
+      <dt><code>else</code></dt>
+      <dd>Se ejecuta solo si el <code>try</code> <strong>no</strong> falló. Es donde va el código que depende del valor que se acaba de leer.</dd>
+    </div>
+    <div>
+      <dt><code>finally</code></dt>
+      <dd>Se ejecuta siempre, haya pasado lo que haya. Es el sitio para cerrar archivos o escribir en el registro.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — nunca captures «cualquier error»</span>
+    <p>
+      Escribir <code>except:</code> a secas, o <code>except Exception:</code>, para «no complicarse»
+      es un error grave: también captura errores de programación que no tienen nada que ver con lo
+      que el usuario escribió, y los esconde. Si el error es de tipado, el programa tiene un fallo
+      que hay que arreglar, no un dato malo que hay que perdonar. Captura <strong>solo el error que
+      sabes que puede ocurrir</strong>, y deja que los demás se vean.
+    </p>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — lanzar un error propio</span>
+    <p>
+      Cuando tu código detecta un dato que no debería aceptarse, no lo corrijas en silencio:
+      <strong>lanza un error</strong> con un mensaje que explique qué pasó. <code>raise
+      ValueError("El préstamo no puede ser de 0 días")</code>. Esa línea corta el flujo, y el mensaje
+      es lo que el usuario o el registro del servidor acaba viendo. En las clases siguientes, la
+      biblioteca Pydantic hará esto mismo por ti y de forma automática.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué imprime <code>for n in range(1, 4): print(n)</code>?</p>
+      <button class="opcion" data-op="a">1, 2, 3, 4</button>
+      <button class="opcion" data-op="b">0, 1, 2, 3</button>
+      <button class="opcion" data-op="c">1, 2, 3</button>
+      <button class="opcion" data-op="d">1, 2, 3, 4, 5</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Qué hace el <code>else</code> que puede ir después de un <code>for</code>?</p>
+      <button class="opcion" data-op="a">Se ejecuta cuando la condición del <code>for</code> es falsa</button>
+      <button class="opcion" data-op="b">Se ejecuta solo si el ciclo terminó sin un <code>break</code></button>
+      <button class="opcion" data-op="c">Es lo mismo que el <code>else</code> de un <code>if</code></button>
+      <button class="opcion" data-op="d">Python no lo permite: es un error de sintaxis</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Por qué conviene escribir <code>except ValueError</code> y no <code>except</code> a secas?</p>
+      <button class="opcion" data-op="a">Porque así solo se capturan los errores previstos y los fallos de programación siguen visibles</button>
+      <button class="opcion" data-op="b">Porque <code>except</code> a secas no funciona en Python 3</button>
+      <button class="opcion" data-op="c">Porque <code>ValueError</code> es el único error que produce <code>int()</code></button>
+      <button class="opcion" data-op="d">Porque así el programa es más rápido</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Cuál de estas expresiones es una comprensión válida?</p>
+      <button class="opcion" data-op="a"><code>[x for x in range(10) if x &gt; 5]</code></button>
+      <button class="opcion" data-op="b"><code>{x: x * 2 for x in range(10)}</code> — porque un diccionario no admite comprensión</button>
+      <button class="opcion" data-op="c"><code>[x if x &gt; 5 for x in range(10)]</code></button>
+      <button class="opcion" data-op="d"><code>{x: x * 2 for x in range(10)}</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: Sintaxis esencial</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de lectura</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija por
+      escrito lo que has leído hasta ahora.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora.
+    </p>
+
+    <div class="reglas">
+      <div class="regla">
+        <h4>Regla 20-20-20</h4>
+        <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+      </div>
+      <div class="regla">
+        <h4>Movimiento</h4>
+        <p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p>
+      </div>
+      <div class="regla">
+        <h4>Hidratación</h4>
+        <p>Un vaso de agua. La lectura densa agota más de lo que parece.</p>
+      </div>
+      <div class="regla">
+        <h4>Bitácora</h4>
+        <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora de lectura (5 minutos)</h3>
+
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿qué diferencia hay entre una variable y su valor?</li>
+    <li><strong>En una frase:</strong> ¿por qué <code>input()</code> devuelve siempre texto?</li>
+    <li><strong>En una frase:</strong> ¿qué problema resuelve el bloque <code>try</code>?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+
+  <p>
+    Estas siete palabras aparecerán en el taller final. Léelas ahora; las definiciones son
+    aproximadas y se afinarán en las unidades siguientes.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>Variable</dt>
+      <dd>Una etiqueta que apunta a un valor. El valor puede cambiar de tipo a lo largo del programa.</dd>
+    </div>
+    <div>
+      <dt>Anotación de tipo</dt>
+      <dd>Una declaración de intenciones escrita después del nombre de la variable: <code>dias: int</code>.</dd>
+    </div>
+    <div>
+      <dt>Bloque</dt>
+      <dd>Conjunto de líneas sangradas que dependen de la instrucción que las precede.</dd>
+    </div>
+    <div>
+      <dt>Ámbito</dt>
+      <dd>La parte del programa donde una variable existe. Las que se crean dentro de una función se destruyen al terminar.</dd>
+    </div>
+    <div>
+      <dt>Iterable</dt>
+      <dd>Cualquier cosa que se pueda recorrer con un <code>for</code>: una lista, un texto, un diccionario.</dd>
+    </div>
+    <div>
+      <dt>Comprensión</dt>
+      <dd>Un ciclo de una sola instrucción escrito entre corchetes, que produce una colección.</dd>
+    </div>
+    <div>
+      <dt>Excepción</dt>
+      <dd>Un error que interrumpe el flujo del programa y que se puede capturar con <code>except</code>.</dd>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: Estructuras de control</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Ejercicio práctico →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — EJERCICIO: CALCULADORA DE PRÉSTAMOS
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · Taller de aplicación</div>
+    <h2>Ejercicio 5.1 · <em>Calculadora de préstamos</em></h2>
+    <p class="proposito">
+      Las tres unidades anteriores dieron el vocabulario, la forma y el control del flujo. Ahora toca
+      juntarlos en un programa que alguien vaya a usar de verdad. En 35 minutos escribirás una
+      calculadora de préstamos que no se caiga cuando alguien escriba mal.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: script de consola con validación</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>Calculadora de préstamos de la biblioteca</h3>
+    </div>
+
+    <p>
+      La biblioteca del colegio quiere saber, de un vistazo, cuánto cuesta cada préstamo y si este
+      necesita autorización. Escribe un programa de consola, <code>calculadora.py</code>, que pida
+      los datos del préstamo y muestre un resumen.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Datos que pide</strong></td>
+            <td>Título del libro, nombre del estudiante y número de días del préstamo</td>
+          </tr>
+          <tr>
+            <td><strong>Regla de días</strong></td>
+            <td>Entre 1 y 30 días. Cualquier otro valor se rechaza y se vuelve a preguntar</td>
+          </tr>
+          <tr>
+            <td><strong>Regla de autorización</strong></td>
+            <td>Más de 15 días exige autorización del coordinador</td>
+          </tr>
+          <tr>
+            <td><strong>Multa por retraso</strong></td>
+            <td>500 pesos por cada día de retraso</td>
+          </tr>
+          <tr>
+            <td><strong>Salida esperada</strong></td>
+            <td>Un resumen con los tres datos, el aviso de autorización cuando aplica y la multa</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong>Constantes con nombre.</strong> El límite de días, el umbral de autorización y la
+        multa viven en tres constantes en mayúsculas —<code>MAX_DIAS</code>,
+        <code>DIAS_SIN_AUTORIZACION</code> y <code>MULTA_POR_DIA</code>—, nunca escritos dentro de
+        los cálculos.
+      </li>
+      <li>
+        <strong>Una función que lee y valida los días.</strong> Se llama <code>leer_dias()</code>, no
+        recibe parámetros y devuelve un <code>int</code>. Si el usuario escribe texto o un valor
+        fuera del rango, el programa explica el problema y vuelve a preguntar.
+      </li>
+      <li>
+        <strong>Una función que muestra el resumen.</strong> Se llama <code>mostrar_resumen()</code>,
+        recibe el título, el estudiante y los días, y no devuelve nada.
+      </li>
+      <li>
+        <strong>Anotaciones de tipo en todas las funciones</strong>, incluido el tipo de retorno:
+        <code>-&gt; int</code>, <code>-&gt; None</code>.
+      </li>
+      <li>
+        <strong>Una cadena de documentación</strong> en cada función, que explique en una frase qué
+        hace.
+      </li>
+      <li>
+        <strong>Una función <code>main()</code></strong> que ordene el flujo, y al final del archivo
+        la línea <code>if __name__ == "__main__":</code> que la ejecuta.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-5-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-5-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        No es la única manera de resolverlo. Lo que importa es que las tres reglas —rango de días,
+        umbral de autorización y multa— estén escritas <em>una sola vez</em> y que la validación
+        no se pueda saltar.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>calculadora.py — solución de referencia</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-str">""</span><span class="tk-str">"Calculadora de préstamos de la biblioteca del colegio."</span><span class="tk-str">""</span>
+
+<span class="tk-cls">MAX_DIAS</span> = <span class="tk-num">30</span>
+<span class="tk-cls">DIAS_SIN_AUTORIZACION</span> = <span class="tk-num">15</span>
+<span class="tk-cls">MULTA_POR_DIA</span> = <span class="tk-num">500</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">leer_dias</span>() -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">""</span><span class="tk-str">"Pide los días del préstamo y vuelve a preguntar si no son válidos."</span><span class="tk-str">""</span>
+    <span class="tk-kw">while</span> <span class="tk-kw">True</span>:
+        texto = <span class="tk-fn">input</span>(<span class="tk-str">"¿Cuántos días dura el préstamo? "</span>)
+        <span class="tk-kw">try</span>:
+            dias = <span class="tk-fn">int</span>(texto)
+        <span class="tk-kw">except</span> <span class="tk-cls">ValueError</span>:
+            <span class="tk-fn">print</span>(<span class="tk-str">"Eso no es un número entero. Escribe solo el número."</span>)
+            <span class="tk-kw">continue</span>
+        <span class="tk-kw">if</span> <span class="tk-kw">not</span> <span class="tk-num">1</span> &lt;= dias &lt;= <span class="tk-cls">MAX_DIAS</span>:
+            <span class="tk-fn">print</span>(f<span class="tk-str">"El préstamo debe durar entre 1 y {MAX_DIAS} días."</span>)
+            <span class="tk-kw">continue</span>
+        <span class="tk-kw">return</span> dias
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">mostrar_resumen</span>(titulo: <span class="tk-cls">str</span>, estudiante: <span class="tk-cls">str</span>, dias: <span class="tk-cls">int</span>) -&gt; <span class="tk-kw">None</span>:
+    <span class="tk-str">""</span><span class="tk-str">"Imprime el resumen del préstamo."</span><span class="tk-str">""</span>
+    <span class="tk-fn">print</span>()
+    <span class="tk-fn">print</span>(<span class="tk-str">"=== Resumen del préstamo ==="</span>)
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Libro:      {titulo}"</span>)
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Estudiante: {estudiante}"</span>)
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Días:       {dias}"</span>)
+    <span class="tk-kw">if</span> dias &gt; <span class="tk-cls">DIAS_SIN_AUTORIZACION</span>:
+        <span class="tk-fn">print</span>(<span class="tk-str">"Aviso: este préstamo necesita autorización del coordinador."</span>)
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Multa por día de retraso: {MULTA_POR_DIA} pesos"</span>)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">main</span>() -&gt; <span class="tk-kw">None</span>:
+    titulo = <span class="tk-fn">input</span>(<span class="tk-str">"Título del libro: "</span>).<span class="tk-fn">strip</span>()
+    estudiante = <span class="tk-fn">input</span>(<span class="tk-str">"Nombre del estudiante: "</span>).<span class="tk-fn">strip</span>()
+    dias = <span class="tk-fn">leer_dias</span>()
+    <span class="tk-fn">mostrar_resumen</span>(titulo, estudiante, dias)
+
+
+<span class="tk-kw">if</span> __name__ == <span class="tk-str">"__main__"</span>:
+    <span class="tk-fn">main</span>()</code></pre>
+  </div>
+
+      <p>
+        <strong>Una variación habitual:</strong> muchos programadores alivian el bloque
+        <code>try</code> usando <code>int()</code> dentro de una función aparte que devuelve
+        <code>None</code> cuando falla. Es correcta, pero exige una comprobación extra en el
+        llamador. La versión de arriba es más simple porque el bucle vive dentro de la función que
+        valida.
+      </p>
+    </div>
+  </div>
+
+  <h3>5.2 · Antes de escribir: el modelo de datos</h3>
+
+  <p class="primer-párrafo">
+    Un ejercicio de programación no empieza escribiendo: empieza decidiendo <strong>qué datos
+    existen</strong> y <strong>de quién es cada dato</strong>. Si esa decisión se toma antes, el
+    código sale solo.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Los datos de la calculadora, antes de escribirlos</caption>
+      <thead>
+        <tr><th>Dato</th><th>Tipo</th><th>Quién lo pone</th><th>Por qué ese tipo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>MAX_DIAS</code></td>
+          <td><span class="familia">int</span></td>
+          <td>El bibliotecario, al escribir el código</td>
+          <td>Es una regla del colegio, no un dato de este préstamo</td>
+        </tr>
+        <tr>
+          <td><code>titulo</code></td>
+          <td><span class="familia">str</span></td>
+          <td>El estudiante</td>
+          <td>Viene del teclado, y el teclado solo produce texto</td>
+        </tr>
+        <tr>
+          <td><code>estudiante</code></td>
+          <td><span class="familia">str</span></td>
+          <td>El estudiante</td>
+          <td>También viene del teclado</td>
+        </tr>
+        <tr>
+          <td><code>dias</code></td>
+          <td><span class="familia">int</span></td>
+          <td>El estudiante</td>
+          <td>Un número de días es entero; se convierte con <code>int()</code></td>
+        </tr>
+        <tr>
+          <td><code>devuelto</code></td>
+          <td><span class="familia">bool</span></td>
+          <td>El sistema</td>
+          <td>La pregunta «¿ya volvió el libro?» solo tiene dos respuestas</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>calculadora.py — las reglas del negocio</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cls">MAX_DIAS</span> = <span class="tk-num">30</span>
+<span class="tk-cls">DIAS_SIN_AUTORIZACION</span> = <span class="tk-num">15</span>
+<span class="tk-cls">MULTA_POR_DIA</span> = <span class="tk-num">500</span></code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — por qué las constantes van arriba y en mayúsculas</span>
+    <p>
+      Python no tiene una palabra clave para declarar constantes: una constante es <em>una
+      convención</em>. Se escribe en mayúsculas para que cualquier persona que lea el archivo sepa
+      que ese valor no debe cambiar, y se coloca arriba para que las reglas del negocio se puedan
+      leer de un tirón. Cuando en la clase 5 el servidor reciba peticiones de verdad, esas mismas
+      constantes serán las que use Pydantic para validar.
+    </p>
+  </div>
+
+  <h3>5.3 · Ejemplo guiado 5.1 — Tres decisiones que hay que tomar antes de escribir (10 min)</h3>
+
+  <div class="ejemplo">
+    <div class="ejemplo-cabecera">
+      <span class="titulo">Ejemplo guiado <b>5.1</b> — Decidir antes de teclear</span>
+      <span class="titulo" style="color:var(--texto-3)">10 min</span>
+    </div>
+    <div class="ejemplo-cuerpo">
+      <p>
+        El enunciado de la biblioteca es corto, pero esconden tres decisiones de programación. Resolverlas
+        por escrito antes de abrir el editor es lo que separa un programa que funciona de uno que
+        funciona <em>bien</em>.
+      </p>
+
+      <div class="paso">
+        <span class="n">1</span>
+        <div class="cuerpo-paso">
+          <strong>¿Qué entra y qué sale?</strong>
+          <p>
+            Entran tres datos: título, estudiante y días. Sale un texto: el resumen. Ningún dato
+            intermedio se muestra a medio camino. Si decides esto, ya sabes que <code>leer_dias()</code>
+            devuelve un número y que <code>mostrar_resumen()</code> no devuelve nada.
+          </p>
+          <p class="observacion">
+            <b>Regla:</b> una función que devuelve algo se puede probar sola. Una que solo imprime,
+            no. Por eso la que valida devuelve el valor y la que muestra no devuelve nada.
+          </p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">2</span>
+        <div class="cuerpo-paso">
+          <strong>¿Quién valida?</strong>
+          <p>
+            La validación puede vivir dentro de <code>leer_dias()</code> o repartida por el programa.
+            Si vive dentro de la función, es imposible saltársela: quien llama recibe un
+            <code>int</code> válido o no recibe nada. Esa es la diferencia entre <em>validar</em> y
+            <em>confiar en que el usuario se portó bien</em>.
+          </p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">3</span>
+        <div class="cuerpo-paso">
+          <strong>¿Qué hace <code>main()</code>?</strong>
+          <p>
+            Solo tres cosas, en este orden: pedir el título, pedir el estudiante, pedir los días. Y
+            después, mostrar el resumen. Todo lo demás —validar, calcular, imprimir— vive en las
+            funciones. <code>main()</code> se lee como la lista de pasos del programa, y esa es
+            exactamente su función.
+          </p>
+          <p class="observacion">
+            <b>Por qué importa:</b> cuando el programa crezca, <code>main()</code> seguirá siendo
+            legible. Un <code>main()</code> de 200 líneas es la señal de que las funciones están
+            mal repartidas.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>5.4 · La validación que no se puede saltar</h3>
+
+  <p>
+    La parte más difícil del ejercicio es el bucle de validación. La estructura tiene tres piezas
+    que ya conoces, montadas una dentro de otra.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>calculadora.py — leer y validar los días</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">leer_dias</span>() -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">""</span><span class="tk-str">"Pide los días del préstamo y vuelve a preguntar si no son válidos."</span><span class="tk-str">""</span>
+    <span class="tk-kw">while</span> <span class="tk-kw">True</span>:
+        texto = <span class="tk-fn">input</span>(<span class="tk-str">"¿Cuántos días dura el préstamo? "</span>)
+        <span class="tk-kw">try</span>:
+            dias = <span class="tk-fn">int</span>(texto)
+        <span class="tk-kw">except</span> <span class="tk-cls">ValueError</span>:
+            <span class="tk-fn">print</span>(<span class="tk-str">"Eso no es un número entero. Escribe solo el número."</span>)
+            <span class="tk-kw">continue</span>
+        <span class="tk-kw">if</span> <span class="tk-kw">not</span> <span class="tk-num">1</span> &lt;= dias &lt;= <span class="tk-cls">MAX_DIAS</span>:
+            <span class="tk-fn">print</span>(f<span class="tk-str">"El préstamo debe durar entre 1 y {MAX_DIAS} días."</span>)
+            <span class="tk-kw">continue</span>
+        <span class="tk-kw">return</span> dias</code></pre>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — <code>continue</code> y <code>break</code> dentro del bucle</span>
+    <p>
+      Los dos caminos de error se resuelven con palabras distintas. Un <code>continue</code>
+      <strong>vuelve al principio del bucle</strong>: el programa vuelve a preguntar, que es lo que
+      queremos cuando el usuario se equivocaba. Un <code>break</code> <strong>sale del bucle</strong>:
+      tiene sentido cuando ya tienes el dato bueno y solo querías abandonar una búsqueda. En
+      <code>leer_dias()</code> ninguno de los dos caminos usa <code>break</code>: cuando el valor es
+      válido, la función devuelve y el bucle termina solo.
+    </p>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el error que se repite cada tres minutos</span>
+    <p>
+      Si el <code>try</code> no tiene un <code>except</code> que capture <code>ValueError</code>, el
+      programa se cae en cuanto alguien escriba letras. Y si el <code>except</code> captura
+      <code>Exception</code> a secas, el programa nunca se caerá… pero tampoco te avisará de los
+      errores de programación, que son los que de verdad hay que arreglar. Captura
+      <strong>el error que sabes que puede ocurrir</strong>, y solo ese.
+    </p>
+  </div>
+
+  <h3>5.5 · Comprobación: la salida real</h3>
+
+  <p>
+    Este es el texto que produce el programa del modelo cuando alguien escribe mal dos veces. La
+    segunda pregunta no es un error: es el programa funcionando.
+  </p>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — uv run python calculadora.py</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">Título del libro: El principito</div>
+      <div class="consola-entrada">Nombre del estudiante: Ana Torres</div>
+      <div class="consola-entrada">¿Cuántos días dura el préstamo? quince</div>
+      <div class="consola-salida">Eso no es un número entero. Escribe solo el número.</div>
+      <div class="consola-entrada">¿Cuántos días dura el préstamo? 40</div>
+      <div class="consola-salida">El préstamo debe durar entre 1 y 30 días.</div>
+      <div class="consola-entrada">¿Cuántos días dura el préstamo? 20</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-salida">=== Resumen del préstamo ===</div>
+      <div class="consola-salida">Libro:      El principito</div>
+      <div class="consola-salida">Estudiante: Ana Torres</div>
+      <div class="consola-salida">Días:       20</div>
+      <div class="consola-salida">Aviso: este préstamo necesita autorización del coordinador.</div>
+      <div class="consola-salida">Multa por día de retraso: 500 pesos</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Por qué <code>leer_dias()</code> está dentro de un <code>while True</code>?</p>
+      <button class="opcion" data-op="a">Porque <code>while True</code> es la forma de escribir un <code>if</code> en Python</button>
+      <button class="opcion" data-op="b">Porque el programa tiene que volver a preguntar hasta que el usuario dé un valor válido</button>
+      <button class="opcion" data-op="c">Porque <code>int()</code> no puede leer del teclado</button>
+      <button class="opcion" data-op="d">Porque las constantes necesitan un bucle para definirse</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué hace exactamente la línea <code>continue</code> dentro del <code>except</code>?</p>
+      <button class="opcion" data-op="a">Termina el programa con un mensaje de error</button>
+      <button class="opcion" data-op="b">Salta el resto del programa y vuelve al primer <code>try</code></button>
+      <button class="opcion" data-op="c">Convierte el texto inválido en el número 0</button>
+      <button class="opcion" data-op="d">Vuelve al principio del bucle, de modo que se vuelve a preguntar</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuál es la diferencia entre <code>return dias</code> y <code>break</code> dentro de <code>leer_dias()</code>?</p>
+      <button class="opcion" data-op="a"><code>return</code> entrega el valor a quien llamó la función; <code>break</code> solo interrumpe el bucle</button>
+      <button class="opcion" data-op="b">No hay diferencia: las dos palabras hacen lo mismo</button>
+      <button class="opcion" data-op="c"><code>break</code> entrega el valor y <code>return</code> interrumpe el bucle</button>
+      <button class="opcion" data-op="d">Las dos palabras están obsoletas desde Python 3.10</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Por qué <code>MAX_DIAS</code> es una constante y no un número escrito dentro del <code>if</code>?</p>
+      <button class="opcion" data-op="a">Porque Python no permite escribir números dentro de un <code>if</code></button>
+      <button class="opcion" data-op="b">Porque las constantes se ejecutan más rápido</button>
+      <button class="opcion" data-op="c">Porque la regla está escrita una sola vez y se puede cambiar sin tocar la lógica</button>
+      <button class="opcion" data-op="d">Porque <code>MAX_DIAS</code> solo puede contener texto</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: Ejercicio práctico →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — EJERCICIO: ANALIZADOR DE REGISTROS
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · Taller de aplicación</div>
+    <h2>Ejercicio 6.1 · <em>Analizador de registros</em></h2>
+    <p class="proposito">
+      El primer ejercicio leyó datos de una persona. Este los lee de un archivo, que es como
+      funcionan las cosas de verdad: muchos registros, ninguno conocido de antemano. Es el
+      momento de que los diccionarios, las funciones y las comprensiones trabajen juntos.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: programa que resume un mes de préstamos</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>Analizador de un mes de préstamos</h3>
+    </div>
+
+    <p>
+      La biblioteca guarda un registro de cada préstamo del mes. Escribe un programa,
+      <code>analizador.py</code>, que lea ese registro y responda cinco preguntas: cuántos préstamos
+      hubo, qué libro se prestó más, cuál fue el promedio de días, cuántos siguen sin devolverse y
+      cuántos estudiantes distintos participaron.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>Una lista de préstamos. Cada préstamo es un diccionario con cuatro claves: <code>estudiante</code>, <code>titulo</code>, <code>dias</code> y <code>devuelto</code></td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>Un diccionario con los cinco indicadores y, además, la lista de los préstamos pendientes</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Cada cálculo va en su propia función. Las funciones no imprimen: devuelven valores</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>El programa tiene que funcionar con el registro vacío, sin romperse</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>La última línea del archivo es <code>if __name__ == "__main__":</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong>Cinco funciones de cálculo</strong>: <code>total_prestamos()</code>,
+        <code>titulo_mas_prestado()</code>, <code>promedio_dias()</code>,
+        <code>prestamos_vencidos()</code> y <code>resumen()</code>. Cada una recibe la lista de
+        préstamos y devuelve un valor.
+      </li>
+      <li>
+        <strong>Una función <code>main()</code></strong> que llame a las otras, muestre los cinco
+        indicadores y después liste los préstamos pendientes, uno por línea.
+      </li>
+      <li>
+        <strong>Anotaciones de tipo en todas las funciones</strong> y una cadena de documentación en
+        cada una.
+      </li>
+      <li>
+        <strong>El registro vacío no rompe nada</strong>: <code>promedio_dias()</code> devuelve
+        <code>0.0</code> y <code>titulo_mas_prestado()</code> devuelve <code>None</code>.
+      </li>
+      <li>
+        <strong>Una comparación con tolerancia para el promedio</strong>, si decides mostrarlo con dos
+        decimales: <code>{promedio:.2f}</code>.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-6-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-6-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La parte interesante de este ejercicio es <code>titulo_mas_prestado()</code>: cuenta cuántas
+        veces aparece cada título y devuelve el mayor conteo. La forma de hacerlo con un
+        <strong>contador en un diccionario</strong> es la que se usa en la práctica.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>analizador.py — solución de referencia</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-str">""</span><span class="tk-str">"Analizador de un mes de préstamos de la biblioteca."</span><span class="tk-str">""</span>
+
+<span class="tk-cls">PRESTAMOS</span> = [
+    {<span class="tk-str">"estudiante"</span>: <span class="tk-str">"Ana Torres"</span>, <span class="tk-str">"titulo"</span>: <span class="tk-str">"El principito"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">15</span>, <span class="tk-str">"devuelto"</span>: <span class="tk-kw">True</span>},
+    {<span class="tk-str">"estudiante"</span>: <span class="tk-str">"Luis Díaz"</span>, <span class="tk-str">"titulo"</span>: <span class="tk-str">"Cien años de soledad"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">30</span>, <span class="tk-str">"devuelto"</span>: <span class="tk-kw">False</span>},
+    {<span class="tk-str">"estudiante"</span>: <span class="tk-str">"Sara Ríos"</span>, <span class="tk-str">"titulo"</span>: <span class="tk-str">"El principito"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">7</span>, <span class="tk-str">"devuelto"</span>: <span class="tk-kw">True</span>},
+    {<span class="tk-str">"estudiante"</span>: <span class="tk-str">"Julián Mora"</span>, <span class="tk-str">"titulo"</span>: <span class="tk-str">"Pedro Páramo"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">22</span>, <span class="tk-str">"devuelto"</span>: <span class="tk-kw">False</span>},
+    {<span class="tk-str">"estudiante"</span>: <span class="tk-str">"Ana Torres"</span>, <span class="tk-str">"titulo"</span>: <span class="tk-str">"Pedro Páramo"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">9</span>, <span class="tk-str">"devuelto"</span>: <span class="tk-kw">True</span>},
+    {<span class="tk-str">"estudiante"</span>: <span class="tk-str">"Carla Restrepo"</span>, <span class="tk-str">"titulo"</span>: <span class="tk-str">"La casa de los espíritus"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">12</span>, <span class="tk-str">"devuelto"</span>: <span class="tk-kw">True</span>},
+]
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">total_prestamos</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">""</span><span class="tk-str">"Cuenta cuántos préstamos hay en el registro."</span><span class="tk-str">""</span>
+    <span class="tk-kw">return</span> <span class="tk-fn">len</span>(prestamos)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">titulo_mas_prestado</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">str</span> | <span class="tk-kw">None</span>:
+    <span class="tk-str">""</span><span class="tk-str">"Devuelve el título del libro que más veces se prestó."</span><span class="tk-str">""</span>
+    conteo: <span class="tk-cls">dict</span>[<span class="tk-cls">str</span>, <span class="tk-cls">int</span>] = {}
+    <span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> prestamos:
+        titulo = prestamo[<span class="tk-str">"titulo"</span>]
+        conteo[titulo] = conteo.<span class="tk-fn">get</span>(titulo, <span class="tk-num">0</span>) + <span class="tk-num">1</span>
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> conteo:
+        <span class="tk-kw">return</span> <span class="tk-kw">None</span>
+    <span class="tk-kw">return</span> <span class="tk-fn">max</span>(conteo, key=<span class="tk-kw">lambda</span> titulo: conteo[titulo])
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">promedio_dias</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">float</span>:
+    <span class="tk-str">""</span><span class="tk-str">"Calcula el promedio de días de préstamo."</span><span class="tk-str">""</span>
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> prestamos:
+        <span class="tk-kw">return</span> <span class="tk-num">0.0</span>
+    <span class="tk-kw">return</span> <span class="tk-fn">sum</span>(p[<span class="tk-str">"dias"</span>] <span class="tk-kw">for</span> p <span class="tk-kw">in</span> prestamos) / <span class="tk-fn">len</span>(prestamos)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">prestamos_vencidos</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]:
+    <span class="tk-str">""</span><span class="tk-str">"Devuelve los préstamos que todavía no se devolvieron."</span><span class="tk-str">""</span>
+    <span class="tk-kw">return</span> [p <span class="tk-kw">for</span> p <span class="tk-kw">in</span> prestamos <span class="tk-kw">if</span> <span class="tk-kw">not</span> p[<span class="tk-str">"devuelto"</span>]]
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">resumen</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">dict</span>:
+    <span class="tk-str">""</span><span class="tk-str">"Reúne todos los indicadores del mes en un solo diccionario."</span><span class="tk-str">""</span>
+    <span class="tk-kw">return</span> {
+        <span class="tk-str">"total"</span>: <span class="tk-fn">total_prestamos</span>(prestamos),
+        <span class="tk-str">"titulo_mas_prestado"</span>: <span class="tk-fn">titulo_mas_prestado</span>(prestamos),
+        <span class="tk-str">"promedio_dias"</span>: <span class="tk-fn">promedio_dias</span>(prestamos),
+        <span class="tk-str">"vencidos"</span>: <span class="tk-fn">len</span>(<span class="tk-fn">prestamos_vencidos</span>(prestamos)),
+        <span class="tk-str">"estudiantes"</span>: <span class="tk-fn">len</span>({p[<span class="tk-str">"estudiante"</span>] <span class="tk-kw">for</span> p <span class="tk-kw">in</span> prestamos}),
+    }
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">main</span>() -&gt; <span class="tk-kw">None</span>:
+    datos = <span class="tk-fn">resumen</span>(<span class="tk-cls">PRESTAMOS</span>)
+    <span class="tk-fn">print</span>(<span class="tk-str">"=== Resumen del mes ==="</span>)
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Préstamos registrados:  {datos['total']}"</span>)
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Libro más prestado:     {datos['titulo_mas_prestado']}"</span>)
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Promedio de días:       {datos['promedio_dias']:.1f}"</span>)
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Préstamos sin devolver: {datos['vencidos']}"</span>)
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Estudiantes distintos:  {datos['estudiantes']}"</span>)
+
+    <span class="tk-fn">print</span>(<span class="tk-str">"\nPendientes:"</span>)
+    <span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> <span class="tk-fn">prestamos_vencidos</span>(<span class="tk-cls">PRESTAMOS</span>):
+        <span class="tk-fn">print</span>(f<span class="tk-str">"  - {prestamo['titulo']} ({prestamo['estudiante']})"</span>)
+
+
+<span class="tk-kw">if</span> __name__ == <span class="tk-str">"__main__"</span>:
+    <span class="tk-fn">main</span>()</code></pre>
+  </div>
+
+      <p>
+        <strong>Una variación más corta</strong> para el título más prestado, aunque pierde el
+        orden estable en caso de empate:
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>analizador.py — la variante breve</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">titulo_mas_prestado</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">str</span> | <span class="tk-kw">None</span>:
+    <span class="tk-str">""</span><span class="tk-str">"Variante breve: cuenta con count() y se queda con el mayor conteo."</span><span class="tk-str">""</span>
+    titulos = [p[<span class="tk-str">"titulo"</span>] <span class="tk-kw">for</span> p <span class="tk-kw">in</span> prestamos]
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> titulos:
+        <span class="tk-kw">return</span> <span class="tk-kw">None</span>
+    <span class="tk-kw">return</span> <span class="tk-fn">max</span>(<span class="tk-fn">set</span>(titulos), key=titulos.count)</code></pre>
+  </div>
+
+      <p>
+        <strong>Por qué la primera es mejor:</strong> <code>max()</code> con
+        <code>key=titulos.count</code> recorre un <code>set</code>, y el orden de un conjunto no
+        está garantizado; en un empate puede devolver cualquiera de los dos títulos. Con el
+        diccionario de conteo, el orden es el de inserción y el resultado es siempre el mismo.
+        En un informe que se imprime dos veces, eso no es un detalle menor.
+      </p>
+    </div>
+  </div>
+
+  <h3>6.2 · El registro: un diccionario por préstamo</h3>
+
+  <p class="primer-párrafo">
+    Un registro es un préstamo con sus datos. Como cada préstamo tiene siempre las mismas cuatro
+    cosas, la forma natural de guardarlo es un <strong>diccionario con claves fijas</strong>: el
+    nombre del estudiante, el título del libro, los días y si ya volvió.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>analizador.py — el registro del mes</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cls">PRESTAMOS</span> = [
+    {<span class="tk-str">"estudiante"</span>: <span class="tk-str">"Ana Torres"</span>, <span class="tk-str">"titulo"</span>: <span class="tk-str">"El principito"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">15</span>, <span class="tk-str">"devuelto"</span>: <span class="tk-kw">True</span>},
+    {<span class="tk-str">"estudiante"</span>: <span class="tk-str">"Luis Díaz"</span>, <span class="tk-str">"titulo"</span>: <span class="tk-str">"Cien años de soledad"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">30</span>, <span class="tk-str">"devuelto"</span>: <span class="tk-kw">False</span>},
+    {<span class="tk-str">"estudiante"</span>: <span class="tk-str">"Sara Ríos"</span>, <span class="tk-str">"titulo"</span>: <span class="tk-str">"El principito"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">7</span>, <span class="tk-str">"devuelto"</span>: <span class="tk-kw">True</span>},
+    {<span class="tk-str">"estudiante"</span>: <span class="tk-str">"Julián Mora"</span>, <span class="tk-str">"titulo"</span>: <span class="tk-str">"Pedro Páramo"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">22</span>, <span class="tk-str">"devuelto"</span>: <span class="tk-kw">False</span>},
+    {<span class="tk-str">"estudiante"</span>: <span class="tk-str">"Ana Torres"</span>, <span class="tk-str">"titulo"</span>: <span class="tk-str">"Pedro Páramo"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">9</span>, <span class="tk-str">"devuelto"</span>: <span class="tk-kw">True</span>},
+    {<span class="tk-str">"estudiante"</span>: <span class="tk-str">"Carla Restrepo"</span>, <span class="tk-str">"titulo"</span>: <span class="tk-str">"La casa de los espíritus"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">12</span>, <span class="tk-str">"devuelto"</span>: <span class="tk-kw">True</span>},
+]</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las cuatro claves de cada préstamo</caption>
+      <thead>
+        <tr><th>Clave</th><th>Tipo</th><th>Qué significa</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>estudiante</code></td>
+          <td><span class="familia">str</span></td>
+          <td>Quién se llevó el libro</td>
+          <td><code>"Ana Torres"</code></td>
+        </tr>
+        <tr>
+          <td><code>titulo</code></td>
+          <td><span class="familia">str</span></td>
+          <td>Qué libro se prestó</td>
+          <td><code>"El principito"</code></td>
+        </tr>
+        <tr>
+          <td><code>dias</code></td>
+          <td><span class="familia">int</span></td>
+          <td>Cuánto dura el préstamo</td>
+          <td><code>15</code></td>
+        </tr>
+        <tr>
+          <td><code>devuelto</code></td>
+          <td><span class="familia">bool</span></td>
+          <td>Si el libro ya volvió a la estantería</td>
+          <td><code>True</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — por qué un diccionario y no cinco variables sueltas</span>
+    <p>
+      Podrías guardar <code>estudiante_1</code>, <code>titulo_1</code>, <code>dias_1</code>… y
+      añadir un <code>_2</code>, un <code>_3</code>. Funciona hasta el tercer préstamo. En el
+      cuarto, el código se vuelve imposible de escribir y de leer. El diccionario resuelve el
+      problema de raíz: <strong>el número de registros deja de estar escrito en el código</strong>,
+      y por eso el mismo programa sirve para seis préstamos o para seis mil.
+    </p>
+  </div>
+
+  <h3>6.3 · Recorrer un diccionario</h3>
+
+  <p>
+    Un diccionario se recorre de dos formas, y conviene saber cuál se está usando en cada momento.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — recorrer diccionarios</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>prestamo = {"estudiante": "Ana Torres", "titulo": "El principito", "dias": 15}
+
+<span class="tk-cm"># 1. Por las claves: devuelve el nombre de cada clave</span>
+<span class="tk-kw">for</span> clave <span class="tk-kw">in</span> prestamo:
+    <span class="tk-fn">print</span>(clave)                  <span class="tk-cm"># estudiante, titulo, dias</span>
+
+<span class="tk-cm"># 2. Por los pares: devuelve la clave y el valor juntos</span>
+<span class="tk-kw">for</span> clave, valor <span class="tk-kw">in</span> prestamo.<span class="tk-fn">items</span>():
+    <span class="tk-fn">print</span>(clave, <span class="tk-str">"="</span>, valor)
+
+<span class="tk-cm"># 3. Acceder a una clave que puede no existir</span>
+<span class="tk-fn">print</span>(prestamo.<span class="tk-fn">get</span>(<span class="tk-str">"multa"</span>, <span class="tk-num">0</span>))      <span class="tk-cm"># 0 — el valor por defecto</span>
+<span class="tk-fn">print</span>(prestamo[<span class="tk-str">"multa"</span>])                <span class="tk-cm"># KeyError — el programa se cae</span></code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>prestamo["multa"]</code> no es lo mismo que <code>prestamo.get("multa")</code></span>
+    <p>
+      Con corchetes, si la clave no existe, Python lanza <code>KeyError</code> y el programa se
+      detiene. Con <code>.get()</code>, si la clave no existe, devuelve el valor por defecto que le
+      indiques. En un backend que recibe datos de fuera, esa diferencia es la que separa «este
+      registro no trae esa información» de «este programa tiene un fallo».
+    </p>
+  </div>
+
+  <h3>6.4 · Contar y quedarse con el máximo</h3>
+
+  <p>
+    Contar cuántas veces aparece cada título es un problema clásico: se recorre la lista y se
+    guarda el conteo en un diccionario. Después, se busca el mayor conteo.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>analizador.py — contar títulos y quedarse con el máximo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">titulo_mas_prestado</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">str</span> | <span class="tk-kw">None</span>:
+    <span class="tk-str">""</span><span class="tk-str">"Devuelve el título del libro que más veces se prestó."</span><span class="tk-str">""</span>
+    conteo: <span class="tk-cls">dict</span>[<span class="tk-cls">str</span>, <span class="tk-cls">int</span>] = {}
+    <span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> prestamos:
+        titulo = prestamo[<span class="tk-str">"titulo"</span>]
+        conteo[titulo] = conteo.<span class="tk-fn">get</span>(titulo, <span class="tk-num">0</span>) + <span class="tk-num">1</span>
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> conteo:
+        <span class="tk-kw">return</span> <span class="tk-kw">None</span>
+    <span class="tk-kw">return</span> <span class="tk-fn">max</span>(conteo, key=<span class="tk-kw">lambda</span> titulo: conteo[titulo])</code></pre>
+  </div>
+
+  <p>
+    La línea final merece un aparte. <code>max(conteo, key=...)</code> no compara los títulos:
+    compara <strong>lo que devuelve la función</strong>. Es decir, busca la clave cuyo conteo es el
+    más alto, y devuelve la clave.
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — <code>key=</code> es un comparador, no un filtro</span>
+    <p>
+      <code>max()</code> y <code>min()</code> aceptan <code>key=</code>, y lo que reciben es una
+      función que dice <strong>qué comparar</strong>. En el ejemplo, la clave es
+      <code>lambda titulo: conteo[titulo]</code>: para cada título, mira su conteo; el título con
+      el conteo más alto gana. Con <code>min()</code> y la misma función se obtiene el título menos
+      prestado. Es el mismo mecanismo, en dos direcciones.
+    </p>
+  </div>
+
+  <h3>6.5 · Comprobación: la salida real</h3>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — uv run python analizador.py</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">uv run python analizador.py</div>
+      <div class="consola-salida">=== Resumen del mes ===</div>
+      <div class="consola-salida">Préstamos registrados:  6</div>
+      <div class="consola-salida">Libro más prestado:     El principito</div>
+      <div class="consola-salida">Promedio de días:       15.8</div>
+      <div class="consola-salida">Préstamos sin devolver: 2</div>
+      <div class="consola-salida">Estudiantes distintos:  5</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-salida">Pendientes:</div>
+      <div class="consola-salida">  - Cien años de soledad (Luis Díaz)</div>
+      <div class="consola-salida">  - Pedro Páramo (Julián Mora)</div>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — el promedio no es un entero</span>
+    <p>
+      <code>15.8</code> es el resultado de dividir 95 entre 6. Y <code>95 / 6</code> en Python da
+      un <code>float</code> siempre, aunque el resultado sea exacto: <code>4 / 2</code> da
+      <code>2.0</code>, no <code>2</code>. Si necesitas un entero, usa <code>//</code>. Y si vas a
+      mostrar el promedio en un informe, el especificador <code>:.1f</code> lo deja en un decimal:
+      <code>f"{promedio:.1f}"</code>.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué devuelve <code>prestamo.get("multa", 0)</code> si el préstamo no tiene esa clave?</p>
+      <button class="opcion" data-op="a">Lanza un <code>KeyError</code> y el programa se detiene</button>
+      <button class="opcion" data-op="b">Devuelve <code>None</code></button>
+      <button class="opcion" data-op="c">Devuelve <code>0</code>, que es el valor por defecto</button>
+      <button class="opcion" data-op="d">Añade la clave <code>multa</code> al diccionario</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué hace <code>max(conteo, key=lambda titulo: conteo[titulo])</code>?</p>
+      <button class="opcion" data-op="a">Devuelve la clave con el mayor valor asociado en <code>conteo</code></button>
+      <button class="opcion" data-op="b">Devuelve el número más grande que hay como clave</button>
+      <button class="opcion" data-op="c">Añade al diccionario la clave con el conteo más alto</button>
+      <button class="opcion" data-op="d">Devuelve una lista con todas las claves ordenadas</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Por qué el enunciado pide que las funciones devuelvan valores en vez de imprimirlos?</p>
+      <button class="opcion" data-op="a">Porque <code>print()</code> es una función obsoleta</button>
+      <button class="opcion" data-op="b">Porque así cada cálculo se puede probar por separado y combinar con otros</button>
+      <button class="opcion" data-op="c">Porque las funciones que imprimen no pueden tener anotaciones de tipo</button>
+      <button class="opcion" data-op="d">Porque Python no permite imprimir dentro de una función</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Qué tiene que hacer <code>promedio_dias()</code> cuando recibe una lista vacía?</p>
+      <button class="opcion" data-op="a">Lanzar un <code>ZeroDivisionError</code></button>
+      <button class="opcion" data-op="b">Devolver <code>None</code></button>
+      <button class="opcion" data-op="c">Devolver <code>0</code>, porque es el promedio de cero préstamos</button>
+      <button class="opcion" data-op="d">Devolver <code>0.0</code> sin romperse, comprobando la lista antes de dividir</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: Calculadora de préstamos</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller integrador →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER INTEGRADOR
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>El módulo <em>prestamos.py</em></h2>
+    <p class="proposito">
+      En 45 minutos vas a reunir todo lo de la clase en un solo archivo de Python: el modelo de
+      datos, las reglas de validación, el menú y el resumen. Al final tendrás el módulo que el
+      servidor de la clase 5 va a usar tal cual.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller integrador</b></span>
+      <span>🧭 <b>Producto: módulo completo y documentado</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El encargo</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Encargo</span>
+      <h3>Módulo de préstamos de la biblioteca</h3>
+    </div>
+
+    <p>
+      La biblioteca no quiere un programa de consola suelto: quiere un <strong>módulo</strong> que
+      otros programas puedan usar. El archivo <code>prestamos.py</code> tendrá las reglas de la
+      biblioteca escritas dentro, y un menú que permita registrar préstamos y ver el resumen del
+      mes.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Contenido</strong></td>
+            <td>Un módulo de Python con las constantes, seis funciones y un menú de tres opciones</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción de diseño</strong></td>
+            <td>Ninguna función imprime y devuelve a la vez: o imprime, o devuelve</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción técnica</strong></td>
+            <td>Todo lleva anotaciones de tipo y cadena de documentación</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción de robustez</strong></td>
+            <td>Ningún dato inválido puede llegar al registro: la función que valida lanza <code>ValueError</code></td>
+          </tr>
+          <tr>
+            <td><strong>Restricción del taller</strong></td>
+            <td>No hay base de datos todavía: el registro vive en memoria, mientras el programa corre</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li>
+        <strong>Las constantes</strong> <code>MAX_DIAS</code>, <code>DIAS_SIN_AUTORIZACION</code> y
+        <code>MULTA_POR_DIA</code>, arriba del todo, con un comentario que explique cada una.
+      </li>
+      <li>
+        <strong><code>validar_dias(dias)</code></strong>: devuelve los días si cumplen la regla y
+        lanza <code>ValueError</code> con un mensaje explicativo si no la cumplen.
+      </li>
+      <li>
+        <strong><code>crear_prestamo(estudiante, titulo, dias)</code></strong>: devuelve el
+        diccionario del préstamo, ya validado y con los espacios sobrantes quitados.
+      </li>
+      <li>
+        <strong><code>registrar_prestamo(registro, prestamo)</code></strong>,
+        <code>prestamos_vencidos(registro)</code>, <code>titulo_mas_prestado(registro)</code> y
+        <code>resumen(registro)</code>: las cuatro funciones que manejan el registro.
+      </li>
+      <li>
+        <strong><code>main()</code></strong> con un menú de tres opciones: registrar un préstamo,
+        ver el resumen del mes y salir. El menú se repite hasta que el usuario elige salir.
+      </li>
+      <li>
+        <strong>Un párrafo escrito</strong> de unas 120 palabras: qué decidiste tú y qué decidiste
+        el enunciado, y por qué. Si tuviste que apartarte de alguna regla, explica por qué.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="taller-solucion">Ver un modelo de respuesta</button>
+
+    <div class="solucion" id="taller-solucion">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        El módulo completo, tal como quedaría en <code>prestamos.py</code>. Las seis funciones de
+        abajo son las que usará el servidor de la clase siguiente.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>prestamos.py — solución de referencia</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-str">""</span>"<span class="tk-cls">Módulo</span> de préstamos de la biblioteca <span class="tk-kw">del</span> colegio.
+
+<span class="tk-cls">Reúne</span> el modelo de datos, la validación de las reglas y el resumen <span class="tk-kw">del</span> mes.
+<span class="tk-str">""</span>"
+
+<span class="tk-cls">MAX_DIAS</span> = <span class="tk-num">30</span>
+<span class="tk-cls">DIAS_SIN_AUTORIZACION</span> = <span class="tk-num">15</span>
+<span class="tk-cls">MULTA_POR_DIA</span> = <span class="tk-num">500</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">validar_dias</span>(dias: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">""</span>"<span class="tk-cls">Comprueba</span> que la duración <span class="tk-kw">del</span> préstamo sea admisible.
+
+    <span class="tk-cls">Devuelve</span> los días si la regla se cumple. <span class="tk-cls">Si</span> no se cumple, lanza un error
+    explicando qué está mal.
+    <span class="tk-str">""</span>"
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> <span class="tk-fn">isinstance</span>(dias, <span class="tk-cls">int</span>):
+        <span class="tk-kw">raise</span> <span class="tk-cls">TypeError</span>(<span class="tk-str">"Los días deben ser un número entero."</span>)
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> <span class="tk-num">1</span> &lt;= dias &lt;= <span class="tk-cls">MAX_DIAS</span>:
+        <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(f<span class="tk-str">"El préstamo debe durar entre 1 y {MAX_DIAS} días."</span>)
+    <span class="tk-kw">return</span> dias
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">crear_prestamo</span>(estudiante: <span class="tk-cls">str</span>, titulo: <span class="tk-cls">str</span>, dias: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">dict</span>:
+    <span class="tk-str">""</span>"<span class="tk-cls">Arma</span> el registro de un préstamo nuevo.
+
+    <span class="tk-cls">Devuelve</span> un diccionario con cuatro claves: estudiante, titulo, dias y devuelto.
+    <span class="tk-str">""</span>"
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> estudiante.<span class="tk-fn">strip</span>():
+        <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"El nombre del estudiante no puede estar vacío."</span>)
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> titulo.<span class="tk-fn">strip</span>():
+        <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"El título del libro no puede estar vacío."</span>)
+    <span class="tk-kw">return</span> {
+        <span class="tk-str">"estudiante"</span>: estudiante.<span class="tk-fn">strip</span>(),
+        <span class="tk-str">"titulo"</span>: titulo.<span class="tk-fn">strip</span>(),
+        <span class="tk-str">"dias"</span>: <span class="tk-fn">validar_dias</span>(dias),
+        <span class="tk-str">"devuelto"</span>: <span class="tk-kw">False</span>,
+    }
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">registrar_prestamo</span>(registro: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>], prestamo: <span class="tk-cls">dict</span>) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]:
+    <span class="tk-str">""</span><span class="tk-str">"Añade el préstamo al registro y devuelve la lista actualizada."</span><span class="tk-str">""</span>
+    registro.<span class="tk-fn">append</span>(prestamo)
+    <span class="tk-kw">return</span> registro
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">titulo_mas_prestado</span>(registro: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">str</span> | <span class="tk-kw">None</span>:
+    <span class="tk-str">""</span><span class="tk-str">"Devuelve el título del libro que más veces se prestó."</span><span class="tk-str">""</span>
+    conteo: <span class="tk-cls">dict</span>[<span class="tk-cls">str</span>, <span class="tk-cls">int</span>] = {}
+    <span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> registro:
+        titulo = prestamo[<span class="tk-str">"titulo"</span>]
+        conteo[titulo] = conteo.<span class="tk-fn">get</span>(titulo, <span class="tk-num">0</span>) + <span class="tk-num">1</span>
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> conteo:
+        <span class="tk-kw">return</span> <span class="tk-kw">None</span>
+    <span class="tk-kw">return</span> <span class="tk-fn">max</span>(conteo, key=<span class="tk-kw">lambda</span> titulo: conteo[titulo])
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">prestamos_vencidos</span>(registro: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]:
+    <span class="tk-str">""</span><span class="tk-str">"Devuelve los préstamos que todavía no se devolvieron."</span><span class="tk-str">""</span>
+    <span class="tk-kw">return</span> [p <span class="tk-kw">for</span> p <span class="tk-kw">in</span> registro <span class="tk-kw">if</span> <span class="tk-kw">not</span> p[<span class="tk-str">"devuelto"</span>]]
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">resumen</span>(registro: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">dict</span>:
+    <span class="tk-str">""</span><span class="tk-str">"Calcula los indicadores del mes."</span><span class="tk-str">""</span>
+    promedio = <span class="tk-fn">sum</span>(p[<span class="tk-str">"dias"</span>] <span class="tk-kw">for</span> p <span class="tk-kw">in</span> registro) / <span class="tk-fn">len</span>(registro) <span class="tk-kw">if</span> registro <span class="tk-kw">else</span> <span class="tk-num">0.0</span>
+    <span class="tk-kw">return</span> {
+        <span class="tk-str">"total"</span>: <span class="tk-fn">len</span>(registro),
+        <span class="tk-str">"promedio_dias"</span>: promedio,
+        <span class="tk-str">"titulo_mas_prestado"</span>: <span class="tk-fn">titulo_mas_prestado</span>(registro),
+        <span class="tk-str">"vencidos"</span>: <span class="tk-fn">len</span>(<span class="tk-fn">prestamos_vencidos</span>(registro)),
+    }
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">main</span>() -&gt; <span class="tk-kw">None</span>:
+    registro: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>] = []
+
+    <span class="tk-kw">while</span> <span class="tk-kw">True</span>:
+        <span class="tk-fn">print</span>(<span class="tk-str">"\n1. Registrar un préstamo"</span>)
+        <span class="tk-fn">print</span>(<span class="tk-str">"2. Ver el resumen del mes"</span>)
+        <span class="tk-fn">print</span>(<span class="tk-str">"3. Salir"</span>)
+        opcion = <span class="tk-fn">input</span>(<span class="tk-str">"Elige una opción: "</span>).<span class="tk-fn">strip</span>()
+
+        <span class="tk-kw">if</span> opcion == <span class="tk-str">"3"</span>:
+            <span class="tk-fn">print</span>(<span class="tk-str">"Hasta pronto."</span>)
+            <span class="tk-kw">break</span>
+
+        <span class="tk-kw">if</span> opcion == <span class="tk-str">"2"</span>:
+            datos = <span class="tk-fn">resumen</span>(registro)
+            <span class="tk-kw">if</span> datos[<span class="tk-str">"total"</span>] == <span class="tk-num">0</span>:
+                <span class="tk-fn">print</span>(<span class="tk-str">"Todavía no hay préstamos registrados."</span>)
+            <span class="tk-kw">else</span>:
+                <span class="tk-fn">print</span>(f<span class="tk-str">"Préstamos registrados:  {datos['total']}"</span>)
+                <span class="tk-fn">print</span>(f<span class="tk-str">"Promedio de días:       {datos['promedio_dias']:.1f}"</span>)
+                <span class="tk-fn">print</span>(f<span class="tk-str">"Libro más prestado:     {datos['titulo_mas_prestado']}"</span>)
+                <span class="tk-fn">print</span>(f<span class="tk-str">"Sin devolver:           {datos['vencidos']}"</span>)
+            <span class="tk-kw">continue</span>
+
+        <span class="tk-kw">if</span> opcion == <span class="tk-str">"1"</span>:
+            nombre = <span class="tk-fn">input</span>(<span class="tk-str">"Nombre del estudiante: "</span>).<span class="tk-fn">strip</span>()
+            titulo = <span class="tk-fn">input</span>(<span class="tk-str">"Título del libro: "</span>).<span class="tk-fn">strip</span>()
+            <span class="tk-kw">try</span>:
+                dias = <span class="tk-fn">int</span>(<span class="tk-fn">input</span>(<span class="tk-str">"Días del préstamo: "</span>))
+            <span class="tk-kw">except</span> <span class="tk-cls">ValueError</span>:
+                <span class="tk-fn">print</span>(<span class="tk-str">"Los días deben escribirse como número entero."</span>)
+                <span class="tk-kw">continue</span>
+            <span class="tk-kw">try</span>:
+                prestamo = <span class="tk-fn">crear_prestamo</span>(nombre, titulo, dias)
+            <span class="tk-kw">except</span> (<span class="tk-cls">TypeError</span>, <span class="tk-cls">ValueError</span>) <span class="tk-kw">as</span> error:
+                <span class="tk-fn">print</span>(f<span class="tk-str">"No se pudo registrar: {error}"</span>)
+                <span class="tk-kw">continue</span>
+            <span class="tk-fn">registrar_prestamo</span>(registro, prestamo)
+            <span class="tk-fn">print</span>(<span class="tk-str">"Préstamo registrado."</span>)
+            <span class="tk-kw">continue</span>
+
+        <span class="tk-fn">print</span>(<span class="tk-str">"Opción no válida."</span>)
+
+
+<span class="tk-kw">if</span> __name__ == <span class="tk-str">"__main__"</span>:
+    <span class="tk-fn">main</span>()</code></pre>
+  </div>
+
+      <p>
+        <strong>El párrafo escrito (modelo):</strong> el enunciado pedía un módulo, no un programa
+        suelto, así que decidí que ninguna función imprimiera: todas devuelven valores y es
+        <code>main()</code> la que muestra los resultados. Aparté la validación del menú y la puse
+        en <code>validar_dias()</code>, porque desde ahí la regla no se puede saltarse. Mantuve el
+        registro en memoria porque todavía no hay base de datos; cuando la haya, esa lista pasará a
+        ser una consulta y las funciones de cálculo no tendrán que cambiar.
+      </p>
+    </div>
+  </div>
+
+  <h3>7.2 · La estructura del módulo</h3>
+
+  <p>
+    Un módulo bien organizado se lee de arriba abajo como una historia: primero las reglas, luego
+    las piezas, y al final el programa que las usa.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>estructura — prestamos.py</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>prestamos.py
+│
+├── Constants          MAX_DIAS, DIAS_SIN_AUTORIZACION, MULTA_POR_DIA
+│
+├── Validacion         validar_dias()
+│
+├── Modelo             crear_prestamo(), registrar_prestamo()
+│
+├── Analisis           titulo_mas_prestado(), prestamos_vencidos(), resumen()
+│
+└── Programa           main() + la linea que lo ejecuta</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las seis funciones del módulo y sus contratos</caption>
+      <thead>
+        <tr><th>Función</th><th>Qué hace</th><th>Qué devuelve</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>validar_dias(dias)</code></td>
+          <td>Comprueba la regla de duración</td>
+          <td>Los días, o lanza <code>ValueError</code></td>
+        </tr>
+        <tr>
+          <td><code>crear_prestamo(...)</code></td>
+          <td>Arma el registro de un préstamo</td>
+          <td>Un diccionario de cuatro claves</td>
+        </tr>
+        <tr>
+          <td><code>registrar_prestamo(...)</code></td>
+          <td>Añade el préstamo al registro</td>
+          <td>La lista del registro, actualizada</td>
+        </tr>
+        <tr>
+          <td><code>titulo_mas_prestado(...)</code></td>
+          <td>Cuenta y busca el título más prestado</td>
+          <td>El título, o <code>None</code> si no hay préstamos</td>
+        </tr>
+        <tr>
+          <td><code>prestamos_vencidos(...)</code></td>
+          <td>Filtra los que no han vuelto</td>
+          <td>Una lista de préstamos</td>
+        </tr>
+        <tr>
+          <td><code>resumen(registro)</code></td>
+          <td>Reúne los indicadores del mes</td>
+          <td>Un diccionario con cuatro claves</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.3 · Las dos reglas que un backend no puede saltarse</h3>
+
+  <p>
+    Hay una diferencia entre un programa de escritorio y un servidor. En el escritorio, si el
+    usuario escribe mal, el problema es suyo y el programa puede pedirle que lo repita. En un
+    servidor, los datos llegan de la red, y lo que llega mal hay que rechazarlo <strong>con un
+    mensaje que el otro programa pueda entender</strong>. Para eso existe <code>raise</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>prestamos.py — la función que valida</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">validar_dias</span>(dias: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">""</span>"<span class="tk-cls">Comprueba</span> que la duración <span class="tk-kw">del</span> préstamo sea admisible.
+
+    <span class="tk-cls">Devuelve</span> los días si la regla se cumple. <span class="tk-cls">Si</span> no se cumple, lanza un error
+    explicando qué está mal.
+    <span class="tk-str">""</span>"
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> <span class="tk-fn">isinstance</span>(dias, <span class="tk-cls">int</span>):
+        <span class="tk-kw">raise</span> <span class="tk-cls">TypeError</span>(<span class="tk-str">"Los días deben ser un número entero."</span>)
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> <span class="tk-num">1</span> &lt;= dias &lt;= <span class="tk-cls">MAX_DIAS</span>:
+        <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(f<span class="tk-str">"El préstamo debe durar entre 1 y {MAX_DIAS} días."</span>)
+    <span class="tk-kw">return</span> dias</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — un detalle que casi nadie ve: <code>True</code> también es un entero</span>
+    <p>
+      La comprobación <code>isinstance(dias, int)</code> acepta <code>True</code>, porque
+      <code>bool</code> es una subclase de <code>int</code> — lo viste en la unidad 1 —. Es decir,
+      <code>validar_dias(True)</code> devuelve <code>True</code> en lugar de fallar. En este
+      módulo no importa: <code>True</code> vale <code>1</code> y <code>1</code> es un préstamo
+      válido. Pero es el tipo de detalle que se convierte en un error real cuando el dato viene de
+      fuera y nadie revisó lo que se guardó. Conviene tenerlo en la cabeza.
+    </p>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — el contrato entre dos programas</span>
+    <p>
+      Cuando <code>crear_prestamo()</code> lanza <code>ValueError</code>, no está fallando: está
+      <strong>cumpliendo su parte del contrato</strong>. Dice: «o te devuelvo un préstamo válido, o
+      te explico por qué no hay préstamo». Quien llama decide qué hacer con ese error. En el taller
+      el menú lo captura con <code>except (TypeError, ValueError)</code> y lo muestra; en la clase
+      siguiente, Pydantic hará exactamente esto mismo por ti, y además.
+    </p>
+  </div>
+
+  <h3>7.4 · Rúbrica de autoevaluación</h3>
+
+  <p>
+    Puntúa cada criterio de 0 a 2 y revisa los que hayas quedado en 0 o 1 antes de dar por terminado
+    el taller.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación del módulo de préstamos</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Constantes</td>
+          <td>Los números están escritos dentro de los cálculos</td>
+          <td>Hay constantes, pero algunas reglas siguen repetidas en el código</td>
+          <td>Las tres reglas están en constantes, arriba, y se usan en todas partes</td>
+        </tr>
+        <tr>
+          <td>Validación</td>
+          <td>No hay validación: cualquier dato entra al registro</td>
+          <td>Hay validación, pero se puede saltar desde otro camino del programa</td>
+          <td>La validación vive en la función y ningún dato inválido llega al registro</td>
+        </tr>
+        <tr>
+          <td>Manejo de errores</td>
+          <td>No hay <code>try</code>, y el programa se cae con cualquier error</td>
+          <td>Se captura <code>Exception</code> a secas, y se esconden errores de verdad</td>
+          <td>Se capturan solo los errores previstos, cada uno con su mensaje</td>
+        </tr>
+        <tr>
+          <td>Funciones</td>
+          <td>Todo el código está en <code>main()</code></td>
+          <td>Hay funciones, pero algunas imprimen y devuelven a la vez</td>
+          <td>Cada función hace una sola cosa: o imprime, o devuelve</td>
+        </tr>
+        <tr>
+          <td>Anotaciones y documentación</td>
+          <td>No hay anotaciones ni cadenas de documentación</td>
+          <td>Hay anotaciones en algunas funciones y la documentación es escueta</td>
+          <td>Todas las funciones están anotadas y documentadas en una frase</td>
+        </tr>
+        <tr>
+          <td>Robustez</td>
+          <td>El programa se rompe con el registro vacío</td>
+          <td>Maneja el registro vacío, pero hay algún otro caso que lo rompe</td>
+          <td>El registro vacío, los títulos repetidos y las entradas inválidas están cubiertos</td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay nada escrito</td>
+          <td>Describe el qué, no el porqué</td>
+          <td>Decisión, motivo, apartamiento del enunciado y consecuencia</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.5 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>Una variable es una etiqueta: lo que importa no es el nombre, sino el valor al que apunta ahora mismo.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p>La anotación de tipo no convierte nada: es una declaración de intenciones que comprueban las herramientas, no el intérprete.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>La indentación es la sintaxis, y el error de sangría es el más frecuente de quien empieza.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p>Los ciclos existen para repetir; las comprenciones existen para repetir <em>una sola instrucción</em>.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p><code>except</code> es una puerta, no una aspiradora: se abre solo para el error que uno sabe que puede ocurrir.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p>Una función que devuelve se puede probar sola; una función que solo imprime, no. Por eso conviene devolver.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p>Un programa que se rompe con datos raros todavía no está terminado: la robustez también se diseña.</p>
+    </div>
+  </div>
+
+  <h3>7.6 · Puente hacia la próxima clase</h3>
+
+  <p>
+    Todo lo que escribiste hoy, a mano, existe porque Python no te obliga a declarar los tipos. La
+    próxima clase es exactamente lo contrario: vas a <strong>declarar los tipos una sola vez</strong>
+    y a que una biblioteca los compruebe por ti.
+  </p>
+
+  <ol>
+    <li>
+      <strong>La validación manual</strong> —el <code>validar_dias()</code> que escribiste— desaparece
+      en la clase 5. En su lugar hay una clase que declara qué es un préstamo válido, y el
+      servidor rechaza lo que no lo sea, con el mismo <code>ValueError</code> que tú escribiste a
+      mano.
+    </li>
+    <li>
+      <strong>Los diccionarios</strong> que usaste como modelo se convierten en clases: un
+      <code>Prestamo</code> con atributos <code>estudiante</code>, <code>titulo</code>,
+      <code>dias</code> y <code>devuelto</code>, donde equivocarse al escribir el nombre de un
+      campo deja de ser posible.
+    </li>
+    <li>
+      <strong>Las funciones que devuelven valores</strong> siguen igual, y son la base de todo: una
+      función de servidor es, en el fondo, una función que recibe datos y devuelve un resultado.
+    </li>
+  </ol>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de la próxima clase</span>
+    <p>
+      Guarda tu taller en un repositorio de Git con un mensaje de commit claro, y comprueba que
+      <code>uv run python prestamos.py</code> arranca y que el menú responde. En la clase siguiente
+      vamos a necesitar esta versión exacta para poder comparar el antes y el después.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 4</h2>
+    <p>
+      Has cerrado el ciclo del servidor: el navegador pide (clase 1), el fragmento llega sin
+      recargar (clase 2), la página se ve bien en cualquier pantalla (clase 3) y ahora el backend
+      decide, con reglas escritas en Python, qué es un préstamo válido. A partir de aquí, la única
+      variable que queda es quién se encarga de comprobar esas reglas.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: Analizador de registros</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 4 · Introducción al lenguaje backend (Python)</span>
+  <p class="pie-sub">Variables y tipos · Sintaxis · Control del flujo · Módulo de préstamos</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
+

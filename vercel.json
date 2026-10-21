@@ -40,6 +40,16 @@
       "source": "/herramientas-prog-ii/siete-curso-htmx-bootstrap/:path*",
       "destination": "/herramientas-prog-ii/tres-curso-css-responsivo/:path*",
       "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/cuatro-curso-repositorio-crud",
+      "destination": "/herramientas-prog-ii/cuatro-curso-python-lenguaje/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/cuatro-curso-repositorio-crud/:path*",
+      "destination": "/herramientas-prog-ii/cuatro-curso-python-lenguaje/:path*",
+      "permanent": true
     }
   ]
 }
