@@ -1,0 +1,2518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 5 · Estructuras repetitivas para automatizar procesos</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 5 · <em>Estructuras repetitivas para automatizar procesos</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura y programa</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">El bucle for</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">El bucle while</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Contadores y acumuladores</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Ejercicio: recuento del mes</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Ejercicio: liquidación</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: informe mensual</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> un módulo que procesa un archivo de préstamos y produce el informe del mes.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>Del trabajo manual al <em>proceso automático</em></h2>
+    <p class="proposito">
+      La clase anterior te dio el lenguaje: variables, tipos, condiciones. Esta clase le da la
+      pieza que convierte un programa en un proceso: <strong>la repetición</strong>. Con ella, un
+      programa deja de hacer una cosa y empieza a hacer diez mil.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: datos listos para trabajar</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · El proceso que hoy se hace a mano</h3>
+
+  <p class="primer-párrafo">
+    Es el último viernes de mes. La bibliotecaria tiene que cerrar el archivo de préstamos. Abre
+    el cuaderno, busca cada préstamo, copia el título en una columna, anota los días en otra, y
+    marca con una rayita los que llevan más de veinte días. Al final tiene que escribir un
+    informe: cuántos préstamos hubo, cuál se prestó más, cuál fue el promedio.
+  </p>
+
+  <p>
+    Con trece préstamos, el trabajo toma un rato. Con trescientos —que es lo que tiene la biblioteca
+    del colegio— toma <strong>una mañana entera</strong>. Y en una mañana entera, es fácil que se
+    escape uno. Un préstamo que no se cuenta no es un error de escritura: es un estudiante que no
+    aparece en el informe, y una multa que no se cobra.
+  </p>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — automatizar no es «hacerlo más rápido»</span>
+    <p>
+      Automatizar un proceso no significa <strong>dedicarse</strong> a hacerlo en menos tiempo: significa
+      <strong>que el proceso se ejecuta siempre igual</strong>. El programa no se distrae, no se
+      salta el préstamo número 147 porque ya está cansado y no confunde el día 20 con el 21. Esa
+      diferencia —<em>velocidad</em> frente a <em>fiabilidad</em>— es la que hace que un proceso
+      automático valga la pena, incluso con tres préstamos.
+    </p>
+  </div>
+
+  <h3>0.2 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cuadro de unidades, tiempos y productos esperados</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura, programa y datos de trabajo</td><td>20 min</td><td>Archivo <code>prestamos.txt</code> listo</td></tr>
+        <tr><td><strong>01</strong></td><td>El bucle <code>for</code>: recorrer lo que ya tienes</td><td>30 min</td><td>Recorridos con <code>range</code>, <code>enumerate</code> y <code>zip</code></td></tr>
+        <tr><td><strong>02</strong></td><td>El bucle <code>while</code>: repetir mientras algo siga siendo cierto</td><td>30 min</td><td>Bucle con estado, <code>break</code> y <code>continue</code></td></tr>
+        <tr><td><strong>03</strong></td><td>Contadores y acumuladores</td><td>30 min</td><td>Los dos patrones y el error de inicialización</td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Ejercicio 5.1 · El recuento del mes</td><td>35 min</td><td>Programa que lee un archivo y produce el recuento</td></tr>
+        <tr><td><strong>06</strong></td><td>Ejercicio 6.1 · Liquidar una deuda</td><td>35 min</td><td>Simulación de pagos diarios con <code>while</code></td></tr>
+        <tr><td><strong>07</strong></td><td>Taller integrador</td><td>45 min</td><td>Módulo <code>informe.py</code> completo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.3 · La idea central de la clase</h3>
+
+  <p>
+    Aquí está la diferencia entre hacer el trabajo a mano y dejarlo en manos de un programa. A mano,
+    el trabajo está escrito <strong>tantas veces como hace falta</strong>. En un programa, se escribe
+    <strong>una vez</strong>, y el programa se encarga de repetirlo.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la misma tarea, escrita de dos maneras</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># A mano: hay que escribir una línea por cada préstamo</span>
+<span class="tk-fn">print</span>(<span class="tk-str">"El principito"</span>)
+<span class="tk-fn">print</span>(<span class="tk-str">"Pedro Páramo"</span>)
+<span class="tk-fn">print</span>(<span class="tk-str">"Cien años de soledad"</span>)
+
+<span class="tk-cm"># Con un bucle: se escribe una vez y se repite por cada elemento</span>
+<span class="tk-kw">for</span> titulo <span class="tk-kw">in</span> [<span class="tk-str">"El principito"</span>, <span class="tk-str">"Pedro Páramo"</span>, <span class="tk-str">"Cien años de soledad"</span>]:
+    <span class="tk-fn">print</span>(titulo)</code></pre>
+  </div>
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — un bucle es una promesa</span>
+    <p>
+      La línea <code>for titulo in prestamos:</code> es una promesa: <em>«esto que sigue se
+      ejecutará una vez por cada elemento de la lista, sin importar cuántos haya»</em>. Quien lee
+      el código no necesita saber cuántos préstamos hay: eso es problema del dato, no del
+      programa. Es el mismo criterio con el que se escribe una función que no sabe cuántos
+      registros vendrán de la base de datos.
+    </p>
+  </div>
+
+  <h3>0.4 · Los datos con los que vas a trabajar</h3>
+
+  <p>
+    Todo el curso usa el mismo archivo: los préstamos de un mes. Cada línea es un préstamo, y los
+    tres datos van separados por punto y coma. Copia el contenido en un archivo llamado
+    <code>prestamos.txt</code>, en la carpeta donde vas a trabajar.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>prestamos.txt — el archivo de datos del mes</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cls">Ana</span> <span class="tk-cls">Torres</span>;<span class="tk-cls">El</span> principito;<span class="tk-num">15</span>
+<span class="tk-cls">Luis</span> <span class="tk-cls">Díaz</span>;<span class="tk-cls">Cien</span> años de soledad;<span class="tk-num">30</span>
+<span class="tk-cls">Sara</span> <span class="tk-cls">Ríos</span>;<span class="tk-cls">El</span> principito;<span class="tk-num">7</span>
+<span class="tk-cls">Julián</span> <span class="tk-cls">Mora</span>;<span class="tk-cls">Pedro</span> <span class="tk-cls">Páramo</span>;<span class="tk-num">22</span>
+<span class="tk-cls">Ana</span> <span class="tk-cls">Torres</span>;<span class="tk-cls">Pedro</span> <span class="tk-cls">Páramo</span>;<span class="tk-num">9</span>
+<span class="tk-cls">Carla</span> <span class="tk-cls">Restrepo</span>;<span class="tk-cls">La</span> casa de los espíritus;<span class="tk-num">12</span>
+<span class="tk-cls">Mateo</span> <span class="tk-cls">Vidal</span>;<span class="tk-cls">Harry</span> <span class="tk-cls">Potter</span> y la piedra filosofal;<span class="tk-num">6</span>
+<span class="tk-cls">Sara</span> <span class="tk-cls">Ríos</span>;<span class="tk-cls">Cien</span> años de soledad;<span class="tk-num">18</span>
+<span class="tk-cls">Julián</span> <span class="tk-cls">Mora</span>;<span class="tk-cls">El</span> principito;<span class="tk-num">11</span>
+<span class="tk-cls">Carla</span> <span class="tk-cls">Restrepo</span>;<span class="tk-cls">Pedro</span> <span class="tk-cls">Páramo</span>;<span class="tk-num">25</span>
+<span class="tk-cls">Mateo</span> <span class="tk-cls">Vidal</span>;<span class="tk-cls">La</span> casa de los espíritus;<span class="tk-num">8</span>
+<span class="tk-cls">Ana</span> <span class="tk-cls">Torres</span>;<span class="tk-cls">Harry</span> <span class="tk-cls">Potter</span> y la piedra filosofal;<span class="tk-num">14</span>
+<span class="tk-cls">Sofía</span> <span class="tk-cls">Núñez</span>;<span class="tk-cls">El</span> principito;<span class="tk-num">6</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — preparar la carpeta de trabajo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Crear la carpeta y entrar en ella</span>
+<span class="tk-fn">mkdir</span> biblioteca
+<span class="tk-fn">cd</span> biblioteca
+
+<span class="tk-cm"># Comprobar que el archivo quedó bien guardado</span>
+<span class="tk-fn">cat</span> prestamos.txt</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — por qué un archivo de texto y no una base de datos</span>
+    <p>
+      Una base de datos es lo que usará el servidor de verdad, pero para aprender a recorrer datos
+      un archivo de texto es mejor: <strong>se ve</strong>. No hay consultas, ni conexiones, ni
+      errores de configuración: lo que hay en el archivo es exactamente lo que entra al
+      programa, línea por línea. Y leer un archivo con Python son cuatro líneas. Cuando el
+      recorrido esté dominado, cambiar el origen de los datos es cambiar dos líneas.
+    </p>
+  </div>
+
+  <h3>0.5 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito estas dos preguntas:</p>
+
+  <ol>
+    <li>¿En qué se diferencia un proceso automatizado de uno hecho a mano, si el automatizado tardara más?</li>
+    <li>Si un archivo tiene trescientos préstamos y el programa solo recorre trece, ¿qué falta?</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: el bucle for →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — EL BUCLE FOR
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · El recorrido</div>
+    <h2>El bucle <em>for</em>: recorrer lo que ya tienes</h2>
+    <p class="proposito">
+      Hay dos maneras de repetir en Python. Esta es la primera y la más frecuente: la que se usa
+      cuando ya sabes <em>qué</em> hay que repetir. Recorrer una lista, un texto, un rango de
+      números. Y los dos ayudantes que evitan el trabajo de contar a mano.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: recorridos con range, enumerate y zip</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · La anatomía de un <code>for</code></h3>
+
+  <p class="primer-párrafo">
+    Un <code>for</code> tiene siempre tres piezas, y conviene saber cómo se llama cada una porque
+    los mensajes de error las nombran.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la anatomía de un for</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>prestamos = [<span class="tk-str">"El principito"</span>, <span class="tk-str">"Pedro Páramo"</span>, <span class="tk-str">"Cien años de soledad"</span>]
+
+<span class="tk-kw">for</span> titulo <span class="tk-kw">in</span> prestamos:
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Préstamo: {titulo}"</span>)</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt>La colección</dt>
+      <dd>Lo que se va a recorrer: una lista, un texto, un diccionario, un rango de números. Puede ser cualquier cosa que se pueda ir tomando elemento a elemento.</dd>
+    </div>
+    <div>
+      <dt>La variable del bucle</dt>
+      <dd>El nombre que recibe cada elemento. En cada vuelta cambia de valor: primero vale lo que había en la primera posición, después en la segunda, y así.</dd>
+    </div>
+    <div>
+      <dt>El cuerpo</dt>
+      <dd>Lo que está sangrado. Se ejecuta una vez por cada elemento de la colección, siempre en el mismo orden.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — la variable del bucle no desaparece al terminar</span>
+    <p>
+      Cuando el bucle acaba, la variable conserva el <strong>último</strong> valor que tuvo. No es
+      un error, pero sí una sorpresa: si después del <code>for</code> escribes
+      <code>print(titulo)</code> y la lista estaba vacía, recibirás un
+      <code>NameError</code>, porque la variable nunca llegó a crearse. Es el mismo aviso que da
+      Python cuando una lista vacía se recorre y luego se usa lo que debería haber salido del
+      bucle.
+    </p>
+  </div>
+
+  <h3>1.2 · Qué se puede recorrer</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Lo que recibe la variable del bucle en cada caso</caption>
+      <thead>
+        <tr><th>Colección</th><th>Qué recibe la variable</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="familia">list</span></td>
+          <td>Cada elemento, uno por uno</td>
+          <td><code>["a", "b"]</code> → «a», «b»</td>
+        </tr>
+        <tr>
+          <td><span class="familia">str</span></td>
+          <td>Cada <strong>carácter</strong>, no cada palabra</td>
+          <td><code>"hola"</code> → «h», «o», «l», «a»</td>
+        </tr>
+        <tr>
+          <td><span class="familia">dict</span></td>
+          <td>Cada <strong>clave</strong>, no cada valor</td>
+          <td><code>{"a": 1}</code> → «a»</td>
+        </tr>
+        <tr>
+          <td><span class="familia">range</span></td>
+          <td>Cada número de la serie</td>
+          <td><code>range(3)</code> → 0, 1, 2</td>
+        </tr>
+        <tr>
+          <td><span class="familia">tuple</span></td>
+          <td>Cada elemento</td>
+          <td><code>(1, 2)</code> → 1, 2</td>
+        </tr>
+        <tr>
+          <td><span class="familia">set</span></td>
+          <td>Cada elemento, <strong>sin orden garantizado</strong></td>
+          <td><code>{1, 2}</code> → sin orden fijo</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — recorrer un diccionario da las claves</span>
+    <p>
+      Es la sorpresa más común del primer día. Si escribes <code>for titulo in prestamos:</code> y
+      <code>prestamos</code> es un diccionario, lo que recibes es el <strong>nombre</strong> de cada
+      clave, no su valor. Para recorrer clave y valor a la vez hay que pedirlo explícitamente:
+      <code>for titulo, dias in prestamos.items():</code>.
+    </p>
+  </div>
+
+  <h3>1.3 · <code>range()</code>: el generador de números</h3>
+
+  <p>
+    Los datos de la biblioteca son textos. Pero casi todos los procesos automáticos empiezan con
+    números, y para eso está <code>range()</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — las tres formas de range</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">for</span> numero <span class="tk-kw">in</span> <span class="tk-fn">range</span>(<span class="tk-num">5</span>):
+    <span class="tk-fn">print</span>(numero)          <span class="tk-cm"># 0, 1, 2, 3, 4</span>
+
+<span class="tk-kw">for</span> numero <span class="tk-kw">in</span> <span class="tk-fn">range</span>(<span class="tk-num">2</span>, <span class="tk-num">6</span>):
+    <span class="tk-fn">print</span>(numero)          <span class="tk-cm"># 2, 3, 4, 5</span>
+
+<span class="tk-kw">for</span> numero <span class="tk-kw">in</span> <span class="tk-fn">range</span>(<span class="tk-num">10</span>, <span class="tk-num">0</span>, -<span class="tk-num">2</span>):
+    <span class="tk-fn">print</span>(numero)          <span class="tk-cm"># 10, 8, 6, 4, 2</span></code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las tres formas de escribir un <code>range</code></caption>
+      <thead>
+        <tr><th>Se escribe</th><th>Produce</th><th>Equivale a</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>range(fin)</code></td><td>De 0 hasta <code>fin - 1</code></td><td><code>range(0, fin, 1)</code></td></tr>
+        <tr><td><code>range(inicio, fin)</code></td><td>De <code>inicio</code> hasta <code>fin - 1</code></td><td><code>range(inicio, fin, 1)</code></td></tr>
+        <tr><td><code>range(inicio, fin, paso)</code></td><td>De <code>inicio</code> hasta <code>fin</code>, de <code>paso</code> en <code>paso</code></td><td>Con incremento o decremento</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — el final queda fuera, siempre</span>
+    <p>
+      <code>range(1, 4)</code> produce <code>1, 2, 3</code>. Nunca el 4. La razón es práctica: si
+      el final fuera incluido, <code>range(10)</code> daría diez números del 0 al 9, y un ciclo
+      <code>for i in range(10)</code> tocaría el índice 10, que no existe. Con el final fuera, el
+      ciclo que recorre una lista de diez elementos usa exactamente los índices del 0 al 9.
+    </p>
+    <p>
+      Y una segunda precisión: <code>range</code> <strong>no construye una lista</strong>. Es un
+      generador: produce los números uno a uno, en el momento en que se necesitan. Por eso
+      <code>range(10**9)</code> no agota la memoria. Si quieres verlo como lista, conviértelo
+      explícitamente: <code>list(range(5))</code>.
+    </p>
+  </div>
+
+  <h3>1.4 · <code>enumerate()</code> y <code>zip()</code>: los dos ayudantes</h3>
+
+  <p>
+    A veces hay que recorrer la lista y además saber en qué posición se está. Y a veces hay dos
+    listas que van de la mano. Escribir eso a mano es la fuente clásica de errores de una posición:
+    el <code>índice + 1</code> que se olvida, el índice que se descuadra. Python trae dos
+    funciones que resuelven ambos casos.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — enumerate y zip</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>titulos = [<span class="tk-str">"El principito"</span>, <span class="tk-str">"Pedro Páramo"</span>, <span class="tk-str">"Cien años de soledad"</span>]
+dias = [<span class="tk-num">15</span>, <span class="tk-num">22</span>, <span class="tk-num">30</span>]
+
+<span class="tk-kw">for</span> posicion, titulo <span class="tk-kw">in</span> <span class="tk-fn">enumerate</span>(titulos, start=<span class="tk-num">1</span>):
+    <span class="tk-fn">print</span>(f<span class="tk-str">"{posicion}. {titulo}"</span>)
+
+<span class="tk-kw">for</span> titulo, duracion <span class="tk-kw">in</span> <span class="tk-fn">zip</span>(titulos, dias):
+    <span class="tk-fn">print</span>(f<span class="tk-str">"{titulo}: {duracion} días"</span>)</code></pre>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — cuándo usar cada ayudante</span>
+    <p>
+      <code>enumerate()</code> cuando necesitas el número de posición <em>y</em> el elemento.
+      <code>zip()</code> cuando dos listas se corresponden una a una: títulos y días, nombres y
+      notas, fechas y cantidades. Y si solo necesitas el elemento, <strong>no uses ninguno de los
+      dos</strong>: el <code>for titulo in titulos:</code> a secas es más corto y más claro.
+    </p>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el <code>range(len(...))</code> que no hace falta</span>
+    <p>
+      Es tentador escribir <code>for i in range(len(lista)):</code> para tener el índice
+      disponible. Si el índice no se usa, es ruido: obliga a leer dos líneas para entender una, y
+      es la causa clásica de los errores «fuera de rango». Escribe <code>for elemento in lista:</code>
+      y, si de verdad necesitas la posición, añade <code>enumerate</code>.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué produce <code>range(2, 9, 3)</code>?</p>
+      <button class="opcion" data-op="a">2, 3, 4, 5, 6, 7, 8, 9</button>
+      <button class="opcion" data-op="b">2, 5, 8</button>
+      <button class="opcion" data-op="c">2, 5, 8, 9</button>
+      <button class="opcion" data-op="d">3, 6, 9</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> Al recorrer un diccionario con un <code>for</code>, ¿qué recibe la variable del bucle?</p>
+      <button class="opcion" data-op="a">Cada valor del diccionario</button>
+      <button class="opcion" data-op="b">Cada par clave-valor como una tupla</button>
+      <button class="opcion" data-op="c">Nada: los diccionarios no se pueden recorrer</button>
+      <button class="opcion" data-op="d">Cada clave del diccionario</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Para qué sirve <code>enumerate()</code>?</p>
+      <button class="opcion" data-op="a">Para recorrer la lista sabiendo la posición de cada elemento</button>
+      <button class="opcion" data-op="b">Para recorrer dos listas a la vez</button>
+      <button class="opcion" data-op="c">Para ordenar la lista de menor a mayor</button>
+      <button class="opcion" data-op="d">Para eliminar los elementos repetidos</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Por qué <code>range</code> no incluye el número final?</p>
+      <button class="opcion" data-op="a">Porque Python no sabe contar hasta el final</button>
+      <button class="opcion" data-op="b">Porque el final siempre es un error de escritura</button>
+      <button class="opcion" data-op="c">Porque así los índices de una lista de <em>n</em> elementos son del 0 al <em>n</em> − 1</button>
+      <button class="opcion" data-op="d">Porque <code>range</code> es una función heredada de versiones antiguas</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: el bucle while →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — EL BUCLE WHILE
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · La condición</div>
+    <h2>El bucle <em>while</em>: repetir mientras algo siga siendo cierto</h2>
+    <p class="proposito">
+      El <code>for</code> se usa cuando sabes cuántas repeticiones hay. El <code>while</code> se usa
+      cuando no lo sabes: repite mientras una condición siga siendo cierta. Esta unidad explica
+      cómo escribirlo sin que se cuelgue, y cómo salir de él a tiempo.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: bucle con estado, break y continue</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · Dos maneras de repetir</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption><code>for</code> y <code>while</code>, lado a lado</caption>
+      <thead>
+        <tr><th></th><th><code>for</code></th><th><code>while</code></th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Lo que sabes</strong></td>
+          <td>Cuántas repeticiones habrá: hay una por cada elemento</td>
+          <td>Solo sabes que hay que repetir <em>mientras</em> algo sea cierto</td>
+        </tr>
+        <tr>
+          <td><strong>La pregunta que responde</strong></td>
+          <td>«¿Qué hay en esta lista?»</td>
+          <td>«¿Cuánto falta para que se cumpla?»</td>
+        </tr>
+        <tr>
+          <td><strong>Ejemplo</strong></td>
+          <td><code>for prestamo in prestamos:</code></td>
+          <td><code>while deuda &gt; 0:</code></td>
+        </tr>
+        <tr>
+          <td><strong>Riesgo</strong></td>
+          <td>Ninguno: el número de vueltas está claro</td>
+          <td>Si la condición nunca deja de cumplirse, no termina nunca</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — no son sinónimos, son dos preguntas distintas</span>
+    <p>
+      La tentación es escribir <code>while</code> para todo, porque parece más flexible. Pero
+      <code>while</code> traslada la responsabilidad de demostrar que el bucle termina: hay que
+      quedarse tres veces. El <code>for</code> termina solo, y eso es una garantía que vale
+      dinero. <strong>Usa <code>for</code> siempre que puedas</strong>, y reserva el
+      <code>while</code> para cuando de verdad no sabes cuántas vueltas hay.
+    </p>
+  </div>
+
+  <h3>2.2 · Las tres piezas de un <code>while</code></h3>
+
+  <p>
+    Todo <code>while</code> que funciona tiene tres piezas. Si falta la tercera, el programa se
+    cuelga; esa es la diferencia entre un bucle y un bucle infinito.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — las tres piezas de un while</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>deuda = <span class="tk-num">1250</span>
+pago_diario = <span class="tk-num">500</span>
+
+<span class="tk-kw">while</span> deuda &gt; <span class="tk-num">0</span>:              <span class="tk-cm"># 1. la condición</span>
+    pago = <span class="tk-fn">min</span>(pago_diario, deuda)
+    deuda -= pago              <span class="tk-cm"># 2. el avance</span>
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Pagaste {pago}, quedan {deuda}"</span>)</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt>1. La condición</dt>
+      <dd>Lo que se comprueba <strong>antes</strong> de cada vuelta. Si es cierta, el cuerpo se ejecuta; si es falsa, el bucle termina.</dd>
+    </div>
+    <div>
+      <dt>2. El cuerpo</dt>
+      <dd>Lo que se repite. Puede haber una instrucción o muchas.</dd>
+    </div>
+    <div>
+      <dt>3. El avance</dt>
+      <dd>La instrucción que cambia el valor que aparece en la condición. <strong>Sin ella, la condición nunca cambia y el bucle no termina.</strong></dd>
+    </div>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el bucle que se cuelga</span>
+    <p>
+      Quitar el avance del ejemplo anterior deja el programa imprimiendo «Pago 1», «Pago 2», «Pago
+      3»… sin parar. Se llama bucle infinito, y es el error más común de quien empieza. Tiene dos
+      caras: si el avance falta, el programa no termina; y si el avance está pero la condición
+      nunca llega a ser falsa, pasa lo mismo. Cuando un programa no parece terminar, lo primero que
+      hay que mirar es <strong>si la variable de la condición está cambiando</strong>.
+    </p>
+  </div>
+
+  <h3>2.3 · <code>break</code> y <code>continue</code></h3>
+
+  <p>
+    A veces el bucle tiene que detenerse antes de tiempo, o saltarse un elemento sin terminar. Para
+    eso hay dos palabras.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — continue: saltar un elemento</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>prestamos = [
+    {<span class="tk-str">"titulo"</span>: <span class="tk-str">"El principito"</span>, <span class="tk-str">"devuelto"</span>: <span class="tk-kw">True</span>},
+    {<span class="tk-str">"titulo"</span>: <span class="tk-str">"Pedro Páramo"</span>, <span class="tk-str">"devuelto"</span>: <span class="tk-kw">False</span>},
+    {<span class="tk-str">"titulo"</span>: <span class="tk-str">"Cien años de soledad"</span>, <span class="tk-str">"devuelto"</span>: <span class="tk-kw">True</span>},
+]
+
+<span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> prestamos:
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> prestamo[<span class="tk-str">"devuelto"</span>]:
+        <span class="tk-kw">continue</span>               <span class="tk-cm"># este no se cuenta: sigue con el siguiente</span>
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Devuelto: {prestamo['titulo']}"</span>)</code></pre>
+  </div>
+
+  <p>
+    Y <code>break</code> hace lo contrario: termina el bucle en cuanto se cumple la condición. Si
+    lo que se busca es el primer elemento que cumple algo, no hace falta seguir mirando.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — break: dejar de buscar</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>catalogo = [<span class="tk-str">"El principito"</span>, <span class="tk-str">"Pedro Páramo"</span>, <span class="tk-str">"Cien años de soledad"</span>]
+
+<span class="tk-kw">for</span> titulo <span class="tk-kw">in</span> catalogo:
+    <span class="tk-kw">if</span> titulo == <span class="tk-str">"Pedro Páramo"</span>:
+        <span class="tk-fn">print</span>(<span class="tk-str">"¡Encontrado!"</span>)
+        <span class="tk-kw">break</span>                   <span class="tk-cm"># deja de buscar: ya lo tiene</span></code></pre>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — <code>break</code> sale, <code>continue</code> salta</span>
+    <p>
+      <code>break</code> <strong>abandona el bucle</strong>: el programa sigue por la línea que hay
+      después del bucle. <code>continue</code> <strong>abandona la vuelta actual</strong> y empieza
+      la siguiente: el resto del cuerpo no se ejecuta. En el ejemplo, <code>continue</code> salta
+      los préstamos que no están devueltos y sigue con el siguiente; <code>break</code> deja de
+      buscar en cuanto encuentra el primero.
+    </p>
+  </div>
+
+  <h3>2.4 · El <code>else</code> del bucle</h3>
+
+  <p>
+    Un detalle de Python que no existe en la mayoría de los lenguajes: el bucle puede llevar un
+    <code>else</code> que se ejecuta <strong>solo si el bucle terminó sin un <code>break</code></strong>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el else del bucle</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>catalogo = [<span class="tk-str">"El principito"</span>, <span class="tk-str">"Cien años de soledad"</span>]
+
+<span class="tk-kw">for</span> titulo <span class="tk-kw">in</span> catalogo:
+    <span class="tk-kw">if</span> titulo == <span class="tk-str">"Pedro Páramo"</span>:
+        <span class="tk-fn">print</span>(<span class="tk-str">"¡Encontrado!"</span>)
+        <span class="tk-kw">break</span>
+<span class="tk-kw">else</span>:
+    <span class="tk-fn">print</span>(<span class="tk-str">"No estaba en el catálogo"</span>)</code></pre>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — el <code>else</code> como detector de «no encontré nada»</span>
+    <p>
+      Es la forma más limpia de expresar una búsqueda que puede no tener resultado. Si el
+      <code>break</code> dispara, significa que lo encontraste y el <code>else</code> no se
+      ejecuta. Si el bucle se recorre entero sin <code>break</code>, no lo encontraste, y el
+      <code>else</code> es el lugar natural para decirlo. Evita la variable bandera, que es la
+      manera larga de hacer lo mismo.
+    </p>
+  </div>
+
+  <h3>2.5 · <code>while True</code> y <code>break</code></h3>
+
+  <p>
+    Hay una forma de <code>while</code> que merece nombre propio: <code>while True</code> con un
+    <code>break</code> dentro. Es el bucle de «haz esto hasta que se cumpla algo», y se usa cuando
+    la condición de salida está en el <em>interior</em> del cuerpo y no se puede expresar arriba.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — while True con break</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">while</span> <span class="tk-kw">True</span>:
+    texto = <span class="tk-fn">input</span>(<span class="tk-str">"Escribe un número: "</span>)
+    <span class="tk-kw">try</span>:
+        numero = <span class="tk-fn">int</span>(texto)
+    <span class="tk-kw">except</span> <span class="tk-cls">ValueError</span>:
+        <span class="tk-fn">print</span>(<span class="tk-str">"Eso no es un número. Inténtalo otra vez."</span>)
+        <span class="tk-kw">continue</span>
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Has escrito {numero}"</span>)
+    <span class="tk-kw">break</span></code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — es el mismo patrón que escribiste en la clase 4</span>
+    <p>
+      La función <code>leer_dias()</code> de la clase anterior era exactamente esto: un
+      <code>while True</code> que repite la pregunta y un <code>break</code> —o un
+      <code>return</code>— en cuanto el valor es válido. Reconocer ese patrón es la diferencia entre
+      escribir bucles que se leen y bucles que se descifran a fuerza de probar.
+    </p>
+  </div>
+
+  <h3>2.6 · Ejemplo guiado 2.1 — Adivinar el número (8 min)</h3>
+
+  <div class="ejemplo">
+    <div class="ejemplo-cabecera">
+      <span class="titulo">Ejemplo guiado <b>2.1</b> — Un bucle que termina</span>
+      <span class="titulo" style="color:var(--texto-3)">8 min</span>
+    </div>
+    <div class="ejemplo-cuerpo">
+      <p>
+        El enunciado es: <em>«el programa piensa un número del 1 al 10 y el jugador adivina; el
+        programa dice si va bien y, cuando acierta, dice en cuántos intentos lo consiguió.»</em>
+      </p>
+
+      <div class="paso">
+        <span class="n">1</span>
+        <div class="cuerpo-paso">
+          <strong>Decidir qué se repite</strong>
+          <p>
+            Se repite la acción de pedir un número. Cuántas veces se repite, no lo sabemos al
+            principio: depende del jugador. Por eso este proceso es un <code>while</code> y no un
+            <code>for</code>.
+          </p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">2</span>
+        <div class="cuerpo-paso">
+          <strong>Escribir la condición y el avance</strong>
+          <p>
+            La condición es «el jugador todavía no ha acertado». El avance es
+            <code>intentos += 1</code>: cada vuelta cuenta un intento más. Si se olvida esa línea,
+            el <code>intentos</code> siempre vale 1 y el programa nunca anuncia la respuesta.
+          </p>
+          <p class="observacion">
+            <b>Piensa:</b> el número de intentos es un <em>contador</em>. Ya has usado el patrón
+            sin darte cuenta: se inicializa antes del bucle y se incrementa dentro.
+          </p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">3</span>
+        <div class="cuerpo-paso">
+          <strong>Decidir cómo se sale</strong>
+          <p>
+            Cuando la propuesta coincide con el número secreto, hay que terminar el bucle. Se hace
+            con <code>break</code>, o con <code>return</code> si la función devuelve el número de
+            intentos. Las dos opciones son correctas; <code>break</code> es la más fácil de ver.
+          </p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="n">4</span>
+        <div class="cuerpo-paso">
+          <strong>Comprobar que termina</strong>
+          <p>
+            Antes de darlo por bueno, pregúntate: «¿hay algún camino en el que la condición siga
+            siendo cierta para siempre?». Si la respuesta es sí, falta algo. En este caso no la
+            hay: <code>break</code> garantiza la salida, y el <code>continue</code> implícito
+            (la vuelta siguiente) no puede volver atrás.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué pieza de un <code>while</code> falta si el programa nunca termina?</p>
+      <button class="opcion" data-op="a">La condición</button>
+      <button class="opcion" data-op="b">El cuerpo</button>
+      <button class="opcion" data-op="c">El avance: la instrucción que cambia el valor de la condición</button>
+      <button class="opcion" data-op="d">Los dos puntos al final de la línea</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué diferencia hay entre <code>break</code> y <code>continue</code>?</p>
+      <button class="opcion" data-op="a"><code>break</code> sale del bucle; <code>continue</code> salta a la siguiente vuelta</button>
+      <button class="opcion" data-op="b"><code>break</code> salta a la siguiente vuelta; <code>continue</code> sale del bucle</button>
+      <button class="opcion" data-op="c">Los dos hacen lo mismo, pero <code>break</code> es más rápido</button>
+      <button class="opcion" data-op="d"><code>continue</code> solo funciona dentro de un <code>for</code></button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Cuándo se ejecuta el <code>else</code> de un bucle?</p>
+      <button class="opcion" data-op="a">Siempre que termina el bucle</button>
+      <button class="opcion" data-op="b">Solo si el bucle terminó sin ejecutar un <code>break</code></button>
+      <button class="opcion" data-op="c">Solo si el bucle se ejecutó al menos una vez</button>
+      <button class="opcion" data-op="d">Nunca: Python no admite un <code>else</code> después de un bucle</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Por qué se prefiere <code>for</code> cuando se sabe cuántas repeticiones hay?</p>
+      <button class="opcion" data-op="a">Porque <code>for</code> es más rápido que <code>while</code></button>
+      <button class="opcion" data-op="b">Porque <code>for</code> permite más instrucciones dentro</button>
+      <button class="opcion" data-op="c">Porque <code>while</code> no admite <code>break</code></button>
+      <button class="opcion" data-op="d">Porque <code>for</code> termina solo: no hay que demostrar que la condición dejará de cumplirse</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: El bucle for</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: contadores y acumuladores →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — CONTADORES Y ACUMULADORES
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · Los patrones</div>
+    <h2>Contadores y <em>acumuladores</em></h2>
+    <p class="proposito">
+      Con el <code>for</code> y el <code>while</code> ya sabes repetir. Ahora vas a aprender para
+      qué: dos patrones que aparecen en todos los procesos automáticos del mundo, y un error de
+      inicialización que costó años de historia de la programación.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: los dos patrones dominados</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · El patrón del contador</h3>
+
+  <p class="primer-párrafo">
+    Un contador responde a una pregunta: <strong>¿cuántas veces ocurre algo?</strong> Se
+    inicializa a cero antes del bucle y se incrementa una unidad cada vez que se cumple la
+    condición.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el patrón del contador</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>prestamos = [
+    {<span class="tk-str">"titulo"</span>: <span class="tk-str">"El principito"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">15</span>},
+    {<span class="tk-str">"titulo"</span>: <span class="tk-str">"Pedro Páramo"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">22</span>},
+    {<span class="tk-str">"titulo"</span>: <span class="tk-str">"Cien años de soledad"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">30</span>},
+]
+
+largos = <span class="tk-num">0</span>
+
+<span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> prestamos:
+    <span class="tk-kw">if</span> prestamo[<span class="tk-str">"dias"</span>] &gt; <span class="tk-num">20</span>:
+        largos += <span class="tk-num">1</span>
+
+<span class="tk-fn">print</span>(f<span class="tk-str">"Préstamos de más de 20 días: {largos}"</span>)</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el contador tiene tres líneas y ni una más</span>
+    <p>
+      Un contador son siempre tres cosas, en este orden: <strong>la declaración antes</strong> del
+      bucle, <strong>el incremento dentro</strong> del bucle, y nada más. Si falta la declaración,
+      el programa falla al empezar; si falta el incremento, el contador siempre vale lo mismo. Es
+      el esqueleto más repetido de la programación, y conviene poder escribirlo sin pensarlo.
+    </p>
+  </div>
+
+  <h3>3.2 · El patrón del acumulador</h3>
+
+  <p>
+    Un acumulador responde a otra pregunta: <strong>¿cuánto suman, en total, todas las
+    cosas?</strong> La estructura es idéntica; lo único que cambia es la operación: en vez de
+    sumar uno, se suma el valor del elemento.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el patrón del acumulador</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>prestamos = [
+    {<span class="tk-str">"titulo"</span>: <span class="tk-str">"El principito"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">15</span>},
+    {<span class="tk-str">"titulo"</span>: <span class="tk-str">"Pedro Páramo"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">22</span>},
+    {<span class="tk-str">"titulo"</span>: <span class="tk-str">"Cien años de soledad"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">30</span>},
+]
+
+total = <span class="tk-num">0</span>
+
+<span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> prestamos:
+    total += prestamo[<span class="tk-str">"dias"</span>]
+
+<span class="tk-fn">print</span>(f<span class="tk-str">"Total de días: {total}"</span>)</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Contador y acumulador, cara a cara</caption>
+      <thead>
+        <tr><th></th><th>Contador</th><th>Acumulador</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Pregunta</strong></td>
+          <td>¿Cuántas veces?</td>
+          <td>¿Cuánto en total?</td>
+        </tr>
+        <tr>
+          <td><strong>Valor inicial</strong></td>
+          <td><code>0</code></td>
+          <td><code>0</code>, o el valor neutro de la operación</td>
+        </tr>
+        <tr>
+          <td><strong>Se actualiza con</strong></td>
+          <td><code>contador += 1</code></td>
+          <td><code>acumulador += valor</code></td>
+        </tr>
+        <tr>
+          <td><strong>Ejemplo</strong></td>
+          <td>Cuántos préstamos superaron los 20 días</td>
+          <td>Cuántos días se prestaron en total</td>
+        </tr>
+        <tr>
+          <td><strong>También sirve para</strong></td>
+          <td>Contar palabras de un texto, días de un mes, errores de un registro</td>
+          <td>Acumular texto, construir una lista, sumar precios</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — el acumulador no siempre empieza en cero</span>
+    <p>
+      El valor inicial del acumulador es el <strong>valor neutro</strong> de la operación que
+      vas a hacer. Para sumar días, es <code>0</code>. Para multiplicar precios, es <code>1</code>.
+      Para concatenar textos, es <code>""</code> (cadena vacía). Empezar en <code>0</code> un
+      acumulador de productos da siempre <code>0</code>, y ese error —el más silencioso de todos—
+      no lanza ningún aviso: el programa simplemente calcula mal.
+    </p>
+  </div>
+
+  <h3>3.3 · El error más frecuente: inicializar dentro del bucle</h3>
+
+  <p>
+    Aquí está el error que casi todo el mundo comete una vez, y que después de una hora de
+    desconcierto resulta evidente. Son las dos versiones del mismo programa.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la versión que falla</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>prestamos = [
+    {<span class="tk-str">"titulo"</span>: <span class="tk-str">"El principito"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">15</span>},
+    {<span class="tk-str">"titulo"</span>: <span class="tk-str">"Pedro Páramo"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">22</span>},
+    {<span class="tk-str">"titulo"</span>: <span class="tk-str">"Cien años de soledad"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">30</span>},
+]
+
+<span class="tk-cm"># Versión que falla: el contador se declara DENTRO del bucle</span>
+<span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> prestamos:
+    <span class="tk-kw">if</span> prestamo[<span class="tk-str">"dias"</span>] &gt; <span class="tk-num">20</span>:
+        largos = <span class="tk-num">0</span>
+        largos += <span class="tk-num">1</span>
+
+<span class="tk-fn">print</span>(largos)          <span class="tk-cm"># 1 — solo cuenta el último, no todos</span></code></pre>
+  </div>
+
+  <p>
+    La versión correcta es la misma, con una línea en otro sitio: la declaración del contador
+    <strong>antes</strong> del bucle, para que cada vuelta sume sobre lo que ya había.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la versión correcta</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>prestamos = [
+    {<span class="tk-str">"titulo"</span>: <span class="tk-str">"El principito"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">15</span>},
+    {<span class="tk-str">"titulo"</span>: <span class="tk-str">"Pedro Páramo"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">22</span>},
+    {<span class="tk-str">"titulo"</span>: <span class="tk-str">"Cien años de soledad"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">30</span>},
+]
+
+<span class="tk-cm"># Versión correcta: se declara ANTES del bucle</span>
+largos = <span class="tk-num">0</span>
+
+<span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> prestamos:
+    <span class="tk-kw">if</span> prestamo[<span class="tk-str">"dias"</span>] &gt; <span class="tk-num">20</span>:
+        largos += <span class="tk-num">1</span>
+
+<span class="tk-fn">print</span>(largos)          <span class="tk-cm"># 2 — cuenta todos</span></code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — por qué la versión mala no da error</span>
+    <p>
+      La versión que inicializa el contador <strong>dentro</strong> del bucle no falla: Python
+      acepta el código y el programa responde <code>1</code> en cada vuelta. Lo que está
+      mal es lo que cuenta: en lugar de contar todos los préstamos, cuenta <strong>los
+      préstamos de la última vuelta</strong>. El contador se reinicia a cero en cada iteración, así
+      que al final solo conserva el valor del último elemento. Es el error más peligroso de esta
+      clase, porque no se ve: el programa funciona, imprime un número y ese número es
+      incorrecto.
+    </p>
+  </div>
+
+  <h3>3.4 · Los atajos que Python ya trae</h3>
+
+  <p>
+    Para algunas operaciones, el bucle ya está escrito. Reconocer cuándo es el caso no solo te
+    ahorra líneas: te ahorra errores.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Atajos y cuándo hacen falta</caption>
+      <thead>
+        <tr><th>Atajo</th><th>Equivale a</th><th>Cuándo hace falta el bucle</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>len(lista)</code></td>
+          <td>Contar elementos</td>
+          <td>Nunca: <code>len()</code> es siempre mejor</td>
+        </tr>
+        <tr>
+          <td><code>sum(lista)</code></td>
+          <td>Acumulador de días</td>
+          <td>Nunca, si solo quieres el total</td>
+        </tr>
+        <tr>
+          <td><code>max(lista)</code> / <code>min(lista)</code></td>
+          <td>Acumulador de máximo o mínimo</td>
+          <td>Nunca, si solo quieres el valor</td>
+        </tr>
+        <tr>
+          <td><code>lista.count(x)</code></td>
+          <td>Contador de un valor concreto</td>
+          <td>Nunca, si solo quieres la cantidad</td>
+        </tr>
+        <tr>
+          <td><code>any(...)</code> / <code>all(...)</code></td>
+          <td>Contador que se convierte en sí o no</td>
+          <td>Nunca, si solo quieres el sí o no</td>
+        </tr>
+        <tr>
+          <td><code>sum(1 for x in ...)</code></td>
+          <td>Contador disfrazado</td>
+          <td>Nunca</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — cuándo el atajo no basta</span>
+    <p>
+      Los atajos dan <strong>un</strong> resultado: el total, el máximo, la cantidad. En cuanto el
+      proceso necesita <strong>dos cosas a la vez</strong> —el total de días <em>y</em> cuántos
+      préstamos hubo— el atajo se queda corto y hay que escribir el bucle. O cuando el acumulador
+      es de otra cosa: <code>sum()</code> suma números, pero no puede contar cuántos textos
+      empiezan por «El». Para eso, un bucle con un contador.
+    </p>
+  </div>
+
+  <h3>3.5 · El acumulador de diccionario: contar por categoría</h3>
+
+  <p>
+    El patrón más útil de todos: un contador que no cuenta del uno al total, sino que cuenta
+    <strong>cuántos hay de cada cosa</strong>. Se necesita un diccionario, porque cada categoría
+    necesita su propia casilla.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el acumulador de diccionario</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>prestamos = [
+    {<span class="tk-str">"titulo"</span>: <span class="tk-str">"El principito"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">15</span>},
+    {<span class="tk-str">"titulo"</span>: <span class="tk-str">"Pedro Páramo"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">22</span>},
+    {<span class="tk-str">"titulo"</span>: <span class="tk-str">"Cien años de soledad"</span>, <span class="tk-str">"dias"</span>: <span class="tk-num">30</span>},
+]
+
+conteo = {}
+
+<span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> prestamos:
+    titulo = prestamo[<span class="tk-str">"titulo"</span>]
+    conteo[titulo] = conteo.<span class="tk-fn">get</span>(titulo, <span class="tk-num">0</span>) + <span class="tk-num">1</span>
+
+<span class="tk-fn">print</span>(conteo)</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>diccionario.get(clave, 0)</code> en lugar de KeyError</span>
+    <p>
+      La línea <code>conteo[titulo] = conteo.get(titulo, 0) + 1</code> dice: «si esta categoría ya
+      existe, súmale uno; si no, empieza en cero y súmale uno». Sin el <code>get</code>, la
+      primera vez que aparece un título el programa falla con <code>KeyError</code>, porque la
+      clave todavía no existe en el diccionario. Es un pequeño detalle que hace toda la
+      diferencia entre un programa que funciona y uno que falla en la primera vuelta.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Dónde debe inicializarse un contador?</p>
+      <button class="opcion" data-op="a">Dentro del bucle, antes de usarlo</button>
+      <button class="opcion" data-op="b">Antes del bucle, para que conserve el total acumulado</button>
+      <button class="opcion" data-op="c">Al final del bucle, después de la última vuelta</button>
+      <button class="opcion" data-op="d">Da igual: el resultado es el mismo</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> Un proceso necesita el total de días <em>y</em> la cantidad de préstamos. ¿Qué conviene?</p>
+      <button class="opcion" data-op="a">Dos llamadas a <code>sum()</code> y <code>len()</code></button>
+      <button class="opcion" data-op="b">Una comprensión, porque es más corta</button>
+      <button class="opcion" data-op="c">Un <code>while</code>, porque necesita dos contadores</button>
+      <button class="opcion" data-op="d">Un bucle con un contador y un acumulador, porque se necesitan las dos cosas</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Por qué el valor inicial de un acumulador que multiplica debe ser <code>1</code> y no <code>0</code>?</p>
+      <button class="opcion" data-op="a">Porque 0 es el valor neutro de la suma, no del producto</button>
+      <button class="opcion" data-op="b">Porque Python no admite un 0 en una variable</button>
+      <button class="opcion" data-op="c">Porque <code>sum()</code> no funciona con ceros</button>
+      <button class="opcion" data-op="d">Porque el bucle no puede empezar en la primera vuelta</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Qué hace <code>conteo.get(titulo, 0) + 1</code>?</p>
+      <button class="opcion" data-op="a">Añade la clave con valor 1 y descarta lo anterior</button>
+      <button class="opcion" data-op="b">Devuelve el número de títulos distintos</button>
+      <button class="opcion" data-op="c">Suma uno al conteo de ese título, empezando en 0 si es la primera vez</button>
+      <button class="opcion" data-op="d">Falla con <code>KeyError</code> si el título no existe</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: El bucle while</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de lectura</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija por
+      escrito lo que has leído hasta ahora.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora.
+    </p>
+
+    <div class="reglas">
+      <div class="regla">
+        <h4>Regla 20-20-20</h4>
+        <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+      </div>
+      <div class="regla">
+        <h4>Movimiento</h4>
+        <p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p>
+      </div>
+      <div class="regla">
+        <h4>Hidratación</h4>
+        <p>Un vaso de agua. La lectura densa agota más de lo que parece.</p>
+      </div>
+      <div class="regla">
+        <h4>Bitácora</h4>
+        <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora de lectura (5 minutos)</h3>
+
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿qué diferencia hay entre un <code>for</code> y un <code>while</code>?</li>
+    <li><strong>En una frase:</strong> ¿por qué un contador se inicializa antes del bucle y no dentro?</li>
+    <li><strong>En una frase:</strong> ¿qué es un acumulador de diccionario?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+
+  <p>
+    Estas siete palabras aparecerán en el taller final. Léelas ahora; las definiciones son
+    aproximadas y se afinarán en las unidades siguientes.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>Iterable</dt>
+      <dd>Cualquier cosa que se pueda recorrer con un <code>for</code>: una lista, un texto, un diccionario, un rango.</dd>
+    </div>
+    <div>
+      <dt>Rango</dt>
+      <dd>Una serie de números que produce <code>range()</code>, con el final siempre-exclusive.</dd>
+    </div>
+    <div>
+      <dt>Contador</dt>
+      <dd>Una variable que cuenta cuántas veces se cumple algo. Se inicializa a cero antes del bucle.</dd>
+    </div>
+    <div>
+      <dt>Acumulador</dt>
+      <dd>Una variable que guarda la suma, la concatenación o el máximo de todo lo recorrido.</dd>
+    </div>
+    <div>
+      <dt>Estado</dt>
+      <dd>El dato que un <code>while</code> consulta en su condición y que su cuerpo modifica en cada vuelta.</dd>
+    </div>
+    <div>
+      <dt>Salir</dt>
+      <dd>La forma de terminar un bucle antes de tiempo: <code>break</code> lo interrumpe, <code>continue</code> salta la vuelta.</dd>
+    </div>
+    <div>
+      <dt>Automatizar</dt>
+      <dd>Escribir el proceso una vez y que el programa lo repita siempre igual, sin intervención humana.</dd>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: Contadores y acumuladores</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Ejercicio práctico →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — EJERCICIO: EL RECUENTO DEL MES
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · Taller de aplicación</div>
+    <h2>Ejercicio 5.1 · <em>El recuento del mes</em></h2>
+    <p class="proposito">
+      Las tres unidades anteriores dieron el <code>for</code>, el <code>while</code> y los dos
+      patrones de conteo. Ahora toca juntarlos con algo que no había aparecido hasta ahora: un
+      archivo. En 35 minutos escribirás el programa que hace, en un segundo, el trabajo de una
+      mañana entera.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: programa que lee un archivo y produce el recuento</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>El cierre mensual de la biblioteca</h3>
+    </div>
+
+    <p>
+      La bibliotecaria ya tiene el archivo <code>prestamos.txt</code> con todos los préstamos del
+      mes. Escribe un programa, <code>recuento.py</code>, que lo lea y construya el informe que
+      ella escribe a mano: cuántos préstamos hubo, cuántos días se prestó en total, cuál fue el
+      promedio, cómo se reparten los préstamos por título y cuáles se pasaron del límite.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>El archivo <code>prestamos.txt</code>: una línea por préstamo, con tres datos separados por punto y coma</td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>Un recuento en la pantalla: total, suma de días, promedio, desglose por título y lista de los préstamos largos</td>
+          </tr>
+          <tr>
+            <td><strong>Regla del límite</strong></td>
+            <td>Un préstamo es «largo» si supera los 20 días. Ese límite es una constante del principio del archivo</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>El archivo se recorre con un <code>for</code>. No se lee entero con <code>read()</code></td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Cada cálculo va en su propia función, que devuelve un valor en vez de imprimir</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong><code>leer_prestamos(ruta)</code></strong>: abre el archivo y devuelve una lista de
+        diccionarios con las claves <code>estudiante</code>, <code>titulo</code> y <code>dias</code>.
+      </li>
+      <li>
+        <strong><code>contar_por_titulo(prestamos)</code></strong>: devuelve un diccionario con
+        cuántos préstamos hay de cada título.
+      </li>
+      <li>
+        <strong><code>total_dias(prestamos)</code></strong>: devuelve la suma de todos los días,
+        con un acumulador.
+      </li>
+      <li>
+        <strong><code>prestamos_largos(prestamos, limite)</code></strong>: devuelve los préstamos que
+        superan el límite.
+      </li>
+      <li>
+        <strong>El programa principal</strong> que muestra los cuatro resultados y, al final, la
+        lista de los préstamos largos, uno por línea.
+      </li>
+      <li>
+        <strong>Anotaciones de tipo y cadenas de documentación</strong> en todas las funciones.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-5-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-5-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La parte que más se olvida es la lectura del archivo. Las demás funciones son
+        acumuladores y contadores que ya sabes escribir. Fíjate sobre todo en las dos primeras
+        líneas de <code>leer_prestamos()</code>: todo el recorrido depende de ellas.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>recuento.py — solución de referencia</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-str">""</span><span class="tk-str">"Recuento de los préstamos del mes."</span><span class="tk-str">""</span>
+
+<span class="tk-cls">LIMITE_DIAS</span> = <span class="tk-num">20</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">leer_prestamos</span>(ruta: <span class="tk-cls">str</span>) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]:
+    <span class="tk-str">""</span><span class="tk-str">"Lee el archivo de préstamos y devuelve una lista de diccionarios."</span><span class="tk-str">""</span>
+    prestamos = []
+    <span class="tk-kw">with</span> <span class="tk-fn">open</span>(ruta, encoding=<span class="tk-str">"utf-8"</span>) <span class="tk-kw">as</span> archivo:
+        <span class="tk-kw">for</span> linea <span class="tk-kw">in</span> archivo:
+            <span class="tk-kw">if</span> <span class="tk-kw">not</span> linea.<span class="tk-fn">strip</span>():
+                <span class="tk-kw">continue</span>
+            estudiante, titulo, dias = linea.<span class="tk-fn">strip</span>().<span class="tk-fn">split</span>(<span class="tk-str">";"</span>)
+            prestamos.<span class="tk-fn">append</span>({
+                <span class="tk-str">"estudiante"</span>: estudiante,
+                <span class="tk-str">"titulo"</span>: titulo,
+                <span class="tk-str">"dias"</span>: <span class="tk-fn">int</span>(dias),
+            })
+    <span class="tk-kw">return</span> prestamos
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">contar_por_titulo</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">dict</span>[<span class="tk-cls">str</span>, <span class="tk-cls">int</span>]:
+    <span class="tk-str">""</span><span class="tk-str">"Cuenta cuántos préstamos hay de cada título."</span><span class="tk-str">""</span>
+    conteo: <span class="tk-cls">dict</span>[<span class="tk-cls">str</span>, <span class="tk-cls">int</span>] = {}
+    <span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> prestamos:
+        titulo = prestamo[<span class="tk-str">"titulo"</span>]
+        conteo[titulo] = conteo.<span class="tk-fn">get</span>(titulo, <span class="tk-num">0</span>) + <span class="tk-num">1</span>
+    <span class="tk-kw">return</span> conteo
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">total_dias</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">""</span><span class="tk-str">"Suma los días de todos los préstamos."</span><span class="tk-str">""</span>
+    total = <span class="tk-num">0</span>
+    <span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> prestamos:
+        total += prestamo[<span class="tk-str">"dias"</span>]
+    <span class="tk-kw">return</span> total
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">prestamos_largos</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>], limite: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]:
+    <span class="tk-str">""</span><span class="tk-str">"Devuelve los préstamos que superan el límite de días."</span><span class="tk-str">""</span>
+    <span class="tk-kw">return</span> [p <span class="tk-kw">for</span> p <span class="tk-kw">in</span> prestamos <span class="tk-kw">if</span> p[<span class="tk-str">"dias"</span>] &gt; limite]
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">main</span>() -&gt; <span class="tk-kw">None</span>:
+    prestamos = <span class="tk-fn">leer_prestamos</span>(<span class="tk-str">"prestamos.txt"</span>)
+    conteo = <span class="tk-fn">contar_por_titulo</span>(prestamos)
+    largos = <span class="tk-fn">prestamos_largos</span>(prestamos, <span class="tk-cls">LIMITE_DIAS</span>)
+
+    <span class="tk-fn">print</span>(<span class="tk-str">"=== Recuento del mes ==="</span>)
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Préstamos registrados:  {len(prestamos)}"</span>)
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Total de días:          {total_dias(prestamos)}"</span>)
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Promedio de días:       {total_dias(prestamos) / len(prestamos):.1f}"</span>)
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Préstamos de más de {LIMITE_DIAS} días: {len(largos)}"</span>)
+
+    <span class="tk-fn">print</span>(<span class="tk-str">"\nPréstamos por título:"</span>)
+    <span class="tk-kw">for</span> titulo, veces <span class="tk-kw">in</span> <span class="tk-fn">sorted</span>(conteo.<span class="tk-fn">items</span>(), key=<span class="tk-kw">lambda</span> par: par[<span class="tk-num">1</span>], reverse=<span class="tk-kw">True</span>):
+        <span class="tk-fn">print</span>(f<span class="tk-str">"  {titulo}: {veces}"</span>)
+
+    <span class="tk-fn">print</span>(<span class="tk-str">"\nPréstamos largos:"</span>)
+    <span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> largos:
+        <span class="tk-fn">print</span>(f<span class="tk-str">"  {prestamo['estudiante']} — {prestamo['titulo']} ({prestamo['dias']} días)"</span>)
+
+
+<span class="tk-kw">if</span> __name__ == <span class="tk-str">"__main__"</span>:
+    <span class="tk-fn">main</span>()</code></pre>
+  </div>
+
+      <p>
+        <strong>Una variación más corta para <code>total_dias()</code>:</strong> el atajo
+        <code>sum(prestamo["dias"] for prestamo in prestamos)</code> devuelve exactamente lo mismo
+        en una línea. Se deja aquí a propósito, para que veas las dos: la versión con acumulador
+        explica lo que hace; la versión con <code>sum()</code> es la que escribirías en un proyecto
+        real.
+      </p>
+    </div>
+  </div>
+
+  <h3>5.2 · Abrir un archivo y recorrerlo línea por línea</h3>
+
+  <p>
+    La biblioteca de Python trae una función para abrir archivos, <code>open()</code>, que devuelve
+    un <strong>objeto de archivo</strong>. Ese objeto se puede recorrer con un <code>for</code>, y
+    cada vuelta entrega una línea.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — abrir un archivo y recorrerlo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">with</span> <span class="tk-fn">open</span>(<span class="tk-str">"prestamos.txt"</span>, encoding=<span class="tk-str">"utf-8"</span>) <span class="tk-kw">as</span> archivo:
+    <span class="tk-kw">for</span> linea <span class="tk-kw">in</span> archivo:
+        <span class="tk-fn">print</span>(<span class="tk-fn">repr</span>(linea))</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — por qué la línea empieza con <code>with</code></span>
+    <p>
+      <code>with open(...) as archivo:</code> es una forma de decir «abre esto, úsalo, y ciérralo
+      cuando termine el bloque». Python se encarga del cierre solo, incluso si el programa falla a
+      mitad del recorrido. Sin el <code>with</code>, el archivo se cerraría al final del programa y
+      el recurso quedaría abierto mientras tanto. En Python, <strong>el <code>with</code> es la
+      norma</strong> para trabajar con archivos.
+    </p>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — por qué <code>encoding="utf-8"</code> va siempre</span>
+    <p>
+      Un archivo de texto no son bytes: son caracteres codificados con una tabla. Si Python usa la
+      tabla por defecto del sistema —en un equipo español suele ser latin-1— y el archivo tiene
+      tildes o la «ñ» en UTF-8, aparece una lista de caracteres raros donde debería haber texto.
+      Escribir <code>encoding="utf-8"</code> es barato y evita el problema antes de que aparezca.
+    </p>
+  </div>
+
+  <h3>5.3 · Partir la línea en tres datos</h3>
+
+  <p>
+    La línea del archivo es una cadena de texto con tres datos separados por punto y coma. Para
+    convertirla en tres valores se usa <code>split()</code>, que devuelve una lista, y el
+    desempaquetado, que reparte esa lista en variables.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — partir una línea en tres datos</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>linea = <span class="tk-str">"Ana Torres;El principito;15"</span>
+
+limpio = linea.<span class="tk-fn">strip</span>()              <span class="tk-cm"># quita el salto de línea del final</span>
+datos = limpio.<span class="tk-fn">split</span>(<span class="tk-str">";"</span>)           <span class="tk-cm"># ['Ana Torres', 'El principito', '15']</span>
+estudiante, titulo, dias = datos    <span class="tk-cm"># desempaquetado: tres variables</span>
+
+<span class="tk-fn">print</span>(dias)                         <span class="tk-cm"># '15' — todavía es texto</span></code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — la línea vacía</span>
+    <p>
+      Si el archivo termina con un salto de línea —que es lo normal— o si alguien dejó una línea en
+      blanco, <code>split(";")</code> no devolverá tres valores y el programa fallará con
+      <code>ValueError</code>. La guarda <code>if not linea.strip(): continue</code> salta esas
+      líneas y deja el programa preparado para archivos reales, que siempre tienen alguna línea
+      suelta de más.
+    </p>
+  </div>
+
+  <h3>5.4 · El esqueleto del programa</h3>
+
+  <p>
+    Antes de escribir nada, escribe en el papel las cuatro funciones que vas a necesitar y qué
+    devuelve cada una. Esta es la parte del trabajo que no se puede saltarse.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>recuento.py — el esqueleto del programa</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-str">""</span><span class="tk-str">"Recuento de los préstamos del mes."</span><span class="tk-str">""</span>
+
+<span class="tk-cls">LIMITE_DIAS</span> = <span class="tk-num">20</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">leer_prestamos</span>(ruta: <span class="tk-cls">str</span>) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]:
+    <span class="tk-str">""</span><span class="tk-str">"Lee el archivo y devuelve una lista de diccionarios."</span><span class="tk-str">""</span>
+    prestamos = []
+    <span class="tk-cm"># 1. Abre el archivo con with</span>
+    <span class="tk-cm"># 2. Recorre las líneas con for</span>
+    <span class="tk-cm"># 3. Salta las líneas vacías</span>
+    <span class="tk-cm"># 4. Parte cada línea en tres datos</span>
+    <span class="tk-kw">return</span> prestamos
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">contar_por_titulo</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">dict</span>[<span class="tk-cls">str</span>, <span class="tk-cls">int</span>]:
+    <span class="tk-str">""</span><span class="tk-str">"Cuenta cuántos préstamos hay de cada título."</span><span class="tk-str">""</span>
+    conteo = {}
+    <span class="tk-cm"># Un contador por título, guardado en un diccionario</span>
+    <span class="tk-kw">return</span> conteo
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">total_dias</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">""</span><span class="tk-str">"Suma los días de todos los préstamos."</span><span class="tk-str">""</span>
+    total = <span class="tk-num">0</span>
+    <span class="tk-cm"># Un acumulador: total += prestamo["dias"]</span>
+    <span class="tk-kw">return</span> total
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">prestamos_largos</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>], limite: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]:
+    <span class="tk-str">""</span><span class="tk-str">"Devuelve los préstamos que superan el límite."</span><span class="tk-str">""</span>
+    <span class="tk-cm"># Una comprensión, o un for con un if</span>
+    <span class="tk-kw">return</span> []
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">main</span>() -&gt; <span class="tk-kw">None</span>:
+    <span class="tk-str">""</span><span class="tk-str">"Muestra el recuento del mes."</span><span class="tk-str">""</span>
+    <span class="tk-cm"># 1. leer los préstamos</span>
+    <span class="tk-cm"># 2. llamar a las cuatro funciones</span>
+    <span class="tk-cm"># 3. imprimir los resultados</span>
+
+
+<span class="tk-kw">if</span> __name__ == <span class="tk-str">"__main__"</span>:
+    <span class="tk-fn">main</span>()</code></pre>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — el orden en que se lee un archivo</span>
+    <p>
+      El <code>for</code> sobre el archivo entrega las líneas <strong>en el orden en que están</strong>.
+      Eso significa que el orden de los resultados depende del orden del archivo, salvo que uses
+      <code>sorted()</code>. En el desglose por título, el primer título que aparece es el que
+      sale primero; para que el informe salga ordenado por cantidad, hay que pedirlo explícitamente
+      con <code>sorted(conteo.items(), key=lambda par: par[1], reverse=True)</code>.
+    </p>
+  </div>
+
+  <h3>5.5 · Comprobación: la salida real</h3>
+
+  <p>
+    Este es el resultado de ejecutar el modelo con el archivo <code>prestamos.txt</code> de la
+    unidad 0. Los tres números de arriba son los que la bibliotecaria escribe a mano.
+  </p>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — uv run python recuento.py</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">uv run python recuento.py</div>
+      <div class="consola-salida">=== Recuento del mes ===</div>
+      <div class="consola-salida">Préstamos registrados:  13</div>
+      <div class="consola-salida">Total de días:          183</div>
+      <div class="consola-salida">Promedio de días:       14.1</div>
+      <div class="consola-salida">Préstamos de más de 20 días: 3</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-salida">Préstamos por título:</div>
+      <div class="consola-salida">  El principito: 4</div>
+      <div class="consola-salida">  Pedro Páramo: 3</div>
+      <div class="consola-salida">  Cien años de soledad: 2</div>
+      <div class="consola-salida">  La casa de los espíritus: 2</div>
+      <div class="consola-salida">  Harry Potter y la piedra filosofal: 2</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-salida">Préstamos largos:</div>
+      <div class="consola-salida">  Luis Díaz — Cien años de soledad (30 días)</div>
+      <div class="consola-salida">  Julián Mora — Pedro Páramo (22 días)</div>
+      <div class="consola-salida">  Carla Restrepo — Pedro Páramo (25 días)</div>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — el promedio no es un entero</span>
+    <p>
+      183 entre 13 da <code>14.0769...</code>, y el informe muestra <code>14.1</code>. Eso lo hace
+      el especificador <code>:.1f</code>, que redondea a un decimal. Sin él, Python imprimiría la
+      cola infinita de decimales. Y fíjate en el detalle: <code>183 / 13</code> da un
+      <code>float</code> aunque el resultado sea exacto, porque en Python la división
+      <code>/</code> siempre devuelve decimales; la entera es <code>//</code>.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué hace el <code>for linea in archivo:</code> dentro de <code>with open(...)</code>?</p>
+      <button class="opcion" data-op="a">Lee el archivo entero y lo divide en líneas</button>
+      <button class="opcion" data-op="b">Escribe una línea nueva en el archivo</button>
+      <button class="opcion" data-op="c">Recorre el archivo y entrega una línea en cada vuelta</button>
+      <button class="opcion" data-op="d">Cuenta cuántas líneas tiene el archivo</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué se escribe <code>encoding="utf-8"</code> al abrir el archivo?</p>
+      <button class="opcion" data-op="a">Para que Python sepa cómo interpretar los caracteres, incluidas las tildes y la «ñ»</button>
+      <button class="opcion" data-op="b">Para que el archivo se guarde más pequeño</button>
+      <button class="opcion" data-op="c">Porque <code>open()</code> no funciona sin ese argumento</button>
+      <button class="opcion" data-op="d">Para que el archivo se pueda escribir desde el navegador</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Para qué sirve la guarda <code>if not linea.strip(): continue</code>?</p>
+      <button class="opcion" data-op="a">Para terminar el programa en la primera línea</button>
+      <button class="opcion" data-op="b">Para convertir los números del archivo en enteros</button>
+      <button class="opcion" data-op="c">Para quitar los espacios del final de cada línea</button>
+      <button class="opcion" data-op="d">Para saltar las líneas vacías y que <code>split()</code> no falle</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Por qué el desglose por título usa <code>sorted(..., reverse=True)</code>?</p>
+      <button class="opcion" data-op="a">Para que el archivo se lea más rápido</button>
+      <button class="opcion" data-op="b">Para que el informe salga ordenado de más prestado a menos prestado</button>
+      <button class="opcion" data-op="c">Porque <code>dict</code> no conserva el orden de inserción</button>
+      <button class="opcion" data-op="d">Para eliminar los títulos que aparecen una sola vez</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: Ejercicio práctico →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — EJERCICIO: LIQUIDAR UNA DEUDA
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · Taller de aplicación</div>
+    <h2>Ejercicio 6.1 · <em>Liquidar una deuda</em></h2>
+    <p class="proposito">
+      El primer ejercicio leyó datos de un archivo. Este resuelve un proceso en el que
+      <strong>no se sabe de antemano cuántas repeticiones hacen falta</strong>: un estudiante que
+      paga una multa poco a poco. Es el caso donde el <code>while</code> es la herramienta correcta
+      y donde sus dos errores más frecuentes se ven a simple vista.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: simulación de pagos diarios</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>La multa que se paga a plazos</h3>
+    </div>
+
+    <p>
+      Un estudiante tiene una multa de 1 250 pesos y paga 500 pesos cada día. Escribe un programa,
+      <code>deuda.py</code>, que simule los pagos: día a día, muestre cuánto paga y cuánto queda, y
+      termine cuando la deuda esté saldada.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>La deuda inicial (1 250 pesos) y el pago diario (500 pesos), como constantes</td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>Una línea por día con el pago y lo que queda, y al final el total pagado y el número de días</td>
+          </tr>
+          <tr>
+            <td><strong>Condición de salida</strong></td>
+            <td>El bucle termina cuando ya no queda nada por pagar</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>El último pago puede ser menor que los demás: nunca se paga de más</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>La simulación va en una función <code>liquidar()</code> que devuelve el total pagado y los días</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong>Dos constantes</strong> al principio del archivo: <code>DEUDA_INICIAL</code> y
+        <code>PAGO_DIARIO</code>.
+      </li>
+      <li>
+        <strong><code>liquidar(deuda, pago_diario)</code></strong>: un <code>while</code> que salda
+        la deuda y devuelve dos valores: el total pagado y el número de días que se tardó.
+      </li>
+      <li>
+        <strong>El último pago se ajusta</strong>: si quedan 250 pesos y el pago diario es de 500,
+        se pagan 250 y se termina. La deuda nunca queda en negativo.
+      </li>
+      <li>
+        <strong>Un contador y un acumulador</strong>: los días que se tardó y el total pagado.
+      </li>
+      <li>
+        <strong>Una línea de salida por día</strong>, con el número de pago, lo pagado y lo que
+        queda.
+      </li>
+      <li>
+        <strong>Anotaciones de tipo y cadenas de documentación</strong> en todas las funciones.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-6-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-6-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La línea que hace todo el trabajo es
+        <code>pago = min(pago_diario, deuda)</code>. <code>min()</code> devuelve el menor de los
+        dos valores: si queda menos de lo que toca pagar, paga lo que queda y el bucle termina.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>deuda.py — solución de referencia</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-str">""</span><span class="tk-str">"Simulación de la liquidación de una multa de la biblioteca."</span><span class="tk-str">""</span>
+
+<span class="tk-cls">DEUDA_INICIAL</span> = <span class="tk-num">1250</span>
+<span class="tk-cls">PAGO_DIARIO</span> = <span class="tk-num">500</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">liquidar</span>(deuda: <span class="tk-cls">int</span>, pago_diario: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">tuple</span>[<span class="tk-cls">int</span>, <span class="tk-cls">int</span>]:
+    <span class="tk-str">""</span>"<span class="tk-cls">Salda</span> la deuda con pagos diarios.
+
+    <span class="tk-cls">Devuelve</span> el total pagado y el número de días que se tardó.
+    <span class="tk-str">""</span>"
+    pagado = <span class="tk-num">0</span>
+    dias = <span class="tk-num">0</span>
+    <span class="tk-kw">while</span> deuda &gt; <span class="tk-num">0</span>:
+        dias += <span class="tk-num">1</span>
+        pago = <span class="tk-fn">min</span>(pago_diario, deuda)
+        deuda -= pago
+        pagado += pago
+        <span class="tk-fn">print</span>(f<span class="tk-str">"Pago {dias}: {pago} pesos — quedan {deuda}"</span>)
+    <span class="tk-kw">return</span> pagado, dias
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">main</span>() -&gt; <span class="tk-kw">None</span>:
+    <span class="tk-fn">print</span>(<span class="tk-str">"=== Liquidación de la multa ==="</span>)
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Deuda inicial: {DEUDA_INICIAL} pesos"</span>)
+    pagado, dias = <span class="tk-fn">liquidar</span>(<span class="tk-cls">DEUDA_INICIAL</span>, <span class="tk-cls">PAGO_DIARIO</span>)
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Total pagado: {pagado} pesos en {dias} días"</span>)
+
+
+<span class="tk-kw">if</span> __name__ == <span class="tk-str">"__main__"</span>:
+    <span class="tk-fn">main</span>()</code></pre>
+  </div>
+
+      <p>
+        <strong>Una variación</strong> que algunos preferirán: en lugar de
+        <code>min(pago_diario, deuda)</code>, se puede comprobar
+        <code>if deuda &lt;= pago_diario:</code> y pagar la deuda entera con un <code>break</code>.
+        Las dos funcionan; la primera es más corta y no necesita dos salidas del bucle.
+      </p>
+    </div>
+  </div>
+
+  <h3>6.2 · El <code>while</code> y su variable de estado</h3>
+
+  <p>
+    En este ejercicio las tres piezas del <code>while</code> se ven con total claridad, porque el
+    proceso es un <strong>estado que cambia</strong>.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las tres piezas del bucle, en la liquidación</caption>
+      <thead>
+        <tr><th>Pieza</th><th>En este programa</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>La condición</strong></td>
+          <td><code>while deuda &gt; 0:</code> — «mientras quede algo por pagar»</td>
+        </tr>
+        <tr>
+          <td><strong>El cuerpo</strong></td>
+          <td>Calcular el pago, restarlo de la deuda, mostrar la línea del día</td>
+        </tr>
+        <tr>
+          <td><strong>El avance</strong></td>
+          <td><code>deuda -= pago</code> — la deuda baja, y por eso el bucle termina</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — por qué aquí no puede usarse un <code>for</code></span>
+    <p>
+      El número de pagos depende de la deuda, y la deuda no se conoce de antemano. Con
+      <code>range(3)</code> el bucle haría tres vueltas <em>siempre</em>: con una deuda de 3 000
+      pesos dejaría una deuda pendiente, y con una de 100 pagaría de más. El <code>while</code> se
+      adapta al dato, que es exactamente para lo que sirve.
+    </p>
+  </div>
+
+  <h3>6.3 · El error del último pago</h3>
+
+  <p>
+    La versión que casi todo el mundo escribe primero resta siempre el pago diario completo. El
+    programa no falla: el programa <strong>cobra de más</strong>. Y se nota en la salida.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>deuda.py — la versión que cobra de más</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># La versión que casi todo el mundo escribe primero</span>
+deuda = <span class="tk-num">1250</span>
+pagado = <span class="tk-num">0</span>
+dias = <span class="tk-num">0</span>
+
+<span class="tk-kw">while</span> deuda &gt; <span class="tk-num">0</span>:
+    dias += <span class="tk-num">1</span>
+    pagado += <span class="tk-num">500</span>
+    deuda -= <span class="tk-num">500</span>
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Pago {dias}: 500 pesos — quedan {deuda}"</span>)
+
+<span class="tk-fn">print</span>(f<span class="tk-str">"Total pagado: {pagado} pesos en {dias} días"</span>)</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — un error que no lanza excepciones</span>
+    <p>
+      El mensaje «quedan −250 pesos» no es un aviso de Python: es una operación aritmética
+      perfectamente válida. El programa terminó bien y el resultado está mal. Esta es la categoría
+      de error más peligrosa en un proceso automático, porque no se anuncia: si este programa
+      calculara el saldo de una cuenta, el saldo negativo pasaría desapercibido.
+    </p>
+    <p>
+      La corrección es una línea: <code>pago = min(pago_diario, deuda)</code>. Con ella, el último
+      pago nunca supera lo que queda.
+    </p>
+  </div>
+
+  <h3>6.4 · El error que no termina</h3>
+
+  <p>
+    El segundo error es el de la unidad 2: olvidar el avance. Aquí el efecto es desconcertante,
+    porque el programa <strong>no se cuelga del todo</strong>: sigue escribiendo, pero para
+    siempre.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>deuda.py — la versión que no termina</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Falta el avance: la deuda nunca cambia, y el bucle no termina</span>
+deuda = <span class="tk-num">1250</span>
+dias = <span class="tk-num">0</span>
+
+<span class="tk-kw">while</span> deuda &gt; <span class="tk-num">0</span>:
+    dias += <span class="tk-num">1</span>
+    <span class="tk-fn">print</span>(f<span class="tk-str">"Pago {dias}"</span>)
+
+<span class="tk-fn">print</span>(<span class="tk-str">"Este mensaje nunca aparece"</span>)</code></pre>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — cómo se reconoce un bucle infinito</span>
+    <p>
+      La señal es que <strong>el programa no termina nunca</strong> y, si imprime algo, imprime lo
+      mismo una y otra vez. En la consola, se interrumpe con <kbd>Ctrl</kbd> + <kbd>C</kbd>. Y
+      hay un detalle importante: un programa con un bucle infinito no se «cuelga» por casualidad,
+      se cuelga porque la condición sigue siendo cierta. Por eso la revisión de un <code>while</code>
+      empieza siempre por la misma pregunta: <em>¿la variable de la condición cambia?</em>
+    </p>
+  </div>
+
+  <h3>6.5 · Comprobación: la salida real</h3>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — uv run python deuda.py</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">uv run python deuda.py</div>
+      <div class="consola-salida">=== Liquidación de la multa ===</div>
+      <div class="consola-salida">Deuda inicial: 1250 pesos</div>
+      <div class="consola-salida">Pago 1: 500 pesos — quedan 750</div>
+      <div class="consola-salida">Pago 2: 500 pesos — quedan 250</div>
+      <div class="consola-salida">Pago 3: 250 pesos — quedan 0</div>
+      <div class="consola-salida">Total pagado: 1250 pesos en 3 días</div>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — por qué el tercer pago es de 250 y no de 500</span>
+    <p>
+      Porque <code>min(500, 250)</code> vale 250. El estudiante no puede pagar 500 cuando solo debe
+      250: la deuda no es una cuenta de la que se pueda retirar más dinero del que hay. Y fíjate en
+      lo que devuelve la función: <code>pagado</code> y <code>dias</code> son dos valores, y
+      <code>return pagado, dias</code> los devuelve en una tupla. Quien llama puede separarlos:
+      <code>pagado, dias = liquidar(...)</code>.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Qué línea garantiza que el último pago no supere lo que queda de deuda?</p>
+      <button class="opcion" data-op="a"><code>pago = min(pago_diario, deuda)</code></button>
+      <button class="opcion" data-op="b"><code>deuda -= pago_diario</code></button>
+      <button class="opcion" data-op="c"><code>while deuda &gt; 0:</code></button>
+      <button class="opcion" data-op="d"><code>pagado += pago</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Por qué este proceso necesita un <code>while</code> y no un <code>for</code>?</p>
+      <button class="opcion" data-op="a">Porque <code>while</code> es más rápido</button>
+      <button class="opcion" data-op="b">Porque la deuda es un número decimal</button>
+      <button class="opcion" data-op="c">Porque el proceso tiene más de 100 pagos</button>
+      <button class="opcion" data-op="d">Porque el número de pagos depende de la deuda, que no se conoce de antemano</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Qué salida produce la versión que resta siempre el pago completo?</p>
+      <button class="opcion" data-op="a">«quedan 0» y un total de 1 250 pesos</button>
+      <button class="opcion" data-op="b">«quedan −250» y un total de 1 500 pesos</button>
+      <button class="opcion" data-op="c">Un <code>ValueError</code> en la tercera vuelta</button>
+      <button class="opcion" data-op="d">El programa se queda en un bucle infinito</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Qué hace <code>return pagado, dias</code> al final de la función?</p>
+      <button class="opcion" data-op="a">Imprime los dos valores y termina el programa</button>
+      <button class="opcion" data-op="b">Guarda los valores en variables globales</button>
+      <button class="opcion" data-op="c">Devuelve los dos valores a quien llamó la función, como una tupla</button>
+      <button class="opcion" data-op="d">Repite el bucle desde el principio</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: El recuento del mes</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller integrador →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER INTEGRADOR
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>El informe <em>mensual automatizado</em></h2>
+    <p class="proposito">
+      En 45 minutos vas a reunir las dos unidades de ejercicio y las tres de teoría en un solo
+      módulo: el programa que la biblioteca ejecuta cada mes. Al final tendrás algo que no es un
+      ejercicio, sino una pieza de software con contrato.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller integrador</b></span>
+      <span>🧭 <b>Producto: módulo informe.py completo y documentado</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El encargo</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Encargo</span>
+      <h3>El cierre mensual de la biblioteca, en un solo módulo</h3>
+    </div>
+
+    <p>
+      Lo que hiciste en las dos unidades anteriores eran dos programas separados: uno contaba, otro
+      liquidaba. Ahora hay que hacer <strong>una sola pieza</strong>: un módulo del que el
+      servidor pueda pedir el informe del mes, sin que nadie tenga que tocar nada.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Contenido</strong></td>
+            <td>Un módulo con dos constantes, cinco funciones y un punto de entrada</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción de diseño</strong></td>
+            <td>Ninguna función imprime y devuelve a la vez: o imprime, o devuelve</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción técnica</strong></td>
+            <td>Todo lleva anotaciones de tipo y cadena de documentación</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción de robustez</strong></td>
+            <td>Con el archivo vacío, el informe debe decir que no hay préstamos, no romperse</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción del taller</strong></td>
+            <td>El informe se devuelve como texto: la página que lo muestra es problema de otra clase</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li>
+        <strong><code>leer_prestamos(ruta)</code></strong>: del archivo a una lista de
+        diccionarios, saltando las líneas vacías.
+      </li>
+      <li>
+        <strong><code>contar_por_titulo(prestamos)</code></strong>: el acumulador de diccionario.
+      </li>
+      <li>
+        <strong><code>total_dias(prestamos)</code></strong>: el acumulador simple.
+      </li>
+      <li>
+        <strong><code>prestamos_largos(prestamos, limite)</code></strong>: los que superan el
+        límite de días.
+      </li>
+      <li>
+        <strong><code>generar_informe(prestamos)</code></strong>: devuelve <strong>un texto</strong>
+        con el informe completo, listo para mostrar en pantalla o para guardar en un archivo.
+      </li>
+      <li>
+        <strong>Un párrafo escrito</strong> de unas 120 palabras: qué decidiste tú y qué decidiste
+        el enunciado, y por qué.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="taller-solucion">Ver un modelo de respuesta</button>
+
+    <div class="solucion" id="taller-solucion">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        El módulo completo, tal como quedaría en <code>informe.py</code>. La función que sostiene
+        todo es <code>generar_informe()</code>: no imprime nada, <strong>devuelve un texto</strong>.
+        Esa es la diferencia entre un programa y un módulo, y es lo que hará que el servidor de las
+        clases siguientes pueda usarlo sin adaptarlo.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>informe.py — solución de referencia</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-str">""</span><span class="tk-str">"Informe mensual de préstamos de la biblioteca del colegio."</span><span class="tk-str">""</span>
+
+<span class="tk-cls">DIAS_MAXIMOS</span> = <span class="tk-num">20</span>
+<span class="tk-cls">DIAS_PRESTAMO_NORMAL</span> = <span class="tk-num">15</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">leer_prestamos</span>(ruta: <span class="tk-cls">str</span>) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]:
+    <span class="tk-str">""</span><span class="tk-str">"Lee el archivo de préstamos y devuelve una lista de diccionarios."</span><span class="tk-str">""</span>
+    prestamos = []
+    <span class="tk-kw">with</span> <span class="tk-fn">open</span>(ruta, encoding=<span class="tk-str">"utf-8"</span>) <span class="tk-kw">as</span> archivo:
+        <span class="tk-kw">for</span> linea <span class="tk-kw">in</span> archivo:
+            <span class="tk-kw">if</span> <span class="tk-kw">not</span> linea.<span class="tk-fn">strip</span>():
+                <span class="tk-kw">continue</span>
+            estudiante, titulo, dias = linea.<span class="tk-fn">strip</span>().<span class="tk-fn">split</span>(<span class="tk-str">";"</span>)
+            prestamos.<span class="tk-fn">append</span>({
+                <span class="tk-str">"estudiante"</span>: estudiante,
+                <span class="tk-str">"titulo"</span>: titulo,
+                <span class="tk-str">"dias"</span>: <span class="tk-fn">int</span>(dias),
+            })
+    <span class="tk-kw">return</span> prestamos
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">contar_por_titulo</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">dict</span>[<span class="tk-cls">str</span>, <span class="tk-cls">int</span>]:
+    <span class="tk-str">""</span><span class="tk-str">"Cuenta cuántos préstamos hay de cada título."</span><span class="tk-str">""</span>
+    conteo: <span class="tk-cls">dict</span>[<span class="tk-cls">str</span>, <span class="tk-cls">int</span>] = {}
+    <span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> prestamos:
+        titulo = prestamo[<span class="tk-str">"titulo"</span>]
+        conteo[titulo] = conteo.<span class="tk-fn">get</span>(titulo, <span class="tk-num">0</span>) + <span class="tk-num">1</span>
+    <span class="tk-kw">return</span> conteo
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">total_dias</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">""</span><span class="tk-str">"Suma los días de todos los préstamos."</span><span class="tk-str">""</span>
+    total = <span class="tk-num">0</span>
+    <span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> prestamos:
+        total += prestamo[<span class="tk-str">"dias"</span>]
+    <span class="tk-kw">return</span> total
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">prestamos_largos</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>], limite: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]:
+    <span class="tk-str">""</span><span class="tk-str">"Devuelve los préstamos que superan el límite de días."</span><span class="tk-str">""</span>
+    <span class="tk-kw">return</span> [p <span class="tk-kw">for</span> p <span class="tk-kw">in</span> prestamos <span class="tk-kw">if</span> p[<span class="tk-str">"dias"</span>] &gt; limite]
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">generar_informe</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">str</span>:
+    <span class="tk-str">""</span><span class="tk-str">"Construye el informe del mes como un texto."</span><span class="tk-str">""</span>
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> prestamos:
+        <span class="tk-kw">return</span> <span class="tk-str">"No hay préstamos registrados este mes."</span>
+
+    conteo = <span class="tk-fn">contar_por_titulo</span>(prestamos)
+    largos = <span class="tk-fn">prestamos_largos</span>(prestamos, <span class="tk-cls">DIAS_MAXIMOS</span>)
+    titulo_top, veces = <span class="tk-fn">max</span>(conteo.<span class="tk-fn">items</span>(), key=<span class="tk-kw">lambda</span> par: par[<span class="tk-num">1</span>])
+    suma = <span class="tk-fn">total_dias</span>(prestamos)
+
+    lineas = [
+        <span class="tk-str">"=== Informe mensual de préstamos ==="</span>,
+        f<span class="tk-str">"Préstamos registrados: {len(prestamos)}"</span>,
+        f<span class="tk-str">"Total de días:         {suma}"</span>,
+        f<span class="tk-str">"Promedio de días:      {suma / len(prestamos):.1f}"</span>,
+        f<span class="tk-str">"Título más prestado:   {titulo_top} ({veces} préstamos)"</span>,
+        f<span class="tk-str">"Préstamos de más de {DIAS_MAXIMOS} días: {len(largos)}"</span>,
+        <span class="tk-str">""</span>,
+        <span class="tk-str">"Préstamos por título:"</span>,
+    ]
+    <span class="tk-kw">for</span> titulo, veces_titulo <span class="tk-kw">in</span> <span class="tk-fn">sorted</span>(conteo.<span class="tk-fn">items</span>(), key=<span class="tk-kw">lambda</span> par: par[<span class="tk-num">1</span>], reverse=<span class="tk-kw">True</span>):
+        lineas.<span class="tk-fn">append</span>(f<span class="tk-str">"  {titulo}: {veces_titulo}"</span>)
+    <span class="tk-kw">return</span> <span class="tk-str">"\n"</span>.<span class="tk-fn">join</span>(lineas)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">main</span>() -&gt; <span class="tk-kw">None</span>:
+    prestamos = <span class="tk-fn">leer_prestamos</span>(<span class="tk-str">"prestamos.txt"</span>)
+    <span class="tk-fn">print</span>(<span class="tk-fn">generar_informe</span>(prestamos))
+
+
+<span class="tk-kw">if</span> __name__ == <span class="tk-str">"__main__"</span>:
+    <span class="tk-fn">main</span>()</code></pre>
+  </div>
+
+      <p>
+        <strong>El párrafo escrito (modelo):</strong> decidí que el informe se construyera como una
+        lista de líneas que al final se unen con <code>"\n".join(...)</code>, en vez de escribir
+        prints sueltos, porque así el informe es un valor que se puede devolver, guardar en un
+        archivo o mandar por correo sin tocar el programa. La función que devuelve los datos
+        —<code>generar_informe()</code>— no imprime nada: imprimirse es cosa de
+        <code>main()</code>. Me aparté del enunciado en un punto: el enunciado pedía imprimir el
+        informe, y yo pedí que se devuelva, para que el módulo sirva también para un servidor
+        web.
+      </p>
+    </div>
+  </div>
+
+  <h3>7.2 · La estructura del módulo</h3>
+
+  <p>
+    Un módulo bien organizado se lee de arriba abajo como una historia: primero las reglas, luego
+    las piezas, y al final el programa que las usa.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>estructura — informe.py</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>informe.py
+│
+├── Constantes       DIAS_MAXIMOS, DIAS_PRESTAMO_NORMAL
+│
+├── Entrada          leer_prestamos()      — el archivo a una lista de diccionarios
+│
+├── Analisis         contar_por_titulo()   — el acumulador de diccionario
+│                   total_dias()          — el acumulador simple
+│                   prestamos_largos()    — los que se pasaron del limite
+│
+├── Salida           generar_informe()     — los datos a un texto
+│
+└── Programa         main() + la linea que lo ejecuta</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las cinco funciones del módulo y sus contratos</caption>
+      <thead>
+        <tr><th>Función</th><th>Qué hace</th><th>Qué devuelve</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>leer_prestamos(ruta)</code></td>
+          <td>Lee el archivo y convierte cada línea en un diccionario</td>
+          <td>Una lista de diccionarios</td>
+        </tr>
+        <tr>
+          <td><code>contar_por_titulo(prestamos)</code></td>
+          <td>Cuenta los préstamos de cada título</td>
+          <td>Un diccionario título → cantidad</td>
+        </tr>
+        <tr>
+          <td><code>total_dias(prestamos)</code></td>
+          <td>Suma los días de todos los préstamos</td>
+          <td>Un entero</td>
+        </tr>
+        <tr>
+          <td><code>prestamos_largos(prestamos, limite)</code></td>
+          <td>Filtra los que superan el límite</td>
+          <td>Una lista de diccionarios</td>
+        </tr>
+        <tr>
+          <td><code>generar_informe(prestamos)</code></td>
+          <td>Reúne todos los indicadores en un texto</td>
+          <td>Una cadena de texto</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.3 · El mismo problema, escrito de dos maneras</h3>
+
+  <p>
+    La biblioteca tiene un cupo: en circulación no puede haber más de 100 días de préstamo. Los
+    préstamos se atienden <strong>en orden</strong>, y cuando el siguiente no cabe, se deja de
+    atender. Es un problema de <code>for</code> con <code>break</code>, y también podría ser un
+    <code>while</code>. Vale la pena ver las dos.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>informe.py — el cupo de días en circulación</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">llenar_cupo</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>], cupo: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]:
+    <span class="tk-str">""</span><span class="tk-str">"Devuelve los préstamos que caben en el cupo de días en circulación."</span><span class="tk-str">""</span>
+    admitidos = []
+    ocupados = <span class="tk-num">0</span>
+    <span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> prestamos:
+        <span class="tk-kw">if</span> ocupados + prestamo[<span class="tk-str">"dias"</span>] &gt; cupo:
+            <span class="tk-kw">break</span>
+        ocupados += prestamo[<span class="tk-str">"dias"</span>]
+        admitidos.<span class="tk-fn">append</span>(prestamo)
+    <span class="tk-kw">return</span> admitidos</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — dos estilos, un mismo resultado</span>
+    <p>
+      La versión con <code>while</code> necesita una bandera —<code>cupo_cabia</code>— para saber
+      si el último préstamo se admits: es el precio de no poder recorrer la lista con un
+      <code>break</code>. La versión con <code>for</code> usa el <code>break</code> y sale
+      directamente. Cuando las dos son posibles, <strong>prefiere la que no necesita una bandera
+      auxiliar</strong>: menos estado significa menos formas de equivocarse.
+    </p>
+  </div>
+
+  <h3>7.4 · Rúbrica de autoevaluación</h3>
+
+  <p>
+    Puntúa cada criterio de 0 a 2 y revisa los que hayas quedado en 0 o 1 antes de dar por terminado
+    el taller.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación del informe mensual</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Lectura del archivo</td>
+          <td>El archivo no se lee, o se lee con un método que no debería</td>
+          <td>Se lee, pero no se saltan las líneas vacías y falla con archivos reales</td>
+          <td>Se lee con <code>with</code>, con <code>encoding</code> y saltando las líneas vacías</td>
+        </tr>
+        <tr>
+          <td>Contadores y acumuladores</td>
+          <td>Los contadores se inicializan dentro del bucle</td>
+          <td>Hay contadores, pero uno de los dos está mal inicializado</td>
+          <td>Contador y acumulador se inicializan antes del bucle y se incrementan dentro</td>
+        </tr>
+        <tr>
+          <td>Funciones</td>
+          <td>Todo el código está en <code>main()</code></td>
+          <td>Hay funciones, pero algunas imprimen y devuelven a la vez</td>
+          <td>Cada función hace una sola cosa: o imprime, o devuelve</td>
+        </tr>
+        <tr>
+          <td>Robustez</td>
+          <td>Con el archivo vacío el programa se rompe</td>
+          <td>Maneja el archivo vacío, pero hay algún otro caso que lo rompe</td>
+          <td>El archivo vacío, los títulos repetidos y los días en cero están cubiertos</td>
+        </tr>
+        <tr>
+          <td>Anotaciones y documentación</td>
+          <td>No hay anotaciones ni cadenas de documentación</td>
+          <td>Hay anotaciones en algunas funciones y la documentación es escueta</td>
+          <td>Todas las funciones están anotadas y documentadas en una frase</td>
+        </tr>
+        <tr>
+          <td>Salida del informe</td>
+          <td>El informe se imprime desde varias funciones a la vez</td>
+          <td>El informe se construye, pero se imprime dentro de la función que lo construye</td>
+          <td><code>generar_informe()</code> devuelve el texto y solo <code>main()</code> lo muestra</td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay nada escrito</td>
+          <td>Describe el qué, no el porqué</td>
+          <td>Decisión, motivo, apartamiento del enunciado y consecuencia</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.5 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>Un bucle es una promesa: «esto se repite tantas veces como haga falta». Quien lo lee no necesita saber cuántos datos hay.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p><code>for</code> para cuando sabes qué hay que recorrer; <code>while</code> para cuando solo sabes que hay que seguir.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>Todo <code>while</code> que funciona tiene tres piezas: condición, cuerpo y avance. Sin la tercera, no termina.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p>Contador y acumulador son el mismo esqueleto: se inicializan antes del bucle y se actualizan dentro.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p>El error más peligroso no es el que se cuelga: es el que termina bien y calcula mal.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p>Automatizar no es hacer la tarea más rápido: es hacer que el proceso se ejecute siempre igual.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p>Una función que devuelve se puede probar y reutilizar; una que solo imprime, no. Por eso conviene devolver.</p>
+    </div>
+  </div>
+
+  <h3>7.6 · Puente hacia la próxima clase</h3>
+
+  <p>
+    Hoy tu informe es un <strong>texto</strong>: una cadena con líneas y todo, construida a mano
+    con <code>"\n".join(...)</code>. Es un informe que se puede leer en una terminal, pero no se
+    puede poner en una página web sin pelearte con las etiquetas.
+  </p>
+
+  <p>
+    La próxima clase resuelve exactamente eso, con las herramientas de la clase 2 y la clase 3. Tres
+    cosas de hoy siguen vivas allí:
+  </p>
+
+  <ol>
+    <li>
+      <strong>Los bucles que recorren los datos</strong> son exactamente los que usará el motor de
+      plantillas para pintar una lista de libros. El <code>{% for %}</code> de Jinja2 es un
+      <code>for</code> de Python con otra sintaxis, y la idea es la misma.
+    </li>
+    <li>
+      <strong>La lista de diccionarios que devuelve <code>leer_prestamos()</code></strong> es el
+      modelo que la plantilla va a recibir. El bucle produce los datos; la plantilla produce la
+      página. Separar esas dos cosas es lo que convierte un programa de terminal en un sitio web.
+    </li>
+    <li>
+      <strong>El informe que devuelve un texto</strong> es el modelo de lo quesoon hará
+      <code>generar_informe()</code>: una función que devuelve contenido en vez de imprimirlo, para
+      que quien lo use decida dónde va.
+    </li>
+  </ol>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de la próxima clase</span>
+    <p>
+      Guarda tu taller en un repositorio de Git con un mensaje de commit claro, y comprueba que
+      <code>uv run python informe.py</code> imprime el informe y que el programa no se cuelga con un
+      archivo vacío. En la clase siguiente vamos a necesitar esta versión exacta para poder
+      comparar el antes y el después.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 5</h2>
+    <p>
+      Has cerrado el ciclo de la automatización: el servidor recibe datos (clase 4), los recorre con
+      bucles, los cuenta, los acumula y produce un informe sin que nadie tenga que hacerlo a mano.
+      A partir de aquí, la pregunta ya no es cómo se recorre un archivo, sino cómo se pone ese
+      resultado en una página.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: Liquidar una deuda</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 5 · Estructuras repetitivas para automatizar procesos</span>
+  <p class="pie-sub">El bucle for · El bucle while · Contadores y acumuladores · El informe mensual</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

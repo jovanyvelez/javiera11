@@ -1279,7 +1279,7 @@ indice = {titulo: d <span class="tk-kw">for</span> titulo, d <span class="tk-kw"
       <strong>lanza un error</strong> con un mensaje que explique qué pasó. <code>raise
       ValueError("El préstamo no puede ser de 0 días")</code>. Esa línea corta el flujo, y el mensaje
       es lo que el usuario o el registro del servidor acaba viendo. En las clases siguientes, la
-      biblioteca Pydantic hará esto mismo por ti y de forma automática.
+      biblioteca de validación hará esto mismo por ti y de forma automática.
     </p>
   </div>
 
@@ -1656,7 +1656,7 @@ indice = {titulo: d <span class="tk-kw">for</span> titulo, d <span class="tk-kw"
       convención</em>. Se escribe en mayúsculas para que cualquier persona que lea el archivo sepa
       que ese valor no debe cambiar, y se coloca arriba para que las reglas del negocio se puedan
       leer de un tirón. Cuando en la clase 5 el servidor reciba peticiones de verdad, esas mismas
-      constantes serán las que use Pydantic para validar.
+      constantes serán las que use una biblioteca de validación para comprobar los datos.
     </p>
   </div>
 
@@ -2639,7 +2639,7 @@ indice = {titulo: d <span class="tk-kw">for</span> titulo, d <span class="tk-kw"
       <strong>cumpliendo su parte del contrato</strong>. Dice: «o te devuelvo un préstamo válido, o
       te explico por qué no hay préstamo». Quien llama decide qué hacer con ese error. En el taller
       el menú lo captura con <code>except (TypeError, ValueError)</code> y lo muestra; en la clase
-      siguiente, Pydantic hará exactamente esto mismo por ti, y además.
+      siguientes, una biblioteca de validación hará exactamente esto mismo por ti, y además.
     </p>
   </div>
 
@@ -2739,27 +2739,26 @@ indice = {titulo: d <span class="tk-kw">for</span> titulo, d <span class="tk-kw"
   <h3>7.6 · Puente hacia la próxima clase</h3>
 
   <p>
-    Todo lo que escribiste hoy, a mano, existe porque Python no te obliga a declarar los tipos. La
-    próxima clase es exactamente lo contrario: vas a <strong>declarar los tipos una sola vez</strong>
-    y a que una biblioteca los compruebe por ti.
+    Todo lo que escribiste hoy trata <strong>un préstamo a la vez</strong>. La próxima clase cambia
+    la escala: en lugar de procesar un registro, el programa procesará <em>todos</em> los
+    préstamos del mes, uno detrás de otro, sin que nadie tenga que decidir en cada paso.
   </p>
 
   <ol>
     <li>
-      <strong>La validación manual</strong> —el <code>validar_dias()</code> que escribiste— desaparece
-      en la clase 5. En su lugar hay una clase que declara qué es un préstamo válido, y el
-      servidor rechaza lo que no lo sea, con el mismo <code>ValueError</code> que tú escribiste a
-      mano.
+      <strong>Los bucles que ya usaste</strong> —el <code>for</code> sobre una lista, el
+      <code>while</code> de la validación— se convierten en el tema central de la clase 5. Allí
+      aprenderás a usarlos de verdad: <code>range</code>, <code>enumerate</code>,
+      <code>zip</code>, <code>break</code>, <code>continue</code> y el <code>else</code> del bucle.
     </li>
     <li>
-      <strong>Los diccionarios</strong> que usaste como modelo se convierten en clases: un
-      <code>Prestamo</code> con atributos <code>estudiante</code>, <code>titulo</code>,
-      <code>dias</code> y <code>devuelto</code>, donde equivocarse al escribir el nombre de un
-      campo deja de ser posible.
+      <strong>El <code>for prestamo in prestamos:</code></strong> que usaste en el taller se
+      convierte en el motor de un proceso completo: recorrer un archivo de préstamos, contarlos,
+      sumarlos y producir un informe que la biblioteca ya no tiene que escribir a mano.
     </li>
     <li>
-      <strong>Las funciones que devuelven valores</strong> siguen igual, y son la base de todo: una
-      función de servidor es, en el fondo, una función que recibe datos y devuelve un resultado.
+      <strong>Los contadores y acumuladores</strong> —que aquí solo aparecieron de pasada— pasan a
+      ser el tema central, con el error de inicialización que casi todo el mundo comete una vez.
     </li>
   </ol>
 

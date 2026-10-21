@@ -50,6 +50,16 @@
       "source": "/herramientas-prog-ii/cuatro-curso-repositorio-crud/:path*",
       "destination": "/herramientas-prog-ii/cuatro-curso-python-lenguaje/:path*",
       "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/cinco-curso-pydantic-validacion",
+      "destination": "/herramientas-prog-ii/cinco-curso-estructuras-repetitivas/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/cinco-curso-pydantic-validacion/:path*",
+      "destination": "/herramientas-prog-ii/cinco-curso-estructuras-repetitivas/:path*",
+      "permanent": true
     }
   ]
 }
