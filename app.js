@@ -132,11 +132,10 @@ function cargarProgresoPorClase() {
     'curso-bd-ejemplo-final': 6,             // idem (clase 9)
     'curso-herr-1': 6,                        // 0..7 (m0 inicio y m4 descanso no cuentan)
     'curso-herr-2': 6,
-    'curso-herr-3': 6,
+    'curso-herr-3-css': 6,                   // clase 3: CSS para diseño responsivo
     'curso-herr-4': 6,
     'curso-herr-5': 6,
     'curso-herr-6': 6,
-    'curso-herr-7': 6,
     'curso-herr-8': 6,
     'curso-herr-9-repetitivas': 6,
     'curso-herr-10-funciones': 6,
@@ -238,7 +237,7 @@ function actualizarBarraClase(card, pct) {
 function animarStats() {
   // Los 3 primeros son fijos
   animarNumero(document.getElementById('stat-cursos'),  0, 6,  800);
-  animarNumero(document.getElementById('stat-clases'), 0, 40, 900);
+  animarNumero(document.getElementById('stat-clases'), 0, 39, 900);
   // El cuarto (horas) tiene "+" al final
   const elHoras = document.getElementById('stat-horas');
   if (elHoras) {
@@ -363,10 +362,7 @@ document.addEventListener('keydown', (e) => {
   } else if (e.key === 'r' || e.key === 'R') {
     const card = document.querySelector('.clase-card.herr-6');
     if (card) card.click();
-  } else if (e.key === 'y' || e.key === 'Y') {
-    const card = document.querySelector('.clase-card.herr-7');
-    if (card) card.click();
-  } else if (e.key === 'u' || e.key === 'U') {
+    } else if (e.key === 'u' || e.key === 'U') {
     const card = document.querySelector('.clase-card.herr-8');
     if (card) card.click();
   } else if (e.key === 'i' || e.key === 'I') {
@@ -398,7 +394,7 @@ window.addEventListener('load', () => {
                 'curso-csharp-9', 'curso-csharp-10',
                 'curso-analisis-diseno', 'curso-requerimientos',
                 'curso-elicitacion', 'curso-documentacion', 'curso-introduccion-diseno',
-                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3', 'curso-herr-4', 'curso-herr-5', 'curso-herr-6', 'curso-herr-7', 'curso-herr-8', 'curso-herr-9-repetitivas', 'curso-herr-10-funciones', 'curso-herr-11-estructura', 'curso-herr-12-git', 'curso-herr-13-github', 'curso-herr-14-git-vscode'];
+                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3-css', 'curso-herr-4', 'curso-herr-5', 'curso-herr-6', 'curso-herr-8', 'curso-herr-9-repetitivas', 'curso-herr-10-funciones', 'curso-herr-11-estructura', 'curso-herr-12-git', 'curso-herr-13-github', 'curso-herr-14-git-vscode'];
 
   let tienePrograma = false;
   let ultimaClase = null;

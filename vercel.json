@@ -1,0 +1,45 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/herramientas-prog-ii/uno-curso-python-http",
+      "destination": "/herramientas-prog-ii/uno-curso-web-fullstack/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/uno-curso-python-http/:path*",
+      "destination": "/herramientas-prog-ii/uno-curso-web-fullstack/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/dos-curso-fastapi-basico",
+      "destination": "/herramientas-prog-ii/dos-curso-htmx-formularios/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/dos-curso-fastapi-basico/:path*",
+      "destination": "/herramientas-prog-ii/dos-curso-htmx-formularios/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/tres-curso-base-datos-conexion",
+      "destination": "/herramientas-prog-ii/tres-curso-css-responsivo/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/tres-curso-base-datos-conexion/:path*",
+      "destination": "/herramientas-prog-ii/tres-curso-css-responsivo/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/siete-curso-htmx-bootstrap",
+      "destination": "/herramientas-prog-ii/tres-curso-css-responsivo/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/siete-curso-htmx-bootstrap/:path*",
+      "destination": "/herramientas-prog-ii/tres-curso-css-responsivo/:path*",
+      "permanent": true
+    }
+  ]
+}

@@ -98,7 +98,9 @@
     </p>
     <p>
       La consecuencia práctica es que el JavaScript escrito a mano desaparece casi por completo: no hace
-      falta <?php echo "¿Necesitas saber más? Consulta la documentación oficial de HTMX para conocer todos los atributos disponibles." ?>
+      falta ni una línea de JavaScript escrita a mano: no hace falta interceptar el envío, ni
+      llamar a <code>fetch()</code>, ni tocar el DOM. Solo hay que escribir <em>qué fragmento</em>
+      quieres pedir y <em>dónde</em> quieres que aparezca.
     </p>
   </div>
 
@@ -2323,18 +2325,21 @@ async def errores_de_validacion(request: Request, exc: RequestValidationError):
   <h3>7.3 · Puente hacia la clase 3</h3>
 
   <p>
-    La clase 3 conectará este formulario a una base de datos real. Dos cosas que conviene tener
-    presentes al empezar:
+    La clase 3 se ocupa de que todo lo que has construido hasta ahora <strong>se vea bien en
+    cualquier pantalla</strong>. Dos cosas que conviene tener presentes al empezar:
   </p>
 
   <ol>
     <li>
-      La <strong>restricción de los tres préstamos</strong> del enunciado solo se puede comprobar
-      consulting la base de datos: en el taller la simulamos, pero allí será una consulta real.
+      Tu formulario <strong>tiene una etiqueta <code>&lt;meta name="viewport"&gt;</code></strong> en
+      la plantilla base: es la primera línea que hace que las consultas de medios midan el ancho
+      real del dispositivo y no un valor simulado. Si esa línea falta, la clase 3 no tiene sobre
+      qué trabajar.
     </li>
     <li>
-      El <strong>manejador de errores</strong> que escribiste no cambia: seguirá siendo el punto donde
-      se decide qué se le muestra al usuario cuando los datos no sirven.
+      Los <strong>atributos <code>hx-*</code> viven en el HTML</strong>, no en el CSS. Eso significa
+      que los fragmentos que inserta HTMX traen sus propias clases y se comportan bien con cualquier
+      hoja de estilo: la clase 3 lo aprovecha y lo usa como ejemplo.
     </li>
   </ol>
 

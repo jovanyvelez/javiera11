@@ -1,0 +1,2334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 3 · CSS para diseño responsivo</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 3 · <em>CSS para diseño responsivo</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura y programa</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">Una página, muchas pantallas</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">Media queries: la regla que cambia</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Ejercicio: ficha responsiva</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Clases propias y capas</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Bootstrap: la rejilla resuelta</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller integrador</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> un catálogo que se lee igual en un teléfono y en un monitor, con CSS propio y con Bootstrap.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>De la página que <em>funciona</em> a la página que <em>se ve bien</em></h2>
+    <p class="proposito">
+      La clase 2 terminó con un formulario que recibe, valida y muestra errores sin recargar la
+      página. Funciona. Pero funciona <strong>en la pantalla del portátil del aula</strong>. La misma
+      página, abierta en un teléfono de 390 píxeles de ancho, se desborda, los campos se salen de la
+      pantalla y el botón de envío queda fuera de la vista. Esta clase cierra ese hueco: el CSS
+      que hace que una sola página se comporte bien en todas partes.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: entorno listo</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · El problema que el CSS no resuelve solo</h3>
+
+  <p class="primer-párrafo">
+    La reacción natural ante una página que se ve mal en el celular es hacer <strong>una versión
+    aparte</strong> para el celular: <code>index-movil.html</code>. Es la respuesta que se da por
+    costumbre, y es una trampa por tres razones: duplica el trabajo, obliga a mantener dos versiones
+    en paralelo y nunca termina. En cuanto alguien cambia un texto, hay que cambiarlo en dos sitios.
+  </p>
+
+  <p>
+    La respuesta correcta es otra: <strong>una sola página, y una descripción de en qué momento
+    cambia cada cosa</strong>. Esa descripción es CSS. Un sitio responsive no tiene dos versiones:
+    tiene una versión y un conjunto de reglas que dicen «a partir de aquí, esto se reorganiza».
+  </p>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — «responsive» no significa «versión para el celular»</span>
+    <p>
+      Diseño responsivo no es «adaptar la página al teléfono». Es <strong>adaptar la página al ancho
+      disponible</strong>, sea ese ancho el de un teléfono, el de una tableta en horizontal o el de un
+      monitor de 27 pulgadas. La consequence práctica es que no se pregunta «¿cuál es el tamaño del
+      celular?», sino «<strong>¿qué información sobra, o qué se vuelve ilegible, cuando el espacio
+      aprieta?</strong>». La segunda pregunta tiene respuesta; la primera no, porque el ancho
+      disponible varía más que la lista de dispositivos.
+    </p>
+  </div>
+
+  <h3>0.2 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cuadro de unidades, tiempos y productos esperados</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura, programa y entorno</td><td>20 min</td><td>Hojas de estilo enlazadas</td></tr>
+        <tr><td><strong>01</strong></td><td>Una página, muchas pantallas</td><td>30 min</td><td>Medidas y herramientas de distribución</td></tr>
+        <tr><td><strong>02</strong></td><td>Media queries: la regla que cambia</td><td>30 min</td><td>Mapa de puntos de corte</td></tr>
+        <tr><td><strong>03</strong></td><td>Ejercicio 3.1 · Ficha responsiva</td><td>30 min</td><td>Ficha con tres cortes propios</td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Clases propias y capas de CSS</td><td>35 min</td><td>Hoja de estilo con sistema de clases</td></tr>
+        <tr><td><strong>06</strong></td><td>Bootstrap: la rejilla resuelta</td><td>35 min</td><td>La misma ficha con Bootstrap</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller integrador</td><td>45 min</td><td>Catálogo responsive completo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.3 · La caja de herramientas</h3>
+
+  <p>
+    Esta clase necesita menos herramientas que las anteriores, y eso es intencionado: el CSS se
+    escribe en un archivo de texto y se mira en un navegador. No hay servidor que montar, ni
+    dependencias que instalar, ni paso de compilación.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>El editor</dt>
+      <dd>El que ya usas. En esta clase solo se escriben archivos <code>.css</code> y se editan plantillas <code>.html</code>.</dd>
+    </div>
+    <div>
+      <dt>El navegador</dt>
+      <dd>Su panel de herramientas (DevTools). Es el banco de pruebas de la clase: permite cambiar el ancho de la ventana al instante y ver qué reglas se aplican.</dd>
+    </div>
+    <div>
+      <dt>El modo «dispositivo»</dt>
+      <dd>Está dentro de las DevTools y permite elegir un tamaño de pantalla concreto (390 × 844, 768 × 1024, 1440 × 900) y ver la página a ese ancho. Es la herramienta central de la unidad 2.</dd>
+    </div>
+    <div>
+      <dt>Bootstrap</dt>
+      <dd>Se enlaza desde un CDN con la versión fijada. No hay que compilar nada ni instalar nada. Se explica en la unidad 6.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el navegador basta</span>
+    <p>
+      Antes de que existieran los marcos de trabajo, el CSS se aprendía con el navegador y un archivo
+      de texto, y así se aprendía de verdad: entendiendo qué hace cada regla y por qué. Bootstrap y
+      sus sucesores resuelven problemas reales, pero usarlos sin saber qué hay debajo produce
+      proyectos que se rompen en cuanto algo no está previsto. <strong>Esta clase construye primero
+      el fundamento y después muestra la herramienta.</strong>
+    </p>
+  </div>
+
+  <h3>0.4 · La estructura de hojas de estilo del proyecto</h3>
+
+  <p>
+    La clase 2 dejó un proyecto de FastAPI con plantillas en <code>templates/</code>. Esta clase
+    añade la carpeta <code>estilos/</code>, dividida en tres archivos con una responsabilidad cada
+    uno. La división no es puramente estética: es la forma más barata de evitar que dos reglas
+    compitan por el mismo elemento.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>estructura del proyecto</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm">biblioteca/
+├── main.py                 ← la aplicación de FastAPI (clase 2)
+├── templates/
+│   ├── base.html            ← el esqueleto de todas las páginas
+│   └── index.html           ← el catálogo
+├── estilos/
+│   ├── base.css             ← lo que aplica a todo el documento
+│   ├── componentes.css      ← lo que aplica a las piezas (ficha, botón)
+│   └── responsivo.css       ← lo que cambia con el ancho disponible
+└── static/                  ← archivos que se sirven tal cual</span></code></pre>
+  </div>
+
+  <p>
+    Las tres hojas se enlazan desde <code>templates/base.html</code>, y <strong>el orden de esos
+    enlaces es el orden de prioridad</strong>. No es una convención: es el mecanismo por el que el
+    navegador decide a qué regla recurre cuando dos reglas compiten.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>templates/base.html — el orden importa</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">link</span> <span class="tk-attr">rel</span>=<span class="tk-str">"stylesheet"</span> <span class="tk-attr">href</span>=<span class="tk-str">"/estilos/base.css"</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-tag">link</span> <span class="tk-attr">rel</span>=<span class="tk-str">"stylesheet"</span> <span class="tk-attr">href</span>=<span class="tk-str">"/estilos/componentes.css"</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-tag">link</span> <span class="tk-attr">rel</span>=<span class="tk-str">"stylesheet"</span> <span class="tk-attr">href</span>=<span class="tk-str">"/estilos/responsivo.css"</span><span class="tk-pun">&gt;</span></code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — por qué la carpeta <code>static/</code></span>
+    <p>
+      Los archivos que el navegador pide directamente (CSS, JavaScript, imágenes) se sirven desde
+      <code>static/</code>. En FastAPI eso significa montar esa carpeta en la aplicación, algo que ya
+      hace el esqueleto de la clase 2. Si un archivo CSS está en la raíz del proyecto y no en
+      <code>static/</code>, el servidor respondirá con un <code>404</code> y la página aparecerá sin
+      estilos: es el error más común al empezar, y su síntoma —«el CSS no se aplica»— no dice nada
+      sobre la causa. Cuando una hoja no se aplique, lo primero es abrir la pestaña de red de las
+      DevTools y comprobar si el archivo se descargó.
+    </p>
+  </div>
+
+  <h3>0.5 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito estas dos preguntas:</p>
+
+  <ol>
+    <li>Si una página tiene un ancho fijo de 960 píxeles, ¿qué le ocurre al abrirla en un teléfono de 390 píxeles?</li>
+    <li>¿Por qué la etiqueta <code>&lt;meta name="viewport"&gt;</code> es indispensable para que las consultas de medios midan lo que dicen medir?</li>
+  </ol>
+
+  <p>
+    Vuelve a ellas al terminar la unidad 7. La diferencia entre tu respuesta inicial y la final es
+    exactamente lo que cambia cuando el diseño deja de depender del dispositivo.
+  </p>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: una página, muchas pantallas →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — UNA PÁGINA, MUCHAS PANTALLAS
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · La medida</div>
+    <h2>Una página, <em>muchas pantallas</em></h2>
+    <p class="proposito">
+      Antes de escribir la primera consulta de medios hay que decidir dos cosas: cómo se mide el
+      espacio y cómo se reparte. Esta unidad construye el vocabulario con el que se toman esas
+      decisiones, y explica por qué la pregunta correcta no es «¿qué tamaño tiene el celular?».
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y análisis</b></span>
+      <span>🧭 <b>Producto: criterio de medida</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · La ventana de visualización</h3>
+
+  <p class="primer-párrafo">
+    La primera decisión responsive no es de CSS: es de HTML. En la clase 2, el esqueleto
+    <code>base.html</code> no incluía la etiqueta <code>viewport</code>. Sin ella, un teléfono
+    interpretaba la página como si midiera 980 píxeles de ancho y luego la encogía para que cupiera
+    en pantalla: el texto quedaba diminuto y el usuario tenía que ampliar con los dedos.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>templates/base.html — la línea que no puede faltar</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">meta</span> <span class="tk-attr">name</span>=<span class="tk-str">"viewport"</span> <span class="tk-attr">content</span>=<span class="tk-str">"width=device-width, initial-scale=1"</span><span class="tk-pun">&gt;</span></code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>width=device-width</code></dt>
+      <dd>El ancho de la ventana de visualización es el ancho real del dispositivo. Es lo que permite que una consulta de medios con <code>min-width: 390px</code> se active en un teléfono de 390 píxeles y no en uno de 980.</dd>
+    </div>
+    <div>
+      <dt><code>initial-scale=1</code></dt>
+      <dd>El contenido arranca a escala 1:1, sin que el navegador aplique su propio factor de reducción.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — no es lo mismo que «usar el ancho del dispositivo»</span>
+    <p>
+      <code>device-width</code> mide el ancho <em>del aparato</em>, no el de la ventana que el usuario
+      puede redimensionar. En un monitor de escritorio, <code>device-width</code> sigue siendo el
+      ancho del monitor, así que una consulta con ese valor nunca se activaría por el hecho de que el
+      usuario encogió la ventana. <code>device-width</code> pertenece a la era de los dispositivos
+      con tamaños fijos; hoy se usa <code>width</code>, que es el ancho <strong>disponible</strong>.
+      Por eso las consultas de medios bien escritas usan <code>(min-width: …)</code> sin
+      <code>device-</code>.
+    </p>
+  </div>
+
+  <h3>1.2 · Tres formas de medir</h3>
+
+  <p>
+    Todo el diseño responsivo se decide en estas dos preguntas: <strong>¿cuánto espacio ocupa
+    esto?</strong> y <strong>¿cómo se reparte el espacio que hay?</strong>. La primera tiene cuatro
+    respuestas posibles, y cada una tiene un coste.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Maneras de expresar una medida</caption>
+      <thead>
+        <tr><th>Medida</th><th>Se escribe</th><th>Cuándo usarla</th><th>Su riesgo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Absoluta</strong></td>
+          <td><code>width: 320px</code></td>
+          <td>Detalles, bordes, iconos, la altura de un botón</td>
+          <td>Se desborda cuando el espacio aprieta</td>
+        </tr>
+        <tr>
+          <td><strong>Relativa al contenedor</strong></td>
+          <td><code>width: 100%</code><br><code>max-width: 68ch</code></td>
+          <td>Cajas de contenido, columnas de una rejilla</td>
+          <td><code>100%</code> sin tope se estira hasta el infinito</td>
+        </tr>
+        <tr>
+          <td><strong>Relativa a la ventana</strong></td>
+          <td><code>40vw</code>, <code>100dvh</code></td>
+          <td>Tipografía fluida, fondos a pantalla completa</td>
+          <td>No distingue el móvil del escritorio</td>
+        </tr>
+        <tr>
+          <td><strong>Fluida con topes</strong></td>
+          <td><code>clamp(1rem, 2vw + 0.8rem, 1.5rem)</code></td>
+          <td>Títulos y cuerpos de texto</td>
+          <td>Hay que entender qué significan sus tres valores</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    <code>clamp()</code> merece una explicación aparte, porque resuelve de una vez el problema de
+    los dos extremos. Su firma es <code>clamp(mínimo, valor-preferido, máximo)</code>: el navegador
+    toma el valor preferido —que puede depender del ancho de la ventana— pero nunca baja del
+    mínimo ni sube del máximo. En el ejemplo de la tabla, el título mide 1rem en un teléfono
+    pequeño, crece con la ventana y se detiene en 1.5rem en un monitor.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>estilos/base.css — tipografía fluida</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cls">:root</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">--texto-base</span><span class="tk-pun">:</span> <span class="tk-fn">clamp</span><span class="tk-pun">(</span><span class="tk-num">1rem</span><span class="tk-pun">,</span> <span class="tk-num">0.95rem</span> <span class="tk-kw">+</span> <span class="tk-num">0.2vw</span><span class="tk-pun">,</span> <span class="tk-num">1.15rem</span><span class="tk-pun">);</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-tag">body</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">font-size</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--texto-base</span><span class="tk-pun">);</span>
+  <span class="tk-attr">line-height</span><span class="tk-pun">:</span> <span class="tk-num">1.7</span><span class="tk-pun">;</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cls">.ficha__titulo</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">font-size</span><span class="tk-pun">:</span> <span class="tk-fn">clamp</span><span class="tk-pun">(</span><span class="tk-num">1.1rem</span><span class="tk-pun">,</span> <span class="tk-num">1rem</span> <span class="tk-kw">+</span> <span class="tk-num">0.8vw</span><span class="tk-pun">,</span> <span class="tk-num">1.6rem</span><span class="tk-pun">);</span>
+<span class="tk-pun">}</span></code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — la altura de la ventana en el móvil</span>
+    <p>
+      La unidad <code>vh</code> mide el 1 % de la altura de la ventana <em>asumiendo que la barra de
+      direcciones del navegador no existe</em>. En un teléfono, esa barra aparece y desaparece, y
+      durante el desplazamiento cambia el alto real disponible. Por eso existen unidades nuevas:
+      <code>dvh</code> (<em>dynamic</em>) sigue el valor real en cada momento, y <code>svh</code>
+      (<em>small</em>) toma siempre el más pequeño, que es el valor estable. Para una sección que
+      ocupa toda la pantalla, <code>min-height: 100dvh</code> es la respuesta correcta en los
+      navegadores actuales.
+    </p>
+  </div>
+
+  <h3>1.3 · Las dos herramientas de distribución</h3>
+
+  <p>
+    Medir es la mitad del trabajo; la otra mitad es <strong>repartir</strong>. CSS ofrece dos
+    mecanismos para eso, y son complementarios, no alternativos.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Dos formas de colocar elementos</caption>
+      <thead>
+        <tr><th></th><th>Flexbox</th><th>Rejilla (CSS Grid)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Idea</strong></td><td>Una fila o una columna, y se reparte el espacio</td><td>Filas y columnas a la vez, como una hoja de cálculo</td></tr>
+        <tr><td><strong>Ejes</strong></td><td>Uno principal y otro transversal</td><td>Horizontal y vertical, simétricos</td></tr>
+        <tr><td><strong>Reparto</strong></td><td><code>justify-content</code>, <code>align-items</code>, <code>gap</code>, <code>flex: 1</code></td><td><code>grid-template-columns</code>, <code>grid-template-rows</code>, <code>gap</code></td></tr>
+        <tr><td><strong>Se usa cuando</strong></td><td>Alinear botones en una barra, distributing el espacio de una cabecera</td><td>Un catálogo de tarjetas, la estructura general de la página</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — la regla práctica</span>
+    <p>
+      Si la decisión que estás tomando es <strong>«¿cuántas columnas y de qué ancho?»</strong>, es
+      rejilla. Si la decisión es <strong>«¿cómo se alinean estos tres elementos entre sí?»</strong>,
+      es flexbox. En la práctica se combinan: la rejilla decide la estructura de la página, y
+      flexbox alinea el contenido dentro de cada celda.
+    </p>
+  </div>
+
+  <p>
+    Y hay un caso donde la decisión ni siquiera hace falta tomarla, porque CSS ya sabe resolverlo.
+    Una rejilla de tarjetas que se adapta sola, <strong>sin una sola consulta de medios</strong>:
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>estilos/componentes.css — la rejilla que se adapta sola</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cls">.catalogo</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">display</span><span class="tk-pun">:</span> <span class="tk-kw">grid</span><span class="tk-pun">;</span>
+  <span class="tk-attr">grid-template-columns</span><span class="tk-pun">:</span> <span class="tk-fn">repeat</span><span class="tk-pun">(</span><span class="tk-kw">auto-fit</span><span class="tk-pun">,</span> <span class="tk-fn">minmax</span><span class="tk-pun">(</span><span class="tk-num">16rem</span><span class="tk-pun">,</span> <span class="tk-num">1fr</span><span class="tk-pun">));</span>
+  <span class="tk-attr">gap</span><span class="tk-pun">:</span> <span class="tk-num">1.25rem</span><span class="tk-pun">;</span>
+<span class="tk-pun">}</span></code></pre>
+  </div>
+
+  <p>
+    Léelo despacio: <strong>«tantas columnas como quepan, cada una de al menos 16 remes, y el
+    sobrante repartido a partes iguales»</strong>. En una ventana de 360 píxeles cabe una sola
+    columna; en una de 1200 caben tres; en una de 1600, cuatro. El navegador lo recalcula solo en
+    cada redimensionamiento. Es la respuesta correcta para un catálogo de tarjetas, y es un buen
+    recordatorio de que <strong>no todo necesita una consulta de medios</strong>.
+  </p>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>auto-fit</code> frente a <code>auto-fill</code></span>
+    <p>
+      Los dos términos existen y se parecen, pero no son lo mismo. Con <code>auto-fill</code>, las
+      columnas vacías <strong>se conservan</strong>: el hueco mínimo de 16 remes se calcula siempre
+      contra el número máximo de columnas que cabrían, y si sobran huecos, ahí se quedan. Con
+      <code>auto-fit</code>, las columnas vacías <strong>se colapsan</strong> y las que quedan se
+      estiran para llenar el espacio. Si tienes una sola tarjeta en una pantalla ancha, con
+      <code>auto-fill</code> esa tarjeta se queda angosta a la izquierda con un vacío enorme a la
+      derecha; con <code>auto-fit</code> ocupa todo el ancho. Para un catálogo de fichas, casi
+      siempre quieres <code>auto-fit</code>.
+    </p>
+  </div>
+
+  <h3>1.4 · La pregunta de diseño</h3>
+
+  <p>
+    Hay una diferencia entre lo que se le pregunta al CSS y lo que debería preguntarse. «¿Cómo se ve
+    esto en un celular de 390 píxeles?» es una pregunta mal planteada: no hay un «celular de 390
+    píxeles», hay muchos, y el ancho puede cambiar en cualquier momento. La pregunta útil es
+    <strong>«¿qué contenido no cabe, o qué se vuelve incómoda, cuando el espacio aprieta?»</strong>.
+  </p>
+
+  <p>
+    Esa pregunta tiene respuestas concretas, y cada respuesta es un punto de corte. «En el ancho
+    mínimo, la portada y el texto van apilados porque no caben en fila». «A partir de cierto ancho,
+    caben tres fichas en una fila sin que el texto quede ilegible». «A partir de un ancho mayor, el
+    texto principal ya no debe ocupar toda la pantalla, porque una línea de 200 caracteres es
+    incómoda de leer».
+  </p>
+
+  <figure>
+    <div class="ensayo">
+      <div class="ensayo-titulo">La misma ficha de libro en tres anchos disponibles</div>
+      <div class="ensayo-pantallas">
+        <div class="ensayo-pantalla estrecha">
+          <div class="ensayo-dato"><span>Teléfono</span><b>390 px</b></div>
+          <div class="maqueta">
+            <div class="maqueta-linea titulo"></div>
+            <div class="maqueta-linea corta"></div>
+            <div class="maqueta-rejilla una">
+              <div class="maqueta-bloque"></div>
+              <div class="maqueta-bloque"></div>
+              <div class="maqueta-bloque"></div>
+            </div>
+          </div>
+        </div>
+        <div class="ensayo-pantalla mediana">
+          <div class="ensayo-dato"><span>Tableta</span><b>768 px</b></div>
+          <div class="maqueta">
+            <div class="maqueta-linea titulo"></div>
+            <div class="maqueta-linea corta"></div>
+            <div class="maqueta-rejilla dos">
+              <div class="maqueta-bloque"></div>
+              <div class="maqueta-bloque"></div>
+              <div class="maqueta-bloque"></div>
+              <div class="maqueta-bloque"></div>
+            </div>
+          </div>
+        </div>
+        <div class="ensayo-pantalla ancha">
+          <div class="ensayo-dato"><span>Monitor</span><b>1440 px</b></div>
+          <div class="maqueta">
+            <div class="maqueta-linea titulo"></div>
+            <div class="maqueta-linea corta"></div>
+            <div class="maqueta-rejilla tres">
+              <div class="maqueta-bloque"></div>
+              <div class="maqueta-bloque"></div>
+              <div class="maqueta-bloque"></div>
+              <div class="maqueta-bloque"></div>
+              <div class="maqueta-bloque"></div>
+              <div class="maqueta-bloque"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <figcaption class="pie-figura"><b>Figura 1</b>El contenido no cambia: cambian cuántos elementos caben en una fila. El diseño responsivo decide <em>cuántas</em>, no <em>qué</em>.</figcaption>
+  </figure>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> Una página con <code>width: 960px</code> fijo, abierta en un teléfono de 390 píxeles, ¿qué ocurre?</p>
+      <button class="opcion" data-op="a">El navegador la reduce y el texto queda pequeño</button>
+      <button class="opcion" data-op="b">Se ajusta sola porque todas las páginas lo hacen</button>
+      <button class="opcion" data-op="c">Se desborda: el contenido más ancho que la ventana genera desplazamiento horizontal</button>
+      <button class="opcion" data-op="d">El navegador la centra y reduce el ancho al 40 %</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Qué significa exactamente <code>clamp(1rem, 2vw, 1.5rem)</code>?</p>
+      <button class="opcion" data-op="a">Que el tamaño será 1rem en pantallas pequeñas y 1.5rem en las grandes</button>
+      <button class="opcion" data-op="b">Que el tamaño sigue el valor preferido (2vw), sin bajar de 1rem ni subir de 1.5rem</button>
+      <button class="opcion" data-op="c">Que el tamaño se elige al azar entre los tres valores</button>
+      <button class="opcion" data-op="d">Que el valor preferido solo se aplica en consultas de medios</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuándo conviene una rejilla con <code>repeat(auto-fit, minmax(16rem, 1fr))</code> en lugar de consultas de medios?</p>
+      <button class="opcion" data-op="a">Cuando el número de elementos depende del espacio disponible y no del dispositivo</button>
+      <button class="opcion" data-op="b">Cuando la página tiene que verse igual en todos los tamaños</button>
+      <button class="opcion" data-op="c">Cuando se quiere un número fijo de tres columnas</button>
+      <button class="opcion" data-op="d">Nunca: las consultas de medios son siempre obligatorias</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: Media queries →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — MEDIA QUERIES
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · La regla que cambia</div>
+    <h2>Media queries: <em>la regla que cambia con el ancho</em></h2>
+    <p class="proposito">
+      Una consulta de medios es una regla CSS que dice «esto solo se aplica cuando se cumple esta
+      condición». Es la herramienta que convierte una maqueta fija en un diseño que se adapta. Esta
+      unidad explica su sintaxis, justifica el orden en que se escriben y enumera los errores que
+      más tiempo consumen.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica guiada</b></span>
+      <span>🧭 <b>Producto: mapa de puntos de corte</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · La sintaxis</h3>
+
+  <p class="primer-párrafo">
+    La forma completa de una consulta de medios tiene cuatro piezas: la palabra <code>@media</code>,
+    una condición, y un bloque de CSS que solo se aplica si la condición se cumple.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>estilos/responsivo.css — la forma completa</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">@media</span> <span class="tk-pun">(</span><span class="tk-attr">min-width</span><span class="tk-pun">:</span> <span class="tk-num">768px</span><span class="tk-pun">)</span> <span class="tk-kw">and</span> <span class="tk-pun">(</span><span class="tk-attr">orientation</span><span class="tk-pun">:</span> <span class="tk-kw">landscape</span><span class="tk-pun">)</span> <span class="tk-pun">{</span>
+  <span class="tk-cls">.ficha__portada</span> <span class="tk-pun">{</span>
+    <span class="tk-attr">aspect-ratio</span><span class="tk-pun">:</span> <span class="tk-num">16</span> <span class="tk-kw">/</span> <span class="tk-num">9</span><span class="tk-pun">;</span>
+  <span class="tk-pun">}</span>
+<span class="tk-pun">}</span></code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>and</code></dt>
+      <dd>Las dos condiciones deben cumplirse a la vez. «La ventana es ancha <em>y</em> el dispositivo está en horizontal».</dd>
+    </div>
+    <div>
+      <dt><code>,</code> (coma)</dt>
+      <dd>Equivale a «o». «La ventana es ancha <em>o</em> el dispositivo está en horizontal».</dd>
+    </div>
+    <div>
+      <dt><code>not</code></dt>
+      <dd>Niega la condición: <code>@media not (min-width: 768px)</code> se cumple cuando la ventana es más estrecha que 768 píxeles.</dd>
+    </div>
+    <div>
+      <dt><code>min-width</code></dt>
+      <dd>La condición se cumple cuando el ancho disponible es <strong>igual o mayor</strong> que el valor dado. Es la forma que se usa en esta clase, siempre.</dd>
+    </div>
+  </div>
+
+  <h3>2.2 · Móvil primero: la decisión de fondo</h3>
+
+  <p>
+    Hay dos manera posibles de escribir una hoja responsiva, y la elección tiene consecuencias que se
+    notan meses después.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Dos estrategias y sus consecuencias</caption>
+      <thead>
+        <tr><th></th><th>Partiendo del escritorio</th><th>Partiendo del móvil</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Condición</strong></td>
+          <td><code>@media (max-width: 768px)</code></td>
+          <td><code>@media (min-width: 768px)</code></td>
+        </tr>
+        <tr>
+          <td><strong>El estilo base es</strong></td>
+          <td>el de la pantalla grande</td>
+          <td>el de la pantalla pequeña</td>
+        </tr>
+        <tr>
+          <td><strong>Dirección del trabajo</strong></td>
+          <td>hay que «deshacer» al achicar</td>
+          <td>hay que «añadir» al ensanchar</td>
+        </tr>
+        <tr>
+          <td><strong>Riesgo</strong></td>
+          <td>las reglas se acumulan y se pisan entre sí</td>
+          <td>cada consulta de medios suma; nada se contradice</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    La segunda columna de la tabla es la que explica por qué el enfoque «móvil primero» es el
+    estándar. Con <code>max-width</code>, cada punto de corte <em>reduce</em> el espacio de acción:
+    el escritorio escribe las reglas, y cada consulta posterior tiene que deshacer lo que hizo la
+    anterior. Con dos o tres cortes, el resultado es una maraña de reglas que se contradicen y en la
+    que el orden de escritura termina importando más que el orden del HTML.
+  </p>
+
+  <p>
+    Con <code>min-width</code>, el mecanismo es el contrario y mucho más limpio: <strong>el estilo
+    base describe la pantalla más estrecha</strong> —el caso más difícil, porque ahí es donde menos
+    cabe— y cada consulta de medios <em>añade</em> lo que la pantalla más ancha permite. El
+    resultado es que nunca hay que «deshacer» nada.
+  </p>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — por qué «móvil primero» también es más rápido</span>
+    <p>
+      El estilo base es el que el navegador aplica antes de descargar el resto de las hojas, y el
+      que se descarga primero en una conexión lenta. Con el enfoque «móvil primero», ese primer
+      estilo es el más sencillo —el que exige menos trabajo de renderizado— en lugar de ser la
+      versión completa del escritorio a la que luego hay que recortar. En una red del colegio, con
+      treinta estudiantes cargando la misma página, esa diferencia se nota.
+    </p>
+  </div>
+
+  <h3>2.3 · Los puntos de corte que usaremos</h3>
+
+  <p>
+    Los anchos en los que el diseño cambia se llaman <strong>puntos de corte</strong>. No hay un
+    número oficial, pero sí hay un conjunto de valores que casi todo el mundo usa, porque
+    corresponden a los anchos de pantalla donde un diseño de contenido cambia de naturaleza. La
+    tabla siguiente es la que vamos a usar en toda la clase.
+  </p>
+
+  <div class="cortes">
+    <div class="corte">
+      <span class="corte-nombre">sm</span>
+      <span class="corte-valor">576 px</span>
+      <span class="corte-uso">¿Cabe ya una segunda columna de contenido sin que el texto quede estrecho?</span>
+    </div>
+    <div class="corte">
+      <span class="corte-nombre">md</span>
+      <span class="corte-valor">768 px</span>
+      <span class="corte-uso">¿La pantalla ya es de tableta? Dos columnas cómodo, tres apretado.</span>
+    </div>
+    <div class="corte">
+      <span class="corte-nombre">lg</span>
+      <span class="corte-valor">992 px</span>
+      <span class="corte-uso">¿Entra una barra lateral junto al contenido principal?</span>
+    </div>
+    <div class="corte">
+      <span class="corte-nombre">xl</span>
+      <span class="corte-valor">1200 px</span>
+      <span class="corte-uso">¿El texto central necesita un tope para no quedar ilegible?</span>
+    </div>
+    <div class="corte">
+      <span class="corte-nombre">xxl</span>
+      <span class="corte-valor">1400 px</span>
+      <span class="corte-uso">¿El diseño aprovecha el sobrante o deja un vacío enorme?</span>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — estos son los mismos de Bootstrap</span>
+    <p>
+      La tabla anterior no es una invención de esta clase: son exactamente los seis puntos de corte
+      de <strong>Bootstrap 5.3</strong> (el primero, «extra pequeño», es el estilo base y no tiene
+      nombre). No es casualidad. Si tu CSS propio usa 768, 992 y 1200, y más adelante añades
+      Bootstrap, las dos cosas hablan el mismo idioma y el resultado se ve coherente. Si usaras
+      700 y 950, cada regla de Bootstrap entraría en juego en un ancho distinto al tuyo, y la página
+      se vería «rota» justo en los bordes. <strong>Elegir los cortes que usa Bootstrap es la decisión
+      más barata que puedes tomar en esta clase.</strong>
+    </p>
+  </div>
+
+  <h3>2.4 · Condiciones que no son de ancho</h3>
+
+  <p>
+    El ancho es la condición más usada, pero no la única. Estas otras son todas admitidas dentro
+    de <code>@media</code> y resuelven problemas distintos.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Condiciones de medios y su uso</caption>
+      <thead>
+        <tr><th>Condición</th><th>Se cumple cuando…</th><th>Para qué sirve</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>(orientation: landscape)</code></td><td>el dispositivo está tumbado</td><td>Una tabla ancha gana sentido en horizontal</td></tr>
+        <tr><td><code>(prefers-color-scheme: dark)</code></td><td>el sistema pide tema oscuro</td><td>Seguir la preferencia del usuario sin pedirle nada</td></tr>
+        <tr><td><code>(prefers-reduced-motion: reduce)</code></td><td>el usuario pidió menos movimiento</td><td>Desactivar transiciones y animaciones</td></tr>
+        <tr><td><code>(hover: hover)</code></td><td>el puntero es un ratón</td><td>No mostrar «pasa el cursor» en una pantalla táctil</td></tr>
+        <tr><td><code>(pointer: coarse)</code></td><td>el puntero es un dedo</td><td>Botones más grandes, porque el dedo es impreciso</td></tr>
+        <tr><td><code>(min-resolution: 2dppx)</code></td><td>la pantalla es de alta densidad</td><td>Cargar imágenes más definidas</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — el movimiento reducido no es opcional</span>
+    <p>
+      <code>prefers-reduced-motion</code> existe porque hay personas a las que el movimiento —
+      transiciones, paralaje, animaciones de desplazamiento— les causa malestar real, y en algunos
+      casos dolor. No es un detalle de gusto. La forma correcta de aplicarlo es al revés de lo
+      habitual: se escribe la animación con normalidad y se desactiva dentro de la consulta.
+    </p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>estilos/base.css — el tema del sistema</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cls">:root</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">--color-fondo</span><span class="tk-pun">:</span> <span class="tk-num">#ffffff</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--color-texto</span><span class="tk-pun">:</span> <span class="tk-num">#16181d</span><span class="tk-pun">;</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-kw">@media</span> <span class="tk-pun">(</span><span class="tk-attr">prefers-color-scheme</span><span class="tk-pun">:</span> <span class="tk-kw">dark</span><span class="tk-pun">)</span> <span class="tk-pun">{</span>
+  <span class="tk-cls">:root</span> <span class="tk-pun">{</span>
+    <span class="tk-attr">--color-fondo</span><span class="tk-pun">:</span> <span class="tk-num">#12141a</span><span class="tk-pun">;</span>
+    <span class="tk-attr">--color-texto</span><span class="tk-pun">:</span> <span class="tk-num">#e8eaf0</span><span class="tk-pun">;</span>
+  <span class="tk-pun">}</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-tag">body</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">background</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--color-fondo</span><span class="tk-pun">);</span>
+  <span class="tk-attr">color</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--color-texto</span><span class="tk-pun">);</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-kw">@media</span> <span class="tk-pun">(</span><span class="tk-attr">prefers-reduced-motion</span><span class="tk-pun">:</span> <span class="tk-kw">reduce</span><span class="tk-pun">)</span> <span class="tk-pun">{</span>
+  <span class="tk-tag">*</span> <span class="tk-pun">{</span>
+    <span class="tk-attr">transition-duration</span><span class="tk-pun">:</span> <span class="tk-num">0.01ms</span> <span class="tk-kw">important</span><span class="tk-pun">;</span>
+    <span class="tk-attr">animation-duration</span><span class="tk-pun">:</span> <span class="tk-num">0.01ms</span> <span class="tk-kw">important</span><span class="tk-pun">;</span>
+  <span class="tk-pun">}</span>
+<span class="tk-pun">}</span></code></pre>
+  </div>
+
+  <h3>2.5 · Cuatro errores que cuestan horas</h3>
+
+  <div class="paso">
+    <span class="n">1</span>
+    <div class="cuerpo-paso">
+      <strong>Olvidar la etiqueta <code>viewport</code></strong>
+      <p>
+        El síntoma es desconcertante: la página se ve diminuta en el teléfono y las consultas de
+        medios no se activan como se espera. La causa es que, sin esa etiqueta, el teléfono usa un
+        ancho de simulación de 980 píxeles, y tus cortes de 768 y 992 nunca se cumplen.
+      </p>
+    </div>
+  </div>
+
+  <div class="paso">
+    <span class="n">2</span>
+    <div class="cuerpo-paso">
+      <strong>Escribir la condición al revés</strong>
+      <p>
+        «Quiero que esto se vea grande» produce <code>(max-width: 768px)</code>, que en realidad
+        significa «esto se ve <em>pequeño</em>». La forma de evitarlo es leer la condición en voz
+        alta: <code>min-width: 768px</code> se lee «desde 768 píxeles hacia arriba», que es
+        exactamente lo que quieres.
+      </p>
+    </div>
+  </div>
+
+  <div class="paso">
+    <span class="n">3</span>
+    <div class="cuerpo-paso">
+      <strong>Encadenar condiciones <code>max-width</code></strong>
+      <p>
+        Con tres reglas <code>max-width</code> —para 1200, para 992 y para 768— hay tres zonas que
+        se solapan, y en la zona de solape gana la que se escribió después, no la más específica. Es
+        el problema que el enfoque «móvil primero» elimina de raíz.
+      </p>
+    </div>
+  </div>
+
+  <div class="paso">
+    <span class="n">4</span>
+    <div class="cuerpo-paso">
+      <strong>Una llave de más o de menos</strong>
+      <p>
+        Una regla que se cierra de más queda fuera de la consulta de medios y <strong>se aplica
+        siempre</strong>; una que se cierra de menos deja reglas huérfanas y el resto de la hoja
+        deja de funcionar. El síntoma clásico es «las reglas que vienen después de este punto no se
+        aplican». En el panel de estilos de las DevTools, una regla que aparece <em>tachada</em>
+        está siendo pisada por otra; una regla que aparece en gris está siendo anulada.
+      </p>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — cómo se comprueba qué regla se aplica</span>
+    <p>
+      El panel de estilos de las DevTools (<code>Ctrl</code> + <code>Shift</code> + <code>C</code>
+      en Windows y Linux, <code>Cmd</code> + <code>Option</code> + <code>C</code> en macOS) tiene un
+      casillero de <strong>«Simular»</strong> que permite forzar el tamaño de pantalla sin tocar
+      el código. Cada regla que se aplica aparece marcada; las que no, tachadas. Con eso, un error
+      de cascada se diagnostica en segundos en lugar de horas.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Por qué se recomienda escribir las reglas base para la pantalla más estrecha y después ampliar?</p>
+      <button class="opcion" data-op="a">Porque el navegador no sabe calcular anchos en píxeles</button>
+      <button class="opcion" data-op="b">Porque cada consulta con <code>min-width</code> solo añade reglas y nunca hay que deshacer nada</button>
+      <button class="opcion" data-op="c">Porque <code>max-width</code> dejó de existir en los navegadores modernos</button>
+      <button class="opcion" data-op="d">Porque las consultas de medios solo funcionan en pantallas pequeñas</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> Una consulta con <code>(min-width: 992px)</code>, ¿en qué rango se aplica?</p>
+      <button class="opcion" data-op="a">Solo entre 992 y 1200 píxeles</button>
+      <button class="opcion" data-op="b">En cualquier ancho menor de 992 píxeles</button>
+      <button class="opcion" data-op="c">En 992 píxeles y en todos los anchos mayores</button>
+      <button class="opcion" data-op="d">Exactamente en 992 píxeles</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué se rompe si falta la etiqueta <code>viewport</code> en el HTML?</p>
+      <button class="opcion" data-op="a">El móvil simula un ancho de unos 980 píxeles, así que los cortes pequeños nunca se activan</button>
+      <button class="opcion" data-op="b">Las hojas de estilo dejan de descargarse</button>
+      <button class="opcion" data-op="c">Las consultas de medios se ignoran en el móvil y solo funcionan en el escritorio</button>
+      <button class="opcion" data-op="d">No pasa nada: es una etiqueta opcional</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: Una página, muchas pantallas</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: Ejercicio práctico →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — EJERCICIO
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · Taller de aplicación</div>
+    <h2>Ejercicio 3.1 · <em>Una ficha que se adapta sola</em></h2>
+    <p class="proposito">
+      Las dos unidades anteriores dieron el vocabulario y la sintaxis. Ahora toca escribir. En los
+      próximos 30 minutos construirás, desde cero y sin ningún marco de trabajo, la ficha de un
+      libro que se lee bien en un teléfono, en una tableta y en un monitor.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: ficha responsiva con tres cortes</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>Ficha de libro del catálogo de la biblioteca</h3>
+    </div>
+
+    <p>
+      La biblioteca del colegio quiere presentar su catálogo. Por ahora solo hay una ficha de
+      ejemplo, pero la estructura debe servir para muchas. Escribe el HTML y el CSS de esa ficha en
+      dos archivos nuevos: <code>templates/ficha.html</code> y <code>estilos/componentes.css</code>.
+      <strong>No uses Bootstrap todavía</strong>: esta unidad es sobre CSS propio.
+    </p>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong>HTML semántico.</strong> Un elemento <code>&lt;article&gt;</code> con la clase
+        <code>ficha</code>, un <code>&lt;h2&gt;</code> para el título, un <code>&lt;p&gt;</code> para
+        el autor, otro para el resumen y un elemento para la disponibilidad. Los tres últimos
+        llevan clases propias: <code>ficha__autor</code>, <code>ficha__resumen</code> y
+        <code>ficha__estado</code>.
+      </li>
+      <li>
+        <strong>Variables de diseño</strong> declaradas en <code>:root</code>: el ancho máximo de la
+        ficha, el color de fondo, el color del texto, el radio de las esquinas y la separación
+        interior. Ningún color escrito directamente en el resto de la hoja.
+      </li>
+      <li>
+        <strong>Estilo base de móvil.</strong> Sin ninguna consulta de medios, la ficha debe verse
+        correctamente en una ventana de 360 píxeles: una sola columna, todo el texto legible, sin
+        desbordamiento horizontal.
+      </li>
+      <li>
+        <strong>Tres consultas de medios</strong>, con <code>min-width</code>, en 768, 992 y 1200
+        píxeles. Cada una tiene que hacer <em>algo distinto y justificado</em>:
+        <ul>
+          <li>768: la portada pasa a estar al lado del texto en lugar de encima.</li>
+          <li>992: el resumen puede ocupar una columna propia porque ya no se estrecha tanto.</li>
+          <li>1200: la ficha deja de crecer y se ancla a un ancho cómodo de lectura.</li>
+        </ul>
+      </li>
+      <li>
+        <strong>Una tipografía fluida</strong> con <code>clamp()</code> en el título de la ficha.
+      </li>
+      <li>
+        <strong>Un estado de foco visible</strong> en el enlace «Ver disponibilidad», y una
+        transición desactivada dentro de <code>(prefers-reduced-motion: reduce)</code>.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-3-1">Ver una ficha de referencia</button>
+
+    <div class="solucion" id="solucion-3-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p><strong>A. La plantilla</strong></p>
+      <pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">article</span> <span class="tk-attr">class</span>=<span class="tk-str">"ficha"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"ficha__portada"</span> <span class="tk-attr">aria-hidden</span>=<span class="tk-str">"true"</span><span class="tk-pun">&gt;&lt;/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"ficha__cuerpo"</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">h2</span> <span class="tk-attr">class</span>=<span class="tk-str">"ficha__titulo"</span><span class="tk-pun">&gt;</span>El principito<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">h2</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">p</span> <span class="tk-attr">class</span>=<span class="tk-str">"ficha__autor"</span><span class="tk-pun">&gt;</span>Antonio Machado<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">p</span> <span class="tk-attr">class</span>=<span class="tk-str">"ficha__resumen"</span><span class="tk-pun">&gt;</span>Un poeta busca su camino entre las palabras.<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+
+    <span class="tk-pun">&lt;</span><span class="tk-tag">p</span> <span class="tk-attr">class</span>=<span class="tk-str">"ficha__estado"</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">a</span> <span class="tk-attr">href</span>=<span class="tk-str">"/libros/el-principito"</span><span class="tk-pun">&gt;</span>Ver disponibilidad<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">a</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">article</span><span class="tk-pun">&gt;</span></code></pre>
+
+      <p><strong>B. La hoja de componentes</strong></p>
+      <pre><code><span class="tk-cls">:root</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">--ficha-ancho</span><span class="tk-pun">:</span> <span class="tk-num">34rem</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--ficha-fondo</span><span class="tk-pun">:</span> <span class="tk-num">#ffffff</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--ficha-texto</span><span class="tk-pun">:</span> <span class="tk-num">#16181d</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--ficha-tenue</span><span class="tk-pun">:</span> <span class="tk-num">#5b6472</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--ficha-radio</span><span class="tk-pun">:</span> <span class="tk-num">10px</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--ficha-sep</span><span class="tk-pun">:</span> <span class="tk-num">1rem</span><span class="tk-pun">;</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cls">.ficha</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">display</span><span class="tk-pun">:</span> <span class="tk-kw">grid</span><span class="tk-pun">;</span>
+  <span class="tk-attr">gap</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--ficha-sep</span><span class="tk-pun">);</span>
+  <span class="tk-attr">max-width</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--ficha-ancho</span><span class="tk-pun">);</span>
+  <span class="tk-attr">padding</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--ficha-sep</span><span class="tk-pun">);</span>
+  <span class="tk-attr">background</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--ficha-fondo</span><span class="tk-pun">);</span>
+  <span class="tk-attr">color</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--ficha-texto</span><span class="tk-pun">);</span>
+  <span class="tk-attr">border-radius</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--ficha-radio</span><span class="tk-pun">);</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cls">.ficha__portada</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">aspect-ratio</span><span class="tk-pun">:</span> <span class="tk-num">16</span> <span class="tk-kw">/</span> <span class="tk-num">7</span><span class="tk-pun">;</span>
+  <span class="tk-attr">border-radius</span><span class="tk-pun">:</span> <span class="tk-fn">calc</span><span class="tk-pun">(</span><span class="tk-attr">--ficha-radio</span> <span class="tk-kw">-</span> <span class="tk-num">2px</span><span class="tk-pun">);</span>
+  <span class="tk-attr">background</span><span class="tk-pun">:</span> <span class="tk-fn">linear-gradient</span><span class="tk-pun">(</span><span class="tk-num">135deg</span><span class="tk-pun">,</span> <span class="tk-num">#6d28d9</span><span class="tk-pun">,</span> <span class="tk-num">#2563eb</span><span class="tk-pun">);</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cls">.ficha__titulo</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">font-size</span><span class="tk-pun">:</span> <span class="tk-fn">clamp</span><span class="tk-pun">(</span><span class="tk-num">1.15rem</span><span class="tk-pun">,</span> <span class="tk-num">1rem</span> <span class="tk-kw">+</span> <span class="tk-num">1vw</span><span class="tk-pun">,</span> <span class="tk-num">1.8rem</span><span class="tk-pun">);</span>
+  <span class="tk-attr">margin</span><span class="tk-pun">:</span> <span class="tk-num">0</span><span class="tk-pun">;</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cls">.ficha__autor</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">margin</span><span class="tk-pun">:</span> <span class="tk-num">0</span><span class="tk-pun">;</span>
+  <span class="tk-attr">color</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--ficha-tenue</span><span class="tk-pun">);</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cls">.ficha__resumen</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">margin</span><span class="tk-pun">:</span> <span class="tk-num">0</span><span class="tk-pun">;</span>
+  <span class="tk-attr">line-height</span><span class="tk-pun">:</span> <span class="tk-num">1.65</span><span class="tk-pun">;</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cls">.ficha__estado</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">margin</span><span class="tk-pun">:</span> <span class="tk-num">0</span><span class="tk-pun">;</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cls">.ficha__estado</span> <span class="tk-tag">a</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">color</span><span class="tk-pun">:</span> <span class="tk-num">#2563eb</span><span class="tk-pun">;</span>
+  <span class="tk-attr">transition</span><span class="tk-pun">:</span> <span class="tk-kw">color</span> <span class="tk-num">.2s</span><span class="tk-pun">;</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cls">.ficha__estado</span> <span class="tk-tag">a</span><span class="tk-pun">:</span><span class="tk-tag">hover</span><span class="tk-pun">,</span>
+<span class="tk-cls">.ficha__estado</span> <span class="tk-tag">a</span><span class="tk-pun">:</span><span class="tk-tag">focus-visible</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">color</span><span class="tk-pun">:</span> <span class="tk-num">#1d4ed8</span><span class="tk-pun">;</span>
+  <span class="tk-attr">text-decoration-thickness</span><span class="tk-pun">:</span> <span class="tk-num">2px</span><span class="tk-pun">;</span>
+<span class="tk-pun">}</span></code></pre>
+
+      <p><strong>C. Las consultas de medios</strong></p>
+      <pre><code><span class="tk-cm">/* 768: la portada pasa al lado del texto */</span>
+<span class="tk-kw">@media</span> <span class="tk-pun">(</span><span class="tk-attr">min-width</span><span class="tk-pun">:</span> <span class="tk-num">768px</span><span class="tk-pun">)</span> <span class="tk-pun">{</span>
+  <span class="tk-cls">.ficha</span> <span class="tk-pun">{</span>
+    <span class="tk-attr">grid-template-columns</span><span class="tk-pun">:</span> <span class="tk-num">10rem</span> <span class="tk-num">1fr</span><span class="tk-pun">;</span>
+    <span class="tk-attr">align-items</span><span class="tk-pun">:</span> <span class="tk-kw">start</span><span class="tk-pun">;</span>
+  <span class="tk-pun">}</span>
+  <span class="tk-cls">.ficha__portada</span> <span class="tk-pun">{</span>
+    <span class="tk-attr">aspect-ratio</span><span class="tk-pun">:</span> <span class="tk-num">3</span> <span class="tk-kw">/</span> <span class="tk-num">4</span><span class="tk-pun">;</span>
+  <span class="tk-pun">}</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cm">/* 992: el cuerpo se reparte en dos columnas */</span>
+<span class="tk-kw">@media</span> <span class="tk-pun">(</span><span class="tk-attr">min-width</span><span class="tk-pun">:</span> <span class="tk-num">992px</span><span class="tk-pun">)</span> <span class="tk-pun">{</span>
+  <span class="tk-cls">.ficha__cuerpo</span> <span class="tk-pun">{</span>
+    <span class="tk-attr">display</span><span class="tk-pun">:</span> <span class="tk-kw">grid</span><span class="tk-pun">;</span>
+    <span class="tk-attr">grid-template-columns</span><span class="tk-pun">:</span> <span class="tk-num">14rem</span> <span class="tk-num">1fr</span><span class="tk-pun">;</span>
+    <span class="tk-attr">column-gap</span><span class="tk-pun">:</span> <span class="tk-num">1.5rem</span><span class="tk-pun">;</span>
+  <span class="tk-pun">}</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cm">/* 1200: la ficha deja de crecer y se ancla a un ancho de lectura */</span>
+<span class="tk-kw">@media</span> <span class="tk-pun">(</span><span class="tk-attr">min-width</span><span class="tk-pun">:</span> <span class="tk-num">1200px</span><span class="tk-pun">)</span> <span class="tk-pun">{</span>
+  <span class="tk-cls">.ficha</span> <span class="tk-pun">{</span>
+    <span class="tk-attr">--ficha-ancho</span><span class="tk-pun">:</span> <span class="tk-num">46rem</span><span class="tk-pun">;</span>
+  <span class="tk-pun">}</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-kw">@media</span> <span class="tk-pun">(</span><span class="tk-attr">prefers-reduced-motion</span><span class="tk-pun">:</span> <span class="tk-kw">reduce</span><span class="tk-pun">)</span> <span class="tk-pun">{</span>
+  <span class="tk-cls">.ficha__estado</span> <span class="tk-tag">a</span> <span class="tk-pun">{</span>
+    <span class="tk-attr">transition</span><span class="tk-pun">:</span> <span class="tk-kw">none</span><span class="tk-pun">;</span>
+  <span class="tk-pun">}</span>
+<span class="tk-pun">}</span></code></pre>
+
+      <p>
+        <strong>Para comprobarlo:</strong> abre el modo «dispositivo» de las DevTools y recorre los
+        anchos 360, 768, 992 y 1280 píxeles. En 360 no debe aparecer barra de desplazamiento
+        horizontal; en 768 la portada debe estar a la izquierda; en 1200 la ficha debe dejar de
+        ensancharse. Si algo falla, mira en el panel de estilos qué regla está tachada.
+      </p>
+      <p>
+        <strong>Criterio de dominio:</strong> se considera bien resuelto cuando la ficha se ve
+        correcta en los cuatro anchos, cuando ninguna medida de color está escrita directamente
+        fuera de <code>:root</code> y cuando cada una de las tres consultas de medios hace algo
+        que se puede explicar con una frase.
+      </p>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> En el enunciado, ¿por qué se pide que el estilo base funcione en 360 píxeles?</p>
+      <button class="opcion" data-op="a">Porque el estilo base es el de la pantalla más estrecha y las consultas de medios solo añaden</button>
+      <button class="opcion" data-op="b">Porque 360 píxeles es el tamaño de todos los teléfonos del mundo</button>
+      <button class="opcion" data-op="c">Porque las consultas de medios no funcionan por debajo de 400 píxeles</button>
+      <button class="opcion" data-op="d">Porque el enunciado pide una versión específica para el celular</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Qué se consigue al declarar los colores en <code>:root</code> y usarlos con <code>var()</code>?</p>
+      <button class="opcion" data-op="a">Que la página cargue más rápido</button>
+      <button class="opcion" data-op="b">Que las clases propias del CSS se puedan abreviar</button>
+      <button class="opcion" data-op="c">Un único lugar donde cambiar el color, y la posibilidad de cambiarlo según el tema del sistema</button>
+      <button class="opcion" data-op="d">Que el navegador aplique las reglas por orden de lectura del archivo</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Por qué la consulta de 992 píxeles reparte el cuerpo en dos columnas?</p>
+      <button class="opcion" data-op="a">Porque a partir de 992 píxeles todos los textos deben ir en dos columnas</button>
+      <button class="opcion" data-op="b">Porque a partir de ese ancho el resumen tiene sitio propio y deja de estrecharse</button>
+      <button class="opcion" data-op="c">Porque el enunciado lo pide así, sin más explicación</button>
+      <button class="opcion" data-op="d">Porque las columnas de la rejilla siempre son 12</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: Media queries</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de lectura</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija por
+      escrito lo que has leído hasta ahora.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora.
+    </p>
+
+    <div class="reglas">
+      <div class="regla">
+        <h4>Regla 20-20-20</h4>
+        <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+      </div>
+      <div class="regla">
+        <h4>Movimiento</h4>
+        <p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p>
+      </div>
+      <div class="regla">
+        <h4>Hidratación</h4>
+        <p>Un vaso de agua. La lectura densa agota más de lo que parece.</p>
+      </div>
+      <div class="regla">
+        <h4>Bitácora</h4>
+        <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora de lectura (5 minutos)</h3>
+
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿qué significa que un diseño sea responsivo?</li>
+    <li><strong>En una frase:</strong> ¿por qué se escribe primero el estilo de la pantalla más estrecha?</li>
+    <li><strong>En una frase:</strong> ¿qué gana y qué pierde un sitio que usa un marco de trabajo de CSS?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+
+  <p>
+    Estas siete palabras aparecerán en el taller final. Léelas ahora; las definiciones son
+    aproximadas y se afinarán en las unidades siguientes.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>Punto de corte</dt>
+      <dd>Ancho de pantalla a partir del cual el diseño cambia de estructura.</dd>
+    </div>
+    <div>
+      <dt>Consulta de medios</dt>
+      <dd>Regla de CSS que solo se aplica cuando se cumple una condición sobre el dispositivo o la ventana.</dd>
+    </div>
+    <div>
+      <dt>Estilo base</dt>
+      <dd>Las reglas que se aplican sin ninguna condición: el aspecto de la pantalla más estrecha.</dd>
+    </div>
+    <div>
+      <dt>Flujo</dt>
+      <dd>La parte del documento que se llena con contenido. Su ancho decide cuánta información cabe sin volverse incómoda.</dd>
+    </div>
+    <div>
+      <dt>Variable CSS</dt>
+      <dd>Nombre que guarda un valor —un color, una medida— para reutilizarlo y poder cambiarlo en un solo lugar.</dd>
+    </div>
+    <div>
+      <dt>Capa</dt>
+      <dd>Grupo de reglas con una prioridad definida por su posición en el orden de las hojas de estilo.</dd>
+    </div>
+    <div>
+      <dt>Utilidad</dt>
+      <dd>Clase de un solo propósito que aplica una propiedad concreta: <code>.d-none</code>, <code>.text-center</code>, <code>.mt-3</code>.</dd>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: Ejercicio 3.1</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Clases propias →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — CLASES PROPIAS Y CAPAS
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · El sistema propio</div>
+    <h2>Clases propias y <em>capas de CSS</em></h2>
+    <p class="proposito">
+      Escribir CSS que funciona en una página es fácil; escribir CSS que siga funcionando cuando la
+      página crezca es otra cosa. Esta unidad trata de las dos decisiones que convierten un conjunto
+      de reglas en un sistema: cómo se nombran las clases y en qué orden se aplican las hojas.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>📄 <b>Lectura y práctica guiada</b></span>
+      <span>🧭 <b>Producto: hoja con sistema de clases</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · De selectores sueltos a un sistema</h3>
+
+  <p class="primer-párrafo">
+    La forma más rápida de escribir CSS es también la que peor escala. Se escribe
+    <code>.card h3 { … }</code>, luego <code>.card > .titulo { … }</code>, luego
+    <code>.card .card__titulo { … }</code>, y un día aparece otro <code>.card</code> en otra parte
+    del proyecto y cada regla empieza a depender de la estructura del HTML que la rodea.
+  </p>
+
+  <p>
+    El problema de fondo no es el estilo: es la <strong>acoplamiento</strong>. Una regla como
+    <code>.card h3</code> dice «cualquier <code>h3</code> que esté dentro de una tarjeta». Si mañana
+    la tarjeta lleva otro título, la regla deja de aplicarse. El selector no nombra la pieza: nombra
+    una coincidencia de estructura, y la estructura cambia.
+  </p>
+
+  <p>
+    La solución es usar <strong>clases que nombran las piezas</strong>. Una clase es un nombre
+    explícito que se pone en el HTML y que el CSS puede buscar sin depender de nada más. Y para que
+    esos nombres no se conviertan en un caos, se usa una convención.
+  </p>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — la convención de esta clase</span>
+    <p>
+      Se usa una versión simplificada de la convención BEM, que divide cada nombre en tres partes
+      separadas por dos guiones bajos y dos guiones:
+    </p>
+    <ul>
+      <li><strong>Bloque</strong>: <code>ficha</code>. La pieza completa.</li>
+      <li><strong>Elemento</strong>: <code>ficha__titulo</code>. Una parte de la pieza.</li>
+      <li><strong>Modificador</strong>: <code>ficha--destacada</code>. Una variante de la pieza.</li>
+    </ul>
+    <p>
+      La ventaja concreta no es estética: es que <strong>se puede buscar</strong>. Escribe
+      <code>ficha__</code> en la búsqueda del editor y aparecen todos los lugares donde se usa ese
+      elemento, en el HTML y en el CSS. Con nombres sueltos como <code>.titulo</code> o
+      <code>.sub</code>, esa búsqueda devuelve resultados de media clase.
+    </p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>HTML y CSS con la convención aplicada</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">article</span> <span class="tk-attr">class</span>=<span class="tk-str">"ficha ficha--destacada"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">h2</span> <span class="tk-attr">class</span>=<span class="tk-str">"ficha__titulo"</span><span class="tk-pun">&gt;</span>El principito<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">h2</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">p</span> <span class="tk-attr">class</span>=<span class="tk-str">"ficha__resumen"</span><span class="tk-pun">&gt;</span>…<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">article</span><span class="tk-pun">&gt;</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>estilos/componentes.css — cada regla nombra una pieza</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cls">.ficha</span> <span class="tk-pun">{</span> <span class="tk-pun">}</span>
+<span class="tk-cls">.ficha__titulo</span> <span class="tk-pun">{</span> <span class="tk-pun">}</span>
+<span class="tk-cls">.ficha__resumen</span> <span class="tk-pun">{</span> <span class="tk-pun">}</span>
+
+<span class="tk-cm">/* La variante se declara aparte y solo cambia lo que debe cambiar */</span>
+<span class="tk-cls">.ficha--destacada</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">box-shadow</span><span class="tk-pun">:</span> <span class="tk-num">0</span> <span class="tk-num">0</span> <span class="tk-num">0</span> <span class="tk-num">3px</span> <span class="tk-fn">rgb</span><span class="tk-pun">(</span><span class="tk-num">0</span> <span class="tk-num">0</span> <span class="tk-num">0</span> <span class="tk-kw">/</span> <span class="tk-num">0.12</span><span class="tk-pun">);</span>
+<span class="tk-pun">}</span></code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — la especificidad no desaparece</span>
+    <p>
+      Nombrar las piezas con clases no elimina la especificidad: la sigue existiendo. Lo que hace
+      es <strong>ponerla a trabajar a tu favor</strong>. Una clase tiene siempre la misma
+      especificidad, así que dos reglas que compiten por la misma pieza se resuelven por
+      <em>orden</em> (gana la última) y no por «qué selector parece más complicado». Ese orden es
+      exactamente lo que controlan las capas del punto 5.3.
+    </p>
+  </div>
+
+  <h3>5.2 · Las variables CSS como contrato de diseño</h3>
+
+  <p>
+    Una variable CSS es un nombre que guarda un valor. Se declara en <code>:root</code> —que
+    representa el elemento raíz del documento— y se usa después con <code>var()</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>estilos/base.css — el contrato de diseño</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cls">:root</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">--color-fondo</span><span class="tk-pun">:</span> <span class="tk-num">#ffffff</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--color-texto</span><span class="tk-pun">:</span> <span class="tk-num">#16181d</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--color-tenue</span><span class="tk-pun">:</span> <span class="tk-num">#5b6472</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--color-acento</span><span class="tk-pun">:</span> <span class="tk-num">#2563eb</span><span class="tk-pun">;</span>
+
+  <span class="tk-attr">--ancho-contenido</span><span class="tk-pun">:</span> <span class="tk-num">68rem</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--ancho-lectura</span><span class="tk-pun">:</span> <span class="tk-num">42rem</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--separacion</span><span class="tk-pun">:</span> <span class="tk-num">1rem</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--radio</span><span class="tk-pun">:</span> <span class="tk-num">10px</span><span class="tk-pun">;</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-tag">body</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">background</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--color-fondo</span><span class="tk-pun">);</span>
+  <span class="tk-attr">color</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--color-texto</span><span class="tk-pun">);</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cls">.contenido</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">max-width</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--ancho-contenido</span><span class="tk-pun">);</span>
+  <span class="tk-attr">margin-inline</span><span class="tk-pun">:</span> <span class="tk-kw">auto</span><span class="tk-pun">;</span>
+  <span class="tk-attr">padding-inline</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--separacion</span><span class="tk-pun">);</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cls">.contenido__texto</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">max-width</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--ancho-lectura</span><span class="tk-pun">);</span>
+<span class="tk-pun">}</span></code></pre>
+  </div>
+
+  <p>
+    La ventaja no es la abreviatura del código: es que <strong>el contrato de diseño queda escrito en un
+    solo lugar</strong>. Si mañana el colegio cambia de color institucional, se cambia en cuatro
+    líneas del <code>:root</code> y el resto del proyecto sigue igual. Si el ancho máximo del
+    contenido cambia, tampoco hay que buscarlo por todas las hojas.
+  </p>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>var()</code> admite un valor por defecto</span>
+    <p>
+      La sintaxis <code>var(--nombre, valor-por-defecto)</code> es más de lo que parece. Si la
+      variable no está definida —porque alguien la borró o porque se usó un nombre con una errata—,
+      el navegador usa el valor por defecto en lugar de dejar la propiedad sin valor. Es la forma
+      de escribir una regla que no se rompe por un descuido en el nombre de una variable.
+    </p>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — las variables CSS no sirven dentro de las condiciones</span>
+    <p>
+      Una variable CSS <strong>no puede usarse en la condición de una consulta de medios</strong>.
+      Esto es una limitación del lenguaje, no una torpeza de CSS: escribir
+      <code>@media (min-width: var(--corte-md))</code> es <em>inválido</em> y el navegador descarta
+      la consulta completa. Bootstrap lo dice con todas las letras en su propia documentación: «aunque
+      incluimos los puntos de corte de la rejilla como variables CSS, ten en cuenta que las variables
+      CSS no funcionan dentro de las consultas de medios».
+    </p>
+    <p>
+      <strong>Consecuencia práctica:</strong> sí puedes declarar los cortes como variables para
+      documentarlos y para usarlos en el resto del CSS, pero dentro de <code>@media</code> hay que
+      escribir el número. Es un poco incómodo, y es una de esas cosas que conviene saber <em>antes</em>
+      de perder una hora buscando el error.
+    </p>
+  </div>
+
+  <h3>5.3 · Las capas: el orden de las hojas es el orden de la prioridad</h3>
+
+  <p>
+    CSS se aplica en cascada: cuando dos reglas dicen la misma propiedad de un elemento, gana la que
+    tiene mayor especificidad; si empatan, gana la que llegó después. El orden de llegada es el de
+    los <code>&lt;link&gt;</code> en el HTML.
+  </p>
+
+  <figure>
+    <div class="capas">
+      <div class="capa">
+        <span class="capa-nombre">1 · Reinicio</span>
+        <span class="capa-desc"><b>Lo que el navegador pone por su cuenta.</b> Márgenes por defecto, tamaño de letra, estilos de los encabezados. Se anulan para partir de una base conocida.</span>
+      </div>
+      <div class="capa">
+        <span class="capa-nombre">2 · Base</span>
+        <span class="capa-desc"><b>El documento.</b> Tipografía, colores, variables, estilos de <code>body</code> y de los encabezados.</span>
+      </div>
+      <div class="capa">
+        <span class="capa-nombre">3 · Componentes</span>
+        <span class="capa-desc"><b>Las piezas reutilizables.</b> La ficha, el botón, el formulario, la tarjeta. Cada una con sus clases propias.</span>
+      </div>
+      <div class="capa">
+        <span class="capa-nombre">4 · Utilidades</span>
+        <span class="capa-desc"><b>Lo que se ajusta en un momento concreto.</b> Una clase que empuja a la derecha, que oculta algo, que cambia un margen.</span>
+      </div>
+      <div class="capa">
+        <span class="capa-nombre">5 · Responsive</span>
+        <span class="capa-desc"><b>Las consultas de medios.</b> Al final, para que puedan ajustar cualquier capa anterior sin pelearse con ella.</span>
+      </div>
+    </div>
+    <figcaption class="pie-figura"><b>Figura 2</b>El orden de las hojas es un orden de prioridad explícito. Cada capa solo necesita saber qué hay debajo de ella.</figcaption>
+  </figure>
+
+  <p>
+    Esa última fila es la que resuelve el problema clásico de <strong>combinar un marco de trabajo
+    con CSS propio</strong>, y se explica con detalle en la unidad 6: si las consultas de medios
+    van al final, entonces el CSS responsive puede corregir cualquier cosa que haya puesto el
+    marco de trabajo, sin recurrir a selectores gymnastics.
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — el orden de los archivos <code>&lt;link&gt;</code></span>
+    <p>
+      En el proyecto de esta clase, el orden queda así: <code>base.css</code>, después
+      <code>componentes.css</code>, después <code>responsivo.css</code>. La hoja de componentes va
+      después de la base porque una pieza necesita poder sobrescribir el estilo general de un
+      elemento (un <code>&lt;h2&gt;</code> dentro de una ficha no puede heredar el tamaño del
+      <code>h2</code> del documento). Y la hoja responsive va al final porque sus reglas tienen que
+      poder aplicarse a cualquier capa.
+    </p>
+  </div>
+
+  <h3>5.4 · Ejercicio 5.2 · Pasa tu ficha a clases propias</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>Convierte la ficha del ejercicio 3.1 en un sistema</h3>
+    </div>
+
+    <p>
+      Retoma la ficha que construiste en la unidad 3 y conviértela en algo que puedas mantener.
+      El objetivo no es que «se vea mejor»: es que <strong>la hoja de estilo sea legible dentro de
+      seis meses</strong>, cuando alguien —quizá tú— tenga que cambiar algo.
+    </p>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong>Renombra las clases</strong> con la convención de la unidad: <code>ficha</code>,
+        <code>ficha__titulo</code>, <code>ficha__autor</code>, <code>ficha__resumen</code>,
+        <code>ficha__estado</code>, <code>ficha__portada</code>. Ningún selector debe depender de la
+        estructura del HTML (nada de <code>.ficha h2</code>).
+      </li>
+      <li>
+        <strong>Saca todas las medidas y colores</strong> a variables en <code>:root</code>: al menos
+        seis. Ningún color literal debe quedar fuera de ese bloque.
+      </li>
+      <li>
+        <strong>Reparte el CSS en los tres archivos</strong> del proyecto: <code>base.css</code>
+        (tipografía, variables, elementos del documento), <code>componentes.css</code> (la ficha) y
+        <code>responsivo.css</code> (las tres consultas de medios).
+      </li>
+      <li>
+        <strong>Una variante</strong> con modificador: por ejemplo <code>ficha--disponible</code>, que
+        cambie el color del estado. La regla del modificador debe declarar <strong>únicamente</strong>
+        lo que cambia.
+      </li>
+      <li>
+        <strong>Una nota escrita</strong> de tres líneas en la parte superior de
+        <code>componentes.css</code> que explique qué contiene el archivo y en qué orden deben ir
+        las hojas.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-5-2">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-5-2">
+      <h4>Modelo de respuesta</h4>
+
+      <p><strong>A. La nota de cabecera de la hoja</strong></p>
+      <pre><code><span class="tk-cm">/* ---------------------------------------------------------------
+   componentes.css
+   Piezas reutilizables del catálogo: la ficha de libro.
+   Se aplica después de base.css (por si necesita corregirse)
+   y antes de responsivo.css (que ajusta todo lo anterior).
+   Convención: bloque__elemento--modificador
+---------------------------------------------------------------- */</span></code></pre>
+
+      <p><strong>B. El bloque y sus elementos</strong></p>
+      <pre><code><span class="tk-cls">.ficha</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">display</span><span class="tk-pun">:</span> <span class="tk-kw">grid</span><span class="tk-pun">;</span>
+  <span class="tk-attr">gap</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--separacion</span><span class="tk-pun">);</span>
+  <span class="tk-attr">max-width</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--ancho-contenido</span><span class="tk-pun">);</span>
+  <span class="tk-attr">padding</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--separacion</span><span class="tk-pun">);</span>
+  <span class="tk-pun">}</span>
+
+<span class="tk-cls">.ficha__portada</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">aspect-ratio</span><span class="tk-pun">:</span> <span class="tk-num">16</span> <span class="tk-kw">/</span> <span class="tk-num">7</span><span class="tk-pun">;</span>
+  <span class="tk-attr">border-radius</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--radio</span><span class="tk-pun">);</span>
+  <span class="tk-attr">background</span><span class="tk-pun">:</span> <span class="tk-fn">linear-gradient</span><span class="tk-pun">(</span><span class="tk-num">135deg</span><span class="tk-pun">,</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--color-acento</span><span class="tk-pun">),</span> <span class="tk-num">#7c3aed</span><span class="tk-pun">);</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cls">.ficha__titulo</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">font-size</span><span class="tk-pun">:</span> <span class="tk-fn">clamp</span><span class="tk-pun">(</span><span class="tk-num">1.15rem</span><span class="tk-pun">,</span> <span class="tk-num">1rem</span> <span class="tk-kw">+</span> <span class="tk-num">1vw</span><span class="tk-pun">,</span> <span class="tk-num">1.8rem</span><span class="tk-pun">);</span>
+  <span class="tk-attr">margin</span><span class="tk-pun">:</span> <span class="tk-num">0</span><span class="tk-pun">;</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cls">.ficha__autor</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">margin</span><span class="tk-pun">:</span> <span class="tk-num">0</span><span class="tk-pun">;</span>
+  <span class="tk-attr">color</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--color-tenue</span><span class="tk-pun">);</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cls">.ficha__estado</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">margin</span><span class="tk-pun">:</span> <span class="tk-pun">0</span><span class="tk-pun">;</span>
+  <span class="tk-attr">font-weight</span><span class="tk-pun">:</span> <span class="tk-num">600</span><span class="tk-pun">;</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cm">/* Variante: solo declara lo que cambia */</span>
+<span class="tk-cls">.ficha--disponible</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">border-color</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--color-acento</span><span class="tk-pun">);</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cls">.ficha--disponible</span> <span class="tk-cls">.ficha__estado</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">color</span><span class="tk-pun">:</span> <span class="tk-fn">var</span><span class="tk-pun">(</span><span class="tk-attr">--color-acento</span><span class="tk-pun">);</span>
+<span class="tk-pun">}</span></code></pre>
+
+      <p>
+        <strong>Criterio de dominio:</strong> el ejercicio está resuelto cuando no queda ningún
+        selector que dependa de la estructura del HTML, cuando todo color literal está en
+        <code>:root</code>, cuando la hoja de componentes no necesita saber nada de las de base y
+        responsive, y cuando el modificador <code>--disponible</code> se puede borrar sin romper
+        nada.
+      </p>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Por qué se prefiere una clase propia (<code>ficha__titulo</code>) a un selector de estructura (<code>.ficha h2</code>)?</p>
+      <button class="opcion" data-op="a">Porque las clases se escriben más rápido</button>
+      <button class="opcion" data-op="b">Porque la clase nombra la pieza y no depende de cómo esté construido el HTML</button>
+      <button class="opcion" data-op="c">Porque los selectores de estructura ya no funcionan en los navegadores actuales</button>
+      <button class="opcion" data-op="d">Porque las clases pesan menos en el archivo</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Cuál de estas afirmaciones sobre las variables CSS es <strong>falsa</strong>?</p>
+      <button class="opcion" data-op="a">Se pueden declarar en <code>:root</code> y usarlas en cualquier regla</button>
+      <button class="opcion" data-op="b">Permiten cambiar un color en un solo lugar</button>
+      <button class="opcion" data-op="c">Se pueden usar dentro de la condición de una consulta de medios</button>
+      <button class="opcion" data-op="d">Admiten un valor por defecto con <code>var(--nombre, valor)</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> Dos reglas con la misma especificidad se escriben en el mismo elemento. ¿Cuál gana?</p>
+      <button class="opcion" data-op="a">La que aparece después en el orden de las hojas de estilo</button>
+      <button class="opcion" data-op="b">La que aparece antes, para que la otra pueda corregirla</button>
+      <button class="opcion" data-op="c">La que esté en el archivo con más líneas</button>
+      <button class="opcion" data-op="d">Ninguna: el navegador elige al azar</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: Bootstrap →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — BOOTSTRAP
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · La herramienta</div>
+    <h2>Bootstrap: <em>la rejilla que ya está resuelta</em></h2>
+    <p class="proposito">
+      Escribir una rejilla que se adapte, con sus puntos de corte, sus clases de columna y sus
+      utilidades, lleva tiempo. Bootstrap es ese trabajo ya hecho, revisado y documentado. Esta
+      unidad explica qué trae, cómo se instala sin compilar nada, qué personaliza y qué no.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>📄 <b>Lectura y práctica guiada</b></span>
+      <span>🧭 <b>Producto: la ficha con Bootstrap</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · Qué es y qué no es un marco de trabajo de CSS</h3>
+
+  <p class="primer-párrafo">
+    Bootstrap es un archivo de CSS escrito por otras personas. Eso es todo. No es un lenguaje, ni
+    tiene compilador, ni ejecuta lógica: son clases que ya sabes usar porque las has usado sin saber
+    que existían —<code>btn</code>, <code>card</code>, <code>navbar</code>— en cientos de páginas.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Qué aporta Bootstrap y qué queda en tus manos</caption>
+      <thead>
+        <tr><th>Lo que ya viene hecho</th><th>Lo que sigue siendo tuyo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>La rejilla de 12 columnas y sus puntos de corte</td><td>Decidir en qué momento el diseño cambia y por qué</td></tr>
+        <tr><td>Los componentes: botones, tarjetas, formularios, avisos</td><td>Qué componentes usar y cómo se combinan entre sí</td></tr>
+        <tr><td>Las utilidades de espaciado, color y tamaño</td><td>La identidad visual: los colores y la tipografía del colegio</td></tr>
+        <tr><td>Los detalles de accesibilidad de los componentes</td><td>La jerarquía de la información y el contenido</td></tr>
+        <tr><td>Un sistema de nombres consistente</td><td>El orden en que se cargan las hojas y quién puede sobrescribir a quién</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el marco de trabajo no sustituye el criterio</span>
+    <p>
+      Bootstrap no decide por ti cómo se ve tu página: te da un catálogo de piezas y un sistema de
+      rejilla. Lo que tú decides es <strong>qué piezas usar y en qué momento dejar de usar el
+      catálogo</strong>. Un sitio hecho con Bootstrap se parece a otros miles de sitios hechos con
+      Bootstrap; se parece a tu colegio cuando le cambias los colores, la tipografía y el orden de
+      las secciones.
+    </p>
+  </div>
+
+  <h3>6.2 · Instalación sin compilación</h3>
+
+  <p>
+    Bootstrap se enlaza desde un CDN. No hay que instalar nada, ni configurar un empaquetador, ni
+    compilar: una etiqueta <code>&lt;link&gt;</code> y listo. La versión se fija siempre, por la
+    misma razón que en la clase 2 con HTMX: lo que no se fija, puede cambiar sin aviso.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>templates/base.html — Bootstrap y el CSS propio</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">head</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">meta</span> <span class="tk-attr">charset</span>=<span class="tk-str">"utf-8"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">meta</span> <span class="tk-attr">name</span>=<span class="tk-str">"viewport"</span> <span class="tk-attr">content</span>=<span class="tk-str">"width=device-width, initial-scale=1"</span><span class="tk-pun">&gt;</span>
+
+  <span class="tk-cm">&lt;!-- Primero Bootstrap: es la base sobre la que todo lo demás se apoya --&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">link</span> <span class="tk-attr">rel</span>=<span class="tk-str">"stylesheet"</span>
+        <span class="tk-attr">href</span>=<span class="tk-str">"https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"</span><span class="tk-pun">&gt;</span>
+
+  <span class="tk-cm">&lt;!-- Después el CSS propio: así puede sobrescribir a Bootstrap --&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">link</span> <span class="tk-attr">rel</span>=<span class="tk-str">"stylesheet"</span> <span class="tk-attr">href</span>=<span class="tk-str">"/estilos/base.css"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">link</span> <span class="tk-attr">rel</span>=<span class="tk-str">"stylesheet"</span> <span class="tk-attr">href</span>=<span class="tk-str">"/estilos/componentes.css"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">link</span> <span class="tk-attr">rel</span>=<span class="tk-str">"stylesheet"</span> <span class="tk-attr">href</span>=<span class="tk-str">"/estilos/responsivo.css"</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">head</span><span class="tk-pun">&gt;</span></code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — qué versión de Bootstrap se usa hoy</span>
+    <p>
+      La versión estable es la <strong>5.3.8</strong>. En el registro de paquetes, la etiqueta
+      <code>latest</code> apunta a ella, pero la etiqueta <code>next</code> apunta a
+      <code>6.0.0-alpha.1</code>: una versión <em>alpha</em>, es decir, en desarrollo y sin
+      garantía de estabilidad. Si enlazas <code>bootstrap@6</code> o <code>bootstrap@next</code> en
+      un trabajo del aula, estás trabajando con código que todavía puede cambiar. La clase usa
+      <code>5.3.8</code>, fijada de forma explícita.
+    </p>
+    <p>
+      <strong>Sobre el JavaScript:</strong> Bootstrap incluye componentes que necesitan scripting —
+      los menús desplegables, las ventanas modales, los mensajes emergentes—. Para usarlos hace
+      falta <code>bootstrap.bundle.min.js</code>, que ya incluye la biblioteca <em>Popper</em> que
+      los menús necesitan. Pero si tu página solo usa rejilla, botones, formularios y tarjetas —
+      que es el caso del taller de esta clase—, <strong>no necesitas ningún JavaScript</strong>.
+    </p>
+  </div>
+
+  <h3>6.3 · El sistema de rejilla</h3>
+
+  <p>
+    La rejilla de Bootstrap divide el ancho en <strong>doce columnas</strong>. Esa cifra no es
+    arbitraria: doce es divisible por 1, 2, 3, 4 y 6, así que permite la mayoría de las
+    combinaciones que se necesitan en la práctica.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>templates/index.html — el catálogo con la rejilla de Bootstrap</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"container"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"row g-4"</span><span class="tk-pun">&gt;</span>
+
+    <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"col-12 col-md-6 col-lg-4"</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"card h-100"</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"card-body"</span><span class="tk-pun">&gt;</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">h2</span> <span class="tk-attr">class</span>=<span class="tk-str">"card-title h5"</span><span class="tk-pun">&gt;</span>El principito<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">h2</span><span class="tk-pun">&gt;</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">p</span> <span class="tk-attr">class</span>=<span class="tk-str">"card-text"</span><span class="tk-pun">&gt;</span>Un poeta busca su camino…<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"card-footer text-body-secondary"</span><span class="tk-pun">&gt;</span>Disponible<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+
+  <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span></code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>.container</code></dt>
+      <dd>Una caja con un ancho máximo que cambia según el punto de corte, centrada y con márgenes laterales. Es el contenedor de la página.</dd>
+    </div>
+    <div>
+      <dt><code>.container-fluid</code></dt>
+      <dd>La misma idea sin tope: ocupa el 100 % del ancho disponible en cualquier tamaño.</dd>
+    </div>
+    <div>
+      <dt><code>.row</code></dt>
+      <dd>La fila: contiene columnas. Aplica un margen negativo que compensa el margen de las columnas, para que la fila quede al ras del contenedor.</dd>
+    </div>
+    <div>
+      <dt><code>.col-12 col-md-6 col-lg-4</code></dt>
+      <dd>La columna: ocupa las 12 columnas por defecto; desde 768 píxeles, la mitad; desde 992, un tercio. La última regla que se cumple es la que manda.</dd>
+    </div>
+    <div>
+      <dt><code>g-4</code></dt>
+      <dd>La separación entre columnas. El número va de 0 a 5 y son pasos de media rem.</dd>
+    </div>
+    <div>
+      <dt><code>h-100</code></dt>
+      <dd>Altura completa: hace que la tarjeta ocupe toda la celda, para que varias tarjetas de la misma fila queden alineadas.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — por qué <code>col-12</code> va primero</span>
+    <p>
+      El orden de las clases no es decorativo: Bootstrap genera las reglas de las columnas en
+      <strong>orden creciente de punto de corte</strong> —primero las de <code>xs</code>, luego
+      <code>sm</code>, <code>md</code>…— y dentro de una misma fila, gana la que aparece más
+      abajo. Como <code>col-12</code> pertenece al grupo sin punto de corte, se escribe primero y
+      las demás la sobrescriben a partir de su corte. Si se invirtiera el orden
+      (<code>col-lg-4 col-md-6 col-12</code>), la regla de 992 píxeles se aplicaría también por
+      debajo, y en un teléfono la columna ocuparía un tercio en lugar de todo el ancho.
+    </p>
+  </div>
+
+  <h3>6.4 · Las utilidades responsivas</h3>
+
+  <p>
+    Las utilidades son clases de un solo propósito. Se pueden aplicar en cualquier momento, pero
+    lo interesante es que también aceptan un punto de corte, y entonces solo actúan a partir de
+    ese ancho.
+  </p>
+
+  <div class="utilidades">
+    <div class="utilidad">
+      <h4>Visualización</h4>
+      <p><code>d-none</code> · <code>d-block</code> · <code>d-flex</code> · <code>d-grid</code></p>
+      <p>Con punto de corte: <code>d-none d-md-block</code> —oculto por defecto, visible desde 768 píxeles.</p>
+    </div>
+    <div class="utilidad">
+      <h4>Texto</h4>
+      <p><code>text-start</code> · <code>text-center</code> · <code>text-end</code> · <code>text-uppercase</code></p>
+      <p>Con punto de corte: <code>text-center text-lg-start</code>.</p>
+    </div>
+    <div class="utilidad">
+      <h4>Separación</h4>
+      <p><code>m-0</code> · <code>mt-3</code> · <code>mb-auto</code> · <code>p-2</code> · <code>px-4</code></p>
+      <p>Con punto de corte: <code>mb-2 mb-md-4</code>.</p>
+    </div>
+    <div class="utilidad">
+      <h4>Tamaño y forma</h4>
+      <p><code>w-100</code> · <code>h-100</code> · <code>rounded</code> · <code>rounded-circle</code> · <code>border</code></p>
+      <p>Con punto de corte: <code>w-50 w-md-auto</code>.</p>
+    </div>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — el patrón que más se usa</span>
+    <p>
+      <code>d-none d-md-block</code> es el patrón más frecuente de Bootstrap responsivo, y merece
+      entenderse bien. Significa: «oculto por defecto; a partir de 768 píxeles, visible». Como el
+      estilo base manda mientras no se cumple ninguna condición, el elemento está oculto en el
+      teléfono; en cuanto la ventana llega a 768, la segunda regla se activa y lo muestra.
+    </p>
+    <p>
+      Su equivalente en CSS propio sería <code>display: none;</code> en la regla base y
+      <code>display: block;</code> dentro de <code>@media (min-width: 768px)</code>. La diferencia
+      es que en Bootstrap cabe en un fragmento de atributo, y en CSS propio ocupa un bloque. Las dos
+      formas son correctas: la primera es más corta, la segunda es más explícita.
+    </p>
+  </div>
+
+  <h3>6.5 · Personalizar sin recompilar</h3>
+
+  <p>
+    Bootstrap 5 expone sus decisiones de diseño como <strong>variables CSS</strong> con el prefijo
+    <code>--bs-</code>. Cambiar una de ellas cambia el comportamiento de todos los componentes que
+    la usan, sin compilar nada y sin reescribir una sola clase.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>estilos/base.css — la identidad del colegio sobre Bootstrap</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cls">:root</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">--bs-primary</span><span class="tk-pun">:</span> <span class="tk-num">#6d28d9</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--bs-body-bg</span><span class="tk-pun">:</span> <span class="tk-num">#fbfaf7</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--bs-body-color</span><span class="tk-pun">:</span> <span class="tk-num">#1b1d23</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--bs-border-radius</span><span class="tk-pun">:</span> <span class="tk-num">0.5rem</span><span class="tk-pun">;</span>
+<span class="tk-pun">}</span></code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — los botones tienen sus propias variables</span>
+    <p>
+      Cambiar <code>--bs-primary</code> repinta los enlaces y los componentes que usan ese color,
+      pero <strong>no repinta los botones</strong>. El motivo es que <code>.btn-primary</code> no
+      usa <code>var(--bs-primary)</code>: define su propio juego de variables
+      (<code>--bs-btn-bg</code>, <code>--bs-btn-hover-bg</code>, <code>--bs-btn-border-color</code>…)
+      con valores concretos. Para cambiar el color de los botones hay que sobrescribir esas.
+    </p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>estilos/base.css — repintar los botones</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cls">.btn-primary</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">--bs-btn-bg</span><span class="tk-pun">:</span> <span class="tk-num">#6d28d9</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--bs-btn-border-color</span><span class="tk-pun">:</span> <span class="tk-num">#6d28d9</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--bs-btn-hover-bg</span><span class="tk-pun">:</span> <span class="tk-num">#5b21b6</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--bs-btn-hover-border-color</span><span class="tk-pun">:</span> <span class="tk-num">#5b21b6</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--bs-btn-active-bg</span><span class="tk-pun">:</span> <span class="tk-num">#4c1d95</span><span class="tk-pun">;</span>
+<span class="tk-pun">}</span></code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el tema oscuro con una sola etiqueta</span>
+    <p>
+      Bootstrap trae un tema oscuro completo que se activa escribiendo
+      <code>data-bs-theme="dark"</code> en la etiqueta <code>&lt;html&gt;</code>. También se puede
+      activar solo en una parte de la página, por ejemplo en la barra de navegación, escribiendo el
+      atributo en el <code>&lt;body&gt;</code> o en un contenedor. Es la forma más barata de probar
+      cómo se ve el catálogo con el tema del sistema.
+    </p>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — la misma limitación de siempre</span>
+    <p>
+      Las variables de Bootstrap tampoco funcionan dentro de las condiciones de las consultas de
+      medios. Los puntos de corte de la rejilla están expuestos como
+      <code>--bs-breakpoint-md</code> y compañía, pero no se pueden escribir así:
+      <code>@media (min-width: var(--bs-breakpoint-md))</code>. La documentación de Bootstrap lo
+      advierte de forma expresa. Se pueden usar para <em>documentar</em> los cortes en el
+      <code>:root</code>, pero las condiciones llevan los números escritos.
+    </p>
+  </div>
+
+  <h3>6.6 · Ejercicio 6.1 · La misma ficha, ahora con Bootstrap</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>Rehaz el catálogo del ejercicio 3.1 usando la rejilla de Bootstrap</h3>
+    </div>
+
+    <p>
+      Vuelve al catálogo del ejercicio 3.1, pero ahora con Bootstrap. El objetivo no es «usar
+      Bootstrap»: es <strong>comprobar qué parte del trabajo se resuelve solo y qué parte sigue
+      siendo tuya</strong>. Escribe una segunda versión de la página, en un archivo
+      <code>templates/index_bootstrap.html</code>, con el mismo contenido.
+    </p>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong>El esqueleto de Bootstrap</strong>: <code>.container</code> y <code>.row</code> con
+        separador <code>g-4</code>.
+      </li>
+      <li>
+        <strong>Las columnas con su punto de corte</strong>: <code>col-12 col-md-6 col-lg-4</code>,
+        de modo que haya una ficha en el teléfono, dos en la tableta y tres en el monitor.
+      </li>
+      <li>
+        <strong>El componente <code>card</code></strong> para la ficha, con <code>card-body</code>,
+        <code>card-title</code> y <code>card-text</code>. La clase <code>h-100</code> es
+        obligatoria si quieres que las tarjetas de una misma fila queden alineadas.
+      </li>
+      <li>
+        <strong>La identidad del colegio</strong>: sobrescribe <code>--bs-primary</code>,
+        <code>--bs-body-bg</code> y el radio de las esquinas en tu <code>base.css</code>, y
+        comprueba que la página cambia de color.
+      </li>
+      <li>
+        <strong>Un párrafo comparativo</strong> de cinco líneas: qué líneas de tu CSS propio
+        desaparecieron al usar Bootstrap, y cuáles tuvo que seguir escribiendo.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-6-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-6-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p><strong>A. La página con Bootstrap</strong></p>
+      <pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"container"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">h1</span> <span class="tk-attr">class</span>=<span class="tk-str">"h3 mb-4"</span><span class="tk-pun">&gt;</span>Catálogo de la biblioteca<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">h1</span><span class="tk-pun">&gt;</span>
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"row g-4"</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"col-12 col-md-6 col-lg-4"</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"card h-100 shadow-sm"</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"card-body"</span><span class="tk-pun">&gt;</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">h2</span> <span class="tk-attr">class</span>=<span class="tk-str">"card-title h5"</span><span class="tk-pun">&gt;</span>El principito<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">h2</span><span class="tk-pun">&gt;</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">p</span> <span class="tk-attr">class</span>=<span class="tk-str">"card-text text-body-secondary"</span><span class="tk-pun">&gt;</span>Un poeta busca su camino entre las palabras.<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"card-footer d-flex justify-content-between align-items-center"</span><span class="tk-pun">&gt;</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">span</span> <span class="tk-attr">class</span>=<span class="tk-str">"badge text-bg-success"</span><span class="tk-pun">&gt;</span>Disponible<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">span</span><span class="tk-pun">&gt;</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">a</span> <span class="tk-attr">href</span>=<span class="tk-str">"/libros/el-principito"</span> <span class="tk-attr">class</span>=<span class="tk-str">"btn btn-sm btn-outline-primary"</span><span class="tk-pun">&gt;</span>Ver ficha<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">a</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span></code></pre>
+
+      <p><strong>B. La identidad del colegio</strong></p>
+      <pre><code><span class="tk-cls">:root</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">--bs-primary</span><span class="tk-pun">:</span> <span class="tk-num">#6d28d9</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--bs-body-bg</span><span class="tk-pun">:</span> <span class="tk-num">#fbfaf7</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--bs-border-radius</span><span class="tk-pun">:</span> <span class="tk-num">0.5rem</span><span class="tk-pun">;</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-cls">.btn-primary</span> <span class="tk-pun">{</span>
+  <span class="tk-attr">--bs-btn-bg</span><span class="tk-pun">:</span> <span class="tk-num">#6d28d9</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--bs-btn-border-color</span><span class="tk-pun">:</span> <span class="tk-num">#6d28d9</span><span class="tk-pun">;</span>
+  <span class="tk-attr">--bs-btn-hover-bg</span><span class="tk-pun">:</span> <span class="tk-num">#5b21b6</span><span class="tk-pun">;</span>
+<span class="tk-pun">}</span></code></pre>
+
+      <p><strong>C. El párrafo comparativo (modelo)</strong></p>
+      <p>
+        Al pasar a Bootstrap desaparecieron 34 líneas de mi CSS: las que definían la rejilla de
+        columnas, las que ajustaban el ancho máximo del contenedor y las que aplicaban el margen
+        entre tarjetas. Siguieron siendo mías las reglas de la portada de la ficha, el espaciado
+        interno del texto y el color con el que se dibuja el título, porque Bootstrap no conoce
+        ninguna de esas tres cosas. También tuve que escribir a mano el equivalente a la clase
+        <code>h-100</code> que usaba en la versión anterior, porque el componente <code>card</code>
+        no la aplica por defecto.
+      </p>
+
+      <p>
+        <strong>Criterio de dominio:</strong> el ejercicio está resuelto cuando la versión con
+        Bootstrap muestra el mismo contenido que la versión propia, cuando el catálogo se lee bien
+        en 360, 768 y 1280 píxeles, cuando el color del colegio se ve en los botones y en los
+        enlaces, y cuando el párrafo comparativo menciona al menos dos líneas que Bootstrap te
+        ahorró y dos que no te ahorró.
+      </p>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué significa exactamente <code>col-12 col-md-6 col-lg-4</code>?</p>
+      <button class="opcion" data-op="a">Que la columna ocupa 12 columnas en el teléfono, 6 en la tableta y 4 en el monitor, en cualquier tamaño</button>
+      <button class="opcion" data-op="b">Que hay 12 columnas en total y la ficha ocupa 6 y 4 de ellas</button>
+      <button class="opcion" data-op="c">Que ocupa todo el ancho por defecto, la mitad desde 768 píxeles y un tercio desde 992</button>
+      <button class="opcion" data-op="d">Que la columna cambia de tamaño según el dispositivo que detecta el navegador</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Por qué el CSS propio debe enlazarse <strong>después</strong> de Bootstrap?</p>
+      <button class="opcion" data-op="a">Por seguridad, para que no se mezclen los archivos</button>
+      <button class="opcion" data-op="b">Porque en un empate depecificidad gana la hoja que llega después, y así el CSS propio puede sobrescribir a Bootstrap</button>
+      <button class="opcion" data-op="c">Porque Bootstrap necesita que las variables se definan antes</button>
+      <button class="opcion" data-op="d">Por estética: es la convención de la comunidad</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> Al cambiar <code>--bs-primary</code>, ¿qué ocurre con los botones?</p>
+      <button class="opcion" data-op="a">No cambian de color: <code>.btn-primary</code> usa sus propias variables y hay que sobrescribirlas</button>
+      <button class="opcion" data-op="b">Cambian de color automáticamente, porque leen esa variable</button>
+      <button class="opcion" data-op="c">Dejan de verse, porque la variable deja de existir</button>
+      <button class="opcion" data-op="d">Cambian solo los botones con el atributo <code>data-bs-theme</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: Clases propias y capas</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller integrador →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER INTEGRADOR
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller</div>
+    <h2>Taller integrador · <em>El catálogo que se lee en todas partes</em></h2>
+    <p class="proposito">
+      Las tres últimas unidades se juncan aquí. Tienes que llevar el catálogo de la biblioteca hasta
+      el final: el mismo contenido, en dos versiones —CSS propio y Bootstrap—, y una decisión
+      razonada sobre cuál de las dos usar y por qué.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Encargo completo</b></span>
+      <span>🧭 <b>Producto: catálogo responsivo argumentado</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El encargo</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Encargo</span>
+      <h3>Catálogo de la biblioteca del colegio, para teléfono y para monitor</h3>
+    </div>
+
+    <p>
+      La biblioteca quiere publicar su catálogo. No es una página nueva: es la que ya construiste,
+      con el formulario de la clase 2 al lado, y ahora tiene que verse bien en la pantalla de un
+      teléfono, en la de una tableta y en la del monitor del aula. El contenido no cambia: cambia
+      <strong>cómo se reparte</strong>.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr><td><strong>Contenido</strong></td><td>Cuatro libros: título, autor, resumen de una línea y estado de disponibilidad</td></tr>
+          <tr><td><strong>Restricción de diseño</strong></td><td>Una columna en el teléfono, dos en la tableta, tres en el monitor</td></tr>
+          <tr><td><strong>Restricción técnica</strong></td><td>Las consultas de medios van en su propia hoja, al final de las demás</td></tr>
+          <tr><td><strong>Restricción de HTMX</strong></td><td>El catálogo se inserta con un fragmento del servidor: los estilos no pueden depender de una etiqueta <code>&lt;style&gt;</code> dentro del fragmento</td></tr>
+          <tr><td><strong>Restricción del taller</strong></td><td>No hay que conectar la base de datos: basta con que el catálogo se vea y se comporte bien</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li>
+        <strong>La versión con CSS propio</strong>: <code>templates/index.html</code> con el catálogo y
+        las tres hojas (<code>base.css</code>, <code>componentes.css</code>, <code>responsivo.css</code>)
+        separadas y en el orden correcto. Las consultas de medios van en <code>responsivo.css</code> y
+        ninguna otra hoja las necesita.
+      </li>
+      <li>
+        <strong>La versión con Bootstrap</strong>: <code>templates/index_bootstrap.html</code> con el
+        mismo contenido, usando la rejilla de Bootstrap y las variables <code>--bs-</code> para la
+        identidad del colegio.
+      </li>
+      <li>
+        <strong>El fragmento de HTMX</strong>: el catálogo devuelto por el servidor como fragmento
+        (<code>templates/fragmento_catalogo.html</code>), con las mismas clases que la página
+        completa. Explica por qué los estilos viven en las hojas globales y no dentro del fragmento.
+      </li>
+      <li>
+        <strong>La lista de puntos de corte</strong> que usaste, con una frase que justifique cada
+        uno: qué cambia en la página en ese ancho y por qué ese ancho y no otro.
+      </li>
+      <li>
+        <strong>Un argumento escrito</strong> de 150 palabras: qué estrategia elegiste para el
+        proyecto real del colegio y qué harías si la consigna fuera «sin dependencias externas».
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="taller-solucion">Ver un modelo de respuesta</button>
+
+    <div class="solucion" id="taller-solucion">
+      <h4>Modelo de respuesta (extracto)</h4>
+
+      <p><strong>A. La hoja responsivo (la única con consultas de medios)</strong></p>
+      <pre><code><span class="tk-cm">/* ---------------------------------------------------------------
+   responsivo.css
+   Lo único que depende del ancho disponible.
+   Va al final para poder ajustar cualquier capa anterior.
+---------------------------------------------------------------- */</span>
+
+<span class="tk-kw">@media</span> <span class="tk-pun">(</span><span class="tk-attr">min-width</span><span class="tk-pun">:</span> <span class="tk-num">768px</span><span class="tk-pun">)</span> <span class="tk-pun">{</span>
+  <span class="tk-cls">.catalogo__rejilla</span> <span class="tk-pun">{</span>
+    <span class="tk-attr">grid-template-columns</span><span class="tk-pun">:</span> <span class="tk-fn">repeat</span><span class="tk-pun">(</span><span class="tk-num">2</span><span class="tk-pun">,</span> <span class="tk-num">1fr</span><span class="tk-pun">);</span>
+  <span class="tk-pun">}</span>
+  <span class="tk-cls">.ficha__portada</span> <span class="tk-pun">{</span>
+    <span class="tk-attr">aspect-ratio</span><span class="tk-pun">:</span> <span class="tk-num">3</span> <span class="tk-kw">/</span> <span class="tk-num">4</span><span class="tk-pun">;</span>
+  <span class="tk-pun">}</span>
+<span class="tk-pun">}</span>
+
+<span class="tk-kw">@media</span> <span class="tk-pun">(</span><span class="tk-attr">min-width</span><span class="tk-pun">:</span> <span class="tk-num">1200px</span><span class="tk-pun">)</span> <span class="tk-pun">{</span>
+  <span class="tk-cls">.catalogo__rejilla</span> <span class="tk-pun">{</span>
+    <span class="tk-attr">grid-template-columns</span><span class="tk-pun">:</span> <span class="tk-fn">repeat</span><span class="tk-pun">(</span><span class="tk-num">3</span><span class="tk-pun">,</span> <span class="tk-num">1fr</span><span class="tk-pun">);</span>
+  <span class="tk-pun">}</span>
+  <span class="tk-cls">.catalogo__texto</span> <span class="tk-pun">{</span>
+    <span class="tk-attr">max-width</span><span class="tk-pun">:</span> <span class="tk-num">68rem</span><span class="tk-pun">;</span>
+  <span class="tk-pun">}</span>
+<span class="tk-pun">}</span></code></pre>
+
+      <p><strong>B. El fragmento de HTMX</strong></p>
+      <pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"catalogo__rejilla"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">{%</span> <span class="tk-kw">for</span> libro <span class="tk-kw">in</span> libros <span class="tk-pun">%}</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">article</span> <span class="tk-attr">class</span>=<span class="tk-str">"ficha"</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">h2</span> <span class="tk-attr">class</span>=<span class="tk-str">"ficha__titulo"</span><span class="tk-pun">&gt;</span>{{ libro.titulo }}<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">h2</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">p</span> <span class="tk-attr">class</span>=<span class="tk-str">"ficha__resumen"</span><span class="tk-pun">&gt;</span>{{ libro.resumen }}<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">article</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">{%</span> <span class="tk-kw">endfor</span> <span class="tk-pun">%}</span>
+<span class="tk-pun">&lt;</span><span class="tk-pun">/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span></code></pre>
+
+      <p>
+        <strong>Por qué el fragmento no lleva estilos dentro:</strong> una etiqueta
+        <code>&lt;style&gt;</code> dentro de un fragmento se insertaría en el documento, pero el
+        navegador aplicaría sus reglas al <em>documento entero</em>, no al fragmento. Si el mismo
+        catálogo se inserta dos veces con variantes distintas, la segunda insertada hereda las reglas
+        de la primera. La solución correcta es que las clases del fragmento
+        (<code>ficha</code>, <code>ficha__titulo</code>, <code>ficha__resumen</code>) ya existan en las
+        hojas globales: el fragmento trae la <strong>estructura</strong>, las hojas traen el
+        <strong>estilo</strong>.
+      </p>
+
+      <p><strong>C. El argumento (modelo)</strong></p>
+      <p>
+        <em>Decisión:</em> usar CSS propio en el catálogo y dejar Bootstrap para el formulario.
+        <em>Motivo:</em> el catálogo tiene cuatro tarjetas que deben verse iguales en cualquier
+        ancho, y la rejilla <code>repeat(auto-fit, minmax(16rem, 1fr))</code> lo resuelve sin
+        ninguna consulta de medios; mientras que el formulario de la clase 2 tiene campos de tres
+        tipos distintos, etiquetas, mensajes de error en línea y estados de carga, y eso ya es un
+        catálogo de componentes con accesibilidad que Bootstrap resuelve mejor y con menos código
+        propio.
+        <em>Consecuencia:</em> hay dos sistemas de estilo conviviendo, así que el orden de las
+        hojas queda fijado por escrito: Bootstrap primero, después <code>base.css</code>, después
+        <code>componentes.css</code>, y <code>responsivo.css</code> al final.
+        <em>Alternativa descartada:</em> usar Bootstrap para todo, que habría dejado la identidad
+        visual del colegio en manos de un archivo que no controlamos y que cambia en cada
+        actualización de versión.
+      </p>
+    </div>
+  </div>
+
+  <h3>7.2 · Rúbrica de autoevaluación</h3>
+
+  <p>
+    Puntúa cada criterio de 0 a 2 y revisa los que hayas quedado en 0 o 1 antes de dar por terminado
+    el taller.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación del catálogo</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Estilo base</td>
+          <td>La página se ve rota por debajo de 400 píxeles</td>
+          <td>Se ve bien en el teléfono pero tiene desbordamiento en algún ancho</td>
+          <td>Se lee correctamente en 360, 768 y 1280 píxeles, sin barra horizontal</td>
+        </tr>
+        <tr>
+          <td>Puntos de corte</td>
+          <td>No hay consultas de medios</td>
+          <td>Hay consultas pero no se puede explicar qué hace cada una</td>
+          <td>Cada corte está justificado con una frase sobre el contenido</td>
+        </tr>
+        <tr>
+          <td>Capas</td>
+          <td>Todo está en un solo archivo, sin orden</td>
+          <td>Hay separación, pero el orden es incorrecto</td>
+          <td>Las tres hojas están separadas y el orden está justificado por escrito</td>
+        </tr>
+        <tr>
+          <td>Clases propias</td>
+          <td>Los selectores dependen de la estructura del HTML</td>
+          <td>Hay clases, pero con nombres sueltos</td>
+          <td>La convención se respeta y las variables están todas en <code>:root</code></td>
+        </tr>
+        <tr>
+          <td>Versión con Bootstrap</td>
+          <td>No existe o no se parece a la versión propia</td>
+          <td>Existe, pero usa Bootstrap sin ningún ajuste propio</td>
+          <td>Existe, muestra lo mismo y lleva la identidad del colegio</td>
+        </tr>
+        <tr>
+          <td>Integración con HTMX</td>
+          <td>El fragmento trae estilos dentro y rompe el diseño</td>
+          <td>El fragmento funciona, pero no se explica por qué</td>
+          <td>El fragmento usa las clases globales y el razonamiento está escrito</td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay escrito</td>
+          <td>Describe el qué, no el porqué</td>
+          <td>Decisión, motivo, consecuencia y alternativa descartada</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.3 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>No hay dos versiones de una página: hay una página y un conjunto de reglas que dicen cuándo cambia.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p>La etiqueta <code>viewport</code> es la condición de posibilidad: sin ella, las consultas de medios miden otra cosa.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>Se escribe primero para la pantalla más estrecha y luego se amplía: cada consulta <code>min-width</code> solo añade.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p>Los puntos de corte los decide el contenido, no el dispositivo; los de Bootstrap ya están elegidos y conviene usarlos.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p>Las clases que nombran piezas y las variables en <code>:root</code> son lo que convierte un montón de reglas en un sistema.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p>El orden de las hojas es el orden de la prioridad: el CSS propio va después de Bootstrap y las consultas de medios al final.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p>Las variables CSS no funcionan dentro de las condiciones de las consultas de medios: es una limitación del lenguaje, y hay que conocerla.</p>
+    </div>
+  </div>
+
+  <h3>7.4 · Puente hacia la próxima clase</h3>
+
+  <p>
+    La próxima clase trabaja con los datos: el catálogo que has maquetado necesitará algún origen
+    real de libros. Tres cosas de lo que has hecho hoy siguen vivas allí:
+  </p>
+
+  <ol>
+    <li>
+      La <strong>estructura de la ficha</strong> —<code>ficha</code>,
+      <code>ficha__titulo</code>, <code>ficha__resumen</code>— es la que se va a rellenar con los
+      registros que vengan de la base de datos. Los nombres de clase no se tocan: son el contrato
+      entre el HTML y el CSS.
+    </li>
+    <li>
+      El <strong>fragmento de HTMX</strong> que preparaste es el punto exacto donde el servidor
+      entregará los datos. Todo lo que aprendiste en la clase 2 sobre errores y estados sigue
+      vigente: un fragmento que llega con datos puede llegar también con un mensaje de error.
+    </li>
+    <li>
+      La <strong>separación de hojas</strong> te va a ahorrar un problema: cuando los datos cambien,
+      solo cambian las plantillas; el CSS no se toca, salvo que la forma del dato cambie.
+    </li>
+  </ol>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de la próxima clase</span>
+    <p>
+      Guarda tu taller en un repositorio de Git con un mensaje de commit claro, y comprueba que la
+      página se ve bien en el modo «dispositivo» a 360, 768 y 1280 píxeles antes de confirmar. En la
+      próxima clase vamos a necesitar volver a esta versión exacta para poder comparar el antes y
+      el después.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 3</h2>
+    <p>
+      Has cerrado el ciclo visual del proyecto: el servidor devuelve HTML (clase 1), el navegador lo
+      inserta sin recargar (clase 2) y ahora ese HTML se ve bien en cualquier pantalla. A partir de
+      aquí, la única variable que queda por introducir son los datos que llenan ese HTML.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: Bootstrap</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 3 · CSS para diseño responsivo</span>
+  <p class="pie-sub">Medidas y puntos de corte · Clases propias y capas · La rejilla de Bootstrap</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
+
