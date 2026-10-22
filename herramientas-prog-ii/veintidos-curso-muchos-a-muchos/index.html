@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 22 · Muchos a muchos: la tabla intermedia</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 22 · <em>Muchos a muchos: la tabla intermedia</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura y programa</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">La tabla intermedia</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">El modelo que une: link_model</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Añadir y quitar relaciones</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Ejercicio: la API con relaciones</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Ejercicio: campos extra en el enlace</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: la biblioteca compartida</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> la relación de muchos a muchos, con su tabla intermedia y su API.</p>
+    </div>
+  </aside>
+
+  <main class="columna">
+
+<!-- ============ UNIDAD 0 ============ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>Cuando no hay <em>una</em> tabla principal</h2>
+    <p class="proposito">
+      Las clases 20 y 21 conectaron dos tablas donde una mandaba: el libro señalaba a la editorial.
+      Hoy aparece una relación donde <strong>ninguna manda</strong>: un libro tiene varios autores, y
+      un autor tiene varios libros. Y para eso hace falta una tabla que antes no existía.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: el problema que no cabe en dos columnas</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · Por qué dos columnas no bastan</h3>
+
+  <p class="primer-párrafo">
+    En la clase 20, <code>libro.editorial_id</code> bastaba: un libro tiene <strong>una</strong>
+    editorial, y con un número basta. Pero un libro puede tener tres autores, y un autor puede
+    tener cuarenta libros. ¿Dónde se guarda eso?
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Los tres casos de cardinalidad, y cómo se resuelven</caption>
+      <thead>
+        <tr><th>Relación</th><th>Ejemplo</th><th>Dónde se guarda</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Uno a uno</td>
+          <td>Una persona y un Carné</td>
+          <td>Una columna con clave foránea en cualquiera de las dos</td>
+        </tr>
+        <tr>
+          <td>Uno a muchos</td>
+          <td>Una editorial y sus libros</td>
+          <td>Una columna con clave foránea en la tabla de los muchos</td>
+        </tr>
+        <tr>
+          <td><strong>Muchos a muchos</strong></td>
+          <td>Libros y autores</td>
+          <td><strong>Una tercera tabla</strong> que guarda los pares</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — la solución que no funciona</span>
+    <p>
+      Un camino rápido es poner <code>autor_id</code> en el libro… pero entonces cada libro solo
+      puede tener un autor. Y poner <code>autores</code> como texto en una columna («Gabriel,
+      Isabel») es peor: no se puede buscar, no se puede garantizar que los nombres existan, y en cuanto
+      un autor cambia de nombre hay que arreglar todas las filas a mano.
+    </p>
+    <p>
+      La solución correcta es la que te recuerda el curso de Bases de Datos, clase 5: cuando la
+      relación es de muchos a muchos, <strong>la relación se convierte en una tabla</strong>.
+    </p>
+  </div>
+
+  <h3>0.2 · La tabla que lo resuelve todo</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la tabla intermedia</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Una fila = un autor de un libro. Nada más.</span>
+libroautor
+├── libro_id   -&gt; libro.id
+└── autor_id   -&gt; autor.id</code></pre>
+  </div>
+
+  <p>
+    Con esa tabla, todo se responde contando: «¿qué autores tiene este libro?» son las filas de
+    <code>libroautor</code> con ese <code>libro_id</code>. «¿qué libros tiene este autor?», las
+    filas con ese <code>autor_id</code>. Y quitar un autor de un libro es <strong>borrar una
+    fila</strong> de esa tabla, sin tocar ni el libro ni el autor.
+  </p>
+
+  <h3>0.3 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cuadro de unidades, tiempos y productos esperados</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura: la relación que no cabe en dos columnas</td><td>20 min</td><td>El problema, formulado</td></tr>
+        <tr><td><strong>01</strong></td><td>La tabla intermedia</td><td>30 min</td><td>El esquema de la tabla de pares</td></tr>
+        <tr><td><strong>02</strong></td><td>El modelo que une: <code>link_model</code> (+ laboratorio)</td><td>30 min</td><td>Los tres modelos con el enlace</td></tr>
+        <tr><td><strong>03</strong></td><td>Añadir y quitar relaciones</td><td>30 min</td><td>El <code>append</code> y el <code>remove</code></td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Ejercicio 5.1 · La API con relaciones</td><td>35 min</td><td>El libro con sus autores, en JSON</td></tr>
+        <tr><td><strong>06</strong></td><td>Ejercicio 6.1 · Campos extra en el enlace</td><td>35 min</td><td>Una tabla intermedia con información propia</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller integrador</td><td>45 min</td><td>La biblioteca compartida, probada</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+  <h3>0.4 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito estas tres preguntas:</p>
+
+  <ol>
+    <li>¿Por qué un libro con varios autores no cabe en una columna <code>autor_id</code>?</li>
+    <li>Si la relación se guarda en una tabla aparte, ¿qué es una fila de esa tabla?</li>
+    <li>¿Qué ventaja tiene eso frente a guardar los nombres en un texto?</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: la tabla intermedia →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 1 ============ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · La tercera tabla</div>
+    <h2>La <em>tabla intermedia</em></h2>
+    <p class="proposito">
+      Una tabla más, con un truco: sus dos columnas son <strong>clave primaria a la vez</strong>. No
+      hay «id» de la tabla intermedia, porque lo que identifica una fila es <em>el par</em>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: el modelo de la tabla de pares</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · El modelo de la tabla intermedia</h3>
+
+  <p class="primer-párrafo">
+    Es un modelo de tabla como cualquier otro, con dos diferencias: sus dos columnas son claves
+    foráneas <strong>y</strong> clave primaria, y no tiene <code>id</code> propio.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el modelo de la tabla intermedia</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">LibroAutor</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    <span class="tk-cm"># Las dos columnas son clave primaria: el par es lo único.</span>
+    libro_id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(
+        default=<span class="tk-cls">None</span>, foreign_key=<span class="tk-str">"libro.id"</span>, primary_key=<span class="tk-kw">True</span>
+    )
+    autor_id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(
+        default=<span class="tk-cls">None</span>, foreign_key=<span class="tk-str">"autor.id"</span>, primary_key=<span class="tk-kw">True</span>
+    )</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — por qué las dos son clave primaria</span>
+    <p>
+      Si solo una de las dos fuera clave primaria, la tabla admitiría <strong>duplicados</strong>:
+      el mismo autor aparecería dos veces en el mismo libro, y no habría forma de quitar solo una
+      de las dos. Con las dos como clave primaria, la tabla <strong>no puede</strong> tener
+      el mismo par dos veces.
+    </p>
+    <p>
+      Es la misma idea de la clase 20 con la clave foránea, pero en el otro lado: ahora la
+      unicidad la garantiza el <strong>par</strong>, no una columna suelta.
+    </p>
+  </div>
+
+  <h3>1.2 · El esquema que sale</h3>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — las tres tablas de la biblioteca</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-salida">autor</div>
+      <div class="consola-salida">    id             INTEGER</div>
+      <div class="consola-salida">    nombre         VARCHAR</div>
+      <div class="consola-salida">libro</div>
+      <div class="consola-salida">    id             INTEGER</div>
+      <div class="consola-salida">    titulo         VARCHAR</div>
+      <div class="consola-salida">    anio           INTEGER</div>
+      <div class="consola-salida">libroautor</div>
+      <div class="consola-salida">    libro_id       INTEGER        REFERENCES libro.id</div>
+      <div class="consola-salida">    autor_id       INTEGER        REFERENCES autor.id</div>
+    </div>
+  </div>
+
+  <p>
+    La tabla <code>libroautor</code> no tiene <code>id</code> propio, y sus dos columnas son
+    referencias. Fíjate en que <code>libro</code> ya no tiene <code>editorial_id</code>: en esta
+    clase la biblioteca cambia de tema y lo que se conecta son libros y autores.
+  </p>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el nombre de la tabla</span>
+    <p>
+      SQLModel crea la tabla con el nombre de la clase en minúsculas y sin guiones:
+      <code>LibroAutor</code> se llama <code>libroautor</code>. Por eso las claves foráneas
+      apuntan a <code>"libro.id"</code> y <code>"autor.id"</code>, en minúsculas.
+    </p>
+  </div>
+
+  <h3>1.3 · Por qué no basta con la tabla: falta el «cómo»</h3>
+
+  <p>
+    La tabla intermedia guarda <strong>quién con quién</strong>. Pero un libro puede tener
+    tres autores, y uno de ellos es el principal, y otro solo escribió el prólogo. Esa
+    información —<em>cómo</em> está cada autor en cada libro— <strong>tiene su sitio</strong> en
+    la tabla intermedia, y es lo que la unidad 6 teaches.
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — la tabla intermedia tiene información propia</span>
+    <p>
+      Piénsalo así: la tabla <code>libroautor</code> no es «un pedazo de la tabla de libros» ni
+      «un pedazo de la tabla de autores». Es <strong>su propia cosa</strong>: la relación entre
+      un libro y un autor, que tiene sus propios datos. Y si mañana quieres registrar
+      <em>cuándo</em> se firmó ese contrato o <em>cuánto</em> se cobró por él, ese dato va
+      <strong>en la tabla intermedia</strong>, no en el libro ni en el autor.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué guarda una fila de la tabla intermedia?</p>
+      <button class="opcion" data-op="a">Un libro con todos sus datos</button>
+      <button class="opcion" data-op="b">Un par: un libro y un autor</button>
+      <button class="opcion" data-op="c">Un autor con todos sus libros</button>
+      <button class="opcion" data-op="d">Un identificador de la relación</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Por qué las dos columnas son clave primaria?</p>
+      <button class="opcion" data-op="a">Para que la tabla tenga un <code>id</code> más corto</button>
+      <button class="opcion" data-op="b">Porque SQLite lo exige</button>
+      <button class="opcion" data-op="c">Para poder ordenarlas</button>
+      <button class="opcion" data-op="d">Para que el mismo autor no pueda aparecer dos veces en el mismo libro</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cómo se llama la tabla que crea la clase <code>LibroAutor</code>?</p>
+      <button class="opcion" data-op="a"><code>libroautor</code></button>
+      <button class="opcion" data-op="b"><code>libro_autor</code></button>
+      <button class="opcion" data-op="c"><code>LibroAutor</code></button>
+      <button class="opcion" data-op="d">La que tú quieras: el nombre es libre</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Dónde se guardaría el dato «este autor escribió el prólogo»?</p>
+      <button class="opcion" data-op="a">En la tabla de libros, en una columna nueva</button>
+      <button class="opcion" data-op="b">En la tabla de autores</button>
+      <button class="opcion" data-op="c">En la tabla intermedia, como una columna más</button>
+      <button class="opcion" data-op="d">En el título del libro</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: el modelo que une →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 2 ============ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · El enlace</div>
+    <h2>El modelo que une: <em>link_model</em></h2>
+    <p class="proposito">
+      Con la tabla intermedia ya escrita, falta el truco de verdad: que el ORM sepa que esa tabla
+      es <strong>el puente</strong> entre las dos, y no una tabla más. Para eso está
+      <code>link_model</code>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: los tres modelos unidos</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · Los tres modelos, unidos</h3>
+
+  <p class="primer-párrafo">
+    El cambio es una palabra en cada lado: <code>link_model=LibroAutor</code>. Con ella, el ORM
+    sabe que para ir de un libro a sus autores tiene que pasar por esa tabla.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — los tres modelos con link_model</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">Autor</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(default=<span class="tk-cls">None</span>, primary_key=<span class="tk-kw">True</span>)
+    nombre: <span class="tk-cls">str</span> = <span class="tk-fn">Field</span>(index=<span class="tk-kw">True</span>)
+
+    <span class="tk-cm"># El puente hacia la tabla intermedia.</span>
+    libros: list[<span class="tk-str">"Libro"</span>] = <span class="tk-fn">Relationship</span>(back_populates=<span class="tk-str">"autores"</span>, link_model=<span class="tk-cls">LibroAutor</span>)
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">Libro</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(default=<span class="tk-cls">None</span>, primary_key=<span class="tk-kw">True</span>)
+    titulo: <span class="tk-cls">str</span> = <span class="tk-fn">Field</span>(index=<span class="tk-kw">True</span>)
+    anio: <span class="tk-cls">int</span>
+
+    <span class="tk-cm"># El mismo puente, visto desde el otro lado.</span>
+    autores: list[<span class="tk-cls">Autor</span>] = <span class="tk-fn">Relationship</span>(back_populates=<span class="tk-str">"libros"</span>, link_model=<span class="tk-cls">LibroAutor</span>)</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — por qué en los dos lados</span>
+    <p>
+      El <code>link_model</code> tiene que estar en <strong>las dos</strong> relaciones. Si solo
+      lo pones en una, el ORM no sabe cómo volver por el otro camino y falla al arrancar con un
+      error sobre la relación.
+    </p>
+  </div>
+
+  <h3>2.2 · El tablero de la relación</h3>
+
+  <p>
+    Mueve los autores de un libro y mira lo que pasa en la tabla intermedia. Cada cambio que
+    haces aquí es <strong>una fila que se añade o se borra</strong>: ni el libro ni el autor se
+    tocan.
+  </p>
+
+  <div class="tablero" data-tablero>
+    <div class="tablero-cabecera">
+      <span class="etiqueta">Laboratorio</span>
+      <h4>La tabla intermedia, a la vista</h4>
+      <p>
+        Elige un libro, añádele o quítale un autor, y observa la lista de sus autores y la lista
+        de libros del autor. Ningún autor ni libro se borra: lo único que cambia es el enlace.
+      </p>
+    </div>
+    <div class="tablero-cuerpo">
+      <div class="tablero-izq" data-tablero-izq></div>
+      <div class="tablero-der" data-tablero-der></div>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el lenguaje de las listas</span>
+    <p>
+      En una relación de uno a muchos, el lado del «muchos» guarda <strong>un</strong> objeto y el
+      otro guarda <strong>una lista</strong>. En una de muchos a muchos, <strong>los dos lados
+      guardan listas</strong>. Por eso aquí no hay <code>libro.autor</code>: hay
+      <code>libro.autores</code>, y para quitar a alguien hay que quitarlo de la <em>lista</em>.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué le dice <code>link_model=LibroAutor</code> al ORM?</p>
+      <button class="opcion" data-op="a">Que la tabla intermedia es opcional</button>
+      <button class="opcion" data-op="b">Que para ir de un libro a sus autores hay que pasar por esa tabla</button>
+      <button class="opcion" data-op="c">Que la relación es de uno a muchos</button>
+      <button class="opcion" data-op="d">Que la tabla intermedia se borra al terminar la sesión</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> En una relación de muchos a muchos, ¿qué guardan los dos lados?</p>
+      <button class="opcion" data-op="a">Un objeto y una lista</button>
+      <button class="opcion" data-op="b">Dos objetos</button>
+      <button class="opcion" data-op="c">Dos listas de cadenas de texto</button>
+      <button class="opcion" data-op="d">Dos listas de objetos</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Dónde hay que poner el <code>link_model</code>?</p>
+      <button class="opcion" data-op="a">En las dos relaciones, la del libro y la del autor</button>
+      <button class="opcion" data-op="b">Solo en la del libro</button>
+      <button class="opcion" data-op="c">Solo en la del autor</button>
+      <button class="opcion" data-op="d">En el modelo de la tabla intermedia</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> Cuando añades un autor a un libro, ¿qué cambia en la base de datos?</p>
+      <button class="opcion" data-op="a">Se inserta un autor nuevo</button>
+      <button class="opcion" data-op="b">Se actualiza la fila del libro</button>
+      <button class="opcion" data-op="c">Se inserta una fila en la tabla intermedia</button>
+      <button class="opcion" data-op="d">Se actualiza la fila del autor</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: La tabla intermedia</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: añadir y quitar relaciones →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 3 ============ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · Las operaciones</div>
+    <h2>Añadir y <em>quitar</em> relaciones</h2>
+    <p class="proposito">
+      Con listas en los dos lados, las operaciones cambian de verbs. Ya no se asigna un objeto:
+      se <strong>añade a una lista</strong> o se <strong>quita de una lista</strong>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: las dos operaciones, con su efecto real</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · Crear con los dos lados</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — crear un libro con varios autores</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+    gabriel = <span class="tk-cls">Autor</span>(nombre=<span class="tk-str">"Gabriel García Márquez"</span>)
+    isabel = <span class="tk-cls">Autor</span>(nombre=<span class="tk-str">"Isabel Allende"</span>)
+    session.<span class="tk-fn">add</span>(gabriel)
+    session.<span class="tk-fn">add</span>(isabel)
+    session.<span class="tk-fn">commit</span>()
+
+    <span class="tk-cm"># Se pasa la lista de autores y ya está.</span>
+    soledad = <span class="tk-cls">Libro</span>(titulo=<span class="tk-str">"Cien años de soledad"</span>, anio=<span class="tk-num">1967</span>, autores=[gabriel, isabel])
+    casa = <span class="tk-cls">Libro</span>(titulo=<span class="tk-str">"La casa de los espíritus"</span>, anio=<span class="tk-num">1982</span>, autores=[isabel])
+    session.<span class="tk-fn">add</span>(soledad)
+    session.<span class="tk-fn">add</span>(casa)
+    session.<span class="tk-fn">commit</span>()
+    session.<span class="tk-fn">refresh</span>(soledad)
+    session.<span class="tk-fn">refresh</span>(casa)
+
+    <span class="tk-fn">print</span>([a.nombre <span class="tk-kw">for</span> a <span class="tk-kw">in</span> soledad.autores])
+    <span class="tk-fn">print</span>([x.titulo <span class="tk-kw">for</span> x <span class="tk-kw">in</span> gabriel.libros])</code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — crear con muchos a muchos</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-salida">== CREAR con muchos a muchos ==</div>
+      <div class="consola-salida">  Cien años de soledad -&gt; ['Gabriel García Márquez', 'Isabel Allende']</div>
+      <div class="consola-salida">  La casa de los espíritus -&gt; ['Isabel Allende']</div>
+      <div class="consola-salida">  el espejo: Gabriel -&gt; ['Cien años de soledad']</div>
+    </div>
+  </div>
+
+  <h3>3.2 · Añadir y quitar: los dos verbos</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — añadir y quitar un autor</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+    casa = session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Libro</span>).<span class="tk-fn">where</span>(<span class="tk-cls">Libro</span>.titulo == <span class="tk-str">"La casa de los espíritus"</span>)).<span class="tk-fn">one</span>()
+    gabriel = session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Autor</span>).<span class="tk-fn">where</span>(<span class="tk-cls">Autor</span>.nombre == <span class="tk-str">"Gabriel García Márquez"</span>)).<span class="tk-fn">one</span>()
+
+    <span class="tk-cm"># AÑADIR: se mete en la lista y se guarda.</span>
+    casa.autores.<span class="tk-fn">append</span>(gabriel)
+    session.<span class="tk-fn">add</span>(casa)
+    session.<span class="tk-fn">commit</span>()
+    session.<span class="tk-fn">refresh</span>(casa)
+    <span class="tk-fn">print</span>([a.nombre <span class="tk-kw">for</span> a <span class="tk-kw">in</span> casa.autores])
+
+    <span class="tk-cm"># QUITAR: se saca de la lista y se guarda.</span>
+    casa.autores.<span class="tk-fn">remove</span>(gabriel)
+    session.<span class="tk-fn">add</span>(casa)
+    session.<span class="tk-fn">commit</span>()
+    session.<span class="tk-fn">refresh</span>(casa)
+    <span class="tk-fn">print</span>([a.nombre <span class="tk-kw">for</span> a <span class="tk-kw">in</span> casa.autores])</code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — el efecto real de añadir y de quitar</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-salida">== AÑADIR una relación ==</div>
+      <div class="consola-salida">  La casa de los espíritus -&gt; ['Gabriel García Márquez', 'Isabel Allende']</div>
+      <div class="consola-salida">  el espejo: Gabriel -&gt; ['Cien años de soledad', 'La casa de los espíritus']</div>
+      <div class="consola-salida">== QUITAR una relación ==</div>
+      <div class="consola-salida">  Cien años de soledad -&gt; ['Gabriel García Márquez']</div>
+      <div class="consola-salida">  el espejo: Isabel -&gt; ['La casa de los espíritus']</div>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — por qué hay que volver a guardar con <code>add()</code></span>
+    <p>
+      <code>append()</code> modifica una lista de Python; no toca la base de datos. Para que el
+      cambio llegue a la tabla intermedia, hay que <strong>volver a colgar el objeto en la
+      sesión</strong> con <code>session.add()</code> y confirmar con <code>commit()</code>. Es el
+      mismo <code>add → commit → refresh</code> de siempre, con un paso más en medio.
+    </p>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — quitar un autor no es borrar al autor</span>
+    <p>
+      <code>remove()</code> quita la relación: borra la fila de la tabla intermedia. El autor
+      sigue existiendo, con sus otros libros. Es el mismo cuidado de la clase 13, aplicado a un
+      nivel más arriba: <strong>borrar el enlace no es borrar lo que une</strong>.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cómo se añade un autor a un libro?</p>
+      <button class="opcion" data-op="a"><code>libro.autor = autor</code></button>
+      <button class="opcion" data-op="b"><code>libro.autores.append(autor)</code>, y luego <code>add()</code> y <code>commit()</code></button>
+      <button class="opcion" data-op="c">Se crea una fila a mano en la tabla intermedia</button>
+      <button class="opcion" data-op="d"><code>libro.autores_id = autor.id</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué ocurre exactamente al quitar un autor de un libro?</p>
+      <button class="opcion" data-op="a">Se borra la fila de la tabla intermedia; el libro y el autor siguen</button>
+      <button class="opcion" data-op="b">Se borra el autor</button>
+      <button class="opcion" data-op="c">Se borra el libro</button>
+      <button class="opcion" data-op="d">No cambia nada hasta que se reinicie el servidor</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Por qué hay que llamar a <code>session.add()</code> después del <code>append()</code>?</p>
+      <button class="opcion" data-op="a">Para que el ORM sepa en qué tabla está el objeto</button>
+      <button class="opcion" data-op="b">Porque <code>append()</code> no existe en Python</button>
+      <button class="opcion" data-op="c">Porque el cambio estaba solo en la lista de Python: hay que colgarlo en la sesión otra vez</button>
+      <button class="opcion" data-op="d">Por estilo</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿En qué se diferencia esto de la clase 20?</p>
+      <button class="opcion" data-op="a">En nada: es el mismo código</button>
+      <button class="opcion" data-op="b">En que aquí no hace falta la clave foránea</button>
+      <button class="opcion" data-op="c">En que aquí no hace falta la tabla intermedia</button>
+      <button class="opcion" data-op="d">En que los dos lados guardan listas: por eso se añade y se quita con <code>append</code> y <code>remove</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: El modelo que une: link_model</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 4 ============ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de lectura</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija por
+      escrito lo que has leído hasta ahora.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora.
+    </p>
+    <div class="reglas">
+      <div class="regla"><h4>Regla 20-20-20</h4><p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p></div>
+      <div class="regla"><h4>Movimiento</h4><p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p></div>
+      <div class="regla"><h4>Hidratación</h4><p>Un vaso de agua. La lectura densa agota más de lo que parece.</p></div>
+      <div class="regla"><h4>Bitácora</h4><p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p></div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora de lectura (5 minutos)</h3>
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+  <ol>
+    <li><strong>En una frase:</strong> ¿por qué una relación de muchos a muchos necesita su propia tabla?</li>
+    <li><strong>En una frase:</strong> ¿qué le dice <code>link_model</code> al ORM?</li>
+    <li><strong>En una frase:</strong> ¿qué pasa en la base de datos cuando quitas un autor de un libro?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+  <p>Estas siete palabras aparecerán en el taller final. Léelas ahora.</p>
+  <div class="definiciones">
+    <div><dt>Cardinalidad</dt><dd>Cuántas filas de una tabla se corresponden con una de la otra: una a una, una a muchas o muchas a muchas.</dd></div>
+    <div><dt>Tabla intermedia</dt><dd>La tabla que guarda los pares de una relación de muchos a muchos. Una fila es un par.</dd></div>
+    <div><dt>Clave primaria compuesta</dt><dd>Una clave que son varias columnas juntas: aquí, <code>libro_id</code> y <code>autor_id</code>.</dd></div>
+    <div><dt><code>link_model</code></dt><dd>El parámetro que le dice al ORM cuál es la tabla puente entre dos modelos.</dd></div>
+    <div><dt>Relación simétrica</dt><dd>Una relación en la que los dos lados guardan listas: el libro tiene sus autores y el autor tiene sus libros.</dd></div>
+    <div><dt>Quitar un enlace</dt><dd>Borrar la fila de la tabla intermedia. Ni el libro ni el autor se tocan.</dd></div>
+    <div><dt>Dato de la relación</dt><dd>Información que pertenece al vínculo y no a ninguno de los dos lados: «este autor escribió el prólogo».</dd></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: Añadir y quitar relaciones</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Ejercicio práctico →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 5 ============ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · Taller de aplicación</div>
+    <h2>Ejercicio 5.1 · <em>La API con relaciones</em></h2>
+    <p class="proposito">
+      La clase 19 separó la entrada de la salida; la 20 añadió una relación. Hoy se juntan las dos
+      cosas: una API cuyo contrato incluye la relación, con la tabla intermedia detrás. En 35
+      minutos la montas y la pruebas.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: el libro con sus autores, en JSON</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>El libro y sus autores</h3>
+    </div>
+
+    <p>
+      Escribe la API de la biblioteca con la relación de muchos a muchos, respetando el
+      contrato de la clase 19.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr><td><strong>Entrada</strong></td><td>Un <code>id</code> de libro, opcional</td></tr>
+          <tr><td><strong>Salida</strong></td><td>JSON con el libro y sus autores, cada uno con su nombre</td></tr>
+          <tr><td><strong>Restricción</strong></td><td>El modelo de salida no expone <code>libro_id</code> ni <code>autor_id</code>: expone nombres</td></tr>
+          <tr><td><strong>Restricción</strong></td><td>Un libro sin autores se devuelve con <code>"autores": []</code></td></tr>
+          <tr><td><strong>Restricción</strong></td><td>Un <code>id</code> inexistente da <strong>404</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li><strong><code>AutorPublic</code></strong> con <code>id</code> y <code>nombre</code>.</li>
+      <li><strong><code>LibroPublic</code></strong> con <code>id</code>, <code>titulo</code>, <code>anio</code> y <code>autores</code>: una lista de <code>AutorPublic</code>.</li>
+      <li><strong><code>GET /libros/</code></strong> y <strong><code>GET /libros/{id}</code></strong>.</li>
+      <li><strong>El <code>response_model</code></strong> de la clase 19, con la relación dentro.</li>
+      <li><strong>La comprobación</strong>: que un libro sin autores no rompa la respuesta.</li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-5-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-5-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La diferencia con la clase 20 está en el tipo del campo: allí era
+        <code>editorial: EditorialPublic | None</code>; aquí es una <strong>lista</strong>.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>los modelos de salida con la relación</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">AutorPublic</span>(<span class="tk-cls">SQLModel</span>):
+    id: <span class="tk-cls">int</span>
+    nombre: <span class="tk-cls">str</span>
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">LibroPublic</span>(<span class="tk-cls">SQLModel</span>):
+    id: <span class="tk-cls">int</span>
+    titulo: <span class="tk-cls">str</span>
+    anio: <span class="tk-cls">int</span>
+    <span class="tk-cm"># Una LISTA de autores: la relación de muchos a muchos.</span>
+    autores: list[<span class="tk-cls">AutorPublic</span>] = []</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>las dos rutas</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">@</span>app.<span class="tk-fn">get</span>(<span class="tk-str">"/libros/"</span>, response_model=list[<span class="tk-cls">LibroPublic</span>])
+<span class="tk-kw">def</span> <span class="tk-fn">leer_libros</span>(session: <span class="tk-cls">SessionDep</span>):
+    <span class="tk-kw">return</span> session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Libro</span>)).<span class="tk-fn">all</span>()
+
+
+<span class="tk-kw">@</span>app.<span class="tk-fn">get</span>(<span class="tk-str">"/libros/{libro_id}"</span>, response_model=<span class="tk-cls">LibroPublic</span>)
+<span class="tk-kw">def</span> <span class="tk-fn">leer_libro</span>(libro_id: <span class="tk-cls">int</span>, session: <span class="tk-cls">SessionDep</span>):
+    libro = session.<span class="tk-fn">get</span>(<span class="tk-cls">Libro</span>, libro_id)
+    <span class="tk-kw">if not</span> libro:
+        <span class="tk-kw">raise</span> <span class="tk-cls">HTTPException</span>(status_code=<span class="tk-num">404</span>, detail=<span class="tk-str">"Libro no encontrado"</span>)
+    <span class="tk-kw">return</span> libro</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>la respuesta real</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>{
+  <span class="tk-str">"id"</span>: <span class="tk-num">1</span>,
+  <span class="tk-str">"titulo"</span>: <span class="tk-str">"Cien años de soledad"</span>,
+  <span class="tk-str">"anio"</span>: <span class="tk-num">1967</span>,
+  <span class="tk-str">"autores"</span>: [
+    { <span class="tk-str">"id"</span>: <span class="tk-num">1</span>, <span class="tk-str">"nombre"</span>: <span class="tk-str">"Gabriel García Márquez"</span> },
+    { <span class="tk-str">"id"</span>: <span class="tk-num">2</span>, <span class="tk-str">"nombre"</span>: <span class="tk-str">"Isabel Allende"</span> }
+  ]
+}</code></pre>
+  </div>
+  </div>
+    </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — fíjate en lo que NO aparece</span>
+    <p>
+      Ni <code>libro_id</code> ni <code>autor_id</code>. La tabla intermedia existe, pero el
+      cliente no la ve: solo ve la relación. Igual que en la clase 19 con el
+      <code>costo_proveedor</code>, el detalle interno se queda dentro.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Qué tipo tiene el campo <code>autores</code> en el modelo de salida?</p>
+      <button class="opcion" data-op="a">Una lista de <code>AutorPublic</code></button>
+      <button class="opcion" data-op="b">Un <code>AutorPublic</code> o <code>None</code></button>
+      <button class="opcion" data-op="c">Una lista de cadenas con los nombres</button>
+      <button class="opcion" data-op="d">Una lista de números</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Qué dato de la tabla intermedia ve el cliente?</p>
+      <button class="opcion" data-op="a">El <code>libro_id</code></button>
+      <button class="opcion" data-op="b">El <code>autor_id</code></button>
+      <button class="opcion" data-op="c">Ninguno: solo ve los nombres de los autores</button>
+      <button class="opcion" data-op="d">Todos</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> Un libro sin autores, ¿cómo sale en la respuesta?</p>
+      <button class="opcion" data-op="a">Con un error 404</button>
+      <button class="opcion" data-op="b">Con <code>"autores": []</code></button>
+      <button class="opcion" data-op="c">Con <code>"autores": null</code></button>
+      <button class="opcion" data-op="d">No sale en la lista</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿En qué se diferencia esta clase de la 20?</p>
+      <button class="opcion" data-op="a">En que aquí no hay tabla intermedia</button>
+      <button class="opcion" data-op="b">En que la relación es de uno a muchos</button>
+      <button class="opcion" data-op="c">En que aquí no se usa <code>Relationship</code></button>
+      <button class="opcion" data-op="d">En que la relación es de muchos a muchos: los dos lados guardan listas</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: campos extra en el enlace →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 6 ============ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · Taller de aplicación</div>
+    <h2>Ejercicio 6.1 · <em>Campos extra en el enlace</em></h2>
+    <p class="proposito">
+      La última pieza: la tabla intermedia no solo dice <em>quién con quién</em>, también puede
+      decir <em>cómo</em>. En 35 minutos le añades una columna propia y ves por qué eso
+      <strong>no</strong> se puede guardar en el libro ni en el autor.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: un enlace que también guarda información</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>El prólogo</h3>
+    </div>
+
+    <p>
+      Un libro puede tener varios autores, y uno de ellos puede haber escrito el prólogo. Esa
+      información pertenece a la relación, no al libro ni al autor. Añádela a la tabla intermedia.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr><td><strong>Entrada</strong></td><td>Un libro con sus autores, y quién es el principal</td></tr>
+          <tr><td><strong>Salida</strong></td><td>La misma API, y además la información del enlace</td></tr>
+          <tr><td><strong>Restricción</strong></td><td>La columna nueva vive en la tabla intermedia, <strong>no</strong> en el libro</td></tr>
+          <tr><td><strong>Restricción</strong></td><td>El modelo de la tabla intermedia necesita sus propios atributos de relación</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li><strong>Una columna <code>principal</code></strong> (booleana) en <code>LibroAutor</code>.</li>
+      <li><strong>El modelo intermedio con sus propios <code>Relationship()</code></strong>, para poder leer y escribir esa columna.</li>
+      <li><strong>La lectura del enlace</strong>: recorrer <code>libro.autor_links</code> y ver quién es el principal.</li>
+      <li><strong>La escritura</strong>: marcar un autor como principal y comprobar que se guarda.</li>
+      <li><strong>La comparación</strong>: por qué esta columna <strong>no puede</strong> estar en el modelo <code>Libro</code>.</li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-6-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-6-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        El truco de esta unidad está en el modelo de la tabla intermedia: si quieres
+        <strong>leer y escribir</strong> los datos de la tabla intermedia, ese modelo necesita
+        sus propias relaciones.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>el modelo de la tabla intermedia, con sus relaciones</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">LibroAutor</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    libro_id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(
+        default=<span class="tk-cls">None</span>, foreign_key=<span class="tk-str">"libro.id"</span>, primary_key=<span class="tk-kw">True</span>
+    )
+    autor_id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(
+        default=<span class="tk-cls">None</span>, foreign_key=<span class="tk-str">"autor.id"</span>, primary_key=<span class="tk-kw">True</span>
+    )
+
+    <span class="tk-cm"># El dato que pertenece a la RELACIÓN, no a sus dos lados.</span>
+    principal: <span class="tk-cls">bool</span> = <span class="tk-kw">False</span>
+
+    <span class="tk-cm"># Con estas dos, se puede leer y escribir la fila del enlace.</span>
+    libro: <span class="tk-str">"Libro"</span> = <span class="tk-fn">Relationship</span>(back_populates=<span class="tk-str">"autor_links"</span>)
+    autor: <span class="tk-str">"Autor"</span> = <span class="tk-fn">Relationship</span>(back_populates=<span class="tk-str">"libro_links"</span>)</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>leer y escribir el enlace</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+    libro = session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Libro</span>).<span class="tk-fn">where</span>(<span class="tk-cls">Libro</span>.titulo == <span class="tk-str">"Cien años de soledad"</span>)).<span class="tk-fn">one</span>()
+
+    <span class="tk-cm"># LEER el enlace: cada fila dice quién y cómo.</span>
+    <span class="tk-kw">for</span> enlace <span class="tk-kw">in</span> libro.autor_links:
+        <span class="tk-fn">print</span>(<span class="tk-str">f"autor={enlace.autor.nombre}  principal={enlace.principal}"</span>)
+
+    <span class="tk-cm"># ESCRIBIR el enlace: se cambia el atributo y se guarda.</span>
+    enlace = libro.autor_links[<span class="tk-num">0</span>]
+    enlace.principal = <span class="tk-kw">True</span>
+    session.<span class="tk-fn">add</span>(enlace)
+    session.<span class="tk-fn">commit</span>()</code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — el enlace con su propio dato</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-salida">== el link model con campo extra ==</div>
+      <div class="consola-salida">  libro=Cien años de soledad  autor=Gabriel García Márquez  principal=False</div>
+      <div class="consola-salida">  libro=Cien años de soledad  autor=Isabel Allende  principal=False</div>
+      <div class="consola-salida">  tras marcar principal: [('Gabriel García Márquez', True), ('Isabel Allende', False)]</div>
+    </div>
+  </div>
+  </div>
+    </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — dos relaciones que se pisan</span>
+    <p>
+      Al añadir <code>libro.autor_links</code> y <code>autor.libro_links</code> <em>además</em> de
+      <code>libro.autores</code> y <code>autor.libros</code>, SQLModel avisa con un
+      <code>SAWarning</code>: las dos parejas de relaciones quieren escribir las mismas columnas
+      de la tabla intermedia. <strong>No es un error</strong>: el programa funciona igual. Pero es
+      la señal de que el modelo se está acercando al límite de lo que el ORM puede adivinar.
+    </p>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — por qué este dato no puede ir en el libro</span>
+    <p>
+      «Gabriel es el autor principal de Cien años de soledad» es un dato de <em>esa relación</em>.
+      Si lo guardaras en el libro, tendrías una columna <code>autor_principal</code>… y entonces
+      ¿qué pasa con los otros dos autores? ¿Necesitas tres columnas? ¿Una? La tabla intermedia
+      resuelve el problema de raíz: <strong>una fila por relación, con sus propios datos</strong>.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Por qué el dato «este autor es el principal» va en la tabla intermedia?</p>
+      <button class="opcion" data-op="a">Porque es más corto de escribir</button>
+      <button class="opcion" data-op="b">Porque describe a la <strong>relación</strong>, y no a ninguno de sus dos lados</button>
+      <button class="opcion" data-op="c">Porque las tablas intermedias no admiten datos</button>
+      <button class="opcion" data-op="d">Porque el autor no tiene nombre</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué necesita el modelo de la tabla intermedia para poder leer y escribir sus datos?</p>
+      <button class="opcion" data-op="a">Un <code>id</code> propio</button>
+      <button class="opcion" data-op="b">Una clave primaria compuesta</button>
+      <button class="opcion" data-op="c">Una columna <code>id</code> de la tabla de libros</button>
+      <button class="opcion" data-op="d">Sus propios atributos <code>Relationship()</code> hacia el libro y el autor</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué significa el <code>SAWarning</code> sobre relaciones que se pisan?</p>
+      <button class="opcion" data-op="a">Que dos parejas de relaciones escriben las mismas columnas de la tabla intermedia</button>
+      <button class="opcion" data-op="b">Que el modelo está mal y no arranca</button>
+      <button class="opcion" data-op="c">Que falta la clave primaria compuesta</button>
+      <button class="opcion" data-op="d">Que el <code>link_model</code> está mal escrito</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Por qué esta columna no puede estar en el modelo <code>Libro</code>?</p>
+      <button class="opcion" data-op="a">Porque el libro no tiene autores</button>
+      <button class="opcion" data-op="b">Porque el modelo del libro es de solo lectura</button>
+      <button class="opcion" data-op="c">Porque un libro puede tener varios autores y la respuesta sería distinta en cada uno</button>
+      <button class="opcion" data-op="d">Porque las columnas booleanas no se guardan</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: La API con relaciones</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller integrador →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 7 ============ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>Taller · <em>La biblioteca compartida</em></h2>
+    <p class="proposito">
+      Las piezas están listas: la tabla intermedia, el <code>link_model</code>, las dos
+      operaciones y el dato propio del enlace. Ahora se montan en un proyecto completo y se
+      escribe el taller.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller de desarrollo</b></span>
+      <span>🧭 <b>Producto: el CRUD con relaciones, probado y escrito</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Taller</span>
+      <h3>Libros y autores</h3>
+    </div>
+
+    <p>
+      Construye la biblioteca completa: las tres tablas, la API con la relación en el contrato y
+      las operaciones de añadir y quitar autores. Y decide qué harías con el enlace cuando un
+      autor deja de escribir con la editorial.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr><td><strong>Tablas</strong></td><td><code>autor</code>, <code>libro</code> y <code>libroautor</code></td></tr>
+          <tr><td><strong>Rutas</strong></td><td>Listar libros y leer uno, cada uno con sus autores</td></tr>
+          <tr><td><strong>Operaciones</strong></td><td>Añadir y quitar autores, y marcar el principal</td></tr>
+          <tr><td><strong>Restricción</strong></td><td>El cliente nunca ve <code>libro_id</code> ni <code>autor_id</code></td></tr>
+          <tr><td><strong>Restricción</strong></td><td>Quitar un autor no borra al autor</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong>El proyecto</strong> con las tres tablas, la API y las operaciones.</li>
+      <li><strong>Las ocho comprobaciones</strong> marcadas una por una.</li>
+      <li><strong>La tabla de las rutas</strong>: método, ruta, qué acepta, qué devuelve, qué errores.</li>
+      <li><strong>Un párrafo</strong>: qué pasaría en tu aplicación si un autor desaparece de la base de datos, y qué decidirías.</li>
+      <li><strong>El commit</strong> con un mensaje que explique el cambio.</li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="taller-solucion">Ver un modelo de respuesta</button>
+
+    <div class="solucion" id="taller-solucion">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La pregunta del entregable 4 es la última del bloque, y no tiene respuesta única: tiene
+        respuesta <strong>razonada</strong>.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>las ocho comprobaciones del taller</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-num">1.</span> Las tres tablas se crean y el esquema muestra las dos claves foráneas
+<span class="tk-num">2.</span> Se crean dos autores y dos libros, pasando la lista de autores
+<span class="tk-num">3.</span> Leer libro.autores devuelve los autores del libro
+<span class="tk-num">4.</span> Leer autor.libros devuelve los libros del autor
+<span class="tk-num">5.</span> Añadir un autor añade una fila a la tabla intermedia
+<span class="tk-num">6.</span> Quitar un autor borra esa fila, y el autor sigue existiendo
+<span class="tk-num">7.</span> La API devuelve el libro con sus autores, sin ids de la tabla intermedia
+<span class="tk-num">8.</span> Marcar el autor principal se guarda en la fila del enlace</code></pre>
+  </div>
+
+    <blockquote class="recuadro nota">
+      <p>
+        Un párrafo de diagnóstico para este taller puede ser: «La tabla intermedia cambia la
+        naturaleza de la relación: en vez de que un libro apunte a un autor, ahora hay una fila
+        por cada pareja. Eso permite que el enlace tenga sus propios datos —que autor es el
+        principal— y que quitar un autor no borre al autor. La consecuencia es que ahora hay que
+        decidir qué pasa con las filas de la tabla intermedia cuando se borra un autor: con la
+        regla de la clase 21, la fila se queda con un <code>autor_id</code> que ya no existe. Yo lo
+        resolvería con la misma regla de la clase 21: <code>ondelete="CASCADE"</code> sobre la
+        tabla intermedia, para que al borrar un autor desaparezcan sus enlaces, pero no sus
+        libros».
+      </p>
+    </blockquote>
+  </div>
+    </div>
+
+  <h3>7.2 · Rúbrica de autoevaluación</h3>
+
+  <p>Puntúa cada criterio de 0 a 2 y revisa los que hayas quedado en 0 o 1.</p>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación de la relación de muchos a muchos</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>La tabla intermedia</td>
+          <td>Los autores se guardan en un texto del libro</td>
+          <td>Existe la tabla, pero le falta una clave primaria</td>
+          <td>Existe, con las dos columnas como clave primaria compuesta</td>
+        </tr>
+        <tr>
+          <td>El <code>link_model</code></td>
+          <td>No está, o solo está en un lado</td>
+          <td>Está en los dos lados pero sin <code>back_populates</code></td>
+          <td>Está en los dos lados, con <code>back_populates</code> coherente</td>
+        </tr>
+        <tr>
+          <td>Crear con la lista</td>
+          <td>Se crean las filas de la tabla a mano</td>
+          <td>Se pasa la lista, pero falta el <code>commit</code></td>
+          <td>Se pasa la lista de autores y el ORM crea las filas del enlace</td>
+        </tr>
+        <tr>
+          <td>Añadir y quitar</td>
+          <td>Solo se puede crear</td>
+          <td>Se añade, pero quitar no funciona</td>
+          <td><code>append</code> y <code>remove</code>, con su efecto en la tabla intermedia</td>
+        </tr>
+        <tr>
+          <td>El espejo</td>
+          <td>Un lado no refleja al otro</td>
+          <td>Se refleja, pero hay que recargar la sesión</td>
+          <td>Los dos lados se actualizan solos</td>
+        </tr>
+        <tr>
+          <td>El contrato de la API</td>
+          <td>La respuesta incluye <code>libro_id</code> o <code>autor_id</code></td>
+          <td>Incluye los autores, pero no con la forma declarada</td>
+          <td>Solo los datos públicos, con la lista de autores filtrada</td>
+        </tr>
+        <tr>
+          <td>Quitar no es borrar</td>
+          <td>Quitar un autor borra al autor</td>
+          <td>Borra al autor solo si no tiene más libros</td>
+          <td>Quitar un autor solo borra la fila del enlace</td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay nada escrito</td>
+          <td>Describe el qué, no el porqué</td>
+          <td>Decide qué pasa con los enlaces huérfanos y lo justifica</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.3 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea"><div class="idea-n">01</div><p>Cuando una relación es de muchos a muchos, <strong>la relación se convierte en una tabla</strong>.</p></div>
+    <div class="idea"><div class="idea-n">02</div><p>Una fila de esa tabla es un par, y por eso sus dos columnas son clave primaria a la vez.</p></div>
+    <div class="idea"><div class="idea-n">03</div><p><code>link_model</code> le dice al ORM cuál es el puente, y tiene que estar en los dos lados.</p></div>
+    <div class="idea"><div class="idea-n">04</div><p>Si los dos lados guardan listas, las operaciones cambian de verbo: <code>append</code> y <code>remove</code>.</p></div>
+    <div class="idea"><div class="idea-n">05</div><p>Modificar la lista no toca la base de datos: hay que volver a colgar el objeto en la sesión.</p></div>
+    <div class="idea"><div class="idea-n">06</div><p>Quitar un autor borra el enlace, no al autor. La relación y sus lados son cosas distintas.</p></div>
+    <div class="idea"><div class="idea-n">07</div><p>La tabla intermedia puede tener sus propios datos: lo que describe al vínculo y no a ninguno de sus dos lados.</p></div>
+  </div>
+
+  <h3>7.4 · Cierre del bloque del ORM</h3>
+
+  <p>
+    Repasa el camino completo de las tres últimas clases:
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>De la columna al contrato</caption>
+      <thead>
+        <tr><th>Clase</th><th>Qué añadió</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>20</strong></td><td>La clave foránea: la columna que une dos tablas</td></tr>
+        <tr><td><strong>21</strong></td><td>El atributo de relación: la relación que se mantiene sola</td></tr>
+        <tr><td><strong>22</strong></td><td>La tabla intermedia: cuando ninguno de los dos lados manda</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Y con esto se cierra el bloque de la base de datos. Empezaste con una tabla y un
+    <code>INSERT</code> (clase 10) y terminas con un modelo que sabe relacionarse, decides qué
+    pasa al borrar y publica un contrato que dice exactamente qué entra y qué sale.
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de la próxima clase</span>
+    <p>
+      Guarda este proyecto en un repositorio de Git, con un commit por cada unidad: la tabla
+      intermedia, el <code>link_model</code>, las operaciones y el dato extra del enlace. Cuatro
+      commits con mensajes claros: la clase 16 explica Git en detalle.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 22</h2>
+    <p>
+      Has terminado el bloque de la base de datos del curso, y lo has terminado por la vía
+      difícil: no con SQL escrito a mano, sino con un modelo que <strong>sabe lo que es</strong>
+      una editorial, un libro y un autor, y que mantiene esas relaciones coherentes solo.
+    </p>
+    <p>
+      Y has visto por qué la tercera tabla no es un truco: es la manera que tiene una base de
+      datos de decir «esto que os encaja en un solo sitio, en realidad son dos cosas». El próximo
+      paso es el que ya has usado en las clases 20 y 21: ponerlo en una API y decidir qué ve
+      el cliente.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: Campos extra en el enlace</button>
+    <button class="btn-siguiente" data-ir="0">✓ Marcar el taller como terminado y volver al inicio</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 22 · Muchos a muchos: la tabla intermedia</span>
+  <p class="pie-sub">La tabla intermedia · El link_model · Añadir y quitar relaciones · La API con relaciones</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

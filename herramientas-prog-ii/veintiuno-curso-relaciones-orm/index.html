@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 21 · Relaciones en el ORM: Relationship y back_populates</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 21 · <em>Relaciones en el ORM</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura y programa</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">El atributo que habla</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">El espejo: back_populates</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Crear, leer y cortar</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Ejercicio: las cuatro operaciones</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Ejercicio: el borrado en cascada</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: el modelo que se relaciona</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> un modelo donde la relación es un atributo, y las dos caras se mueven solas.</p>
+    </div>
+  </aside>
+
+  <main class="columna">
+
+<!-- ============ UNIDAD 0 ============ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>El mismo resultado, <em>otra manera</em></h2>
+    <p class="proposito">
+      La clase pasada escribiste el enlace a mano: ponías <code>editorial_id</code> y pedías las
+      dos tablas con un <code>JOIN</code>. Hoy el ORM se encarga: la relación pasa a ser un
+      <strong>atributo del modelo</strong>, y mover un libro actualiza las dos caras solo.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y comparación</b></span>
+      <span>🧭 <b>Producto: las dos maneras, comparadas</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · Lo que hiciste la clase pasada, en dos frases</h3>
+
+  <p class="primer-párrafo">
+    Para conectar un libro con una editorial escribiste <code>editorial_id=planeta.id</code>, y
+    para leerlos escribiste <code>select(Libro, Editorial).where(...)</code>. Funciona, y es
+    exactamente lo que hace SQL. Pero obliga a acordarte de dos cosas en cada operación: qué
+    columna apunta a quién, y qué se escribe en el otro lado cuando mueves un libro.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la manera de la clase 20</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># A mano: yo me acuerdo de la columna y de la dirección</span>
+libro.editorial_id = oceano.id
+session.<span class="tk-fn">add</span>(libro)
+session.<span class="tk-fn">commit</span>()
+
+<span class="tk-kw">for</span> libro, editorial <span class="tk-kw">in</span> session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Libro</span>, <span class="tk-cls">Editorial</span>).<span class="tk-fn">where</span>(<span class="tk-cls">Libro</span>.editorial_id == <span class="tk-cls">Editorial</span>.id)):
+    <span class="tk-fn">print</span>(libro.titulo, editorial.nombre)</code></pre>
+  </div>
+
+  <h3>0.2 · Lo que vas a aprender a hacer</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la manera de esta clase</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Con el ORM: la relación es un atributo del modelo</span>
+libro.editorial = oceano
+session.<span class="tk-fn">add</span>(libro)
+session.<span class="tk-fn">commit</span>()
+
+<span class="tk-kw">for</span> libro <span class="tk-kw">in</span> session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Libro</span>)).<span class="tk-fn">all</span>():
+    <span class="tk-fn">print</span>(libro.titulo, libro.editorial.nombre)</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — no es magia, es que el ORM conoce el esquema</span>
+    <p>
+      Cuando declaras <code>foreign_key="editorial.id"</code>, el ORM sabe que la columna
+      <code>editorial_id</code> de <code>libro</code> apunta a <code>editorial.id</code>. Con esa
+      información puede <strong>escribir la columna por ti</strong> cuando le das un objeto
+      entero, y puede <strong>leerla y buscar el objeto</strong> cuando le pides la editorial.
+      Eso es todo: el ORM no adivina, usa lo que le declaraste.
+    </p>
+  </div>
+
+  <h3>0.3 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cuadro de unidades, tiempos y productos esperados</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura: la misma tarea, otra manera</td><td>20 min</td><td>La comparación de las dos maneras</td></tr>
+        <tr><td><strong>01</strong></td><td>El atributo que habla: <code>Relationship()</code></td><td>30 min</td><td>Los dos modelos con la relación declarada</td></tr>
+        <tr><td><strong>02</strong></td><td>El espejo: <code>back_populates</code> (+ laboratorio)</td><td>30 min</td><td>El tablero, con las dos caras moviéndose</td></tr>
+        <tr><td><strong>03</strong></td><td>Crear, leer y cortar una relación</td><td>30 min</td><td>Las cuatro operaciones con objetos</td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Ejercicio 5.1 · Las cuatro operaciones con el ORM</td><td>35 min</td><td>El modelo relacionado funcionando</td></tr>
+        <tr><td><strong>06</strong></td><td>Ejercicio 6.1 · El borrado en cascada</td><td>35 min</td><td>La regla del borrado, decidida</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller integrador</td><td>45 min</td><td>El modelo que se relaciona, probado</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.4 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito estas tres preguntas:</p>
+
+  <ol>
+    <li>En la clase 20, ¿qué dos cosas tenías que recordar tú en cada operación?</li>
+    <li>Si el ORM sabe qué columna apunta a qué, ¿qué trabajo te queda a ti?</li>
+    <li>¿Qué pasaría si te olvidaras de actualizar el lado inverso al mover un libro?</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: el atributo que habla →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 1 ============ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · La pieza nueva</div>
+    <h2>El atributo que <em>habla</em></h2>
+    <p class="proposito">
+      La clase 20 usó la clave foránea como lo que es: una columna. Esta clase le añade un
+      <strong>atributo</strong> con el mismo nombre y otra intención: el que te deja recorrer la
+      relación como si los objetos estuvieran unidos de verdad.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: los dos modelos con la relación declarada</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · Las dos cosas que tiene el modelo</h3>
+
+  <p class="primer-párrafo">
+    El modelo de <code>Libro</code> sigue teniendo su columna <code>editorial_id</code> —esa es la
+    que se guarda en la base de datos— y además gana un atributo <code>editorial</code>, que es la
+    que te permite trabajar con <strong>objetos</strong>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la columna y el atributo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">Editorial</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(default=<span class="tk-cls">None</span>, primary_key=<span class="tk-kw">True</span>)
+    nombre: <span class="tk-cls">str</span> = <span class="tk-fn">Field</span>(index=<span class="tk-kw">True</span>)
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">Libro</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(default=<span class="tk-cls">None</span>, primary_key=<span class="tk-kw">True</span>)
+    titulo: <span class="tk-cls">str</span> = <span class="tk-fn">Field</span>(index=<span class="tk-kw">True</span>)
+    anio: <span class="tk-cls">int</span>
+
+    <span class="tk-cm"># La COLUMNA: lo que se guarda en la tabla.</span>
+    editorial_id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(default=<span class="tk-cls">None</span>, foreign_key=<span class="tk-str">"editorial.id"</span>)
+
+    <span class="tk-cm"># El ATRIBUTO: lo que te permite recorrer la relación.</span>
+    editorial: <span class="tk-cls">Editorial</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Relationship</span>(back_populates=<span class="tk-str">"libros"</span>)</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — las dos cosas se complementan</span>
+    <p>
+      No se sustituyen: <code>editorial_id</code> es lo que se <strong>guarda</strong>,
+      <code>editorial</code> es lo que se <strong>usa</strong>. El ORM mantiene las dos en
+      coherencia: si le das un objeto editorial, escribe su <code>id</code> en la columna; si lees
+      la columna, te da el objeto.
+    </p>
+    <p>
+      Por eso en la tabla solo hay <strong>una</strong> columna nueva. La relación no ocupa sitio
+      en la base de datos: ocupa una línea en el modelo.
+    </p>
+  </div>
+
+  <h3>1.2 · Crear con la relación, sin tocar la columna</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — crear pasando el objeto</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>planeta = <span class="tk-cls">Editorial</span>(nombre=<span class="tk-str">"Planeta"</span>)
+session.<span class="tk-fn">add</span>(planeta)
+session.<span class="tk-fn">commit</span>()
+
+<span class="tk-cm"># Se pasa el objeto, no el id. El ORM escribe el id en la columna.</span>
+amor = <span class="tk-cls">Libro</span>(titulo=<span class="tk-str">"El amor en los tiempos del cólera"</span>, anio=<span class="tk-num">1985</span>, editorial=planeta)
+session.<span class="tk-fn">add</span>(amor)
+session.<span class="tk-fn">commit</span>()
+session.<span class="tk-fn">refresh</span>(amor)
+
+<span class="tk-fn">print</span>(amor.editorial.nombre)   <span class="tk-cm"># Planeta</span></code></pre>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — por qué esto es mejor que el <code>id</code> a mano</span>
+    <p>
+      Fíjate en lo que desaparece: el <code>planeta.id</code> ya no aparece en la línea de
+      creación. ¿Y si el modelo del ORM lo escribiera <strong>mal</strong>? No puedes: el
+      <code>id</code> lo pone la base de datos, y el ORM lo lee. Con el <code>id</code> a mano
+      dependías de acordarte de hacer el <code>commit</code> en el momento exacto.
+    </p>
+  </div>
+
+  <h3>1.3 · La anotación de tipo: la flecha hacia adelante</h3>
+
+  <p>
+    Hay un detalle en el modelo de <code>Editorial</code> que parece un error y no lo es:
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la referencia hacia adelante</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">Editorial</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(default=<span class="tk-cls">None</span>, primary_key=<span class="tk-kw">True</span>)
+    nombre: <span class="tk-cls">str</span> = <span class="tk-fn">Field</span>(index=<span class="tk-kw">True</span>)
+
+    <span class="tk-cm"># "Libro" entre comillas: la clase todavía no existe aquí.</span>
+    libros: list[<span class="tk-str">"Libro"</span>] = <span class="tk-fn">Relationship</span>(back_populates=<span class="tk-str">"editorial"</span>)</code></pre>
+  </div>
+
+  <p>
+    Las comillas no son un descuido: son la forma que tiene Python de decir «esta clase aún no
+    está definida, pero lo estará». Sin ellas, Python intentaría resolver <code>Libro</code> al
+    llegar a esa línea y fallaría, porque <code>Libro</code> está <em>debajo</em> en el archivo.
+    Con ellas, la referencia se resuelve más tarde, cuando ya existen las dos clases.
+  </p>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la diferencia entre <code>editorial_id</code> y <code>editorial</code>?</p>
+      <button class="opcion" data-op="a">Ninguna: son dos formas de escribir lo mismo</button>
+      <button class="opcion" data-op="b">La primera es la columna que se guarda; la segunda, el atributo con el que recorres la relación</button>
+      <button class="opcion" data-op="c">La primera es opcional; la segunda, obligatoria</button>
+      <button class="opcion" data-op="d">La primera solo sirve para el <code>JOIN</code>; la segunda, para el <code>INSERT</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Por qué <code>list["Libro"]</code> lleva comillas?</p>
+      <button class="opcion" data-op="a">Porque las listas no se pueden anotar</button>
+      <button class="opcion" data-op="b">Porque <code>Libro</code> es una tabla y las tablas no se anotan</button>
+      <button class="opcion" data-op="c">Para que Python loimporte solo</button>
+      <button class="opcion" data-op="d">Porque la clase se define más abajo: la referencia se resuelve más tarde</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> Al crear <code>Libro(editorial=planeta)</code>, ¿qué ocurre?</p>
+      <button class="opcion" data-op="a">El ORM escribe el <code>id</code> de la editorial en la columna <code>editorial_id</code></button>
+      <button class="opcion" data-op="b">Se crea una segunda editorial</button>
+      <button class="opcion" data-op="c">La columna <code>editorial_id</code> se queda vacía</button>
+      <button class="opcion" data-op="d">Solo funciona con PostgreSQL</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Dónde queda la relación en la base de datos?</p>
+      <button class="opcion" data-op="a">En una tabla nueva que crea el ORM</button>
+      <button class="opcion" data-op="b">En el atributo <code>editorial</code></button>
+      <button class="opcion" data-op="c">En la columna <code>editorial_id</code>, que sigue siendo la única que se guarda</button>
+      <button class="opcion" data-op="d">En ninguna parte: la relación es solo del modelo</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: el espejo →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 2 ============ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · Las dos caras</div>
+    <h2>El espejo: <em>back_populates</em></h2>
+    <p class="proposito">
+      Una relación no tiene un solo sentido. Si un libro sabe su editorial, la editorial debería
+      saber sus libros. <code>back_populates</code> es la línea que convierte dos atributos sueltos
+      en <strong>un enlace de ida y vuelta</strong>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: el espejo funcionando en las dos direcciones</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · Los dos lados de la misma puerta</h3>
+
+  <p class="primer-párrafo">
+    Sin <code>back_populates</code>, cada relación va en un solo sentido: el libro sabe su
+    editorial, pero la editorial no sabe sus libros. Con él, cada lado nombra al otro.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — los dos lados, nombrándose</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">Editorial</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    ...
+    <span class="tk-cm"># "libros" es el nombre del atributo del OTRO lado.</span>
+    libros: list[<span class="tk-str">"Libro"</span>] = <span class="tk-fn">Relationship</span>(back_populates=<span class="tk-str">"editorial"</span>)
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">Libro</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    ...
+    <span class="tk-cm"># "editorial" es el nombre del atributo del OTRO lado.</span>
+    editorial: <span class="tk-cls">Editorial</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Relationship</span>(back_populates=<span class="tk-str">"libros"</span>)</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — el nombre es el del otro lado</span>
+    <p>
+      En <code>Editorial</code>, <code>back_populates="editorial"</code>: «el atributo que me
+      corresponde en el otro lado se llama <code>editorial</code>». En <code>Libro</code>,
+      <code>back_populates="libros"</code>: «el mío se llama <code>libros</code>». Si los dos
+      nombres no coinciden, SQLModel avisa al arrancar con un error que dice exactamente eso.
+    </p>
+  </div>
+
+  <h3>2.2 · El espejo, en movimiento</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — mover un libro actualiza las dos caras</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+    planeta = session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Editorial</span>).<span class="tk-fn">where</span>(<span class="tk-cls">Editorial</span>.nombre == <span class="tk-str">"Planeta"</span>)).<span class="tk-fn">one</span>()
+    viento = session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Libro</span>).<span class="tk-fn">where</span>(<span class="tk-cls">Libro</span>.titulo == <span class="tk-str">"La sombra del viento"</span>)).<span class="tk-fn">one</span>()
+
+    <span class="tk-cm"># Una sola línea: el libro pasa a Planeta.</span>
+    viento.editorial = planeta
+    session.<span class="tk-fn">add</span>(viento)
+    session.<span class="tk-fn">commit</span>()
+    session.<span class="tk-fn">refresh</span>(viento)
+
+    <span class="tk-fn">print</span>(viento.editorial.nombre)
+    <span class="tk-fn">print</span>([x.titulo <span class="tk-kw">for</span> x <span class="tk-kw">in</span> planeta.libros])</code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — las dos caras, después de mover un libro</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-salida">== UPDATE de la relación ==</div>
+      <div class="consola-salida">  La sombra del viento -&gt; Planeta</div>
+      <div class="consola-salida">  planeta.libros = ['El amor en los tiempos del cólera', 'Cien años de soledad', 'La sombra del viento']</div>
+      <div class="consola-salida">  oceano.libros  = []</div>
+    </div>
+  </div>
+
+  <p>
+    Eso es el espejo: una sola línea de código, y <strong>las dos listas se actualizan</strong>.
+    En la clase 20, para mover un libro tenías que acordarte de que la editorial vieja lo soltaba.
+    Aquí no hay nada que recordar: el ORM mantiene la coherencia porque sabe que son dos caras
+    de la misma puerta.
+  </p>
+
+  <div class="tablero" data-tablero>
+    <div class="tablero-cabecera">
+      <span class="etiqueta">Laboratorio</span>
+      <h4>El espejo, a la vista</h4>
+      <p>
+        Mueve un libro de editorial y observa las dos caras: la del libro y la de la editorial.
+        También puedes cortar el enlace y ver que el libro no desaparece.
+      </p>
+    </div>
+    <div class="tablero-cuerpo">
+      <div class="tablero-izq" data-tablero-izq></div>
+      <div class="tablero-der" data-tablero-der></div>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el corte también se refleja</span>
+    <p>
+      Cuando <code>libro.editorial</code> se pone a <code>None</code>, el libro sale de
+      <code>editorial.libros</code>. No es que el ORM borre nada: es que la relación era de ida y
+      vuelta, y cortar un lado corta el otro por definición.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué hace <code>back_populates</code>?</p>
+      <button class="opcion" data-op="a">Crea la columna <code>editorial_id</code> en la tabla</button>
+      <button class="opcion" data-op="b">Convierte la relación en obligatoria</button>
+      <button class="opcion" data-op="c">Enlaza los dos atributos para que la relación se pueda recorrer en los dos sentidos</button>
+      <button class="opcion" data-op="d">Borra la editorial cuando se borra el libro</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> En <code>Editorial</code>, <code>back_populates="editorial"</code> significa…</p>
+      <button class="opcion" data-op="a">«el atributo que me corresponde en el otro lado se llama <code>editorial</code>»</button>
+      <button class="opcion" data-op="b">«la columna de la otra tabla se llama <code>editorial</code>»</button>
+      <button class="opcion" data-op="c">«llamo a este método <code>editorial</code>»</button>
+      <button class="opcion" data-op="d">«mi editorial es la que se llama así»</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> Al mover un libro con <code>libro.editorial = otra</code>, ¿qué pasa con la editorial anterior?</p>
+      <button class="opcion" data-op="a">Se borra</button>
+      <button class="opcion" data-op="b">Falla con un error</button>
+      <button class="opcion" data-op="c">Se queda con el libro en su lista</button>
+      <button class="opcion" data-op="d">Pierde el libro de su lista, sin que tengas que hacer nada</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Por qué <code>list["Libro"]</code> necesita comillas?</p>
+      <button class="opcion" data-op="a">Porque el ORM no acepta listas</button>
+      <button class="opcion" data-op="b">Porque la clase se define después: la referencia se resuelve más tarde</button>
+      <button class="opcion" data-op="c">Para que Python la importe automáticamente</button>
+      <button class="opcion" data-op="d">Porque las listas de modelos necesitan un tipo especial</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: El atributo que habla</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: crear, leer y cortar →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 3 ============ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · Las operaciones</div>
+    <h2>Crear, leer y <em>cortar</em> una relación</h2>
+    <p class="proposito">
+      Las cuatro operaciones de la clase 20, pero en el idioma del ORM. La diferencia no está en
+      el código: está en que <strong>ya no teequivocas de dirección</strong>, porque el enlace
+      tiene las dos puntas.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: las cuatro operaciones con objetos</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · Leer: el ORM trae el objeto</h3>
+
+  <p class="primer-párrafo">
+    Con la clase 20, para saber de qué editorial es un libro había que hacer un <code>JOIN</code>
+    y emparejar los resultados. Con el atributo, el ORM <strong>hace la consulta por ti</strong>
+    cuando le pides la editorial.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — leer la relación</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+    editorial = session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Editorial</span>).<span class="tk-fn">where</span>(<span class="tk-cls">Editorial</span>.nombre == <span class="tk-str">"Planeta"</span>)).<span class="tk-fn">one</span>()
+
+    <span class="tk-cm"># Los libros de la editorial: ya no hay que emparejar nada.</span>
+    <span class="tk-fn">print</span>([x.titulo <span class="tk-kw">for</span> x <span class="tk-kw">in</span> editorial.libros])</code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — leer la relación</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-salida">== LECTURA por relación ==</div>
+      <div class="consola-salida">  libros de Planeta: ['El amor en los tiempos del cólera', 'Cien años de soledad']</div>
+    </div>
+  </div>
+
+  <h3>3.2 · Cortar: poner la relación a None</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — cortar la relación</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>viento.editorial = <span class="tk-cls">None</span>
+session.<span class="tk-fn">add</span>(viento)
+session.<span class="tk-fn">commit</span>()
+session.<span class="tk-fn">refresh</span>(viento)
+
+<span class="tk-fn">print</span>(viento.editorial)                        <span class="tk-cm"># None</span>
+<span class="tk-fn">print</span>([x.titulo <span class="tk-kw">for</span> x <span class="tk-kw">in</span> planeta.libros])</code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — el resultado de cortar</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-salida">== REMOVE de la relación ==</div>
+      <div class="consola-salida">  La sombra del viento -&gt; None</div>
+      <div class="consola-salida">  planeta.libros = ['El amor en los tiempos del cólera', 'Cien años de soledad']</div>
+    </div>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — cortar no es borrar, ni al revés</span>
+    <p>
+      Poner <code>libro.editorial = None</code> deja el libro en la tabla y su
+      <code>editorial_id</code> a nulo. Borrar el libro es <code>session.delete(libro)</code>. Son
+      dos cosas distintas, igual que en la clase 20, pero aquí el ORM se encarga de que no se
+      te olvide de ninguna.
+    </p>
+  </div>
+
+  <h3>3.3 · Lo que sigue sin resolver</h3>
+
+  <p>
+    Una relación que va y vuelve es cómoda, pero deja una pregunta: si borro una editorial, ¿qué
+    pasa con sus libros? La clave foránea de la clase 20 solo comprueba <strong>al escribir</strong>.
+    No dice nada de lo que ocurre <strong>al borrar</strong>. Y esa es la unidad siguiente.
+  </p>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — dos preguntas, dos respuestas</span>
+    <p>
+      Cuando borras una editorial, puedes decidir que pasa con sus libros de dos maneras:
+    </p>
+    <ul>
+      <li><strong>Que no se pueda borrar</strong> mientras tenga libros (lo restringe: no hay libros sin editorial).</li>
+      <li><strong>Que los libros se queden sin editorial</strong> (lo permite: habrá libros huérfanos, y hay que asumirlos).</li>
+    </ul>
+    <p>Decidirlo es parte del trabajo, no un detalle que se deje para luego.</p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> Al pedir <code>editorial.libros</code>, ¿qué hace el ORM?</p>
+      <button class="opcion" data-op="a">Nada: esa lista está vacía siempre</button>
+      <button class="opcion" data-op="b">La consulta por los libros de esa editorial</button>
+      <button class="opcion" data-op="c">Devuelve todos los libros de la base de datos</button>
+      <button class="opcion" data-op="d">Da error: las listas no se pueden leer</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué hace <code>libro.editorial = None</code>?</p>
+      <button class="opcion" data-op="a">Borra el libro</button>
+      <button class="opcion" data-op="b">Borra la editorial</button>
+      <button class="opcion" data-op="c">Deja el libro como estaba</button>
+      <button class="opcion" data-op="d">Corta el enlace: el libro sigue existiendo, sin editorial</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cuál es la pregunta que esta unidad deja abierta?</p>
+      <button class="opcion" data-op="a">Qué pasa con los libros cuando se borra su editorial</button>
+      <button class="opcion" data-op="b">Cómo se crea una tabla</button>
+      <button class="opcion" data-op="c">Cómo se escribe un <code>JOIN</code> a mano</button>
+      <button class="opcion" data-op="d">Para qué sirve un <code>index</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Qué diferencia real hay con la clase 20?</p>
+      <button class="opcion" data-op="a">Ninguna: es el mismo código con otros nombres</button>
+      <button class="opcion" data-op="b">Que ahora las consultas son más rápidas</button>
+      <button class="opcion" data-op="c">Que ya no hay que acordarse de la dirección del enlace ni de actualizar el otro lado</button>
+      <button class="opcion" data-op="d">Que ya no hace falta la clave foránea</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: El espejo: back_populates</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 4 ============ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de lectura</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija por
+      escrito lo que has leído hasta ahora.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora.
+    </p>
+    <div class="reglas">
+      <div class="regla"><h4>Regla 20-20-20</h4><p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p></div>
+      <div class="regla"><h4>Movimiento</h4><p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p></div>
+      <div class="regla"><h4>Hidratación</h4><p>Un vaso de agua. La lectura densa agota más de lo que parece.</p></div>
+      <div class="regla"><h4>Bitácora</h4><p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p></div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora de lectura (5 minutos)</h3>
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+  <ol>
+    <li><strong>En una frase:</strong> ¿qué es un atributo <code>Relationship()</code> y para qué sirve?</li>
+    <li><strong>En una frase:</strong> ¿qué gana la relación al ser de ida y vuelta?</li>
+    <li><strong>En una frase:</strong> ¿qué diferencia hay entre cortar una relación y borrar un registro?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+  <p>Estas siete palabras aparecerán en el taller final. Léelas ahora.</p>
+  <div class="definiciones">
+    <div><dt>Relación</dt><dd>El vínculo entre dos tablas, que el ORM representa con un atributo <code>Relationship()</code>.</dd></div>
+    <div><dt><code>back_populates</code></dt><dd>El nombre del atributo del otro lado, que convierte la relación en bidireccional.</dd></div>
+    <div><dt>Bidireccional</dt><dd>Una relación que se puede recorrer en los dos sentidos: del libro a la editorial y de la editorial a sus libros.</dd></div>
+    <div><dt>Referencia hacia adelante</dt><dd>Escribir <code>list["Libro"]</code> con comillas para poder nombrar una clase que aún no está definida.</dd></div>
+    <div><dt>Cargar en memoria</dt><dd>Lo que hace el ORM al pedir un atributo que es una relación: consulta la otra tabla por ti.</dd></div>
+    <div><dt>Cascada</dt><dd>La regla que decide qué pasa con los hijos cuando se borra el padre.</dd></div>
+    <div><dt>Huérfano</dt><dd>Una fila que ya no apunta a nadie: el <code>editorial_id</code> quedó vacío o apunta a algo que no existe.</dd></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: Crear, leer y cortar una relación</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Ejercicio práctico →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 5 ============ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · Taller de aplicación</div>
+    <h2>Ejercicio 5.1 · <em>Las cuatro operaciones con el ORM</em></h2>
+    <p class="proposito">
+      Las mismas cuatro de la clase 20, reescritas en el idioma de los objetos. En 35 minutos
+     vas a ver por qué el código es más corto y, sobre todo, por qué ya no puede quedar
+      desincronizado.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: el modelo relacionado funcionando</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>El enlace que se mantiene solo</h3>
+    </div>
+
+    <p>
+      Reescribe las cuatro operaciones de la clase 20 usando el atributo de relación, y comprueba
+      que las dos caras quedan siempre coherentes.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr><td><strong>Entrada</strong></td><td>Los dos modelos con <code>Relationship()</code> y <code>back_populates</code></td></tr>
+          <tr><td><strong>Salida</strong></td><td>Cuatro funciones que operan sobre objetos, no sobre columnas</td></tr>
+          <tr><td><strong>Restricción</strong></td><td>Ninguna función escribe <code>editorial_id</code> a mano</td></tr>
+          <tr><td><strong>Restricción</strong></td><td>Después de cada operación, las dos caras se comprueban juntas</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li><strong><code>crear()</code></strong>: dos editoriales y tres libros, pasando los <strong>objetos</strong> editorial, no el id.</li>
+      <li><strong><code>leer_desde_la_editorial()</code></strong>: los libros de una editorial, sin <code>JOIN</code>.</li>
+      <li><strong><code>mover()</code></strong>: cambia <code>libro.editorial</code> y comprueba las dos listas.</li>
+      <li><strong><code>cortar()</code></strong>: pone <code>libro.editorial</code> a <code>None</code> y comprueba que el libro sigue.</li>
+      <li><strong>La comparación</strong>: el código de la clase 20 y el de esta, línea a línea.</li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-5-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-5-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La diferencia se ve en cuanto comparas las dos versiones: la de la clase 20 tenía que
+        acordarse de la columna <code>editorial_id</code> y de que la editorial vieja soltara al
+        libro. Esta no se acuerda de nada.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>las cuatro operaciones con el ORM</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">crear</span>() -&gt; <span class="tk-cls">None</span>:
+    <span class="tk-str">"""1. CREAR: se pasa el objeto editorial, no su id."""</span>
+    <span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+        planeta = <span class="tk-cls">Editorial</span>(nombre=<span class="tk-str">"Planeta"</span>)
+        oceano = <span class="tk-cls">Editorial</span>(nombre=<span class="tk-str">"Océano"</span>)
+        session.<span class="tk-fn">add</span>(planeta)
+        session.<span class="tk-fn">add</span>(oceano)
+        session.<span class="tk-fn">commit</span>()
+
+        libros = [
+            <span class="tk-cls">Libro</span>(titulo=<span class="tk-str">"El amor en los tiempos del cólera"</span>, anio=<span class="tk-num">1985</span>, editorial=planeta),
+            <span class="tk-cls">Libro</span>(titulo=<span class="tk-str">"Cien años de soledad"</span>, anio=<span class="tk-num">1967</span>, editorial=planeta),
+            <span class="tk-cls">Libro</span>(titulo=<span class="tk-str">"La sombra del viento"</span>, anio=<span class="tk-num">2001</span>, editorial=oceano),
+        ]
+        <span class="tk-kw">for</span> libro <span class="tk-kw">in</span> libros:
+            session.<span class="tk-fn">add</span>(libro)
+        session.<span class="tk-fn">commit</span>()
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">leer_desde_la_editorial</span>(nombre: <span class="tk-cls">str</span>) -&gt; <span class="tk-cls">None</span>:
+    <span class="tk-str">"""2. LEER: el ORM carga la relación por nosotros."""</span>
+    <span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+        editorial = session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Editorial</span>).<span class="tk-fn">where</span>(<span class="tk-cls">Editorial</span>.nombre == nombre)).<span class="tk-fn">one</span>()
+        <span class="tk-fn">print</span>([x.titulo <span class="tk-kw">for</span> x <span class="tk-kw">in</span> editorial.libros])
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">mover</span>(titulo: <span class="tk-cls">str</span>, editorial_nombre: <span class="tk-cls">str</span>) -&gt; <span class="tk-cls">None</span>:
+    <span class="tk-str">"""3. MOVER: una línea, y las dos caras se actualizan."""</span>
+    <span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+        libro = session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Libro</span>).<span class="tk-fn">where</span>(<span class="tk-cls">Libro</span>.titulo == titulo)).<span class="tk-fn">one</span>()
+        editorial = session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Editorial</span>).<span class="tk-fn">where</span>(<span class="tk-cls">Editorial</span>.nombre == editorial_nombre)).<span class="tk-fn">one</span>()
+
+        libro.editorial = editorial
+        session.<span class="tk-fn">add</span>(libro)
+        session.<span class="tk-fn">commit</span>()
+        session.<span class="tk-fn">refresh</span>(libro)
+        <span class="tk-fn">print</span>(<span class="tk-str">f"{libro.titulo} -&gt; {libro.editorial.nombre}"</span>)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">cortar</span>(titulo: <span class="tk-cls">str</span>) -&gt; <span class="tk-cls">None</span>:
+    <span class="tk-str">"""4. CORTAR: el libro sigue, pero ya no cuelga de ninguna editorial."""</span>
+    <span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+        libro = session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Libro</span>).<span class="tk-fn">where</span>(<span class="tk-cls">Libro</span>.titulo == titulo)).<span class="tk-fn">one</span>()
+        libro.editorial = <span class="tk-cls">None</span>
+        session.<span class="tk-fn">add</span>(libro)
+        session.<span class="tk-fn">commit</span>()
+        session.<span class="tk-fn">refresh</span>(libro)
+        <span class="tk-fn">print</span>(<span class="tk-str">f"{libro.titulo} -&gt; {libro.editorial}"</span>)</code></pre>
+  </div>
+
+    <p>
+      Fíjate en que <code>mover</code> y <code>cortar</code> ya no tocan ninguna columna. El ORM
+      escribe el <code>editorial_id</code> por su cuenta a partir de la relación que le diste.
+    </p>
+  </div>
+    </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — la comparación que pide el ejercicio</span>
+    <p>
+      La versión de la clase 20 tenía <strong>cinco</strong> responsabilidades repartidas entre
+      tú y la base de datos: elegir la columna, acertar con el orden de los <code>commit()</code>,
+      emparejar los resultados del <code>JOIN</code>, acordarte de soltar el libro de la
+      editorial vieja, y no dejar libros con ids que ya no existen. La de hoy tiene <strong>una</strong>:
+      escribir qué editorial es. El resto lo hace el ORM, que para eso conoce el esquema.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué línea delata que el ORM está escribiendo la columna por ti?</p>
+      <button class="opcion" data-op="a"><code>libro.editorial_id = editorial.id</code></button>
+      <button class="opcion" data-op="b"><code>Libro(..., editorial=planeta)</code></button>
+      <button class="opcion" data-op="c"><code>session.commit()</code></button>
+      <button class="opcion" data-op="d"><code>session.refresh(libro)</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué se pierde al usar la relación en vez del <code>JOIN</code> manual?</p>
+      <button class="opcion" data-op="a">La posibilidad de traer las dos tablas</button>
+      <button class="opcion" data-op="b">El control sobre lo que se devuelve</button>
+      <button class="opcion" data-op="c">La clave foránea</button>
+      <button class="opcion" data-op="d">Nada importante: a cambio, el enlace ya no puede quedar desincronizado</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> Al leer <code>editorial.libros</code>, ¿qué hace el ORM por debajo?</p>
+      <button class="opcion" data-op="a">Una consulta a la tabla <code>libro</code> filtrando por la clave foránea</button>
+      <button class="opcion" data-op="b">Lee la tabla entera en memoria</button>
+      <button class="opcion" data-op="c">No hace nada: la lista siempre está vacía</button>
+      <button class="opcion" data-op="d">Abre una segunda sesión</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Por qué la columna <code>editorial_id</code> sigue en el modelo si ya hay un atributo <code>editorial</code>?</p>
+      <button class="opcion" data-op="a">Porque es una constante de SQLModel</button>
+      <button class="opcion" data-op="b">Porque <code>Relationship</code> no funciona sin ella</button>
+      <button class="opcion" data-op="c">Porque la columna es la que se guarda; el atributo es la que se usa</button>
+      <button class="opcion" data-op="d">Para que el <code>JOIN</code> manual siga funcionando</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: el borrado en cascada →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 6 ============ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · Taller de aplicación</div>
+    <h2>Ejercicio 6.1 · <em>El borrado en cascada</em></h2>
+    <p class="proposito">
+      La pregunta que la unidad 3 dejó abierta: si borro una editorial, ¿qué pasa con sus
+      libros? Hay dos respuestas válidas y <strong>hay que elegir una</strong>. En 35 minutos la
+      implementas y descubres por qué la base de datos no puede decidirlo por ti.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: la regla del borrado, decidida y probada</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>Decidir qué pasa al borrar</h3>
+    </div>
+
+    <p>
+      Implementa las dos reglas posibles de borrado y decide cuál usa tu biblioteca. No es un
+      ejercicio de escribir código: es de <strong>elegir una regla y sostenerla</strong>.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr><td><strong>Entrada</strong></td><td>Una editorial con dos libros, y el intento de borrarla</td></tr>
+          <tr><td><strong>Salida</strong></td><td>Una de las dos reglas, aplicada y comprobada</td></tr>
+          <tr><td><strong>Restricción</strong></td><td>La regla se escribe en el <strong>modelo</strong>, no en la ruta</td></tr>
+          <tr><td><strong>Restricción</strong></td><td>Con SQLite, las claves foráneas tienen que estar activadas</td></tr>
+          <tr><td><strong>Restricción</strong></td><td>El borrado se hace con <code>session.delete()</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li><strong>Regla A — no se puede borrar</strong>: la editorial con libros no se borra. (Con la base de datos: <code>ondelete="RESTRICT"</code>.)</li>
+      <li><strong>Regla B — los libros se quedan sin editorial</strong>: la editorial se borra y sus libros quedan con la editorial a nulo. (Con la base de datos: <code>ondelete="SET NULL"</code>.)</li>
+      <li><strong>El modelo</strong> con la regla elegida, y el <code>passive_deletes="all"</code> que le corresponde.</li>
+      <li><strong>La prueba</strong>: borrar la editorial y comprobar qué quedó en la tabla de libros.</li>
+      <li><strong>Un párrafo</strong>: por qué elegiste esa regla y qué tendrías que revisar en la interfaz si hubieras elegido la otra.</li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-6-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-6-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La regla B es la más cómoda para empezar, y la que se usa en la mayoría de los sistemas
+        reales: un libro puede quedarse sin editorial durante un tiempo, y la aplicación lo
+        refleja con un <code>null</code>.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>el modelo con la regla B</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">Editorial</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(default=<span class="tk-cls">None</span>, primary_key=<span class="tk-kw">True</span>)
+    nombre: <span class="tk-cls">str</span> = <span class="tk-fn">Field</span>(index=<span class="tk-kw">True</span>)
+
+    <span class="tk-cm"># "all": que la base de datos borre, y no el ORM carga uno a uno.</span>
+    libros: list[<span class="tk-str">"Libro"</span>] = <span class="tk-fn">Relationship</span>(back_populates=<span class="tk-str">"editorial"</span>, passive_deletes=<span class="tk-str">"all"</span>)
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">Libro</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    ...
+    <span class="tk-cm"># Al borrar la editorial, la columna del libro se pone a nulo.</span>
+    editorial_id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(
+        default=<span class="tk-cls">None</span>, foreign_key=<span class="tk-str">"editorial.id"</span>, ondelete=<span class="tk-str">"SET NULL"</span>
+    )
+    editorial: <span class="tk-cls">Editorial</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Relationship</span>(back_populates=<span class="tk-str">"libros"</span>)</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>la prueba del borrado</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+    planeta = session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Editorial</span>).<span class="tk-fn">where</span>(<span class="tk-cls">Editorial</span>.nombre == <span class="tk-str">"Planeta"</span>)).<span class="tk-fn">one</span>()
+    libros = session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Libro</span>)).<span class="tk-fn">all</span>()
+
+    session.<span class="tk-fn">delete</span>(planeta)
+    session.<span class="tk-fn">commit</span>()
+
+    <span class="tk-kw">for</span> libro <span class="tk-kw">in</span> libros:
+        session.<span class="tk-fn">refresh</span>(libro)
+        <span class="tk-fn">print</span>(<span class="tk-str">f"{libro.titulo}  editorial_id={libro.editorial_id}  editorial={libro.editorial}"</span>)
+
+    <span class="tk-fn">print</span>(<span class="tk-str">"libros que quedan:"</span>, <span class="tk-fn">len</span>(session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Libro</span>)).<span class="tk-fn">all</span>()))</code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — el resultado real de borrar la editorial</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-salida">== antes de borrar la editorial ==</div>
+      <div class="consola-salida">  planeta.libros = ['Cien años de soledad', 'El amor en los tiempos del cólera']</div>
+      <div class="consola-salida">== al borrar la editorial, los libros quedan, pero sin editorial ==</div>
+      <div class="consola-salida">  Cien años de soledad  editorial_id=None  editorial=None</div>
+      <div class="consola-salida">  El amor en los tiempos del cólera  editorial_id=None  editorial=None</div>
+      <div class="consola-salida">  libros que quedan: 2</div>
+    </div>
+  </div>
+
+    <div class="recuadro advertencia">
+      <span class="rotulo">Advertencia — sin el <code>PRAGMA</code>, esto no pasa</span>
+      <p>
+        La salida de arriba es con las claves foráneas <strong>activadas</strong>. Si ejecutas el
+        mismo programa sin el <code>PRAGMA foreign_keys=ON</code> de la unidad 1, la editorial se
+        borra y los libros se quedan con un <code>editorial_id</code> que ya no apunta a nadie:
+        el <strong>libro fantasma</strong>. La base de datos no avisa, porque en SQLite no le
+        importa. Por eso el <code>PRAGMA</code> no es un detalle: es la diferencia entre una
+        regla y una casualidad.
+      </p>
+    </div>
+  </div>
+    </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — qué hace <code>passive_deletes="all"</code></span>
+    <p>
+      Cuando borras una editorial, el ORM tiene dos opciones: cargar todos sus libros en
+      memoria y ponerles la editorial a nulo <strong>uno por uno</strong> (lo que se llama una
+      cascada en Python), o <strong>dejar que lo haga la base de datos</strong> con su regla
+      <code>ondelete</code>. Con <code>passive_deletes="all"</code> le dices al ORM que no se
+      encargue: que lo haga la base de datos, que lo hace en una sola operación y no se equivoca.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Qué significa <code>ondelete="SET NULL"</code>?</p>
+      <button class="opcion" data-op="a">Al borrar la editorial, la columna de los libros se pone a nulo</button>
+      <button class="opcion" data-op="b">Al borrar la editorial, se borran también sus libros</button>
+      <button class="opcion" data-op="c">Que no se puede borrar una editorial con libros</button>
+      <button class="opcion" data-op="d">Que el borrado se hace más rápido</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Qué hace <code>passive_deletes="all"</code>?</p>
+      <button class="opcion" data-op="a">Que el ORM borre los libros en memoria</button>
+      <button class="opcion" data-op="b">Que sea la base de datos la que aplique la regla, y no el ORM</button>
+      <button class="opcion" data-op="c">Que el borrado no se ejecute</button>
+      <button class="opcion" data-op="d">Que se ignoren las claves foráneas</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> Sin el <code>PRAGMA foreign_keys=ON</code> en SQLite, al borrar una editorial…</p>
+      <button class="opcion" data-op="a">Falla con un error de integridad</button>
+      <button class="opcion" data-op="b">Se borran también sus libros</button>
+      <button class="opcion" data-op="c">La operación se cancela</button>
+      <button class="opcion" data-op="d">Los libros quedan con un <code>editorial_id</code> que ya no existe: libros fantasma</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Por qué hay que <strong>elegir</strong> una regla y no dejar que la base de datos la decida?</p>
+      <button class="opcion" data-op="a">Porque la base de datos no sabe de reglas</button>
+      <button class="opcion" data-op="b">Porque el ORM no lo permite</button>
+      <button class="opcion" data-op="c">Porque cada regla tiene consecuencias en la aplicación, y esa decisión es del proyecto</button>
+      <button class="opcion" data-op="d">Porque con PostgreSQL no hay cascada</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: Las cuatro operaciones con el ORM</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller integrador →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 7 ============ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>Taller · <em>El modelo que se relaciona</em></h2>
+    <p class="proposito">
+      Las piezas están listas: el atributo, el espejo, las cuatro operaciones y la regla del
+      borrado. Ahora se montan en un proyecto completo y se escribe el taller.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller de desarrollo</b></span>
+      <span>🧭 <b>Producto: el modelo relacionado, probado y escrito</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Taller</span>
+      <h3>La biblioteca que se mantiene sola</h3>
+    </div>
+
+    <p>
+      Convierte tu proyecto de la clase 20 en un proyecto con relaciones del ORM, con la regla de
+      borrado que hayas elegido y la API que devuelve la relación en el contrato.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr><td><strong>Modelos</strong></td><td><code>Editorial</code> y <code>Libro</code> con <code>Relationship()</code> y <code>back_populates</code></td></tr>
+          <tr><td><strong>Rutas</strong></td><td>Listar y leer un libro, con su editorial en la respuesta</td></tr>
+          <tr><td><strong>Regla de borrado</strong></td><td>La que hayas decidido, escrita en el modelo</td></tr>
+          <tr><td><strong>Comprobación</strong></td><td>Las dos caras de la relación se mueven juntas, siempre</td></tr>
+          <tr><td><strong>Restricción</strong></td><td>Ninguna función escribe <code>editorial_id</code> a mano</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong>El proyecto</strong> con las relaciones y la regla de borrado.</li>
+      <li><strong>Las siete comprobaciones</strong> marcadas una por una.</li>
+      <li><strong>La comparación final</strong> con la clase 20: las mismas tareas, cuánto código y qué errores se pueden cometer.</li>
+      <li><strong>Un párrafo</strong>: qué cambiarías de la interfaz si adoptaras la otra regla de borrado.</li>
+      <li><strong>El commit</strong> con un mensaje que explique el cambio.</li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="taller-solucion">Ver un modelo de respuesta</button>
+
+    <div class="solucion" id="taller-solucion">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La comparación del entregable 3 es lo que demuestra la clase. No es una comparación de
+        líneas: es una comparación de <strong>errores posibles</strong>.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>las siete comprobaciones del taller</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-num">1.</span> Los dos modelos se declaran y las tablas se crean
+<span class="tk-num">2.</span> Se crean dos editoriales y tres libros pasando los objetos
+<span class="tk-num">3.</span> Leer editorial.libros devuelve los libros, sin JOIN escrito a mano
+<span class="tk-num">4.</span> Mover un libro actualiza las dos caras a la vez
+<span class="tk-num">5.</span> Cortar la relación deja el libro existiendo, con la editorial a nulo
+<span class="tk-num">6.</span> La API devuelve el libro con el nombre de su editorial
+<span class="tk-num">7.</span> Al borrar la editorial, se aplica la regla que elegiste</code></pre>
+  </div>
+
+    <blockquote class="recuadro nota">
+      <p>
+        Un párrafo de comparación para este taller puede ser: «Las dos versiones hacen lo mismo,
+        pero la de la clase 20 me obligaba a acordarme de tres cosas que no son evidentes: qué
+        columna apunta a quién, que hay que hacer el <code>commit</code> del padre antes de crear
+        el hijo, y que al mover un libro hay que soltarlo de la editorial vieja. La de hoy
+        elimina las tres, porque el ORM conoce el esquema y mantiene las dos caras en
+        coherencia. Lo que pierdo es el control fino: si algún día quiero una consulta que no
+        encaje en el modelo, tendré que volver al SQL a mano».
+      </p>
+    </blockquote>
+  </div>
+    </div>
+
+  <h3>7.2 · Rúbrica de autoevaluación</h3>
+
+  <p>Puntúa cada criterio de 0 a 2 y revisa los que hayas quedado en 0 o 1.</p>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación de las relaciones del ORM</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>El atributo de relación</td>
+          <td>No hay <code>Relationship()</code>: todo son columnas</td>
+          <td>Hay relación en un lado pero no en el otro</td>
+          <td>Los dos lados, con <code>back_populates</code> coherente</td>
+        </tr>
+        <tr>
+          <td>Crear con objetos</td>
+          <td>Se sigue pasando el <code>id</code> a mano</td>
+          <td>Se pasa el objeto pero con un <code>commit</code> de más</td>
+          <td>Se pasa el objeto y el ORM escribe la columna</td>
+        </tr>
+        <tr>
+          <td>El espejo</td>
+          <td>Mover un libro deja la editorial vieja con el libro en su lista</td>
+          <td>El espejo se actualiza, pero hay que recargar la sesión</td>
+          <td>Las dos caras se actualizan solas</td>
+        </tr>
+        <tr>
+          <td>Leer la relación</td>
+          <td>Tiene que seguir usando el <code>JOIN</code> a mano</td>
+          <td>Usa el atributo pero no lo entiende</td>
+          <td>Lee desde los dos lados sin escribir SQL</td>
+        </tr>
+        <tr>
+          <td>La regla de borrado</td>
+          <td>No hay ninguna regla, y ni se ha pensado</td>
+          <td>Hay una regla, pero no está escrita en el modelo</td>
+          <td>La regla está en el modelo y se ha probado</td>
+        </tr>
+        <tr>
+          <td>Las claves activadas</td>
+          <td>Nunca se comprobó</td>
+          <td>Se activó en un punto y se olvidó en otro</td>
+          <td>Están activadas en todas las conexiones</td>
+        </tr>
+        <tr>
+          <td>El contrato con la relación</td>
+          <td>La API devuelve el <code>editorial_id</code> crudo</td>
+          <td>Devuelve la editorial pero no con la forma declarada</td>
+          <td>El <code>response_model</code> filtra la relación como en la clase 19</td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay nada escrito</td>
+          <td>Describe el qué, no el porqué</td>
+          <td>Compara con la clase 20 y razona la diferencia</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.3 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea"><div class="idea-n">01</div><p>La columna y el atributo son dos caras de lo mismo: una se guarda, la otra se usa.</p></div>
+    <div class="idea"><div class="idea-n">02</div><p><code>back_populates</code> convierte dos atributos en una relación de ida y vuelta: mover un lado mueve el otro.</p></div>
+    <div class="idea"><div class="idea-n">03</div><p>Al pedir un atributo de relación, el ORM hace la consulta por ti: el <code>JOIN</code> ya no se escribe.</p></div>
+    <div class="idea"><div class="idea-n">04</div><p><code>list["Libro"]</code> con comillas es una referencia hacia adelante: la clase se definirá más abajo.</p></div>
+    <div class="idea"><div class="idea-n">05</div><p>Cortar una relación no borra nada: el registro sigue existiendo, solo que ya no apunta a nadie.</p></div>
+    <div class="idea"><div class="idea-n">06</div><p>La clave foránea comprueba al escribir, pero <strong>no decide al borrar</strong>: esa regla la escribes tú.</p></div>
+    <div class="idea"><div class="idea-n">07</div><p>Un ORM no es una caja negra: es la capa que usa el esquema que tú declaraste. Sin esquema, no hay magia.</p></div>
+  </div>
+
+  <h3>7.4 · Puente hacia la próxima clase</h3>
+
+  <p>
+    Ya sabes conectar dos tablas de <strong>una a muchos</strong>. Pero hay relaciones que no
+    caben en ese molde: un libro puede tener <strong>varios autores</strong>, y un autor
+    <strong>varios libros</strong>. Ninguna de las dos columnas puede ser la clave foránea de la
+    otra, porque ninguna es «la principal».
+  </p>
+
+  <p>
+    La solución es una <strong>tercera tabla</strong>: la tabla intermedia. Y con ella llega el
+    último caso: la relación que no solo guarda <em>quién</em> está conectado con <em>quién</em>,
+    sino también <em>cómo</em>.
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de la próxima clase</span>
+    <p>
+      Guarda este proyecto en un repositorio de Git, con un commit por cada unidad: el atributo,
+      el espejo, las cuatro operaciones y la regla de borrado. Cuatro commits con mensajes
+      claros: la clase 16 explica Git en detalle.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 21</h2>
+    <p>
+      Has dado el paso que separa «saber SQL» de «saber ORM»: la relación ha dejado de ser una
+      columna que tú manejas y ha pasado a ser un <strong>atributo que el ORM mantiene</strong>.
+      Con eso, el enlace ya no puede quedar a medias: o las dos caras coinciden, o el programa
+      falla y te avisa.
+    </p>
+    <p>
+      Y has dejado decididos dos puntos que la mayoría de los proyectos de verdad se saltan: qué
+      pasa con los hijos al borrar al padre, y cómo se leen las relaciones sin escribir SQL.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: El borrado en cascada</button>
+    <button class="btn-siguiente" data-ir="0">✓ Marcar el taller como terminado y volver al inicio</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 21 · Relaciones en el ORM: Relationship y back_populates</span>
+  <p class="pie-sub">El atributo que habla · El espejo de back_populates · Crear, leer y cortar · El borrado en cascada</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

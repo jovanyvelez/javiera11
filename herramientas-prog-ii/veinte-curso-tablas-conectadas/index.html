@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 20 · Tablas conectadas: la clave foránea y el JOIN</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 20 · <em>Tablas conectadas: la clave foránea y el JOIN</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura y programa</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">La clave foránea</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">Crear filas conectadas</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Leer lo conectado: el JOIN</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Ejercicio: las cuatro operaciones</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Ejercicio: el JOIN en la API</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: la biblioteca conectada</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> una biblioteca con dos tablas que se hablan, y las cuatro operaciones sobre el enlace.</p>
+    </div>
+  </aside>
+
+  <main class="columna">
+
+<!-- ============ UNIDAD 0 ============ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>Dos tablas que <em>se hablan</em></h2>
+    <p class="proposito">
+      Hasta ahora has trabajado con una tabla sola: <code>producto</code>. Hoy metes la segunda. Una
+      biblioteca tiene <strong>editoriales</strong> y tiene <strong>libros</strong>, y cada libro
+      pertenece a una editorial. Esa pertenencia —la clave foránea— es lo que convierte dos
+      listas en <strong>una base de datos</strong>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: las dos tablas y su enlace</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · La biblioteca del colegio</h3>
+
+  <p class="primer-párrafo">
+    La clase 9 te dio un catálogo; la 10 te dio un formulario para dar de alta libros. Hoy esos
+    libros van a tener <strong>editorial</strong>, y las editoriales van a tener los suyos. Dos
+    tablas, y un enlace entre ellas.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las dos tablas de la biblioteca</caption>
+      <thead>
+        <tr><th>Tabla</th><th>Columnas</th><th>Una fila es…</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>editorial</code></td>
+          <td><code>id</code>, <code>nombre</code></td>
+          <td>una editorial: «Planeta», «Océano»</td>
+        </tr>
+        <tr>
+          <td><code>libro</code></td>
+          <td><code>id</code>, <code>titulo</code>, <code>anio</code>, <code>editorial_id</code></td>
+          <td>un libro, y <strong>a qué editorial pertenece</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — esto ya lo viste, en otro lenguaje</span>
+    <p>
+      En el curso de Bases de Datos, la clase 4 («Modelo Entidad-Relación») te enseñó a dibujar
+      exactamente esto: una editorial, muchos libros, y una <em>cardinalidad</em> que dice de
+      muchos a uno. Hoy el diagrama se vuelve <strong>código</strong>: la relación se escribe
+      como una columna más, y el <code>JOIN</code> es el <code>SELECT</code> que cruza las dos
+      tablas.
+    </p>
+  </div>
+
+  <h3>0.2 · El problema que resuelve el enlace</h3>
+
+  <p>
+    Sin clave foránea, el <code>editorial_id</code> de cada libro sería un número suelto. Y un
+    número suelto se equivoca. Hoy laeditorial 3 es «Planeta»; mañana será «Océano» porque
+    insertaste una editorial en medio, y todos los libros que apuntaban al 3RBON suddenly
+    pertenecen a otra casa. En una biblioteca real, eso es un desastre silencioso.
+  </p>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el error que la clave foránea evita</span>
+    <p>
+      Con la clave foránea, la base de datos <strong>se niega</strong> a guardar un
+      <code>editorial_id</code> que no existe en la tabla <code>editorial</code>. No es una
+      convención: es una regla que la base de datos hace cumplir. Por eso el orden de la clase
+      8 («conectar» antes de «usar») importa: primero las editoriales, después los libros.
+    </p>
+  </div>
+
+  <h3>0.3 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cuadro de unidades, tiempos y productos esperados</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura: dos tablas que se hablan</td><td>20 min</td><td>El mapa de la clase</td></tr>
+        <tr><td><strong>01</strong></td><td>La clave foránea</td><td>30 min</td><td>Un modelo con <code>foreign_key</code> y su esquema</td></tr>
+        <tr><td><strong>02</strong></td><td>Crear filas conectadas</td><td>30 min</td><td>Padre e hijo guardados en el orden correcto</td></tr>
+        <tr><td><strong>03</strong></td><td>Leer lo conectado: el JOIN (+ laboratorio)</td><td>30 min</td><td>El tablero de relaciones, funcionando</td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Ejercicio 5.1 · Las cuatro operaciones sobre el enlace</td><td>35 min</td><td>Crear, leer, cambiar y desconectar</td></tr>
+        <tr><td><strong>06</strong></td><td>Ejercicio 6.1 · El JOIN en la API</td><td>35 min</td><td>La ruta que devuelve libros con su editorial</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller integrador</td><td>45 min</td><td>La biblioteca conectada, probada</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.4 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito estas tres preguntas:</p>
+
+  <ol>
+    <li>¿Qué es una clave foránea y qué problema concreto resuelve?</li>
+    <li>Si un libro apunta a la editorial 5 y mañana la editorial 5 es otra, ¿qué pasa con ese libro?</li>
+    <li>¿Por qué hay que guardar la editorial <em>antes</em> que el libro?</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: la clave foránea →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 1 ============ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · La pieza nueva</div>
+    <h2>La <em>clave foránea</em></h2>
+    <p class="proposito">
+      Una clave foránea no es un invento de SQLModel: es una <strong>columna normal</strong> que
+      además dice «este valor tiene que existir en aquella otra tabla». Declararla es una línea;
+      entender lo que implica es la unidad entera.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: el esquema con su clave foránea</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · Qué es una clave foránea</h3>
+
+  <p class="primer-párrafo">
+    Es una columna cuyo valor <strong>no puede ser un valor inventado</strong>: o está vacía, o
+    es el <code>id</code> de una fila que existe en la otra tabla. La regla la pone la base de
+    datos, no tu código.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — las dos tablas y su enlace</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">Editorial</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(default=<span class="tk-cls">None</span>, primary_key=<span class="tk-kw">True</span>)
+    nombre: <span class="tk-cls">str</span> = <span class="tk-fn">Field</span>(index=<span class="tk-kw">True</span>)
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">Libro</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(default=<span class="tk-cls">None</span>, primary_key=<span class="tk-kw">True</span>)
+    titulo: <span class="tk-cls">str</span> = <span class="tk-fn">Field</span>(index=<span class="tk-kw">True</span>)
+    anio: <span class="tk-cls">int</span>
+
+    <span class="tk-cm"># La clave foránea: el id de una editorial, o nada.</span>
+    editorial_id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(default=<span class="tk-cls">None</span>, foreign_key=<span class="tk-str">"editorial.id"</span>)</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — «editorial.id», con punto y no con guion</span>
+    <p>
+      El valor de <code>foreign_key</code> es el <strong>nombre de la tabla</strong> y el
+      <strong>nombre de la columna</strong>, separados por un punto. La tabla se llama
+      <code>editorial</code> (en minúsculas, como SQLModel las crea) y la columna se llama
+      <code>id</code>. Escribir <code>"editorial-id"</code> o <code>"Editorial.id"</code> falla al
+      arrancar, con un error que menciona «no such table».
+    </p>
+  </div>
+
+  <h3>1.2 · El esquema que sale de ahí</h3>
+
+  <p>
+    Con el modelo escrito, la base de datos refleja el enlace. Esto no es el
+    <code>CREATE TABLE</code> de la clase 8: es lo que <strong>la base de datos dice que hay</strong>
+    después de crear las tablas.
+  </p>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — el esquema real de las dos tablas</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-salida">editorial</div>
+      <div class="consola-salida">    id             INTEGER</div>
+      <div class="consola-salida">    nombre         VARCHAR</div>
+      <div class="consola-salida">libro</div>
+      <div class="consola-salida">    id             INTEGER</div>
+      <div class="consola-salida">    titulo         VARCHAR</div>
+      <div class="consola-salida">    anio           INTEGER</div>
+      <div class="consola-salida">    editorial_id   INTEGER        REFERENCES editorial.id</div>
+    </div>
+  </div>
+
+  <p>
+    La última línea es el enlace. Fíjate en que <code>editorial_id</code> es <strong>una columna
+    normal</strong>: puedes leerla, escribirla, indexarla. Lo único especial es la regla que la
+    acompaña.
+  </p>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — SQLite no aplica las claves foráneas por defecto</span>
+    <p>
+      Este es uno de los Tricks que más sorprenden: <strong>SQLite ignora las claves foráneas
+      salvo que se lo digas</strong>. Con la base de datos de la clase 8 (PostgreSQL) la regla se
+      cumple sola; con el archivo <code>.db</code> de esta clase, no.
+    </p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — cómo activar las claves foráneas en SQLite</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> sqlalchemy <span class="tk-kw">import</span> <span class="tk-fn">event</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">activar_claves_foraneas</span>(dbapi_con, con_record):
+    <span class="tk-cm"># Se ejecuta en cada conexión nueva del pool.</span>
+    dbapi_con.<span class="tk-fn">execute</span>(<span class="tk-str">"PRAGMA foreign_keys=ON"</span>)
+
+
+engine = <span class="tk-fn">create_engine</span>(sqlite_url, connect_args=connect_args)
+<span class="tk-fn">event</span>.<span class="tk-fn">listen</span>(engine, <span class="tk-str">"connect"</span>, <span class="tk-fn">activar_claves_foraneas</span>)</code></pre>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — por qué el curso usa PostgreSQL en la clase 8</span>
+    <p>
+      Ahora se entiende por qué la clase 8 te pidió levantar un PostgreSQL con Docker: en
+      PostgreSQL las claves foráneas <strong>siempre</strong> están activas. SQLite es cómodo
+      para una clase de 4 horas (un archivo, cero instalación), pero tiene esta trampa. No es un
+      defecto de SQLite: es que cada motor decide sus valores por defecto, y hay que conocerlos.
+    </p>
+  </div>
+
+  <h3>1.3 · Lo que la clave foránea NO hace</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Lo que sí hace y lo que no hace una clave foránea</caption>
+      <thead>
+        <tr><th>La clave foránea…</th><th>…impide esto</th><th>…NO impide esto</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Comprueba que el <code>id</code> exista</td>
+          <td>Guardar un libro con <code>editorial_id=99</code> si no hay editorial 99</td>
+          <td>Que el libro se guarde sin editorial (<code>NULL</code> es válido)</td>
+        </tr>
+        <tr>
+          <td>Se fija al borrar la editorial</td>
+          <td>—</td>
+          <td>Que el borrado de la editorial se lleve por delante sus libros</td>
+        </tr>
+        <tr>
+          <td>No dice nada del orden</td>
+          <td>—</td>
+          <td>Que puedas guardar el hijo antes que el padre</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué garantiza una clave foránea?</p>
+      <button class="opcion" data-op="a">Que la tabla relacionada se cree sola</button>
+      <button class="opcion" data-op="b">Que el hijo se borre al borrar el padre</button>
+      <button class="opcion" data-op="c">Que el valor guardado exista en la tabla referenciada (o sea nulo)</button>
+      <button class="opcion" data-op="d">Que el <code>id</code> se genere en Python</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> En <code>foreign_key="editorial.id"</code>, ¿qué es <code>editorial.id</code>?</p>
+      <button class="opcion" data-op="a">El nombre de la tabla y el de la columna referenciada</button>
+      <button class="opcion" data-op="b">Una cadena de conexión a la base de datos</button>
+      <button class="opcion" data-op="c">El nombre del archivo de la base de datos</button>
+      <button class="opcion" data-op="d">Un índice sobre la columna</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Por qué hay que activar <code>PRAGMA foreign_keys=ON</code> con SQLite?</p>
+      <button class="opcion" data-op="a">Porque SQLite no admite claves foráneas</button>
+      <button class="opcion" data-op="b">Porque es un requisito de SQLModel</button>
+      <button class="opcion" data-op="c">Porque sin eso no se pueden crear las tablas</button>
+      <button class="opcion" data-op="d">Porque SQLite las tiene desactivadas por defecto, aunque sí las admite</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Qué pasa si un libro se guarda con <code>editorial_id = None</code>?</p>
+      <button class="opcion" data-op="a">La base de datos lo rechaza</button>
+      <button class="opcion" data-op="b">Se guarda sin editorial: un libro puede no tener editorial</button>
+      <button class="opcion" data-op="c">Se guarda con una editorial inventada</button>
+      <button class="opcion" data-op="d">Se borra el libro</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: crear filas conectadas →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 2 ============ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · El orden</div>
+    <h2>Crear filas <em>conectadas</em></h2>
+    <p class="proposito">
+      Conectar dos filas es fácil; conectarlas <strong>en el orden correcto</strong> es lo que
+      cuesta. Esta unidad es corta y mecánica, y justo por eso se equivoca tanto: aquí se
+      aprende el orden que hay que respetarlo siempre.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: padre e hijo, en orden</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · El orden importa: primero el padre</h3>
+
+  <p class="primer-párrafo">
+    Para meter un libro en la editorial «Planeta» necesitas el <code>id</code> de la editorial,
+    y ese <code>id</code> no existe hasta que la editorial se guarda. Así que: primero la
+    editorial, luego el libro.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — guardar el padre y luego el hijo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+    <span class="tk-cm"># 1. El padre. Todavía no tiene id.</span>
+    planeta = <span class="tk-cls">Editorial</span>(nombre=<span class="tk-str">"Planeta"</span>)
+    oceano = <span class="tk-cls">Editorial</span>(nombre=<span class="tk-str">"Océano"</span>)
+    session.<span class="tk-fn">add</span>(planeta)
+    session.<span class="tk-fn">add</span>(oceano)
+    session.<span class="tk-fn">commit</span>()
+
+    <span class="tk-cm"># 2. Ahora sí: el commit le ha dado los ids.</span>
+    amor = <span class="tk-cls">Libro</span>(titulo=<span class="tk-str">"El amor en los tiempos del cólera"</span>, anio=<span class="tk-num">1985</span>, editorial_id=planeta.id)
+    soledad = <span class="tk-cls">Libro</span>(titulo=<span class="tk-str">"Cien años de soledad"</span>, anio=<span class="tk-num">1967</span>, editorial_id=planeta.id)
+    viento = <span class="tk-cls">Libro</span>(titulo=<span class="tk-str">"La sombra del viento"</span>, anio=<span class="tk-num">2001</span>, editorial_id=oceano.id)
+    paramo = <span class="tk-cls">Libro</span>(titulo=<span class="tk-str">"Pedro Páramo"</span>, anio=<span class="tk-num">1955</span>, editorial_id=<span class="tk-cls">None</span>)
+
+    <span class="tk-kw">for</span> libro <span class="tk-kw">in</span> (amor, soledad, viento, paramo):
+        session.<span class="tk-fn">add</span>(libro)
+    session.<span class="tk-fn">commit</span>()</code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — lo que queda guardado</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-salida">== CREADOS ==</div>
+      <div class="consola-salida">  1  El amor en los tiempos del cólera  (1985)  editorial_id=1</div>
+      <div class="consola-salida">  2  Cien años de soledad  (1967)  editorial_id=1</div>
+      <div class="consola-salida">  3  La sombra del viento  (2001)  editorial_id=2</div>
+      <div class="consola-salida">  4  Pedro Páramo  (1955)  editorial_id=None</div>
+    </div>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el error de «guardar el hijo antes que el padre»</span>
+    <p>
+      Si añades el libro <strong>antes</strong> de hacer el <code>commit()</code> del padre,
+      su <code>editorial_id</code> valdrá <code>None</code>: el <code>id</code> de la editorial
+      todavía no existe. El libro se guarda, pero <strong>sin editorial</strong>, y no hay ningún
+      error que te avise. Es el mismo tipo de fallo silencioso que el formulario vacío de la
+      clase 11: el programa «funciona» y el dato está mal.
+    </p>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — por qué el <code>commit()</code> va en medio</span>
+    <p>
+      El <code>commit()</code> de la clase 18 tenía una sola misión: escribir. Aquí tiene una
+      segunda: <strong>es el punto en que la base de datos genera los ids</strong>. Hasta que no
+      haya un <code>commit()</code>, el <code>planeta.id</code> es <code>None</code>. Por eso
+      los dos <code>commit()</code> —uno para los padres y otro para los hijos— no son un descuido
+      de estilo: son la mitad del trabajo.
+    </p>
+  </div>
+
+  <h3>2.2 · La conexión también se puede romper</h3>
+
+  <p>
+    Con las claves foráneas activadas, esta llamada no se guarda:
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el error que la base de datos sí avisa</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>fantasma = <span class="tk-cls">Libro</span>(titulo=<span class="tk-str">"Un libro que no existe"</span>, anio=<span class="tk-num">2020</span>, editorial_id=<span class="tk-num">99</span>)
+session.<span class="tk-fn">add</span>(fantasma)
+session.<span class="tk-fn">commit</span>()
+<span class="tk-cm"># IntegrityError: FOREIGN KEY constraint failed</span></code></pre>
+  </div>
+
+  <p>
+    Este error <strong>es una buena noticia</strong>: la base de datos te ha parado. Compáralo
+    con la clase 10, donde un formulario mal enviado se guardaba sin quejarse. La clave foránea
+    es una red de seguridad debajo de la validación.
+  </p>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Por qué hay que hacer <code>commit()</code> de las editoriales antes de crear los libros?</p>
+      <button class="opcion" data-op="a">Por estilo: queda más ordenado</button>
+      <button class="opcion" data-op="b">Porque hasta el commit la base de datos no genera el <code>id</code> de la editorial</button>
+      <button class="opcion" data-op="c">Porque si no, la clave foránea no se crea</button>
+      <button class="opcion" data-op="d">Porque el <code>id</code> se borra al terminar la sesión</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué pasa si el libro se añade a la sesión antes del commit de las editoriales?</p>
+      <button class="opcion" data-op="a">La base de datos lanza un error</button>
+      <button class="opcion" data-op="b">El libro se guarda con un id de editorial cualquiera</button>
+      <button class="opcion" data-op="c">El libro se guarda dos veces</button>
+      <button class="opcion" data-op="d">El libro se guarda con <code>editorial_id=None</code>, sin avisar</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué error aparece si el <code>editorial_id</code> no existe?</p>
+      <button class="opcion" data-op="a">Un <code>IntegrityError</code>: la restricción de clave foránea falló</button>
+      <button class="opcion" data-op="b">Un <code>ValueError</code> de Pydantic</button>
+      <button class="opcion" data-op="c">Un 404 de FastAPI</button>
+      <button class="opcion" data-op="d">Ninguno: se guarda igual</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Por qué un libro puede guardarse sin editorial?</p>
+      <button class="opcion" data-op="a">Porque la clave foránea solo se comprueba al leer</button>
+      <button class="opcion" data-op="b">Porque <code>None</code> no es un número</button>
+      <button class="opcion" data-op="c">Porque la columna admite nulos: no toda relación es obligatoria</button>
+      <button class="opcion" data-op="d">Porque el <code>id</code> de la editorial todavía no existía</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: La clave foránea</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: leer lo conectado →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 3 ============ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · La lectura</div>
+    <h2>Leer lo conectado: <em>el JOIN</em></h2>
+    <p class="proposito">
+      Crear el enlace era la mitad. La otra mitad es <strong>leerlo</strong>: traer el libro
+      <em>y</em> su editorial en la misma respuesta. Eso es el <code>JOIN</code>, y en SQLModel se
+      escribe con dos modelos en el <code>select</code>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: el tablero de relaciones, funcionando</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · Dos tablas, una consulta</h3>
+
+  <p class="primer-párrafo">
+    La consulta de la clase 9 pedía un modelo: <code>select(Libro)</code>. Para traer también la
+    editorial, se piden <strong>los dos</strong> y se dice cómo se conectan:
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el JOIN con SQLModel</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> sqlmodel <span class="tk-kw">import</span> <span class="tk-fn">select</span>
+
+<span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+    statement = <span class="tk-fn">select</span>(<span class="tk-cls">Libro</span>, <span class="tk-cls">Editorial</span>).<span class="tk-fn">where</span>(<span class="tk-cls">Libro</span>.editorial_id == <span class="tk-cls">Editorial</span>.id)
+    <span class="tk-kw">for</span> libro, editorial <span class="tk-kw">in</span> session.<span class="tk-fn">exec</span>(statement):
+        <span class="tk-fn">print</span>(<span class="tk-str">f"{libro.titulo}  -&gt;  {editorial.nombre}"</span>)</code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — el resultado del JOIN</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-salida">== JOIN: cada libro con su editorial ==</div>
+      <div class="consola-salida">  El amor en los tiempos del cólera  -&gt;  Planeta</div>
+      <div class="consola-salida">  Cien años de soledad  -&gt;  Planeta</div>
+      <div class="consola-salida">  La sombra del viento  -&gt;  Océano</div>
+    </div>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el JOIN se traga los libros sin editorial</span>
+    <p>
+      «Pedro Páramo» no aparece en la lista, y no es un fallo: no tiene editorial, así que la
+      condición <code>Libro.editorial_id == Editorial.id</code> no se cumple. Un <code>JOIN</code>
+      normal (<code>INNER JOIN</code>) devuelve <strong>solo las filas que tienen pareja en las
+      dos tablas</strong>.
+    </p>
+    <p>
+      Para traer también los libros sueltos se necesita un <code>LEFT JOIN</code>, que dice
+      «incluye los libros aunque no tengan editorial». En SQLModel se hace con
+      <code>isouter=True</code>.
+    </p>
+  </div>
+
+  <h3>3.2 · El tablero de relaciones</h3>
+
+  <p>
+    Antes de tocar código, mueve los datos a mano. El tablero tiene los cuatro libros de la
+    biblioteca y te deja cambiar su editorial o dejarlos sin ella, viendo qué ocurre en las dos
+    tablas.
+  </p>
+
+  <div class="tablero" data-tablero>
+    <div class="tablero-cabecera">
+      <span class="etiqueta">Laboratorio</span>
+      <h4>El enlace, a la vista</h4>
+      <p>
+        Elige un libro y muévelo de editorial. A la derecha verás las dos caras del mismo dato:
+        la columna <code>editorial_id</code> del libro y la lista de libros de la editorial.
+      </p>
+    </div>
+
+    <div class="tablero-cuerpo">
+      <div class="tablero-izq" data-tablero-izq></div>
+      <div class="tablero-der" data-tablero-der></div>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el tablero es la base de datos, en memoria</span>
+    <p>
+      Lo que estás moviendo aquí es exactamente la columna <code>editorial_id</code>. Ni más ni
+      menos. Cuando en la unidad 5 escribas <code>producto.editorial_id = otra.id</code>, el
+      efecto en la base de datos será el mismo que el del botón «Cambiar la editorial».
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cómo se pide en SQLModel un <code>SELECT</code> que traiga el libro <em>y</em> su editorial?</p>
+      <button class="opcion" data-op="a"><code>select(Libro)</code></button>
+      <button class="opcion" data-op="b"><code>select(Libro, Editorial).where(Libro.editorial_id == Editorial.id)</code></button>
+      <button class="opcion" data-op="c"><code>select(Libro).join(Editorial)</code></button>
+      <button class="opcion" data-op="d">Haciendo dos consultas y cruzando el resultado en Python</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Por qué «Pedro Páramo» no sale en el JOIN?</p>
+      <button class="opcion" data-op="a">Porque su <code>titulo</code> tiene tildes</button>
+      <button class="opcion" data-op="b">Porque el JOIN solo trae las dos primeras filas</button>
+      <button class="opcion" data-op="c">Porque el <code>id</code> 4 está repetido</button>
+      <button class="opcion" data-op="d">Porque no tiene editorial: el JOIN solo devuelve filas con pareja en las dos tablas</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cómo se llama al JOIN que también trae las filas sin pareja?</p>
+      <button class="opcion" data-op="a"><code>LEFT JOIN</code> (en SQLModel, <code>isouter=True</code>)</button>
+      <button class="opcion" data-op="b"><code>FULL OUTER JOIN</code></button>
+      <button class="opcion" data-op="c"><code>CROSS JOIN</code></button>
+      <button class="opcion" data-op="d"><code>UNION</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> Al cambiar la editorial de un libro, ¿qué filas cambian en la base de datos?</p>
+      <button class="opcion" data-op="a">Las de las dos tablas: el libro y la editorial</button>
+      <button class="opcion" data-op="b">Solo las de la editorial</button>
+      <button class="opcion" data-op="c">Solo la del libro: basta con cambiar su <code>editorial_id</code></button>
+      <button class="opcion" data-op="d">Ninguna: el enlace es una vista, no un dato</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: Crear filas conectadas</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 4 ============ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de lectura</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija por
+      escrito lo que has leído hasta ahora.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora.
+    </p>
+    <div class="reglas">
+      <div class="regla"><h4>Regla 20-20-20</h4><p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p></div>
+      <div class="regla"><h4>Movimiento</h4><p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p></div>
+      <div class="regla"><h4>Hidratación</h4><p>Un vaso de agua. La lectura densa agota más de lo que parece.</p></div>
+      <div class="regla"><h4>Bitácora</h4><p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p></div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora de lectura (5 minutos)</h3>
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+  <ol>
+    <li><strong>En una frase:</strong> ¿qué le dice la clave foránea a la base de datos?</li>
+    <li><strong>En una frase:</strong> ¿por qué el padre se guarda antes que el hijo?</li>
+    <li><strong>En una frase:</strong> ¿qué libros se pierden en un <code>JOIN</code> normal?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+  <p>Estas siete palabras aparecerán en el taller final. Léelas ahora.</p>
+  <div class="definiciones">
+    <div><dt>Clave foránea</dt><dd>Columna que apunta a otra tabla y no puede contener un valor que no exista allí.</dd></div>
+    <div><dt>Tabla referenciada</dt><dd>La tabla «padre»: la que contiene los valores a los que se puede apuntar.</dd></div>
+    <div><dt>Tabla que referencia</dt><dd>La tabla «hija»: la que tiene la columna con la clave foránea.</dd></div>
+    <div><dt>Cardinalidad</dt><dd>Cuántas filas de una tabla se corresponden con una de la otra: una a una, una a muchas o muchas a muchas.</dd></div>
+    <div><dt><code>JOIN</code></dt><dd>Consulta que trae columnas de dos tablas a la vez, uniendo por la clave foránea.</dd></div>
+    <div><dt><code>INNER JOIN</code></dt><dd>El JOIN normal: solo devuelve las filas que tienen pareja en las dos tablas.</dd></div>
+    <div><dt><code>LEFT JOIN</code></dt><dd>El JOIN que además trae las filas de la izquierda que no tienen pareja.</dd></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: Leer lo conectado: el JOIN</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Ejercicio práctico →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 5 ============ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · Taller de aplicación</div>
+    <h2>Ejercicio 5.1 · <em>Las cuatro operaciones sobre el enlace</em></h2>
+    <p class="proposito">
+      Conectar, leer, cambiar y desconectar. Son cuatro operaciones, y en una base de datos
+      real son cuatro operaciones distintas que se confunden todo el tiempo. En 35 minutos las
+      escribes las cuatro y compruebas que ninguna rompe lo anterior.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: las cuatro operaciones funcionando</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>Conectar, leer, mover y soltar</h3>
+    </div>
+
+    <p>
+      Escribe un programa que haga las cuatro operaciones sobre el enlace entre
+      <code>editorial</code> y <code>libro</code>. Cada una va en su propia función, y cada una
+      dice qué ha hecho.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr><td><strong>Entrada</strong></td><td>Dos tablas: <code>editorial</code> y <code>libro</code>, unidas por <code>editorial_id</code></td></tr>
+          <tr><td><strong>Salida</strong></td><td>Cuatro funciones que operan sobre el enlace</td></tr>
+          <tr><td><strong>Restricción</strong></td><td>Ninguna función escribe SQL: todo se hace con modelos y sesión</td></tr>
+          <tr><td><strong>Restricción</strong></td><td>Desconectar <strong>no</strong> es borrar: el libro sigue existiendo</td></tr>
+          <tr><td><strong>Restricción</strong></td><td>Con las claves foráneas activadas, guardar un <code>editorial_id</code> inexistente debe fallar</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li><strong><code>crear_editoriales()</code></strong>: dos editoriales y cuatro libros, con el orden correcto.</li>
+      <li><strong><code>leer_con_join()</code></strong>: la consulta que trae libro y editorial juntos.</li>
+      <li><strong><code>mover_libro()</code></strong>: cambia el <code>editorial_id</code> de un libro.</li>
+      <li><strong><code>desconectar_libro()</code></strong>: pone el <code>editorial_id</code> a <code>None</code> sin borrar el libro.</li>
+      <li><strong>La comprobación de las cuatro</strong>: que cada función imprima lo que ha hecho y que los datos sigan siendo coherentes.</li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-5-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-5-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La parte que más cuesta no es el código: es entender que <strong>desconectar y borrar
+        son cosas distintas</strong>, y que el <code>JOIN</code> no ve lo que no tiene pareja.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>las cuatro operaciones</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">crear_editoriales</span>() -&gt; <span class="tk-cls">None</span>:
+    <span class="tk-str">"""1. CONECTAR: primero los padres, luego los hijos."""</span>
+    <span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+        planeta = <span class="tk-cls">Editorial</span>(nombre=<span class="tk-str">"Planeta"</span>)
+        oceano = <span class="tk-cls">Editorial</span>(nombre=<span class="tk-str">"Océano"</span>)
+        session.<span class="tk-fn">add</span>(planeta)
+        session.<span class="tk-fn">add</span>(oceano)
+        session.<span class="tk-fn">commit</span>()
+
+        libros = [
+            <span class="tk-cls">Libro</span>(titulo=<span class="tk-str">"El amor en los tiempos del cólera"</span>, anio=<span class="tk-num">1985</span>, editorial_id=planeta.id),
+            <span class="tk-cls">Libro</span>(titulo=<span class="tk-str">"Cien años de soledad"</span>, anio=<span class="tk-num">1967</span>, editorial_id=planeta.id),
+            <span class="tk-cls">Libro</span>(titulo=<span class="tk-str">"La sombra del viento"</span>, anio=<span class="tk-num">2001</span>, editorial_id=oceano.id),
+            <span class="tk-cls">Libro</span>(titulo=<span class="tk-str">"Pedro Páramo"</span>, anio=<span class="tk-num">1955</span>, editorial_id=<span class="tk-cls">None</span>),
+        ]
+        <span class="tk-kw">for</span> libro <span class="tk-kw">in</span> libros:
+            session.<span class="tk-fn">add</span>(libro)
+        session.<span class="tk-fn">commit</span>()
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">leer_con_join</span>() -&gt; <span class="tk-cls">None</span>:
+    <span class="tk-str">"""2. LEER: el libro y su editorial en la misma fila."""</span>
+    <span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+        statement = <span class="tk-fn">select</span>(<span class="tk-cls">Libro</span>, <span class="tk-cls">Editorial</span>).<span class="tk-fn">where</span>(<span class="tk-cls">Libro</span>.editorial_id == <span class="tk-cls">Editorial</span>.id)
+        <span class="tk-kw">for</span> libro, editorial <span class="tk-kw">in</span> session.<span class="tk-fn">exec</span>(statement):
+            <span class="tk-fn">print</span>(<span class="tk-str">f"{libro.titulo}  -&gt;  {editorial.nombre}"</span>)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">mover_libro</span>(titulo: <span class="tk-cls">str</span>, editorial_id: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">None</span>:
+    <span class="tk-str">"""3. MOVER: cambiar a qué editorial apunta un libro."""</span>
+    <span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+        libro = session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Libro</span>).<span class="tk-fn">where</span>(<span class="tk-cls">Libro</span>.titulo == titulo)).<span class="tk-fn">one</span>()
+        libro.editorial_id = editorial_id
+        session.<span class="tk-fn">add</span>(libro)
+        session.<span class="tk-fn">commit</span>()
+        session.<span class="tk-fn">refresh</span>(libro)
+        <span class="tk-fn">print</span>(<span class="tk-str">f"{libro.titulo} ahora editorial_id={libro.editorial_id}"</span>)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">desconectar_libro</span>(titulo: <span class="tk-cls">str</span>) -&gt; <span class="tk-cls">None</span>:
+    <span class="tk-str">"""4. DESCONECTAR: el libro sigue, pero ya no apunta a nadie."""</span>
+    <span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+        libro = session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Libro</span>).<span class="tk-fn">where</span>(<span class="tk-cls">Libro</span>.titulo == titulo)).<span class="tk-fn">one</span>()
+        libro.editorial_id = <span class="tk-cls">None</span>
+        session.<span class="tk-fn">add</span>(libro)
+        session.<span class="tk-fn">commit</span>()
+        session.<span class="tk-fn">refresh</span>(libro)
+        <span class="tk-fn">print</span>(<span class="tk-str">f"{libro.titulo} ya no está en ninguna editorial"</span>)</code></pre>
+  </div>
+
+    <p>
+      Fíjate en que <code>mover_libro</code> y <code>desconectar_libro</code> son el mismo
+      código con un valor distinto. <strong>La diferencia entre mover y soltar está en el dato,
+      no en la operación.</strong>
+    </p>
+  </div>
+    </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — lo que NO es desconectar</span>
+    <p>
+      Borrar la editorial es otra cosa: la clave foránea dice «este valor tiene que existir»,
+      pero no dice «bórralo todo cuando yo desaparezca». Qué pasa con los libros huérfanos al
+      borrar su editorial es un problema aparte, y lo resuelve la clase 21.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la diferencia entre desconectar y borrar un libro?</p>
+      <button class="opcion" data-op="a">Desconectar borra el libro; borrar solo quita el enlace</button>
+      <button class="opcion" data-op="b">Desconectar deja el libro sin editorial; borrarlo elimina el libro de la tabla</button>
+      <button class="opcion" data-op="c">Son exactamente lo mismo</button>
+      <button class="opcion" data-op="d">Desconectar solo funciona con PostgreSQL</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> En <code>mover_libro</code>, ¿qué línea hace el cambio?</p>
+      <button class="opcion" data-op="a"><code>libro.editorial_id = editorial_id</code></button>
+      <button class="opcion" data-op="b"><code>session.add(libro)</code></button>
+      <button class="opcion" data-op="c"><code>session.commit()</code></button>
+      <button class="opcion" data-op="d"><code>session.refresh(libro)</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué le falta a un <code>JOIN</code> normal?</p>
+      <button class="opcion" data-op="a">Que no trae las dos tablas</button>
+      <button class="opcion" data-op="b">Que necesita el <code>where</code></button>
+      <button class="opcion" data-op="c">Que deja fuera las filas que no tienen pareja en la otra tabla</button>
+      <button class="opcion" data-op="d">Que no se puede ordenar el resultado</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Por qué el orden de los <code>commit()</code> importa?</p>
+      <button class="opcion" data-op="a">Por rendimiento</button>
+      <button class="opcion" data-op="b">Porque el <code>commit</code> cierra la sesión</button>
+      <button class="opcion" data-op="c">Porque la clave foránea se crea en el commit</button>
+      <button class="opcion" data-op="d">Porque el <code>id</code> del padre solo existe después de su commit</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: el JOIN en la API →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 6 ============ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · Taller de aplicación</div>
+    <h2>Ejercicio 6.1 · <em>El JOIN en la API</em></h2>
+    <p class="proposito">
+      La clase 19 separó la entrada de la salida; esta clase le añade la <strong>relación</strong>. Lo que
+      se ve en la respuesta es lo que decide el modelo de salida, y con dos tablas hay una
+      pregunta nueva: ¿qué se devuelve exactamente, el libro o también su editorial?
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: la API que devuelve libros con su editorial</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>La biblioteca en JSON</h3>
+    </div>
+
+    <p>
+      Monta la API de la biblioteca: dos rutas (listar y leer uno) que devuelvan el libro
+      <strong>y su editorial</strong>, con el contrato separado como en la clase 19.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr><td><strong>Entrada</strong></td><td>Un <code>id</code> de libro, opcional</td></tr>
+          <tr><td><strong>Salida</strong></td><td>JSON con el libro y el nombre de su editorial</td></tr>
+          <tr><td><strong>Restricción</strong></td><td>El modelo de salida <strong>no</strong> incluye la columna <code>editorial_id</code>: incluye el nombre de la editorial</td></tr>
+          <tr><td><strong>Restricción</strong></td><td>Un libro sin editorial se devuelve con <code>editorial: null</code></td></tr>
+          <tr><td><strong>Restricción</strong></td><td>Un <code>id</code> inexistente da <strong>404</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li><strong><code>LibroPublic</code></strong> con <code>id</code>, <code>titulo</code>, <code>anio</code> y un <code>editorial</code> que es el <strong>nombre</strong> (o <code>None</code>).</li>
+      <li><strong><code>GET /libros/</code></strong>: la lista, cada uno con su editorial.</li>
+      <li><strong><code>GET /libros/{id}</code></strong>: uno, o 404.</li>
+      <li><strong>El <code>response_model</code></strong> de la clase 19, con la relación dentro.</li>
+      <li><strong>La comprobación</strong>: que un libro sin editorial no rompa la respuesta.</li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-6-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-6-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        El truco está en el modelo de salida: no expone la columna <code>editorial_id</code>, sino
+        el <strong>nombre</strong> de la editorial. El cliente recibe algo que puede entender sin
+        saber nada de la base de datos.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>los modelos con la relación dentro</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">EditorialPublic</span>(<span class="tk-cls">SQLModel</span>):
+    id: <span class="tk-cls">int</span>
+    nombre: <span class="tk-cls">str</span>
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">LibroPublic</span>(<span class="tk-cls">SQLModel</span>):
+    id: <span class="tk-cls">int</span>
+    titulo: <span class="tk-cls">str</span>
+    anio: <span class="tk-cls">int</span>
+    editorial: <span class="tk-cls">EditorialPublic</span> | <span class="tk-cls">None</span> = <span class="tk-cls">None</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>las dos rutas</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">@</span>app.<span class="tk-fn">get</span>(<span class="tk-str">"/libros/"</span>, response_model=list[<span class="tk-cls">LibroPublic</span>])
+<span class="tk-kw">def</span> <span class="tk-fn">leer_libros</span>(session: <span class="tk-cls">SessionDep</span>):
+    <span class="tk-kw">return</span> session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Libro</span>)).<span class="tk-fn">all</span>()
+
+
+<span class="tk-kw">@</span>app.<span class="tk-fn">get</span>(<span class="tk-str">"/libros/{libro_id}"</span>, response_model=<span class="tk-cls">LibroPublic</span>)
+<span class="tk-kw">def</span> <span class="tk-fn">leer_libro</span>(libro_id: <span class="tk-cls">int</span>, session: <span class="tk-cls">SessionDep</span>):
+    libro = session.<span class="tk-fn">get</span>(<span class="tk-cls">Libro</span>, libro_id)
+    <span class="tk-kw">if not</span> libro:
+        <span class="tk-kw">raise</span> <span class="tk-cls">HTTPException</span>(status_code=<span class="tk-num">404</span>, detail=<span class="tk-str">"Libro no encontrado"</span>)
+    <span class="tk-kw">return</span> libro</code></pre>
+  </div>
+
+    <p>
+      Y así queda la respuesta: el libro con su editorial anidada, y el <code>id</code> de la
+      editorial no aparece por ningún lado.
+    </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>la respuesta real</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>{
+  <span class="tk-str">"id"</span>: <span class="tk-num">1</span>,
+  <span class="tk-str">"titulo"</span>: <span class="tk-str">"Cien años de soledad"</span>,
+  <span class="tk-str">"anio"</span>: <span class="tk-num">1967</span>,
+  <span class="tk-str">"editorial"</span>: { <span class="tk-str">"id"</span>: <span class="tk-num">1</span>, <span class="tk-str">"nombre"</span>: <span class="tk-str">"Planeta"</span> }
+}</code></pre>
+  </div>
+  </div>
+    </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Por qué el modelo de salida lleva el <strong>nombre</strong> de la editorial y no su <code>id</code>?</p>
+      <button class="opcion" data-op="a">Porque es lo que el cliente puede entender sin saber nada de la base de datos</button>
+      <button class="opcion" data-op="b">Porque el <code>id</code> es un dato secreto</button>
+      <button class="opcion" data-op="c">Porque FastAPI no sabe convertir un <code>id</code></button>
+      <button class="opcion" data-op="d">Porque el <code>id</code> no se puede serializar</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué devuelve el <code>GET /libros/</code> de un libro sin editorial?</p>
+      <button class="opcion" data-op="a">Un error 404</button>
+      <button class="opcion" data-op="b">Un error 500</button>
+      <button class="opcion" data-op="c">Una lista vacía</button>
+      <button class="opcion" data-op="d">El libro, con <code>"editorial": null</code></button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Qué aporta el <code>response_model</code> de la clase 19 en esta clase?</p>
+      <button class="opcion" data-op="a">Nada: solo servía para las rutas HTML</button>
+      <button class="opcion" data-op="b">Que FastAPI filtre la respuesta con ese modelo, así que la relación sale con la forma exacta del contrato</button>
+      <button class="opcion" data-op="c">Que la consulta se haga más rápido</button>
+      <button class="opcion" data-op="d">Que la clave foránea se compruebe</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> En esta clase, ¿qué es más difícil que en la clase 19?</p>
+      <button class="opcion" data-op="a">Nada: es exactamente lo mismo</button>
+      <button class="opcion" data-op="b">Que el modelo de salida tenga más campos</button>
+      <button class="opcion" data-op="c">Decidir qué parte de la relación entra en el contrato y qué parte no</button>
+      <button class="opcion" data-op="d">Escribir el <code>response_model</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: Las cuatro operaciones sobre el enlace</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller integrador →</button>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 7 ============ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>Taller · <em>La biblioteca que se habla</em></h2>
+    <p class="proposito">
+      Las piezas están listas: el enlace, el JOIN y el contrato. Ahora se montan en un proyecto
+      completo y se escribe el taller.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller de desarrollo</b></span>
+      <span>🧭 <b>Producto: la biblioteca conectada, probada y escrita</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Taller</span>
+      <h3>Dos tablas, una biblioteca</h3>
+    </div>
+
+    <p>
+      Construye la biblioteca con las dos tablas conectadas, la API que devuelve la relación y
+      las cuatro operaciones sobre el enlace. Y contesta, por escrito, la pregunta que deja esta
+      clase abierta.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr><td><strong>Tablas</strong></td><td><code>editorial</code> y <code>libro</code>, unidas por <code>editorial_id</code></td></tr>
+          <tr><td><strong>Rutas</strong></td><td>Listar libros y leer uno, con su editorial</td></tr>
+          <tr><td><strong>Comprobación</strong></td><td>Las cuatro operaciones del enlace y las dos rutas de la API</td></tr>
+          <tr><td><strong>Restricción</strong></td><td>Las claves foráneas están activadas</td></tr>
+          <tr><td><strong>Restricción</strong></td><td>El contrato de salida (clase 19) se respeta también con la relación</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong>El proyecto</strong> con las dos tablas, la API y las cuatro operaciones.</li>
+      <li><strong>Las seis comprobaciones</strong> marcadas una por una.</li>
+      <li><strong>Una tabla de las rutas</strong>: método, ruta, qué acepta, qué devuelve, qué errores.</li>
+      <li><strong>Un párrafo</strong> que responda: si mañana se borra una editorial, ¿qué pasa con sus libros?</li>
+      <li><strong>El commit</strong> con un mensaje que explique el cambio.</li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="taller-solucion">Ver un modelo de respuesta</button>
+
+    <div class="solucion" id="taller-solucion">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La pregunta del entregable 4 es la que abre la clase 21. No hay una única respuesta
+        correcta, pero sí hay una respuesta <strong>razonada</strong>.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>las seis comprobaciones del taller</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-num">1.</span> Se crean las dos tablas y el esquema muestra la clave foránea
+<span class="tk-num">2.</span> Las dos editoriales y los cuatro libros se guardan en el orden correcto
+<span class="tk-num">3.</span> El JOIN trae los tres libros que tienen editorial
+<span class="tk-num">4.</span> Mover un libro cambia solo su columna editorial_id
+<span class="tk-num">5.</span> Desconectar deja el libro existiendo, con editorial_id nulo
+<span class="tk-num">6.</span> El GET de un libro inexistente devuelve 404</code></pre>
+  </div>
+
+    <blockquote class="recuadro nota">
+      <p>
+        Un párrafo de diagnóstico para este taller puede ser: «Hoy, si se borra una editorial,
+        sus libros se quedan con un <code>editorial_id</code> que ya no apunta a nadie, porque la
+        clave foránea de la clase 20 solo comprueba al escribir y no define qué pasa al borrar.
+        Yo lo resolvería decidiendo explícitamente una de las dos reglas: o la columna no admite
+        nulos y el borrado de la editorial falla mientras tenga libros, o se permite el nulo y se
+        acepta que habrá libros sin editorial. Lo que no se puede es no decidir: ahí es donde
+        aparecen los datos fantasma».
+      </p>
+    </blockquote>
+  </div>
+    </div>
+
+  <h3>7.2 · Rúbrica de autoevaluación</h3>
+
+  <p>Puntúa cada criterio de 0 a 2 y revisa los que hayas quedado en 0 o 1.</p>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación de las tablas conectadas</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>La clave foránea</td>
+          <td>El <code>editorial_id</code> es un número suelto, sin <code>foreign_key</code></td>
+          <td>Tiene <code>foreign_key</code> pero el nombre de la tabla no coincide</td>
+          <td><code>foreign_key="editorial.id"</code> y el esquema muestra la referencia</td>
+        </tr>
+        <tr>
+          <td>El orden al crear</td>
+          <td>Se crean los libros antes que las editoriales</td>
+          <td>El orden es correcto a veces</td>
+          <td>Padres, commit, y luego hijos</td>
+        </tr>
+        <tr>
+          <td>Las claves activadas</td>
+          <td>Nunca se comprobó si SQLite las aplica</td>
+          <td>Se activó en unas tablas y no en otras</td>
+          <td>Se activan en cada conexión del pool</td>
+        </tr>
+        <tr>
+          <td>El JOIN</td>
+          <td>Se leen los libros y las editoriales por separado</td>
+          <td>Hay un <code>select</code> con dos modelos pero sin la condición</td>
+          <td>El <code>select</code> con los dos modelos y el <code>where</code> correcto</td>
+        </tr>
+        <tr>
+          <td>Mover y desconectar</td>
+          <td>Solo se crea</td>
+          <td>Se mueven, pero no se desconecta</td>
+          <td>Las cuatro operaciones, cada una en su función</td>
+        </tr>
+        <tr>
+          <td>El contrato</td>
+          <td>La API devuelve la columna <code>editorial_id</code></td>
+          <td>Devuelve la editorial, pero con forma distinta de la declarada</td>
+          <td>Devuelve el nombre de la editorial y el <code>response_model</code> lo filtra</td>
+        </tr>
+        <tr>
+          <td>Los casos sin editorial</td>
+          <td>Rompen la respuesta con un error 500</td>
+          <td>Se devuelven con la editorial vacía en vez de <code>null</code></td>
+          <td>Se devuelven con <code>"editorial": null</code></td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay nada escrito</td>
+          <td>Describe el qué, no el porqué</td>
+          <td>Decide qué pasa al borrar y lo justifica</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.3 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea"><div class="idea-n">01</div><p>Una clave foránea es una columna que dice «este valor tiene que existir en aquella tabla»: o está vacía, o es un id real.</p></div>
+    <div class="idea"><div class="idea-n">02</div><p>El orden de los <code>commit()</code> importa: hasta que el padre se guarda, su <code>id</code> no existe.</p></div>
+    <div class="idea"><div class="idea-n">03</div><p>El <code>JOIN</code> normal solo trae las filas que tienen pareja en las dos tablas; las huérfanas se pierden.</p></div>
+    <div class="idea"><div class="idea-n">04</div><p>Mover y desconectar son la <strong>misma</strong> operación con un dato distinto: el <code>editorial_id</code>.</p></div>
+    <div class="idea"><div class="idea-n">05</div><p>Desconectar no es borrar: el libro sigue existiendo, solo que ya no apunta a nadie.</p></div>
+    <div class="idea"><div class="idea-n">06</div><p>Una clave foránea comprueba al escribir, pero <strong>no decide qué pasa al borrar</strong>: eso hay que decidirlo aparte.</p></div>
+    <div class="idea"><div class="idea-n">07</div><p>El contrato de la API manda también sobre las relaciones: el cliente recibe el nombre de la editorial, no su <code>id</code>.</p></div>
+  </div>
+
+  <h3>7.4 · Puente hacia la próxima clase</h3>
+
+  <p>
+    Hoy escribiste el enlace <strong>a mano</strong>: ponías <code>editorial_id</code> y pedías
+    las dos tablas con un <code>JOIN</code> escrito por ti. Funciona, y es exactamente lo que
+    hacía SQL.
+  </p>
+
+  <p>
+    Pero has tenido que acordarte de dos cosas en cada operación: <strong>qué columna</strong>
+    apunta a quién, y <strong>qué se escribe en el otro lado</strong> cuando mueves un libro. La
+    próxima clase le da al ORM esa tarea: que la relación sea un <strong>atributo</strong> del
+    modelo, y que mover un libro actualice los dos lados solo.
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de la próxima clase</span>
+    <p>
+      Guarda este proyecto en un repositorio de Git, con un commit por cada unidad: la clave
+      foránea, la creación de filas conectadas, el JOIN, las cuatro operaciones y la API. La
+      clase 16 explica Git en detalle; lo único que necesitas ahora es tener el proyecto en un
+      repositorio y cinco commits con mensajes claros.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 20</h2>
+    <p>
+      Has cerrado el círculo de las tablas: la segunda tabla ya no es una lista suelta, está
+      <strong>enlazada</strong> a la primera, y ahora sabes crear el enlace, leerlo, moverlo y
+      soltarlo. La próxima clase le quita el trabajo manual: la relación será un atributo del
+      modelo, y mover un libro actualizará los dos lados a la vez.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: El JOIN en la API</button>
+    <button class="btn-siguiente" data-ir="0">✓ Marcar el taller como terminado y volver al inicio</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 20 · Tablas conectadas: la clave foránea y el JOIN</span>
+  <p class="pie-sub">La clave foránea · Crear filas conectadas · El JOIN · Las cuatro operaciones sobre el enlace</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

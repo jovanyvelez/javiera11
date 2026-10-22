@@ -108,14 +108,19 @@ Ruta de **17 clases** con la plantilla editorial «cuaderno técnico». Es la ru
 | **16** | Git moderno en el día a día | `curso-herr-16-git-moderno` |
 | **17** | GitHub: publica tu código | `curso-herr-17-github` |
 
-**Bloque E — El ORM: del SQL al contrato de la API (clases 18‑19)**
+**Bloque E — El ORM: del SQL al contrato y las relaciones (clases 18‑22)**
 
 | Clase | Tema | Clave `localStorage` |
 |-------|------|----------------------|
 | **18** | El modelo que es la tabla: SQLModel, el motor y la sesión | `curso-herr-18-orm` |
 | **19** | El contrato de la API: modelos separados, `response_model` y `PATCH` | `curso-herr-19-contrato` |
+| **20** | Tablas conectadas: la clave foránea y el `JOIN` | `curso-herr-20-conectadas` |
+| **21** | Relaciones en el ORM: `Relationship` y `back_populates` | `curso-herr-21-relaciones` |
+| **22** | Muchos a muchos: la tabla intermedia | `curso-herr-22-muchos` |
 
 La clase 18 cierra la promesa que hizo la clase 8 («un ORM, cuando el proyecto crezca»): el modelo pasa de validar a <em>ser</em> la tabla, y aparece la sesión como unidad de trabajo. La clase 19 separa lo que la API <strong>recibe</strong> de lo que <strong>devuelve</strong>: el `id` lo pone la base de datos y los campos internos no se filtran.
+
+Las clases 20 a 22 completan el bloque de la base de datos con las **relaciones**: primero la clave foránea y el `JOIN` escritos a mano (20), después el atributo de relación que se mantiene solo (21) y, por último, la tabla intermedia que hace posible la relación de muchos a muchos (22).
 
 ### 🔮 En desarrollo
 
@@ -199,7 +204,10 @@ once/
     ├── dieciseis-curso-git-moderno/         ← Clase 16: Git moderno
     ├── diecisiete-curso-github/             ← Clase 17: GitHub
     ├── dieciocho-curso-orm-sqlmodel/        ← Clase 18: el modelo que es la tabla
-    └── diecinueve-curso-contrato-api/       ← Clase 19: el contrato de la API
+    ├── diecinueve-curso-contrato-api/       ← Clase 19: el contrato de la API
+    ├── veinte-curso-tablas-conectadas/     ← Clase 20: tablas conectadas (clave foránea y JOIN)
+    ├── veintiuno-curso-relaciones-orm/     ← Clase 21: relaciones en el ORM
+    └── veintidos-curso-muchos-a-muchos/    ← Clase 22: muchos a muchos (tabla intermedia)
 ```
 
 ### Filosofía: "tres archivos por clase"
@@ -254,7 +262,7 @@ Cada clase tiene una paleta propia, definida en variables CSS del hub (`--cs-N-a
 | Algoritmos en C# (1‑10) | Código y energía | Violeta · Cian · Esmeralda · Ámbar · Rosa · Morado · Verde |
 | Análisis y Diseño (1‑7) | Plano arquitectónico | Azul profundo · Dorado · Esmeralda · Violeta · Índigo · Verde · Teal |
 | Bases de Datos (1‑9) | Datos y exploración | Esmeralda · Ámbar · Lima · Fucsia · Morado · Rojo · Cian · Verde |
-| Herramientas de Prog. II (1‑19) | Cuaderno técnico | Cian · Violeta · Naranja · Amarillo · Coral · Lima · Fucsia · Turquesa · Rosa · Git púrpura · Cian motor · Rosa contrato |
+| Herramientas de Prog. II (1‑22) | Cuaderno técnico | Cian · Violeta · Naranja · Amarillo · Coral · Lima · Fucsia · Turquesa · Rosa · Git púrpura · Cian motor · Rosa contrato |
 
 ---
 
@@ -277,6 +285,12 @@ los cuatro cursos; las clases 18 y 19 de Herramientas de Programación II usan l
 |-------|------|
 | <kbd>2</kbd> | Clase 18 · El modelo que es la tabla |
 | <kbd>3</kbd> | Clase 19 · El contrato de la API |
+| <kbd>Alt</kbd>+<kbd>2</kbd> | Clase 20 · Tablas conectadas |
+| <kbd>Alt</kbd>+<kbd>3</kbd> | Clase 21 · Relaciones en el ORM |
+| <kbd>Alt</kbd>+<kbd>4</kbd> | Clase 22 · Muchos a muchos |
+
+Las clases 20 a 22 usan <kbd>Alt</kbd> porque las 26 letras y los demás dígitos ya estaban
+ocupados por los otros cursos.
 
 ### Verificar cambios en el código
 
@@ -354,10 +368,10 @@ Para detalles técnicos finos, revisa los archivos `CLAUDE.md` y `AGENTS.md` en 
 
 ## 📂 Estado actual
 
-- ✅ **45 clases interactivas** completamente funcionales
-- ⏱️ **~174 horas** de material de estudio (24 clases de 3 h 45 min + 21 de 4 h)
+- ✅ **48 clases interactivas** completamente funcionales
+- ⏱️ **~178 horas** de material de estudio (24 clases de 3 h 45 min + 24 de 4 h)
 - 🎯 **4 cursos activos**: Algoritmos en C# (10), Análisis y Diseño (7), Bases de Datos (9) y Herramientas de Programación II (17)
-- 🧪 **8 laboratorios interactivos** simulados en el navegador
+- 🧪 **10 laboratorios interactivos** simulados en el navegador
 - 🔮 **1 curso en desarrollo**: Bases de Datos Avanzadas
 
 ---

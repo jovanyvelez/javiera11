@@ -32,7 +32,7 @@ function mostrarFecha() {
 function configurarAcordeon() {
   const bloques = document.querySelectorAll('.curso-bloque');
 
-  bloques.forEach((bloque, idx) => {
+  bloques.forEach((bloque) => {
     const encabezado = bloque.querySelector('.curso-encabezado');
     const grid = bloque.querySelector('.cuadricula-clases');
 
@@ -41,10 +41,10 @@ function configurarAcordeon() {
       grid.style.maxHeight = grid.scrollHeight + 'px';
     }
 
-    // Colapsa todos por defecto excepto el primero (que queda abierto de bienvenida)
-    if (idx !== 0) {
-      bloque.classList.add('colapsado');
-    }
+    // Al inicio, todos los cursos empiezan colapsados: el estudiante abre
+    // el que le interesa. El encabezado sigue mostrando cuántas clases hay
+    // y qué porcentaje lleva, así que no se pierde ninguna información.
+    bloque.classList.add('colapsado');
 
     // Inyecta chevron y contenedor de progreso % en el encabezado
     const meta = encabezado.querySelector('.curso-meta');
@@ -73,7 +73,7 @@ function configurarAcordeon() {
     // Accesibilidad: Enter / Espacio
     encabezado.setAttribute('tabindex', '0');
     encabezado.setAttribute('role', 'button');
-    encabezado.setAttribute('aria-expanded', idx === 0 ? 'true' : 'false');
+    encabezado.setAttribute('aria-expanded', 'false');
     encabezado.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -243,11 +243,11 @@ function animarStats() {
   // la animación sobrescribe el texto inicial, así que un valor aquí desactualizado
   // pisa el número correcto del HTML.
   animarNumero(document.getElementById('stat-cursos'),  0, 6,  800);
-  animarNumero(document.getElementById('stat-clases'), 0, 45, 900);
+  animarNumero(document.getElementById('stat-clases'), 0, 48, 900);
   // El cuarto (horas) tiene "+" al final
   const elHoras = document.getElementById('stat-horas');
   if (elHoras) {
-    animarNumero(elHoras, 0, 166, 1000, valor => valor + '+');
+    animarNumero(elHoras, 0, 178, 1000, valor => valor + '+');
   }
   // El de progreso ya se actualiza en cargarProgresoPorClase
 }
@@ -298,12 +298,20 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
+  // Atajos con Alt: clases 20, 21 y 22 de "Herramientas de Programación II"
+  if (e.altKey && /^Digit[234]$/.test(e.code)) {
+    const numero = { Digit2: 20, Digit3: 21, Digit4: 22 }[e.code];
+    const card = document.querySelector('.clase-card.herr-' + numero);
+    if (card) card.click();
+    return;
+  }
+
   // Atajos numéricos
   if (e.key === '1') {
     const card = document.querySelector('.clase-card.ad-1');
     if (card) card.click();
   } else if (e.key === '5') {
-    const card = document.querySelector('.clase-card.ad-1');
+    const card = document.querySelector('.clase-card.ad-5');
     if (card) card.click();
   } else if (e.key === '6') {
     const card = document.querySelector('.clase-card.ad-2');
