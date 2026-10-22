@@ -243,11 +243,11 @@ function animarStats() {
   // la animación sobrescribe el texto inicial, así que un valor aquí desactualizado
   // pisa el número correcto del HTML.
   animarNumero(document.getElementById('stat-cursos'),  0, 6,  800);
-  animarNumero(document.getElementById('stat-clases'), 0, 43, 900);
+  animarNumero(document.getElementById('stat-clases'), 0, 45, 900);
   // El cuarto (horas) tiene "+" al final
   const elHoras = document.getElementById('stat-horas');
   if (elHoras) {
-    animarNumero(elHoras, 0, 158, 1000, valor => valor + '+');
+    animarNumero(elHoras, 0, 166, 1000, valor => valor + '+');
   }
   // El de progreso ya se actualiza en cargarProgresoPorClase
 }
@@ -394,6 +394,12 @@ document.addEventListener('keydown', (e) => {
     if (card) card.click();
   } else if (e.key === 'l' || e.key === 'L') {
     const card = document.querySelector('.clase-card.herr-15');
+    if (card) card.click();
+  } else if (e.key === '2') {
+    const card = document.querySelector('.clase-card.herr-18');
+    if (card) card.click();
+  } else if (e.key === '3') {
+    const card = document.querySelector('.clase-card.herr-19');
     if (card) card.click();
   } else if (e.key === 'y' || e.key === 'Y') {
     const card = document.querySelector('.clase-card.herr-16');

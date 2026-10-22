@@ -1,0 +1,1660 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 18 · El modelo que es la tabla</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 18 · <em>El modelo que es la tabla</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura y programa</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">El modelo que es la tabla</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">El motor y las tablas</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">La sesión: la unidad de trabajo</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Ejercicio: el CRUD con ORM</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Ejercicio: la app que responde</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: el catálogo con ORM</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> la misma API del CRUD, pero con el modelo hablando por ti con la base de datos.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>El CRUD que ya sabes, <em>por dentro</em></h2>
+    <p class="proposito">
+      Las clases 8 a 15 construyeron un CRUD completo con SQL directo: la conexión, el
+      <code>SELECT</code>, el <code>INSERT</code>, la edición, el borrado y la estructura de
+      carpetas. Todo eso sigue en pie. Hoy añades <strong>una capa encima</strong>: el modelo deja
+      de ser solo un validador y pasa a <strong>ser también la tabla</strong>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: el mapa de lo que ya sabes</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · La promesa de la clase 8</h3>
+
+  <p class="primer-párrafo">
+    La clase 8 terminó con una advertencia que hoy se cumple. Si abres el cuaderno de aquella
+    clase, el último recuadro dice:
+  </p>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — lo que dijo la clase 8</span>
+    <p>
+      «<strong>Un ORM, cuando el proyecto crezca.</strong> SQLAlchemy o SQLModel añaden comodidad
+      y migraciones, pero solo después de entender la conexión, el pool y el SQL que hay
+      debajo.»
+    </p>
+    <p>
+      Ya entendiste la conexión (clase 8), las consultas (9), la inserción (10), la edición (11 y
+      12), el borrado (13), el flujo entre módulos (14) y la estructura de carpetas (15). Te toca
+      la capa de encima.
+    </p>
+  </div>
+
+  <p>
+    Esta clase es, literalmente, la deuda que el curso dejó escrita. Y es la primera vez que el
+    proyecto de la tienda <strong>sirve JSON</strong> en vez de HTML: el resto del curso devuelve
+    fragmentos de página, y esta clase devuelve datos que otro programa puede consumir. No es un
+    cambio de capricho: es la diferencia entre una web y una API.
+  </p>
+
+  <h3>0.2 · Lo que vas a ver, en tres palabras</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las tres piezas nuevas, y lo que ya sabes de cada una</caption>
+      <thead>
+        <tr><th>Pieza nueva</th><th>Lo que ya sabes</th><th>Qué cambia</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>El modelo que es la tabla</strong></td>
+          <td>Clase 10: un modelo de Pydantic que valida el formulario</td>
+          <td>Ahora el mismo modelo <em>define la tabla</em>: el esquema nace del código</td>
+        </tr>
+        <tr>
+          <td><strong>La sesión</strong></td>
+          <td>Clase 8: una conexión por petición</td>
+          <td>Una sesión por petición, que además <em>recuerda lo que hay que guardar</em></td>
+        </tr>
+        <tr>
+          <td><strong>El motor</strong></td>
+          <td>Clase 8: un pool de conexiones a PostgreSQL</td>
+          <td>Un motor a SQLite: un solo archivo, sin instalar nada</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.3 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cuadro de unidades, tiempos y productos esperados</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura, la promesa de la clase 8 y el mapa</td><td>20 min</td><td>El mapa de lo que ya sabes</td></tr>
+        <tr><td><strong>01</strong></td><td>El modelo que también es la tabla</td><td>30 min</td><td>Un modelo con <code>table=True</code> y su <code>id</code> bien declarado</td></tr>
+        <tr><td><strong>02</strong></td><td>El motor y las tablas</td><td>30 min</td><td>Un motor a SQLite y las tablas creadas al arrancar</td></tr>
+        <tr><td><strong>03</strong></td><td>La sesión: la unidad de trabajo (+ laboratorio)</td><td>30 min</td><td>El simulador de la sesión, funcionando</td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Ejercicio 5.1 · El CRUD con ORM</td><td>35 min</td><td>Las cuatro operaciones con ORM</td></tr>
+        <tr><td><strong>06</strong></td><td>Ejercicio 6.1 · La app que responde</td><td>35 min</td><td>La app con <code>/docs</code> y sus errores</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller integrador</td><td>45 min</td><td>El catálogo con ORM, funcionando de punta a punta</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.4 · Lo que vas a construir</h3>
+
+  <p>
+    Una aplicación diminuta: cuatro rutas y una tabla. Es la misma API del CRUD que construiste
+    con SQL, pero escrita de otra manera.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — las cuatro rutas que vas a tener</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># POST   /productos/              crea un producto</span>
+<span class="tk-cm"># GET    /productos/              lista todos</span>
+<span class="tk-cm"># GET    /productos/{id}          lee uno</span>
+<span class="tk-cm"># DELETE /productos/{id}          lo borra</span>
+
+<span class="tk-cm"># Mismo CRUD que en las clases 9 a 13.</span>
+<span class="tk-cm"># Distinta manera de hablarle a la base de datos.</span></code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — esta clase es la excepción del curso</span>
+    <p>
+      Las clases 9 a 15 devuelven <strong>HTML</strong>: la página entera, o un fragmento que
+      HTMX coloca en un sitio. Esta clase devuelve <strong>JSON</strong>: datos puros, sin
+      página. La razón es que un JSON lo puede consumir un celular, un script o el editor de
+      otra persona; un HTML con etiquetas, no.
+    </p>
+    <p>
+      No es un cambio de gusto: es el salto de «una web» a «una API». Vas a ver por qué el
+      tutorial oficial de FastAPI enseña exactamente esto.
+    </p>
+  </div>
+
+  <h3>0.5 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito estas tres preguntas:</p>
+
+  <ol>
+    <li>En tu proyecto del CRUD, ¿qué archivo contiene la consulta <code>SELECT</code> y qué archivo contiene la validación del formulario?</li>
+    <li>¿Qué pasaría si el esquema de la tabla cambiara y tus consultas lo tuvieran escrito a mano en ocho sitios?</li>
+    <li>¿Qué es «commit» en una base de datos y en qué se parece a lo que hacías al guardar una versión con Git?</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: el modelo que es la tabla →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — EL MODELO QUE ES LA TABLA
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · La pieza nueva</div>
+    <h2>El modelo que <em>también</em> es la tabla</h2>
+    <p class="proposito">
+      Hasta ahora, un modelo de Pydantic era un <strong>validador</strong>: comprobaba que el
+      formulario viniera bien. A partir de ahora será algo más: la <strong>definición de la
+      tabla</strong>. Una sola clase describirá las columnas, los tipos y la clave primaria.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: un modelo con <code>table=True</code></b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · La clase que lo cambia todo</h3>
+
+  <p class="primer-párrafo">
+    Mira las dos definiciones de la clase 10, la que usabas para validar el formulario de alta.
+    Ahora la misma, con una palabra de diferencia.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el mismo modelo, dos veces</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># ANTES (clase 10): un modelo que valida el formulario</span>
+<span class="tk-kw">class</span> <span class="tk-cls">ProductoActualizar</span>(<span class="tk-cls">BaseModel</span>):
+    nombre: <span class="tk-cls">str</span> = <span class="tk-fn">Field</span>(min_length=<span class="tk-num">1</span>, max_length=<span class="tk-num">100</span>)
+    precio: <span class="tk-cls">float</span> = <span class="tk-fn">Field</span>(gt=<span class="tk-num">0</span>)
+    cantidad: <span class="tk-cls">int</span> = <span class="tk-fn">Field</span>(ge=<span class="tk-num">0</span>)
+
+
+<span class="tk-cm"># AHORA: el mismo modelo, y además la tabla</span>
+<span class="tk-kw">class</span> <span class="tk-cls">Producto</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(default=<span class="tk-cls">None</span>, primary_key=<span class="tk-kw">True</span>)
+    nombre: <span class="tk-cls">str</span> = <span class="tk-fn">Field</span>(index=<span class="tk-kw">True</span>, min_length=<span class="tk-num">1</span>, max_length=<span class="tk-num">100</span>)
+    precio: <span class="tk-cls">float</span> = <span class="tk-fn">Field</span>(gt=<span class="tk-num">0</span>)
+    cantidad: <span class="tk-cls">int</span> = <span class="tk-fn">Field</span>(ge=<span class="tk-num">0</span>)
+    descripcion: <span class="tk-cls">str</span> | <span class="tk-cls">None</span> = <span class="tk-cls">None</span></code></pre>
+  </div>
+
+  <p>
+    Lo único que ha cambiado es la base: <code>SQLModel</code> en vez de <code>BaseModel</code>, y
+    el <code>table=True</code> detrás. Con eso, esa clase deja de ser «un validador» y pasa a ser
+    «la tabla <code>productos</code>».
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Qué significa cada palabra nueva</caption>
+      <thead>
+        <tr><th>Se escribe</th><th>Le dice a la base de datos</th><th>Por qué importa</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>table=True</code></td>
+          <td>«Esta clase <strong>es</strong> una tabla»</td>
+          <td>Sin esto, la clase solo valida; con esto, define las columnas</td>
+        </tr>
+        <tr>
+          <td><code>primary_key=True</code></td>
+          <td>«Esta columna es la <strong>clave primaria</strong>»</td>
+          <td>La columna que identifica cada fila y no se repite</td>
+        </tr>
+        <tr>
+          <td><code>index=True</code></td>
+          <td>«Pon un <strong>índice</strong> en esta columna»</td>
+          <td>Buscar por nombre o por id será rápido en vez de un barrido entero</td>
+        </tr>
+        <tr>
+          <td><code>default=None</code></td>
+          <td>«Esta columna puede venir vacía»</td>
+          <td>Necesario para el <code>id</code>: lo pone la base de datos</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>1.2 · El <code>id</code> que pone la base de datos</h3>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — por qué <code>int | None</code> y no <code>int</code></span>
+    <p>
+      La clave primaria se declara como <code>int | None</code>, no como <code>int</code>. Parece
+      un detalle tipográfico, pero es una decisión de diseño: <strong>en Python puedes crear el
+      objeto sin <code>id</code></strong>, porque en ese momento todavía no existe. Se lo inventa
+      la base de datos al guardarlo.
+    </p>
+    <p>
+      SQLModel lo entiende y además define la columna como un entero que <strong>no puede ser
+      nulo</strong> en la tabla: puede faltar en Python, pero una vez guardado, siempre tiene
+      valor.
+    </p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el id se inventa al guardar, no antes</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> sqlmodel <span class="tk-kw">import</span> <span class="tk-cls">Session</span>, <span class="tk-cls">SQLModel</span>
+
+producto = <span class="tk-cls">Producto</span>(nombre=<span class="tk-str">"Teclado mecánico"</span>, precio=<span class="tk-num">189900</span>, cantidad=<span class="tk-num">7</span>)
+<span class="tk-fn">print</span>(producto.id)      <span class="tk-cm"># None: todavía no existe</span>
+
+<span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+    session.<span class="tk-fn">add</span>(producto)
+    session.<span class="tk-fn">commit</span>()
+    session.<span class="tk-fn">refresh</span>(producto)
+
+<span class="tk-fn">print</span>(producto.id)      <span class="tk-cm"># 1: ahora sí, y lo puso la base de datos</span></code></pre>
+  </div>
+
+  <h3>1.3 · Lo que el modelo le dice a la tabla</h3>
+
+  <p>
+    Con el modelo escrito, la tabla se describe sola. Puedes ver exactamente qué columnas habrá
+    y de qué tipo, sin adivinar:
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el esquema que sale del modelo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>CREATE TABLE producto (
+    id          INTEGER NOT NULL PRIMARY KEY,
+    nombre      VARCHAR NOT NULL,
+    precio      FLOAT NOT NULL,
+    cantidad    INTEGER NOT NULL,
+    descripcion VARCHAR
+)
+CREATE INDEX ix_producto_nombre ON producto (nombre)</code></pre>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — por qué esto no es «magia»</span>
+    <p>
+      No adivinas: <strong>traducen</strong>. El <code>str</code> se vuelve <code>VARCHAR</code>,
+      el <code>float</code> se vuelve <code>FLOAT</code>, el <code>int | None</code> con
+      <code>primary_key=True</code> se vuelve <code>INTEGER NOT NULL PRIMARY KEY</code>. La
+      diferencia con la clase 8 es que allí escribías el <code>CREATE TABLE</code> a mano y el
+      modelo por separado: dos fuentes de verdad que se podían desincronizar. Aquí hay una sola.
+    </p>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — «el esquema nace del código» no significa «el esquema no cambia»</span>
+    <p>
+      Si mañana añades una columna al modelo, <code>create_all()</code> <strong>no</strong> la
+      añade a una tabla que ya existe: solo crea las tablas que faltan. Cambiar el esquema de
+      una base de datos que ya tiene datos es un problema aparte, y tiene nombre:
+      <strong>migraciones</strong>. Lo veremos en la clase 19; el tutorial oficial también las
+      aplaza y las mentions como el paso siguiente.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué hace exactamente <code>table=True</code>?</p>
+      <button class="opcion" data-op="a">Convierte la clase en un archivo de texto</button>
+      <button class="opcion" data-op="b">Hace que la tabla se cree automáticamente vacía</button>
+      <button class="opcion" data-op="c">Le dice al ORM que esa clase <strong>es</strong> la definición de una tabla</button>
+      <button class="opcion" data-op="d">Activa las validaciones de Pydantic</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué la clave primaria se declara <code>int | None</code>?</p>
+      <button class="opcion" data-op="a">Porque en Python el objeto puede existir todavía sin <code>id</code>: lo inventa la base de datos al guardarlo</button>
+      <button class="opcion" data-op="b">Porque todas las columnas de SQL admiten nulos</button>
+      <button class="opcion" data-op="c">Por una convención de Pydantic que no significa nada</button>
+      <button class="opcion" data-op="d">Para que el <code>id</code> se pueda repetir</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Para qué sirve <code>index=True</code>?</p>
+      <button class="opcion" data-op="a">Para ordenar la tabla alfabéticamente</button>
+      <button class="opcion" data-op="b">Para que la columna acepte nulos</button>
+      <button class="opcion" data-op="c">Para que la columna sea la clave primaria</button>
+      <button class="opcion" data-op="d">Para crear un índice: buscar por esa columna será rápido</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Qué diferencia hay con el modelo de Pydantic de la clase 10?</p>
+      <button class="opcion" data-op="a">Ninguna: es el mismo modelo con otro nombre</button>
+      <button class="opcion" data-op="b">El de ahora define también las columnas de la tabla; el anterior solo validaba</button>
+      <button class="opcion" data-op="c">El de ahora es más rápido porque no valida</button>
+      <button class="opcion" data-op="d">El anterior servía para las consultas y el nuevo para los formularios</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: el motor y las tablas →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — EL MOTOR Y LAS TABLAS
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · La conexión</div>
+    <h2>El motor y <em>las tablas</em></h2>
+    <p class="proposito">
+      El motor es el objeto que sabe cómo hablar con la base de datos. En la clase 8 lo llamaste
+      «pool de conexiones»; aquí tiene un nombre propio y una diferencia importante: un motor no
+      guarda conexiones, las <strong>fabrica</strong>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: un motor y las tablas creadas al arrancar</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · El motor</h3>
+
+  <p class="primer-párrafo">
+    El motor se crea con <code>create_engine()</code>. Necesita dos cosas: la URL de la base de
+    datos y, en el caso de SQLite, un ajuste que evita un error muy confuso.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el motor</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> sqlmodel <span class="tk-kw">import</span> <span class="tk-fn">create_engine</span>
+
+<span class="tk-cm"># SQLite es un solo archivo: no hay servidor que levantar</span>
+sqlite_file_name = <span class="tk-str">"database.db"</span>
+sqlite_url = <span class="tk-fn">f</span><span class="tk-str">"sqlite:///{sqlite_file_name}"</span>
+
+<span class="tk-cm"># Esta línea solo hace falta con SQLite.</span>
+connect_args = {<span class="tk-str">"check_same_thread"</span>: <span class="tk-kw">False</span>}
+
+engine = <span class="tk-fn">create_engine</span>(sqlite_url, connect_args=connect_args)</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — qué es <code>check_same_thread</code></span>
+    <p>
+      Por defecto, SQLite dice: «una conexión no se puede usar desde dos hilos a la vez». En
+      FastAPI, una sola petición puede tocar la base de datos desde más de un hilo (por ejemplo,
+      si una dependencia y la ruta usan la misma conexión). Con <code>False</code> se levanta esa
+      prohibición.
+    </p>
+    <p>
+      Y aquí está la buena noticia: <strong>esa línea desaparece con PostgreSQL</strong>. No es
+      una peculiaridad de FastAPI, es una peculiaridad de SQLite, que es un motor de un solo
+      archivo pensado para uso local. En cuanto passes a un servidor de verdad, se borra.
+    </p>
+  </div>
+
+  <h3>2.2 · Crear las tablas</h3>
+
+  <p>
+    Con el motor listo, las tablas se crean a partir de los modelos. Una sola función se encarga:
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — crear las tablas</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">create_db_and_tables</span>() -&gt; <span class="tk-cls">None</span>:
+    <span class="tk-str">"""Crea las tablas de todos los modelos de tabla."""</span>
+    <span class="tk-cls">SQLModel</span>.metadata.<span class="tk-fn">create_all</span>(engine)</code></pre>
+  </div>
+
+  <p>
+    <code>SQLModel.metadata</code> es el registro donde SQLModel guarda todos los modelos que
+    llevan <code>table=True</code>. <code>create_all()</code> recorre ese registro y crea en la
+    base de datos las tablas que falten. Si la tabla ya existe, no hace nada.
+  </p>
+
+  <h3>2.3 · Cuándo crearlas: al arrancar la aplicación</h3>
+
+  <p>
+    Las tablas tienen que existir antes de la primera petición. El sitio para hacerlo es el
+    <strong>arranque</strong> de la aplicación, y el curso ya te enseñó cómo: con
+    <code>lifespan</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el arranque</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> contextlib <span class="tk-kw">import</span> <span class="tk-cls">asynccontextmanager</span>
+
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">FastAPI</span>
+
+
+<span class="tk-kw">@</span><span class="tk-cls">asynccontextmanager</span>
+<span class="tk-kw">async def</span> <span class="tk-fn">lifespan</span>(app: <span class="tk-cls">FastAPI</span>):
+    <span class="tk-cm"># Al arrancar la aplicación se crean las tablas.</span>
+    <span class="tk-fn">create_db_and_tables</span>()
+    <span class="tk-kw">yield</span>
+    <span class="tk-cm"># Al apagarla, aquí se cerraría el pool. Con SQLite no hace falta.</span>
+
+
+app = <span class="tk-cls">FastAPI</span>(title=<span class="tk-str">"TechStore"</span>, lifespan=<span class="tk-fn">lifespan</span>)</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el tutorial oficial usa otra cosa</span>
+    <p>
+      El tutorial de FastAPI crea las tablas con <code>@app.on_event("startup")</code>. En nuestra
+      clase 8 ya aprendiste que ese patrón <strong>está de salida</strong>: la forma moderna es
+      <code>lifespan</code>, que además permite cerrar cosas al apagar. Lo que ves aquí es el
+      tutorial actualizado, no el publicado.
+    </p>
+  </div>
+
+  <h3>2.4 · Cambiar de SQLite a PostgreSQL</h3>
+
+  <p>
+    Cuando la tienda crezca de verdad, el archivo <code>database.db</code> se quedará corto. El
+    cambio completo son <strong>tres líneas</strong>:
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el mismo motor, otro motor de base de datos</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># ANTES (SQLite, un archivo)</span>
+sqlite_url = <span class="tk-str">"sqlite:///database.db"</span>
+connect_args = {<span class="tk-str">"check_same_thread"</span>: <span class="tk-kw">False</span>}
+engine = <span class="tk-fn">create_engine</span>(sqlite_url, connect_args=connect_args)
+
+<span class="tk-cm"># DESPUÉS (PostgreSQL, un servidor)</span>
+postgresql_url = <span class="tk-str">"postgresql://usuario:clave@localhost:5432/techstore"</span>
+engine = <span class="tk-fn">create_engine</span>(postgresql_url, pool_pre_ping=<span class="tk-kw">True</span>)</code></pre>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — la primera ventaja del ORM</span>
+    <p>
+      Compáralo con la clase 8: allí el cambio de motor significaba reescribir el DSN, revisar
+      los tipos de columna y tocar el código de la conexión. Aquí el ORM ya traduce los tipos de
+      Python a los de cada motor: <code>str</code> es <code>VARCHAR</code> en los dos, pero el
+      <code>Decimal</code> de los precios se traduce solo. <strong>El modelo es el mismo; el motor
+      se decide en un archivo.</strong>
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es el «motor» (<code>engine</code>)?</p>
+      <button class="opcion" data-op="a">Un tipo de conexión guardada en una variable</button>
+      <button class="opcion" data-op="b">El objeto que sabe cómo fabricar conexiones a esa base de datos</button>
+      <button class="opcion" data-op="c">Una tabla más, con la lista de columnas</button>
+      <button class="opcion" data-op="d">El archivo <code>database.db</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Por qué <code>check_same_thread=False</code> solo aparece con SQLite?</p>
+      <button class="opcion" data-op="a">Porque SQLite no admite índices</button>
+      <button class="opcion" data-op="b">Porque es una opción antigua que ya no funciona</button>
+      <button class="opcion" data-op="c">Porque FastAPI lo exige siempre</button>
+      <button class="opcion" data-op="d">Porque es una restricción del propio SQLite: con un servidor de verdad no hace falta</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué hace <code>SQLModel.metadata.create_all(engine)</code>?</p>
+      <button class="opcion" data-op="a">Crea las tablas de los modelos que aún no existen</button>
+      <button class="opcion" data-op="b">Borra y vuelve a crear todas las tablas</button>
+      <button class="opcion" data-op="c">Añade las columnas que falten a las tablas existentes</button>
+      <button class="opcion" data-op="d">Copia los datos de una base de datos a otra</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Por qué las tablas se crean en el arranque y no en cada petición?</p>
+      <button class="opcion" data-op="a">Porque en el arranque es más rápido</button>
+      <button class="opcion" data-op="b">Porque FastAPI no lo permite en otro sitio</button>
+      <button class="opcion" data-op="c">Porque deben existir antes de la primera petición, y crearlas en cada una sería absurdo</button>
+      <button class="opcion" data-op="d">Porque es donde se guarda el <code>id</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: El modelo que es la tabla</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: la sesión →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — LA SESIÓN
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · La idea central</div>
+    <h2>La sesión: <em>la unidad de trabajo</em></h2>
+    <p class="proposito">
+      Una conexión abre la puerta a la base de datos. Una <strong>sesión</strong> es el espacio
+      de trabajo: recuerda lo que has cambiado, y decide si eso se guarda o se tira. Es el
+      concepto más importante del ORM y el que más cuesta hasta que «suena» la explicación.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: el simulador de la sesión, funcionando</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · La diferencia entre conexión y sesión</h3>
+
+  <p class="primer-párrafo">
+    Con <code>asyncpg</code> (clase 8) tenías una <strong>conexión</strong>: un canal por el que
+    mandabas consultas. Con el ORM tienes una <strong>sesión</strong>, que es una conexión con
+    memoria. En esa sesión viven los objetos que has tocado, y hay tres palabras que deciden
+    qué pasa con ellos.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las tres palabras de la sesión</caption>
+      <thead>
+        <tr><th>Palabra</th><th>Qué hace</th><th>Si no la escribes</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>add()</code></td>
+          <td>Deja el objeto <strong>pendiente</strong> dentro de la sesión</td>
+          <td>El objeto se queda en memoria y se pierde al cerrar</td>
+        </tr>
+        <tr>
+          <td><code>commit()</code></td>
+          <td>Escribe de verdad en la base de datos</td>
+          <td>Nada se guarda: el cambio se pierde</td>
+        </tr>
+        <tr>
+          <td><code>refresh()</code></td>
+          <td>Relee el objeto desde la base de datos</td>
+          <td>El objeto en memoria puede quedar desfasado</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — por qué hace falta <code>refresh()</code></span>
+    <p>
+      Porque la base de datos puede hacer cosas que tú no pediste. El caso típico: tú creas un
+      producto <strong>sin</strong> <code>id</code> y la base de datos le asigna el <code>1</code>.
+      Tu objeto en memoria sigue con <code>id=None</code>, porque nadie le ha dicho que la base de
+      datos decidió. <code>refresh()</code> es esa llamada: «vuelve a leerlo y actualiza el
+      objeto».
+    </p>
+  </div>
+
+  <h3>3.2 · La dependencia que abre la sesión</h3>
+
+  <p>
+    La sesión se abre y se cierra sola, una por petición. En FastAPI eso es una dependencia con
+    <code>yield</code>, y el curso ya te enseñó la forma exacta en la clase 8:
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la dependencia de sesión</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> typing <span class="tk-kw">import</span> <span class="tk-cls">Annotated</span>
+
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">Depends</span>
+<span class="tk-kw">from</span> sqlmodel <span class="tk-kw">import</span> <span class="tk-cls">Session</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">get_session</span>():
+    <span class="tk-str">"""Abre una sesión, la cede y la cierra al terminar la petición."""</span>
+    <span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+        <span class="tk-kw">yield</span> session
+
+
+SessionDep = <span class="tk-cls">Annotated</span>[<span class="tk-cls">Session</span>, <span class="tk-fn">Depends</span>(<span class="tk-fn">get_session</span>)]</code></pre>
+  </div>
+
+  <p>
+    El <code>with</code> es la clave: si la petición termina bien, la sesión se cierra; si falla a
+    mitad, el <code>with</code> <strong>deshace</strong> lo que no se había confirmado. Es el
+    <code>rollback</code> implícito, y por eso es imposible dejar la base de datos a medias.
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — el mismo <code>yield</code> de la clase 8</span>
+    <p>
+      Fíjate: es <strong>exactamente</strong> el mismo patrón que aprendiste en la clase 8 con
+      <code>get_connection()</code>. Cambia lo que se cede (una conexión frente a una sesión) y
+      nada más. Esa es una de las razones por las que el curso empieza por la conexión y no por
+      el ORM: la forma ya la conoces.
+    </p>
+  </div>
+
+  <h3>3.3 · Laboratorio: la máquina de la sesión</h3>
+
+  <p>
+    Antes de leer más código, recorre una petición real. Pulsa <strong>Avanzar</strong> para
+    ver cómo la sesión va guardando el trabajo, y pulsa <strong>Forzar un fallo</strong> para ver
+    qué pasa cuando algo se rompe antes del <code>commit</code>.
+  </p>
+
+  <div class="sesion" data-sesion>
+    <div class="sesion-cabecera">
+      <span class="etiqueta">Laboratorio</span>
+      <h4>La máquina de la sesión</h4>
+      <p>
+        Cada petición abre una sesión, la llena de cambios y decide si se confirman. Avanza paso a
+        paso, o inyecta un fallo antes del <code>commit</code> para ver el <code>rollback</code>.
+      </p>
+    </div>
+
+    <div class="sesion-cuerpo">
+      <div class="sesion-pasos" data-sesion-pasos></div>
+      <div class="sesion-estado" data-sesion-estado></div>
+    </div>
+
+    <div style="padding: 0 1.3rem 1.3rem;">
+      <div class="sesion-barra"><span data-sesion-barra></span></div>
+      <div class="sesion-acciones">
+        <button type="button" class="sesion-boton avanzar" data-sesion-avanzar>Avanzar un paso</button>
+        <button type="button" class="sesion-boton fallar" data-sesion-fallar>Forzar un fallo antes del commit</button>
+        <button type="button" class="sesion-boton" data-sesion-reiniciar>Reiniciar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="recuadto nota">
+    <span class="rotulo">Nota — lo que tienes que salir sabiendo</span>
+    <p>
+      Tres cosas: que <code>add()</code> <strong>no</strong> guarda nada; que <code>commit()</code>
+      es el punto sin retorno; y que si algo falla antes del commit, la base de datos ni se entera.
+      Ese último punto es el que hace que una API sea fiable: un error a mitad de una petición
+      nunca deja datos a medias.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué diferencia hay entre una conexión y una sesión?</p>
+      <button class="opcion" data-op="a">La sesión es más rápida</button>
+      <button class="opcion" data-op="b">La sesión trabaja con SQL y la conexión con Python</button>
+      <button class="opcion" data-op="c">La sesión es una conexión con memoria: recuerda los cambios pendientes y sabe confirmarlos o deshacerlos</button>
+      <button class="opcion" data-op="d">La conexión se abre a mano y la sesión automáticamente</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué pasa si olvidas el <code>commit()</code>?</p>
+      <button class="opcion" data-op="a">El cambio no se escribe: la sesión se cierra y se pierde</button>
+      <button class="opcion" data-op="b">El cambio se escribe igualmente, pero más tarde</button>
+      <button class="opcion" data-op="c">La aplicación se cae con un error</button>
+      <button class="opcion" data-op="d">Se escribe solo la primera vez</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Para qué sirve <code>refresh()</code>?</p>
+      <button class="opcion" data-op="a">Para borrar el objeto de la memoria</button>
+      <button class="opcion" data-op="b">Para volver a abrir la conexión</button>
+      <button class="opcion" data-op="c">Para deshacer el último cambio</button>
+      <button class="opcion" data-op="d">Para releer el objeto desde la base de datos y actualizarlo</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Qué garantiza el <code>with Session(engine) as session:</code>?</p>
+      <button class="opcion" data-op="a">Que la sesión nunca se cierre</button>
+      <button class="opcion" data-op="b">Que si la petición falla a mitad, lo no confirmado se deshace</button>
+      <button class="opcion" data-op="c">Que la base de datos no pueda escrever más</button>
+      <button class="opcion" data-op="d">Que todas las peticiones usen la misma sesión</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: El motor y las tablas</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de lectura</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija por
+      escrito lo que has leído hasta ahora.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora.
+    </p>
+
+    <div class="reglas">
+      <div class="regla">
+        <h4>Regla 20-20-20</h4>
+        <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+      </div>
+      <div class="regla">
+        <h4>Movimiento</h4>
+        <p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p>
+      </div>
+      <div class="regla">
+        <h4>Hidratación</h4>
+        <p>Un vaso de agua. La lectura densa agota más de lo que parece.</p>
+      </div>
+      <div class="regla">
+        <h4>Bitácora</h4>
+        <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora de lectura (5 minutos)</h3>
+
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿qué significa que un modelo tenga <code>table=True</code>?</li>
+    <li><strong>En una frase:</strong> ¿qué diferencia hay entre <code>add()</code> y <code>commit()</code>?</li>
+    <li><strong>En una frase:</strong> ¿por qué el <code>id</code> se declara <code>int | None</code>?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+
+  <p>
+    Estas siete palabras aparecerán en el taller final. Léelas ahora; las definiciones son
+    aproximadas y se afinarán en las unidades siguientes.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>ORM</dt>
+      <dd>Un «mapeador» entre objetos de Python y tablas de SQL: escribes una clase y el ORM traduce a <code>CREATE TABLE</code>, <code>SELECT</code> o <code>UPDATE</code>.</dd>
+    </div>
+    <div>
+      <dt>Modelo de tabla</dt>
+      <dd>Una clase con <code>table=True</code>: describe las columnas de una tabla real.</dd>
+    </div>
+    <div>
+      <dt>Modelo de datos</dt>
+      <dd>Una clase sin <code>table=True</code>: solo valida y transporta datos.</dd>
+    </div>
+    <div>
+      <dt>Motor</dt>
+      <dd>El objeto que fabrica las conexiones a la base de datos.</dd>
+    </div>
+    <div>
+      <dt>Sesión</dt>
+      <dd>Una conexión con memoria: guarda los cambios pendientes hasta que se confirman o se deshacen.</dd>
+    </div>
+    <div>
+      <dt>Confirmar</dt>
+      <dd><code>commit()</code>: escribir de verdad los cambios pendientes en la base de datos.</dd>
+    </div>
+    <div>
+      <dt>Deshacer</dt>
+      <dd><code>rollback()</code>: tirar los cambios pendientes sin tocar la base de datos.</dd>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: La sesión: la unidad de trabajo</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Ejercicio práctico →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — EJERCICIO: EL CRUD CON ORM
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · Taller de aplicación</div>
+    <h2>Ejercicio 5.1 · <em>El CRUD con ORM</em></h2>
+    <p class="proposito">
+      Las cuatro operaciones de la clase 9 a la 13, reescritas con el ORM. En 35 minutos
+      escribirás las cuatro rutas y comprobarás que devuelven <strong>exactamente lo mismo</strong>
+      que las versiones con SQL directo.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: las cuatro rutas funcionando</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>Las cuatro operaciones, sin SQL</h3>
+    </div>
+
+    <p>
+      Escribe la aplicación del CRUD con el ORM. Tienes el motor, el modelo y la dependencia de
+      sesión de las unidades anteriores: solo faltan las rutas.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>Un cuerpo JSON con <code>nombre</code>, <code>precio</code>, <code>cantidad</code> y <code>descripcion</code></td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>JSON con los datos del producto y su <code>id</code></td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Ninguna ruta escribe SQL: todo pasa por la sesión</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Una sola sesión por petición, entregada por <code>SessionDep</code></td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Si el <code>id</code> no existe, la respuesta es un error <strong>404</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong><code>POST /productos/</code></strong>: crea el producto, lo guarda con
+        <code>add</code> + <code>commit</code> + <code>refresh</code>, y lo devuelve.
+      </li>
+      <li>
+        <strong><code>GET /productos/</code></strong>: devuelve la lista, con <code>offset</code> y
+        <code>limit</code> como en la clase 9.
+      </li>
+      <li>
+        <strong><code>GET /productos/{producto_id}</code></strong>: devuelve uno, o un error
+        <strong>404</strong> con el mensaje «Producto no encontrado».
+      </li>
+      <li>
+        <strong><code>DELETE /productos/{producto_id}</code></strong>: lo borra y devuelve
+        <code>{"ok": true}</code>.
+      </li>
+      <li>
+        <strong>Que el <code>id</code> lo ponga la base de datos</strong>: si el cuerpo no trae
+        <code>id</code>, la respuesta trae el que la base de datos generó.
+      </li>
+      <li>
+        <strong>Que el orden de las operaciones sea siempre el mismo</strong>:
+        <code>add</code> → <code>commit</code> → <code>refresh</code>. Nunca al revés.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-5-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-5-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La diferencia con las clases 9 a 13 está en <em>qué</em> se le pide a la base de datos. Ya
+        no escribes la consulta: describes qué quieres y el ORM la traduce.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>app.py — las cuatro rutas con ORM</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> typing <span class="tk-kw">import</span> <span class="tk-cls">Annotated</span>
+
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">FastAPI</span>, <span class="tk-cls">HTTPException</span>, <span class="tk-cls">Query</span>
+<span class="tk-kw">from</span> sqlmodel <span class="tk-kw">import</span> <span class="tk-fn">select</span>
+
+<span class="tk-kw">from</span> modelos <span class="tk-kw">import</span> <span class="tk-cls">Producto</span>
+<span class="tk-kw">from</span> dependencias <span class="tk-kw">import</span> <span class="tk-cls">SessionDep</span>
+
+app = <span class="tk-cls">FastAPI</span>(title=<span class="tk-str">"TechStore"</span>)
+
+
+<span class="tk-kw">@</span>app.<span class="tk-fn">post</span>(<span class="tk-str">"/productos/"</span>)
+<span class="tk-kw">def</span> <span class="tk-fn">crear_producto</span>(producto: <span class="tk-cls">Producto</span>, session: <span class="tk-cls">SessionDep</span>) -&gt; <span class="tk-cls">Producto</span>:
+    <span class="tk-str">"""Crea un producto y lo guarda."""</span>
+    session.<span class="tk-fn">add</span>(producto)
+    session.<span class="tk-fn">commit</span>()
+    session.<span class="tk-fn">refresh</span>(producto)
+    <span class="tk-kw">return</span> producto
+
+
+<span class="tk-kw">@</span>app.<span class="tk-fn">get</span>(<span class="tk-str">"/productos/"</span>)
+<span class="tk-kw">def</span> <span class="tk-fn">leer_productos</span>(
+    session: <span class="tk-cls">SessionDep</span>,
+    offset: <span class="tk-cls">int</span> = <span class="tk-num">0</span>,
+    limit: <span class="tk-cls">Annotated</span>[<span class="tk-cls">int</span>, <span class="tk-fn">Query</span>(le=<span class="tk-num">100</span>)] = <span class="tk-num">100</span>,
+) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">Producto</span>]:
+    <span class="tk-str">"""Devuelve la lista de productos."""</span>
+    productos = session.<span class="tk-fn">exec</span>(<span class="tk-fn">select</span>(<span class="tk-cls">Producto</span>).<span class="tk-fn">offset</span>(offset).<span class="tk-fn">limit</span>(limit)).<span class="tk-fn">all</span>()
+    <span class="tk-kw">return</span> productos
+
+
+<span class="tk-kw">@</span>app.<span class="tk-fn">get</span>(<span class="tk-str">"/productos/{producto_id}"</span>)
+<span class="tk-kw">def</span> <span class="tk-fn">leer_producto</span>(producto_id: <span class="tk-cls">int</span>, session: <span class="tk-cls">SessionDep</span>) -&gt; <span class="tk-cls">Producto</span>:
+    <span class="tk-str">"""Devuelve un producto, o un 404 si no existe."""</span>
+    producto = session.<span class="tk-fn">get</span>(<span class="tk-cls">Producto</span>, producto_id)
+    <span class="tk-kw">if not</span> producto:
+        <span class="tk-kw">raise</span> <span class="tk-cls">HTTPException</span>(status_code=<span class="tk-num">404</span>, detail=<span class="tk-str">"Producto no encontrado"</span>)
+    <span class="tk-kw">return</span> producto
+
+
+<span class="tk-kw">@</span>app.<span class="tk-fn">delete</span>(<span class="tk-str">"/productos/{producto_id}"</span>)
+<span class="tk-kw">def</span> <span class="tk-fn">borrar_producto</span>(producto_id: <span class="tk-cls">int</span>, session: <span class="tk-cls">SessionDep</span>):
+    <span class="tk-str">"""Borra un producto."""</span>
+    producto = session.<span class="tk-fn">get</span>(<span class="tk-cls">Producto</span>, producto_id)
+    <span class="tk-kw">if not</span> producto:
+        <span class="tk-kw">raise</span> <span class="tk-cls">HTTPException</span>(status_code=<span class="tk-num">404</span>, detail=<span class="tk-str">"Producto no encontrado"</span>)
+    session.<span class="tk-fn">delete</span>(producto)
+    session.<span class="tk-fn">commit</span>()
+    <span class="tk-kw">return</span> {<span class="tk-str">"ok"</span>: <span class="tk-kw">True</span>}</code></pre>
+  </div>
+
+    <p>
+      La línea que más se olvida es <code>session.get(Producto, producto_id)</code>: es el
+      equivalente exacto de <code>SELECT ... WHERE id = $1</code> de la clase 9. Y el
+      <code>if not producto</code> es el 404: la clase 12 ya te enseñó a distinguir «no existe»
+      de «hay un problema».
+    </p>
+  </div>
+    </div>
+
+  <h3>5.2 · Comprobación</h3>
+
+  <p>Arranca el servidor y prueba las cuatro rutas:</p>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — las cuatro rutas con ORM</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">uv run fastapi dev</div>
+      <div class="consola-salida">INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada">curl -X POST http://127.0.0.1:8000/productos/ -H "Content-Type: application/json" -d '{"nombre":"Audífonos Bluetooth","precio":129900,"cantidad":14,"descripcion":"30 h de batería"}'</div>
+      <div class="consola-salida">{"nombre":"Audífonos Bluetooth","precio":129900.0,"cantidad":14,"descripcion":"30 h de batería","id":1}</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada">curl http://127.0.0.1:8000/productos/1</div>
+      <div class="consola-salida">{"nombre":"Audífonos Bluetooth","precio":129900.0,"cantidad":14,"descripcion":"30 h de batería","id":1}</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada">curl http://127.0.0.1:8000/productos/999</div>
+      <div class="consola-salida">{"detail":"Producto no encontrado"}</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada">curl -X DELETE http://127.0.0.1:8000/productos/1</div>
+      <div class="consola-salida">{"ok":true}</div>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — mira el <code>id</code> de la respuesta</span>
+    <p>
+      En la respuesta del <code>POST</code> aparece <code>"id":1</code> aunque el cuerpo que
+      mandaste <strong>no tenía <code>id</code></strong>. Lo puso la base de datos. En las clases
+      10 a 13, el <code>id</code> se generaba en Python con un contador; aquí lo genera el
+      motor, que es donde corresponde.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué sustituye a <code>SELECT ... WHERE id = $1</code>?</p>
+      <button class="opcion" data-op="a">Una consulta escrita a mano dentro de la ruta</button>
+      <button class="opcion" data-op="b"><code>session.get(Producto, producto_id)</code></button>
+      <button class="opcion" data-op="c"><code>session.exec(select(...))</code></button>
+      <button class="opcion" data-op="d">Una función que hay que escribir en el repositorio</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿En qué orden van las tres llamadas al guardar un producto?</p>
+      <button class="opcion" data-op="a"><code>add</code> → <code>commit</code> → <code>refresh</code></button>
+      <button class="opcion" data-op="b"><code>commit</code> → <code>add</code> → <code>refresh</code></button>
+      <button class="opcion" data-op="c"><code>refresh</code> → <code>add</code> → <code>commit</code></button>
+      <button class="opcion" data-op="d">El orden no importa</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué hace <code>session.exec(select(Producto))</code>?</p>
+      <button class="opcion" data-op="a">Ejecuta el SQL y devuelve las filas como diccionarios</button>
+      <button class="opcion" data-op="b">Borra todos los productos</button>
+      <button class="opcion" data-op="c">Pide al ORM los objetos <code>Producto</code> de la tabla</button>
+      <button class="opcion" data-op="d">Crea la tabla por primera vez</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Por qué el <code>404</code> va con <code>raise HTTPException</code> y no con un <code>return</code> normal?</p>
+      <button class="opcion" data-op="a">Porque es más corto de escribir</button>
+      <button class="opcion" data-op="b">Porque <code>return</code> no admite números</button>
+      <button class="opcion" data-op="c">Porque la sesión se cierra antes</button>
+      <button class="opcion" data-op="d">Porque así FastAPI corta la petición y devuelve ese código y ese mensaje</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: la app que responde →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — EJERCICIO: LA APP QUE RESPONDE
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · Taller de aplicación</div>
+    <h2>Ejercicio 6.1 · <em>La app que responde</em></h2>
+    <p class="proposito">
+      La aplicación ya funciona. Ahora hay que entender <strong>qué está viendo quien la
+      consume</strong>: la documentación automática, los códigos de error y el esquema que se
+      publica solo. En 35 minutos lo compruebas y lo dejas documentado.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: la API con su documentación y sus errores</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>Lo que ve quien consume la API</h3>
+    </div>
+
+    <p>
+      La API ya responde. Este ejercicio es sobre su <strong>contrato</strong>: qué se puede
+      pedir, qué se recibe, qué se devuelve y qué errores existen.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>Peticiones HTTP con un cuerpo JSON</td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>JSON con los datos, y un código de estado que dice qué pasó</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Los errores se responden con <code>HTTPException</code> o con el <code>422</code> automático</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>La documentación de <code>/docs</code> la genera FastAPI a partir del código</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Todavía se usa <strong>un solo modelo</strong> para todo</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong>Levantar la aplicación y abrir <code>/docs</code></strong>: comprobar que
+        aparecen las cuatro rutas con sus campos.
+      </li>
+      <li>
+        <strong>Comprobar el <code>404</code></strong> con un <code>id</code> que no existe.
+      </li>
+      <li>
+        <strong>Comprobar el <code>422</code></strong> mandando un cuerpo que no cumple las
+        reglas del modelo.
+      </li>
+      <li>
+        <strong>Mirar <code>/openapi.json</code></strong> y anotar qué campos pide cada ruta.
+      </li>
+      <li>
+        <strong>Escribir el enunciado del problema</strong>: qué puede pedir un cliente y qué
+        campos le devuelve.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-6-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-6-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        El <code>422</code> <strong>no lo escribes tú</strong>: FastAPI lo genera solo cuando el
+        modelo rechaza el cuerpo. Tú solo escribes los <code>404</code>, porque esos dependen de
+        si el registro existe, y eso solo lo sabe la base de datos.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>las tres respuestas de la API</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># 200 — todo bien</span>
+<span class="tk-kw">def</span> <span class="tk-fn">leer_producto</span>(producto_id: <span class="tk-cls">int</span>, session: <span class="tk-cls">SessionDep</span>) -&gt; <span class="tk-cls">Producto</span>:
+    ...
+    <span class="tk-kw">return</span> producto
+
+
+<span class="tk-cm"># 404 — el registro no existe (lo decides tú)</span>
+<span class="tk-kw">def</span> <span class="tk-fn">leer_producto</span>(producto_id: <span class="tk-cls">int</span>, session: <span class="tk-cls">SessionDep</span>) -&gt; <span class="tk-cls">Producto</span>:
+    producto = session.<span class="tk-fn">get</span>(<span class="tk-cls">Producto</span>, producto_id)
+    <span class="tk-kw">if not</span> producto:
+        <span class="tk-kw">raise</span> <span class="tk-cls">HTTPException</span>(status_code=<span class="tk-num">404</span>, detail=<span class="tk-str">"Producto no encontrado"</span>)
+    <span class="tk-kw">return</span> producto
+
+
+<span class="tk-cm"># 422 — el cuerpo no cumple el modelo (lo genera FastAPI)</span>
+<span class="tk-cm"># No hay que escribir nada: basta con declarar el tipo del parámetro.</span>
+<span class="tk-kw">def</span> <span class="tk-fn">crear_producto</span>(producto: <span class="tk-cls">Producto</span>, session: <span class="tk-cls">SessionDep</span>) -&gt; <span class="tk-cls">Producto</span>:
+    ...</code></pre>
+  </div>
+
+    <p>
+      La diferencia entre los dos 404 y el 422 es de fondo: el 404 dice «lo que pediste no
+      existe» y el 422 dice «lo que mandaste no sirve». La clase 10 ya te enseñó a distinguirlos.
+    </p>
+  </div>
+    </div>
+
+  <h3>6.2 · Comprobación</h3>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — los tres finales de una respuesta</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">curl -i http://127.0.0.1:8000/productos/1 | head -1</div>
+      <div class="consola-salida">HTTP/1.1 200 OK</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada">curl -i http://127.0.0.1:8000/productos/999 | head -1</div>
+      <div class="consola-salida">HTTP/1.1 404 Not Found</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada">curl -i -X POST http://127.0.0.1:8000/productos/ -H "Content-Type: application/json" -d '{"nombre":"","precio":-5,"cantidad":1}' | head -1</div>
+      <div class="consola-salida">HTTP/1.1 422 Unprocessable Entity</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada">curl -s http://127.0.0.1:8000/openapi.json | python -c "import json,sys; d=json.load(sys.stdin); print(list(d['components']['schemas']['Producto']['properties']))"</div>
+      <div class="consola-salida">['id', 'nombre', 'precio', 'cantidad', 'descripcion']</div>
+    </div>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el <code>id</code> aparece en el cuerpo del POST</span>
+    <p>
+      Mira la última línea: el esquema de <code>Producto</code> incluye <code>id</code>. Como el
+      <code>POST</code> usa ese mismo modelo, <strong>el cliente puede mandar un
+      <code>id</code></strong>… y sobrescribir un producto que ya existe. Y como el modelo también
+      incluye los campos internos, el cliente ve todo lo guardado.
+    </p>
+    <p>
+      La API funciona. Pero tiene una puerta abierta de par en par, y el ejercicio 7 y la clase 19
+      van a cerrarla.
+    </p>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — lo que es una API</span>
+    <p>
+      Una API es un contrato: <em>esto es lo que acepto, esto es lo que devuelvo, y esto es lo que
+      pasa cuando te equivocas</em>. La documentación de <code>/docs</code> no es un adorno: es el
+      contrato escrito y actualizado <strong>por el propio código</strong>. Si cambias el modelo,
+      la documentación cambia sola. Nadie tiene que acordarse de actualizar un Word.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Quién escribe el error <code>422</code>?</p>
+      <button class="opcion" data-op="a">Tú, con un <code>raise HTTPException</code></button>
+      <button class="opcion" data-op="b">La base de datos</button>
+      <button class="opcion" data-op="c">FastAPI, automáticamente, cuando el modelo rechaza el cuerpo</button>
+      <button class="opcion" data-op="d">El navegador</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Y el <code>404</code> de un producto inexistente?</p>
+      <button class="opcion" data-op="a">Lo escribes tú, porque solo la base de datos sabe si el registro existe</button>
+      <button class="opcion" data-op="b">También lo genera FastAPI solo</button>
+      <button class="opcion" data-op="c">Lo genera el ORM automáticamente</button>
+      <button class="opcion" data-op="d">Lo escribe el cliente</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿De dónde sale la documentación de <code>/docs</code>?</p>
+      <button class="opcion" data-op="a">De un archivo <code>docs.md</code> que se escribe a mano</button>
+      <button class="opcion" data-op="b">De un comentario al principio del archivo</button>
+      <button class="opcion" data-op="c">De la base de datos</button>
+      <button class="opcion" data-op="d">Del propio código: FastAPI la genera a partir de los modelos y las rutas</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Qué problema tiene esta API tal como está?</p>
+      <button class="opcion" data-op="a">Que devuelve JSON en vez de HTML</button>
+      <button class="opcion" data-op="b">Que usa un solo modelo: el cliente puede mandar el <code>id</code> y ve los campos internos</button>
+      <button class="opcion" data-op="c">Que el <code>404</code> debería ser un <code>500</code></button>
+      <button class="opcion" data-op="d">Que las tablas se crean al apagar la aplicación</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: El CRUD con ORM</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller integrador →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER INTEGRADOR
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>Taller · <em>El catálogo que habla con la base de datos</em></h2>
+    <p class="proposito">
+      Las unidades anteriores dejaron las piezas: el modelo, el motor, la sesión y las cuatro
+      rutas. Ahora se montan en una aplicación completa, se prueban de punta a punta y se escribe
+      el taller.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller de desarrollo</b></span>
+      <span>🧭 <b>Producto: la API del catálogo funcionando y documentada</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Taller</span>
+      <h3>La API del catálogo</h3>
+    </div>
+
+    <p>
+      Construye la aplicación completa con el ORM: motor, modelo, dependencia de sesión y las
+      cuatro rutas. Después, deja constancia de un problema que la API todavía tiene.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Archivos</strong></td>
+            <td><code>modelos.py</code>, <code>dependencias.py</code> y <code>app.py</code> (o los tres dentro de un paquete <code>app/</code>)</td>
+          </tr>
+          <tr>
+            <td><strong>Base de datos</strong></td>
+            <td>SQLite: un archivo <code>database.db</code> que se crea solo</td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>JSON en las cuatro rutas y la documentación en <code>/docs</code></td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Ninguna ruta escribe SQL</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Las tablas se crean al arrancar, no a mano</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li>
+        <strong>La aplicación completa</strong>, con las cuatro rutas y su documentación.
+      </li>
+      <li>
+        <strong>Las seis comprobaciones</strong> marcadas una por una en el cuaderno.
+      </li>
+      <li>
+        <strong>Una tabla en tu cuaderno</strong> con las cuatro rutas, su cuerpo esperado y su
+        código de estado.
+      </li>
+      <li>
+        <strong>Un párrafo escrito</strong>: qué problema tiene todavía esta API y por qué la
+        clase siguiente lo arregla.
+      </li>
+      <li>
+        <strong>El commit</strong> con un mensaje que explique el cambio, usando lo que aprendiste
+        en la clase 16.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="taller-solucion">Ver un modelo de respuesta</button>
+
+    <div class="solucion" id="taller-solucion">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        El párrafo del entregable 4 es el corazón del taller. No es una descripción: es un
+        <strong>diagnóstico</strong>. Y tiene que señalar el problema <em>concreto</em>, no algo
+        genérico como «conviene mejorar la seguridad».
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>las seis comprobaciones del taller</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-num">1.</span> Arrancar la aplicación: se crea el archivo database.db
+<span class="tk-num">2.</span> POST sin id: la respuesta trae un id generado por la base de datos
+<span class="tk-num">3.</span> GET /productos/: devuelve la lista
+<span class="tk-num">4.</span> GET /productos/999: devuelve 404
+<span class="tk-num">5.</span> POST con nombre vacío o precio negativo: devuelve 422
+<span class="tk-num">6.</span> DELETE /productos/{id}: devuelve {"ok":true} y la fila desaparece</code></pre>
+  </div>
+
+    <div class="recuadro nota">
+      <p>
+        Un párrafo de diagnóstico para este taller puede ser: «La API funciona, pero usa un solo
+        modelo para recibir, guardar y devolver. Como el <code>id</code> forma parte de ese
+        modelo, un cliente puede mandar <code>id=99</code> al crear y sobrescribir el producto que
+        ya tiene ese identificador. Además, el mismo modelo devuelve todos los campos guardados,
+        así que cualquier dato interno saldría en la respuesta. Lo que falta es <strong>separar
+        el modelo que se recibe del modelo que se devuelve</strong>, y eso es exactamente lo que
+        hace la clase 19».
+      </p>
+    </div>
+  </div>
+    </div>
+
+  <h3>7.2 · Rúbrica de autoevaluación</h3>
+
+  <p>
+    Puntúa cada criterio de 0 a 2 y revisa los que hayas quedado en 0 o 1 antes de dar por terminado
+    el taller.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación de la API con ORM</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>El modelo</td>
+          <td>No hay modelo, o es un Pydantic de los de la clase 10</td>
+          <td>Hay modelo con <code>table=True</code> pero el <code>id</code> es <code>int</code> a secas</td>
+          <td>Modelo de tabla con <code>id</code> opcional, clave primaria, índice y reglas</td>
+        </tr>
+        <tr>
+          <td>El motor</td>
+          <td>Se conecta a la base de datos a mano en cada ruta</td>
+          <td>Hay motor, pero se crea dentro de cada petición</td>
+          <td>Un motor único, con la URL en una variable</td>
+        </tr>
+        <tr>
+          <td>Las tablas</td>
+          <td>Se crean a mano con SQL</td>
+          <td>Se crean al arrancar, pero el <code>lifespan</code> está mal colocado</td>
+          <td>Se crean en el arranque con <code>create_all</code> y un <code>lifespan</code> correcto</td>
+        </tr>
+        <tr>
+          <td>La sesión</td>
+          <td>Se abre y se cierra en cada ruta</td>
+          <td>Hay dependencia, pero se abre dos veces o no se cierra</td>
+          <td>Una dependencia con <code>yield</code>: una sesión por petición</td>
+        </tr>
+        <tr>
+          <td>El orden de las llamadas</td>
+          <td>No hay <code>commit</code>, o va antes del <code>add</code></td>
+          <td>Guarda bien, pero falta el <code>refresh</code></td>
+          <td><code>add</code> → <code>commit</code> → <code>refresh</code>, siempre</td>
+        </tr>
+        <tr>
+          <td>Los errores</td>
+          <td>Un <code>id</code> inexistente da un error 500</td>
+          <td>El 404 existe, pero el 422 se gestiona a mano</td>
+          <td>El 404 es tuyo y el 422 lo genera FastAPI sin que escribas nada</td>
+        </tr>
+        <tr>
+          <td>La documentación</td>
+          <td>No existe o está escrita a mano</td>
+          <td>Existe, pero no refleja los modelos</td>
+          <td><code>/docs</code> muestra las cuatro rutas con los campos reales</td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay nada escrito</td>
+          <td>Describe el qué, no el porqué</td>
+          <td>Diagnóstico: qué problema queda, por qué importa y qué lo arregla</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.3 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>Un <code>table=True</code> convierte una clase en la <strong>definición de una tabla</strong>: el esquema nace del código.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p>El <code>id</code> se declara <code>int | None</code> porque lo inventa la base de datos al guardar, no el programa al crear.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>El motor sabe fabricar conexiones; la sesión es una conexión <strong>con memoria</strong> de lo que has cambiado.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p><code>add()</code> no guarda nada: <code>commit()</code> es el punto sin retorno, y <code>refresh()</code> pone al día el objeto.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p>Una sesión por petición, entregada por una dependencia: si algo falla, se deshace sola.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p>El <code>404</code> lo escribes tú; el <code>422</code> lo genera FastAPI. No todos los errores se escriben igual.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p>Una API es un contrato, y la documentación se escribe sola a partir del código. Pero un solo modelo deja puertas abiertas.</p>
+    </div>
+  </div>
+
+  <h3>7.4 · Puente hacia la próxima clase</h3>
+
+  <p>
+    Tu API funciona: crea, lista, lee y borra. Y funciona <em>de la manera más simple posible</em>:
+    con <strong>un solo modelo</strong> para todo.
+  </p>
+
+  <p>
+    Ese modelo único tiene dos agujeros abiertos, y los dos son de seguridad:
+  </p>
+
+  <ol>
+    <li>
+      <strong>El <code>id</code> lo puede elegir el cliente.</strong> Si alguien manda
+      <code>id=99</code> al crear, puede sobrescribir el producto que ya tiene ese identificador.
+    </li>
+    <li>
+      <strong>Todos los campos guardados se devuelven.</strong> Hoy no hay ningún campo interno,
+      así que no se nota. En cuanto lo haya —el precio de compra, la nota interna, el
+      proveedor— <strong>saldrá en la respuesta</strong>.
+    </li>
+  </ol>
+
+  <p>
+    La próxima clase arregla las dos cosas separando lo que entra de lo que sale. Y para eso hay
+    una herramienta que no conocías: la <strong>herencia de modelos</strong>.
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de la próxima clase</span>
+    <p>
+      Guarda este proyecto <strong>completo</strong> en un repositorio de Git, con un commit por
+      cada unidad de la clase: uno para el modelo, otro para el motor y las tablas, otro para las
+      rutas. La clase 16 explica Git en detalle; lo único que necesitas ahora es tener el proyecto
+      en un repositorio y tres commits con mensajes claros.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 18</h2>
+    <p>
+      Has cerrado el círculo de la capa de datos: la clase 8 te dio la conexión, las clases 9 a 13
+      te dieron las cuatro operaciones, y hoy has puesto una capa encima que las hace más cortas
+      y, sobre todo, <strong>más seguras de mantener</strong>. El modelo describe la tabla, la
+      sesión recuerda lo que hay que guardar, y el motor decide a qué base de datos hablarle.
+      La próxima clase abre la puerta que hoy está entreabierta: la del <code>id</code> que elige
+      el cliente y los campos internos que se filtran.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: La app que responde</button>
+    <button class="btn-siguiente" data-ir="0">✓ Marcar el taller como terminado y volver al inicio</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 18 · El modelo que es la tabla</span>
+  <p class="pie-sub">El modelo como tabla · El motor y las tablas · La sesión como unidad de trabajo · El CRUD con ORM</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

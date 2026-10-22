@@ -108,6 +108,15 @@ Ruta de **17 clases** con la plantilla editorial «cuaderno técnico». Es la ru
 | **16** | Git moderno en el día a día | `curso-herr-16-git-moderno` |
 | **17** | GitHub: publica tu código | `curso-herr-17-github` |
 
+**Bloque E — El ORM: del SQL al contrato de la API (clases 18‑19)**
+
+| Clase | Tema | Clave `localStorage` |
+|-------|------|----------------------|
+| **18** | El modelo que es la tabla: SQLModel, el motor y la sesión | `curso-herr-18-orm` |
+| **19** | El contrato de la API: modelos separados, `response_model` y `PATCH` | `curso-herr-19-contrato` |
+
+La clase 18 cierra la promesa que hizo la clase 8 («un ORM, cuando el proyecto crezca»): el modelo pasa de validar a <em>ser</em> la tabla, y aparece la sesión como unidad de trabajo. La clase 19 separa lo que la API <strong>recibe</strong> de lo que <strong>devuelve</strong>: el `id` lo pone la base de datos y los campos internos no se filtran.
+
 ### 🔮 En desarrollo
 
 - **Bases de Datos Avanzadas** — JOINs avanzados, `GROUP BY`, `HAVING` y subconsultas.
@@ -129,7 +138,7 @@ Ruta de **17 clases** con la plantilla editorial «cuaderno técnico». Es la ru
 - Puedes usar este material como **base para tus clases**: proyéctalo o pide a los estudiantes que lo recorran en casa.
 - Cada curso incluye una **ruta sugerida** con módulos en orden, pero los estudiantes pueden saltar libremente.
 - Las actividades prácticas (talleres, laboratorios, retos finales) son ideales para **trabajar en parejas o grupos**.
-- Seis clases incluyen un **laboratorio interactivo** en el navegador: la 7 (simulador de validación), la 11 (editor de registros), la 12 (control de versión), la 13 (borrado), la 14 (trazador entre módulos) y la 15 (organizador de carpetas).
+- Ocho clases incluyen un **laboratorio interactivo** en el navegador: la 7 (simulador de validación), la 11 (editor de registros), la 12 (control de versión), la 13 (borrado), la 14 (trazador entre módulos), la 15 (organizador de carpetas), la 18 (máquina de la sesión) y la 19 (los cuatro modelos).
 
 ---
 
@@ -188,7 +197,9 @@ once/
     ├── catorce-curso-interaccion-modulos/   ← Clase 14: interacción entre módulos
     ├── quince-curso-estructura-crud/        ← Clase 15: estructuración del CRUD
     ├── dieciseis-curso-git-moderno/         ← Clase 16: Git moderno
-    └── diecisiete-curso-github/             ← Clase 17: GitHub
+    ├── diecisiete-curso-github/             ← Clase 17: GitHub
+    ├── dieciocho-curso-orm-sqlmodel/        ← Clase 18: el modelo que es la tabla
+    └── diecinueve-curso-contrato-api/       ← Clase 19: el contrato de la API
 ```
 
 ### Filosofía: "tres archivos por clase"
@@ -243,7 +254,7 @@ Cada clase tiene una paleta propia, definida en variables CSS del hub (`--cs-N-a
 | Algoritmos en C# (1‑10) | Código y energía | Violeta · Cian · Esmeralda · Ámbar · Rosa · Morado · Verde |
 | Análisis y Diseño (1‑7) | Plano arquitectónico | Azul profundo · Dorado · Esmeralda · Violeta · Índigo · Verde · Teal |
 | Bases de Datos (1‑9) | Datos y exploración | Esmeralda · Ámbar · Lima · Fucsia · Morado · Rojo · Cian · Verde |
-| Herramientas de Prog. II (1‑17) | Cuaderno técnico | Cian · Violeta · Naranja · Amarillo · Coral · Lima · Fucsia · Turquesa · Rosa · Git púrpura |
+| Herramientas de Prog. II (1‑19) | Cuaderno técnico | Cian · Violeta · Naranja · Amarillo · Coral · Lima · Fucsia · Turquesa · Rosa · Git púrpura · Cian motor · Rosa contrato |
 
 ---
 
@@ -255,6 +266,17 @@ Cada clase tiene una paleta propia, definida en variables CSS del hub (`--cs-N-a
 - **localStorage** para guardar progreso.
 
 **Sin** Node, **sin** npm, **sin** servidor, **sin** dependencias. Todo corre directamente en el navegador.
+
+### Atajos de teclado
+
+En la página principal, cada clase se abre con una tecla. Las 26 letras están repartidas entre
+los cuatro cursos; las clases 18 y 19 de Herramientas de Programación II usan los dígitos
+<kbd>2</kbd> y <kbd>3</kbd>, los únicos libres.
+
+| Atajo | Abre |
+|-------|------|
+| <kbd>2</kbd> | Clase 18 · El modelo que es la tabla |
+| <kbd>3</kbd> | Clase 19 · El contrato de la API |
 
 ### Verificar cambios en el código
 
@@ -332,10 +354,10 @@ Para detalles técnicos finos, revisa los archivos `CLAUDE.md` y `AGENTS.md` en 
 
 ## 📂 Estado actual
 
-- ✅ **43 clases interactivas** completamente funcionales
-- ⏱️ **~166 horas** de material de estudio (24 clases de 3 h 45 min + 19 de 4 h)
+- ✅ **45 clases interactivas** completamente funcionales
+- ⏱️ **~174 horas** de material de estudio (24 clases de 3 h 45 min + 21 de 4 h)
 - 🎯 **4 cursos activos**: Algoritmos en C# (10), Análisis y Diseño (7), Bases de Datos (9) y Herramientas de Programación II (17)
-- 🧪 **6 laboratorios interactivos** simulados en el navegador
+- 🧪 **8 laboratorios interactivos** simulados en el navegador
 - 🔮 **1 curso en desarrollo**: Bases de Datos Avanzadas
 
 ---

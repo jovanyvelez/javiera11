@@ -590,6 +590,10 @@ main {
 .clase-card.herr-16::before { background: linear-gradient(90deg, var(--herr-16-a), var(--herr-16-b)); }
 .clase-card.herr-17::before { background: linear-gradient(90deg, var(--herr-17-a), var(--herr-17-b)); }
 
+.clase-card.herr-18::before { background: linear-gradient(90deg, var(--herr-18-a), var(--herr-18-b)); }
+
+.clase-card.herr-19::before { background: linear-gradient(90deg, var(--herr-19-a), var(--herr-19-b)); }
+
 .clase-card:hover {
   transform: translateY(-6px) scale(1.01);
   border-color: var(--dorado);
@@ -666,6 +670,10 @@ main {
 .clase-card.herr-15 .clase-badge { background: linear-gradient(135deg, var(--herr-15-a), var(--herr-15-b)); color: #241300; }
 .clase-card.herr-16 .clase-badge { background: linear-gradient(135deg, var(--herr-16-a), var(--herr-16-b)); color: #04121a; }
 .clase-card.herr-17 .clase-badge { background: linear-gradient(135deg, var(--herr-17-a), var(--herr-17-b)); color: #fff; }
+
+.clase-card.herr-18 .clase-badge { background: linear-gradient(135deg, var(--herr-18-a), var(--herr-18-b)); color: #04222a; }
+
+.clase-card.herr-19 .clase-badge { background: linear-gradient(135deg, var(--herr-19-a), var(--herr-19-b)); color: #fff; }
 
 .clase-badge.gris {
   background: rgba(148, 163, 184, 0.2);

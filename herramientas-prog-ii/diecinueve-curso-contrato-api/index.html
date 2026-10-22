@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 19 · El contrato de la API</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 19 · <em>El contrato de la API</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura y programa</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">Un modelo, cuatro modelos</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">El id lo pone la base de datos</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Los campos que no se devuelven</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Ejercicio: el PATCH</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Ejercicio: la API documentada</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: la API pública del catálogo</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> una API cuyo contrato dice exactamente qué entra y qué sale.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>La API que deja al <em>cliente decidir el id</em></h2>
+    <p class="proposito">
+      La clase 18 dejó una API que funciona. Hoy vas a descubrir que <strong>funcionar no es
+      suficiente</strong>: esa API tiene dos agujeros abiertos, y los dos tienen que ver con la
+      misma pregunta — <em>¿qué tiene derecho a saber el cliente?</em>
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y diagnóstico</b></span>
+      <span>🧭 <b>Producto: los dos agujeros, demostrados</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · Lo que entregaste la clase pasada</h3>
+
+  <p class="primer-párrafo">
+    La clase 18 terminó con una aplicación que hacía las cuatro cosas: crear, listar, leer y
+    borrar. Todo con un <strong>único modelo</strong>, el mismo para recibir el cuerpo, para
+    guardar en la tabla y para devolver en la respuesta. Y el taller pedía que dejar escrito qué
+    problema le quedaba. Este es el problema:
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — lo que hace la API de la clase 18</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Un solo modelo para todo</span>
+<span class="tk-kw">class</span> <span class="tk-cls">Producto</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(default=<span class="tk-cls">None</span>, primary_key=<span class="tk-kw">True</span>)
+    nombre: <span class="tk-cls">str</span> = <span class="tk-fn">Field</span>(index=<span class="tk-kw">True</span>)
+    precio: <span class="tk-cls">float</span>
+    cantidad: <span class="tk-cls">int</span>
+    descripcion: <span class="tk-cls">str</span> | <span class="tk-cls">None</span> = <span class="tk-cls">None</span>
+
+
+<span class="tk-cm"># Y el POST usa ese mismo modelo</span>
+<span class="tk-kw">@</span>app.<span class="tk-fn">post</span>(<span class="tk-str">"/productos/"</span>)
+<span class="tk-kw">def</span> <span class="tk-fn">crear_producto</span>(producto: <span class="tk-cls">Producto</span>, session: <span class="tk-cls">SessionDep</span>) -&gt; <span class="tk-cls">Producto</span>:
+    session.<span class="tk-fn">add</span>(producto)
+    session.<span class="tk-fn">commit</span>()
+    session.<span class="tk-fn">refresh</span>(producto)
+    <span class="tk-kw">return</span> producto</code></pre>
+  </div>
+
+  <h3>0.2 · Agujero número uno: el cliente elige el identificador</h3>
+
+  <p>
+    Mira el <code>id</code> del modelo: es un campo más. Y el <code>POST</code> acepta un
+    <code>Producto</code> entero. ¿Qué pasa si el cliente manda un <code>id</code> que ya existe?
+  </p>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — el cliente manda un id que ya existe</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">curl -X POST http://127.0.0.1:8000/productos/ -H "Content-Type: application/json" -d '{"id":99,"nombre":"Teclado mecánico","precio":189900,"cantidad":7}'</div>
+      <div class="consola-salida">{"id":99,"cantidad":7,"precio":189900.0,"nombre":"Teclado mecánico","descripcion":null}</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada">curl http://127.0.0.1:8000/productos/99</div>
+      <div class="consola-salida">{"id":99,"cantidad":7,"precio":189900.0,"nombre":"Teclado mecánico","descripcion":null}</div>
+    </div>
+  </div>
+
+  <p>
+    El servidor aceptó un <code>id=99</code> porque se lo mandaron. Si ese 99 ya existía, lo que
+    ha pasado es que <strong>el producto viejo ha desaparecido</strong> y en su lugar está otro.
+    Nadie lo ha hackeado: ha sido un <code>POST</code> normal, con un campo de más.
+  </p>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el identificador no es un dato, es una decisión</span>
+    <p>
+      Decidir <strong>qué registro se toca</strong> es tarea del servidor o de la base de datos,
+      nunca del cliente. El cliente dice <em>«quiero crear un producto»</em>; el servidor responde
+      <em>«este es el que te toca, el 7»</em>. La clase 12 ya te mostró por qué: si el
+      identificador lo elige el cliente, la concurrencia se rompe.
+    </p>
+  </div>
+
+  <h3>0.3 · Agujero número dos: todo lo que se guarda, se devuelve</h3>
+
+  <p>
+    El segundo agujero es más discreto y aparece más adelante. Hoy el modelo tiene cuatro campos
+    y todos son públicos, así que no se nota. Pero en una tienda real hay un campo que
+    <strong>no es del cliente</strong>: lo que a la tienda le cuesta el producto.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el campo que nadie debe ver</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Si mañana añades esto al modelo…</span>
+<span class="tk-kw">class</span> <span class="tk-cls">Producto</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    ...
+    costo_proveedor: <span class="tk-cls">float</span>   <span class="tk-cm"># lo que le cuesta a la tienda</span>
+
+<span class="tk-cm"># …la respuesta de la API lo devolverá. A cualquiera que pregunte.</span></code></pre>
+  </div>
+
+  <p>
+    Con un solo modelo, <strong>no hay forma de decirlo</strong>: el mismo campo que usas para
+    guardar es el que se devuelve. Es como tener una caja con una sola tapa: no puedes guardar
+    algo y a la vez no enseñarlo.
+  </p>
+
+  <h3>0.4 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cuadro de unidades, tiempos y productos esperados</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura: los dos agujeros de la API anterior</td><td>20 min</td><td>El diagnóstico, demostrado con peticiones reales</td></tr>
+        <tr><td><strong>01</strong></td><td>Un modelo, cuatro modelos</td><td>30 min</td><td>Los cinco modelos, con la herencia entendida</td></tr>
+        <tr><td><strong>02</strong></td><td>El <code>id</code> lo pone la base de datos</td><td>30 min</td><td>Una ruta de alta donde el cliente no manda el <code>id</code></td></tr>
+        <tr><td><strong>03</strong></td><td>Los campos que no se devuelven</td><td>30 min</td><td>El campo interno filtrado, comprobado</td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Ejercicio 5.1 · El <code>PATCH</code></td><td>35 min</td><td>La actualización parcial funcionando</td></tr>
+        <tr><td><strong>06</strong></td><td>Ejercicio 6.1 · La API documentada</td><td>35 min</td><td>El contrato de la API, por escrito</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller integrador</td><td>45 min</td><td>La API pública del catálogo, completa</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — la idea que ordena la clase</span>
+    <p>
+      No se trata de «añadir más clases». Se trata de <strong>separar tres cosas que hasta ahora
+      iban juntas</strong>: lo que la base de datos guarda, lo que el cliente manda y lo que el
+      cliente se lleva. Tres responsabilidades, tres modelos. Y para no repetir los mismos campos
+      cinco veces, la herencia.
+    </p>
+  </div>
+
+  <h3>0.5 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito estas tres preguntas:</p>
+
+  <ol>
+    <li>En la API de la clase 18, ¿qué pasaría si un cliente mandara un <code>id</code> que ya existe?</li>
+    <li>¿Por qué no basta con borrar el campo <code>id</code> del modelo?</li>
+    <li>Nombra un dato de tu app que el cliente no debería ver nunca. ¿Cómo lo protegerías?</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: un modelo, cuatro modelos →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — UN MODELO, CUATRO MODELOS
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · La separación</div>
+    <h2>Un modelo, <em>cuatro modelos</em></h2>
+    <p class="proposito">
+      La solución no es un modelo más grande: son <strong>cuatro modelos distintos</strong>, cada
+      uno con su trabajo. Y para no escribir los mismos campos cinco veces, se heredan de una
+      clase base: una herencia que, por primera vez en el curso, se usa para <em>organizar</em>
+      y no para «dejar cosas en el sitio».
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: los cinco modelos escritos</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · La clase base</h3>
+
+  <p class="primer-párrafo">
+    Lo que todos los modelos tienen en común son los campos que el cliente <em>siempre</em> ve: el
+    nombre, el precio, el stock y la descripción. Esos campos van en una clase base, sin
+    <code>table=True</code>: no es una tabla, solo es la lista compartida.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la clase base</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">ProductoBase</span>(<span class="tk-cls">SQLModel</span>):
+    <span class="tk-str">"""Los campos que todos los modelos comparten."""</span>
+
+    nombre: <span class="tk-cls">str</span> = <span class="tk-fn">Field</span>(index=<span class="tk-kw">True</span>, min_length=<span class="tk-num">1</span>, max_length=<span class="tk-num">100</span>)
+    precio: <span class="tk-cls">float</span> = <span class="tk-fn">Field</span>(gt=<span class="tk-num">0</span>)
+    cantidad: <span class="tk-cls">int</span> = <span class="tk-fn">Field</span>(ge=<span class="tk-num">0</span>)
+    descripcion: <span class="tk-cls">str</span> | <span class="tk-cls">None</span> = <span class="tk-cls">None</span></code></pre>
+  </div>
+
+  <h3>1.2 · Los cuatro modelos que heredan</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — los cuatro modelos</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># 1. La TABLA: lo que se guarda de verdad</span>
+<span class="tk-kw">class</span> <span class="tk-cls">Producto</span>(<span class="tk-cls">ProductoBase</span>, table=<span class="tk-kw">True</span>):
+    id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(default=<span class="tk-cls">None</span>, primary_key=<span class="tk-kw">True</span>)
+    costo_proveedor: <span class="tk-cls">float</span>
+
+
+<span class="tk-cm"># 2. Lo que VE el cliente: sin costo_proveedor, con id siempre presente</span>
+<span class="tk-kw">class</span> <span class="tk-cls">ProductoPublic</span>(<span class="tk-cls">ProductoBase</span>):
+    id: <span class="tk-cls">int</span>
+
+
+<span class="tk-cm"># 3. Lo que ACEPTA el cliente al crear: los campos públicos + el interno</span>
+<span class="tk-kw">class</span> <span class="tk-cls">ProductoCreate</span>(<span class="tk-cls">ProductoBase</span>):
+    costo_proveedor: <span class="tk-cls">float</span>
+
+
+<span class="tk-cm"># 4. Lo que ACEPTA el cliente al editar: todo opcional</span>
+<span class="tk-kw">class</span> <span class="tk-cls">ProductoUpdate</span>(<span class="tk-cls">ProductoBase</span>):
+    nombre: <span class="tk-cls">str</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(default=<span class="tk-cls">None</span>, min_length=<span class="tk-num">1</span>, max_length=<span class="tk-num">100</span>)
+    precio: <span class="tk-cls">float</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(default=<span class="tk-cls">None</span>, gt=<span class="tk-num">0</span>)
+    cantidad: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(default=<span class="tk-cls">None</span>, ge=<span class="tk-num">0</span>)
+    descripcion: <span class="tk-cls">str</span> | <span class="tk-cls">None</span> = <span class="tk-cls">None</span></code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Qué hace cada modelo, y por qué está separado</caption>
+      <thead>
+        <tr><th>Modelo</th><th><code>table=True</code></th><th>Su trabajo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>ProductoBase</code></td>
+          <td>no</td>
+          <td>Tiene los campos compartidos. No se usa solo: es la base de la que heredan los otros</td>
+        </tr>
+        <tr>
+          <td><code>Producto</code></td>
+          <td><strong>sí</strong></td>
+          <td>Es la tabla. Es el único que se guarda en la base de datos</td>
+        </tr>
+        <tr>
+          <td><code>ProductoPublic</code></td>
+          <td>no</td>
+          <td>Es lo que sale por la puerta. Es el <em>contrato</em> con el cliente</td>
+        </tr>
+        <tr>
+          <td><code>ProductoCreate</code></td>
+          <td>no</td>
+          <td>Es lo que entra por la puerta al crear. Sin <code>id</code>: eso lo pone la base de datos</td>
+        </tr>
+        <tr>
+          <td><code>ProductoUpdate</code></td>
+          <td>no</td>
+          <td>Es lo que entra al editar. Todo opcional: solo lo que se quiere cambiar</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — por qué <code>ProductoPublic</code> repite <code>id: int</code></span>
+    <p>
+      En el modelo de la tabla, el <code>id</code> es <code>int | None</code> porque puede no
+      existir todavía. En el modelo público, el <code>id</code> es <code>int</code> a secas:
+      <strong>cuando te lo devuelven, siempre existe</strong>. Ese detalle no es decorativo:
+      convierte «el id puede ser nulo» en una certeza, y el cliente puede escribir código más
+      simple porque sabe que el dato está.
+    </p>
+  </div>
+
+  <h3>1.3 · Por qué <code>ProductoUpdate</code> repite los campos</h3>
+
+  <p>
+    Fíjate en que <code>ProductoUpdate</code> vuelve a declarar los cuatro campos de la base.
+    Podría heredarlos tal cual… pero entonces <code>nombre</code> sería <strong>obligatorio</strong>
+    en toda edición, y no es lo que queremos: si el cliente solo cambia el precio, ¿por qué tiene
+    que mandar el nombre otra vez?
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — la técnica de «re-declarar para cambiar»</span>
+    <p>
+      En Python, cuando una subclase vuelve a declarar un atributo, <strong>gana la subclase</strong>.
+      Así que <code>ProductoUpdate</code> hereda de <code>ProductoBase</code> —y por eso trae
+      <code>descripcion</code>—, pero declara sus propios cuatro campos como opcionales. Es la
+      misma idea de la clase 12, donde el modelo de la edición declare qué campos se pueden
+      tocar.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Cuántos modelos hay y cuál es el único que se guarda en la base de datos?</p>
+      <button class="opcion" data-op="a">Cinco modelos; solo <code>Producto</code>, el que lleva <code>table=True</code></button>
+      <button class="opcion" data-op="b">Cuatro modelos; todos se guardan</button>
+      <button class="opcion" data-op="c">Cinco modelos; los cinco se guardan</button>
+      <button class="opcion" data-op="d">Dos modelos: uno de entrada y uno de salida</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Para qué sirve <code>ProductoBase</code>?</p>
+      <button class="opcion" data-op="a">Para crear la tabla automáticamente</button>
+      <button class="opcion" data-op="b">Para validar el cuerpo del POST</button>
+      <button class="opcion" data-op="c">Para filtrar los campos internos</button>
+      <button class="opcion" data-op="d">Para tener los campos compartidos en un solo sitio, sin repetirlos en cada modelo</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Por qué <code>ProductoPublic</code> declara <code>id: int</code> y no <code>int | None</code>?</p>
+      <button class="opcion" data-op="a">Porque el <code>id</code> no se guarda en la tabla</button>
+      <button class="opcion" data-op="b">Porque cuando el cliente recibe el producto, el <code>id</code> siempre existe: es una certeza</button>
+      <button class="opcion" data-op="c">Porque así el campo puede ser opcional en el <code>POST</code></button>
+      <button class="opcion" data-op="d">Por la velocidad de la base de datos</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Por qué <code>ProductoUpdate</code> vuelve a declarar los campos de la base?</p>
+      <button class="opcion" data-op="a">Para poder cambiarles el nombre</button>
+      <button class="opcion" data-op="b">Porque la herencia no funciona en SQLModel</button>
+      <button class="opcion" data-op="c">Para hacerlos opcionales: en una edición solo se manda lo que se quiere cambiar</button>
+      <button class="opcion" data-op="d">Para que el modelo de actualización tenga más campos</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: el id lo pone la base de datos →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — EL ID LO PONE LA BASE DE DATOS
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · La primera puerta</div>
+    <h2>El <em>id</em> lo pone la base de datos</h2>
+    <p class="proposito">
+      Con el modelo de entrada ya sin <code>id</code>, la ruta de alta deja de poder aceptar un
+      identificador cualquiera. Pero hay un paso más: <strong>convertir</strong> lo que llega en
+      el modelo de la tabla. Y ese paso tiene un nombre propio.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: la ruta de alta corregida</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · Dos modelos, una conversión</h3>
+
+  <p>
+    En la clase 18, el <code>POST</code> recibía un <code>Producto</code> y lo guardaba tal cual:
+    el mismo objeto era lo que entraba y lo que se guardaba. Ahora son <strong>dos modelos
+    distintos</strong>, así que hay que convertir uno en el otro.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la ruta de alta corregida</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">@</span>app.<span class="tk-fn">post</span>(<span class="tk-str">"/productos/"</span>, response_model=<span class="tk-cls">ProductoPublic</span>)
+<span class="tk-kw">def</span> <span class="tk-fn">crear_producto</span>(producto: <span class="tk-cls">ProductoCreate</span>, session: <span class="tk-cls">SessionDep</span>):
+    <span class="tk-str">"""Recibe un ProductoCreate y guarda un Producto."""</span>
+
+    <span class="tk-cm"># El modelo de la tabla se construye a partir del de entrada.</span>
+    db_producto = <span class="tk-cls">Producto</span>.<span class="tk-fn">model_validate</span>(producto)
+
+    session.<span class="tk-fn">add</span>(db_producto)
+    session.<span class="tk-fn">commit</span>()
+    session.<span class="tk-fn">refresh</span>(db_producto)
+    <span class="tk-kw">return</span> db_producto</code></pre>
+  </div>
+
+  <p>
+    <code>Producto.model_validate(producto)</code> es la conversión: lee el
+    <code>ProductoCreate</code> que llegó del cliente y construye un <code>Producto</code> — el
+    modelo de la tabla — con esos mismos datos. El <code>id</code> no viene del cliente, y por
+    tanto sale <code>None</code>: lo inventa la base de datos al guardar.
+  </p>
+
+  <h3>2.2 · Comprobación: el cliente ya no manda el id</h3>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — el mismo POST de la clase 18, ahora corregido</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">curl -X POST http://127.0.0.1:8000/productos/ -H "Content-Type: application/json" -d '{"id":99,"nombre":"Teclado mecánico","precio":189900,"cantidad":7,"costo_proveedor":120000}'</div>
+      <div class="consola-salida">{"nombre":"Teclado mecánico","precio":189900.0,"cantidad":7,"descripcion":null,"id":2}</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada"># Fíjate: mandó id=99 y se guardó con id=2.</div>
+      <div class="consola-entrada"># El id del cliente fue ignorado.</div>
+    </div>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — el mismo campo, dos papeles</span>
+    <p>
+      Antes, el <code>id</code> era un campo más del modelo: lo que el cliente mandara. Ahora
+      <code>ProductoCreate</code> <strong>no lo tiene</strong>, así que el <code>id</code> que
+      llega en el JSON simplemente no existe para el servidor. No se ignora, no se «corrige»:
+      <em>no existe</em>. Y el <code>id</code> que sale en la respuesta es el que la base de
+      datos generó, que fue el 2.
+    </p>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el campo que «desaparece» no da error</span>
+    <p>
+      Si mandas <code>id</code> en el cuerpo, FastAPI <strong>no se queja</strong>: el campo no
+      está en el modelo, y lo que no está en el modelo no se valida. El <code>id</code> se
+      ignora en silencio. Es un comportamiento correcto y muy común en APIs bien hechas: el
+      servidor decide qué se acepta.
+    </p>
+  </div>
+
+  <h3>2.3 · Lo que dice la documentación</h3>
+
+  <p>
+    El cambio se ve en <code>/docs</code>, y es la prueba de que el contrato ha cambiado de
+    verdad:
+  </p>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — el cuerpo que acepta el POST, antes y después</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada"># Clase 18 (un solo modelo)</div>
+      <div class="consola-salida">['id', 'nombre', 'precio', 'cantidad', 'descripcion']</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada"># Clase 19 (modelos separados)</div>
+      <div class="consola-salida">['nombre', 'precio', 'cantidad', 'descripcion', 'costo_proveedor']</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada"># El id ya no está: lo pone la base de datos.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace <code>Producto.model_validate(producto)</code>?</p>
+      <button class="opcion" data-op="a">Valida el cuerpo y devuelve un error si algo falla</button>
+      <button class="opcion" data-op="b">Construye un <code>Producto</code> (modelo de tabla) a partir del <code>ProductoCreate</code> recibido</button>
+      <button class="opcion" data-op="c">Escribe el producto en la base de datos</button>
+      <button class="opcion" data-op="d">Convierte el producto en un diccionario JSON</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Por qué el cliente ya no puede elegir el <code>id</code>?</p>
+      <button class="opcion" data-op="a">Porque la base de datos lo bloquea</button>
+      <button class="opcion" data-op="b">Porque el <code>id</code> se valida con una expresión regular</button>
+      <button class="opcion" data-op="c">Porque el <code>POST</code> devuelve 422 si viene un <code>id</code></button>
+      <button class="opcion" data-op="d">Porque el modelo de entrada <code>ProductoCreate</code> no tiene campo <code>id</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> Si el cliente manda <code>id=99</code> en el cuerpo, ¿qué ocurre?</p>
+      <button class="opcion" data-op="a">Se ignora en silencio: el <code>id</code> lo pone la base de datos</button>
+      <button class="opcion" data-op="b">Se guarda con <code>id=99</code></button>
+      <button class="opcion" data-op="c">La API responde 422</button>
+      <button class="opcion" data-op="d">La API responde 409</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Por qué la documentación de <code>/docs</code> es la prueba de que el contrato cambió?</p>
+      <button class="opcion" data-op="a">Porque FastAPI la escribe a mano si se lo pides</button>
+      <button class="opcion" data-op="b">Porque la base de datos genera el <code>id</code></button>
+      <button class="opcion" data-op="c">Porque se genera a partir del código: si el modelo no tiene <code>id</code>, la documentación tampoco</button>
+      <button class="opcion" data-op="d">Porque el <code>POST</code> devuelve el <code>id</code> en el cuerpo</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: Un modelo, cuatro modelos</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: los campos que no se devuelven →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — LOS CAMPOS QUE NO SE DEVUELVEN
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · La segunda puerta</div>
+    <h2>Los campos que <em>no se devuelven</em></h2>
+    <p class="proposito">
+      El <code>id</code> ya está resuelto. Falta el otro agujero: los <strong>datos que la tienda
+      guarda pero que no son del cliente</strong>. El precio de compra, la nota interna, el
+      proveedor. Entran, se guardan… y no deben salir.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: el campo interno filtrado, comprobado</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · El campo que se guarda y no se ve</h3>
+
+  <p>
+    Añadimos <code>costo_proveedor</code>: lo que a la tienda le cuesta el producto. Es un dato
+    interno, pero el cliente <em>tiene</em> que poder mandarlo, porque es quien trae la
+    mercancía. Entra, se guarda… y no debe salir.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — un campo que entra y no sale</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># ENTRADA: el cliente sí lo manda (trae la mercancía)</span>
+<span class="tk-kw">class</span> <span class="tk-cls">ProductoCreate</span>(<span class="tk-cls">ProductoBase</span>):
+    costo_proveedor: <span class="tk-cls">float</span>
+
+
+<span class="tk-cm"># TABLA: se guarda</span>
+<span class="tk-kw">class</span> <span class="tk-cls">Producto</span>(<span class="tk-cls">ProductoBase</span>, table=<span class="tk-kw">True</span>):
+    id: <span class="tk-cls">int</span> | <span class="tk-cls">None</span> = <span class="tk-fn">Field</span>(default=<span class="tk-cls">None</span>, primary_key=<span class="tk-kw">True</span>)
+    costo_proveedor: <span class="tk-cls">float</span>
+
+
+<span class="tk-cm"># SALIDA: no está, y por eso no puede salir</span>
+<span class="tk-kw">class</span> <span class="tk-cls">ProductoPublic</span>(<span class="tk-cls">ProductoBase</span>):
+    id: <span class="tk-cls">int</span></code></pre>
+  </div>
+
+  <p>
+    <code>ProductoPublic</code> <strong>no tiene</strong> <code>costo_proveedor</code>. No es que
+    el servidor lo oculte al final: es que el modelo de salida no lo contempla, así que no hay
+    por dónde se pueda colar.
+  </p>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — filtrar por modelo, no por código</span>
+    <p>
+      Habría una forma «fácil» de resolverlo: borrar el campo de la respuesta a mano, con un
+      <code>del producto["costo_proveedor"]</code> antes de devolverla. Funciona… hasta que
+      alguien añada un segundo campo interno y se olvide de borrarlo también. <strong>Filtrar por
+      modelo</strong> es la solución que no se rompe: si el campo no está en el modelo de salida,
+      no puede salir. Ni hoy ni nunca.
+    </p>
+  </div>
+
+  <h3>3.2 · Comprobación</h3>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — el campo que entra, se guarda y no sale</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">curl -X POST http://127.0.0.1:8000/productos/ -H "Content-Type: application/json" -d '{"nombre":"Audífonos Bluetooth","precio":129900,"cantidad":14,"descripcion":"30 h de batería","costo_proveedor":80000}'</div>
+      <div class="consola-salida">{"nombre":"Audífonos Bluetooth","precio":129900.0,"cantidad":14,"descripcion":"30 h de batería","id":1}</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada"># Se mandó costo_proveedor: 80000. No aparece en la respuesta.</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada">curl -s http://127.0.0.1:8000/openapi.json | python -c "import json,sys; d=json.load(sys.stdin); print(list(d['components']['schemas']['ProductoPublic']['properties']))"</div>
+      <div class="consola-salida">['nombre', 'precio', 'cantidad', 'descripcion', 'id']</div>
+    </div>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — esto es lo que hace una API de verdad</span>
+    <p>
+      Una API profesional nunca devuelve sus datos internos. Piensa en una tienda real: el precio
+      de compra no aparece en la etiqueta del producto, pero la caja sí lo sabe. La API es la
+      etiqueta; la base de datos es la caja. <strong>Y el modelo es el filtro que lo garantiza
+      sin que tengas que acordarte.</strong>
+    </p>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el mismo patrón en otros sitios</span>
+    <p>
+      Las contraseñas se guardan <strong>hasheadas</strong>: nunca devuelves la contraseña de
+      nadie, ni siquiera a esa persona. Los números de tarjeta se guardan enmascarados. Es el
+      mismo patrón: <em>el dato entra, se guarda, y el modelo de salida decide qué sale</em>.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Por qué <code>costo_proveedor</code> está en <code>ProductoCreate</code> pero no en <code>ProductoPublic</code>?</p>
+      <button class="opcion" data-op="a">Por un error de la base de datos</button>
+      <button class="opcion" data-op="b">Porque el cliente tiene que poder mandarlo, pero no debe poder verlo</button>
+      <button class="opcion" data-op="c">Porque los modelos públicos no pueden tener decimales</button>
+      <button class="opcion" data-op="d">Porque <code>ProductoCreate</code> hereda más campos</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Por qué es mejor filtrar por modelo que borrar el campo a mano?</p>
+      <button class="opcion" data-op="a">Porque el código es más corto</button>
+      <button class="opcion" data-op="b">Porque el <code>del</code> es más rápido</button>
+      <button class="opcion" data-op="c">Porque la base de datos no lo permite</button>
+      <button class="opcion" data-op="d">Porque no se puede olvidar: si el campo no está en el modelo, no sale</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Dónde está guardado el <code>costo_proveedor</code> después de la operación?</p>
+      <button class="opcion" data-op="a">En la tabla, en la columna del modelo de tabla</button>
+      <button class="opcion" data-op="b">En la respuesta JSON, para que el cliente lo vea</button>
+      <button class="opcion" data-op="c">En ninguna parte: se descarta</button>
+      <button class="opcion" data-op="d">Solo en la memoria del servidor, hasta que se reinicie</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Con qué otro ejemplo conocido se parece este patrón?</p>
+      <button class="opcion" data-op="a">Con el <code>404</code> de una página no encontrada</button>
+      <button class="opcion" data-op="b">Con el <code>422</code> de un formulario inválido</button>
+      <button class="opcion" data-op="c">Con las contraseñas: se guardan hasheadas y nunca se devuelven</button>
+      <button class="opcion" data-op="d">Con la barra de progreso del hub</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: El id lo pone la base de datos</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de lectura</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija por
+      escrito lo que has leído hasta ahora.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora.
+    </p>
+
+    <div class="reglas">
+      <div class="regla">
+        <h4>Regla 20-20-20</h4>
+        <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+      </div>
+      <div class="regla">
+        <h4>Movimiento</h4>
+        <p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p>
+      </div>
+      <div class="regla">
+        <h4>Hidratación</h4>
+        <p>Un vaso de agua. La lectura densa agota más de lo que parece.</p>
+      </div>
+      <div class="regla">
+        <h4>Bitácora</h4>
+        <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora de lectura (5 minutos)</h3>
+
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿cuál es la diferencia entre el modelo de tabla y el modelo de datos?</li>
+    <li><strong>En una frase:</strong> ¿por qué el <code>id</code> no puede estar en el modelo de entrada?</li>
+    <li><strong>En una frase:</strong> ¿qué garantiza que un campo interno no se filtre?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+
+  <p>
+    Estas siete palabras aparecerán en el taller final. Léelas ahora; las definiciones son
+    aproximadas y se afinarán en las unidades siguientes.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>Modelo de tabla</dt>
+      <dd>Una clase con <code>table=True</code>: describe las columnas de una tabla real. Solo hay uno por entidad.</dd>
+    </div>
+    <div>
+      <dt>Modelo de datos</dt>
+      <dd>Una clase sin <code>table=True</code>: valida y transporta, pero no crea ninguna tabla.</dd>
+    </div>
+    <div>
+      <dt>Modelo público</dt>
+      <dd>El modelo de salida: exactamente lo que el cliente se lleva. Lo que no está aquí, no sale.</dd>
+    </div>
+    <div>
+      <dt>Modelo de entrada</dt>
+      <dd>El modelo de lo que el cliente manda. Define qué campos se aceptan y con qué reglas.</dd>
+    </div>
+    <div>
+      <dt><code>response_model</code></dt>
+      <dd>El parámetro con el que FastAPI filtra y valida lo que devuelve una ruta.</dd>
+    </div>
+    <div>
+      <dt>Herencia de modelos</dt>
+      <dd>Reutilizar los campos compartidos con una clase base, en vez de repetirlos en cada modelo.</dd>
+    </div>
+    <div>
+      <dt>Contrato</dt>
+      <dd>Lo que la API acepta, lo que devuelve y qué pasa cuando te equivocas. Se escribe en el código.</dd>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: Los campos que no se devuelven</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Ejercicio práctico →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — EJERCICIO: EL PATCH
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · Taller de aplicación</div>
+    <h2>Ejercicio 5.1 · <em>El PATCH</em></h2>
+    <p class="proposito">
+      La clase 11 te enseñó a editar. Con el ORM, editar tiene una forma nueva: el
+      <code>PATCH</code>, que cambia <strong>solo lo que el cliente manda</strong>. En 35 minutos
+      escribes la ruta y dominas la técnica que hace posible: <code>exclude_unset=True</code>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: la ruta de edición parcial funcionando</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>Editar sin pisar lo demás</h3>
+    </div>
+
+    <p>
+      La clase 11 tenía un problema: el formulario mandaba los cuatro campos, y si el usuario
+      vaciaba un campo, ese campo se guardaba vacío. El <code>PATCH</code> lo resuelve: el
+      cliente manda <strong>únicamente lo que cambió</strong>.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>Un cuerpo JSON con <strong>uno o varios</strong> campos, todos opcionales</td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>El producto completo, ya actualizado</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Un campo que <strong>no viene</strong> en el cuerpo no se toca</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Un campo que viene <strong>vacío</strong> sí se toca: vacío no es «no enviado»</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Si el <code>id</code> no existe, la respuesta es <strong>404</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong>La ruta <code>PATCH /productos/{producto_id}</code></strong>: recibe un
+        <code>ProductoUpdate</code> y devuelve el producto actualizado.
+      </li>
+      <li>
+        <strong><code>model_dump(exclude_unset=True)</code></strong>: convierte el modelo recibido
+        en un diccionario con <strong>solo los campos que el cliente mandó</strong>.
+      </li>
+      <li>
+        <strong><code>sqlmodel_update(datos)</code></strong>: aplica ese diccionario sobre el
+        objeto que hay en la base de datos.
+      </li>
+      <li>
+        <strong>El <code>404</code></strong> si el producto no existe.
+      </li>
+      <li>
+        <strong>La comprobación clave</strong>: mandar un solo campo y ver que los demás siguen
+        igual.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-5-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-5-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La línea que hace todo el trabajo es
+        <code>modelo.model_dump(exclude_unset=True)</code>. Sin el <code>exclude_unset=True</code>,
+        el diccionario tendría <em>todos</em> los campos, con los que no mandó el cliente puestos
+        a su valor por defecto: y eso es exactamente el bug de la clase 11.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>la ruta del PATCH</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">@</span>app.<span class="tk-fn">patch</span>(<span class="tk-str">"/productos/{producto_id}"</span>, response_model=<span class="tk-cls">ProductoPublic</span>)
+<span class="tk-kw">def</span> <span class="tk-fn">actualizar_producto</span>(producto_id: <span class="tk-cls">int</span>, producto: <span class="tk-cls">ProductoUpdate</span>, session: <span class="tk-cls">SessionDep</span>):
+    <span class="tk-str">"""Cambia solo los campos que el cliente mandó."""</span>
+
+    db_producto = session.<span class="tk-fn">get</span>(<span class="tk-cls">Producto</span>, producto_id)
+    <span class="tk-kw">if not</span> db_producto:
+        <span class="tk-kw">raise</span> <span class="tk-cls">HTTPException</span>(status_code=<span class="tk-num">404</span>, detail=<span class="tk-str">"Producto no encontrado"</span>)
+
+    <span class="tk-cm"># La magia: solo los campos que el cliente envió de verdad.</span>
+    datos = producto.<span class="tk-fn">model_dump</span>(exclude_unset=<span class="tk-kw">True</span>)
+
+    <span class="tk-cm"># Se aplican sobre el objeto que ya está en la base de datos.</span>
+    db_producto.<span class="tk-fn">sqlmodel_update</span>(datos)
+
+    session.<span class="tk-fn">add</span>(db_producto)
+    session.<span class="tk-fn">commit</span>()
+    session.<span class="tk-fn">refresh</span>(db_producto)
+    <span class="tk-kw">return</span> db_producto</code></pre>
+  </div>
+
+    <p>
+      El <code>session.add()</code> después del <code>sqlmodel_update()</code> no es redundante:
+      el objeto se modificó en memoria y hay que volver a colgarlo en la sesión para que el
+      <code>commit()</code> lo escriba. Es el mismo <code>add → commit → refresh</code> de la
+      clase 18, con un paso más en medio.
+    </p>
+  </div>
+    </div>
+
+  <h3>5.2 · Comprobación</h3>
+
+  <p>La comprobación que lo demuestra todo: manda <strong>un solo campo</strong> y mira los demás.</p>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — un PATCH con un solo campo</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">curl -X PATCH http://127.0.0.1:8000/productos/1 -H "Content-Type: application/json" -d '{"precio":99900}'</div>
+      <div class="consola-salida">{"nombre":"Audífonos Bluetooth","precio":99900.0,"cantidad":14,"descripcion":"30 h de batería","id":1}</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada"># Mandé solo el precio. El nombre, la cantidad y la descripción</div>
+      <div class="consola-entrada"># siguen exactamente igual.</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada">curl -X PATCH http://127.0.0.1:8000/productos/1 -H "Content-Type: application/json" -d '{"descripcion":""}'</div>
+      <div class="consola-salida">{"nombre":"Audífonos Bluetooth","precio":99900.0,"cantidad":14,"descripcion":"","id":1}</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada"># Una cadena vacía SÍ es un valor: el campo se vació a propósito.</div>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — «no enviado» no es lo mismo que «vacío»</span>
+    <p>
+      Mira las dos peticiones. La primera no manda <code>descripcion</code>: el campo
+      <strong>no se toca</strong>. La segunda manda <code>descripcion: ""</code>: el campo
+      <strong>se vacía</strong>. Las dos se resolvieron con el mismo
+      <code>exclude_unset=True</code>, porque «enviado» y «no enviado» son cosas distintas y el
+      modelo las distingue.
+    </p>
+    <p>
+      En la clase 11, el formulario HTML mandaba los cuatro campos siempre, así que era imposible
+      distinguirlas. Eso también es una de las razones por las que el <code>PATCH</code> es un
+      avance real y no solo un verbo nuevo.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>1.</strong> ¿Qué hace <code>model_dump(exclude_unset=True)</code>?</p>
+      <button class="opcion" data-op="a">Devuelve un diccionario con solo los campos que el cliente mandó de verdad</button>
+      <button class="opcion" data-op="b">Borra los campos que el cliente no mandó</button>
+      <button class="opcion" data-op="c">Convierte el modelo en texto JSON</button>
+      <button class="opcion" data-op="b">Devuelve el modelo con todos sus valores por defecto</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Por qué el <code>PATCH</code> es mejor que el <code>PUT</code> para editar?</p>
+      <button class="opcion" data-op="a">Porque <code>PATCH</code> es más rápido</button>
+      <button class="opcion" data-op="b">Porque <code>PATCH</code> existe en el estándar HTTP</button>
+      <button class="opcion" data-op="c">Porque <code>PUT</code> está obsoleto</button>
+      <button class="opcion" data-op="d">Porque <code>PATCH</code> cambia solo lo que se manda; <code>PUT</code> reemplaza el registro entero</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> Si el cliente manda <code>{"descripcion": ""}</code>, ¿qué pasa?</p>
+      <button class="opcion" data-op="a">No se toca el campo: una cadena vacía es «no enviado»</button>
+      <button class="opcion" data-op="b">El campo se vacía: una cadena vacía es un valor enviado</button>
+      <button class="opcion" data-op="c">La API responde 422</button>
+      <button class="opcion" data-op="d">Se borra el producto entero</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Para qué sirve <code>sqlmodel_update(datos)</code>?</p>
+      <button class="opcion" data-op="a">Para crear un producto nuevo</button>
+      <button class="opcion" data-op="b">Para borrar el producto de la base de datos</button>
+      <button class="opcion" data-op="c">Para aplicar el diccionario de cambios sobre el objeto que ya está en la base de datos</button>
+      <button class="opcion" data-op="d">Para devolver el producto al cliente</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: la API documentada →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — EJERCICIO: LA API DOCUMENTADA
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · Taller de aplicación</div>
+    <h2>Ejercicio 6.1 · <em>La API documentada</em></h2>
+    <p class="proposito">
+      Las rutas ya funcionan y el contrato ya está separado. Ahora toca la parte que hace que una
+      API sea <strong>usable por alguien que no eres tú</strong>: la documentación, y el
+      laboratorio donde se ve de un vistazo qué entra y qué sale.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: el contrato escrito y el laboratorio funcionando</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>El contrato, por escrito</h3>
+    </div>
+
+    <p>
+      Documenta tu API y comprueba que el contrato que has escrito en el código es el que
+      realmente ven los demás.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>La API con sus cinco modelos</td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>Una tabla con el contrato y el laboratorio funcionando</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>La documentación sale del código, no se escribe a mano</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Las cinco rutas devuelven con el modelo público</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong>Las cinco rutas con <code>response_model</code></strong>: alta, lista, lectura,
+        edición y borrado.
+      </li>
+      <li>
+        <strong>Una tabla de contrato</strong> en tu cuaderno: ruta, método, cuerpo que acepta,
+        respuesta que devuelve y código de estado.
+      </li>
+      <li>
+        <strong>El laboratorio de los cuatro modelos</strong>, funcionando y explicado con tus
+        palabras.
+      </li>
+      <li>
+        <strong>Comprobar <code>/docs</code></strong>: que las cuatro rutas aparezcan con sus
+        campos reales y que el <code>POST</code> <strong>no</strong> pida el <code>id</code>.
+      </li>
+      <li>
+        <strong>Un párrafo</strong> que explique qué ganaste al separar los modelos.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-6-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-6-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La tabla de contrato es el entregable de verdad: es lo que se le pasa a otra persona para
+        que pueda usar tu API sin preguntarte nada.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>el contrato de la API, en una tabla</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>| Método | Ruta                | Acepta                        | Devuelve         | Errores |
+|--------|---------------------|-------------------------------|------------------|---------|
+| POST   | /productos/         | ProductoCreate                | ProductoPublic   | 422     |
+| GET    | /productos/         | —                             | list[ProductoPublic] |   |
+| GET    | /productos/{id}     | —                             | ProductoPublic   | 404     |
+| PATCH  | /productos/{id}     | ProductoUpdate                | ProductoPublic   | 404, 422 |
+| DELETE | /productos/{id}     | —                             | {"ok": true}     | 404     |</code></pre>
+  </div>
+
+    <p>
+      Un párrafo de argumentación para este taller puede ser: «Separar los modelos no es
+      escribir más código, es <strong>escribir el derecho de cada dato</strong>. El
+      <code>ProductoCreate</code> dice qué acepta el cliente y por tanto el <code>id</code> deja
+      de ser suyo; el <code>ProductoPublic</code> dice qué se lleva y por tanto
+      <code>costo_proveedor</code> se queda dentro. Gracias a eso no hay que acordarse de
+      filtrar nada: el contrato está escrito en el modelo».
+    </p>
+  </div>
+    </div>
+
+  <h3>6.2 · Laboratorio: los cuatro modelos</h3>
+
+  <p>
+    Este laboratorio es la clase 19 en una caja. Elige un modelo y mira, campo a campo, qué se
+    guarda, qué acepta el cliente y qué ve el cliente.
+  </p>
+
+  <div class="modelos" data-modelos>
+    <div class="modelos-cabecera">
+      <span class="etiqueta">Laboratorio</span>
+      <h4>Los cuatro modelos, campo a campo</h4>
+      <p>
+        El mismo catálogo de la tienda, visto desde los cuatro modelos. Elige uno y observa qué
+        hace cada campo: si se guarda, si lo recibe el cliente, y si se lo lleva.
+      </p>
+    </div>
+
+    <div class="modelos-cuerpo">
+      <div class="modelos-lista" data-modelos-lista></div>
+      <div class="modelos-detalle" data-modelos-detalle></div>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el modelo de la tabla es el único raro</span>
+    <p>
+      Mira el primer botón: <code>Producto</code> es el único que tiene las tres columnas en
+      «sí». Es el único que puede <strong>entrar</strong> (si se lo pasas tal cual) y el único
+      que puede <strong>salir</strong>. Por eso las rutas no lo usan para nada de eso: lo
+      construyen a partir del modelo de entrada y lo devuelven a través del modelo público.
+    </p>
+  </div>
+
+  <h3>6.3 · Comprobación</h3>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — el contrato publicado</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">curl -s http://127.0.0.1:8000/openapi.json | python -c "import json,sys; d=json.load(sys.stdin); [print(m.upper(), r, o[m].get('tags')) for r,o in d['paths'].items() for m in o]"</div>
+      <div class="consola-salida">POST /productos/ []</div>
+      <div class="consola-salida">GET /productos/ []</div>
+      <div class="consola-salida">GET /productos/{producto_id} []</div>
+      <div class="consola-salida">PATCH /productos/{producto_id} []</div>
+      <div class="consola-salida">DELETE /productos/{producto_id} []</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada">curl -s http://127.0.0.1:8000/openapi.json | python -c "import json,sys; d=json.load(sys.stdin); print(list(d['components']['schemas']['ProductoCreate']['properties']))"</div>
+      <div class="consola-salida">['nombre', 'precio', 'cantidad', 'descripcion', 'costo_proveedor']</div>
+      <div class="consola-salida">   ← ni id, ni campos que no sean de entrada</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué garantiza <code>response_model=ProductoPublic</code>?</p>
+      <button class="opcion" data-op="a">Que la respuesta sea rápida</button>
+      <button class="opcion" data-op="b">Que FastAPI filtre y valide la respuesta con ese modelo: lo que no esté, no sale</button>
+      <button class="opcion" data-op="c">Que la respuesta sea HTML</button>
+      <button class="opcion" data-op="d">Que la ruta devuelva un 404 si el modelo no existe</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué <code>response_model</code> va como parámetro y no como anotación de retorno?</p>
+      <button class="opcion" data-op="a">Porque lo que se devuelve es un <code>Producto</code>, no un <code>ProductoPublic</code>: la anotación mentiría</button>
+      <button class="opcion" data-op="b">Porque las anotaciones de retorno ya no existen en Python</button>
+      <button class="opcion" data-op="c">Porque <code>response_model</code> es más corto</button>
+      <button class="opcion" data-op="d">Porque las dos cosas son exactamente lo mismo</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué se ve en <code>/docs</code>?</p>
+      <button class="opcion" data-op="a">Un archivo escrito a mano con los endpoints</button>
+      <button class="opcion" data-op="b">Un volcado de la base de datos</button>
+      <button class="opcion" data-op="c">La API documentada, generada a partir de los modelos y las rutas</button>
+      <button class="opcion" data-op="d">El código fuente del proyecto</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Cuál es el contrato de esta API, en una frase?</p>
+      <button class="opcion" data-op="a">«JSON con todos los datos guardados»</button>
+      <button class="opcion" data-op="b">«Lo que el cliente mande, se guarda»</button>
+      <button class="opcion" data-op="c">«Un CRUD con cuatro rutas»</button>
+      <button class="opcion" data-op="d">«Acepto un modelo, devuelvo otro, y el <code>id</code> y los campos internos no son del cliente»</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: El PATCH</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller integrador →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER INTEGRADOR
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>Taller · <em>La API pública del catálogo</em></h2>
+    <p class="proposito">
+      Las unidades anteriores dejaron las piezas: los cinco modelos, la conversión, el filtrado y
+      el <code>PATCH</code>. Ahora se montan en una API completa, con su contrato escrito y su
+      documento de entrega.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller de desarrollo</b></span>
+      <span>🧭 <b>Producto: la API del catálogo, con su contrato</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Taller</span>
+      <h3>La API que se puede publicar</h3>
+    </div>
+
+    <p>
+      Monta la API completa con los cinco modelos, comprueba que el contrato es el que dice
+      ser y deja por escrito qué harías si la tienda creciera.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Modelos</strong></td>
+            <td><code>ProductoBase</code>, <code>Producto</code>, <code>ProductoPublic</code>, <code>ProductoCreate</code> y <code>ProductoUpdate</code></td>
+          </tr>
+          <tr>
+            <td><strong>Rutas</strong></td>
+            <td>Alta, lista, lectura, edición parcial y borrado</td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>JSON con el modelo público, y <code>/docs</code> con el contrato</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Ninguna ruta acepta ni devuelve el <code>id</code> del cliente</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>El <code>costo_proveedor</code> se guarda y no se devuelve</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li>
+        <strong>La API completa</strong>, con las cinco rutas y sus modelos.
+      </li>
+      <li>
+        <strong>La tabla de contrato</strong> del ejercicio 6, corregida y completa.
+      </li>
+      <li>
+        <strong>Las ocho comprobaciones</strong> marcadas una por una.
+      </li>
+      <li>
+        <strong>Un párrafo</strong>: qué cambiarías si la tienda quisiera guardar también el
+        proveedor de cada producto, y qué tendrías que tocar.
+      </li>
+      <li>
+        <strong>El commit</strong> con un mensaje que explique el cambio.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="taller-solucion">Ver un modelo de respuesta</button>
+
+    <div class="solucion" id="taller-solucion">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        El párrafo del entregable 4 es donde se demuestra que entendiste la idea: no es «añadir un
+        campo más», es «añadir un campo más <strong>en el modelo correcto</strong>».
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>las ocho comprobaciones del taller</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-num">1.</span> Arrancar: se crea el archivo database.db
+<span class="tk-num">2.</span> POST sin id: la respuesta trae un id generado por la base de datos
+<span class="tk-num">3.</span> POST mandando id=99: se ignora, el id lo pone la base de datos
+<span class="tk-num">4.</span> GET /productos/: devuelve la lista
+<span class="tk-num">5.</span> GET /productos/999: devuelve 404
+<span class="tk-num">6.</span> POST con nombre vacío o precio negativo: devuelve 422
+<span class="tk-num">7.</span> PATCH de un solo campo: solo ese campo cambia
+<span class="tk-num">8.</span> La respuesta NUNCA incluye costo_proveedor</code></pre>
+  </div>
+
+    <div class="recuadro nota">
+      <span class="rotulo">Nota — y lo que viene después</span>
+      <p>
+        Hay un problema que esta clase <strong>no</strong> resuelve, y que el tutorial oficial
+        también aplaza: si mañana cambias el modelo (por ejemplo, si <code>precio</code> pasa a
+        ser decimal), <code>create_all()</code> <strong>no</strong> actualizará la tabla
+        existente. Eso se llama <strong>migración</strong>, y es el siguiente escalón. Por hoy,
+        con la base de datos recién creada, no hace falta.
+      </p>
+    </div>
+  </div>
+    </div>
+
+  <h3>7.2 · Rúbrica de autoevaluación</h3>
+
+  <p>
+    Puntúa cada criterio de 0 a 2 y revisa los que hayas quedado en 0 o 1 antes de dar por terminado
+    el taller.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación del contrato de la API</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Los cinco modelos</td>
+          <td>Hay un solo modelo, como en la clase 18</td>
+          <td>Hay varios modelos pero falta alguno, o la herencia está mal puesta</td>
+          <td>Los cinco, con la base bien usada y cada uno con su trabajo</td>
+        </tr>
+        <tr>
+          <td>El <code>id</code></td>
+          <td>El cliente puede mandar el <code>id</code> y se guarda</td>
+          <td>El <code>id</code> no se guarda, pero el modelo de entrada lo incluye</td>
+          <td>El <code>id</code> no existe en el modelo de entrada: lo pone la base de datos</td>
+        </tr>
+        <tr>
+          <td>El filtrado</td>
+          <td>El campo interno se devuelve en la respuesta</td>
+          <td>Se borra a mano en cada ruta</td>
+          <td>El campo no está en el modelo público, así que no puede salir</td>
+        </tr>
+        <tr>
+          <td><code>response_model</code></td>
+          <td>No se usa en ninguna ruta</td>
+          <td>Se usa en algunas rutas</td>
+          <td>Está en todas las rutas que devuelven datos</td>
+        </tr>
+        <tr>
+          <td>El <code>PATCH</code></td>
+          <td>No existe, o cambia el producto entero</td>
+          <td>Existe, pero sin <code>exclude_unset</code>: pisa los campos que no se mandaron</td>
+          <td>Solo cambia lo que el cliente mandó, y un vacío sí se aplica</td>
+        </tr>
+        <tr>
+          <td>Los errores</td>
+          <td>Un <code>id</code> inexistente da un error 500</td>
+          <td>El 404 existe, pero el 422 se gestiona a mano</td>
+          <td>El 404 es tuyo y el 422 lo genera FastAPI</td>
+        </tr>
+        <tr>
+          <td>El contrato</td>
+          <td>No está escrito en ninguna parte</td>
+          <td>Está en <code>/docs</code> pero no en el cuaderno</td>
+          <td>Está en el código, en <code>/docs</code> y por escrito</td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay nada escrito</td>
+          <td>Describe el qué, no el porqué</td>
+          <td>Explica qué problema se cierra y qué habría que tocar para ampliarlo</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.3 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>Un solo modelo no basta: hay que separar <strong>lo que se guarda</strong>, <strong>lo que se recibe</strong> y <strong>lo que se devuelve</strong>.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p>La herencia evita repetir los campos: una base común y cuatro modelos que se diferencian en lo que cada uno puede y no puede.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>El <code>id</code> no es un dato que recibe el cliente: es una decisión que toma el servidor, y por eso no está en el modelo de entrada.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p>Un campo que no está en el modelo de salida no puede filtrarse. La seguridad no depende de que te acuerdes, sino de cómo está escrito el código.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p><code>response_model</code> es el contrato de salida: FastAPI filtra y valida con él, y por eso se pone como parámetro y no como anotación.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p>El <code>PATCH</code> con <code>exclude_unset=True</code> cambia solo lo que se mandó: «no enviado» y «vacío» son cosas distintas.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p>Una API es un contrato, y la documentación se escribe sola a partir del código. Lo que no está en el modelo, no existe para el cliente.</p>
+    </div>
+  </div>
+
+  <h3>7.4 · Cierre del bloque del ORM</h3>
+
+  <p>
+    Con esta clase terminamos el bloque de la base de datos. Repasa el camino entero:
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Del SQL directo al contrato de la API</caption>
+      <thead>
+        <tr><th>Clase</th><th>Qué añadiste</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>8</strong></td><td>La conexión: motor, pool y tablas</td></tr>
+        <tr><td><strong>9</strong></td><td>La lectura: <code>SELECT</code> y la visualización</td></tr>
+        <tr><td><strong>10</strong></td><td>La escritura: <code>INSERT</code> y la validación</td></tr>
+        <tr><td><strong>11</strong></td><td>La edición: cargar el formulario y conservarlo</td></tr>
+        <tr><td><strong>12</strong></td><td>La concurrencia: versiones y conflictos</td></tr>
+        <tr><td><strong>13</strong></td><td>El borrado: pedir confirmación y no romper el historial</td></tr>
+        <tr><td><strong>14</strong></td><td>El flujo: cómo se hablan los módulos</td></tr>
+        <tr><td><strong>15</strong></td><td>La estructura: un archivo, una responsabilidad</td></tr>
+        <tr><td><strong>18</strong></td><td>La capa: el modelo que es la tabla y la sesión</td></tr>
+        <tr><td><strong>19</strong></td><td>El contrato: lo que entra, lo que sale y lo que no</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de la próxima clase</span>
+    <p>
+      Guarda este proyecto <strong>completo</strong> en un repositorio de Git, con un commit por
+      cada unidad de las dos clases: modelo, motor, sesión, rutas, modelos separados y
+      <code>PATCH</code>. Seis commits con mensajes que expliquen <em>qué</em> cambiaste y
+      <em>por qué</em>. La clase 16 te da las herramientas; aquí solo las usas.
+    </p>
+    <p>
+      Y guarda una pregunta para después: <strong>¿qué pasa si mañana el <code>precio</code> deja
+      de ser un entero y pasa a tener tres decimales?</strong> Porque esa es la pregunta que
+      responde lo que viene ahora: las migraciones.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 19</h2>
+    <p>
+      Has cerrado el bloque de la base de datos con la pieza que faltaba: no cómo se guardan los
+      datos, sino <strong>qué se puede ver de ellos</strong>. Una API no es un programa que
+      responde: es un contrato, y ese contrato se escribe en los modelos, se publica en
+      <code>/docs</code> y se puede leer sin llamar a nadie.
+    </p>
+    <p>
+      Y has hecho algo que no se había hecho en todo el curso: <strong>proteger un dato
+      escribiéndolo bien</strong>, no acordándote de borrarlo.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: La API documentada</button>
+    <button class="btn-siguiente" data-ir="0">✓ Marcar el taller como terminado y volver al inicio</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 19 · El contrato de la API</span>
+  <p class="pie-sub">Un modelo, cuatro modelos · El id de la base de datos · El campo que no se filtra · response_model y PATCH</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
