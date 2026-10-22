@@ -137,7 +137,7 @@ function cargarProgresoPorClase() {
     'curso-herr-5-repetitivas': 6,      // clase 5: Estructuras repetitivas
     'curso-herr-6-funciones': 6,          // clase 6: Funciones y métodos
     'curso-herr-7-formularios': 6,          // clase 7: formularios y validación
-    'curso-herr-8': 6,
+    'curso-herr-8-conexion-bd': 6,       // clase 8: conexión a bases de datos
     'curso-herr-9-repetitivas': 6,
     'curso-herr-10-funciones': 6,
     'curso-herr-11-estructura': 6,
@@ -398,7 +398,7 @@ window.addEventListener('load', () => {
                 'curso-csharp-9', 'curso-csharp-10',
                 'curso-analisis-diseno', 'curso-requerimientos',
                 'curso-elicitacion', 'curso-documentacion', 'curso-introduccion-diseno',
-                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3-css', 'curso-herr-4-python', 'curso-herr-5-repetitivas', 'curso-herr-6-funciones', 'curso-herr-7-formularios', 'curso-herr-8', 'curso-herr-9-repetitivas', 'curso-herr-10-funciones', 'curso-herr-11-estructura', 'curso-herr-12-git', 'curso-herr-13-github', 'curso-herr-14-git-vscode'];
+                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3-css', 'curso-herr-4-python', 'curso-herr-5-repetitivas', 'curso-herr-6-funciones', 'curso-herr-7-formularios', 'curso-herr-8-conexion-bd', 'curso-herr-9-repetitivas', 'curso-herr-10-funciones', 'curso-herr-11-estructura', 'curso-herr-12-git', 'curso-herr-13-github', 'curso-herr-14-git-vscode'];
 
   let tienePrograma = false;
   let ultimaClase = null;

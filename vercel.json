@@ -70,6 +70,16 @@
       "source": "/herramientas-prog-ii/seis-curso-jinja2-plantillas/:path*",
       "destination": "/herramientas-prog-ii/seis-curso-funciones-metodos/:path*",
       "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/ocho-curso-integrador",
+      "destination": "/herramientas-prog-ii/ocho-curso-conexion-bd/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/ocho-curso-integrador/:path*",
+      "destination": "/herramientas-prog-ii/ocho-curso-conexion-bd/:path*",
+      "permanent": true
     }
   ]
 }

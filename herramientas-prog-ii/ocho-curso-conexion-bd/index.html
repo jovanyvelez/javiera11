@@ -1,0 +1,2570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 8 · Conexión a bases de datos</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 8 · <em>Conexión a bases de datos</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura: la app que olvida</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">PostgreSQL y el driver</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">El pool de conexiones</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Lifespan y dependencia</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Actividad: conectar la API</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Errores comunes</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: capa de datos robusta</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> una API conectada a PostgreSQL con pool, lifespan, health check y diagnóstico de errores.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>La aplicación que <em>olvida</em></h2>
+    <p class="proposito">
+      Una lista de Python vive dentro de un proceso: cuando el servidor se reinicia, desaparece.
+      Una base de datos es la <strong>memoria compartida y persistente</strong> del sistema. Hoy
+      aprendes a abrir esa puerta desde FastAPI, a comprobar que está abierta y a entender por qué
+      a veces no lo está.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: diagnóstico inicial escrito</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · El catálogo que se borró solo</h3>
+
+  <p class="primer-párrafo">
+    El club de robótica montó una tienda pequeña para vender sensores y kits. La primera versión
+    guardaba los productos en una lista de Python. Funcionaba de maravilla: agregar, listar,
+    calcular el total. Hasta que alguien reinició el servidor para actualizar una ruta. Al volver,
+    el catálogo estaba vacío. Los productos existían en la memoria del proceso anterior, y ese
+    proceso ya no estaba.
+  </p>
+
+  <p>
+    La segunda versión guardaba todo en un archivo JSON. Aguantó el reinicio, pero apareció otro
+    problema: dos personas del club abrieron la tienda a la vez, cada una con su copia del archivo,
+    y la última en guardar borró los cambios de la otra. El archivo no sabe de concurrencia. Una
+    base de datos sí.
+  </p>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — una lista es memoria de un proceso; una base de datos es memoria de un sistema</span>
+    <p>
+      Una lista vive y muere con el proceso que la creó. Una base de datos vive aparte, atiende a
+      varios clientes a la vez, controla quién puede leer qué y sobrevive a los reinicios. Esa
+      separación es la que convierte un ejercicio en una aplicación. Y también es la que introduce
+      una palabra nueva en tu vocabulario: <strong>conexión</strong>.
+    </p>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Lo que cambia cuando los datos salen del proceso</caption>
+      <thead>
+        <tr><th></th><th>Lista en memoria</th><th>Base de datos</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Persistencia</strong></td><td>Se pierde al reiniciar</td><td>Sobrevive a reinicios y despliegues</td></tr>
+        <tr><td><strong>Concurrencia</strong></td><td>Un proceso, una copia</td><td>Varios clientes con transacciones</td></tr>
+        <tr><td><strong>Consultas</strong></td><td>Recorres la lista entera</td><td><code>SELECT</code>, índices, filtros</td></tr>
+        <tr><td><strong>Integridad</strong></td><td>La cuidar el programador</td><td>Restricciones <code>NOT NULL</code>, <code>UNIQUE</code>, <code>CHECK</code></td></tr>
+        <tr><td><strong>Acceso</strong></td><td>Quien tenga el proceso</td><td>Usuarios, roles y permisos</td></tr>
+        <tr><td><strong>Respaldo</strong></td><td>No hay</td><td>Copias, réplicas y recuperación</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.2 · La cadena: FastAPI, el driver y PostgreSQL</h3>
+
+  <p>
+    Tu aplicación no habla con PostgreSQL directamente. Habla con un <strong>driver</strong>, una
+    librería que traduce entre Python y el protocolo de la base de datos. En este curso el driver
+    es <code>asyncpg</code>, porque es asíncrono y deja que el servidor atienda otras peticiones
+    mientras espera la respuesta.
+  </p>
+
+  <div class="diagrama">
+    <div class="nodo cliente">
+      <div class="rotulo-nodo">Tu código</div>
+      <h5>FastAPI</h5>
+      <p>Recibe la petición, valida el dato y pide una conexión al pool.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">consulta<br>y parámetros</span>
+    </div>
+    <div class="nodo servidor">
+      <div class="rotulo-nodo">El traductor</div>
+      <h5>asyncpg</h5>
+      <p>Convierte la llamada en el protocolo de PostgreSQL y devuelve filas.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">TCP + TLS<br>+ autenticación</span>
+    </div>
+    <div class="nodo datos">
+      <div class="rotulo-nodo">La memoria</div>
+      <h5>PostgreSQL</h5>
+      <p>Guarda los datos, aplica restricciones y responde en filas.</p>
+    </div>
+  </div>
+
+  <p>
+    Hay tres objetos que conviene no confundir desde el primer día: la <strong>conexión</strong>
+    (un canal abierto con la base), el <strong>pool</strong> (un conjunto de conexiones
+    reutilizables) y la <strong>sesión</strong> (el estado de una conexión mientras dura una
+    petición). La conexión es el recurso; el pool es el administrador; la sesión es el uso.
+  </p>
+
+  <h3>0.3 · Qué significa «conectar»</h3>
+
+  <p>
+    La palabra «conectar» esconde cinco pasos. Si uno falla, el error es distinto, y por eso el
+    diagnóstico importa tanto como el código.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Los cinco pasos de una conexión</caption>
+      <thead>
+        <tr><th>Paso</th><th>Qué ocurre</th><th>Error típico</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>1. Resolver el host</strong></td><td>El nombre se traduce a una dirección IP</td><td><code>socket.gaierror</code></td></tr>
+        <tr><td><strong>2. Abrir TCP</strong></td><td>Se intenta llegar al puerto 5432</td><td><code>ConnectionRefusedError</code></td></tr>
+        <tr><td><strong>3. Negociar TLS</strong></td><td>Si el servidor lo exige, se cifra el canal</td><td>Error de certificado o <code>sslmode</code></td></tr>
+        <tr><td><strong>4. Autenticarse</strong></td><td>Usuario y contraseña contra el servidor</td><td><code>InvalidPasswordError</code> (28P01)</td></tr>
+        <tr><td><strong>5. Elegir la base</strong></td><td>Se entra a la base indicada en la URL</td><td><code>InvalidCatalogNameError</code> (3D000)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — conectar no es una línea, es un ciclo de vida</span>
+    <p>
+      Una conexión se abre, se usa y se cierra. Si se abre al arrancar y se olvida al apagar, el
+      servidor de base de datos acumula conexiones zombis. Si se abre en cada petición y no se
+      cierra, se agota el límite. La solución profesional es un <strong>pool</strong> con un
+      <strong>lifespan</strong> que lo abra y lo cierre en el momento correcto. Es exactamente lo
+      que vas a construir.
+    </p>
+  </div>
+
+  <h3>0.4 · Lo que vas a construir</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>tienda/ — la estructura del proyecto</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>tienda/
+│
+├── main.py                  la app: lifespan, health y productos
+├── database.py              el pool, la dependencia y el ping
+├── modelos.py               ProductoIn y ProductoOut
+├── sql/
+│   └── schema.sql           la tabla productos y sus restricciones
+├── .env.example             la URL de conexión, sin secretos reales
+└── test_db.py               pruebas de integración</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Herramientas y versiones de referencia</caption>
+      <thead>
+        <tr><th>Herramienta</th><th>Versión de referencia</th><th>Para qué</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Python</strong></td><td>3.12 o superior</td><td>El lenguaje del servidor</td></tr>
+        <tr><td><strong>FastAPI</strong></td><td>0.159 o superior</td><td>Rutas, lifespan y dependencias</td></tr>
+        <tr><td><strong>asyncpg</strong></td><td>0.32 o superior</td><td>El driver asíncrono de PostgreSQL</td></tr>
+        <tr><td><strong>PostgreSQL</strong></td><td>17 u 18</td><td>La base de datos</td></tr>
+        <tr><td><strong>loguru</strong></td><td>La actual</td><td>Registros legibles del ciclo de vida</td></tr>
+        <tr><td><strong>uv</strong></td><td>La actual</td><td>Crear el proyecto, instalar y ejecutar</td></tr>
+        <tr><td><strong>pytest</strong></td><td>La actual</td><td>Las pruebas del taller</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — no necesitas un ORM para aprender esto</span>
+    <p>
+      Un ORM como SQLAlchemy traduce objetos a SQL y es una gran herramienta para proyectos
+      grandes. Aquí usamos SQL directo con <code>asyncpg</code> a propósito: quieres ver la
+      consulta, los parámetros y el error tal como ocurren. Cuando entiendas la conexión, el ORM
+      será una capa cómoda encima, no una caja negra.
+    </p>
+  </div>
+
+  <h3>0.5 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito estas tres preguntas:</p>
+
+  <ol>
+    <li>¿Qué pasa con los datos de una lista de Python cuando reinicias el servidor? ¿Y con los de una base de datos?</li>
+    <li>¿Por qué no conviene abrir una conexión nueva en cada petición?</li>
+    <li>Si la base de datos está caída cuando arranca la API, ¿debe arrancar igual o fallar de inmediato? Argumenta.</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: PostgreSQL y el driver →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — POSTGRESQL Y EL DRIVER
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · El traductor</div>
+    <h2>PostgreSQL y <em>asyncpg</em>: hablar el mismo idioma</h2>
+    <p class="proposito">
+      Antes de administrar un pool hay que saber qué se está agrupando. Esta unidad explica qué es
+      PostgreSQL, cómo se compone una URL de conexión, cómo se escribe una tabla y cómo se hace la
+      primera consulta desde Python sin bloquear el servidor.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: primera conexión y primera consulta</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · PostgreSQL en treinta segundos</h3>
+
+  <p class="primer-párrafo">
+    PostgreSQL es un <strong>servidor de bases de datos relacionales</strong>. No es un archivo ni
+    una librería: es un proceso que escucha en un puerto, recibe conexiones y responde consultas
+    SQL. Dentro de ese servidor puede haber varias <strong>bases de datos</strong>; dentro de cada
+    base, varias <strong>tablas</strong>; dentro de cada tabla, <strong>filas</strong> con
+    <strong>columnas</strong> tipadas.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>Servidor</dt>
+      <dd>El proceso de PostgreSQL. Escucha en un host y un puerto; puede atender a muchos clientes a la vez.</dd>
+    </div>
+    <div>
+      <dt>Base de datos</dt>
+      <dd>Un espacio aislado con sus propias tablas, usuarios y permisos. No se pueden consultar tablas de otra base sin conectarse a ella.</dd>
+    </div>
+    <div>
+      <dt>Tabla</dt>
+      <dd>Una colección de filas con la misma forma. Cada columna tiene un tipo y, si hace falta, una restricción.</dd>
+    </div>
+    <div>
+      <dt>Fila</dt>
+      <dd>Un registro concreto. En <code>productos</code>, un producto con su nombre y su precio.</dd>
+    </div>
+    <div>
+      <dt>SQL</dt>
+      <dd>El idioma para pedir y modificar datos: <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>.</dd>
+    </div>
+  </div>
+
+  <h3>1.2 · La tabla del proyecto</h3>
+
+  <p>
+    La tabla <code>productos</code> es el contrato de los datos. Los tipos y las restricciones no
+    son adornos: son la última línea de defensa antes de que un dato malo quede guardado para
+    siempre.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>sql/schema.sql — la tabla productos</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">CREATE</span> <span class="tk-kw">TABLE</span> <span class="tk-kw">IF</span> <span class="tk-kw">NOT</span> <span class="tk-kw">EXISTS</span> productos <span class="tk-pun">(</span>
+    id BIGSERIAL <span class="tk-kw">PRIMARY</span> <span class="tk-kw">KEY</span><span class="tk-pun">,</span>
+    nombre <span class="tk-fn">TEXT</span> <span class="tk-kw">NOT</span> <span class="tk-kw">NULL</span> <span class="tk-kw">UNIQUE</span>
+        <span class="tk-kw">CHECK</span> <span class="tk-pun">(</span><span class="tk-kw">char_length</span><span class="tk-pun">(</span>btrim<span class="tk-pun">(</span>nombre<span class="tk-pun">))</span> <span class="tk-kw">BETWEEN</span> <span class="tk-num">2</span> <span class="tk-kw">AND</span> <span class="tk-num">80</span><span class="tk-pun">),</span>
+    precio <span class="tk-fn">NUMERIC</span><span class="tk-pun">(</span><span class="tk-num">10</span><span class="tk-pun">,</span> <span class="tk-num">2</span><span class="tk-pun">)</span> <span class="tk-kw">NOT</span> <span class="tk-kw">NULL</span>
+        <span class="tk-kw">CHECK</span> <span class="tk-pun">(</span>precio &gt; <span class="tk-num">0</span><span class="tk-pun">),</span>
+    creado_en TIMESTAMPTZ <span class="tk-kw">NOT</span> <span class="tk-kw">NULL</span> <span class="tk-kw">DEFAULT</span> now<span class="tk-pun">()</span>
+<span class="tk-pun">);</span>
+</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las decisiones de la tabla y su porqué</caption>
+      <thead>
+        <tr><th>Columna o restricción</th><th>Qué hace</th><th>Por qué</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>BIGSERIAL</code></td><td>Entero grande que se incrementa solo</td><td>No dependes de que el cliente invente el id</td></tr>
+        <tr><td><code>NOT NULL</code></td><td>Obliga a que el valor exista</td><td>Un producto sin nombre no es un producto</td></tr>
+        <tr><td><code>UNIQUE</code> del nombre</td><td>No admite dos productos con el mismo nombre</td><td>Evita duplicados y permite responder <code>409</code> con un caso concreto</td></tr>
+        <tr><td><code>CHECK</code> del nombre</td><td>Entre 2 y 80 caracteres, sin contar espacios extremos</td><td>Evita basura y textos imposibles de mostrar</td></tr>
+        <tr><td><code>NUMERIC(10, 2)</code></td><td>Hasta 10 dígitos, 2 decimales exactos</td><td>El dinero no se guarda en coma flotante</td></tr>
+        <tr><td><code>CHECK</code> del precio</td><td>Mayor que cero</td><td>Un producto gratis o negativo es un error de captura</td></tr>
+        <tr><td><code>TIMESTAMPTZ</code></td><td>Fecha y hora con zona horaria</td><td>Sirve aunque el servidor cambie de zona</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>NUMERIC</code> no es <code>float</code></span>
+    <p>
+      <code>NUMERIC(10, 2)</code> guarda centavos exactos. <code>float</code> guarda una
+      aproximación binaria, y sumar muchos precios con <code>float</code> puede producir
+      <code>0.30000000000000004</code>. En esta clase leeremos el precio con
+      <code>precio::float8</code> para que el JSON sea simple, pero la base lo guarda exacto. En un
+      sistema de facturación, el precio se maneja como <code>Decimal</code> de principio a fin.
+    </p>
+  </div>
+
+  <h3>1.3 · La URL de conexión (DSN)</h3>
+
+  <p>
+    Una DSN (<em>Data Source Name</em>) es una sola cadena con todo lo necesario para conectarse.
+    Tiene la forma de una URL, y cada parte tiene un nombre.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>la anatomía de una DSN</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>postgresql://club:secreto@localhost:5432/club?sslmode=require
+└────┬───┘ └─┬─┘ └──┬──┘ └───┬───┘ └┬─┘ └┬─┘ └──────┬──────┘
+   esquema  usuario  clave     host   puerto base      opciones</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cada parte de la DSN</caption>
+      <thead>
+        <tr><th>Parte</th><th>Ejemplo</th><th>Qué controla</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Esquema</td><td><code>postgresql://</code></td><td>El protocolo. También se acepta <code>postgres://</code> en muchas herramientas</td></tr>
+        <tr><td>Usuario</td><td><code>club</code></td><td>El rol con el que te autenticas</td></tr>
+        <tr><td>Clave</td><td><code>secreto</code></td><td>La contraseña del rol. Si tiene caracteres especiales, se codifica</td></tr>
+        <tr><td>Host</td><td><code>localhost</code></td><td>Dónde escucha PostgreSQL. Dentro de Docker, el nombre del servicio</td></tr>
+        <tr><td>Puerto</td><td><code>5432</code></td><td>El puerto del servidor. Por defecto, 5432</td></tr>
+        <tr><td>Base</td><td><code>club</code></td><td>La base a la que entras</td></tr>
+        <tr><td>Opciones</td><td><code>?sslmode=require</code></td><td>TLS, timeouts y otros parámetros del driver</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — la contraseña también se codifica</span>
+    <p>
+      Si la contraseña es <code>a@b:c</code>, la DSN no puede ser
+      <code>postgresql://club:a@b:c@localhost/club</code>: el driver interpretaría mal el host y el
+      puerto. Los caracteres especiales se escriben en porcentaje: <code>@</code> → <code>%40</code>,
+      <code>:</code> → <code>%3A</code>, <code>/</code> → <code>%2F</code>, <code>#</code> →
+      <code>%23</code>. Es el mismo mecanismo de la clase 7 cuando el navegador codificaba un
+      formulario.
+    </p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>.env.example — una plantilla que sí puede ir al repositorio</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code># Copia este archivo como .env y pon tus valores reales.
+# .env NO se sube al repositorio: contiene una contraseña.
+DATABASE_URL=postgresql://club:club@localhost:5432/club</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — la contraseña no se escribe en el código</span>
+    <p>
+      Nunca pongas una contraseña real en <code>main.py</code> ni en un commit. El código lee
+      <code>DATABASE_URL</code> del entorno; el archivo <code>.env</code> queda fuera de Git y el
+      repositorio solo guarda <code>.env.example</code>. Si una credencial se filtra, se rota en la
+      base de datos y se cambia en el entorno; no basta con borrar el archivo.
+    </p>
+  </div>
+
+  <h3>1.4 · La primera conexión con asyncpg</h3>
+
+  <p>
+    <code>asyncpg</code> es el driver. <code>connect()</code> abre una conexión; <code>close()</code>
+    la cierra. Entre las dos llamadas se pueden ejecutar consultas con <code>fetch</code>,
+    <code>fetchrow</code>, <code>fetchval</code> o <code>execute</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>probar_conexion.py — una conexión, una consulta, un cierre</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">import</span> asyncio
+<span class="tk-kw">import</span> os
+
+<span class="tk-kw">import</span> asyncpg
+
+
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">main</span>() -&gt; <span class="tk-kw">None</span>:
+    conn = <span class="tk-kw">await</span> asyncpg.connect(os.environ[<span class="tk-str">"DATABASE_URL"</span>], timeout=<span class="tk-num">10.0</span>)
+    <span class="tk-kw">try</span>:
+        version = <span class="tk-kw">await</span> conn.fetchval(<span class="tk-str">"SELECT version()"</span>)
+        <span class="tk-fn">print</span>(version)
+
+        <span class="tk-cm"># La consulta más pequeña que demuestra que la base responde.</span>
+        <span class="tk-fn">print</span>(<span class="tk-str">"ping:"</span>, <span class="tk-kw">await</span> conn.fetchval(<span class="tk-str">"SELECT 1"</span>))
+    <span class="tk-kw">finally</span>:
+        <span class="tk-kw">await</span> conn.close()
+
+
+<span class="tk-kw">if</span> __name__ == <span class="tk-str">"__main__"</span>:
+    asyncio.run(main())
+</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — ejecutar con la variable de entorno</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>uv add asyncpg
+uv run --env-file .env python probar_conexion.py
+
+<span class="tk-cm"># PostgreSQL 18.6 on x86_64-pc-linux-gnu...
+# ping: 1
+</span></code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>fetchval</code></dt>
+      <dd>Devuelve el primer valor de la primera fila. Ideal para <code>SELECT 1</code>, un <code>count(*)</code> o un <code>RETURNING id</code>.</dd>
+    </div>
+    <div>
+      <dt><code>fetchrow</code></dt>
+      <dd>Devuelve una fila completa como <code>Record</code>, o <code>None</code> si no hay resultados. Hay que comprobar el <code>None</code> antes de acceder a una columna.</dd>
+    </div>
+    <div>
+      <dt><code>fetch</code></dt>
+      <dd>Devuelve una lista de filas. Nunca es <code>None</code>: si no hay resultados, es una lista vacía.</dd>
+    </div>
+    <div>
+      <dt><code>execute</code></dt>
+      <dd>Ejecuta una sentencia que no devuelve filas y retorna un texto como <code>INSERT 0 1</code>.</dd>
+    </div>
+    <div>
+      <dt><code>Record</code></dt>
+      <dd>Una fila de asyncpg. Se comporta como un diccionario y como una tupla; <code>dict(fila)</code> la convierte para el JSON.</dd>
+    </div>
+  </div>
+
+  <h3>1.5 · SQL con parámetros, nunca con concatenación</h3>
+
+  <p>
+    El SQL se escribe con marcadores <code>$1</code>, <code>$2</code>, y los valores se pasan
+    aparte. El driver los envía como datos, no como texto. Esto evita la <strong>inyección
+    SQL</strong>, el equivalente de dejar la puerta del formulario abierta pero esta vez del lado
+    de la base de datos.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>la diferencia entre datos y código</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># MAL: el nombre del usuario se convierte en parte del SQL</span>
+sql = <span class="tk-str">f"SELECT id FROM productos WHERE nombre = '{</span>nombre<span class="tk-str">}'"</span>
+<span class="tk-kw">await</span> conn.fetch(sql)
+
+<span class="tk-cm"># BIEN: el nombre viaja como parámetro; PostgreSQL lo trata como dato</span>
+<span class="tk-kw">await</span> conn.fetch(<span class="tk-str">"SELECT id FROM productos WHERE nombre = $1"</span>, nombre)
+</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — los marcadores de asyncpg son <code>$1</code></span>
+    <p>
+      Si vienes de otras librerías, quizá esperes <code>%s</code> o <code>?</code>. asyncpg usa
+      <code>$1</code>, <code>$2</code>, y el orden importa. Un <code>?</code> no se sustituye: se
+      envía tal cual y PostgreSQL responde con un error de sintaxis. Es uno de los errores más
+      comunes al cambiar de driver.
+    </p>
+  </div>
+
+  <h3>1.6 · ¿Y si abro una conexión por petición?</h3>
+
+  <p>
+    Funciona en una demostración y se cae en cuanto hay concurrencia. Abrir una conexión implica
+    resolver el host, abrir TCP, negociar TLS y autenticarse: entre 10 y 50 milisegundos que se
+    suman a cada petición. Además, PostgreSQL tiene un límite de conexiones simultáneas; si cada
+    petición abre una, cien usuarios pueden dejar al servidor sin conexiones disponibles.
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — la regla que resuelve el problema</span>
+    <p>
+      Abre un <strong>pool</strong> al arrancar la aplicación, pide una conexión prestada por
+      petición y devuélvela al terminar. El pool mantiene unas pocas conexiones vivas y las
+      reutiliza. Es la unidad siguiente, y es la pieza que separa un script de una API.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué parte de la DSN indica la base de datos a la que te conectas?</p>
+      <button class="opcion" data-op="a">El esquema <code>postgresql://</code></button>
+      <button class="opcion" data-op="b">El puerto <code>5432</code></button>
+      <button class="opcion" data-op="c">El último segmento antes de las opciones: <code>/club</code></button>
+      <button class="opcion" data-op="d">El usuario <code>club</code></button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Cuál es la forma correcta de pasar un valor a una consulta en asyncpg?</p>
+      <button class="opcion" data-op="a"><code>f"SELECT * FROM productos WHERE id = {id}"</code></button>
+      <button class="opcion" data-op="b"><code>"SELECT * FROM productos WHERE id = $1", id</code></button>
+      <button class="opcion" data-op="c"><code>"SELECT * FROM productos WHERE id = ?", id</code></button>
+      <button class="opcion" data-op="d"><code>"SELECT * FROM productos WHERE id = %s", id</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Qué devuelve <code>fetchrow</code> cuando no encuentra filas?</p>
+      <button class="opcion" data-op="a">Una lista vacía</button>
+      <button class="opcion" data-op="b">Un diccionario vacío</button>
+      <button class="opcion" data-op="c">Lanza una excepción siempre</button>
+      <button class="opcion" data-op="d"><code>None</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> ¿Por qué <code>NUMERIC(10, 2)</code> es mejor que <code>float</code> para un precio?</p>
+      <button class="opcion" data-op="a">Porque guarda los centavos de forma exacta, sin aproximaciones binarias</button>
+      <button class="opcion" data-op="b">Porque ocupa menos espacio en disco</button>
+      <button class="opcion" data-op="c">Porque PostgreSQL no admite <code>float</code></button>
+      <button class="opcion" data-op="d">Porque se convierte solo a texto en el JSON</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: el pool de conexiones →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — EL POOL DE CONEXIONES
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · El recurso compartido</div>
+    <h2>El <em>pool</em>: unas pocas conexiones que atienden a todos</h2>
+    <p class="proposito">
+      Abrir una conexión es caro y PostgreSQL tiene un límite. Un pool mantiene unas pocas
+      conexiones vivas, las presta por petición y las recupera. Esta unidad explica cómo se
+      configura, cómo se usa sin fugas y qué pasa cuando se agota.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: la clase Database con connect, close y ping</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · El costo de abrir una conexión</h3>
+
+  <p class="primer-párrafo">
+    Cada conexión nueva recorre los cinco pasos de la unidad 0: DNS, TCP, TLS, autenticación y
+    selección de base. En una red local eso puede tomar entre 10 y 50 milisegundos; contra un
+    servidor administrado, más. Si una API recibe cien peticiones por segundo y abre una conexión
+    por petición, está gastando casi todo su tiempo en saludar.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Tres formas de obtener una conexión</caption>
+      <thead>
+        <tr><th>Estrategia</th><th>Qué hace</th><th>Problema</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Una conexión global</td><td>Se abre una vez y la comparten todas las peticiones</td><td>Una consulta lenta bloquea a las demás; no hay concurrencia real</td></tr>
+        <tr><td>Una conexión por petición</td><td>Se abre y se cierra en cada solicitud</td><td>Latencia alta y riesgo de agotar <code>max_connections</code></td></tr>
+        <tr><td><strong>Un pool</strong></td><td>Mantiene N conexiones vivas y las presta</td><td>Hay que configurarlo y devolver siempre la conexión</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>2.2 · Los parámetros de <code>create_pool</code></h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>asyncpg — crear el pool</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>pool = <span class="tk-kw">await</span> asyncpg.create_pool(
+    dsn=db_url,
+    min_size=<span class="tk-num">1</span>,
+    max_size=<span class="tk-num">10</span>,
+    timeout=<span class="tk-num">10.0</span>,
+    command_timeout=<span class="tk-num">30.0</span>,
+    max_inactive_connection_lifetime=<span class="tk-num">300.0</span>,
+)
+</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cada parámetro y su efecto</caption>
+      <thead>
+        <tr><th>Parámetro</th><th>Valor de la clase</th><th>Qué controla</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>min_size</code></td><td><code>1</code></td><td>Conexiones que se abren de entrada y se mantienen vivas</td></tr>
+        <tr><td><code>max_size</code></td><td><code>10</code></td><td>Máximo de conexiones simultáneas del pool</td></tr>
+        <tr><td><code>timeout</code></td><td><code>10.0</code></td><td>Segundos máximos para abrir una conexión</td></tr>
+        <tr><td><code>command_timeout</code></td><td><code>30.0</code></td><td>Segundos máximos por consulta; al excederse, PostgreSQL la cancela</td></tr>
+        <tr><td><code>max_inactive_connection_lifetime</code></td><td><code>300.0</code></td><td>Segundos que una conexión puede estar inactiva antes de reciclarse</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>max_size</code> no se elige por intuición</span>
+    <p>
+      El límite real lo pone PostgreSQL con <code>max_connections</code>, y cada worker de la API
+      tiene su propio pool. Diez conexiones por worker multiplicadas por cuatro workers son
+      cuarenta conexiones. Si el servidor solo admite cien y hay otras aplicaciones, el número
+      tiene que bajar. La fórmula no es «más grande es mejor»: es «tantas como hagan falta para
+      atender la concurrencia, sin ahogar al servidor».
+    </p>
+  </div>
+
+  <h3>2.3 · La clase <code>Database</code></h3>
+
+  <p>
+    El pool no se crea en una variable suelta: se encapsula en una clase pequeña que sabe abrirlo,
+    cerrarlo y decir si está listo. Así la aplicación tiene un solo punto de verdad sobre la
+    conexión.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>database.py — el pool encapsulado</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-str">"""Capa de acceso a PostgreSQL con un pool de asyncpg."""</span>
+
+<span class="tk-kw">import</span> asyncio
+
+<span class="tk-kw">import</span> asyncpg
+<span class="tk-kw">from</span> loguru <span class="tk-kw">import</span> logger
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">PoolNotReadyError</span>(<span class="tk-cls">RuntimeError</span>):
+    <span class="tk-str">"""Se lanza cuando se pide una conexión antes de crear el pool."""</span>
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">Database</span>:
+    <span class="tk-str">"""Administra el pool de conexiones de la aplicación."""</span>
+
+    <span class="tk-kw">def</span> <span class="tk-fn">__init__</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-fn">self</span>.pool: asyncpg.<span class="tk-cls">Pool</span> | <span class="tk-kw">None</span> = <span class="tk-kw">None</span>
+
+    <span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">connect</span>(<span class="tk-fn">self</span>, db_url: <span class="tk-fn">str</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-kw">if</span> <span class="tk-fn">self</span>.pool <span class="tk-kw">is</span> <span class="tk-kw">not</span> <span class="tk-kw">None</span>:
+            <span class="tk-kw">return</span>
+        <span class="tk-fn">self</span>.pool = <span class="tk-kw">await</span> asyncpg.create_pool(
+            dsn=db_url,
+            min_size=<span class="tk-num">1</span>,
+            max_size=<span class="tk-num">10</span>,
+            timeout=<span class="tk-num">10.0</span>,
+            command_timeout=<span class="tk-num">30.0</span>,
+            max_inactive_connection_lifetime=<span class="tk-num">300.0</span>,
+        )
+        logger.info(<span class="tk-str">"Pool de conexiones abierto"</span>)
+
+    <span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">close</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-kw">if</span> <span class="tk-fn">self</span>.pool <span class="tk-kw">is</span> <span class="tk-kw">None</span>:
+            <span class="tk-kw">return</span>
+        <span class="tk-kw">await</span> <span class="tk-fn">self</span>.pool.close()
+        <span class="tk-fn">self</span>.pool = <span class="tk-kw">None</span>
+        logger.info(<span class="tk-str">"Pool de conexiones cerrado"</span>)
+
+    <span class="tk-fn">@property</span>
+    <span class="tk-kw">def</span> <span class="tk-fn">is_connected</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">bool</span>:
+        <span class="tk-kw">return</span> <span class="tk-fn">self</span>.pool <span class="tk-kw">is</span> <span class="tk-kw">not</span> <span class="tk-kw">None</span>
+
+    <span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">ping</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">bool</span>:
+        <span class="tk-str">"""Comprueba que la base responde con una consulta mínima."""</span>
+        <span class="tk-kw">if</span> <span class="tk-fn">self</span>.pool <span class="tk-kw">is</span> <span class="tk-kw">None</span>:
+            <span class="tk-kw">return</span> <span class="tk-kw">False</span>
+        <span class="tk-kw">try</span>:
+            <span class="tk-kw">await</span> asyncio.wait_for(<span class="tk-fn">self</span>.pool.fetchval(<span class="tk-str">"SELECT 1"</span>), timeout=<span class="tk-num">2.0</span>)
+            <span class="tk-kw">return</span> <span class="tk-kw">True</span>
+        <span class="tk-kw">except</span> (<span class="tk-cls">TimeoutError</span>, <span class="tk-cls">OSError</span>, asyncpg.<span class="tk-cls">PostgresError</span>):
+            <span class="tk-kw">return</span> <span class="tk-kw">False</span>
+
+
+db = <span class="tk-cls">Database</span>()
+</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>PoolNotReadyError</code></dt>
+      <dd>Una excepción propia, no de asyncpg. Sirve para distinguir «la base no está lista» de «la base rechazó la consulta» y responder <code>503</code> en vez de <code>500</code>.</dd>
+    </div>
+    <div>
+      <dt><code>connect()</code> idempotente</dt>
+      <dd>Si el pool ya existe, no hace nada. Así el lifespan puede llamarlo sin miedo a crear dos pools si el arranque se repite.</dd>
+    </div>
+    <div>
+      <dt><code>close()</code></dt>
+      <dd>Cierra todas las conexiones y deja el pool en <code>None</code>. Sin esto, el servidor de base de datos conserva conexiones abiertas hasta que expiran.</dd>
+    </div>
+    <div>
+      <dt><code>ping()</code></dt>
+      <dd>Ejecuta <code>SELECT 1</code> con un límite de dos segundos. Es la consulta más barata que demuestra que la base responde ahora, no que respondió al arrancar.</dd>
+    </div>
+    <div>
+      <dt><code>asyncio.wait_for</code></dt>
+      <dd>Envuelve la consulta y lanza <code>TimeoutError</code> si tarda más de lo permitido. Evita que un health check se quede colgado esperando.</dd>
+    </div>
+  </div>
+
+  <h3>2.4 · Pedir una conexión sin fugas</h3>
+
+  <p>
+    El pool se usa con <code>async with</code>. Al entrar se adquiere una conexión; al salir se
+    devuelve, incluso si el bloque lanza una excepción. Esa garantía es la diferencia entre un
+    pool sano y un pool que se agota a la media hora.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>usar el pool: préstamo y devolución</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">async</span> <span class="tk-kw">with</span> db.pool.acquire() <span class="tk-kw">as</span> conn:
+    filas = <span class="tk-kw">await</span> conn.fetch(<span class="tk-str">"SELECT id, nombre FROM productos"</span>)
+    <span class="tk-cm"># Al salir del bloque, la conexión vuelve al pool.</span>
+
+<span class="tk-cm"># También existen atajos que adquieren y devuelven por ti:</span>
+filas = <span class="tk-kw">await</span> db.pool.fetch(<span class="tk-str">"SELECT id, nombre FROM productos"</span>)
+total = <span class="tk-kw">await</span> db.pool.fetchval(<span class="tk-str">"SELECT count(*) FROM productos"</span>)
+</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — no retengas una conexión mientras esperas otra cosa</span>
+    <p>
+      Si dentro del <code>async with</code> llamas a una API externa, generas un PDF o esperas una
+      respuesta lenta, la conexión queda ocupada sin estar haciendo nada. Con diez conexiones y
+      diez peticiones lentas, el pool se agota y las demás esperan. La regla es: <strong>adquiere
+      la conexión lo más tarde posible y devuélvela lo antes posible</strong>.
+    </p>
+  </div>
+
+  <h3>2.5 · Transacciones: todo o nada</h3>
+
+  <p>
+    Una transacción agrupa varias sentencias para que se guarden juntas o no se guarde ninguna. Es
+    la herramienta para operaciones que no tienen sentido a medias: descontar stock y registrar la
+    venta, por ejemplo.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>una transacción con asyncpg</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">async</span> <span class="tk-kw">with</span> db.pool.acquire() <span class="tk-kw">as</span> conn:
+    <span class="tk-kw">async</span> <span class="tk-kw">with</span> conn.transaction():
+        <span class="tk-kw">await</span> conn.execute(
+            <span class="tk-str">"UPDATE productos SET precio = precio * 1.10 WHERE id = $1"</span>, producto_id
+        )
+        <span class="tk-kw">await</span> conn.execute(
+            <span class="tk-str">"INSERT INTO auditoria (producto_id, accion) VALUES ($1, 'precio')"</span>,
+            producto_id,
+        )
+    <span class="tk-cm"># Si algo falla dentro del bloque, se hace rollback automático.</span>
+    <span class="tk-cm"># Si todo termina bien, se hace commit al salir.</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — una transacción no es un pool</span>
+    <p>
+      La transacción vive <strong>dentro</strong> de una conexión. No se comparte entre peticiones
+      ni se guarda en una variable global. Si dos peticiones necesitan transacciones, cada una
+      adquiere su propia conexión y abre su propia transacción. Mezclar esos dos conceptos produce
+      errores imposibles de reproducir.
+    </p>
+  </div>
+
+  <h3>2.6 · Cuando el pool se agota</h3>
+
+  <p>
+    <code>pool.acquire()</code> espera hasta <code>timeout</code> segundos a que se libere una
+    conexión. Si no lo consigue, lanza <code>TimeoutError</code>. Las causas habituales son tres:
+  </p>
+
+  <ol>
+    <li><strong>Fuga:</strong> una ruta adquirió una conexión y no la devolvió porque no usó <code>async with</code> o porque el <code>yield</code> de la dependencia nunca se reanudó.</li>
+    <li><strong>Consulta lenta:</strong> todas las conexiones están esperando a PostgreSQL; <code>command_timeout</code> debería cancelarlas.</li>
+    <li><strong>Pool demasiado pequeño:</strong> la concurrencia real supera <code>max_size</code>. Se mide antes de aumentar.</li>
+  </ol>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>observar el pool antes de cambiar números</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>logger.info(
+    <span class="tk-str">"pool: size={} idle={} max={}"</span>,
+    db.pool.get_size(),
+    db.pool.get_idle_size(),
+    db.pool.get_max_size(),
+)
+</code></pre>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la ventaja principal de un pool frente a abrir una conexión por petición?</p>
+      <button class="opcion" data-op="a">Que permite usar SQL sin parámetros</button>
+      <button class="opcion" data-op="b">Que reutiliza conexiones y evita pagar el costo de abrirlas en cada solicitud</button>
+      <button class="opcion" data-op="c">Que elimina la necesidad de cerrar la aplicación</button>
+      <button class="opcion" data-op="d">Que aumenta el límite de <code>max_connections</code> de PostgreSQL</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué pasa si una ruta adquiere una conexión y nunca la devuelve?</p>
+      <button class="opcion" data-op="a">Nada: el pool la recupera sola al final del día</button>
+      <button class="opcion" data-op="b">PostgreSQL la cierra inmediatamente</button>
+      <button class="opcion" data-op="c">El pool crece sin límite</button>
+      <button class="opcion" data-op="d">El pool pierde una conexión disponible y, si se repite, se agota</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué hace <code>command_timeout</code>?</p>
+      <button class="opcion" data-op="a">Cancela una consulta que tarda más de lo permitido</button>
+      <button class="opcion" data-op="b">Cierra la aplicación después de ese tiempo</button>
+      <button class="opcion" data-op="c">Limita el número de filas que devuelve una consulta</button>
+      <button class="opcion" data-op="d">Define cuánto vive una conexión inactiva</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Dónde vive una transacción?</p>
+      <button class="opcion" data-op="a">En una variable global de la aplicación</button>
+      <button class="opcion" data-op="b">En el pool, compartida por todas las peticiones</button>
+      <button class="opcion" data-op="c">Dentro de una conexión concreta, mientras dura el bloque</button>
+      <button class="opcion" data-op="d">En el archivo <code>schema.sql</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: PostgreSQL y el driver</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: lifespan y dependencia →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — LIFESPAN Y DEPENDENCIA
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · El ciclo de vida</div>
+    <h2><em>Lifespan</em> y dependencia: abrir una vez, prestar por petición</h2>
+    <p class="proposito">
+      El pool tiene que abrirse antes de la primera petición y cerrarse después de la última. Ese
+      es el trabajo de <code>lifespan</code>. La conexión que usa cada ruta se pide con una
+      dependencia que la devuelve sola. Juntas forman el patrón que usarás en todos tus proyectos.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: main.py con lifespan, health y productos</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · El lifecycle de la aplicación</h3>
+
+  <div class="diagrama">
+    <div class="nodo cliente">
+      <div class="rotulo-nodo">Al arrancar</div>
+      <h5>lifespan · antes del yield</h5>
+      <p>Lee <code>DATABASE_URL</code>, crea el pool y comprueba que la base responde.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">servir<br>peticiones</span>
+    </div>
+    <div class="nodo servidor">
+      <div class="rotulo-nodo">Mientras vive</div>
+      <h5>FastAPI atiende</h5>
+      <p>Cada ruta pide una conexión al pool y la devuelve al terminar.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">apagar<br>ordenado</span>
+    </div>
+    <div class="nodo datos">
+      <div class="rotulo-nodo">Al apagar</div>
+      <h5>lifespan · después del yield</h5>
+      <p>Cierra el pool y libera las conexiones del servidor.</p>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — el lifespan</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">import</span> os
+<span class="tk-kw">from</span> contextlib <span class="tk-kw">import</span> asynccontextmanager
+
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">FastAPI</span>
+<span class="tk-kw">from</span> loguru <span class="tk-kw">import</span> logger
+
+<span class="tk-kw">from</span> database <span class="tk-kw">import</span> db
+
+
+<span class="tk-fn">@asynccontextmanager</span>
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">lifespan</span>(app: <span class="tk-cls">FastAPI</span>):
+    db_url = os.getenv(<span class="tk-str">"DATABASE_URL"</span>)
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> db_url:
+        <span class="tk-kw">raise</span> <span class="tk-cls">RuntimeError</span>(<span class="tk-str">"La variable de entorno DATABASE_URL no está definida"</span>)
+
+    <span class="tk-kw">await</span> db.connect(db_url)
+    logger.info(<span class="tk-str">"Aplicación lista para atender peticiones"</span>)
+    <span class="tk-kw">try</span>:
+        <span class="tk-kw">yield</span>
+    <span class="tk-kw">finally</span>:
+        <span class="tk-kw">await</span> db.close()
+        logger.info(<span class="tk-str">"Aplicación detenida"</span>)
+
+
+app = <span class="tk-cls">FastAPI</span>(title=<span class="tk-str">"Tienda del Club"</span>, lifespan=lifespan)
+</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt>Antes del <code>yield</code></dt>
+      <dd>Todo lo que debe existir antes de atender la primera petición: el pool, clientes, cachés. Si algo falla aquí, la aplicación no arranca.</dd>
+    </div>
+    <div>
+      <dt>Después del <code>yield</code></dt>
+      <dd>La limpieza ordenada: cerrar el pool, vaciar colas, cerrar clientes. Se ejecuta una sola vez, cuando el servidor se apaga.</dd>
+    </div>
+    <div>
+      <dt><code>app.state</code></dt>
+      <dd>El lugar donde FastAPI guarda objetos compartidos. Aquí usamos el singleton <code>db</code> de <code>database.py</code>; en proyectos grandes también se puede guardar en <code>app.state.db</code>.</dd>
+    </div>
+    <div>
+      <dt>Fail fast</dt>
+      <dd>Si la base no está disponible al arrancar, es mejor no arrancar que aceptar peticiones que van a fallar. El orquestador reinicia el servicio y el error queda visible en los registros.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — <code>@app.on_event</code> está de salida</span>
+    <p>
+      Durante años se usaron <code>@app.on_event("startup")</code> y <code>@app.on_event("shutdown")</code>.
+      Hoy se considera una API heredada: el <code>lifespan</code> es el mecanismo recomendado por
+      FastAPI y Starlette. Si ves tutoriales viejos con <code>on_event</code>, funciona, pero no es
+      el estilo que debes copiar.
+    </p>
+  </div>
+
+  <h3>3.2 · La dependencia <code>get_connection</code></h3>
+
+  <p>
+    Una dependencia es una función que FastAPI ejecuta antes de tu ruta y cuyo resultado inyecta
+    como parámetro. Si la función usa <code>yield</code>, FastAPI también ejecuta el código de
+    limpieza cuando la respuesta termina. Esa es la pieza que devuelve la conexión al pool.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>database.py — la dependencia y su alias</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> typing <span class="tk-kw">import</span> <span class="tk-cls">Annotated</span>, <span class="tk-cls">AsyncGenerator</span>
+
+<span class="tk-kw">import</span> asyncpg
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">Depends</span>
+
+<span class="tk-cm"># Añade esto al final de database.py.</span>
+<span class="tk-cm"># PoolNotReadyError y db ya están definidos arriba.</span>
+
+
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">get_connection</span>() -&gt; <span class="tk-cls">AsyncGenerator</span>[asyncpg.<span class="tk-cls">Connection</span>, <span class="tk-kw">None</span>]:
+    <span class="tk-str">"""Cede una conexión del pool y la devuelve al terminar la petición."""</span>
+    <span class="tk-kw">if</span> db.pool <span class="tk-kw">is</span> <span class="tk-kw">None</span>:
+        <span class="tk-kw">raise</span> <span class="tk-cls">PoolNotReadyError</span>(<span class="tk-str">"La base de datos no está lista todavía"</span>)
+
+    <span class="tk-kw">async</span> <span class="tk-kw">with</span> db.pool.acquire() <span class="tk-kw">as</span> conn:
+        <span class="tk-kw">yield</span> conn
+
+
+<span class="tk-cls">ConnectionDep</span> = <span class="tk-cls">Annotated</span>[asyncpg.<span class="tk-cls">Connection</span>, <span class="tk-cls">Depends</span>(get_connection)]
+</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — el alias <code>ConnectionDep</code> no es un adorno</span>
+    <p>
+      <code>ConnectionDep</code> empaqueta el tipo y la dependencia en un solo nombre. Las rutas
+      quedan cortas, el editor sabe qué tipo reciben y la dependencia se puede cambiar en un solo
+      lugar. Es el estilo que FastAPI recomienda con <code>Annotated</code>: el tipo sigue siendo
+      el tipo, y la dependencia viaja como metadato.
+    </p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — usar la dependencia en una ruta</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> database <span class="tk-kw">import</span> <span class="tk-cls">ConnectionDep</span>
+
+
+<span class="tk-fn">@app</span>.get(<span class="tk-str">"/productos"</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">listar_productos</span>(conn: <span class="tk-cls">ConnectionDep</span>) -&gt; <span class="tk-fn">list</span>[<span class="tk-fn">dict</span>]:
+    filas = <span class="tk-kw">await</span> conn.fetch(
+        <span class="tk-str">"SELECT id, nombre, precio::float8 AS precio FROM productos ORDER BY id"</span>
+    )
+    <span class="tk-kw">return</span> [<span class="tk-fn">dict</span>(fila) <span class="tk-kw">for</span> fila <span class="tk-kw">in</span> filas]
+</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — por qué <code>yield</code> y no <code>return</code></span>
+    <p>
+      Con <code>return</code>, la conexión se devolvería antes de que la ruta la use. Con
+      <code>yield</code>, FastAPI pausa la dependencia, entrega la conexión, espera a que la ruta
+      termine y reanuda el bloque para salir del <code>async with</code>. Es el mismo patrón de
+      <code>with open(...)</code> de la clase 5, pero asíncrono y con una conexión de red.
+    </p>
+  </div>
+
+  <h3>3.3 · El health check que sí sirve</h3>
+
+  <p>
+    Un endpoint <code>/health</code> que solo devuelve <code>{"ok": true}</code> no comprueba nada.
+    El health check útil consulta la dependencia crítica con un timeout corto y responde
+    <code>503</code> si no está disponible. Los balanceadores y orquestadores usan ese código para
+    decidir si mandan tráfico.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — health con 200 o 503</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> fastapi.responses <span class="tk-kw">import</span> <span class="tk-cls">JSONResponse</span>
+
+<span class="tk-kw">from</span> database <span class="tk-kw">import</span> db
+
+
+<span class="tk-fn">@app</span>.get(<span class="tk-str">"/health"</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">health</span>() -&gt; <span class="tk-cls">JSONResponse</span>:
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> <span class="tk-kw">await</span> db.ping():
+        <span class="tk-kw">return</span> <span class="tk-cls">JSONResponse</span>(
+            {<span class="tk-str">"db"</span>: <span class="tk-str">"down"</span>, <span class="tk-str">"detalle"</span>: <span class="tk-str">"La base de datos no respondió"</span>},
+            status_code=<span class="tk-num">503</span>,
+        )
+    <span class="tk-kw">return</span> <span class="tk-cls">JSONResponse</span>({<span class="tk-str">"db"</span>: <span class="tk-str">"ok"</span>})
+</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Qué mirar en un health check</caption>
+      <thead>
+        <tr><th>Comprobación</th><th>Bien</th><th>Mal</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>¿El pool existe?</td><td><code>db.is_connected</code> es <code>True</code></td><td>Lifespan no corrió o falló</td></tr>
+        <tr><td>¿La base responde ahora?</td><td><code>SELECT 1</code> en menos de 2 s</td><td>Timeout o excepción de conexión</td></tr>
+        <tr><td>¿El código de estado?</td><td><code>200</code> si todo va bien</td><td><code>503</code> si la dependencia crítica falla</td></tr>
+        <tr><td>¿El cuerpo?</td><td>Un estado legible, sin credenciales</td><td>La DSN o el stack trace</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>3.4 · El <code>main.py</code> completo de la unidad</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — lifespan, health y listado</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-str">"""Tienda del Club de Robótica."""</span>
+
+<span class="tk-kw">import</span> os
+<span class="tk-kw">from</span> contextlib <span class="tk-kw">import</span> asynccontextmanager
+
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">FastAPI</span>
+<span class="tk-kw">from</span> fastapi.responses <span class="tk-kw">import</span> <span class="tk-cls">JSONResponse</span>
+<span class="tk-kw">from</span> loguru <span class="tk-kw">import</span> logger
+
+<span class="tk-kw">from</span> database <span class="tk-kw">import</span> <span class="tk-cls">ConnectionDep</span>, db
+
+
+<span class="tk-fn">@asynccontextmanager</span>
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">lifespan</span>(app: <span class="tk-cls">FastAPI</span>):
+    db_url = os.getenv(<span class="tk-str">"DATABASE_URL"</span>)
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> db_url:
+        <span class="tk-kw">raise</span> <span class="tk-cls">RuntimeError</span>(<span class="tk-str">"La variable de entorno DATABASE_URL no está definida"</span>)
+
+    <span class="tk-kw">await</span> db.connect(db_url)
+    logger.info(<span class="tk-str">"Aplicación lista para atender peticiones"</span>)
+    <span class="tk-kw">try</span>:
+        <span class="tk-kw">yield</span>
+    <span class="tk-kw">finally</span>:
+        <span class="tk-kw">await</span> db.close()
+        logger.info(<span class="tk-str">"Aplicación detenida"</span>)
+
+
+app = <span class="tk-cls">FastAPI</span>(title=<span class="tk-str">"Tienda del Club"</span>, lifespan=lifespan)
+
+
+<span class="tk-fn">@app</span>.get(<span class="tk-str">"/health"</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">health</span>() -&gt; <span class="tk-cls">JSONResponse</span>:
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> <span class="tk-kw">await</span> db.ping():
+        <span class="tk-kw">return</span> <span class="tk-cls">JSONResponse</span>(
+            {<span class="tk-str">"db"</span>: <span class="tk-str">"down"</span>, <span class="tk-str">"detalle"</span>: <span class="tk-str">"La base de datos no respondió"</span>},
+            status_code=<span class="tk-num">503</span>,
+        )
+    <span class="tk-kw">return</span> <span class="tk-cls">JSONResponse</span>({<span class="tk-str">"db"</span>: <span class="tk-str">"ok"</span>})
+
+
+<span class="tk-fn">@app</span>.get(<span class="tk-str">"/productos"</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">listar_productos</span>(conn: <span class="tk-cls">ConnectionDep</span>) -&gt; <span class="tk-fn">list</span>[<span class="tk-fn">dict</span>]:
+    filas = <span class="tk-kw">await</span> conn.fetch(
+        <span class="tk-str">"SELECT id, nombre, precio::float8 AS precio FROM productos ORDER BY id"</span>
+    )
+    <span class="tk-kw">return</span> [<span class="tk-fn">dict</span>(fila) <span class="tk-kw">for</span> fila <span class="tk-kw">in</span> filas]
+</code></pre>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — el patrón que se repite en todos los proyectos</span>
+    <p>
+      Este esqueleto —lifespan que abre, dependencia que presta, health que comprueba— se repite
+      casi igual en cualquier API con base de datos. Cambia el motor, el driver y las consultas;
+      la forma es la misma. Aprenderlo bien una vez ahorra horas en el siguiente proyecto.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Dónde se crea el pool de conexiones?</p>
+      <button class="opcion" data-op="a">En cada ruta, antes de la consulta</button>
+      <button class="opcion" data-op="b">En el <code>lifespan</code>, antes del <code>yield</code></button>
+      <button class="opcion" data-op="c">En el <code>main()</code> de un script aparte</button>
+      <button class="opcion" data-op="d">En el <code>schema.sql</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué hace el <code>yield</code> de <code>get_connection</code>?</p>
+      <button class="opcion" data-op="a">Devuelve la conexión antes de usarla</button>
+      <button class="opcion" data-op="b">Cierra el pool al terminar la ruta</button>
+      <button class="opcion" data-op="c">Convierte la conexión en un modelo Pydantic</button>
+      <button class="opcion" data-op="d">Entrega la conexión y la devuelve al pool cuando la respuesta termina</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué código devuelve un health check cuando la base no responde?</p>
+      <button class="opcion" data-op="a"><code>503</code></button>
+      <button class="opcion" data-op="b"><code>200</code></button>
+      <button class="opcion" data-op="c"><code>404</code></button>
+      <button class="opcion" data-op="d"><code>303</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Qué pasa si falta <code>DATABASE_URL</code> al arrancar?</p>
+      <button class="opcion" data-op="a">La API arranca y falla en la primera consulta</button>
+      <button class="opcion" data-op="b">El pool usa una URL por defecto</button>
+      <button class="opcion" data-op="c">El lifespan lanza un error y la aplicación no arranca</button>
+      <button class="opcion" data-op="d">FastAPI crea la variable automáticamente</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: El pool de conexiones</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de conexión</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija por
+      escrito el ciclo de vida de una conexión.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora.
+    </p>
+
+    <div class="reglas">
+      <div class="regla">
+        <h4>Regla 20-20-20</h4>
+        <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+      </div>
+      <div class="regla">
+        <h4>Movimiento</h4>
+        <p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p>
+      </div>
+      <div class="regla">
+        <h4>Hidratación</h4>
+        <p>Un vaso de agua. La lectura densa agota más de lo que parece.</p>
+      </div>
+      <div class="regla">
+        <h4>Bitácora</h4>
+        <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora de conexión (5 minutos)</h3>
+
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿qué diferencia hay entre una conexión, un pool y una transacción?</li>
+    <li><strong>En una frase:</strong> ¿por qué el pool se abre en el <code>lifespan</code> y no en cada ruta?</li>
+    <li><strong>En una frase:</strong> ¿qué comprueba un health check que un <code>return {"ok": true}</code> no comprueba?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+
+  <p>
+    Estas diez palabras aparecerán en la actividad y en el taller. Léelas ahora; las definiciones
+    se afinan en las unidades siguientes.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>Driver</dt>
+      <dd>La librería que traduce entre Python y el protocolo de la base de datos. Aquí: <code>asyncpg</code>.</dd>
+    </div>
+    <div>
+      <dt>DSN</dt>
+      <dd>La cadena con la que te conectas: esquema, usuario, clave, host, puerto y base.</dd>
+    </div>
+    <div>
+      <dt>Pool</dt>
+      <dd>Un conjunto de conexiones reutilizables que se prestan por petición y se devuelven al terminar.</dd>
+    </div>
+    <div>
+      <dt><code>acquire</code> / <code>release</code></dt>
+      <dd>Las dos operaciones del pool: tomar una conexión y devolverla. <code>async with</code> garantiza la segunda.</dd>
+    </div>
+    <div>
+      <dt>Lifespan</dt>
+      <dd>El bloque de arranque y apagado de la aplicación. Abre recursos antes del <code>yield</code> y los cierra después.</dd>
+    </div>
+    <div>
+      <dt>Dependencia</dt>
+      <dd>Una función que FastAPI ejecuta antes de la ruta y cuyo resultado inyecta. Con <code>yield</code>, también ejecuta la limpieza.</dd>
+    </div>
+    <div>
+      <dt>SQLSTATE</dt>
+      <dd>El código de cinco caracteres con el que PostgreSQL clasifica un error: <code>28P01</code>, <code>3D000</code>, <code>23505</code>.</dd>
+    </div>
+    <div>
+      <dt>Health check</dt>
+      <dd>Una ruta que comprueba la dependencia crítica y responde <code>200</code> o <code>503</code>.</dd>
+    </div>
+    <div>
+      <dt>Fuga de conexión</dt>
+      <dd>Una conexión que se adquirió y nunca se devolvió. Con el tiempo, agota el pool.</dd>
+    </div>
+    <div>
+      <dt>Transacción</dt>
+      <dd>Un grupo de sentencias que se confirman juntas o se deshacen juntas. Vive dentro de una conexión.</dd>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: Lifespan y dependencia</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Actividad →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — ACTIVIDAD: CONECTAR LA API
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · Actividad de desarrollo</div>
+    <h2>Actividad 5.1 · <em>Conectar la API a PostgreSQL</em></h2>
+    <p class="proposito">
+      Las cuatro unidades anteriores dieron las piezas: el driver, la DSN, el pool, el lifespan y
+      la dependencia. Ahora se juntan en una API que arranca, comprueba la base, lista productos y
+      crea uno nuevo. En 35 minutos tendrás una conexión real funcionando de punta a punta.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Actividad de desarrollo</b></span>
+      <span>🧭 <b>Producto: API conectada y probada con curl</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Actividad</span>
+      <h3>El catálogo persistente del club</h3>
+    </div>
+
+    <p>
+      El club necesita que su catálogo sobreviva a los reinicios y que varias personas puedan
+      consultarlo a la vez. La API debe conectarse a PostgreSQL con un pool, comprobar la conexión
+      en <code>/health</code>, listar los productos y crear uno nuevo con validación. Si la base no
+      está disponible, la API debe decirlo con claridad y no fingir que todo está bien.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>Un <code>POST /productos</code> con <code>nombre</code> y <code>precio</code></td>
+          </tr>
+          <tr>
+            <td><strong>Salida correcta</strong></td>
+            <td><code>201</code> con el producto creado, incluido su <code>id</code></td>
+          </tr>
+          <tr>
+            <td><strong>Salida de salud</strong></td>
+            <td><code>200</code> si <code>SELECT 1</code> responde; <code>503</code> si no</td>
+          </tr>
+          <tr>
+            <td><strong>Persistencia</strong></td>
+            <td>Los datos quedan en PostgreSQL y sobreviven al reinicio de la API</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>El pool se abre una vez en el <code>lifespan</code> y se cierra al apagar</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Ninguna consulta concatena valores: todas usan <code>$1</code>, <code>$2</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong><code>sql/schema.sql</code></strong>: la tabla <code>productos</code> con sus restricciones.</li>
+      <li><strong><code>database.py</code></strong>: la clase <code>Database</code>, <code>get_connection</code> y <code>ConnectionDep</code>.</li>
+      <li><strong><code>modelos.py</code></strong>: <code>ProductoIn</code> y <code>ProductoOut</code>.</li>
+      <li><strong><code>main.py</code></strong>: lifespan, <code>/health</code>, <code>GET /productos</code> y <code>POST /productos</code>.</li>
+      <li><strong>Una prueba manual</strong>: <code>/health</code>, un listado y una creación con <code>curl</code>.</li>
+    </ol>
+  </div>
+
+  <h3>5.2 · Paso 1: levantar PostgreSQL</h3>
+
+  <p>
+    Necesitas un servidor PostgreSQL accesible. Tienes tres caminos; elige uno y anota su DSN.
+    Si usas Docker, el archivo <code>compose.yaml</code> levanta la base con un usuario y una base
+    de datos ya creados.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>compose.yaml — PostgreSQL local para el proyecto</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-attr">services</span><span class="tk-pun">:</span>
+  <span class="tk-attr">db</span><span class="tk-pun">:</span>
+    <span class="tk-attr">image</span><span class="tk-pun">:</span> <span class="tk-str">postgres:17</span>
+    <span class="tk-attr">environment</span><span class="tk-pun">:</span>
+      <span class="tk-attr">POSTGRES_USER</span><span class="tk-pun">:</span> <span class="tk-str">club</span>
+      <span class="tk-attr">POSTGRES_PASSWORD</span><span class="tk-pun">:</span> <span class="tk-str">club</span>
+      <span class="tk-attr">POSTGRES_DB</span><span class="tk-pun">:</span> <span class="tk-str">club</span>
+    <span class="tk-attr">ports</span><span class="tk-pun">:</span>
+      <span class="tk-pun">-</span> <span class="tk-str">"5432:5432"</span>
+    <span class="tk-attr">volumes</span><span class="tk-pun">:</span>
+      <span class="tk-pun">-</span> <span class="tk-str">pgdata:/var/lib/postgresql/data</span>
+
+<span class="tk-attr">volumes</span><span class="tk-pun">:</span>
+  <span class="tk-attr">pgdata</span><span class="tk-pun">:</span>
+</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — arrancar el contenedor</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>docker compose up -d
+docker compose ps
+
+<span class="tk-cm"># Comprobar que el puerto responde antes de tocar la API
+</span>pg_isready -h localhost -p <span class="tk-num">5432</span> -U club
+
+<span class="tk-cm"># La DSN de este compose
+</span><span class="tk-fn">export</span> DATABASE_URL=<span class="tk-str">"postgresql://club:club@localhost:5432/club"</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — si trabajas en Windows PowerShell</span>
+    <p>
+      La variable de entorno se define con
+      <code>$env:DATABASE_URL = "postgresql://club:club@localhost:5432/club"</code> y se usa con
+      <code>psql $env:DATABASE_URL -f sql/schema.sql</code>. El resto de los comandos es igual.
+    </p>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — <code>.env</code> para uv, variable exportada para psql</span>
+    <p>
+      Guarda la DSN en un archivo <code>.env</code> en la raíz del proyecto para que
+      <code>uv run --env-file .env</code> la cargue. Para <code>psql</code>, expórtala en la
+      terminal como en el bloque anterior. Si ya la exportaste, puedes ejecutar
+      <code>uv run fastapi dev main.py</code> sin <code>--env-file</code>.
+    </p>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — si no tienes Docker</span>
+    <p>
+      Instala PostgreSQL en tu computador o usa un servicio administrado. Con una instalación
+      local, crea la base y el usuario con <code>createdb club</code> y ajusta la DSN. Con un
+      servicio en la nube, copia la URL que te da el panel y añade <code>?sslmode=require</code> si
+      te lo indica. La clase funciona igual en los tres casos: lo único que cambia es la DSN.
+    </p>
+  </div>
+
+  <h3>5.3 · Paso 2: crear el esquema</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — aplicar el esquema a la base</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>mkdir -p sql
+<span class="tk-cm"># Copia el CREATE TABLE de la unidad 1.2 en sql/schema.sql
+</span>
+psql <span class="tk-str">"</span>$DATABASE_URL<span class="tk-str">"</span> -f sql/schema.sql
+
+<span class="tk-cm"># Comprobar que la tabla existe
+</span>psql <span class="tk-str">"</span>$DATABASE_URL<span class="tk-str">"</span> -c <span class="tk-str">"\d productos"</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — aplicar el esquema en la base correcta</span>
+    <p>
+      <code>psql "$DATABASE_URL"</code> usa la base de la DSN. Si ejecutas el esquema contra
+      <code>postgres</code> y luego la API se conecta a <code>club</code>, la tabla «no existe»
+      aunque la hayas creado. Es el error <code>42P01</code> de la unidad 6, y casi siempre es un
+      problema de base equivocada, no de SQL.
+    </p>
+  </div>
+
+  <h3>5.4 · Paso 3: el archivo <code>database.py</code></h3>
+
+  <p>
+    Reúne en un solo archivo la clase de la unidad 2 y la dependencia de la unidad 3. Es el único
+    lugar de la aplicación que sabe cómo se abre y se presta una conexión.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>database.py — pool, dependencia y ping</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-str">"""Capa de acceso a PostgreSQL con un pool de asyncpg."""</span>
+
+<span class="tk-kw">import</span> asyncio
+<span class="tk-kw">from</span> typing <span class="tk-kw">import</span> <span class="tk-cls">Annotated</span>, <span class="tk-cls">AsyncGenerator</span>
+
+<span class="tk-kw">import</span> asyncpg
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">Depends</span>
+<span class="tk-kw">from</span> loguru <span class="tk-kw">import</span> logger
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">PoolNotReadyError</span>(<span class="tk-cls">RuntimeError</span>):
+    <span class="tk-str">"""Se lanza cuando se pide una conexión antes de crear el pool."""</span>
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">Database</span>:
+    <span class="tk-str">"""Administra el pool de conexiones de la aplicación."""</span>
+
+    <span class="tk-kw">def</span> <span class="tk-fn">__init__</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-fn">self</span>.pool: asyncpg.<span class="tk-cls">Pool</span> | <span class="tk-kw">None</span> = <span class="tk-kw">None</span>
+
+    <span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">connect</span>(<span class="tk-fn">self</span>, db_url: <span class="tk-fn">str</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-kw">if</span> <span class="tk-fn">self</span>.pool <span class="tk-kw">is</span> <span class="tk-kw">not</span> <span class="tk-kw">None</span>:
+            <span class="tk-kw">return</span>
+        <span class="tk-fn">self</span>.pool = <span class="tk-kw">await</span> asyncpg.create_pool(
+            dsn=db_url,
+            min_size=<span class="tk-num">1</span>,
+            max_size=<span class="tk-num">10</span>,
+            timeout=<span class="tk-num">10.0</span>,
+            command_timeout=<span class="tk-num">30.0</span>,
+            max_inactive_connection_lifetime=<span class="tk-num">300.0</span>,
+        )
+        logger.info(<span class="tk-str">"Pool de conexiones abierto"</span>)
+
+    <span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">close</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-kw">if</span> <span class="tk-fn">self</span>.pool <span class="tk-kw">is</span> <span class="tk-kw">None</span>:
+            <span class="tk-kw">return</span>
+        <span class="tk-kw">await</span> <span class="tk-fn">self</span>.pool.close()
+        <span class="tk-fn">self</span>.pool = <span class="tk-kw">None</span>
+        logger.info(<span class="tk-str">"Pool de conexiones cerrado"</span>)
+
+    <span class="tk-fn">@property</span>
+    <span class="tk-kw">def</span> <span class="tk-fn">is_connected</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">bool</span>:
+        <span class="tk-kw">return</span> <span class="tk-fn">self</span>.pool <span class="tk-kw">is</span> <span class="tk-kw">not</span> <span class="tk-kw">None</span>
+
+    <span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">ping</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">bool</span>:
+        <span class="tk-str">"""Comprueba que la base responde con una consulta mínima."""</span>
+        <span class="tk-kw">if</span> <span class="tk-fn">self</span>.pool <span class="tk-kw">is</span> <span class="tk-kw">None</span>:
+            <span class="tk-kw">return</span> <span class="tk-kw">False</span>
+        <span class="tk-kw">try</span>:
+            <span class="tk-kw">await</span> asyncio.wait_for(<span class="tk-fn">self</span>.pool.fetchval(<span class="tk-str">"SELECT 1"</span>), timeout=<span class="tk-num">2.0</span>)
+            <span class="tk-kw">return</span> <span class="tk-kw">True</span>
+        <span class="tk-kw">except</span> (<span class="tk-cls">TimeoutError</span>, <span class="tk-cls">OSError</span>, asyncpg.<span class="tk-cls">PostgresError</span>):
+            <span class="tk-kw">return</span> <span class="tk-kw">False</span>
+
+
+db = <span class="tk-cls">Database</span>()
+
+
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">get_connection</span>() -&gt; <span class="tk-cls">AsyncGenerator</span>[asyncpg.<span class="tk-cls">Connection</span>, <span class="tk-kw">None</span>]:
+    <span class="tk-str">"""Cede una conexión del pool y la devuelve al terminar la petición."""</span>
+    <span class="tk-kw">if</span> db.pool <span class="tk-kw">is</span> <span class="tk-kw">None</span>:
+        <span class="tk-kw">raise</span> <span class="tk-cls">PoolNotReadyError</span>(<span class="tk-str">"La base de datos no está lista todavía"</span>)
+
+    <span class="tk-kw">async</span> <span class="tk-kw">with</span> db.pool.acquire() <span class="tk-kw">as</span> conn:
+        <span class="tk-kw">yield</span> conn
+
+
+<span class="tk-cls">ConnectionDep</span> = <span class="tk-cls">Annotated</span>[asyncpg.<span class="tk-cls">Connection</span>, <span class="tk-cls">Depends</span>(get_connection)]
+</code></pre>
+  </div>
+
+  <h3>5.5 · Paso 4: los modelos y las rutas</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>modelos.py — el contrato de entrada y salida</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> pydantic <span class="tk-kw">import</span> <span class="tk-cls">BaseModel</span>, <span class="tk-cls">ConfigDict</span>, <span class="tk-cls">Field</span>
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">ProductoIn</span>(<span class="tk-cls">BaseModel</span>):
+    <span class="tk-str">"""Campos que se envían al crear un producto."""</span>
+
+    model_config = <span class="tk-cls">ConfigDict</span>(str_strip_whitespace=<span class="tk-kw">True</span>, extra=<span class="tk-str">"forbid"</span>)
+
+    nombre: <span class="tk-fn">str</span> = <span class="tk-cls">Field</span>(min_length=<span class="tk-num">2</span>, max_length=<span class="tk-num">80</span>)
+    precio: <span class="tk-fn">float</span> = <span class="tk-cls">Field</span>(gt=<span class="tk-num">0</span>, le=<span class="tk-num">1_000_000</span>)
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">ProductoOut</span>(<span class="tk-cls">ProductoIn</span>):
+    <span class="tk-str">"""Producto tal como lo devuelve la API."""</span>
+
+    <span class="tk-fn">id</span>: <span class="tk-fn">int</span>
+</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — la API conectada</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-str">"""Tienda del Club de Robótica."""</span>
+
+<span class="tk-kw">import</span> os
+<span class="tk-kw">from</span> contextlib <span class="tk-kw">import</span> asynccontextmanager
+
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">FastAPI</span>, <span class="tk-cls">HTTPException</span>
+<span class="tk-kw">from</span> fastapi.responses <span class="tk-kw">import</span> <span class="tk-cls">JSONResponse</span>
+<span class="tk-kw">from</span> loguru <span class="tk-kw">import</span> logger
+
+<span class="tk-kw">from</span> database <span class="tk-kw">import</span> <span class="tk-cls">ConnectionDep</span>, db
+<span class="tk-kw">from</span> modelos <span class="tk-kw">import</span> <span class="tk-cls">ProductoIn</span>, <span class="tk-cls">ProductoOut</span>
+
+
+<span class="tk-fn">@asynccontextmanager</span>
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">lifespan</span>(app: <span class="tk-cls">FastAPI</span>):
+    db_url = os.getenv(<span class="tk-str">"DATABASE_URL"</span>)
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> db_url:
+        <span class="tk-kw">raise</span> <span class="tk-cls">RuntimeError</span>(<span class="tk-str">"La variable de entorno DATABASE_URL no está definida"</span>)
+
+    <span class="tk-kw">await</span> db.connect(db_url)
+    logger.info(<span class="tk-str">"Aplicación lista para atender peticiones"</span>)
+    <span class="tk-kw">try</span>:
+        <span class="tk-kw">yield</span>
+    <span class="tk-kw">finally</span>:
+        <span class="tk-kw">await</span> db.close()
+        logger.info(<span class="tk-str">"Aplicación detenida"</span>)
+
+
+app = <span class="tk-cls">FastAPI</span>(title=<span class="tk-str">"Tienda del Club"</span>, lifespan=lifespan)
+
+
+<span class="tk-fn">@app</span>.get(<span class="tk-str">"/health"</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">health</span>() -&gt; <span class="tk-cls">JSONResponse</span>:
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> <span class="tk-kw">await</span> db.ping():
+        <span class="tk-kw">return</span> <span class="tk-cls">JSONResponse</span>(
+            {<span class="tk-str">"db"</span>: <span class="tk-str">"down"</span>, <span class="tk-str">"detalle"</span>: <span class="tk-str">"La base de datos no respondió"</span>},
+            status_code=<span class="tk-num">503</span>,
+        )
+    <span class="tk-kw">return</span> <span class="tk-cls">JSONResponse</span>({<span class="tk-str">"db"</span>: <span class="tk-str">"ok"</span>})
+
+
+<span class="tk-fn">@app</span>.get(<span class="tk-str">"/productos"</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">listar_productos</span>(conn: <span class="tk-cls">ConnectionDep</span>) -&gt; <span class="tk-fn">list</span>[<span class="tk-cls">ProductoOut</span>]:
+    filas = <span class="tk-kw">await</span> conn.fetch(
+        <span class="tk-str">"SELECT id, nombre, precio::float8 AS precio FROM productos ORDER BY id"</span>
+    )
+    <span class="tk-kw">return</span> [<span class="tk-cls">ProductoOut</span>(**<span class="tk-fn">dict</span>(fila)) <span class="tk-kw">for</span> fila <span class="tk-kw">in</span> filas]
+
+
+<span class="tk-fn">@app</span>.post(<span class="tk-str">"/productos"</span>, status_code=<span class="tk-num">201</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">crear_producto</span>(producto: <span class="tk-cls">ProductoIn</span>, conn: <span class="tk-cls">ConnectionDep</span>) -&gt; <span class="tk-cls">ProductoOut</span>:
+    fila = <span class="tk-kw">await</span> conn.fetchrow(
+        <span class="tk-str">"""
+        INSERT INTO productos (nombre, precio)
+        VALUES ($1, $2)
+        RETURNING id, nombre, precio::float8 AS precio
+        """</span>,
+        producto.nombre,
+        producto.precio,
+    )
+    <span class="tk-kw">if</span> fila <span class="tk-kw">is</span> <span class="tk-kw">None</span>:
+        <span class="tk-kw">raise</span> <span class="tk-cls">HTTPException</span>(status_code=<span class="tk-num">500</span>, detail=<span class="tk-str">"No se pudo crear el producto"</span>)
+    <span class="tk-kw">return</span> <span class="tk-cls">ProductoOut</span>(**<span class="tk-fn">dict</span>(fila))
+</code></pre>
+  </div>
+
+  <h3>5.6 · Paso 5: arrancar y probar</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — dependencias y arranque</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>uv add asyncpg loguru
+uv run --env-file .env fastapi dev main.py
+
+<span class="tk-cm"># FastAPI CLI - Development mode
+# Serving at: http://127.0.0.1:8000
+# API docs:   http://127.0.0.1:8000/docs
+</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — las tres pruebas de la actividad</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># 1. La base responde
+</span>curl -i http://127.0.0.1:8000/health
+
+<span class="tk-cm"># 2. Crear un producto (201)
+</span>curl -i -X POST http://127.0.0.1:8000/productos <span class="tk-str">\
+</span>  -H <span class="tk-str">"Content-Type: application/json"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">'{"nombre": "Sensor HC-SR04", "precio": 12.5}'</span>
+
+<span class="tk-cm"># 3. Listar los productos (200)
+</span>curl -i http://127.0.0.1:8000/productos
+</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>respuesta esperada — producto creado</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">{</span>
+  <span class="tk-attr">"nombre"</span><span class="tk-pun">:</span> <span class="tk-str">"Sensor HC-SR04"</span><span class="tk-pun">,</span>
+  <span class="tk-attr">"precio"</span><span class="tk-pun">:</span> <span class="tk-num">12.5</span><span class="tk-pun">,</span>
+  <span class="tk-attr">"id"</span><span class="tk-pun">:</span> <span class="tk-num">1</span>
+<span class="tk-pun">}</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — reinicia y comprueba</span>
+    <p>
+      Detén el servidor con <kbd>Ctrl</kbd>+<kbd>C</kbd>, vuelve a arrancarlo y pide
+      <code>GET /productos</code>. El producto sigue ahí: esa es la diferencia con la lista de
+      Python de la unidad 0. Después apaga el contenedor de PostgreSQL y pide
+      <code>/health</code>: debe responder <code>503</code>, no <code>200</code>.
+    </p>
+  </div>
+
+  <h3>5.7 · Antes de dar la actividad por terminada</h3>
+
+  <ol class="entregables">
+    <li><code>GET /health</code> responde <code>200</code> con la base arriba y <code>503</code> con la base abajo.</li>
+    <li><code>POST /productos</code> responde <code>201</code> y devuelve el <code>id</code> generado por PostgreSQL.</li>
+    <li><code>GET /productos</code> devuelve la lista y sobrevive al reinicio de la API.</li>
+    <li>La tabla tiene <code>NOT NULL</code>, <code>CHECK</code> y <code>UNIQUE</code>; la API no es la única defensa.</li>
+    <li>Ninguna consulta usa <code>f-string</code> ni concatenación: todos los valores van como <code>$1</code>, <code>$2</code>.</li>
+    <li>La DSN se lee de <code>DATABASE_URL</code> y no hay contraseñas en el código.</li>
+  </ol>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué pasa si reinicias la API y vuelves a pedir <code>GET /productos</code>?</p>
+      <button class="opcion" data-op="a">La lista queda vacía porque el pool se cerró</button>
+      <button class="opcion" data-op="b">PostgreSQL borra la tabla al desconectarse</button>
+      <button class="opcion" data-op="c">Los productos siguen ahí porque están en la base de datos</button>
+      <button class="opcion" data-op="d">El <code>id</code> se reinicia en 1</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué el <code>POST</code> usa <code>RETURNING</code>?</p>
+      <button class="opcion" data-op="a">Para recibir el <code>id</code> que generó PostgreSQL sin hacer otra consulta</button>
+      <button class="opcion" data-op="b">Para que la inserción sea más rápida que un <code>INSERT</code> normal</button>
+      <button class="opcion" data-op="c">Para validar el precio en la base de datos</button>
+      <button class="opcion" data-op="d">Para cerrar la conexión automáticamente</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Dónde se lee <code>DATABASE_URL</code>?</p>
+      <button class="opcion" data-op="a">En cada ruta, antes de la consulta</button>
+      <button class="opcion" data-op="b">En el <code>lifespan</code>, una sola vez al arrancar</button>
+      <button class="opcion" data-op="c">En <code>schema.sql</code></button>
+      <button class="opcion" data-op="d">En el navegador, desde JavaScript</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Qué demuestra que la conexión es real y no una simulación?</p>
+      <button class="opcion" data-op="a">Que el código compile</button>
+      <button class="opcion" data-op="b">Que <code>/docs</code> muestre la ruta</button>
+      <button class="opcion" data-op="c">Que el archivo <code>.env</code> exista</button>
+      <button class="opcion" data-op="d">Que los datos sobrevivan al reinicio y que <code>/health</code> cambie a <code>503</code> cuando apagas la base</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: errores comunes →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — ERRORES COMUNES
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · El diagnóstico</div>
+    <h2>Cuando la conexión <em>falla</em>: leer el error antes de tocar el código</h2>
+    <p class="proposito">
+      «No conecta» no es un diagnóstico. Esta unidad separa los errores por capas, enseña a leer
+      el SQLSTATE de PostgreSQL y convierte las excepciones del driver en respuestas HTTP que el
+      cliente puede entender sin ver credenciales ni stack traces.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: manejadores de error y tabla de diagnóstico</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · El diagnóstico interactivo</h3>
+
+  <p class="primer-párrafo">
+    Elige el síntoma que tienes delante. El panel muestra la excepción que produce asyncpg, el
+    SQLSTATE de PostgreSQL, qué significa y dónde mirar primero. Úsalo como una lista de
+    comprobación, no como una bola de cristal: el mensaje real siempre manda.
+  </p>
+
+  <div class="diagnostico" data-diag>
+    <div class="diag-cabecera">
+      <span class="etiqueta">Diagnóstico</span>
+      <h4>¿Qué error tienes?</h4>
+      <p>
+        Nueve escenarios frecuentes. El SQLSTATE es el código que PostgreSQL devuelve; la
+        excepción es la clase de Python que asyncpg lanza.
+      </p>
+    </div>
+
+    <div class="diag-cuerpo">
+      <div class="diag-botones">
+        <button type="button" class="diag-opcion" data-diag-op="password">Contraseña incorrecta</button>
+        <button type="button" class="diag-opcion" data-diag-op="database">La base no existe</button>
+        <button type="button" class="diag-opcion" data-diag-op="refused">No hay servidor</button>
+        <button type="button" class="diag-opcion" data-diag-op="dns">El host no resuelve</button>
+        <button type="button" class="diag-opcion" data-diag-op="timeout">La conexión expira</button>
+        <button type="button" class="diag-opcion" data-diag-op="pool">El pool se agotó</button>
+        <button type="button" class="diag-opcion" data-diag-op="relation">La tabla no existe</button>
+        <button type="button" class="diag-opcion" data-diag-op="unique">Valor duplicado</button>
+        <button type="button" class="diag-opcion" data-diag-op="canceled">Consulta cancelada</button>
+      </div>
+
+      <div class="diag-panel">
+        <div class="diag-estado" data-diag-estado>Elige un escenario</div>
+        <div class="diag-excepcion" data-diag-excepcion>—</div>
+        <dl class="diag-detalle">
+          <dt>SQLSTATE</dt>
+          <dd data-diag-sqlstate>—</dd>
+          <dt>Qué significa</dt>
+          <dd data-diag-significado>—</dd>
+          <dt>Dónde mirar</dt>
+          <dd data-diag-fix>—</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — los errores también tienen capas</span>
+    <p>
+      Un error de configuración se arregla en la DSN; uno de red, en el host o el firewall; uno de
+      autenticación, en el rol; uno de pool, en el ciclo de vida; uno de SQL, en la consulta o el
+      esquema. Cambiar código de la ruta cuando el problema es una contraseña mal codificada es la
+      forma más rápida de perder una tarde.
+    </p>
+  </div>
+
+  <h3>6.2 · Las cinco capas de un fallo</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>De la configuración al SQL</caption>
+      <thead>
+        <tr><th>Capa</th><th>Qué falla</th><th>Dónde se arregla</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Configuración</strong></td><td>Falta la variable, la DSN está mal armada o la base no existe</td><td><code>.env</code>, variable de entorno, panel del proveedor</td></tr>
+        <tr><td><strong>Red</strong></td><td>Host, puerto, DNS, firewall, TLS</td><td>Servicio de base de datos, Docker, red del colegio</td></tr>
+        <tr><td><strong>Autenticación</strong></td><td>Usuario o contraseña incorrectos</td><td>Roles y contraseñas de PostgreSQL</td></tr>
+        <tr><td><strong>Pool</strong></td><td>No se creó, se agotó o hay fugas</td><td><code>database.py</code>, lifespan, <code>async with</code></td></tr>
+        <tr><td><strong>SQL</strong></td><td>Tabla o columna inexistente, restricción violada, consulta cancelada</td><td><code>schema.sql</code>, consulta, índices</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>6.3 · Los SQLSTATE que más verás</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Códigos de PostgreSQL y su excepción en asyncpg</caption>
+      <thead>
+        <tr><th>SQLSTATE</th><th>Excepción de asyncpg</th><th>Qué significa</th><th>Respuesta sugerida</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>28P01</code></td><td><code>InvalidPasswordError</code></td><td>La contraseña no coincide</td><td>Corregir la DSN; no es un error del cliente</td></tr>
+        <tr><td><code>3D000</code></td><td><code>InvalidCatalogNameError</code></td><td>La base indicada no existe</td><td>Crear la base o corregir la URL</td></tr>
+        <tr><td><code>42P01</code></td><td><code>UndefinedTableError</code></td><td>La tabla no existe en esa base</td><td>Aplicar el esquema; <code>500</code> para el cliente</td></tr>
+        <tr><td><code>42703</code></td><td><code>UndefinedColumnError</code></td><td>La columna no existe o está mal escrita</td><td>Corregir la consulta; <code>500</code></td></tr>
+        <tr><td><code>23505</code></td><td><code>UniqueViolationError</code></td><td>Ya existe una fila con ese valor único</td><td><code>409 Conflict</code></td></tr>
+        <tr><td><code>23503</code></td><td><code>ForeignKeyViolationError</code></td><td>La fila referenciada no existe</td><td><code>409</code> o <code>422</code> según el caso</td></tr>
+        <tr><td><code>23502</code></td><td><code>NotNullViolationError</code></td><td>Falta un valor obligatorio</td><td><code>422</code> si viene del cliente; bug si no</td></tr>
+        <tr><td><code>23514</code></td><td><code>CheckViolationError</code></td><td>Una regla <code>CHECK</code> no se cumple</td><td><code>422</code> con mensaje claro</td></tr>
+        <tr><td><code>57014</code></td><td><code>QueryCanceledError</code></td><td>La consulta superó <code>command_timeout</code></td><td><code>504 Gateway Timeout</code></td></tr>
+        <tr><td><code>53300</code></td><td><code>TooManyConnectionsError</code></td><td>PostgreSQL llegó a su límite de conexiones</td><td><code>503</code>; revisar tamaño del pool</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — el SQLSTATE es más estable que el texto</span>
+    <p>
+      El mensaje de error puede cambiar entre versiones o idiomas; el SQLSTATE no. Programa contra
+      el código y contra la clase de excepción, no contra la frase. <code>exc.sqlstate</code> y
+      <code>isinstance(exc, asyncpg.UniqueViolationError)</code> son las dos formas fiables de
+      distinguir un conflicto de un fallo interno.
+    </p>
+  </div>
+
+  <h3>6.4 · Convertir excepciones en respuestas HTTP</h3>
+
+  <p>
+    El cliente no debe recibir un stack trace ni el detalle interno de PostgreSQL. El servidor
+    registra el detalle completo y devuelve un mensaje breve, con un código que el cliente pueda
+    interpretar.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — manejadores de error de la base</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">import</span> asyncpg
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">Request</span>
+<span class="tk-kw">from</span> fastapi.responses <span class="tk-kw">import</span> <span class="tk-cls">JSONResponse</span>
+<span class="tk-kw">from</span> loguru <span class="tk-kw">import</span> logger
+
+<span class="tk-kw">from</span> database <span class="tk-kw">import</span> <span class="tk-cls">PoolNotReadyError</span>
+
+
+<span class="tk-fn">@app</span>.exception_handler(<span class="tk-cls">PoolNotReadyError</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">pool_no_listo</span>(request: <span class="tk-cls">Request</span>, exc: <span class="tk-cls">PoolNotReadyError</span>) -&gt; <span class="tk-cls">JSONResponse</span>:
+    logger.warning(<span class="tk-str">"Pool no listo: {}"</span>, exc)
+    <span class="tk-kw">return</span> <span class="tk-cls">JSONResponse</span>(
+        {<span class="tk-str">"detail"</span>: <span class="tk-str">"La base de datos no está disponible. Intenta de nuevo en unos segundos."</span>},
+        status_code=<span class="tk-num">503</span>,
+        headers={<span class="tk-str">"Retry-After"</span>: <span class="tk-str">"5"</span>},
+    )
+
+
+<span class="tk-fn">@app</span>.exception_handler(asyncpg.<span class="tk-cls">UniqueViolationError</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">valor_duplicado</span>(
+    request: <span class="tk-cls">Request</span>, exc: asyncpg.<span class="tk-cls">UniqueViolationError</span>
+) -&gt; <span class="tk-cls">JSONResponse</span>:
+    logger.warning(<span class="tk-str">"Conflicto en la base: {}"</span>, exc)
+    <span class="tk-kw">return</span> <span class="tk-cls">JSONResponse</span>(
+        {<span class="tk-str">"detail"</span>: <span class="tk-str">"Ya existe un producto con ese nombre."</span>},
+        status_code=<span class="tk-num">409</span>,
+    )
+
+
+<span class="tk-fn">@app</span>.exception_handler(asyncpg.<span class="tk-cls">QueryCanceledError</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">consulta_cancelada</span>(
+    request: <span class="tk-cls">Request</span>, exc: asyncpg.<span class="tk-cls">QueryCanceledError</span>
+) -&gt; <span class="tk-cls">JSONResponse</span>:
+    logger.warning(<span class="tk-str">"Consulta cancelada: {}"</span>, exc)
+    <span class="tk-kw">return</span> <span class="tk-cls">JSONResponse</span>(
+        {<span class="tk-str">"detail"</span>: <span class="tk-str">"La consulta tardó demasiado. Intenta con menos datos."</span>},
+        status_code=<span class="tk-num">504</span>,
+    )
+
+
+<span class="tk-fn">@app</span>.exception_handler(asyncpg.<span class="tk-cls">PostgresError</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">error_postgres</span>(request: <span class="tk-cls">Request</span>, exc: asyncpg.<span class="tk-cls">PostgresError</span>) -&gt; <span class="tk-cls">JSONResponse</span>:
+    logger.error(<span class="tk-str">"PostgreSQL {}: {}"</span>, exc.sqlstate, exc)
+    <span class="tk-kw">return</span> <span class="tk-cls">JSONResponse</span>(
+        {<span class="tk-str">"detail"</span>: <span class="tk-str">"Error al acceder a la base de datos."</span>},
+        status_code=<span class="tk-num">500</span>,
+    )
+</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>PoolNotReadyError</code> → <code>503</code></dt>
+      <dd>El servicio aún no está listo o perdió la base. <code>Retry-After</code> le dice al cliente cuándo volver a intentar.</dd>
+    </div>
+    <div>
+      <dt><code>UniqueViolationError</code> → <code>409</code></dt>
+      <dd>El dato es válido, pero choca con una regla de unicidad. El cliente puede corregir el valor y reintentar.</dd>
+    </div>
+    <div>
+      <dt><code>QueryCanceledError</code> → <code>504</code></dt>
+      <dd>La consulta superó el tiempo permitido. Es un problema de rendimiento, no de datos inválidos.</dd>
+    </div>
+    <div>
+      <dt><code>PostgresError</code> → <code>500</code></dt>
+      <dd>La red de seguridad para todo lo demás. El cliente recibe un mensaje genérico; el detalle queda en los registros.</dd>
+    </div>
+    <div>
+      <dt>El orden importa</dt>
+      <dd>Los manejadores específicos se evalúan antes que el genérico. Si registras <code>PostgresError</code> y <code>UniqueViolationError</code>, el conflicto debe caer en el específico.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — nunca devuelvas <code>exc.detail</code> al cliente</span>
+    <p>
+      El detalle de PostgreSQL puede incluir el nombre de la tabla, la restricción, la columna o
+      incluso el valor que falló. Eso es información para el equipo, no para quien usa la API. El
+      mensaje público dice <em>qué puede hacer</em> el cliente; el registro dice <em>qué pasó</em>
+      exactamente.
+    </p>
+  </div>
+
+  <h3>6.5 · Los errores que más se repiten</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Del síntoma a la causa</caption>
+      <thead>
+        <tr><th>Síntoma</th><th>Causa habitual</th><th>Qué revisar</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>La API no arranca y dice «DATABASE_URL no está definida»</td><td>La variable no se cargó</td><td><code>.env</code>, <code>--env-file</code>, variable del sistema</td></tr>
+        <tr><td><code>InvalidPasswordError</code></td><td>Contraseña mal escrita o no codificada en la DSN</td><td>Usuario, clave, <code>%40</code>, <code>%3A</code></td></tr>
+        <tr><td><code>InvalidCatalogNameError</code></td><td>La base no existe o el último segmento está mal</td><td><code>/club</code> frente a <code>/postgres</code></td></tr>
+        <tr><td><code>ConnectionRefusedError</code></td><td>El servicio no está arriba o el puerto no es el correcto</td><td><code>docker compose ps</code>, <code>pg_isready</code></td></tr>
+        <tr><td><code>socket.gaierror</code></td><td>El host no resuelve desde este entorno</td><td>Nombre del servicio, DNS, VPN</td></tr>
+        <tr><td><code>TimeoutError</code> al conectar</td><td>Firewall, red lenta o servidor saturado</td><td>Puerto, firewall, carga del servidor</td></tr>
+        <tr><td><code>PoolNotReadyError</code></td><td>El lifespan no corrió o falló</td><td>Logs de arranque, orden de imports</td></tr>
+        <tr><td><code>UndefinedTableError</code></td><td>El esquema no se aplicó en esa base</td><td><code>psql "$DATABASE_URL" -f sql/schema.sql</code></td></tr>
+        <tr><td><code>UniqueViolationError</code></td><td>Ya existe el valor en una columna <code>UNIQUE</code></td><td>Regla del negocio; responder <code>409</code></td></tr>
+        <tr><td>El pool se agota a los minutos</td><td>Una ruta no devuelve la conexión</td><td><code>async with</code>, <code>yield</code>, <code>pool.get_idle_size()</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>6.6 · Seguridad de la conexión</h3>
+
+  <div class="definiciones">
+    <div>
+      <dt>Mínimo privilegio</dt>
+      <dd>El usuario de la API no debe ser <code>postgres</code> ni un superusuario. Solo necesita <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code> y <code>DELETE</code> sobre sus tablas. En el compose de clase, <code>club</code> es superusuario por comodidad; en producción se crea un rol aparte con permisos mínimos.</dd>
+    </div>
+    <div>
+      <dt>TLS en tránsito</dt>
+      <dd>Si la base está fuera de tu computador, usa <code>sslmode=require</code> o el certificado del proveedor. Sin TLS, la contraseña y los datos viajan legibles por la red.</dd>
+    </div>
+    <div>
+      <dt>Secretos fuera del código</dt>
+      <dd>La DSN vive en el entorno. No se imprime en logs, no se devuelve en <code>/health</code> y no se sube a Git. <code>.env</code> va en <code>.gitignore</code>.</dd>
+    </div>
+    <div>
+      <dt>Consultas parametrizadas</dt>
+      <dd>Todo valor va como <code>$1</code>, <code>$2</code>. Concatenar texto convierte una entrada en código SQL y es la puerta de la inyección.</dd>
+    </div>
+    <div>
+      <dt>Detalle interno, solo en logs</dt>
+      <dd>El cliente recibe un mensaje accionable; el equipo recibe el SQLSTATE, el detalle y la consulta en los registros.</dd>
+    </div>
+    <div>
+      <dt>Respaldos y migraciones</dt>
+      <dd>Una conexión no protege los datos: los protege una política de respaldo y un esquema versionado. Eso viene en el taller y en la clase siguiente.</dd>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué significa el SQLSTATE <code>28P01</code>?</p>
+      <button class="opcion" data-op="a">La tabla no existe</button>
+      <button class="opcion" data-op="b">La autenticación falló: usuario o contraseña incorrectos</button>
+      <button class="opcion" data-op="c">La consulta tardó demasiado</button>
+      <button class="opcion" data-op="d">El pool está lleno</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> Un <code>UniqueViolationError</code> debería responderse con…</p>
+      <button class="opcion" data-op="a"><code>200</code>, porque el dato es válido</button>
+      <button class="opcion" data-op="b"><code>500</code>, porque es un error del servidor</button>
+      <button class="opcion" data-op="c"><code>503</code>, porque la base no está lista</button>
+      <button class="opcion" data-op="d"><code>409</code>, porque choca con una regla de unicidad</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué se devuelve al cliente cuando ocurre un <code>PostgresError</code> no clasificado?</p>
+      <button class="opcion" data-op="a">Un mensaje genérico y <code>500</code>; el detalle queda en los logs</button>
+      <button class="opcion" data-op="b">El <code>exc.detail</code> completo para que depure</button>
+      <button class="opcion" data-op="c">La DSN para que revise la conexión</button>
+      <button class="opcion" data-op="d">Un <code>200</code> con una lista vacía</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Cuál es la primera cosa que hay que revisar si el pool se agota?</p>
+      <button class="opcion" data-op="a">Aumentar <code>max_size</code> al doble</button>
+      <button class="opcion" data-op="b">Cambiar de base de datos</button>
+      <button class="opcion" data-op="c">Buscar conexiones que no se devuelven con <code>async with</code></button>
+      <button class="opcion" data-op="d">Reiniciar PostgreSQL</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: Actividad</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER INTEGRADOR
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>Una capa de datos <em>robusta</em>, no solo conectada</h2>
+    <p class="proposito">
+      En 45 minutos vas a cerrar la clase con algo que se puede publicar: una API que abre su pool,
+      comprueba la base, valida los datos, responde con códigos correctos y demuestra con pruebas
+      que todo eso sigue funcionando.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller integrador</b></span>
+      <span>🧭 <b>Producto: API con pruebas de integración y decisión escrita</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El encargo</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Encargo</span>
+      <h3>La tienda del club, versión que se puede publicar</h3>
+    </div>
+
+    <p>
+      La actividad de la unidad 5 ya conecta y lista. El taller añade lo que falta para que otra
+      persona pueda mantenerla: manejadores de error con códigos correctos, pruebas que se ejecutan
+      sin abrir el navegador y una decisión escrita sobre qué se validó en cada capa y por qué.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Contenido</strong></td>
+            <td><code>database.py</code>, <code>modelos.py</code>, <code>main.py</code>, esquema y pruebas</td>
+          </tr>
+          <tr>
+            <td><strong>Regla de conexión</strong></td>
+            <td>Pool único, abierto en lifespan, cerrado al apagar, con <code>ping</code> de dos segundos</td>
+          </tr>
+          <tr>
+            <td><strong>Regla de datos</strong></td>
+            <td>Validación Pydantic, restricciones SQL y consultas parametrizadas</td>
+          </tr>
+          <tr>
+            <td><strong>Regla de error</strong></td>
+            <td><code>503</code> si el pool no está listo; <code>409</code> si hay conflicto; <code>504</code> si se cancela; <code>500</code> genérico para el resto</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Los detalles de PostgreSQL solo van a los registros, nunca al cliente</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción del taller</strong></td>
+            <td>Las pruebas pasan con <code>uv run --env-file .env pytest</code> y se saltan si no hay <code>DATABASE_URL</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong><code>database.py</code></strong>: clase <code>Database</code>, <code>ping</code>, <code>get_connection</code> y <code>ConnectionDep</code>.</li>
+      <li><strong><code>modelos.py</code></strong>: <code>ProductoIn</code> y <code>ProductoOut</code> con límites y <code>extra="forbid"</code>.</li>
+      <li><strong><code>main.py</code></strong>: lifespan, health, listado, creación y los cuatro manejadores de error.</li>
+      <li><strong><code>sql/schema.sql</code></strong>: tabla con <code>UNIQUE</code>, <code>CHECK</code> y <code>NOT NULL</code>.</li>
+      <li><strong><code>test_db.py</code></strong>: pruebas de salud, creación, validación y conflicto.</li>
+      <li><strong>Un párrafo escrito</strong> de unas 120 palabras: qué decidiste tú, qué decidió el enunciado y por qué.</li>
+    </ol>
+  </div>
+
+  <h3>7.2 · Las pruebas de integración</h3>
+
+  <p>
+    Una prueba de integración usa una base de datos real. Es más lenta que una prueba unitaria,
+    pero demuestra lo que de verdad importa: que el pool se abre, que la tabla existe y que el SQL
+    funciona. El marcador <code>skipif</code> evita que la suite falle en una máquina sin base.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — instalar pytest</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>uv add --dev pytest
+uv run --env-file .env pytest -q
+
+# Si ya exportaste DATABASE_URL en la terminal,
+# también funciona: uv run pytest -q
+</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>test_db.py — cuatro pruebas contra PostgreSQL</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">import</span> os
+<span class="tk-kw">from</span> uuid <span class="tk-kw">import</span> uuid4
+
+<span class="tk-kw">import</span> pytest
+<span class="tk-kw">from</span> fastapi.testclient <span class="tk-kw">import</span> <span class="tk-cls">TestClient</span>
+
+<span class="tk-kw">from</span> main <span class="tk-kw">import</span> app
+
+pytestmark = pytest.mark.skipif(
+    <span class="tk-kw">not</span> os.getenv(<span class="tk-str">"DATABASE_URL"</span>),
+    reason=<span class="tk-str">"Requiere un PostgreSQL con DATABASE_URL definida"</span>,
+)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_health_con_base_arriba</span>():
+    <span class="tk-kw">with</span> <span class="tk-cls">TestClient</span>(app) <span class="tk-kw">as</span> cliente:
+        respuesta = cliente.get(<span class="tk-str">"/health"</span>)
+        <span class="tk-kw">assert</span> respuesta.status_code == <span class="tk-num">200</span>
+        <span class="tk-kw">assert</span> respuesta.json()[<span class="tk-str">"db"</span>] == <span class="tk-str">"ok"</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_crear_y_listar_producto</span>():
+    nombre = <span class="tk-str">f"Sensor {</span>uuid4().hex[:<span class="tk-num">8</span>]<span class="tk-str">}"</span>
+    <span class="tk-kw">with</span> <span class="tk-cls">TestClient</span>(app) <span class="tk-kw">as</span> cliente:
+        creado = cliente.post(
+            <span class="tk-str">"/productos"</span>, json={<span class="tk-str">"nombre"</span>: nombre, <span class="tk-str">"precio"</span>: <span class="tk-num">12.5</span>}
+        )
+        <span class="tk-kw">assert</span> creado.status_code == <span class="tk-num">201</span>
+        producto = creado.json()
+        <span class="tk-kw">assert</span> producto[<span class="tk-str">"nombre"</span>] == nombre
+        <span class="tk-kw">assert</span> producto[<span class="tk-str">"id"</span>] &gt; <span class="tk-num">0</span>
+
+        listado = cliente.get(<span class="tk-str">"/productos"</span>)
+        <span class="tk-kw">assert</span> listado.status_code == <span class="tk-num">200</span>
+        <span class="tk-kw">assert</span> <span class="tk-fn">any</span>(p[<span class="tk-str">"id"</span>] == producto[<span class="tk-str">"id"</span>] <span class="tk-kw">for</span> p <span class="tk-kw">in</span> listado.json())
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_producto_invalido_devuelve_422</span>():
+    <span class="tk-kw">with</span> <span class="tk-cls">TestClient</span>(app) <span class="tk-kw">as</span> cliente:
+        respuesta = cliente.post(
+            <span class="tk-str">"/productos"</span>, json={<span class="tk-str">"nombre"</span>: <span class="tk-str">"X"</span>, <span class="tk-str">"precio"</span>: -<span class="tk-num">1</span>}
+        )
+        <span class="tk-kw">assert</span> respuesta.status_code == <span class="tk-num">422</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_nombre_duplicado_devuelve_409</span>():
+    nombre = <span class="tk-str">f"Kit {</span>uuid4().hex[:<span class="tk-num">8</span>]<span class="tk-str">}"</span>
+    <span class="tk-kw">with</span> <span class="tk-cls">TestClient</span>(app) <span class="tk-kw">as</span> cliente:
+        primero = cliente.post(
+            <span class="tk-str">"/productos"</span>, json={<span class="tk-str">"nombre"</span>: nombre, <span class="tk-str">"precio"</span>: <span class="tk-num">20</span>}
+        )
+        <span class="tk-kw">assert</span> primero.status_code == <span class="tk-num">201</span>
+
+        repetido = cliente.post(
+            <span class="tk-str">"/productos"</span>, json={<span class="tk-str">"nombre"</span>: nombre, <span class="tk-str">"precio"</span>: <span class="tk-num">25</span>}
+        )
+        <span class="tk-kw">assert</span> repetido.status_code == <span class="tk-num">409</span>
+        <span class="tk-kw">assert</span> <span class="tk-str">"Ya existe"</span> <span class="tk-kw">in</span> repetido.json()[<span class="tk-str">"detail"</span>]
+</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>with TestClient(app)</code> no es decoración</span>
+    <p>
+      Usar <code>TestClient(app)</code> sin el <code>with</code> no ejecuta el <code>lifespan</code>:
+      el pool nunca se abre y todas las rutas fallan con <code>PoolNotReadyError</code>. El
+      <code>with</code> arranca la aplicación, ejecuta el lifespan, corre la prueba y apaga la
+      aplicación. Es la forma correcta de probar recursos que viven en el ciclo de vida.
+    </p>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — la prueba de conflicto necesita el manejador</span>
+    <p>
+      <code>test_nombre_duplicado_devuelve_409</code> espera el manejador de
+      <code>UniqueViolationError</code> de la unidad 6. Si todavía no lo añadiste, la segunda
+      inserción terminará en <code>500</code> y la prueba fallará. Añade los cuatro manejadores
+      antes de ejecutar la suite.
+    </p>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — por qué el nombre lleva un identificador único</span>
+    <p>
+      La tabla tiene <code>UNIQUE</code> en <code>nombre</code>. Si todas las pruebas usaran
+      «Sensor», la segunda ejecución fallaría con <code>409</code> antes de probar lo que quería.
+      <code>uuid4().hex[:8]</code> genera un sufijo distinto en cada corrida y mantiene las pruebas
+      repetibles. Es una buena costumbre en integración: cada prueba crea sus propios datos.
+    </p>
+  </div>
+
+  <h3>7.3 · Rúbrica de autoevaluación</h3>
+
+  <p>
+    Puntúa cada criterio de 0 a 2 y revisa los que hayas quedado en 0 o 1 antes de dar por terminado
+    el taller.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación de la capa de datos</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Ciclo de vida del pool</td>
+          <td>Se crea una conexión por petición o no se cierra</td>
+          <td>Hay pool, pero se abre en un lugar que no garantiza el arranque</td>
+          <td>Se abre en lifespan, se cierra al apagar y <code>connect()</code> es idempotente</td>
+        </tr>
+        <tr>
+          <td>Configuración</td>
+          <td>La DSN está escrita en el código</td>
+          <td>Se lee del entorno, pero no hay validación ni <code>.env.example</code></td>
+          <td>Se lee de <code>DATABASE_URL</code>, falla claro si falta y no hay secretos en Git</td>
+        </tr>
+        <tr>
+          <td>Health check</td>
+          <td>Devuelve <code>{"ok": true}</code> sin consultar</td>
+          <td>Consulta la base, pero no limita el tiempo ni devuelve <code>503</code></td>
+          <td><code>SELECT 1</code> con timeout de 2 s, <code>200</code>/<code>503</code> y cuerpo sin secretos</td>
+        </tr>
+        <tr>
+          <td>Consultas</td>
+          <td>Se concatenan valores en el SQL</td>
+          <td>Se usan parámetros en algunas consultas</td>
+          <td>Todas usan <code>$1</code>, <code>$2</code>; el esquema aplica <code>CHECK</code> y <code>UNIQUE</code></td>
+        </tr>
+        <tr>
+          <td>Validación</td>
+          <td>No hay modelo o todo es <code>str</code> sin límites</td>
+          <td>Hay modelo, pero algún límite queda solo en el HTML o en la ruta</td>
+          <td>Pydantic valida tipo y rango; la base vuelve a validar con restricciones</td>
+        </tr>
+        <tr>
+          <td>Errores</td>
+          <td>Se devuelve el stack trace o <code>200</code> con el error</td>
+          <td>Hay <code>500</code> para todo</td>
+          <td><code>503</code>, <code>409</code>, <code>504</code> y <code>500</code> con mensajes claros y detalle en logs</td>
+        </tr>
+        <tr>
+          <td>Pruebas</td>
+          <td>No hay pruebas o no arrancan</td>
+          <td>Hay una o dos, pero dependen de datos que quedaron de una corrida anterior</td>
+          <td>Salud, creación, validación y conflicto pasan; cada prueba crea sus propios datos</td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay nada escrito</td>
+          <td>Describe el qué, no el porqué</td>
+          <td>Decisión, motivo, apartamiento del enunciado y consecuencia</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.4 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>Una base de datos es la memoria compartida y persistente del sistema; una lista de Python es solo la memoria de un proceso.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p>Una conexión tiene un ciclo de vida: se abre, se usa y se cierra. Y cuesta: DNS, TCP, TLS y autenticación.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>El pool reutiliza un número pequeño de conexiones; <code>async with</code> garantiza que siempre vuelvan.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p>El <code>lifespan</code> abre el pool antes de la primera petición y lo cierra después de la última. No es un detalle: es el orden correcto.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p>La dependencia con <code>yield</code> presta una conexión por petición y la devuelve al terminar, incluso si la ruta falla.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p>Un health check consulta la dependencia crítica ahora, con timeout, y responde <code>503</code> cuando no está.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p>Los errores tienen capas y SQLSTATE. El cliente recibe un mensaje accionable; el equipo recibe el detalle en los logs.</p>
+    </div>
+  </div>
+
+  <h3>7.5 · Puente hacia la próxima clase</h3>
+
+  <p>
+    Tu API ya guarda y lee datos reales. Lo que sigue es hacer que ese esquema evolucione sin
+    romper lo que ya funciona, y que las consultas sigan siendo rápidas cuando la tabla crezca.
+  </p>
+
+  <ol>
+    <li>
+      <strong>Migraciones.</strong> <code>schema.sql</code> sirve para crear la primera versión;
+      cuando la tabla cambie, necesitarás migraciones versionadas (Alembic) y no un archivo que se
+      ejecuta a mano.
+    </li>
+    <li>
+      <strong>Índices y consultas.</strong> Un <code>SELECT</code> con <code>WHERE</code> sobre una
+      tabla grande necesita el índice correcto. El <code>EXPLAIN ANALYZE</code> es la herramienta
+      para decidir, no la intuición.
+    </li>
+    <li>
+      <strong>Un ORM, cuando el proyecto crezca.</strong> SQLAlchemy o SQLModel añaden comodidad y
+      migraciones, pero solo después de entender la conexión, el pool y el SQL que hay debajo.
+    </li>
+  </ol>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de la próxima clase</span>
+    <p>
+      Deja el proyecto en un repositorio con <code>README.md</code>, <code>.env.example</code> y
+      <code>compose.yaml</code>. Comprueba que <code>uv run --env-file .env pytest -q</code> pasa, que
+      <code>/health</code> responde <code>503</code> con la base apagada y que el producto sigue
+      ahí después de reiniciar la API. En la clase siguiente vamos a necesitar esta base para
+      trabajar con consultas y datos reales.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 8</h2>
+    <p>
+      Has cerrado el ciclo del dato que se guarda: la API abre su pool, comprueba la base, presta
+      una conexión por petición, escribe con SQL parametrizado y traduce los errores a respuestas
+      que se pueden entender. A partir de aquí, la pregunta ya no es cómo se conecta una base de
+      datos, sino cómo evoluciona sin romper lo que ya está guardado.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: Errores comunes</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 8 · Conexión a bases de datos</span>
+  <p class="pie-sub">PostgreSQL · asyncpg · Pool · Lifespan · Health check · Errores y SQLSTATE</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
