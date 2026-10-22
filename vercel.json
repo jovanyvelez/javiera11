@@ -80,6 +80,66 @@
       "source": "/herramientas-prog-ii/ocho-curso-integrador/:path*",
       "destination": "/herramientas-prog-ii/ocho-curso-conexion-bd/:path*",
       "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/diez-curso-funciones-metodos",
+      "destination": "/herramientas-prog-ii/diez-curso-insercion-datos/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/diez-curso-funciones-metodos/:path*",
+      "destination": "/herramientas-prog-ii/diez-curso-insercion-datos/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/once-curso-estructura-proyecto",
+      "destination": "/herramientas-prog-ii/once-curso-edicion-registros/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/once-curso-estructura-proyecto/:path*",
+      "destination": "/herramientas-prog-ii/once-curso-edicion-registros/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/doce-curso-git-basico",
+      "destination": "/herramientas-prog-ii/doce-curso-edicion-registros/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/doce-curso-git-basico/:path*",
+      "destination": "/herramientas-prog-ii/doce-curso-edicion-registros/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/trece-curso-github",
+      "destination": "/herramientas-prog-ii/trece-curso-eliminacion-registros/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/trece-curso-github/:path*",
+      "destination": "/herramientas-prog-ii/trece-curso-eliminacion-registros/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/catorce-curso-git-vscode",
+      "destination": "/herramientas-prog-ii/catorce-curso-interaccion-modulos/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/catorce-curso-git-vscode/:path*",
+      "destination": "/herramientas-prog-ii/catorce-curso-interaccion-modulos/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/quince-curso-base-datos-conexion",
+      "destination": "/herramientas-prog-ii/quince-curso-estructura-crud/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/quince-curso-base-datos-conexion/:path*",
+      "destination": "/herramientas-prog-ii/quince-curso-estructura-crud/:path*",
+      "permanent": true
     }
   ]
 }

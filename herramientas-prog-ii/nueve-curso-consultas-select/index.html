@@ -1,0 +1,2092 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 9 · Consultas SELECT y visualización</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 9 · <em>Consultas SELECT y visualización</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura: la tienda que no sabe</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">SELECT: elegir qué mostrar</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">WHERE: filtrar con criterio</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Ordenar, limitar y resumir</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Actividad: de la consulta a la ruta</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Del JSON al navegador</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: catálogo consultable</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> un catálogo consultable: <code>SELECT</code> con filtros, ruta JSON y tabla en el navegador.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>La tienda que <em>no sabe</em> lo que tiene</h2>
+    <p class="proposito">
+      La clase anterior conectó la API a PostgreSQL: los productos sobreviven a los reinicios y
+      varias personas pueden escribir a la vez. Pero la tienda sigue sin responder preguntas.
+      Hoy aprendes a <strong>preguntarle a la base de datos</strong> con <code>SELECT</code> y a
+      <strong>dibujar la respuesta en el navegador</strong>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: tres preguntas que la tienda no puede responder</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · El inventario que nadie puede preguntar</h3>
+
+  <p class="primer-párrafo">
+    El club de robótica ya tiene su catálogo en PostgreSQL. Sensores, motores, placas y baterías
+    están ahí, guardados, con precio y stock. La presidenta del club entra un lunes y pregunta:
+    «¿cuántos sensores baratos nos quedan?». Nadie sabe responder sin abrir <code>psql</code> y
+    escribir SQL a mano. Y si pregunta otra cosa distinta, hay que escribir otra consulta.
+  </p>
+
+  <p>
+    Ese es el punto exacto donde estás. Los datos ya <strong>se guardan</strong>; lo que falta es
+    que se <strong>consulten</strong> y que la respuesta llegue a una pantalla que cualquiera pueda
+    leer. Una consulta <code>SELECT</code> es una pregunta escrita en un idioma que la base de
+    datos entiende. Una tabla en el navegador es esa pregunta convertida en algo que se puede ver.
+  </p>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — guardar es una operación; consultar es una pregunta</span>
+    <p>
+      Un <code>INSERT</code> escribe: añade una fila y se olvida. Un <code>SELECT</code> lee: no
+      cambia nada y devuelve un conjunto de filas que puede ser enorme, vacío o exactamente el que
+      buscabas. Las dos cosas son SQL, pero resuelven problemas distintos. Esta clase es entera
+      sobre la segunda.
+    </p>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Lo que la tienda puede hacer hoy y lo que podrá al terminar la clase</caption>
+      <thead>
+        <tr><th></th><th>Hoy</th><th>Al terminar la clase</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Ver productos</strong></td><td><code>psql</code> o <code>curl</code> a mano</td><td>Tabla HTML que se actualiza con filtros</td></tr>
+        <tr><td><strong>Filtrar</strong></td><td>Imposible sin escribir SQL</td><td><code>WHERE</code> + parámetros de la URL</td></tr>
+        <tr><td><strong>Ordenar</strong></td><td>El orden en que se insertaron</td><td><code>ORDER BY</code> por precio, nombre o stock</td></tr>
+        <tr><td><strong>Resumir</strong></td><td>Contar a mano en una hoja</td><td><code>COUNT</code>, <code>AVG</code>, <code>GROUP BY</code></td></tr>
+        <tr><td><strong>Resultado vacío</strong></td><td>Parece un error</td><td>«No hay productos en esa categoría»</td></tr>
+        <tr><td><strong>Seguridad</strong></td><td>Consultas pegadas con f-strings</td><td>Parámetros <code>$1</code>, <code>$2</code> siempre</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.2 · La cadena completa: SQL → JSON → HTML</h3>
+
+  <p>
+    Visualizar un resultado en el navegador no es una magia aparte: es una cadena de tres eslabones
+    que ya conoces por piezas. Hoy los vas a encadenar de principio a fin.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>1 · SQL</dt>
+      <dd>La pregunta a PostgreSQL. <code>SELECT nombre, precio FROM productos WHERE precio &lt; 50000</code>. Devuelve filas y columnas.</dd>
+    </div>
+    <div>
+      <dt>2 · JSON</dt>
+      <dd>El formato en que la API se lo cuenta al navegador. Una lista de objetos:
+        <code>[{"nombre": "Sensor…", "precio": 42000}]</code>.</dd>
+    </div>
+    <div>
+      <dt>3 · HTML</dt>
+      <dd>La tabla, la lista o la tarjeta que el usuario ve. Se dibuja con JavaScript (o con HTMX) a partir del JSON.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — el navegador nunca habla con PostgreSQL</span>
+    <p>
+      El navegador pide a la API; la API consulta a PostgreSQL; PostgreSQL responde; la API
+      convierte y devuelve JSON; el navegador dibuja. Si alguna vez te tienta abrir la base de
+      datos desde JavaScript del lado del cliente, recuerda que ahí estarías exponiendo la
+      contraseña de la base a cualquiera que abra las herramientas de desarrollo. El SQL vive en
+      el servidor, siempre.
+    </p>
+  </div>
+
+  <h3>0.3 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cuadro de unidades, tiempos y productos esperados</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura y programa</td><td>20 min</td><td>Tres preguntas sin responder</td></tr>
+        <tr><td><strong>01</strong></td><td>SELECT: columnas y alias</td><td>30 min</td><td>Cinco consultas de proyección</td></tr>
+        <tr><td><strong>02</strong></td><td>WHERE y parámetros</td><td>30 min</td><td>Filtros seguros con <code>$1</code></td></tr>
+        <tr><td><strong>03</strong></td><td>Orden, límite y agregados</td><td>30 min</td><td>Resumen por categoría</td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Actividad: la ruta consultora</td><td>35 min</td><td><code>GET /productos</code> con filtros</td></tr>
+        <tr><td><strong>06</strong></td><td>Del JSON al navegador</td><td>35 min</td><td>Tabla HTML con estados</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller integrador</td><td>45 min</td><td>Catálogo consultable completo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.4 · Lo que vas a construir</h3>
+
+  <p>
+    Partes del proyecto de la clase 8 (la API con pool y lifespan) y le añades la capa de
+    consulta y la capa de presentación. La estructura queda así:
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>tienda/ — lo que se añade a la clase 8</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>tienda/
+│
+├── main.py                  rutas: GET /productos con filtros y GET /
+├── database.py              pool y dependencia (de la clase 8)
+├── consultas.py             las consultas SELECT, una función por pregunta
+├── modelos.py               ProductoOut, FiltroProductos
+├── static/
+│   └── catalogo.js          dibuja la tabla a partir del JSON
+├── templates/
+│   └── catalogo.html        la página con la tabla vacía y los filtros
+└── sql/
+    └── schema.sql           la tabla productos (de la clase 8)</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — las plantillas son opcionales</span>
+    <p>
+      Puedes servir la tabla con Jinja2 desde FastAPI, o devolver solo JSON y dibujar con
+      JavaScript, o usar HTMX. Esta clase muestra las tres puertas; en el taller eliges una y la
+      justificas. Lo que no es opcional es que el SQL viva en el servidor y que los valores del
+      usuario viajen siempre como parámetros.
+    </p>
+  </div>
+
+  <h3>0.5 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito estas tres preguntas:</p>
+
+  <ol>
+    <li>¿En qué se diferencia un <code>SELECT</code> de un <code>INSERT</code> en lo que hace a los datos?</li>
+    <li>Si la API devuelve <code>[{"nombre": "Motor", "precio": 36000}]</code>, ¿qué tendría que dibujar el navegador para que un adulto del club lo entienda?</li>
+    <li>¿Por qué no se puede escribir <code>WHERE precio &lt; {valor}</code> pegando el valor del usuario dentro del SQL?</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: SELECT →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — SELECT
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · La proyección</div>
+    <h2>SELECT: <em>elegir</em> qué mostrar</h2>
+    <p class="proposito">
+      Una tabla puede tener veinte columnas y mil filas. Casi nunca quieres todo eso en pantalla.
+      <code>SELECT</code> es la parte de la consulta que decide <strong>qué columnas</strong> salen
+      y <strong>qué transformaciones</strong> sufren antes de salir.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: cinco consultas de proyección</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · La forma de una consulta</h3>
+
+  <p class="primer-párrafo">
+    Toda consulta de lectura tiene la misma espina dorsal. Primero <strong>qué</strong> quieres
+    ver, después <strong>de dónde</strong> sale. El orden en que se escribe no es el orden en que
+    se ejecuta —lo veremos en la unidad 3—, pero se lee de izquierda a derecha como una frase.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>sql — la forma mínima de un SELECT</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">SELECT</span> nombre, precio, stock
+<span class="tk-kw">FROM</span> productos;</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt>SELECT</dt>
+      <dd>La lista de columnas o expresiones que quieres ver. Se le llama <em>proyección</em>.</dd>
+    </div>
+    <div>
+      <dt>FROM</dt>
+      <dd>La tabla de la que salen los datos. Sin <code>FROM</code> solo puedes consultar constantes: <code>SELECT 1 + 1</code>.</dd>
+    </div>
+    <div>
+      <dt>;</dt>
+      <dd>El punto y coma cierra la sentencia. En <code>psql</code> es obligatorio; en asyncpg no, pero conviene escribirlo.</dd>
+    </div>
+  </div>
+
+  <p>
+    El resultado de esa consulta es una <strong>tabla</strong> con tres columnas y tantas filas
+    como productos haya. Esa tabla es exactamente lo que después se convertirá en JSON y, al
+    final, en filas de una tabla HTML.
+  </p>
+
+  <h3>1.2 · <code>SELECT *</code> y por qué casi nunca conviene</h3>
+
+  <p>
+    El asterisco significa «todas las columnas». Es cómodo en una consola, para mirar. En una API
+    es una trampa por tres razones concretas:
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Tres razones para nombrar las columnas</caption>
+      <thead>
+        <tr><th>Razón</th><th>Qué pasa con <code>SELECT *</code></th><th>Qué pasa nombrando columnas</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Peso</strong></td>
+          <td>Viajan columnas que la pantalla no usa (fechas internas, hashes…)</td>
+          <td>Viaja solo lo que se dibuja</td>
+        </tr>
+        <tr>
+          <td><strong>Estabilidad</strong></td>
+          <td>Si alguien añade una columna, el JSON cambia y el front puede romperse</td>
+          <td>El contrato solo cambia si tú lo cambias</td>
+        </tr>
+        <tr>
+          <td><strong>Claridad</strong></td>
+          <td>Quien lee el código no sabe qué datos importan</td>
+          <td>La consulta documenta el uso real</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — un <code>*</code> que se convierte en fuga de datos</span>
+    <p>
+      Si la tabla <code>usuarios</code> tuviera un hash de contraseña y escribieras
+      <code>SELECT * FROM usuarios</code> para «mostrar el perfil», ese hash viajaría al navegador
+      dentro del JSON. Nombrar columnas no es manía: es una decisión de seguridad.
+    </p>
+  </div>
+
+  <h3>1.3 · Alias con <code>AS</code>: nombrar lo que sale</h3>
+
+  <p>
+    Un alias es el nombre con el que la columna llega al resultado. Sirve para abreviar, para
+    traducir y para nombrar expresiones calculadas que no tienen nombre propio.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>sql — alias de columna y de expresión</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">SELECT</span>
+  nombre            <span class="tk-kw">AS</span> producto,
+  precio            <span class="tk-kw">AS</span> precio_unitario,
+  stock * precio    <span class="tk-kw">AS</span> valor_en_bodega
+<span class="tk-kw">FROM</span> productos;</code></pre>
+  </div>
+
+  <p>
+    Esos tres nombres —<code>producto</code>, <code>precio_unitario</code>,
+    <code>valor_en_bodega</code>— son los que verás en el JSON y en los encabezados de la tabla
+    HTML. El alias es el contrato entre el SQL y quien dibuja.
+  </p>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — el alias no cambia la tabla</span>
+    <p>
+      <code>AS</code> solo renombra lo que sale en <em>esta</em> consulta. La tabla
+      <code>productos</code> sigue teniendo su columna <code>precio</code>. Si mañana otra ruta
+      consulta sin alias, verá los nombres originales. El alias vive en la consulta, no en el
+      esquema.
+    </p>
+  </div>
+
+  <h3>1.4 · <code>DISTINCT</code>: cuando la repetición sobra</h3>
+
+  <p>
+    Diez productos pueden repartirse en cuatro categorías. Si preguntas solo por la categoría,
+    recibirás diez filas con repeticiones. <code>DISTINCT</code> deduplica el resultado.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>sql — categorías sin repetir</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">SELECT DISTINCT</span> categoria
+<span class="tk-kw">FROM</span> productos
+<span class="tk-kw">ORDER BY</span> categoria;</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>resultado</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code> categoria
+-------------
+ energia
+ kits
+ motores
+ placas
+ sensores
+(<span class="tk-num">5</span> <span class="tk-kw">rows</span>)</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — <code>DISTINCT</code> actúa sobre la fila completa del resultado</span>
+    <p>
+      Si escribes <code>SELECT DISTINCT categoria, precio</code>, la deduplicación es sobre el par
+      (categoría, precio): dos productos de la misma categoría y distinto precio producirán dos
+      filas. No es «distinto de cada columna por separado».
+    </p>
+  </div>
+
+  <h3>1.5 · Expresiones en la lista de columnas</h3>
+
+  <p>
+    <code>SELECT</code> no se limita a copiar columnas: puede calcular. Cálculos aritméticos,
+    funciones de texto, condiciones con <code>CASE</code>. Todo lo que se calcule sale como una
+    columna nueva, y casi siempre conviene ponerle alias.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>sql — calcular y decidir dentro de SELECT</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">SELECT</span>
+  nombre,
+  precio,
+  <span class="tk-fn">ROUND</span>(precio * <span class="tk-num">1.19</span>)          <span class="tk-kw">AS</span> precio_con_iva,
+  <span class="tk-kw">CASE</span>
+    <span class="tk-kw">WHEN</span> stock = <span class="tk-num">0</span>     <span class="tk-kw">THEN</span> <span class="tk-str">'agotado'</span>
+    <span class="tk-kw">WHEN</span> stock &lt; <span class="tk-num">5</span>    <span class="tk-kw">THEN</span> <span class="tk-str">'últimas unidades'</span>
+    <span class="tk-kw">ELSE</span> <span class="tk-str">'disponible'</span>
+  <span class="tk-kw">END</span>                        <span class="tk-kw">AS</span> estado
+<span class="tk-kw">FROM</span> productos;</code></pre>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — calcula en SQL o en el navegador</span>
+    <p>
+      Si el cálculo es del negocio (IVA, stock valorizado, estado de inventario), hazlo en SQL:
+      una sola verdad, un solo sitio donde corregir. Si el cálculo es de presentación (un color,
+      un texto «hace 2 días»), hazlo en el navegador. La regla: <strong>lo que se guarda o se
+      decide, en el servidor; lo que se pinta, en el cliente</strong>.
+    </p>
+  </div>
+
+  <h3>1.6 · Práctica guiada: cinco proyecciones</h3>
+
+  <p>
+    Sobre la tabla <code>productos(id, nombre, categoria, precio, stock, activo)</code>, escribe
+    y ejecuta en <code>psql</code> estas cinco consultas. Comprueba el resultado antes de seguir.
+  </p>
+
+  <ol class="entregables">
+    <li>Solo <code>nombre</code> y <code>precio</code>, orden alfabético de nombre (lo afinamos en la unidad 3).</li>
+    <li><code>nombre</code> como <code>producto</code> y <code>stock</code> como <code>unidades</code>.</li>
+    <li>Las categorías distintas del catálogo.</li>
+    <li><code>nombre</code> y <code>precio * stock</code> como <code>valor_bodega</code>.</li>
+    <li>Un <code>CASE</code> que marque <code>agotado</code> si <code>stock = 0</code> y <code>en venta</code> en caso contrario.</li>
+  </ol>
+
+  <button class="solucion-btn" data-solucion="sol-u1">Ver un modelo de respuesta</button>
+  <div class="solucion" id="sol-u1">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-header-left">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span>sql — cinco proyecciones</span>
+        </div>
+        <button class="copy-btn">Copiar</button>
+      </div>
+<pre><code><span class="tk-cm">-- 1. Dos columnas
+</span><span class="tk-kw">SELECT</span> nombre, precio <span class="tk-kw">FROM</span> productos;
+
+<span class="tk-cm">-- 2. Alias
+</span><span class="tk-kw">SELECT</span> nombre <span class="tk-kw">AS</span> producto, stock <span class="tk-kw">AS</span> unidades <span class="tk-kw">FROM</span> productos;
+
+<span class="tk-cm">-- 3. Distintas
+</span><span class="tk-kw">SELECT DISTINCT</span> categoria <span class="tk-kw">FROM</span> productos;
+
+<span class="tk-cm">-- 4. Expresión
+</span><span class="tk-kw">SELECT</span> nombre, precio * stock <span class="tk-kw">AS</span> valor_bodega <span class="tk-kw">FROM</span> productos;
+
+<span class="tk-cm">-- 5. Condición
+</span><span class="tk-kw">SELECT</span> nombre,
+  <span class="tk-kw">CASE</span> <span class="tk-kw">WHEN</span> stock = <span class="tk-num">0</span> <span class="tk-kw">THEN</span> <span class="tk-str">'agotado'</span> <span class="tk-kw">ELSE</span> <span class="tk-str">'en venta'</span> <span class="tk-kw">END</span> <span class="tk-kw">AS</span> estado
+<span class="tk-kw">FROM</span> productos;</code></pre>
+    </div>
+  </div>
+
+  <!-- QUIZ 1 -->
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p class="enunciado">1. ¿Qué problema resuelve nombrar las columnas en vez de usar <code>SELECT *</code>?</p>
+      <button class="opcion" data-op="a">Hace la consulta más rápida siempre</button>
+      <button class="opcion" data-op="b">Evita enviar al navegador columnas que no se usan o que son sensibles</button>
+      <button class="opcion" data-op="c">Permite usar <code>WHERE</code></button>
+      <button class="opcion" data-op="d">Es un requisito de sintaxis de PostgreSQL</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p class="enunciado">2. ¿Qué hace <code>SELECT DISTINCT categoria FROM productos</code>?</p>
+      <button class="opcion" data-op="a">Ordena las categorías alfabéticamente</button>
+      <button class="opcion" data-op="b">Cuenta cuántas veces aparece cada categoría</button>
+      <button class="opcion" data-op="c">Devuelve cada categoría una sola vez, sin repeticiones</button>
+      <button class="opcion" data-op="d">Elimina las filas con categoría nula de la tabla</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p class="enunciado">3. En <code>SELECT precio * stock AS valor_bodega</code>, ¿qué es <code>valor_bodega</code>?</p>
+      <button class="opcion" data-op="a">Un alias para la columna calculada del resultado</button>
+      <button class="opcion" data-op="b">Una columna nueva creada en la tabla <code>productos</code></button>
+      <button class="opcion" data-op="c">Una función de PostgreSQL</button>
+      <button class="opcion" data-op="d">Un índice</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p class="enunciado">4. ¿Dónde conviene calcular el estado «agotado / en venta»?</p>
+      <button class="opcion" data-op="a">Solo en el CSS, con colores</button>
+      <button class="opcion" data-op="b">En el navegador, porque es presentación pura</button>
+      <button class="opcion" data-op="c">En ningún sitio: el usuario debe mirar el stock a mano</button>
+      <button class="opcion" data-op="d">En el SQL, si la regla es del negocio; en el navegador, si solo afecta a la pintura</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: WHERE →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — WHERE
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · El filtro</div>
+    <h2>WHERE: <em>filtrar</em> con criterio</h2>
+    <p class="proposito">
+      Proyectar columnas es elegir el ancho de la respuesta. <code>WHERE</code> es elegir
+      <strong>qué filas</strong> entran en ella. Es la cláusula que convierte una tabla entera en
+      la respuesta a una pregunta concreta.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: filtros seguros con parámetros</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · La cláusula <code>WHERE</code></h3>
+
+  <p class="primer-párrafo">
+    <code>WHERE</code> se escribe después de <code>FROM</code> y antes de cualquier cosa que
+    ordene o agrupe. Recibe una condición; la fila pasa si la condición es verdadera, y se descarta
+    si es falsa <em>o desconocida</em>. Ese tercer estado —desconocido— es el de los
+    <code>NULL</code>, y merece su propio apartado.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>sql — el filtro mínimo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">SELECT</span> nombre, precio, stock
+<span class="tk-kw">FROM</span> productos
+<span class="tk-kw">WHERE</span> stock &gt; <span class="tk-num">0</span>;</code></pre>
+  </div>
+
+  <h3>2.2 · Operadores de comparación</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Operadores que vas a usar todos los días</caption>
+      <thead>
+        <tr><th>Operador</th><th>Significado</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>=</code></td><td>Igual (en SQL no es <code>==</code>)</td><td><code>WHERE categoria = 'sensores'</code></td></tr>
+        <tr><td><code>&lt;&gt;</code> o <code>!=</code></td><td>Distinto</td><td><code>WHERE activo &lt;&gt; false</code></td></tr>
+        <tr><td><code>&lt;</code> <code>&lt;=</code> <code>&gt;</code> <code>&gt;=</code></td><td>Menor, menor o igual, mayor, mayor o igual</td><td><code>WHERE precio &gt;= 50000</code></td></tr>
+        <tr><td><code>IS NULL</code></td><td>El valor es nulo</td><td><code>WHERE stock IS NULL</code></td></tr>
+        <tr><td><code>IS NOT NULL</code></td><td>El valor no es nulo</td><td><code>WHERE precio IS NOT NULL</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — en SQL la igualdad es un solo <code>=</code></span>
+    <p>
+      En Python, JavaScript o C, la igualdad es <code>==</code> y la asignación <code>=</code>. En
+      SQL, <code>=</code> compara. Si escribes <code>WHERE categoria == 'kits'</code>, PostgreSQL
+      responde con un error de sintaxis, y está bien: te está diciendo que ese idioma no se escribe
+      así.
+    </p>
+  </div>
+
+  <h3>2.3 · <code>AND</code>, <code>OR</code> y <code>NOT</code></h3>
+
+  <p>
+    Las condiciones se combinan como en lenguajes de programación. La precedencia es
+    <code>NOT</code>, después <code>AND</code>, después <code>OR</code>. Cuando dudes, usa
+    paréntesis: no cuestan nada y evitan el error más caro de un filtro.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>sql — combinar condiciones</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm">-- Sensores baratos que todavía hay en stock
+</span><span class="tk-kw">SELECT</span> nombre, precio, stock
+<span class="tk-kw">FROM</span> productos
+<span class="tk-kw">WHERE</span> categoria = <span class="tk-str">'sensores'</span>
+  <span class="tk-kw">AND</span> precio &lt; <span class="tk-num">50000</span>
+  <span class="tk-kw">AND</span> stock &gt; <span class="tk-num">0</span>;
+
+<span class="tk-cm">-- O bien barato, o bien con muchas unidades (el paréntesis importa)
+</span><span class="tk-kw">SELECT</span> nombre, precio, stock
+<span class="tk-kw">FROM</span> productos
+<span class="tk-kw">WHERE</span> (precio &lt; <span class="tk-num">30000</span> <span class="tk-kw">OR</span> stock &gt; <span class="tk-num">20</span>)
+  <span class="tk-kw">AND</span> activo = <span class="tk-kw">true</span>;</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>precio &lt; 30000 OR stock &gt; 20 AND activo</code></span>
+    <p>
+      Sin paréntesis, <code>AND</code> se evalúa antes que <code>OR</code>, así que esa consulta
+      significa «barato, o bien (con stock y activo)». Si querías «(barato o con stock) y activo»,
+      el resultado sería distinto. Cuando una consulta mezcle <code>AND</code> y <code>OR</code>,
+      escribe los paréntesis aunque creas que sobran.
+    </p>
+  </div>
+
+  <h3>2.4 · <code>LIKE</code>, <code>IN</code> y <code>BETWEEN</code></h3>
+
+  <p>
+    Tres atajos que evitan condiciones interminables y que se leen mejor que la alternativa.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>sql — patrones, listas y rangos</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm">-- LIKE: % es «da igual lo que haya»; _ es «un carácter»
+</span><span class="tk-kw">SELECT</span> nombre <span class="tk-kw">FROM</span> productos
+<span class="tk-kw">WHERE</span> nombre <span class="tk-kw">LIKE</span> <span class="tk-str">'Sensor%'</span>;
+
+<span class="tk-kw">SELECT</span> nombre <span class="tk-kw">FROM</span> productos
+<span class="tk-kw">WHERE</span> nombre <span class="tk-kw">LIKE</span> <span class="tk-str">'%ultrasónico%'</span>;
+
+<span class="tk-cm">-- IN: un valor de una lista (mucho más claro que tres OR)
+</span><span class="tk-kw">SELECT</span> nombre, categoria <span class="tk-kw">FROM</span> productos
+<span class="tk-kw">WHERE</span> categoria <span class="tk-kw">IN</span> (<span class="tk-str">'sensores'</span>, <span class="tk-str">'placas'</span>, <span class="tk-str">'kits'</span>);
+
+<span class="tk-cm">-- BETWEEN: rango inclusivo en los dos extremos
+</span><span class="tk-kw">SELECT</span> nombre, precio <span class="tk-kw">FROM</span> productos
+<span class="tk-kw">WHERE</span> precio <span class="tk-kw">BETWEEN</span> <span class="tk-num">30000</span> <span class="tk-kw">AND</span> <span class="tk-num">80000</span>;</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — <code>ILIKE</code> ignora mayúsculas y minúsculas</span>
+    <p>
+      <code>LIKE</code> distingue <code>sensor</code> de <code>Sensor</code>. En PostgreSQL,
+      <code>ILIKE</code> no. Para un buscador de catálogo, casi siempre quieres
+      <code>ILIKE</code>: quien escribe «sensor» espera encontrar «Sensor ultrasónico».
+    </p>
+  </div>
+
+  <h3>2.5 · <code>NULL</code>: el valor que no es un valor</h3>
+
+  <p>
+    <code>NULL</code> no es cero ni es «vacío». Es la <strong>ausencia</strong> de valor: se ignora
+    el precio, o se ignora el stock. Y con él, la lógica de tres estados se vuelve obligatoria.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cómo se comporta <code>NULL</code> en un <code>WHERE</code></caption>
+      <thead>
+        <tr><th>Expresión</th><th>¿Pasa la fila?</th><th>Por qué</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>stock = NULL</code></td><td>Nunca</td><td>La comparación con <code>NULL</code> no es ni verdadera ni falsa: es desconocida</td></tr>
+        <tr><td><code>stock IS NULL</code></td><td>Si el stock es nulo</td><td>La única forma correcta de preguntar por la ausencia</td></tr>
+        <tr><td><code>stock &lt;&gt; 0</code></td><td>Si stock no es 0 y no es nulo</td><td>Con <code>NULL</code> la comparación es desconocida y la fila se descarta</td></tr>
+        <tr><td><code>NOT (stock = 0)</code></td><td>Si stock no es 0 y no es nulo</td><td><code>NOT desconocido</code> sigue sin ser verdadero</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el bug silencioso de los <code>NULL</code></span>
+    <p>
+      Es el filtro que «no funciona» y no da error: devuelve menos filas de las que esperabas, y
+      el culpable es un campo nulo que nadie miró. Antes de culpar al <code>WHERE</code>, comprueba
+      si la columna puede ser nula y si tu condición sobrevive a un <code>NULL</code>.
+    </p>
+  </div>
+
+  <h3>2.6 · Parámetros: <code>$1</code>, <code>$2</code>…</h3>
+
+  <p>
+    La consulta de la clase 8 ya lo usaba, y ahora toca entender por qué. Un parámetro es un hueco
+    en el SQL que se rellena <strong>después</strong>, de forma que el valor del usuario nunca
+    llega a formar parte del texto de la consulta.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>consultas.py — filtro parametrizado con asyncpg</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">async def</span> <span class="tk-fn">productos_de_categoria</span>(conn, categoria: <span class="tk-cls">str</span>) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]:
+    <span class="tk-str">"""Los productos activos de una categoría, por precio."""</span>
+    filas = <span class="tk-kw">await</span> conn.fetch(
+        <span class="tk-str">"""
+        SELECT id, nombre, precio, stock
+        FROM productos
+        WHERE categoria = $1
+          AND activo = true
+        ORDER BY precio
+        """</span>,
+        categoria,
+    )
+    <span class="tk-kw">return</span> [<span class="tk-fn">dict</span>(f) <span class="tk-kw">for</span> f <span class="tk-kw">in</span> filas]</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>consultas.py — lo que jamás se escribe</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># NUNCA. Ni en un taller, ni en una broma, ni «solo para probar».
+</span>sql = <span class="tk-str">f"SELECT * FROM productos WHERE categoria = '{categoria}'"</span>
+<span class="tk-kw">await</span> conn.fetch(sql)   <span class="tk-cm"># inyección SQL, en dos líneas</span></code></pre>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — el valor no es código</span>
+    <p>
+      Con <code>$1</code>, lo que el usuario escriba es un <strong>dato</strong>: se compara como
+      texto, se trata como texto y no puede cambiar la consulta. Con f-strings, lo que escriba es
+      <strong>código SQL</strong>: si escribe <code>x' OR '1'='1</code>, la consulta devuelve la
+      tabla entera. La diferencia entre las dos líneas de arriba es la diferencia entre una API
+      segura y una noticia de seguridad.
+    </p>
+  </div>
+
+  <h3>2.7 · Práctica guiada: cuatro filtros</h3>
+
+  <ol class="entregables">
+    <li>Los productos de la categoría <code>'kits'</code> con stock positivo.</li>
+    <li>Los productos cuyo nombre empieza por <code>'Sensor'</code> (con <code>LIKE</code>).</li>
+    <li>Los productos con precio entre 30 000 y 80 000, o con stock mayor que 20.</li>
+    <li>La misma consulta del punto 1, pero como función con un parámetro <code>$1</code>.</li>
+  </ol>
+
+  <button class="solucion-btn" data-solucion="sol-u2">Ver un modelo de respuesta</button>
+  <div class="solucion" id="sol-u2">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-header-left">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span>sql y python — cuatro filtros</span>
+        </div>
+        <button class="copy-btn">Copiar</button>
+      </div>
+<pre><code><span class="tk-cm">-- 1. Categoría y stock
+</span><span class="tk-kw">SELECT</span> nombre, stock <span class="tk-kw">FROM</span> productos
+<span class="tk-kw">WHERE</span> categoria = <span class="tk-str">'kits'</span> <span class="tk-kw">AND</span> stock &gt; <span class="tk-num">0</span>;
+
+<span class="tk-cm">-- 2. Prefijo
+</span><span class="tk-kw">SELECT</span> nombre <span class="tk-kw">FROM</span> productos
+<span class="tk-kw">WHERE</span> nombre <span class="tk-kw">LIKE</span> <span class="tk-str">'Sensor%'</span>;
+
+<span class="tk-cm">-- 3. Rango o stock alto
+</span><span class="tk-kw">SELECT</span> nombre, precio, stock <span class="tk-kw">FROM</span> productos
+<span class="tk-kw">WHERE</span> (precio <span class="tk-kw">BETWEEN</span> <span class="tk-num">30000</span> <span class="tk-kw">AND</span> <span class="tk-num">80000</span>) <span class="tk-kw">OR</span> stock &gt; <span class="tk-num">20</span>;
+
+<span class="tk-cm">-- 4. Con parámetro
+</span><span class="tk-kw">await</span> conn.fetch(
+    <span class="tk-str">"SELECT nombre, stock FROM productos WHERE categoria = $1 AND stock &gt; 0"</span>,
+    categoria,
+)</code></pre>
+    </div>
+  </div>
+
+  <!-- QUIZ 2 -->
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+
+    <div class="pregunta" data-correcta="c">
+      <p class="enunciado">1. ¿Cómo se pregunta correctamente si <code>stock</code> es nulo?</p>
+      <button class="opcion" data-op="a"><code>WHERE stock = NULL</code></button>
+      <button class="opcion" data-op="b"><code>WHERE stock == null</code></button>
+      <button class="opcion" data-op="c"><code>WHERE stock IS NULL</code></button>
+      <button class="opcion" data-op="d"><code>WHERE NOT stock</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p class="enunciado">2. ¿Por qué se usa <code>$1</code> en vez de pegar el valor con un f-string?</p>
+      <button class="opcion" data-op="a">Para que el valor sea un dato y no pueda cambiar la consulta</button>
+      <button class="opcion" data-op="b">Porque <code>$1</code> hace la consulta más rápida</button>
+      <button class="opcion" data-op="c">Porque asyncpg no acepta texto</button>
+      <button class="opcion" data-op="d">Porque los f-strings no existen en Python</button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p class="enunciado">3. ¿Qué devuelve <code>WHERE precio &lt;&gt; 0</code> sobre una fila con <code>precio</code> nulo?</p>
+      <button class="opcion" data-op="a">La fila, porque nulo no es cero</button>
+      <button class="opcion" data-op="b">No la devuelve: la comparación con <code>NULL</code> no es verdadera</button>
+      <button class="opcion" data-op="c">La fila, con precio convertido a 0</button>
+      <button class="opcion" data-op="d">Un error de SQL</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p class="enunciado">4. En <code>WHERE categoria LIKE 'Sensor%'</code>, ¿qué representa el <code>%</code>?</p>
+      <button class="opcion" data-op="a">Un carácter cualquiera</button>
+      <button class="opcion" data-op="b">El final de la cadena</button>
+      <button class="opcion" data-op="c">Un comodín que no se puede usar al principio</button>
+      <button class="opcion" data-op="d">Cualquier secuencia de caracteres, incluso vacía</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: SELECT</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: Ordenar y resumir →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — ORDER, LIMIT, AGREGADOS
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · El orden y el resumen</div>
+    <h2>Ordenar, limitar y <em>resumir</em></h2>
+    <p class="proposito">
+      Ya eliges columnas y filas. Falta decidir el <strong>orden</strong> en que salen, cuántas
+      salen, y cómo condensar mil filas en cinco números que se puedan leer de un vistazo.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: resumen por categoría</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · <code>ORDER BY</code>: el orden no es gratis, pero es obligatorio</h3>
+
+  <p class="primer-párrafo">
+    Una tabla relacional <strong>no garantiza orden</strong>. Sin <code>ORDER BY</code>, las filas
+    llegan en el orden que le convenga al planificador de PostgreSQL: casi siempre el de inserción
+    en tablas pequeñas, y otro cualquiera en tablas con índices o actualizaciones. Si la pantalla
+    necesita un orden, dilo en el SQL.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>sql — orden por una y por dos columnas</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm">-- Del más barato al más caro
+</span><span class="tk-kw">SELECT</span> nombre, precio
+<span class="tk-kw">FROM</span> productos
+<span class="tk-kw">ORDER BY</span> precio <span class="tk-kw">ASC</span>;
+
+<span class="tk-cm">-- Categoría alfabética, y dentro de cada una, el más caro primero
+</span><span class="tk-kw">SELECT</span> categoria, nombre, precio
+<span class="tk-kw">FROM</span> productos
+<span class="tk-kw">ORDER BY</span> categoria <span class="tk-kw">ASC</span>, precio <span class="tk-kw">DESC</span>;</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Detalles de <code>ORDER BY</code> que se olvidan</caption>
+      <thead>
+        <tr><th>Detalle</th><th>Comportamiento</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>ASC</code> / <code>DESC</code></td><td>Ascendente es el orden por defecto; <code>DESC</code> invierte solo esa columna</td></tr>
+        <tr><td>Varias columnas</td><td>Se aplican en el orden en que se escriben: primero la categoría, después el precio</td></tr>
+        <tr><td>Por número de posición</td><td><code>ORDER BY 2</code> ordena por la segunda columna del <code>SELECT</code></td></tr>
+        <tr><td><code>NULLS FIRST</code> / <code>LAST</code></td><td>Decide dónde caen los nulos; por defecto, al final en <code>ASC</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>3.2 · <code>OFFSET</code> y <code>LIMIT</code>: acotar la respuesta</h3>
+
+  <p>
+    Ninguna pantalla útil muestra mil filas de golpe. <code>LIMIT</code> corta el resultado;
+    <code>OFFSET</code> salta las primeras filas. Juntos forman la paginación más simple que
+    existe.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>sql — top 3 y página 2</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm">-- Los tres más caros
+</span><span class="tk-kw">SELECT</span> nombre, precio
+<span class="tk-kw">FROM</span> productos
+<span class="tk-kw">ORDER BY</span> precio <span class="tk-kw">DESC</span>
+<span class="tk-kw">LIMIT</span> <span class="tk-num">3</span>;
+
+<span class="tk-cm">-- Página 2 de 10 en 10 (filas 11 a 20)
+</span><span class="tk-kw">SELECT</span> id, nombre
+<span class="tk-kw">FROM</span> productos
+<span class="tk-kw">ORDER BY</span> nombre
+<span class="tk-kw">LIMIT</span> <span class="tk-num">10</span> <span class="tk-kw">OFFSET</span> <span class="tk-num">10</span>;</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — <code>LIMIT</code> sin <code>ORDER BY</code> es una ruleta</span>
+    <p>
+      Si preguntas «los 10 productos» sin decir el orden, PostgreSQL te da diez productos, sí, pero
+      no tienes ninguna garantía de cuáles ni de que sean los mismos la próxima vez. En una
+      paginación, eso significa productos que se repiten o que se saltan entre una página y la
+      siguiente. <strong>Ordena siempre que limits.</strong>
+    </p>
+  </div>
+
+  <h3>3.3 · Funciones de agregado: de mil filas a un número</h3>
+
+  <p>
+    Un agregado <strong>colapsa</strong> varias filas en un valor. No devuelve una fila por
+    producto: devuelve un número. Y esa diferencia se nota en lo que se puede poner a su lado.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Los cinco agregados que usarás siempre</caption>
+      <thead>
+        <tr><th>Función</th><th>Qué calcula</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>COUNT(*)</code></td><td>Número de filas</td><td><code>SELECT COUNT(*) FROM productos</code></td></tr>
+        <tr><td><code>SUM(precio)</code></td><td>Suma</td><td>Valor total del catálogo</td></tr>
+        <tr><td><code>AVG(precio)</code></td><td>Media aritmética</td><td>Precio medio</td></tr>
+        <tr><td><code>MIN</code> / <code>MAX</code></td><td>Extremos</td><td>Producto más barato y más caro</td></tr>
+        <tr><td><code>COUNT(col)</code></td><td>Valores no nulos</td><td>Diferente de <code>COUNT(*)</code> si hay nulos</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>sql — el resumen del catálogo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">SELECT</span>
+  <span class="tk-fn">COUNT</span>(*)                <span class="tk-kw">AS</span> productos,
+  <span class="tk-fn">SUM</span>(stock)             <span class="tk-kw">AS</span> unidades,
+  <span class="tk-fn">ROUND</span>(<span class="tk-fn">AVG</span>(precio))     <span class="tk-kw">AS</span> precio_medio,
+  <span class="tk-fn">MIN</span>(precio)            <span class="tk-kw">AS</span> mas_barato,
+  <span class="tk-fn">MAX</span>(precio)            <span class="tk-kw">AS</span> mas_caro
+<span class="tk-kw">FROM</span> productos
+<span class="tk-kw">WHERE</span> activo = <span class="tk-kw">true</span>;</code></pre>
+  </div>
+
+  <h3>3.4 · <code>GROUP BY</code> y <code>HAVING</code></h3>
+
+  <p>
+    «El resumen del catálogo» es un número. «El resumen <em>por categoría</em>» es una fila por
+    categoría. Ese agrupamiento se escribe con <code>GROUP BY</code>, y el filtro
+    <em>después</em> de agrupar se llama <code>HAVING</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>sql — resumen por categoría</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">SELECT</span>
+  categoria,
+  <span class="tk-fn">COUNT</span>(*)                 <span class="tk-kw">AS</span> productos,
+  <span class="tk-fn">SUM</span>(stock)              <span class="tk-kw">AS</span> unidades,
+  <span class="tk-fn">ROUND</span>(<span class="tk-fn">AVG</span>(precio))      <span class="tk-kw">AS</span> precio_medio
+<span class="tk-kw">FROM</span> productos
+<span class="tk-kw">WHERE</span> activo = <span class="tk-kw">true</span>
+<span class="tk-kw">GROUP BY</span> categoria
+<span class="tk-kw">HAVING</span> <span class="tk-fn">COUNT</span>(*) &gt;= <span class="tk-num">2</span>
+<span class="tk-kw">ORDER BY</span> precio_medio <span class="tk-kw">DESC</span>;</code></pre>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — <code>WHERE</code> filtra filas; <code>HAVING</code> filtra grupos</span>
+    <p>
+      El orden de ejecución es: <code>FROM</code> → <code>WHERE</code> → <code>GROUP BY</code> →
+      <code>HAVING</code> → <code>SELECT</code> → <code>ORDER BY</code>. Por eso
+      <code>WHERE activo</code> se aplica antes de contar, y <code>HAVING COUNT(*) &gt;= 2</code>
+      se aplica después. Si pones el conteo en un <code>WHERE</code>, PostgreSQL te dirá que no
+      existe esa columna todavía: tiene razón.
+    </p>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — lo que se puede listar junto a un agregado</span>
+    <p>
+      En un <code>SELECT</code> con agregados, cada columna que no sea agregada debe aparecer en el
+      <code>GROUP BY</code>. <code>SELECT categoria, COUNT(*)</code> funciona porque
+      <code>categoria</code> está agrupada. <code>SELECT nombre, COUNT(*)</code> sin agrupar por
+      <code>nombre</code> es un error de SQL, y está bien que lo sea: la pregunta no tiene sentido.
+    </p>
+  </div>
+
+  <h3>3.5 · Práctica guiada: el resumen de la semana</h3>
+
+  <ol class="entregables">
+    <li>Los cinco productos más baratos, del más barato al quinto.</li>
+    <li>Cuántos productos hay en cada categoría (incluidas las categorías con un solo producto).</li>
+    <li>Las categorías con más de 20 unidades en stock sumadas.</li>
+    <li>El precio medio por categoría, solo de productos activos, del más alto al más bajo.</li>
+  </ol>
+
+  <button class="solucion-btn" data-solucion="sol-u3">Ver un modelo de respuesta</button>
+  <div class="solucion" id="sol-u3">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-header-left">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span>sql — resumen de la semana</span>
+        </div>
+        <button class="copy-btn">Copiar</button>
+      </div>
+<pre><code><span class="tk-cm">-- 1. Cinco más baratos
+</span><span class="tk-kw">SELECT</span> nombre, precio <span class="tk-kw">FROM</span> productos
+<span class="tk-kw">ORDER BY</span> precio <span class="tk-kw">ASC</span> <span class="tk-kw">LIMIT</span> <span class="tk-num">5</span>;
+
+<span class="tk-cm">-- 2. Productos por categoría
+</span><span class="tk-kw">SELECT</span> categoria, <span class="tk-fn">COUNT</span>(*) <span class="tk-kw">AS</span> productos
+<span class="tk-kw">FROM</span> productos <span class="tk-kw">GROUP BY</span> categoria <span class="tk-kw">ORDER BY</span> categoria;
+
+<span class="tk-cm">-- 3. Categorías con stock total alto
+</span><span class="tk-kw">SELECT</span> categoria, <span class="tk-fn">SUM</span>(stock) <span class="tk-kw">AS</span> unidades
+<span class="tk-kw">FROM</span> productos
+<span class="tk-kw">GROUP BY</span> categoria
+<span class="tk-kw">HAVING</span> <span class="tk-fn">SUM</span>(stock) &gt; <span class="tk-num">20</span>;
+
+<span class="tk-cm">-- 4. Precio medio por categoría, activos
+</span><span class="tk-kw">SELECT</span> categoria, <span class="tk-fn">ROUND</span>(<span class="tk-fn">AVG</span>(precio)) <span class="tk-kw">AS</span> precio_medio
+<span class="tk-kw">FROM</span> productos
+<span class="tk-kw">WHERE</span> activo = <span class="tk-kw">true</span>
+<span class="tk-kw">GROUP BY</span> categoria
+<span class="tk-kw">ORDER BY</span> precio_medio <span class="tk-kw">DESC</span>;</code></pre>
+    </div>
+  </div>
+
+  <!-- QUIZ 3 -->
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p class="enunciado">1. ¿Por qué <code>LIMIT 10</code> sin <code>ORDER BY</code> es peligroso en una paginación?</p>
+      <button class="opcion" data-op="a">Porque <code>LIMIT</code> no está soportado en PostgreSQL</button>
+      <button class="opcion" data-op="b">Porque no hay garantía de cuáles 10 filas salen ni de que sean estables</button>
+      <button class="opcion" data-op="c">Porque devuelve siempre las últimas insertadas</button>
+      <button class="opcion" data-op="d">Porque consume mucha memoria</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p class="enunciado">2. ¿Cuál es la diferencia entre <code>WHERE</code> y <code>HAVING</code>?</p>
+      <button class="opcion" data-op="a">Ninguna: son sinónimos</button>
+      <button class="opcion" data-op="b"><code>HAVING</code> es más rápido que <code>WHERE</code></button>
+      <button class="opcion" data-op="c"><code>WHERE</code> filtra filas antes de agrupar; <code>HAVING</code> filtra grupos después</button>
+      <button class="opcion" data-op="d"><code>HAVING</code> solo funciona con <code>JOIN</code></button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p class="enunciado">3. ¿Qué devuelve <code>SELECT COUNT(*) FROM productos</code> si la tabla está vacía?</p>
+      <button class="opcion" data-op="a"><code>0</code>, una fila con el número cero</button>
+      <button class="opcion" data-op="b">Ninguna fila</button>
+      <button class="opcion" data-op="c"><code>NULL</code></button>
+      <button class="opcion" data-op="d">Un error</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p class="enunciado">4. En <code>SELECT categoria, COUNT(*) FROM productos GROUP BY categoria</code>, ¿por qué <code>categoria</code> puede estar en el <code>SELECT</code>?</p>
+      <button class="opcion" data-op="a">Porque es la primera columna de la tabla</button>
+      <button class="opcion" data-op="b">Porque PostgreSQL lo permite siempre</button>
+      <button class="opcion" data-op="c">Porque <code>COUNT(*)</code> no cuenta como agregado</button>
+      <button class="opcion" data-op="d">Porque está en el <code>GROUP BY</code>, así que tiene un valor único por grupo</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: WHERE</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de consultas</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: fijar por escrito lo que ya
+      sabes antes de pasar del SQL a la pantalla.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la
+      bitácora.
+    </p>
+
+    <h4>Regla 20-20-20</h4>
+    <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+
+    <h4>Movimiento</h4>
+    <p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p>
+
+    <h4>Hidratación</h4>
+    <p>Un vaso de agua. La lectura densa agota más de lo que parece.</p>
+
+    <h4>Bitácora</h4>
+    <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+  </div>
+
+  <h3>4.1 · Bitácora de lectura (5 minutos)</h3>
+
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿qué diferencia hay entre proyectar columnas y filtrar filas?</li>
+    <li><strong>En una frase:</strong> ¿por qué <code>stock = NULL</code> nunca devuelve filas?</li>
+    <li><strong>En una frase:</strong> ¿qué evita un parámetro <code>$1</code> que un f-string no evita?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+
+  <div class="definiciones">
+    <div>
+      <dt>Proyección</dt>
+      <dd>La lista de columnas que sale en un <code>SELECT</code>. Elegir el ancho de la respuesta.</dd>
+    </div>
+    <div>
+      <dt>Predicado</dt>
+      <dd>La condición del <code>WHERE</code>. La fila pasa si es verdadera.</dd>
+    </div>
+    <div>
+      <dt>Alias</dt>
+      <dd>El nombre con el que una columna o expresión sale en el resultado.</dd>
+    </div>
+    <div>
+      <dt>Agregado</dt>
+      <dd>Función que colapsa varias filas en un valor: <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>.</dd>
+    </div>
+    <div>
+      <dt>Parámetro</dt>
+      <dd>Hueco <code>$1</code>, <code>$2</code>… que se rellena con un dato, nunca con código SQL.</dd>
+    </div>
+    <div>
+      <dt>JSON</dt>
+      <dd>Formato de texto para estructuras de datos. El idioma en que la API le habla al navegador.</dd>
+    </div>
+    <div>
+      <dt>Escape</dt>
+      <dd>Convertir <code>&lt;</code>, <code>&gt;</code> y <code>&amp;</code> en entidades para que un texto no se interprete como HTML.</dd>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: Ordenar y resumir</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Actividad →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — ACTIVIDAD: LA RUTA CONSULTORA
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · Taller de aplicación</div>
+    <h2>Actividad 5.1 · <em>De la consulta a la ruta</em></h2>
+    <p class="proposito">
+      El SQL ya sabe responder. Ahora hay que colgarlo de una URL de FastAPI para que cualquiera
+      pueda preguntar desde el navegador o desde <code>curl</code>, con filtros opcionales.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Práctica guiada</b></span>
+      <span>🧭 <b>Producto: <code>GET /productos</code> con filtros y probado</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Actividad</span>
+      <h3>La ruta consultora del catálogo</h3>
+    </div>
+
+    <p>
+      La tienda necesita una URL que devuelva productos como JSON, con filtros opcionales por
+      categoría, precio máximo y búsqueda de texto. La consulta debe vivir en un módulo aparte,
+      usar parámetros y devolver una lista siempre —también cuando no hay resultados—.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td><code>GET /productos?categoria=sensores&amp;precio_max=50000&amp;q=sensor</code> (todo opcional)</td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td><code>200</code> con una lista JSON de productos, o <code>[]</code> si no hay coincidencias</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Toda la consulta con <code>$1</code>, <code>$2</code>…; ningún valor pegado al SQL</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>La SQL vive en <code>consultas.py</code>; la ruta solo la invoca y formatea</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Orden estable: <code>ORDER BY precio, id</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong><code>consultas.py</code></strong>: al menos dos funciones que devuelvan listas de diccionarios.</li>
+      <li><strong><code>main.py</code></strong>: la ruta <code>GET /productos</code> con los tres filtros opcionales.</li>
+      <li><strong>Una prueba manual</strong> con <code>curl</code> de tres casos: sin filtros, con filtro y sin resultados.</li>
+    </ol>
+  </div>
+
+  <h3>5.2 · Tres formas de leer: <code>fetch</code>, <code>fetchrow</code>, <code>fetchval</code></h3>
+
+  <p>
+    asyncpg no devuelve «un resultado». Devuelve el resultado con la forma que pediste. Elegir bien
+    la variante evita convertir a mano y evita errores tontos.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Qué método usar según lo que necesites</caption>
+      <thead>
+        <tr><th>Método</th><th>Devuelve</th><th>Cuándo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>conn.fetch(sql, …)</code></td><td>Lista de <code>Record</code> (filas)</td><td>Listados, tablas, el caso normal de un <code>SELECT</code></td></tr>
+        <tr><td><code>conn.fetchrow(sql, …)</code></td><td>Una fila o <code>None</code></td><td>Detalle por id, «el producto 7»</td></tr>
+        <tr><td><code>conn.fetchval(sql, …)</code></td><td>La primera columna de la primera fila</td><td><code>COUNT</code>, <code>AVG</code>, un solo número</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>consultas.py — las tres variantes</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> typing <span class="tk-kw">import</span> Any
+
+<span class="tk-kw">async def</span> <span class="tk-fn">listar_productos</span>(
+    conn,
+    categoria: <span class="tk-cls">str</span> | <span class="tk-kw">None</span> = <span class="tk-kw">None</span>,
+    precio_max: <span class="tk-cls">int</span> | <span class="tk-kw">None</span> = <span class="tk-kw">None</span>,
+    q: <span class="tk-cls">str</span> | <span class="tk-kw">None</span> = <span class="tk-kw">None</span>,
+) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>[<span class="tk-cls">str</span>, Any]]:
+    <span class="tk-str">"""Productos con filtros opcionales. Nunca devuelve None: siempre lista."""</span>
+    condiciones: <span class="tk-cls">list</span>[<span class="tk-cls">str</span>] = [<span class="tk-str">"activo = true"</span>]
+    valores: <span class="tk-cls">list</span>[Any] = []
+
+    <span class="tk-kw">if</span> categoria <span class="tk-kw">is not</span> <span class="tk-kw">None</span>:
+        valores.append(categoria)
+        condiciones.append(<span class="tk-str">f"categoria = ${len(valores)}"</span>)
+
+    <span class="tk-kw">if</span> precio_max <span class="tk-kw">is not</span> <span class="tk-kw">None</span>:
+        valores.append(precio_max)
+        condiciones.append(<span class="tk-str">f"precio &lt;= ${len(valores)}"</span>)
+
+    <span class="tk-kw">if</span> q:
+        valores.append(<span class="tk-str">f"%{q}%"</span>)
+        condiciones.append(<span class="tk-str">f"nombre ILIKE ${len(valores)}"</span>)
+
+    sql = <span class="tk-str">f"""
+        SELECT id, nombre, categoria, precio, stock
+        FROM productos
+        WHERE {" AND ".join(condiciones)}
+        ORDER BY precio, id
+    """</span>
+
+    filas = <span class="tk-kw">await</span> conn.fetch(sql, *valores)
+    <span class="tk-kw">return</span> [<span class="tk-fn">dict</span>(f) <span class="tk-kw">for</span> f <span class="tk-kw">in</span> filas]
+
+
+<span class="tk-kw">async def</span> <span class="tk-fn">contar_productos</span>(conn) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">"""Un solo número: cuántos productos activos hay."""</span>
+    <span class="tk-kw">return</span> <span class="tk-kw">await</span> conn.fetchval(
+        <span class="tk-str">"SELECT COUNT(*) FROM productos WHERE activo = true"</span>
+    )</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>len(valores)</code> construye el hueco correcto</span>
+    <p>
+      Cada filtro añade un valor y, con él, el siguiente hueco: <code>$1</code>, <code>$2</code>,
+      <code>$3</code>. El texto del SQL se arma con el <em>número</em> del hueco, no con el valor.
+      El valor viaja aparte, en <code>*valores</code>. Esa separación es exactamente lo que impide
+      la inyección.
+    </p>
+  </div>
+
+  <h3>5.3 · La ruta FastAPI</h3>
+
+  <p>
+    La ruta recibe los parámetros de la query string como opcionales, llama a la consulta y
+    devuelve la lista. Nada más. Sin formatear HTML aquí: eso es trabajo del navegador.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — GET /productos</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> Depends, Query
+<span class="tk-kw">from</span> database <span class="tk-kw">import</span> ConnectionDep
+<span class="tk-kw">import</span> consultas
+
+<span class="tk-kw">@app.get</span>(<span class="tk-str">"/productos"</span>)
+<span class="tk-kw">async def</span> <span class="tk-fn">listar_productos</span>(
+    conn: ConnectionDep,
+    categoria: <span class="tk-cls">str</span> | <span class="tk-kw">None</span> = Query(<span class="tk-kw">None</span>),
+    precio_max: <span class="tk-cls">int</span> | <span class="tk-kw">None</span> = Query(<span class="tk-kw">None</span>, ge=<span class="tk-num">0</span>),
+    q: <span class="tk-cls">str</span> | <span class="tk-kw">None</span> = Query(<span class="tk-kw">None</span>, min_length=<span class="tk-num">1</span>, max_length=<span class="tk-num">60</span>),
+):
+    <span class="tk-kw">return await</span> consultas.listar_productos(
+        conn, categoria=categoria, precio_max=precio_max, q=q
+    )</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — <code>Query(...)</code> también valida</span>
+    <p>
+      <code>ge=0</code> rechaza precios negativos y <code>min_length</code>/<code>max_length</code>
+      acotan el buscador. La validación vive en la frontera: lo que entra de la red se comprueba
+      antes de tocar la base de datos.
+    </p>
+  </div>
+
+  <h3>5.4 · Probar con <code>curl</code> antes de dibujar nada</h3>
+
+  <p>
+    Si la ruta no devuelve bien el JSON, la tabla nunca se verá bien. Comprueba el contrato en la
+    terminal; es más rápido que abrir el navegador con las herramientas de desarrollo.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — tres casos</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># 1. Sin filtros: el catálogo entero
+</span>curl -s http://localhost:8000/productos | python -m json.tool
+
+<span class="tk-cm"># 2. Con filtros
+</span>curl -s <span class="tk-str">"http://localhost:8000/productos?categoria=sensores&amp;precio_max=50000"</span>
+
+<span class="tk-cm"># 3. Sin resultados: debe devolver [], no un error
+</span>curl -s <span class="tk-str">"http://localhost:8000/productos?categoria=drones"</span></code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — <code>[]</code> es un éxito, no un fallo</span>
+    <p>
+      Una consulta correcta que no encuentra filas no es un error. Si la ruta devuelve
+      <code>404</code> porque no hay coincidencias, el navegador dibujará un error donde debería
+      dibujar «no hay productos». Reserva <code>404</code> para el recurso que no existe
+      (un producto concreto), no para el listado vacío.
+    </p>
+  </div>
+
+  <!-- QUIZ 5 -->
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+
+    <div class="pregunta" data-correcta="c">
+      <p class="enunciado">1. ¿Qué devuelve <code>conn.fetchval("SELECT COUNT(*) FROM productos")</code>?</p>
+      <button class="opcion" data-op="a">Una lista con una fila</button>
+      <button class="opcion" data-op="b">Un diccionario</button>
+      <button class="opcion" data-op="c">Un entero con el número de filas</button>
+      <button class="opcion" data-op="d"><code>None</code> si no hay productos</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p class="enunciado">2. ¿Por qué <code>GET /productos?categoria=drones</code> debe devolver <code>200</code> y <code>[]</code>?</p>
+      <button class="opcion" data-op="a">Porque una consulta válida sin filas no es un error del servidor</button>
+      <button class="opcion" data-op="b">Porque FastAPI no permite <code>404</code> en listados</button>
+      <button class="opcion" data-op="c">Porque <code>[]</code> ocupa menos que un mensaje de error</button>
+      <button class="opcion" data-op="d">Porque los filtros son opcionales</button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p class="enunciado">3. En la función de filtros dinámicos, ¿qué se concatena al texto del SQL?</p>
+      <button class="opcion" data-op="a">El valor que escribió el usuario</button>
+      <button class="opcion" data-op="b">Solo el hueco <code>$n</code> y la condición; el valor viaja aparte</button>
+      <button class="opcion" data-op="c">Un <code>f-string</code> con el precio</button>
+      <button class="opcion" data-op="d">Nada: el SQL no cambia nunca</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p class="enunciado">4. ¿Dónde debería convertirse un texto peligroso con <code>&lt;script&gt;</code> en texto seguro?</p>
+      <button class="opcion" data-op="a">En el SQL, con <code>REPLACE</code></button>
+      <button class="opcion" data-op="b">En el <code>curl</code> de prueba</button>
+      <button class="opcion" data-op="c">En ningún sitio: el navegador lo ignora solo</button>
+      <button class="opcion" data-op="d">Al pintar en el navegador, escapando el texto antes de insertarlo</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: Del JSON al navegador →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — DEL JSON AL NAVEGADOR
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · La pantalla</div>
+    <h2>Del JSON al <em>navegador</em></h2>
+    <p class="proposito">
+      La API ya responde con filas. Esta unidad las convierte en una tabla que se entiende de un
+      vistazo: estados de carga, resultado vacío, errores y —muy importante— textos que no se
+      cuelan como HTML.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>📄 <b>Lectura, demo y práctica</b></span>
+      <span>🧭 <b>Producto: tabla HTML con los tres estados</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · Lo que devuelve la API</h3>
+
+  <p class="primer-párrafo">
+    Antes de dibujar, mira el contrato. La ruta de la unidad 5 devuelve una lista de objetos JSON.
+    Cada objeto tiene las mismas claves que las columnas del <code>SELECT</code>, y esos nombres
+    son los que verás en los encabezados de la tabla.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>json — GET /productos?precio_max=50000</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>[
+  {
+    <span class="tk-str">"id"</span>: <span class="tk-num">2</span>,
+    <span class="tk-str">"nombre"</span>: <span class="tk-str">"Sensor de temperatura"</span>,
+    <span class="tk-str">"categoria"</span>: <span class="tk-str">"sensores"</span>,
+    <span class="tk-str">"precio"</span>: <span class="tk-num">28000</span>,
+    <span class="tk-str">"stock"</span>: <span class="tk-num">4</span>
+  },
+  {
+    <span class="tk-str">"id"</span>: <span class="tk-num">9</span>,
+    <span class="tk-str">"nombre"</span>: <span class="tk-str">"Rueda de goma 65mm"</span>,
+    <span class="tk-str">"categoria"</span>: <span class="tk-str">"motores"</span>,
+    <span class="tk-str">"precio"</span>: <span class="tk-num">12000</span>,
+    <span class="tk-str">"stock"</span>: <span class="tk-num">30</span>
+  }
+]</code></pre>
+  </div>
+
+  <h3>6.2 · Dibujar una tabla con JavaScript</h3>
+
+  <p>
+    El navegador no «entiende» JSON: recibe texto, lo parsea y tú decides cómo se pinta. La forma
+    más clara de pintar una tabla es crear los elementos uno a uno y asignar el texto con
+    <code>textContent</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>static/catalogo.js — pintar la tabla</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">async function</span> <span class="tk-fn">cargarCatalogo</span>(params = <span class="tk-str">''</span>) {
+  <span class="tk-kw">const</span> tabla = document.querySelector(<span class="tk-str">'#tabla-productos'</span>);
+  <span class="tk-kw">const</span> estado = document.querySelector(<span class="tk-str">'#estado'</span>);
+
+  estado.textContent = <span class="tk-str">'Cargando…'</span>;
+  tabla.innerHTML = <span class="tk-str">''</span>;
+
+  <span class="tk-kw">try</span> {
+    <span class="tk-kw">const</span> res = <span class="tk-kw">await</span> fetch(<span class="tk-str">`/productos${params}`</span>);
+    <span class="tk-kw">if</span> (!res.ok) <span class="tk-kw">throw new</span> <span class="tk-cls">Error</span>(<span class="tk-str">`HTTP ${res.status}`</span>);
+
+    <span class="tk-kw">const</span> productos = <span class="tk-kw">await</span> res.json();
+
+    <span class="tk-kw">if</span> (productos.length === <span class="tk-num">0</span>) {
+      estado.textContent = <span class="tk-str">'No hay productos con esos filtros.'</span>;
+      <span class="tk-kw">return</span>;
+    }
+
+    <span class="tk-kw">const</span> columnas = [<span class="tk-str">'nombre'</span>, <span class="tk-str">'categoria'</span>, <span class="tk-str">'precio'</span>, <span class="tk-str">'stock'</span>];
+    <span class="tk-kw">const</span> thead = document.createElement(<span class="tk-str">'thead'</span>);
+    <span class="tk-kw">const</span> trH = document.createElement(<span class="tk-str">'tr'</span>);
+    columnas.forEach(c =&gt; {
+      <span class="tk-kw">const</span> th = document.createElement(<span class="tk-str">'th'</span>);
+      th.textContent = c;          <span class="tk-cm">// texto, no HTML</span>
+      trH.appendChild(th);
+    });
+    thead.appendChild(trH);
+    tabla.appendChild(thead);
+
+    <span class="tk-kw">const</span> tbody = document.createElement(<span class="tk-str">'tbody'</span>);
+    productos.forEach(p =&gt; {
+      <span class="tk-kw">const</span> tr = document.createElement(<span class="tk-str">'tr'</span>);
+      columnas.forEach(c =&gt; {
+        <span class="tk-kw">const</span> td = document.createElement(<span class="tk-str">'td'</span>);
+        td.textContent = p[c];
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    tabla.appendChild(tbody);
+    estado.textContent = `${productos.length} productos`;
+  } <span class="tk-kw">catch</span> (err) {
+    estado.textContent = <span class="tk-str">'No se pudo cargar el catálogo. Revisa el servidor.'</span>;
+  }
+}</code></pre>
+  </div>
+
+  <h3>6.3 · Escape: el dato que no es HTML</h3>
+
+  <p>
+    Si alguna vez se te ocurre escribir <code>td.innerHTML = p.nombre</code>, deja de leer y
+    cambia a <code>textContent</code>. No es estética: es seguridad.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>javascript — la diferencia que importa</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm">// Un producto con nombre hostil
+</span><span class="tk-kw">const</span> p = { nombre: <span class="tk-str">'&lt;img src=x onerror=alert(1)&gt;'</span> };
+
+td.innerHTML = p.nombre;    <span class="tk-cm">// el navegador ejecuta el script  ← XSS</span>
+td.textContent = p.nombre;  <span class="tk-cm">// se ve el texto literal      ← correcto</span></code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — XSS: el script que se cuela por un nombre de producto</span>
+    <p>
+      Si el nombre de un producto puede escribirlo un usuario y tú lo insertas con
+      <code>innerHTML</code>, esa persona (o quien haya comprometido la base) puede ejecutar
+      JavaScript en el navegador de todo el que abra el catálogo. <code>textContent</code> convierte
+      el valor en texto y el navegador lo dibuja tal cual. Es una línea de código y cierra el
+      agujero.
+    </p>
+  </div>
+
+  <h3>6.4 · Los tres estados que siempre se pintan</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Una tabla sin estados es una tabla a medias</caption>
+      <thead>
+        <tr><th>Estado</th><th>Cuándo</th><th>Qué debe ver el usuario</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Cargando</strong></td><td>Entre el <code>fetch</code> y la respuesta</td><td>«Cargando…» o un esqueleto de tabla</td></tr>
+        <tr><td><strong>Vacío</strong></td><td><code>200</code> con <code>[]</code></td><td>«No hay productos con esos filtros.»</td></tr>
+        <tr><td><strong>Error</strong></td><td>Red caída, <code>500</code>, <code>503</code></td><td>«No se pudo cargar. Revisa el servidor.»</td></tr>
+        <tr><td><strong>Con datos</strong></td><td>Una o más filas</td><td>La tabla y el conteo de filas</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>6.5 · Tres puertas: JavaScript, HTMX o Jinja2</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>html — HTMX: la tabla que se actualiza sin escribir JS</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">form</span> <span class="tk-attr">hx-get</span>=<span class="tk-str">"/productos"</span> <span class="tk-attr">hx-target</span>=<span class="tk-str">"#tabla"</span> <span class="tk-attr">hx-trigger</span>=<span class="tk-str">"change"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">select</span> <span class="tk-attr">name</span>=<span class="tk-str">"categoria"</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">option</span> <span class="tk-attr">value</span>=<span class="tk-str">""</span><span class="tk-pun">&gt;</span>Todas<span class="tk-pun">&lt;/</span><span class="tk-tag">option</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">option</span> <span class="tk-attr">value</span>=<span class="tk-str">"sensores"</span><span class="tk-pun">&gt;</span>Sensores<span class="tk-pun">&lt;/</span><span class="tk-tag">option</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;/</span><span class="tk-tag">select</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">form</span><span class="tk-pun">&gt;</span>
+
+<span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">id</span>=<span class="tk-str">"tabla"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-cm">&lt;!-- el servidor devuelve solo el fragmento de tabla --&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span></code></pre>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — JSON + JS, HTMX o Jinja: tres contratos distintos</span>
+    <p>
+      Con <strong>JSON + JavaScript</strong>, el servidor devuelve datos y el cliente dibuja: máximo
+      control, más código en el navegador. Con <strong>HTMX</strong>, el servidor devuelve fragmentos
+      HTML y el cliente solo los inserta: menos JS, más HTML en el servidor. Con
+      <strong>Jinja2</strong>, el servidor devuelve la página entera: la opción más simple y la
+      menos interactiva. Elige por quién mantendrá la pantalla, no por moda.
+    </p>
+  </div>
+
+  <h3>6.6 · Playground: consulta, JSON y tabla</h3>
+
+  <p>
+    Abajo hay una tabla simulada del catálogo del club. Cada botón ejecuta una consulta
+    equivalente a un <code>SELECT</code> real y muestra, lado a lado, el SQL, el JSON que
+    devolvería la API y la tabla que dibujaría el navegador. Úsalo para asociar cada cláusula con
+    lo que se ve en pantalla.
+  </p>
+
+  <div class="playground" data-playground>
+    <div class="playground-cabecera">
+      <div>
+        <span class="etiqueta">Demo</span>
+        <h4>De la consulta a la tabla</h4>
+      </div>
+    </div>
+    <div class="playground-botones">
+      <button type="button" data-consulta="todas" class="activo">SELECT básico</button>
+      <button type="button" data-consulta="baratos">WHERE precio</button>
+      <button type="button" data-consulta="distinct">DISTINCT</button>
+      <button type="button" data-consulta="resumen">GROUP BY</button>
+      <button type="button" data-consulta="limite">ORDER + LIMIT</button>
+      <button type="button" data-consulta="vacio">Resultado vacío</button>
+    </div>
+    <div class="playground-cuerpo">
+      <p class="playground-meta" data-playground-meta>Todas las filas y cinco columnas</p>
+      <div class="playground-paneles">
+        <div class="playground-panel">
+          <div class="panel-titulo">SQL</div>
+          <pre data-playground-sql></pre>
+        </div>
+        <div class="playground-panel">
+          <div class="panel-titulo">JSON que devuelve la API</div>
+          <pre data-playground-json></pre>
+        </div>
+      </div>
+      <div class="playground-resultado">
+        <div class="panel-titulo">Tabla que dibuja el navegador</div>
+        <p class="playground-vacio oculto" data-playground-vacio>No hay filas. La consulta es correcta; simplemente no coincide nada.</p>
+        <table data-playground-tabla></table>
+      </div>
+    </div>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — el playground es exactamente tu taller</span>
+    <p>
+      Lo que hace este demo en el navegador con datos simulados es lo que tu API hará con datos
+      reales: una consulta, un JSON, una tabla. La única diferencia es que aquí no hay servidor.
+      En el taller, las tres piezas se conectan de verdad.
+    </p>
+  </div>
+
+  <!-- QUIZ 6 -->
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+
+    <div class="pregunta" data-correcta="a">
+      <p class="enunciado">1. ¿Por qué <code>td.textContent = nombre</code> es más seguro que <code>innerHTML</code>?</p>
+      <button class="opcion" data-op="a">Porque inserta texto literal y no interpreta etiquetas HTML</button>
+      <button class="opcion" data-op="b">Porque es más rápido</button>
+      <button class="opcion" data-op="c">Porque <code>innerHTML</code> no funciona en tablas</button>
+      <button class="opcion" data-op="d">Porque convierte el texto a mayúsculas</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p class="enunciado">2. ¿Qué debe mostrar la tabla si la API responde <code>200</code> con <code>[]</code>?</p>
+      <button class="opcion" data-op="a">Un mensaje de error 404</button>
+      <button class="opcion" data-op="b">La tabla con una fila en blanco</button>
+      <button class="opcion" data-op="c">Un mensaje de «no hay resultados» y la tabla vacía</button>
+      <button class="opcion" data-op="d">Nada: la página se queda en «Cargando…»</button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p class="enunciado">3. ¿Cuál es la diferencia principal entre HTMX y JSON + JavaScript?</p>
+      <button class="opcion" data-op="a">HTMX no necesita servidor</button>
+      <button class="opcion" data-op="b">HTMX recibe fragmentos HTML del servidor; JSON + JS recibe datos y dibuja en el cliente</button>
+      <button class="opcion" data-op="c">JSON + JS no puede usar <code>fetch</code></button>
+      <button class="opcion" data-op="d">Son lo mismo con distinta sintaxis</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p class="enunciado">4. ¿En qué orden se ve la cadena completa de esta clase?</p>
+      <button class="opcion" data-op="a">HTML → JSON → SQL</button>
+      <button class="opcion" data-op="b">SQL → HTML → JSON</button>
+      <button class="opcion" data-op="c">JSON → SQL → HTML</button>
+      <button class="opcion" data-op="d">SQL → JSON → HTML</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: Actividad</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>El catálogo <em>consultable</em></h2>
+    <p class="proposito">
+      En 45 minutos reúnes las tres capas —SQL, API y pantalla— en un catálogo que el club pueda
+      usar de verdad: filtrar, ordenar, ver el resumen y entender lo que pasa cuando no hay
+      resultados.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller integrador</b></span>
+      <span>🧭 <b>Producto: catálogo consultable completo</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El encargo</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Encargo</span>
+      <h3>La vitrina digital del club de robótica</h3>
+    </div>
+
+    <p>
+      El club quiere que cualquiera pueda mirar el catálogo desde un navegador: ver los productos,
+      filtrar por categoría y precio, buscar por nombre, y ver un resumen por categoría. Nada de
+      <code>psql</code> para la presidenta. Nada de <code>SELECT *</code>. Nada de valores pegados
+      al SQL.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Contenido</strong></td>
+            <td>Un módulo <code>consultas.py</code>, una ruta <code>GET /productos</code> y una página con tabla</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción de datos</strong></td>
+            <td>Proyección explícita: nunca <code>SELECT *</code> en las rutas públicas</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción de seguridad</strong></td>
+            <td>Todo valor del usuario viaja como <code>$n</code>; el buscador usa <code>ILIKE</code></td>
+          </tr>
+          <tr>
+            <td><strong>Restricción de presentación</strong></td>
+            <td>Los tres estados: cargando, vacío y error. Escape con <code>textContent</code></td>
+          </tr>
+          <tr>
+            <td><strong>Restricción del taller</strong></td>
+            <td>Eliges una puerta (JSON+JS, HTMX o Jinja2) y la justificas por escrito</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong><code>consultas.py</code></strong>: al menos tres funciones —listar con filtros, contar, resumen por categoría—.</li>
+      <li><strong><code>main.py</code></strong>: <code>GET /productos</code> con <code>categoria</code>, <code>precio_max</code> y <code>q</code>; y <code>GET /resumen</code> con el agregado por categoría.</li>
+      <li><strong>La pantalla</strong>: tabla con filtros, contador de resultados y los tres estados.</li>
+      <li><strong>Tres capturas o tres comprobaciones</strong>: catálogo completo, filtro sin resultados, y resumen por categoría.</li>
+      <li><strong>Un párrafo escrito</strong> (~120 palabras): qué puerta elegiste (JSON+JS, HTMX o Jinja), por qué, y qué cedería si cambiaras de decisión.</li>
+    </ol>
+  </div>
+
+  <h3>7.2 · La estructura del proyecto</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>tienda/ — cómo queda el taller</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>tienda/
+│
+├── main.py                  GET /productos, GET /resumen, GET /
+├── consultas.py             listar_productos, contar_productos, resumen_por_categoria
+├── database.py              pool y dependencia
+├── static/catalogo.js       fetch, pintar tabla, tres estados
+├── templates/catalogo.html  el esqueleto de la página
+└── sql/schema.sql           productos (clase 8)</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>consultas.py — el resumen por categoría</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">async def</span> <span class="tk-fn">resumen_por_categoria</span>(conn) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]:
+    <span class="tk-str">"""Un renglón por categoría: productos, unidades y precio medio."""</span>
+    filas = <span class="tk-kw">await</span> conn.fetch(
+        <span class="tk-str">"""
+        SELECT
+          categoria,
+          COUNT(*)            AS productos,
+          SUM(stock)          AS unidades,
+          ROUND(AVG(precio))  AS precio_medio
+        FROM productos
+        WHERE activo = true
+        GROUP BY categoria
+        ORDER BY unidades DESC
+        """</span>
+    )
+    <span class="tk-kw">return</span> [<span class="tk-fn">dict</span>(f) <span class="tk-kw">for</span> f <span class="tk-kw">in</span> filas]</code></pre>
+  </div>
+
+  <h3>7.3 · Las tres reglas que este taller no negocia</h3>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Regla 1 — nada de <code>SELECT *</code> en una ruta pública</span>
+    <p>
+      Nombrar columnas es la forma más barata de no filtrar datos sensibles y de no romper el
+      contrato del JSON cuando la tabla cambie. Si necesitas otra columna, la añades a la consulta
+      y al modelo a la vez.
+    </p>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Regla 2 — ningún valor del usuario se pega al SQL</span>
+    <p>
+      Ni con f-strings, ni con <code>format</code>, ni «solo esta vez». El hueco es
+      <code>$n</code>; el valor viaja aparte. Si un filtro es opcional, se añade la condición al
+      SQL y el valor a la lista, como en la unidad 5.
+    </p>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Regla 3 — ningún dato se inserta como HTML</span>
+    <p>
+      <code>textContent</code> para pintar, o escape explícito si usas plantillas. Un nombre de
+      producto con <code>&lt;script&gt;</code> debe verse como texto, no ejecutarse. Y los tres
+      estados de la tabla —cargando, vacío, error— se implementan, no se dejan «para después».
+    </p>
+  </div>
+
+  <h3>7.4 · Rúbrica de autoevaluación</h3>
+
+  <p>Puntúa cada criterio de 0 a 2 y revisa los que hayan quedado en 0 o 1 antes de dar por terminado el taller.</p>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Proyección</td>
+          <td><code>SELECT *</code> en las rutas</td>
+          <td>Columnas nombradas en alguna consulta</td>
+          <td>Todas las consultas nombran solo las columnas que se usan</td>
+        </tr>
+        <tr>
+          <td>Filtros</td>
+          <td>No hay filtros o se pegan al SQL</td>
+          <td>Hay filtros, pero alguno concatena valores</td>
+          <td>Filtros opcionales con <code>$n</code> y validación en la frontera</td>
+        </tr>
+        <tr>
+          <td>Agregados</td>
+          <td>No hay resumen</td>
+          <td>Hay un <code>COUNT</code> suelto</td>
+          <td>Resumen por categoría con <code>GROUP BY</code> y alias claros</td>
+        </tr>
+        <tr>
+          <td>Orden y límite</td>
+          <td>Resultados en orden azaroso</td>
+          <td>Hay <code>ORDER BY</code> pero no es estable</td>
+          <td><code>ORDER BY</code> estable y límite cuando procede</td>
+        </tr>
+        <tr>
+          <td>Pantalla</td>
+          <td>Tabla sin estados</td>
+          <td>Hay tabla y algún estado</td>
+          <td>Cargando, vacío, error y conteo de filas</td>
+        </tr>
+        <tr>
+          <td>Escape</td>
+          <td>Se usa <code>innerHTML</code> con datos</td>
+          <td>Escape parcial</td>
+          <td>Todo dato se pinta con <code>textContent</code> o escape explícito</td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay nada escrito</td>
+          <td>Describe el qué, no el porqué</td>
+          <td>Puerta elegida, motivo y qué se cedería al cambiar</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.5 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>Un <code>SELECT</code> es una pregunta: la proyección elige el ancho, el <code>WHERE</code> elige las filas.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p><code>SELECT *</code> es cómodo en la consola y una fuga de datos en una API. Nombra las columnas.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>Los parámetros <code>$1</code>, <code>$2</code> separan el dato del código. Esa separación es la seguridad.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p>Los <code>NULL</code> no son cero: <code>IS NULL</code> es la única pregunta que los encuentra.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p>Ordena siempre que limits. Sin <code>ORDER BY</code>, la paginación es una ruleta.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p><code>WHERE</code> filtra filas; <code>HAVING</code> filtra grupos. El orden de ejecución lo decide el motor.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p>La cadena es SQL → JSON → HTML. Pinta con <code>textContent</code> y no olvides los estados vacío y error.</p>
+    </div>
+  </div>
+
+  <h3>7.6 · Puente hacia la próxima clase</h3>
+
+  <p>
+    Tu catálogo ya se consulta y se ve. Lo que sigue es que el esquema <strong>cambie sin romper</strong>
+    lo que ya funciona: nuevas columnas, nuevas tablas, y consultas que sigan siendo rápidas cuando
+    el inventario deje de ser de diez productos.
+  </p>
+
+  <ol>
+    <li>
+      <strong>Migraciones.</strong> <code>schema.sql</code> sirve para la primera versión. Cuando
+      la tabla cambie, necesitarás migraciones versionadas y no un archivo que se ejecuta a mano.
+    </li>
+    <li>
+      <strong>Índices y <code>EXPLAIN</code>.</strong> Un <code>WHERE</code> sobre una tabla grande
+      necesita el índice correcto. El plan de ejecución es la herramienta para decidir, no la
+      intuición.
+    </li>
+    <li>
+      <strong>JOIN.</strong> Cuando un producto tenga categoría en otra tabla —o un cliente tenga
+      pedidos—, la consulta dejará de ser de una tabla y empezará a ser de un modelo.
+    </li>
+  </ol>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de la próxima clase</span>
+    <p>
+      Deja el taller en un repositorio con <code>README.md</code> y las tres comprobaciones
+      documentadas. Comprueba que el buscador no se rompe con un nombre que contiene
+      <code>&lt;script&gt;</code>, que un filtro vacío devuelve <code>[]</code> y no un error, y
+      que el resumen por categoría cuadra con lo que se ve en la tabla. En la clase siguiente
+      vamos a necesitar esta base para hacer que el esquema evolucione.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 9</h2>
+    <p>
+      Has cerrado el ciclo de la pregunta: escribes <code>SELECT</code> con proyección y filtros,
+      resuelves el orden y el resumen, la API devuelve JSON y el navegador lo convierte en una
+      tabla que se entiende —y que no se rompe con un nombre hostil—. A partir de aquí, la
+      pregunta ya no es cómo se leen los datos, sino cómo evolucionan sin romper lo que ya se ve.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: Del JSON al navegador</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 9 · Consultas SELECT y visualización</span>
+  <p class="pie-sub">SELECT · WHERE · ORDER BY · Agregados · JSON · Tabla en el navegador</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

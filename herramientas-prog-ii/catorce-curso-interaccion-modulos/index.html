@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 14 · Interacción entre módulos</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 14 · <em>Interacción entre módulos</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura: el sistema que no conversa</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">Los módulos del sistema</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">El flujo de acciones</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Contratos entre módulos</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Actividad: trazar el flujo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Volver, cancelar y estados</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: flujo de una entidad</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> el flujo completo de una entidad — listar, editar, guardar, volver — con la cadena trazada de botón a pieza.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>El sistema que <em>no conversa</em></h2>
+    <p class="proposito">
+      Ya sabes consultar, insertar, editar y borrar. Lo que falta es que esas piezas
+      <strong>trabajen juntas</strong>: que un botón de la lista lleve al formulario, que guardar
+      devuelva la fila actualizada, y que volver no deje a nadie perdido. Hoy estudias la
+      <strong>interacción entre módulos</strong> y el <strong>flujo de acciones</strong> del sistema.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: el mapa de módulos y el flujo dibujado</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · La app que funciona a pedazos</h3>
+
+  <p class="primer-párrafo">
+    Imagina una biblioteca digital. Hay una lista de autores, un botón para editar cada uno, un
+    formulario para crear y otro para borrar. Cada pieza, por separado, funciona: la lista muestra
+    filas, el formulario guarda, el botón de borrar borra. Pero cuando las juntas, algo falla. El
+    usuario edita, guarda y la fila queda en blanco. O pulsa «Volver» y el navegador le pregunta
+    si quiere recargar. O crea un autor y la tabla no se actualiza hasta que recarga a mano.
+  </p>
+
+  <p>
+    El problema no es el SQL. Ni siquiera es el framework. Es que <strong>ninguno de los módulos
+    sabe qué espera el otro</strong>. Hoy abrimos la app <em>Escritores</em> —una biblioteca hecha
+    con FastAPI, Jinja2, htmx y PostgreSQL— y trazamos el camino completo de cada acción.
+  </p>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — una función hace algo; un flujo lleva a alguien a algún sitio</span>
+    <p>
+      <code>actualizar_autor()</code> es una función: recibe datos y escribe una fila. «Editar →
+      Guardar → ver la fila actualizada» es un flujo: un camino que el usuario recorre, con un
+      principio, un medio y un regreso. Las funciones se prueban solas; los flujos solo se
+      entienden viendo cómo se encadenan.
+    </p>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Lo que se ve al abrir la app y lo que hay debajo</caption>
+      <thead>
+        <tr><th></th><th>En la pantalla</th><th>En el sistema</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Listar</strong></td><td>Una tabla con autores</td><td><code>GET /autores</code> → consulta → página</td></tr>
+        <tr><td><strong>Editar</strong></td><td>La fila se convierte en formulario</td><td><code>GET /autores/{id}/editar</code> → pieza editable</td></tr>
+        <tr><td><strong>Guardar</strong></td><td>La fila vuelve a la normal, con datos nuevos</td><td><code>PUT /autores/{id}</code> → <code>UPDATE</code> → pieza normal</td></tr>
+        <tr><td><strong>Volver</strong></td><td>La fila se replega sin cambios</td><td><code>GET /autores/{id}/cancelar</code> → pieza normal, sin escribir</td></tr>
+        <tr><td><strong>Crear</strong></td><td>El formulario limpia y la tabla crece</td><td><code>POST /autores</code> → <code>INSERT</code> → sección completa</td></tr>
+        <tr><td><strong>Borrar</strong></td><td>La fila desaparece</td><td><code>DELETE /autores/{id}</code> → tabla sin esa pieza</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.2 · Qué es un «módulo» en este sistema</h3>
+
+  <p>
+    En esta clase, un módulo no es un paquete de Python ni un componente de React. Es una
+    <strong>responsabilidad con su propio archivo</strong>. Cada uno sabe hacer una cosa, y se
+    comunica con los demás a través de un contrato estrecho: una función que devuelve datos, una
+    ruta que devuelve HTML, una plantilla que rellena huecos.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>escritores/ — los módulos del sistema</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>escritores/
+├── main.py            la app: lifespan, pool, include del router
+├── vistas.py          las rutas: cada endpoint pide datos y devuelve HTML
+├── repositorio.py     el acceso a datos: SQL plano sobre asyncpg
+├── esquemas.py        los modelos Pydantic de validación
+├── dependencias.py    ConnectionDep: la conexión del pool por petición
+├── database.py        el pool asyncpg (crear, adquirir, cerrar)
+└── templates/         las plantillas Jinja2 (base, páginas, componentes)</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — los módulos no son iguales entre sí</span>
+    <p>
+      <code>database.py</code> no sabe que existe una tabla de autores. <code>repositorio.py</code>
+      no sabe qué es HTML. <code>vistas.py</code> no escribe SQL. <code>templates/</code> no decide
+      nada: solo dibuja. Esa separación es lo que permite cambiar la pantalla sin tocar la base, o
+      cambiar la base sin reescribir las plantillas.
+    </p>
+  </div>
+
+  <h3>0.3 · El flujo que vamos a trazar</h3>
+
+  <p>
+    El flujo central de esta clase tiene cuatro pasos. Es el mismo en cualquier sistema de
+    administración: una lista, un modo edición, un guardado y un regreso.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>Listar</dt>
+      <dd>Ver las piezas que hay. Es el estado de partida de casi todos los flujos.</dd>
+    </div>
+    <div>
+      <dt>Editar</dt>
+      <dd>Convertir una pieza en formulario. No cambia nada todavía: solo la vista.</dd>
+    </div>
+    <div>
+      <dt>Guardar</dt>
+      <dd>Enviar los cambios al servidor y ver la pieza actualizada.</dd>
+    </div>
+    <div>
+      <dt>Volver</dt>
+      <dd>Salir del modo edición sin guardar. La pieza vuelve a su estado normal.</dd>
+    </div>
+  </div>
+
+  <h3>0.4 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cuadro de unidades, tiempos y productos esperados</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura y programa</td><td>20 min</td><td>Mapa de módulos dibujado</td></tr>
+        <tr><td><strong>01</strong></td><td>Los módulos del sistema</td><td>30 min</td><td>Ficha de responsabilidades</td></tr>
+        <tr><td><strong>02</strong></td><td>El flujo de acciones</td><td>30 min</td><td>Cadena botón → pieza</td></tr>
+        <tr><td><strong>03</strong></td><td>Contratos entre módulos</td><td>30 min</td><td>Tabla de peticiones y respuestas</td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Actividad: trazar el flujo</td><td>35 min</td><td>Flujo de autores completo</td></tr>
+        <tr><td><strong>06</strong></td><td>Volver, cancelar y estados</td><td>35 min</td><td>Máquina de estados de una fila</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller integrador</td><td>45 min</td><td>Flujo de una entidad completa</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.5 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito estas tres preguntas:</p>
+
+  <ol>
+    <li>Si «Editar» solo cambia cómo se ve la fila, ¿por qué hace falta una petición al servidor?</li>
+    <li>¿Qué debería pasar en pantalla después de guardar un autor: recargar la página, volver al inicio, o ver la fila actualizada? Argumenta.</li>
+    <li>Si un módulo de plantillas «supiera» cómo se escribe el SQL, ¿qué problema tendrías al cambiar la base de datos?</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: los módulos →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — LOS MÓDULOS
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · El mapa</div>
+    <h2>Los módulos del <em>sistema</em></h2>
+    <p class="proposito">
+      Antes de encadenar acciones conviene saber quién es quién. Esta unidad recorre los seis
+      archivos de <em>Escritores</em>, lo que cada uno sabe hacer y —más importante— lo que
+      <strong>no</strong> debe saber.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: ficha de responsabilidades</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · La dirección de las dependencias</h3>
+
+  <p class="primer-párrafo">
+    Los módulos se llaman entre sí, pero no en cualquier dirección. La regla es simple:
+    <strong>lo de arriba conoce lo de abajo; lo de abajo no conoce lo de arriba</strong>. Las
+    vistas llaman al repositorio; el repositorio no llama a las vistas. Las plantillas reciben
+    datos; no los buscan.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>cadena de dependencias — de arriba abajo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>templates/     ← dibuja; no decide
+    ↑
+vistas.py      ← orquesta: pide datos, elige plantilla, responde
+    ↑
+repositorio.py ← consulta y escribe; no sabe qué es HTML
+    ↑
+database.py    ← presta conexiones; no sabe qué hay en ellas</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el atajo que rompe el sistema</span>
+    <p>
+      Si desde una plantilla llamas a una función del repositorio, o si desde el repositorio
+      importas una plantilla, has roto la dirección. Hoy parece un atajo útil; en tres semanas,
+      cuando cambies la base de datos, tendrás que reescribir las plantillas. La dirección de las
+      dependencias no es estética: es lo que hace posible el cambio.
+    </p>
+  </div>
+
+  <h3>1.2 · Ficha de cada módulo</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Qué sabe y qué no sabe cada archivo</caption>
+      <thead>
+        <tr><th>Módulo</th><th>Sabe</th><th>No sabe</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong><code>main.py</code></strong></td>
+          <td>Arrancar la app, abrir el pool, montar las rutas</td>
+          <td>Qué es un autor ni cómo se edita</td>
+        </tr>
+        <tr>
+          <td><strong><code>vistas.py</code></strong></td>
+          <td>Qué responde cada URL, qué plantilla usa</td>
+          <td>El SQL concreto de cada consulta</td>
+        </tr>
+        <tr>
+          <td><strong><code>repositorio.py</code></strong></td>
+          <td>Las consultas, los parámetros <code>$n</code>, los <code>RETURNING</code></td>
+          <td>Si el resultado se pinta en una fila o en un PDF</td>
+        </tr>
+        <tr>
+          <td><strong><code>esquemas.py</code></strong></td>
+          <td>Qué es un dato válido y qué no</td>
+          <td>Cómo se guarda ni cómo se dibuja</td>
+        </tr>
+        <tr>
+          <td><strong><code>dependencias.py</code></strong></td>
+          <td>Cómo se presta una conexión por petición</td>
+          <td>Qué hace la ruta con esa conexión</td>
+        </tr>
+        <tr>
+          <td><strong><code>database.py</code></strong></td>
+          <td>Crear, adquirir y cerrar conexiones</td>
+          <td>Qué tablas existen</td>
+        </tr>
+        <tr>
+          <td><strong><code>templates/</code></strong></td>
+          <td>Cómo se dibuja cada pieza</td>
+          <td>De dónde salen los datos ni cuándo se guardan</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>1.3 · Un ejemplo de contrato: la conexión</h3>
+
+  <p>
+    El contrato más limpio de <em>Escritores</em> es el que presta la conexión. La vista no crea
+    conexiones ni las cierra: pide una al sistema de dependencias y la usa.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>dependencias.py — el contrato de la conexión</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> typing <span class="tk-kw">import</span> Annotated, AsyncIterator
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> Depends
+<span class="tk-kw">import</span> asyncpg
+<span class="tk-kw">from</span> database <span class="tk-kw">import</span> pool
+
+<span class="tk-kw">async def</span> <span class="tk-fn">get_connection</span>() -&gt; AsyncIterator[asyncpg.Connection]:
+    <span class="tk-kw">async with</span> pool.acquire() <span class="tk-kw">as</span> conn:
+        <span class="tk-kw">yield</span> conn
+
+ConnectionDep = Annotated[asyncpg.Connection, Depends(get_connection)]</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — la vista que la usa sin conocerla</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">@router.get</span>(<span class="tk-str">"/autores"</span>)
+<span class="tk-kw">async def</span> <span class="tk-fn">listar_autores_vista</span>(conn: ConnectionDep):
+    autores = <span class="tk-kw">await</span> repositorio.obtener_autores(conn)
+    <span class="tk-kw">return</span> templates.TemplateResponse(
+        request, <span class="tk-str">"autores.html"</span>, {<span class="tk-str">"autores"</span>: autores}
+    )</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el tipo <code>ConnectionDep</code> es el contrato</span>
+    <p>
+      La vista declara <code>conn: ConnectionDep</code> y ya está. No sabe si la conexión viene de
+      un pool, de un mock en las pruebas o de un contenedor. Si mañana cambias asyncpg por otro
+      driver, tocas <code>database.py</code> y <code>dependencias.py</code>; las vistas no se
+      mueven.
+    </p>
+  </div>
+
+  <h3>1.4 · Práctica guiada: la ficha de módulos</h3>
+
+  <p>
+    Sobre el proyecto de la clase pasada (tu API de productos o de la biblioteca), escribe una
+    ficha de tres líneas por cada archivo:
+  </p>
+
+  <ol class="entregables">
+    <li><strong>Qué recibe</strong> (conexión, datos de un formulario, un id).</li>
+    <li><strong>Qué devuelve</strong> (lista de diccionarios, una fila, HTML, una respuesta).</li>
+    <li><strong>Qué no debe saber</strong> (el SQL, el HTML, el color del botón).</li>
+  </ol>
+
+  <button class="solucion-btn" data-solucion="sol-u1">Ver un modelo de respuesta</button>
+  <div class="solucion" id="sol-u1">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-header-left">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span>ficha — tres archivos de ejemplo</span>
+        </div>
+        <button class="copy-btn">Copiar</button>
+      </div>
+<pre><code>repositorio.py
+  Recibe:   una conexión y parámetros de negocio (id, nombre, precio)
+  Devuelve: listas de dicts, una fila o un número
+  No sabe:  qué es una plantilla ni qué botón la llamó
+
+vistas.py
+  Recibe:   la petición HTTP y una conexión (vía dependencia)
+  Devuelve: HTML (TemplateResponse) o un fragmento
+  No sabe:  el texto exacto del SQL ni cómo se dibuja cada fila
+
+templates/fila_autor.html
+  Recibe:   un objeto autor con sus campos
+  Devuelve: el HTML de esa fila
+  No sabe:  de dónde salió el autor ni qué pasa al pulsar Guardar</code></pre>
+    </div>
+  </div>
+
+  <!-- QUIZ 1 -->
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p class="enunciado">1. ¿Cuál es la dirección correcta de las dependencias?</p>
+      <button class="opcion" data-op="a">Las plantillas llaman al repositorio; el repositorio llama a las vistas</button>
+      <button class="opcion" data-op="b">Las vistas llaman al repositorio; el repositorio no conoce las vistas</button>
+      <button class="opcion" data-op="c">Todos los módulos se importan entre sí</button>
+      <button class="opcion" data-op="d">La base de datos llama a las plantillas</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p class="enunciado">2. ¿Qué no debería saber <code>repositorio.py</code>?</p>
+      <button class="opcion" data-op="a">Cómo se escribe un <code>SELECT</code></button>
+      <button class="opcion" data-op="b">Qué es un parámetro <code>$1</code></button>
+      <button class="opcion" data-op="c">Cómo se dibuja la fila en el navegador</button>
+      <button class="opcion" data-op="d">Qué es una conexión asyncpg</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p class="enunciado">3. ¿Qué resuelve el contrato <code>ConnectionDep</code>?</p>
+      <button class="opcion" data-op="a">Que la vista reciba una conexión sin saber de dónde sale ni cómo se cierra</button>
+      <button class="opcion" data-op="b">Que el SQL se escriba automáticamente</button>
+      <button class="opcion" data-op="c">Que las plantillas se rendericen más rápido</button>
+      <button class="opcion" data-op="d">Que no haga falta PostgreSQL</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p class="enunciado">4. ¿Por qué conviene que <code>database.py</code> no sepa qué tablas existen?</p>
+      <button class="opcion" data-op="a">Porque PostgreSQL no se lo permite</button>
+      <button class="opcion" data-op="b">Porque así el pool es más rápido</button>
+      <button class="opcion" data-op="c">Porque las tablas viven en las plantillas</button>
+      <button class="opcion" data-op="d">Para que se pueda cambiar el esquema sin tocar la gestión de conexiones</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: El flujo de acciones →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — EL FLUJO DE ACCIONES
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · El camino</div>
+    <h2>El flujo de <em>acciones</em></h2>
+    <p class="proposito">
+      Listar, editar, guardar, volver. Cuatro acciones que, encadenadas, forman el camino más
+      común de cualquier sistema de administración. Esta unidad las descompone en su cadena
+      completa: botón, petición, ruta, repositorio, pieza.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y demo</b></span>
+      <span>🧭 <b>Producto: cadena botón → pieza de cada acción</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · La metáfora del rompecabezas</h3>
+
+  <p class="primer-párrafo">
+    Piensa en la tabla de autores como un <strong>rompecabezas armado sobre la mesa</strong>. El
+    marco es el contenedor de la tabla; cada fila es una pieza. Sin un mecanismo de actualización
+    parcial, cualquier acción obligaría a tirar el rompecabezas al suelo y armarlo de nuevo: la
+    página entera se recarga para cambiar una fila.
+  </p>
+
+  <p>
+    La idea de este flujo es lo contrario: <strong>cambiar solo la pieza que tocó</strong>. Y cada
+    pieza tiene varios estados —normal, en edición, expandida— entre los que se mueve sin desmontar
+    el resto del tablero.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>estados de una pieza — la misma fila, tres versiones</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>fila_autor.html          Gabo · Colombia · 1927    [Editar] [Borrar] [Libros]
+        ↓ Editar
+fila_editar_autor.html   [Gabo____] [Colombia__] [1927]  [Guardar] [Cancelar]
+        ↓ Guardar                          o bien ↓ Cancelar
+fila_autor.html          Gabo · Colombia · 1927    [Editar] [Borrar] [Libros]</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — «Editar» no escribe nada en la base</span>
+    <p>
+      Pasar de fila normal a fila en edición es un cambio de <strong>vista</strong>, no de datos.
+      Por eso se responde con un <code>GET</code>: solo se pide la otra versión de la pieza. Si
+      «Editar» hiciera un <code>PUT</code>, cada clic de edición modificaría la base, y
+      «Cancelar» ya no podría ser un simple «vuelve a pedir».
+    </p>
+  </div>
+
+  <h3>2.2 · El ciclo de seis pasos</h3>
+
+  <p>
+    Todas las acciones —crear, editar, guardar, borrar, ver libros— siguen el mismo ciclo. Aprender
+    el ciclo una vez sirve para todas.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>El ciclo que se repite en cada clic</caption>
+      <thead>
+        <tr><th>Paso</th><th>Quién</th><th>Qué hace</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td>Navegador</td><td>El usuario pulsa un botón; se dispara la petición <code>hx-*</code></td></tr>
+        <tr><td><strong>2</strong></td><td><code>vistas.py</code></td><td>La ruta recibe la petición y llama al repositorio</td></tr>
+        <tr><td><strong>3</strong></td><td><code>repositorio.py</code></td><td>Ejecuta SQL en PostgreSQL</td></tr>
+        <tr><td><strong>4</strong></td><td>PostgreSQL</td><td>Devuelve filas (o un error)</td></tr>
+        <tr><td><strong>5</strong></td><td><code>vistas.py</code></td><td>Renderiza la pieza con Jinja2</td></tr>
+        <tr><td><strong>6</strong></td><td>Navegador</td><td>htmx encaja la pieza en el lugar indicado por <code>hx-target</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — el servidor fabrica piezas; el navegador las encaja</span>
+    <p>
+      El servidor no «actualiza la página». Devuelve un fragmento de HTML y se olvida. El navegador
+      es quien decide dónde ponerlo, según lo que digan <code>hx-target</code> y
+      <code>hx-swap</code>. Esa división es la que permite que el mismo servidor sirva una fila, un
+      formulario o la página entera sin cambiar de lógica.
+    </p>
+  </div>
+
+  <h3>2.3 · Las cuatro acciones, en cadena</h3>
+
+  <p>
+    Abajo tienes el trazador del flujo. Cada botón muestra la cadena completa de esa acción: el
+    atributo htmx, la ruta, la función del repositorio, la pieza que sale y los estados por los que
+    pasa la fila. Úsalo para asociar el clic con el recorrido.
+  </p>
+
+  <div class="trazador" data-trazador>
+    <div class="trazador-cabecera">
+      <div>
+        <span class="etiqueta">Demo</span>
+        <h4>Del botón a la pieza</h4>
+      </div>
+    </div>
+    <div class="trazador-botones">
+      <button type="button" data-flujo="listar" class="activo">Listar</button>
+      <button type="button" data-flujo="editar">Editar</button>
+      <button type="button" data-flujo="guardar">Guardar</button>
+      <button type="button" data-flujo="volver">Volver</button>
+      <button type="button" data-flujo="crear">Crear</button>
+      <button type="button" data-flujo="borrar">Borrar</button>
+    </div>
+    <div class="trazador-cuerpo">
+      <h4 class="trazador-titulo" data-flujo-accion>Listar</h4>
+
+      <div class="trazador-cadena">
+        <div class="trazador-paso">
+          <div class="paso-n">1 · Botón / petición</div>
+          <p class="paso-texto" data-flujo-boton></p>
+        </div>
+        <div class="trazador-paso">
+          <div class="paso-n">2 · Atributos htmx</div>
+          <p class="paso-texto" data-flujo-htmx></p>
+        </div>
+        <div class="trazador-paso">
+          <div class="paso-n">3 · Ruta en vistas.py</div>
+          <p class="paso-texto" data-flujo-ruta></p>
+        </div>
+        <div class="trazador-paso">
+          <div class="paso-n">4 · Repositorio / SQL</div>
+          <p class="paso-texto" data-flujo-repo></p>
+        </div>
+        <div class="trazador-paso" style="grid-column: 1 / -1">
+          <div class="paso-n">5 · Pieza devuelta</div>
+          <p class="paso-texto" data-flujo-pieza></p>
+        </div>
+      </div>
+
+      <p class="trazador-nota" data-flujo-nota></p>
+
+      <div class="trazador-paso">
+        <div class="paso-n">Estados de la pieza</div>
+        <ul class="trazador-estados" data-flujo-estados></ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>2.4 · El mapa completo de botones</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cada botón, su cadena y la pieza que devuelve</caption>
+      <thead>
+        <tr><th>Acción</th><th>htmx clave</th><th>Ruta</th><th>Repositorio</th><th>Pieza</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Listar</strong></td>
+          <td>—</td>
+          <td><code>GET /autores</code></td>
+          <td><code>obtener_autores</code></td>
+          <td>Página completa</td>
+        </tr>
+        <tr>
+          <td><strong>Editar</strong></td>
+          <td><code>hx-get</code> → <code>closest tr</code></td>
+          <td><code>GET /autores/{id}/editar</code></td>
+          <td><code>obtener_autor</code></td>
+          <td>Fila editable</td>
+        </tr>
+        <tr>
+          <td><strong>Guardar</strong></td>
+          <td><code>hx-put</code> + <code>hx-include</code></td>
+          <td><code>PUT /autores/{id}</code></td>
+          <td><code>actualizar_autor</code></td>
+          <td>Fila normal</td>
+        </tr>
+        <tr>
+          <td><strong>Volver</strong></td>
+          <td><code>hx-get</code> → <code>closest tr</code></td>
+          <td><code>GET /autores/{id}/cancelar</code></td>
+          <td><code>obtener_autor</code></td>
+          <td>Fila normal</td>
+        </tr>
+        <tr>
+          <td><strong>Crear</strong></td>
+          <td><code>hx-post</code> + <code>hx-select</code></td>
+          <td><code>POST /autores</code></td>
+          <td><code>crear_autor</code></td>
+          <td>Sección completa</td>
+        </tr>
+        <tr>
+          <td><strong>Borrar</strong></td>
+          <td><code>hx-delete</code> + <code>hx-confirm</code></td>
+          <td><code>DELETE /autores/{id}</code></td>
+          <td><code>eliminar_autor</code></td>
+          <td>Tabla sin la pieza</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — el patrón REST que hay debajo</span>
+    <p>
+      Fíjate en que cada acción usa el verbo HTTP que le corresponde: <code>GET</code> para leer,
+      <code>POST</code> para crear, <code>PUT</code> para actualizar, <code>DELETE</code> para
+      borrar. No es una moda: es un contrato que cualquier desarrollador —y cualquier
+      herramienta— entiende sin leer el código. Si tuvieras <code>POST /borrar</code>, el sistema
+      seguiría funcionando, pero habrías perdido ese idioma común.
+    </p>
+  </div>
+
+  <!-- QUIZ 2 -->
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+
+    <div class="pregunta" data-correcta="c">
+      <p class="enunciado">1. ¿Por qué «Editar» se responde con un <code>GET</code> y no con un <code>PUT</code>?</p>
+      <button class="opcion" data-op="a">Porque <code>PUT</code> no funciona con htmx</button>
+      <button class="opcion" data-op="b">Porque el <code>GET</code> es más rápido</button>
+      <button class="opcion" data-op="c">Porque editar solo cambia la vista: todavía no se escribe nada en la base</button>
+      <button class="opcion" data-op="d">Porque el formulario necesita recargar la página</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p class="enunciado">2. En el ciclo de seis pasos, ¿quién decide dónde se coloca la pieza nueva?</p>
+      <button class="opcion" data-op="a">El navegador, según <code>hx-target</code> y <code>hx-swap</code></button>
+      <button class="opcion" data-op="b">El repositorio</button>
+      <button class="opcion" data-op="c">La plantilla Jinja2</button>
+      <button class="opcion" data-op="d">PostgreSQL</button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p class="enunciado">3. ¿Qué devuelve la acción «Volver» / «Cancelar»?</p>
+      <button class="opcion" data-op="a">Un error 404 para que el usuario retroceda</button>
+      <button class="opcion" data-op="b">La pieza normal, leída de la base, sin escribir nada</button>
+      <button class="opcion" data-op="c">La página completa de autores</button>
+      <button class="opcion" data-op="d">Nada: el navegador solo oculta el formulario</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p class="enunciado">4. ¿Por qué «Borrar» devuelve la tabla completa y no una fila vacía?</p>
+      <button class="opcion" data-op="a">Porque la tabla se dibuja más bonita</button>
+      <button class="opcion" data-op="b">Porque <code>DELETE</code> no puede devolver filas</button>
+      <button class="opcion" data-op="c">Porque hay que recargar la página entera</button>
+      <button class="opcion" data-op="d">Porque al borrar cambia el número de piezas y hay que rearmar el puzle</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: Los módulos</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: Contratos →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — CONTRATOS
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · Los acuerdos</div>
+    <h2>Contratos entre <em>módulos</em></h2>
+    <p class="proposito">
+      Cada paso del flujo es un intercambio: un módulo pide, otro responde. Esta unidad define
+      <strong>qué se pide, qué se devuelve y qué se garantiza</strong> en cada intercambio —
+      incluido el caso de error.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: tabla de peticiones y respuestas</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · El contrato de cada petición</h3>
+
+  <p class="primer-párrafo">
+    Un contrato no es un documento aparte: es lo que el receptor puede dar por supuesto. Si la
+    vista llama a <code>obtener_autor(conn, id)</code> y espera una fila o <code>None</code>, eso
+    es el contrato. Si la plantilla recibe <code>autor.nombre</code>, espera que ese campo exista.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Qué se garantiza en cada intercambio</caption>
+      <thead>
+        <tr><th>De → a</th><th>Se pide</th><th>Se devuelve</th><th>Garantía</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Vista → Repo</strong></td>
+          <td>Una conexión y parámetros ya validados</td>
+          <td>Filas, una fila, <code>None</code> o un número</td>
+          <td>SQL parametrizado; nunca texto pegado</td>
+        </tr>
+        <tr>
+          <td><strong>Repo → PostgreSQL</strong></td>
+          <td>SQL con huecos <code>$n</code></td>
+          <td>Registros tipados</td>
+          <td>Los valores viajan aparte del texto</td>
+        </tr>
+        <tr>
+          <td><strong>Vista → Plantilla</strong></td>
+          <td>Un nombre de plantilla y un contexto</td>
+          <td>HTML de la pieza</td>
+          <td>La plantilla no consulta la base</td>
+        </tr>
+        <tr>
+          <td><strong>htmx → Vista</strong></td>
+          <td>Un verbo, una URL y (a veces) un formulario</td>
+          <td>HTML de una pieza o de una sección</td>
+          <td>Éxito y error devuelven la misma forma</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>3.2 · Pieza, sección o página</h3>
+
+  <p>
+    No toda respuesta es igual de grande. Elegir el tamaño correcto es parte del contrato: si
+    devuelves de más, el navegador encaja basura; si devuelves de menos, la pantalla queda a
+    medias.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Tres tamaños de respuesta y cuándo usar cada uno</caption>
+      <thead>
+        <tr><th>Tamaño</th><th>Cuándo</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Pieza</strong></td>
+          <td>Cuando solo cambia una fila</td>
+          <td>Editar, Guardar, Cancelar, Ver libros</td>
+        </tr>
+        <tr>
+          <td><strong>Sección</strong></td>
+          <td>Cuando cambian varias piezas o hay errores de formulario</td>
+          <td>Crear (tabla + formulario con errores)</td>
+        </tr>
+        <tr>
+          <td><strong>Página</strong></td>
+          <td>Cuando se entra al módulo o se navega entre módulos</td>
+          <td><code>GET /autores</code>, <code>GET /libros</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>componentes/fila_autor.html — el contrato de una pieza</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">tr</span> <span class="tk-attr">id</span>=<span class="tk-str">"autor-{{ autor.id }}"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>{{ autor.nombre }}<span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>{{ autor.pais }}<span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>{{ autor.nacimiento }}<span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">button</span>
+      <span class="tk-attr">hx-get</span>=<span class="tk-str">"/autores/{{ autor.id }}/editar"</span>
+      <span class="tk-attr">hx-target</span>=<span class="tk-str">"closest tr"</span>
+      <span class="tk-attr">hx-swap</span>=<span class="tk-str">"outerHTML"</span><span class="tk-pun">&gt;</span>Editar<span class="tk-pun">&lt;/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">tr</span><span class="tk-pun">&gt;</span></code></pre>
+  </div>
+
+  <h3>3.3 · Los atributos htmx como contrato</h3>
+
+  <p>
+    Los atributos <code>hx-*</code> no son «magia de front-end». Son la cláusula del contrato que
+    el navegador se compromete a cumplir: a quién se le pide, con qué verbo, qué datos van y dónde
+    se encaja la respuesta.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Los atributos que cierran el contrato</caption>
+      <thead>
+        <tr><th>Atributo</th><th>Se lee como…</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>hx-get</code> / <code>hx-post</code> / <code>hx-put</code> / <code>hx-delete</code></td><td>«Al pulsar, pide esta URL con este verbo»</td><td><code>hx-put="/autores/3"</code></td></tr>
+        <tr><td><code>hx-target</code></td><td>«…y la respuesta va a esta pieza»</td><td><code>hx-target="closest tr"</code></td></tr>
+        <tr><td><code>hx-swap</code></td><td>«…y reemplázala así»</td><td><code>hx-swap="outerHTML"</code></td></tr>
+        <tr><td><code>hx-include</code></td><td>«…enviando también estos datos»</td><td><code>hx-include="closest tr"</code></td></tr>
+        <tr><td><code>hx-select</code></td><td>«…y de la respuesta, quédate solo con este trozo»</td><td><code>hx-select="#autores"</code></td></tr>
+        <tr><td><code>hx-confirm</code></td><td>«…preguntando antes»</td><td><code>hx-confirm="¿Borrar?"</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — <code>hx-include</code> es el olvido más caro</span>
+    <p>
+      Al guardar una fila en edición, los datos viven en los <code>&lt;input&gt;</code> de esa fila.
+      Sin <code>hx-include="closest tr"</code>, htmx no los recolecta y el <code>PUT</code> llega
+      vacío: la fila «se guarda» en blanco. Es el error que más tiempo roba en este flujo, y se
+      detecta mirando la petición en las herramientas de desarrollo.
+    </p>
+  </div>
+
+  <h3>3.4 · El contrato de error: misma forma, distinto estado</h3>
+
+  <p>
+    La regla más elegante de este sistema: <strong>éxito y error devuelven la misma pieza</strong>.
+    Si falta el nombre al crear un autor, la ruta responde la misma sección con status
+    <code>422</code>, los mensajes de error bajo cada campo y lo que el usuario escribió todavía en
+    los inputs. Para htmx es indiferente: recibe HTML y lo encaja.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — éxito y error, la misma forma</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">@router.post</span>(<span class="tk-str">"/autores"</span>)
+<span class="tk-kw">async def</span> <span class="tk-fn">crear_autor_vista</span>(
+    request: Request,
+    conn: ConnectionDep,
+    nombre: <span class="tk-cls">str</span> = Form(...),
+    pais: <span class="tk-cls">str</span> = Form(<span class="tk-str">""</span>),
+    nacimiento: <span class="tk-cls">int</span> | <span class="tk-kw">None</span> = Form(<span class="tk-kw">None</span>),
+):
+    errores = {}
+    <span class="tk-kw">try</span>:
+        datos = esquemas.AutorCrear(nombre=nombre, pais=pais, nacimiento=nacimiento)
+    <span class="tk-kw">except</span> ValidationError <span class="tk-kw">as</span> e:
+        errores = errores_por_campo(e)
+        datos = <span class="tk-kw">None</span>
+
+    <span class="tk-kw">if</span> datos:
+        <span class="tk-kw">await</span> repositorio.crear_autor(conn, datos)
+        status = <span class="tk-num">200</span>
+    <span class="tk-kw">else</span>:
+        status = <span class="tk-num">422</span>
+
+    autores = <span class="tk-kw">await</span> repositorio.obtener_autores(conn)
+    <span class="tk-kw">return</span> templates.TemplateResponse(
+        request, <span class="tk-str">"autores.html"</span>,
+        {<span class="tk-str">"autores"</span>: autores, <span class="tk-str">"errores"</span>: errores,
+         <span class="tk-str">"valores"</span>: {<span class="tk-str">"nombre"</span>: nombre, <span class="tk-str">"pais"</span>: pais}},
+        status_code=status,
+    )</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — htmx 4 intercambia también los 4xx</span>
+    <p>
+      htmx solo ignora <code>204</code> y <code>304</code>. Una respuesta <code>422</code> con HTML
+      se encaja igual que un <code>200</code>. Por eso el error se comunica <em>con la misma
+      pieza</em>, no con una página de error aparte que dejaría al usuario en otro módulo.
+    </p>
+  </div>
+
+  <h3>3.5 · Práctica guiada: la tabla de contratos</h3>
+
+  <ol class="entregables">
+    <li>Para «Editar»: qué recibe la ruta, qué pide al repositorio y qué devuelve a htmx.</li>
+    <li>Para «Guardar»: qué datos viajan, dónde se validan y qué pasa si falla la validación.</li>
+    <li>Para «Volver»: qué se lee, qué se escribe (nada) y qué pieza sale.</li>
+    <li>Un caso de error propio: un <code>409</code> por nombre duplicado. ¿Qué pieza devuelves?</li>
+  </ol>
+
+  <button class="solucion-btn" data-solucion="sol-u3">Ver un modelo de respuesta</button>
+  <div class="solucion" id="sol-u3">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-header-left">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span>contratos — cuatro respuestas</span>
+        </div>
+        <button class="copy-btn">Copiar</button>
+      </div>
+<pre><code>Editar
+  Ruta recibe:  id (por la URL)
+  Pide al repo: obtener_autor(conn, id) → una fila o None
+  Devuelve:     fila_editar_autor.html  (hx-target=closest tr)
+
+Guardar
+  Viajan:       los inputs de la fila (hx-include=closest tr)
+  Se valida:    esquemas.AutorActualizar, en la vista
+  Si falla:     fila_editar_autor.html con errores y lo escrito (422)
+
+Volver
+  Se lee:       obtener_autor(conn, id)  — solo lectura
+  Se escribe:   nada
+  Devuelve:     fila_autor.html  (la pieza normal)
+
+Error 409 (nombre duplicado)
+  Devuelve:     la misma sección #autores con un aviso arriba
+                y el formulario conservando lo escrito (status 409)
+  Por qué:      la forma no cambia; solo el estado que se pinta</code></pre>
+    </div>
+  </div>
+
+  <!-- QUIZ 3 -->
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+
+    <div class="pregunta" data-correcta="a">
+      <p class="enunciado">1. ¿Qué garantiza el contrato de «Vista → Repo»?</p>
+      <button class="opcion" data-op="a">Que se pasa una conexión y parámetros, y se reciben filas; nunca SQL pegado</button>
+      <button class="opcion" data-op="b">Que la plantilla se renderiza en menos de 100 ms</button>
+      <button class="opcion" data-op="c">Que el usuario vea una tabla</button>
+      <button class="opcion" data-op="d">Que no haya errores de validación</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p class="enunciado">2. ¿Cuándo conviene devolver una <strong>sección</strong> y no una pieza?</p>
+      <button class="opcion" data-op="a">Siempre: es más seguro</button>
+      <button class="opcion" data-op="b">Solo cuando la tabla tiene más de 20 filas</button>
+      <button class="opcion" data-op="c">Cuando cambian varias piezas o hay errores de formulario que mostrar</button>
+      <button class="opcion" data-op="d">Cuando se usa PostgreSQL</button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p class="enunciado">3. ¿Qué pasa si falta <code>hx-include="closest tr"</code> al guardar?</p>
+      <button class="opcion" data-op="a">Nada: htmx envía los inputs automáticamente</button>
+      <button class="opcion" data-op="b">El <code>PUT</code> llega vacío y la fila se guarda en blanco</button>
+      <button class="opcion" data-op="c">La petición falla con un 500</button>
+      <button class="opcion" data-op="d">htmx recarga la página entera</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p class="enunciado">4. ¿Por qué el error de validación devuelve la misma sección y no una página de error?</p>
+      <button class="opcion" data-op="a">Porque las páginas de error son difíciles de hacer</button>
+      <button class="opcion" data-op="b">Porque htmx no acepta status <code>422</code></button>
+      <button class="opcion" data-op="c">Porque el error debe ocultarse al usuario</button>
+      <button class="opcion" data-op="d">Para que el usuario siga en el mismo lugar, con los errores a la vista y lo escrito conservado</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: El flujo</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de flujos</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: fijar el mapa y el flujo antes
+      de pasar a trazarlo entero y a diseñar los estados.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la
+      bitácora.
+    </p>
+
+    <h4>Regla 20-20-20</h4>
+    <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+
+    <h4>Movimiento</h4>
+    <p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p>
+
+    <h4>Hidratación</h4>
+    <p>Un vaso de agua. La lectura densa agota más de lo que parece.</p>
+
+    <h4>Bitácora</h4>
+    <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+  </div>
+
+  <h3>4.1 · Bitácora de flujos (5 minutos)</h3>
+
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿qué diferencia hay entre un módulo y una función?</li>
+    <li><strong>En una frase:</strong> ¿por qué «Editar» no escribe en la base de datos?</li>
+    <li><strong>En una frase:</strong> ¿qué garantiza un contrato entre dos módulos?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+
+  <div class="definiciones">
+    <div>
+      <dt>Módulo</dt>
+      <dd>Una responsabilidad con su propio archivo, con un contrato estrecho con los demás.</dd>
+    </div>
+    <div>
+      <dt>Flujo</dt>
+      <dd>El camino que recorre el usuario: listar → editar → guardar → volver.</dd>
+    </div>
+    <div>
+      <dt>Pieza</dt>
+      <dd>El fragmento de HTML que se intercambia: una fila, un formulario, una sección.</dd>
+    </div>
+    <div>
+      <dt>Contrato</dt>
+      <dd>Lo que el receptor puede dar por supuesto: qué recibe, qué devuelve, qué garantiza.</dd>
+    </div>
+    <div>
+      <dt>Estado</dt>
+      <dd>La versión en que se encuentra una pieza: normal, en edición, expandida.</dd>
+    </div>
+    <div>
+      <dt>Dirección de dependencias</dt>
+      <dd>Lo de arriba conoce lo de abajo; lo de abajo no conoce lo de arriba.</dd>
+    </div>
+    <div>
+      <dt>Pieza / sección / página</dt>
+      <dd>Tres tamaños de respuesta. Se elige según cuánto cambie en pantalla.</dd>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: Contratos</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Actividad →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — ACTIVIDAD: TRAZAR EL FLUJO
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · Taller de aplicación</div>
+    <h2>Actividad 5.1 · <em>Trazar el flujo de autores</em></h2>
+    <p class="proposito">
+      En 35 minutos recorres el flujo completo de la entidad <code>autores</code> con la app
+      abierta y las herramientas de desarrollo: cada clic, cada petición, cada pieza. Al terminar
+      tendrás la cadena trazada de botón a pieza.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Práctica guiada</b></span>
+      <span>🧭 <b>Producto: flujo de autores completo y anotado</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Actividad</span>
+      <h3>El expediente de un flujo</h3>
+    </div>
+
+    <p>
+      Abre la app <em>Escritores</em> (o tu proyecto de clase) con las herramientas de desarrollo
+      del navegador. Para cada una de las acciones de abajo, anota la cadena completa: qué se pulsa,
+      qué petición se dispara, qué ruta la atiende, qué consulta corre, qué pieza sale y dónde se
+      encaja.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>Un clic en la app, observado en la pestaña «Red» de las herramientas de desarrollo</td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>Una ficha por acción: botón, URL, verbo, estado, pieza HTML, destino</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Cada ficha cita el archivo y la función reales, no una descripción genérica</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Se anota también qué pasa si la validación falla</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>El trazado se hace con la app corriendo; no vale solo leer el código</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong>Cuatro fichas</strong>: Listar, Editar, Guardar, Volver.</li>
+      <li><strong>Dos fichas más</strong>: Crear y Borrar, con su tamaño de respuesta justificado.</li>
+      <li><strong>Una captura</strong> de la pestaña Red mostrando el <code>PUT</code> de guardar, con su carga útil.</li>
+      <li><strong>Un párrafo</strong> (~80 palabras): qué se rompería si «Guardar» devolviera la página entera en lugar de la fila.</li>
+    </ol>
+  </div>
+
+  <h3>5.2 · Paso 1: abrir el expediente</h3>
+
+  <p>
+    Antes de hacer clic, prepara el terreno. Abre la consola de red, filtra por
+    <code>Fetch/XHR</code> —o por el dominio— y deja la tabla de autores a la vista. Todo lo que
+    hagas a partir de ahora debe verse ahí.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>checklist — lo que hay que mirar en cada clic</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>[ ] Verbo HTTP          GET / POST / PUT / DELETE
+[ ] URL                 /autores/3/editar
+[ ] Cuerpo              nombre=Gabo&amp;pais=Colombia&amp;nacimiento=1927
+[ ] Status              200 / 422 / 409
+[ ] Trozo HTML          &lt;tr&gt;…&lt;/tr&gt;  o  &lt;div id="autores"&gt;…&lt;/div&gt;
+[ ] Destino             la fila, la sección, la tabla</code></pre>
+  </div>
+
+  <h3>5.3 · Paso 2: trazar las cuatro acciones</h3>
+
+  <p>
+    Usa el trazador de la unidad 2 como plantilla y completa cada ficha con lo que veas en la red.
+    La ficha de «Guardar» es la más rica: lleva cuerpo, validación y pieza de vuelta.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ficha modelo — Guardar</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>Acción:     Guardar
+Botón:      &lt;button hx-put="/autores/3" hx-include="closest tr"
+                   hx-target="closest tr" hx-swap="outerHTML"&gt;Guardar&lt;/button&gt;
+Petición:   PUT /autores/3
+Cuerpo:     nombre=Gabo&amp;pais=Colombia&amp;nacimiento=1927
+Ruta:       vistas.py → actualizar_autor_vista(conn, id=3, …)
+Repositorio: actualizar_autor(conn, id=3, datos)
+              → UPDATE autores SET … WHERE id = $1 RETURNING *
+Éxito:      200 · fila_autor.html · se encaja en closest tr
+Error:      422 · fila_editar_autor.html con errores · se encaja en closest tr
+Estados:    fila en edición → fila normal   |   fila en edición → fila con errores</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — una ficha sin URL ni verbo no es una ficha</span>
+    <p>
+      Es fácil redactar «se guarda el autor» y creer que ya está. El valor del trazado está en los
+      datos concretos: la URL exacta, el verbo, el campo del cuerpo, el nombre de la función. Si
+      una ficha no puede citarlos, todavía no has trazado el flujo: solo lo has narrado.
+    </p>
+  </div>
+
+  <h3>5.4 · Paso 3: el caso de error</h3>
+
+  <p>
+    Ahora rompe la validación a propósito. Deja el nombre vacío, o pon un año imposible, y guarda.
+    Observa: la petición sale igual, el status cambia y la pieza que vuelve trae errores.
+  </p>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — un error que devuelve HTML vacío es un error peor</span>
+    <p>
+      Si la ruta responde <code>422</code> sin cuerpo, htmx encaja nada y la fila se desvanece. El
+      usuario se queda sin formulario, sin errores y sin lo que había escrito. La regla del
+      contrato —<strong>misma forma, distinto estado</strong>— no es opcional.
+    </p>
+  </div>
+
+  <!-- QUIZ 5 -->
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+
+    <div class="pregunta" data-correcta="c">
+      <p class="enunciado">1. ¿Qué debe incluir siempre una ficha de flujo?</p>
+      <button class="opcion" data-op="a">Solo el nombre del botón</button>
+      <button class="opcion" data-op="b">Una captura de pantalla de la tabla</button>
+      <button class="opcion" data-op="c">URL, verbo, cuerpo, función del repositorio y pieza devuelta</button>
+      <button class="opcion" data-op="d">El número de líneas del archivo</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p class="enunciado">2. ¿Por qué conviene trazar el flujo con la app corriendo y no solo leyendo el código?</p>
+      <button class="opcion" data-op="a">Porque el flujo real incluye lo que el navegador envía y encaja, y eso solo se ve en la red</button>
+      <button class="opcion" data-op="b">Porque el código no muestra los nombres de las funciones</button>
+      <button class="opcion" data-op="c">Porque Python no se puede leer</button>
+      <button class="opcion" data-op="d">Porque las plantillas no están en el repositorio</button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p class="enunciado">3. Al guardar con el nombre vacío, ¿qué debería volver del servidor?</p>
+      <button class="opcion" data-op="a">Un <code>500</code> con el stack trace</button>
+      <button class="opcion" data-op="b">La misma fila en edición, con errores y lo escrito, y status <code>422</code></button>
+      <button class="opcion" data-op="c">La lista de autores vacía</button>
+      <button class="opcion" data-op="d">Nada: el navegador debe validar antes</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p class="enunciado">4. Si «Guardar» devolviera la página entera, ¿qué se rompería?</p>
+      <button class="opcion" data-op="a">La base de datos</button>
+      <button class="opcion" data-op="b">La validación</button>
+      <button class="opcion" data-op="c">El pool de conexiones</button>
+      <button class="opcion" data-op="d">El encaje: htmx metería menú y todo dentro de la fila, duplicando la página</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: Volver y estados →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — VOLVER, CANCELAR Y ESTADOS
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · El regreso</div>
+    <h2>Volver, cancelar y <em>estados</em></h2>
+    <p class="proposito">
+      Ir a algún sitio es fácil. Lo difícil es <strong>volver sin perderse</strong> y sin dejar
+      la base a medias. Esta unidad cierra el flujo con el regreso y con la máquina de estados de
+      una pieza.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: máquina de estados de una fila</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · «Volver» no es «deshacer»</h3>
+
+  <p class="primer-párrafo">
+    Cuando el usuario pulsa «Cancelar» en una fila en edición, espera dos cosas: dejar de ver el
+    formulario y <strong>que no se haya guardado nada</strong>. El mecanismo más limpio no es
+    «deshacer los cambios»: es <strong>volver a pedir la pieza normal</strong>, que la base nunca
+    dejó de tener.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — cancelar no escribe nada</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">@router.get</span>(<span class="tk-str">"/autores/{autor_id}/cancelar"</span>)
+<span class="tk-kw">async def</span> <span class="tk-fn">cancelar_autor_vista</span>(conn: ConnectionDep, autor_id: <span class="tk-cls">int</span>):
+    autor = <span class="tk-kw">await</span> repositorio.obtener_autor(conn, autor_id)
+    <span class="tk-kw">return</span> templates.TemplateResponse(
+        request, <span class="tk-str">"componentes/fila_autor.html"</span>, {<span class="tk-str">"autor"</span>: autor}
+    )</code></pre>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — cancelar una vista vs. deshacer un cambio</span>
+    <p>
+      Cancelar una <strong>vista</strong> es barato y seguro: se pide otra vez el HTML del estado
+      anterior y ya está. Deshacer un <strong>cambio</strong> es caro y propenso a errores: hay que
+      saber qué se cambió, revertirlo y confirmar que funcionó. Si no se ha escrito nada, cancelar
+      siempre debe ser lo primero.
+    </p>
+  </div>
+
+  <h3>6.2 · La máquina de estados de una fila</h3>
+
+  <p>
+    Una fila de autor tiene tres estados y cuatro transiciones. Dibujarlos evita que el flujo se
+    rompa en un camino que nadie probó.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>máquina de estados — una fila de autor</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>        ┌──────────────────────────────────────────┐
+        │                                          │
+        ▼                                          │
+   ┌─────────┐   Editar    ┌──────────┐   Guardar  │
+   │ normal  │ ──────────► │ edición  │ ──────────┘
+   └─────────┘             └──────────┘   (o Cancelar)
+        │                        │
+        │ Libros                 │ Cancelar
+        ▼                        │
+   ┌──────────┐                  │
+   │expandida │ ◄────────────────┘
+   └──────────┘   (Cerrar → normal)</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Transiciones y su contrato</caption>
+      <thead>
+        <tr><th>Transición</th><th>Disparador</th><th>Petición</th><th>Resultado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>normal → edición</td><td>Editar</td><td><code>GET …/editar</code></td><td>fila editable</td></tr>
+        <tr><td>edición → normal</td><td>Guardar</td><td><code>PUT …</code></td><td>fila con datos nuevos</td></tr>
+        <tr><td>edición → normal</td><td>Cancelar</td><td><code>GET …/cancelar</code></td><td>fila sin cambios</td></tr>
+        <tr><td>edición → edición</td><td>Guardar con error</td><td><code>PUT …</code> → 422</td><td>fila editable con errores</td></tr>
+        <tr><td>normal → expandida</td><td>Libros</td><td><code>GET …/libros</code></td><td>fila con la lista</td></tr>
+        <tr><td>expandida → normal</td><td>Cerrar</td><td><code>GET …/cancelar</code></td><td>fila normal</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — «Cerrar» reutiliza el endpoint de cancelar</span>
+    <p>
+      El botón «Cerrar» de la fila expandida llama al mismo
+      <code>GET /autores/{id}/cancelar</code>. No hay un endpoint «cerrar». Esa reutilización es
+      parte del diseño: el contrato solo dice «dame la pieza normal de este autor», y da igual
+      desde qué estado la pidas.
+    </p>
+  </div>
+
+  <h3>6.3 · Volver entre módulos</h3>
+
+  <p>
+    Hay dos tipos de «volver» en un sistema como este, y confundirlos es la raíz de muchas pantallas
+    rotas.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Dos «volver» distintos</caption>
+      <thead>
+        <tr><th>Tipo</th><th>Qué cambia</th><th>Cómo se hace</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Volver de una pieza</strong></td>
+          <td>Una fila, un fragmento</td>
+          <td><code>hx-get</code> de la pieza normal</td>
+          <td>Cancelar, Cerrar</td>
+        </tr>
+        <tr>
+          <td><strong>Volver de un módulo</strong></td>
+          <td>La página entera</td>
+          <td>Enlace normal, <code>GET</code> de otra URL</td>
+          <td>De libros a autores</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el botón «Atrás» del navegador</span>
+    <p>
+      Si la edición de una fila se hace sin cambiar la URL, el botón «Atrás» del navegador no vuelve
+      de la edición: sale del módulo entero. Para flujos largos —un formulario de una página—
+      conviene que cada paso tenga su URL (por ejemplo <code>/autores/3/editar</code> como página).
+      Para una fila de tabla, el intercambio de piezas es suficiente; solo no finjas que «Atrás»
+      hará algo que no hará.
+    </p>
+  </div>
+
+  <h3>6.4 · El estado vacío también es un estado</h3>
+
+  <p>
+    La máquina de estados no termina en la fila. La tabla entera tiene su propio estado: con filas,
+    vacía, cargando, con error. Diseñarlos es parte del flujo, no un extra.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Estados de la tabla de autores</caption>
+      <thead>
+        <tr><th>Estado</th><th>Cuándo</th><th>Qué ve el usuario</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Con filas</strong></td><td>Hay autores</td><td>La tabla y el formulario de crear</td></tr>
+        <tr><td><strong>Vacía</strong></td><td>La lista viene <code>[]</code></td><td>«Todavía no hay autores» y el formulario de crear</td></tr>
+        <tr><td><strong>Error de red</strong></td><td>El servidor no responde</td><td>«No se pudo cargar. Reintenta.»</td></tr>
+        <tr><td><strong>Error de validación</strong></td><td><code>422</code> al crear</td><td>La sección con errores bajo cada campo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>6.5 · Práctica guiada: la máquina de estados</h3>
+
+  <ol class="entregables">
+    <li>Dibuja la máquina de estados de una fila de <strong>libro</strong> (tu entidad del taller).</li>
+    <li>Añade la transición de error: qué pasa si guardar falla.</li>
+    <li>Escribe el contrato de «Volver» desde cada estado en que sea posible.</li>
+    <li>Decide y justifica: ¿cada paso de edición cambia la URL o no?</li>
+  </ol>
+
+  <button class="solucion-btn" data-solucion="sol-u6">Ver un modelo de respuesta</button>
+  <div class="solucion" id="sol-u6">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-header-left">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span>máquina de estados — fila de libro</span>
+        </div>
+        <button class="copy-btn">Copiar</button>
+      </div>
+<pre><code>normal ──Editar──► edición ──Guardar──► normal (datos nuevos)
+                      │
+                      ├──Guardar (422)──► edición (con errores)
+                      │
+                      └──Cancelar──► normal (sin cambios)
+
+normal ──Autores──► expandida ──Cerrar──► normal
+
+Contrato de «Volver» / «Cancelar» / «Cerrar»:
+  GET /libros/{id}/cancelar → fila_libro.html (solo lectura)
+  Funciona desde cualquier estado: siempre devuelve la pieza normal.
+
+URL en cada paso: no, para una fila de tabla. Sí, si la edición
+fuera un formulario de página entera (entonces /libros/{id}/editar).</code></pre>
+    </div>
+  </div>
+
+  <!-- QUIZ 6 -->
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p class="enunciado">1. ¿Por qué «Cancelar» no necesita escribir en la base?</p>
+      <button class="opcion" data-op="a">Porque la base detecta solo los cambios</button>
+      <button class="opcion" data-op="b">Porque la pieza en edición no cambió los datos: solo la vista</button>
+      <button class="opcion" data-op="c">Porque htmx descarta los cambios</button>
+      <button class="opcion" data-op="d">Porque hay un <code>ROLLBACK</code> implícito</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p class="enunciado">2. ¿Qué transición sigue a un <code>PUT</code> que responde <code>422</code>?</p>
+      <button class="opcion" data-op="a">edición → normal</button>
+      <button class="opcion" data-op="b">normal → expandida</button>
+      <button class="opcion" data-op="c">edición → edición (ahora con errores)</button>
+      <button class="opcion" data-op="d">Se sale del módulo</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p class="enunciado">3. ¿Cuál es la diferencia entre volver de una pieza y volver de un módulo?</p>
+      <button class="opcion" data-op="a">La pieza se intercambia con htmx; el módulo es una navegación con una URL</button>
+      <button class="opcion" data-op="b">No hay diferencia</button>
+      <button class="opcion" data-op="c">Volver de una pieza siempre borra datos</button>
+      <button class="opcion" data-op="d">Volver de un módulo es siempre más rápido</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p class="enunciado">4. ¿Por qué «Cerrar» puede reutilizar el endpoint de «Cancelar»?</p>
+      <button class="opcion" data-op="a">Porque no hay espacio para otro endpoint</button>
+      <button class="opcion" data-op="b">Porque hace la misma acción de negocio</button>
+      <button class="opcion" data-op="c">Porque ambos escriben en la base</button>
+      <button class="opcion" data-op="d">Porque el contrato solo dice «dame la pieza normal» y da igual desde qué estado la pidas</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: Actividad</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>El flujo de una <em>entidad completa</em></h2>
+    <p class="proposito">
+      En 45 minutos llevas el flujo —listar, editar, guardar, volver— a una entidad nueva de
+      principio a fin: con sus módulos, sus contratos, sus estados y su cadena trazada.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller integrador</b></span>
+      <span>🧭 <b>Producto: flujo completo de una entidad</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El encargo</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Encargo</span>
+      <h3>La sección de libros de la biblioteca</h3>
+    </div>
+
+    <p>
+      La biblioteca ya administra autores. Falta la sección de <strong>libros</strong>, con el
+      mismo flujo y los mismos contratos. Debe listar los libros, permitir editar cada uno en su
+      fila, guardar los cambios, cancelar sin escribir, y mostrar los autores de cada libro — el
+      momento donde aparece el <code>JOIN</code> por la tabla intermedia.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Contenido</strong></td>
+            <td>Rutas, repositorio, esquemas y plantillas de la entidad <code>libros</code></td>
+          </tr>
+          <tr>
+            <td><strong>Restricción de flujo</strong></td>
+            <td>Listar, Editar, Guardar, Volver — el mismo patrón que autores</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción de contratos</strong></td>
+            <td>Éxito y error devuelven la misma forma; se anota el status de cada caso</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción de estados</strong></td>
+            <td>La máquina de estados de la fila, dibujada y probada</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción de dirección</strong></td>
+            <td>Las plantillas no consultan la base; el repositorio no devuelve HTML</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong><code>repositorio.py</code></strong>: al menos cuatro funciones —listar, obtener, actualizar, libros_de_autor—.</li>
+      <li><strong><code>vistas.py</code></strong>: las rutas del flujo, con sus estados de error.</li>
+      <li><strong>Las piezas</strong>: <code>fila_libro.html</code>, <code>fila_editar_libro.html</code> y la tabla.</li>
+      <li><strong>El trazado</strong>: la cadena botón → pieza de las cuatro acciones, con URL y verbo.</li>
+      <li><strong>Un párrafo</strong> (~120 palabras): qué reutilizaste de autores, qué tuviste que inventar y por qué.</li>
+    </ol>
+  </div>
+
+  <h3>7.2 · La estructura que se reutiliza</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>escritores/ — lo que se añade para libros</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>escritores/
+├── vistas.py                 + listar_libros, editar_libro, actualizar_libro, …
+├── repositorio.py            + obtener_libros, obtener_libro, actualizar_libro,
+│                               obtener_autores_de_libro
+├── esquemas.py               + LibroCrear, LibroActualizar
+└── templates/
+    ├── libros.html           la página del módulo
+    └── componentes/
+        ├── tabla_libros.html
+        ├── fila_libro.html
+        └── fila_editar_libro.html</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>repositorio.py — el JOIN que asoma en el flujo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">async def</span> <span class="tk-fn">obtener_autores_de_libro</span>(conn, libro_id: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]:
+    <span class="tk-str">"""Los autores de un libro, por la tabla intermedia autoria."""</span>
+    filas = <span class="tk-kw">await</span> conn.fetch(
+        <span class="tk-str">"""
+        SELECT a.id, a.nombre, a.pais
+        FROM autores a
+        JOIN autoria au ON au.autor_id = a.id
+        WHERE au.libro_id = $1
+        ORDER BY a.nombre
+        """</span>,
+        libro_id,
+    )
+    <span class="tk-kw">return</span> [<span class="tk-fn">dict</span>(f) <span class="tk-kw">for</span> f <span class="tk-kw">in</span> filas]</code></pre>
+  </div>
+
+  <h3>7.3 · Las tres reglas que este taller no negocia</h3>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Regla 1 — la dirección de las dependencias se mantiene</span>
+    <p>
+      Las plantillas no importan el repositorio. El repositorio no importa las plantillas. Si
+      necesitas un dato en una plantilla, la vista se lo pasa en el contexto. Es la única forma de
+      que la sección de libros se pueda probar, cambiar o reescribir sin arrastrar el resto.
+    </p>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Regla 2 — éxito y error devuelven la misma forma</span>
+    <p>
+      Un <code>422</code> sin HTML deja la fila en blanco. Un <code>500</code> con stack trace
+      filtra información del servidor. En ambos casos, la respuesta correcta es la pieza (o la
+      sección) con el estado que toque: datos, o datos con errores.
+    </p>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Regla 3 — cada acción tiene su tamaño de respuesta</span>
+    <p>
+      Editar y Cancelar devuelven una pieza. Crear devuelve la sección. Listar devuelve la página.
+      Mezclar los tamaños —devolver la página donde se esperaba una fila— es el bug que más se ve
+      en este flujo, y el más fácil de prevenir decidiéndolo antes de escribir la ruta.
+    </p>
+  </div>
+
+  <h3>7.4 · Rúbrica de autoevaluación</h3>
+
+  <p>Puntúa cada criterio de 0 a 2 y revisa los que hayan quedado en 0 o 1 antes de dar por terminado el taller.</p>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Flujo</td>
+          <td>Las acciones están sueltas, sin encadenar</td>
+          <td>Funcionan, pero algún paso se pierde</td>
+          <td>Listar → Editar → Guardar → Volver, completo y probado</td>
+        </tr>
+        <tr>
+          <td>Módulos</td>
+          <td>Todo en un solo archivo</td>
+          <td>Hay separación, pero se cruza en algún punto</td>
+          <td>Dirección de dependencias intacta; cada archivo con su responsabilidad</td>
+        </tr>
+        <tr>
+          <td>Contratos</td>
+          <td>No se sabe qué devuelve cada ruta</td>
+          <td>Hay contratos, pero no cubren el error</td>
+          <td>Cada intercambio documentado, incluido el caso de error</td>
+        </tr>
+        <tr>
+          <td>Estados</td>
+          <td>Solo hay un estado de fila</td>
+          <td>Hay edición y normal, sin error</td>
+          <td>Máquina de estados dibujada: normal, edición, error, expandida</td>
+        </tr>
+        <tr>
+          <td>Tamaño de respuesta</td>
+          <td>Siempre se devuelve la página entera</td>
+          <td>Se mezclan piezas y secciones</td>
+          <td>Pieza / sección / página elegidos según lo que cambia</td>
+        </tr>
+        <tr>
+          <td>Volver</td>
+          <td>No se puede cancelar sin recargar</td>
+          <td>Cancelar funciona a veces</td>
+          <td>Cancelar y Cerrar devuelven la pieza normal desde cualquier estado</td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay nada escrito</td>
+          <td>Describe el qué, no el porqué</td>
+          <td>Qué se reutilizó, qué se inventó y por qué</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.5 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>Un módulo es una responsabilidad con un contrato; la dirección de dependencias es lo que hace posible el cambio.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p>El flujo listar → editar → guardar → volver es el camino mínimo de cualquier sistema de administración.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>Editar no escribe: es pedir la otra versión de la misma pieza. Guardar escribe y devuelve la pieza normal.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p>El ciclo es siempre el mismo: botón → ruta → repositorio → plantilla → encaje en el navegador.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p>Éxito y error devuelven la misma forma. Un error sin HTML deja la pantalla peor que antes.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p>Volver no es deshacer: es pedir otra vez la pieza normal. Si no se escribió nada, es gratis.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p>El tamaño de la respuesta —pieza, sección o página— se decide antes de escribir la ruta, no después.</p>
+    </div>
+  </div>
+
+  <h3>7.6 · Puente hacia lo que viene</h3>
+
+  <p>
+    Con este taller cierras el ciclo de las herramientas de programación: ya no son piezas sueltas,
+    sino un sistema que conversa. Lo que sigue depende de hacia dónde quieras crecer.
+  </p>
+
+  <ol>
+    <li>
+      <strong>Relaciones de verdad.</strong> El <code>JOIN</code> por <code>autoria</code> es solo
+      el principio: claves foráneas, cascadas y consultas que responden preguntas de negocio.
+    </li>
+    <li>
+      <strong>Autenticación y roles.</strong> Quién puede editar, quién solo leer, y cómo se
+      protege cada ruta sin repetir el mismo <code>if</code> en todas partes.
+    </li>
+    <li>
+      <strong>Pruebas del flujo.</strong> Probar una función es fácil; probar que
+      «Editar → Guardar → ver la fila» no se rompe requiere pruebas de integración.
+    </li>
+  </ol>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de cerrar el curso</span>
+    <p>
+      Deja el taller en un repositorio con <code>README.md</code> que incluya el mapa de módulos y
+      la máquina de estados. Comprueba que Cancelar no escribe, que un guardar con error conserva lo
+      escrito, y que la dirección de dependencias sigue intacta. Ese repositorio es la pieza que
+      puedes enseñar: no solo lo que hace, sino <em>cómo está organizado</em>.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 14</h2>
+    <p>
+      Has cerrado el ciclo del sistema que conversa: los módulos se conocen solo hasta donde deben,
+      cada acción tiene su cadena trazada de botón a pieza, los contratos cubren también el error, y
+      volver es un camino diseñado, no un accidente. A partir de aquí, añadir una entidad nueva no
+      es empezar de cero: es repetir un flujo que ya entiendes.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: Volver y estados</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 14 · Interacción entre módulos</span>
+  <p class="pie-sub">Módulos · Flujo de acciones · Contratos · Listar · Editar · Guardar · Volver</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

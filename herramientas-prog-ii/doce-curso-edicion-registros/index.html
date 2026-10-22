@@ -1,0 +1,2214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 12 · Edición de registros almacenados</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 12 · <em>Edición de registros almacenados</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura: el editor que pisa</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">Cargar el registro</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">Validar la edición</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Actualizar sin pisar</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Actividad: edición con versión</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Conflictos y errores</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: edición robusta</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> edición de productos con versión, actualización segura y conflictos controlados.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>El editor que <em>pisa</em> al otro</h2>
+    <p class="proposito">
+      En la clase 11 aprendiste a cargar un producto en un formulario y a guardarlo con un
+      <code>UPDATE</code>. Hoy aparece el problema que ese primer editor no resuelve: dos personas
+      abren el mismo producto, las dos guardan y la segunda borra el cambio de la primera. Vas a
+      aprender a editar <strong>sin perder cambios ajenos</strong>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: el mapa de una edición concurrente</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · Dos personas, un mismo producto</h3>
+
+  <p class="primer-párrafo">
+    Ana abre el producto «Teclado mecánico» para subirle el precio. Bruno abre el mismo producto
+    para corregir la cantidad. Ana guarda primero: el precio queda actualizado. Bruno, que tenía
+    el formulario cargado con los valores viejos, guarda después. Su <code>UPDATE</code> escribe
+    todas las columnas, incluido el precio viejo. El cambio de Ana desaparece.
+  </p>
+
+  <p>
+    No hubo ningún error: las dos peticiones fueron válidas. El problema es de
+    <strong>concurrencia</strong>. Un <code>UPDATE</code> que escribe todos los campos a partir de
+    una copia vieja se llama <em>lost update</em>: una actualización legítima se pierde porque otra
+    llegó después con datos desactualizados.
+  </p>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — guardar no es lo mismo que actualizar sin pisar</span>
+    <p>
+      Guardar es ejecutar un <code>UPDATE</code>. Actualizar sin pisar es ejecutar un
+      <code>UPDATE</code> que solo tenga efecto si el registro sigue siendo el que el usuario vio.
+      La diferencia es una condición en el <code>WHERE</code> y una columna de
+      <strong>versión</strong>. Es el tema de esta clase.
+    </p>
+  </div>
+
+  <h3>0.2 · Lo que ya tienes de la clase 11</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>El editor básico y lo que le falta</caption>
+      <thead>
+        <tr><th>Pieza</th><th>Clase 11</th><th>Esta clase</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Cargar el formulario</td><td><code>GET /productos/{id}/editar</code> con los valores actuales</td><td>Además, la <strong>versión</strong> que el usuario está viendo</td></tr>
+        <tr><td>Validar</td><td>Pydantic, 422 y valores conservados</td><td>También la versión recibida</td></tr>
+        <tr><td>Guardar</td><td><code>UPDATE ... WHERE id = $1</code></td><td><code>WHERE id = $1 AND version = $2</code></td></tr>
+        <tr><td>Resultado</td><td>Fila actualizada o formulario con errores</td><td>Fila actualizada, <code>404</code> o <code>409</code> de conflicto</td></tr>
+        <tr><td>Valor añadido</td><td>El catálogo se puede corregir</td><td>Dos personas pueden editar sin perder cambios</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    No vas a repetir el editor básico: vas a <strong>endurecerlo</strong>. El proyecto es el mismo
+    <strong>TechStore</strong> del repositorio <a href="https://github.com/jovanyvelez/ejercicio2"
+    target="_blank" rel="noopener">ejercicio2</a>, con la tabla <code>productos</code> y las rutas
+    de edición de la clase 11.
+  </p>
+
+  <h3>0.3 · El viaje de una edición con versión</h3>
+
+  <div class="diagrama">
+    <div class="nodo cliente">
+      <div class="rotulo-nodo">1 · Cargar</div>
+      <h5>GET /productos/5/editar</h5>
+      <p>El formulario recibe los valores actuales y la versión, por ejemplo <code>3</code>.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">usuario<br>edita</span>
+    </div>
+    <div class="nodo servidor">
+      <div class="rotulo-nodo">2 · Validar</div>
+      <h5>Pydantic</h5>
+      <p>Comprueba tipos, rangos y la versión antes de tocar la base.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">UPDATE<br>condicional</span>
+    </div>
+    <div class="nodo datos">
+      <div class="rotulo-nodo">3 · Actualizar</div>
+      <h5>WHERE id = 5 AND version = 3</h5>
+      <p>Si la versión cambió, no actualiza: responde <code>409</code>.</p>
+    </div>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Los resultados posibles del <code>UPDATE</code> condicional</caption>
+      <thead>
+        <tr><th>Filas afectadas</th><th>Qué significa</th><th>Respuesta</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>1</code></td><td>El producto existía y la versión coincidía</td><td><code>200</code> con la fila actualizada y la versión nueva</td></tr>
+        <tr><td><code>0</code>, el producto existe</td><td>Otro usuario guardó antes; la versión ya no coincide</td><td><code>409</code> con un aviso de conflicto</td></tr>
+        <tr><td><code>0</code>, el producto no existe</td><td>Alguien lo borró o el id es inventado</td><td><code>404</code> con un aviso de no encontrado</td></tr>
+        <tr><td><code>1</code>, pero el formulario traía datos inválidos</td><td>No debería ocurrir: Pydantic lo impide antes</td><td><code>422</code> sin ejecutar el <code>UPDATE</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.4 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Unidades, tiempos y productos</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura y mapa de la edición concurrente</td><td>20 min</td><td>Tres resultados identificados</td></tr>
+        <tr><td><strong>01</strong></td><td>Cargar el registro en el formulario</td><td>30 min</td><td>Formulario con valores y versión</td></tr>
+        <tr><td><strong>02</strong></td><td>Validar la edición sin perder lo escrito</td><td>30 min</td><td><code>ProductoActualizar</code> y errores por campo</td></tr>
+        <tr><td><strong>03</strong></td><td>Actualizar sin pisar: <code>UPDATE</code> condicional</td><td>30 min</td><td><code>UPDATE ... WHERE id AND version</code></td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Actividad 5.1 · Edición con versión</td><td>35 min</td><td>La app con edición concurrente</td></tr>
+        <tr><td><strong>06</strong></td><td>Conflictos y control de errores</td><td>35 min</td><td><code>404</code>, <code>409</code> y mensajes claros</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller · Edición robusta</td><td>45 min</td><td>Pruebas y decisión escrita</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.5 · El esquema que vas a necesitar</h3>
+
+  <p>
+    La tabla del repositorio tiene <code>id</code>, <code>nombre</code>, <code>precio</code>,
+    <code>cantidad</code> y <code>descripcion</code>. Para detectar cambios ajenos hacen falta dos
+    columnas nuevas: una versión que sube en cada edición y una marca de tiempo de la última
+    actualización.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — columnas para editar con versión</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">ALTER</span> <span class="tk-kw">TABLE</span> productos
+    <span class="tk-kw">ADD</span> <span class="tk-kw">COLUMN</span> <span class="tk-kw">IF</span> <span class="tk-kw">NOT</span> <span class="tk-kw">EXISTS</span> <span class="tk-kw">version</span> <span class="tk-fn">INTEGER</span> <span class="tk-kw">NOT</span> <span class="tk-kw">NULL</span> <span class="tk-kw">DEFAULT</span> <span class="tk-num">1</span><span class="tk-pun">,</span>
+    <span class="tk-kw">ADD</span> <span class="tk-kw">COLUMN</span> <span class="tk-kw">IF</span> <span class="tk-kw">NOT</span> <span class="tk-kw">EXISTS</span> actualizado_en TIMESTAMPTZ <span class="tk-kw">NOT</span> <span class="tk-kw">NULL</span> <span class="tk-kw">DEFAULT</span> now<span class="tk-pun">();</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — la versión no es el <code>id</code></span>
+    <p>
+      El <code>id</code> identifica el producto; la versión identifica <strong>qué copia</strong>
+      del producto está viendo el usuario. El primero no cambia nunca; la segunda sube con cada
+      actualización. Son dos números distintos y cumplen dos funciones distintas.
+    </p>
+  </div>
+
+  <h3>0.6 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito:</p>
+
+  <ol>
+    <li>¿Por qué dos <code>UPDATE</code> válidos pueden producir un dato incorrecto?</li>
+    <li>¿Qué debería pasar si el usuario guarda con una versión que ya no es la actual?</li>
+    <li>¿Qué diferencia hay entre <code>404</code> y <code>409</code> en este flujo?</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: cargar el registro →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — CARGAR EL REGISTRO
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · La carga</div>
+    <h2>Cargar el registro: el formulario que <em>recuerda</em></h2>
+    <p class="proposito">
+      Un formulario de edición no empieza vacío: empieza con los valores actuales y con la versión
+      que el usuario está viendo. Esta unidad recorre el <code>GET</code>, el contexto de Jinja2 y
+      los detalles que hacen que un campo vuelva con el dato correcto, incluido
+      <code>NULL</code>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: formulario de edición precargado</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · El <code>GET</code> que pide el formulario</h3>
+
+  <p class="primer-párrafo">
+    Cuando el usuario pulsa <strong>Editar</strong>, HTMX pide
+    <code>GET /productos/5/editar</code>. La ruta busca el producto por su clave primaria y
+    devuelve el fragmento <code>fila_editar.html</code> con los valores actuales. Si el producto no
+    existe, devuelve un aviso con <code>404</code> en lugar de un error del servidor.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — cargar el formulario</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-fn">@router</span>.get(<span class="tk-str">"/productos/{producto_id}/editar"</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">editar_producto_vista</span>(
+    request: <span class="tk-cls">Request</span>,
+    conn: <span class="tk-cls">ConnectionDep</span>,
+    producto_id: <span class="tk-fn">int</span>,
+):
+    producto = <span class="tk-kw">await</span> obtener_producto(conn, producto_id)
+    <span class="tk-kw">if</span> producto <span class="tk-kw">is</span> <span class="tk-kw">None</span>:
+        <span class="tk-kw">return</span> producto_no_encontrado(request, producto_id)
+
+    <span class="tk-kw">return</span> templates.<span class="tk-cls">TemplateResponse</span>(
+        request=request,
+        name=<span class="tk-str">"componentes/fila_editar.html"</span>,
+        context={
+            <span class="tk-str">"producto"</span>: producto,
+            <span class="tk-str">"nombre"</span>: producto[<span class="tk-str">"nombre"</span>],
+            <span class="tk-str">"precio"</span>: producto[<span class="tk-str">"precio"</span>],
+            <span class="tk-str">"cantidad"</span>: producto[<span class="tk-str">"cantidad"</span>],
+            <span class="tk-str">"descripcion"</span>: producto[<span class="tk-str">"descripcion"</span>] <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+            <span class="tk-str">"version"</span>: producto[<span class="tk-str">"version"</span>],
+            <span class="tk-str">"errores"</span>: {},
+        },
+    )
+</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>producto_id: int</code></dt>
+      <dd>La clave primaria viaja en la URL. Si no es un entero, FastAPI responde <code>422</code> antes de entrar a la función.</dd>
+    </div>
+    <div>
+      <dt><code>obtener_producto</code></dt>
+      <dd>Un <code>SELECT ... WHERE id = $1</code>. Devuelve un diccionario o <code>None</code>; el <code>None</code> es el caso «no existe».</dd>
+    </div>
+    <div>
+      <dt><code>producto["descripcion"] or ""</code></dt>
+      <dd>Un <code>NULL</code> de la base se convierte en cadena vacía para el <code>&lt;textarea&gt;</code>. Si no, Jinja2 escribiría «None» dentro del campo.</dd>
+    </div>
+    <div>
+      <dt><code>version</code></dt>
+      <dd>La copia que el usuario está viendo. Viaja al formulario en un campo oculto y volverá en el <code>POST</code>.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el <code>SELECT</code> tiene que traer la versión</span>
+    <p>
+      Si <code>obtener_producto</code> sigue seleccionando solo las columnas antiguas, el
+      formulario recibe <code>version = None</code> y el campo oculto queda vacío. Actualiza la
+      consulta antes de continuar.
+    </p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>repositorio.py — obtener_producto con versión</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">obtener_producto</span>(conn, producto_id: <span class="tk-fn">int</span>) -&gt; <span class="tk-fn">dict</span> | <span class="tk-kw">None</span>:
+    fila = <span class="tk-kw">await</span> conn.fetchrow(
+        <span class="tk-str">"""
+        SELECT id, nombre, precio, cantidad, descripcion,
+               version, actualizado_en
+          FROM productos
+         WHERE id = $1
+        """</span>,
+        producto_id,
+    )
+    <span class="tk-kw">return</span> <span class="tk-fn">dict</span>(fila) <span class="tk-kw">if</span> fila <span class="tk-kw">is</span> <span class="tk-kw">not</span> <span class="tk-kw">None</span> <span class="tk-kw">else</span> <span class="tk-kw">None</span>
+</code></pre>
+  </div>
+
+  <h3>1.2 · El formulario que recibe los valores</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>fila_editar.html — valores actuales y versión</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">form</span> <span class="tk-attr">hx-post</span>=<span class="tk-str">"/productos/</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span>
+      <span class="tk-attr">hx-target</span>=<span class="tk-str">"#producto-</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span>
+      <span class="tk-attr">hx-swap</span>=<span class="tk-str">"outerHTML"</span><span class="tk-pun">&gt;</span>
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">input</span> <span class="tk-attr">type</span>=<span class="tk-str">"hidden"</span> <span class="tk-attr">name</span>=<span class="tk-str">"version"</span> <span class="tk-attr">value</span>=<span class="tk-str">"</span><span class="tk-cm">{{</span> <span class="tk-fn">version</span> <span class="tk-cm">}}</span><span class="tk-str">"</span><span class="tk-pun">&gt;</span>
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>Nombre:
+    <span class="tk-pun">&lt;</span><span class="tk-tag">input</span> <span class="tk-attr">type</span>=<span class="tk-str">"text"</span> <span class="tk-attr">name</span>=<span class="tk-str">"nombre"</span> <span class="tk-attr">value</span>=<span class="tk-str">"</span><span class="tk-cm">{{</span> <span class="tk-fn">nombre</span> <span class="tk-cm">}}</span><span class="tk-str">"</span>
+           <span class="tk-attr">required</span> <span class="tk-attr">maxlength</span>=<span class="tk-str">"100"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>Precio:
+    <span class="tk-pun">&lt;</span><span class="tk-tag">input</span> <span class="tk-attr">type</span>=<span class="tk-str">"text"</span> <span class="tk-attr">name</span>=<span class="tk-str">"precio"</span> <span class="tk-attr">value</span>=<span class="tk-str">"</span><span class="tk-cm">{{</span> <span class="tk-fn">precio</span> <span class="tk-cm">}}</span><span class="tk-str">"</span>
+           <span class="tk-attr">inputmode</span>=<span class="tk-str">"decimal"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>Cantidad:
+    <span class="tk-pun">&lt;</span><span class="tk-tag">input</span> <span class="tk-attr">type</span>=<span class="tk-str">"number"</span> <span class="tk-attr">name</span>=<span class="tk-str">"cantidad"</span> <span class="tk-attr">value</span>=<span class="tk-str">"</span><span class="tk-cm">{{</span> <span class="tk-fn">cantidad</span> <span class="tk-cm">}}</span><span class="tk-str">"</span> <span class="tk-attr">min</span>=<span class="tk-str">"0"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>Descripción:
+    <span class="tk-pun">&lt;</span><span class="tk-tag">textarea</span> <span class="tk-attr">name</span>=<span class="tk-str">"descripcion"</span> <span class="tk-attr">rows</span>=<span class="tk-str">"3"</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">descripcion</span> <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">textarea</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">button</span> <span class="tk-attr">type</span>=<span class="tk-str">"submit"</span><span class="tk-pun">&gt;</span>Guardar<span class="tk-pun">&lt;/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">button</span> <span class="tk-attr">type</span>=<span class="tk-str">"button"</span>
+          <span class="tk-attr">hx-get</span>=<span class="tk-str">"/productos/</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">/cancelar"</span>
+          <span class="tk-attr">hx-target</span>=<span class="tk-str">"#producto-</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span>
+          <span class="tk-attr">hx-swap</span>=<span class="tk-str">"outerHTML"</span><span class="tk-pun">&gt;</span>Cancelar<span class="tk-pun">&lt;/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">form</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el campo oculto se puede manipular</span>
+    <p>
+      <code>version</code> viaja en un <code>&lt;input type="hidden"&gt;</code>, y un usuario con
+      DevTools puede cambiarlo. Por eso el servidor no confía en él: lo valida como entero y lo usa
+      como condición del <code>UPDATE</code>. Si alguien envía una versión inventada, la condición
+      no coincide y el servidor responde <code>409</code>; no se escribe nada.
+    </p>
+  </div>
+
+  <h3>1.3 · Por qué cada fila es su propio <code>tbody</code></h3>
+
+  <p>
+    La tabla de productos envuelve cada fila en un <code>&lt;tbody id="producto-5"&gt;</code>. HTMX
+    reemplaza ese <code>tbody</code> completo con el formulario, la fila actualizada o el aviso de
+    error. Si todas las filas compartieran un contenedor, editar una borraría o duplicaría las
+    demás.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>fila_producto.html — la unidad que HTMX reemplaza</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">tbody</span> <span class="tk-attr">id</span>=<span class="tk-str">"producto-</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">tr</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.nombre</span> <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.precio</span> <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.cantidad</span> <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.descripcion</span> <span class="tk-kw">or</span> <span class="tk-str">""</span> <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">button</span> <span class="tk-attr">hx-get</span>=<span class="tk-str">"/productos/</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">/editar"</span>
+              <span class="tk-attr">hx-target</span>=<span class="tk-str">"#producto-</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span>
+              <span class="tk-attr">hx-swap</span>=<span class="tk-str">"outerHTML"</span><span class="tk-pun">&gt;</span>Editar<span class="tk-pun">&lt;/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;/</span><span class="tk-tag">tr</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">tbody</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — cargar no es copiar a mano</span>
+    <p>
+      El formulario no debería pedirle al usuario que vuelva a escribir los datos. La ruta los
+      consulta, los pasa al contexto y la plantilla los coloca en <code>value</code> y en el
+      contenido del <code>textarea</code>. Si un campo llega vacío, el usuario no debería tener que
+      adivinar si el dato era <code>NULL</code> o si la carga falló: la ruta debe distinguir entre
+      «no existe el producto» (<code>404</code>) y «el campo está vacío» (valor vacío legítimo).
+    </p>
+  </div>
+
+  <h3>1.4 · El producto que ya no está</h3>
+
+  <p>
+    Si el usuario abre un enlace viejo o el producto fue eliminado, el <code>GET</code> devuelve un
+    fragmento de aviso con <code>404</code>. No es un error del servidor: es un recurso que ya no
+    existe. La interfaz lo muestra en la misma fila, sin romper la tabla.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>producto_no_encontrado.html</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">tbody</span> <span class="tk-attr">id</span>=<span class="tk-str">"producto-</span><span class="tk-cm">{{</span> <span class="tk-fn">producto_id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">tr</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">td</span> <span class="tk-attr">colspan</span>=<span class="tk-str">"5"</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"aviso-error"</span><span class="tk-pun">&gt;</span>
+        No se encontró el producto con id <span class="tk-cm">{{</span> <span class="tk-fn">producto_id</span> <span class="tk-cm">}}</span>.
+      <span class="tk-pun">&lt;/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;/</span><span class="tk-tag">tr</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">tbody</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — el <code>404</code> también necesita una configuración de HTMX</span>
+    <p>
+      Por defecto, HTMX 2 no inserta las respuestas <code>4xx</code>. El proyecto incluye un
+      <code>&lt;meta name="htmx-config"&gt;</code> que habilita el intercambio para <code>404</code>
+      y <code>422</code>. HTMX 4.0 ya intercambia esos códigos por defecto. Si el aviso no aparece,
+      revisa la versión de HTMX y esa configuración.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué debe recibir el formulario de edición al cargarse?</p>
+      <button class="opcion" data-op="a">Solo el <code>id</code> del producto</button>
+      <button class="opcion" data-op="b">Valores vacíos para que el usuario los escriba</button>
+      <button class="opcion" data-op="c">Los valores actuales y la versión que se está viendo</button>
+      <button class="opcion" data-op="d">La lista completa de productos</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Por qué la descripción <code>NULL</code> se pasa como <code>""</code>?</p>
+      <button class="opcion" data-op="a">Porque PostgreSQL no admite <code>NULL</code> en <code>TEXT</code></button>
+      <button class="opcion" data-op="b">Para que el <code>textarea</code> no muestre la palabra «None»</button>
+      <button class="opcion" data-op="c">Porque Jinja2 no puede imprimir <code>None</code></button>
+      <button class="opcion" data-op="d">Para que el campo sea obligatorio</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Qué pasa si el <code>id</code> del producto no existe?</p>
+      <button class="opcion" data-op="a">La ruta lanza un <code>500</code></button>
+      <button class="opcion" data-op="b">La tabla se recarga completa</button>
+      <button class="opcion" data-op="c">Se crea un producto nuevo con ese id</button>
+      <button class="opcion" data-op="d">Se devuelve el fragmento de no encontrado con <code>404</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> ¿Por qué la versión viaja en el formulario?</p>
+      <button class="opcion" data-op="a">Para que el <code>UPDATE</code> pueda comprobar que el registro no cambió desde que se cargó</button>
+      <button class="opcion" data-op="b">Para que el usuario vea un número más en la pantalla</button>
+      <button class="opcion" data-op="c">Para identificar el producto en lugar del <code>id</code></button>
+      <button class="opcion" data-op="d">Para ordenar la tabla por versión</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: validar la edición →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — VALIDAR LA EDICIÓN
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · El filtro</div>
+    <h2>Validar la edición sin <em>perder lo escrito</em></h2>
+    <p class="proposito">
+      La validación de una edición es la misma de una inserción, con una regla adicional: el
+      formulario tiene que volver con lo que el usuario escribió, no con los valores originales.
+      Esta unidad conecta Pydantic, los mensajes por campo y la versión que se está editando.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: ProductoActualizar con versión</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · El modelo de la edición</h3>
+
+  <p class="primer-párrafo">
+    El modelo del repositorio ya valida nombre, precio y cantidad. Para editarlo con seguridad hay
+    que añadir la versión: el número de copia que el usuario recibió al cargar el formulario. Si no
+    coincide con la de la base, la actualización no se ejecuta.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>esquemas.py — ProductoActualizar con versión</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> pydantic <span class="tk-kw">import</span> <span class="tk-cls">BaseModel</span>, <span class="tk-cls">ConfigDict</span>, <span class="tk-cls">Field</span>
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">ProductoActualizar</span>(<span class="tk-cls">BaseModel</span>):
+    <span class="tk-str">"""Datos que se aceptan al editar un producto."""</span>
+
+    model_config = <span class="tk-cls">ConfigDict</span>(str_strip_whitespace=<span class="tk-kw">True</span>, extra=<span class="tk-str">"forbid"</span>)
+
+    nombre: <span class="tk-fn">str</span> = <span class="tk-cls">Field</span>(min_length=<span class="tk-num">1</span>, max_length=<span class="tk-num">100</span>)
+    precio: <span class="tk-fn">float</span> = <span class="tk-cls">Field</span>(gt=<span class="tk-num">0</span>)
+    cantidad: <span class="tk-fn">int</span> = <span class="tk-cls">Field</span>(ge=<span class="tk-num">0</span>)
+    descripcion: <span class="tk-fn">str</span> | <span class="tk-kw">None</span> = <span class="tk-cls">Field</span>(default=<span class="tk-kw">None</span>, max_length=<span class="tk-num">500</span>)
+    version: <span class="tk-fn">int</span> = <span class="tk-cls">Field</span>(ge=<span class="tk-num">1</span>)
+</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>nombre</code></dt>
+      <dd>Obligatorio, entre 1 y 100 caracteres. Se recorta antes de medir.</dd>
+    </div>
+    <div>
+      <dt><code>precio</code></dt>
+      <dd>Número mayor que cero. Un precio cero o negativo es un error de captura, no una oferta.</dd>
+    </div>
+    <div>
+      <dt><code>cantidad</code></dt>
+      <dd>Entero mayor o igual que cero. Una cantidad negativa no existe en el inventario.</dd>
+    </div>
+    <div>
+      <dt><code>descripcion</code></dt>
+      <dd>Opcional, hasta 500 caracteres. Si llega vacía, la ruta la guarda como <code>NULL</code>.</dd>
+    </div>
+    <div>
+      <dt><code>version</code></dt>
+      <dd>Entero mayor o igual que 1. No se guarda como dato del producto: se usa como condición del <code>UPDATE</code>.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — la versión también se valida</span>
+    <p>
+      Si el campo oculto llega <code>0</code> o negativo, Pydantic rechaza el modelo antes del
+      <code>UPDATE</code>. Si llega <code>"abc"</code> o vacío, FastAPI no puede convertirlo a
+      <code>int</code> y responde <code>422</code> antes de entrar a la función. Para devolver el
+      formulario con un mensaje propio en ese caso, recibe <code>version</code> como
+      <code>str</code> y deja que Pydantic lo convierta, igual que hicimos con el año en la clase
+      10. La versión es parte del contrato, no un adorno del formulario.
+    </p>
+  </div>
+
+  <h3>2.2 · La ruta que valida y conserva</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — guardar con validación</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-fn">@router</span>.post(<span class="tk-str">"/productos/{producto_id}"</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">guardar_producto_vista</span>(
+    request: <span class="tk-cls">Request</span>,
+    conn: <span class="tk-cls">ConnectionDep</span>,
+    producto_id: <span class="tk-fn">int</span>,
+    nombre: <span class="tk-cls">Annotated</span>[<span class="tk-fn">str</span> | <span class="tk-kw">None</span>, <span class="tk-cls">Form</span>()] = <span class="tk-kw">None</span>,
+    precio: <span class="tk-cls">Annotated</span>[<span class="tk-fn">str</span> | <span class="tk-kw">None</span>, <span class="tk-cls">Form</span>()] = <span class="tk-kw">None</span>,
+    cantidad: <span class="tk-cls">Annotated</span>[<span class="tk-fn">str</span> | <span class="tk-kw">None</span>, <span class="tk-cls">Form</span>()] = <span class="tk-kw">None</span>,
+    descripcion: <span class="tk-cls">Annotated</span>[<span class="tk-fn">str</span> | <span class="tk-kw">None</span>, <span class="tk-cls">Form</span>()] = <span class="tk-kw">None</span>,
+    version: <span class="tk-cls">Annotated</span>[<span class="tk-fn">int</span> | <span class="tk-kw">None</span>, <span class="tk-cls">Form</span>()] = <span class="tk-kw">None</span>,
+):
+    <span class="tk-kw">try</span>:
+        datos = <span class="tk-cls">ProductoActualizar</span>(
+            nombre=nombre <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+            precio=precio,
+            cantidad=cantidad,
+            descripcion=descripcion <span class="tk-kw">or</span> <span class="tk-kw">None</span>,
+            version=version,
+        )
+    <span class="tk-kw">except</span> <span class="tk-cls">ValidationError</span> <span class="tk-kw">as</span> exc:
+        <span class="tk-kw">return</span> templates.<span class="tk-cls">TemplateResponse</span>(
+            request=request,
+            name=<span class="tk-str">"componentes/fila_editar.html"</span>,
+            context={
+                <span class="tk-str">"producto"</span>: {<span class="tk-str">"id"</span>: producto_id},
+                <span class="tk-str">"nombre"</span>: nombre <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"precio"</span>: precio <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"cantidad"</span>: cantidad <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"descripcion"</span>: descripcion <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"version"</span>: version <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"errores"</span>: errores_de_validacion(exc),
+            },
+            status_code=<span class="tk-num">422</span>,
+        )
+
+    actualizado = <span class="tk-kw">await</span> actualizar_producto(conn, producto_id, datos)
+    ...
+</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — no recargues el formulario con los valores originales</span>
+    <p>
+      Si el usuario escribió un precio nuevo y la cantidad era inválida, el formulario debe volver
+      con el precio nuevo y el mensaje de cantidad. Volver a los valores de la base borra el
+      trabajo del usuario y es la causa más común de abandono en un formulario de edición.
+    </p>
+  </div>
+
+  <h3>2.3 · Los mensajes por campo</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — traducir los errores</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> pydantic <span class="tk-kw">import</span> <span class="tk-cls">ValidationError</span>
+
+<span class="tk-cls">MENSAJES_ERROR</span> = {
+    <span class="tk-str">"nombre"</span>: <span class="tk-str">"El nombre es obligatorio (entre 1 y 100 caracteres)."</span>,
+    <span class="tk-str">"precio"</span>: <span class="tk-str">"El precio debe ser un número mayor que cero."</span>,
+    <span class="tk-str">"cantidad"</span>: <span class="tk-str">"La cantidad debe ser un número entero mayor o igual que cero."</span>,
+    <span class="tk-str">"descripcion"</span>: <span class="tk-str">"La descripción no puede superar los 500 caracteres."</span>,
+    <span class="tk-str">"version"</span>: <span class="tk-str">"La versión del registro no es válida."</span>,
+}
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">errores_de_validacion</span>(exc: <span class="tk-cls">ValidationError</span>) -&gt; <span class="tk-fn">dict</span>[<span class="tk-fn">str</span>, <span class="tk-fn">str</span>]:
+    <span class="tk-str">"""Convierte la lista de Pydantic en {campo: mensaje}."""</span>
+    errores: <span class="tk-fn">dict</span>[<span class="tk-fn">str</span>, <span class="tk-fn">str</span>] = {}
+    <span class="tk-kw">for</span> error <span class="tk-kw">in</span> exc.errors():
+        campo = <span class="tk-fn">str</span>(error[<span class="tk-str">"loc"</span>][<span class="tk-num">0</span>])
+        errores.setdefault(
+            campo,
+            <span class="tk-cls">MENSAJES_ERROR</span>.get(campo, <span class="tk-str">"Revisa este campo."</span>),
+        )
+    <span class="tk-kw">return</span> errores
+</code></pre>
+  </div>
+
+  <p>
+    La plantilla consulta el diccionario por campo y pinta el mensaje debajo. También marca el
+    campo con <code>aria-invalid</code> y <code>aria-describedby</code> para que el error no sea
+    solo un color.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>fila_editar.html — campo con error</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>Precio:
+    <span class="tk-pun">&lt;</span><span class="tk-tag">input</span> <span class="tk-attr">type</span>=<span class="tk-str">"text"</span> <span class="tk-attr">name</span>=<span class="tk-str">"precio"</span> <span class="tk-attr">value</span>=<span class="tk-str">"</span><span class="tk-cm">{{</span> <span class="tk-fn">precio</span> <span class="tk-cm">}}</span><span class="tk-str">"</span>
+           <span class="tk-attr">inputmode</span>=<span class="tk-str">"decimal"</span>
+           <span class="tk-cm">{%</span> <span class="tk-kw">if</span> <span class="tk-fn">errores.get</span>(<span class="tk-str">'precio'</span>) <span class="tk-cm">%}</span><span class="tk-attr">aria-invalid</span>=<span class="tk-str">"true"</span> <span class="tk-attr">aria-describedby</span>=<span class="tk-str">"error-precio"</span><span class="tk-cm">{%</span> <span class="tk-kw">endif</span> <span class="tk-cm">%}</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+  <span class="tk-cm">{%</span> <span class="tk-kw">if</span> <span class="tk-fn">errores.get</span>(<span class="tk-str">'precio'</span>) <span class="tk-cm">%}</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">p</span> <span class="tk-attr">class</span>=<span class="tk-str">"error"</span> <span class="tk-attr">id</span>=<span class="tk-str">"error-precio"</span> <span class="tk-attr">role</span>=<span class="tk-str">"alert"</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">errores</span>[<span class="tk-str">'precio'</span>] <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+  <span class="tk-cm">{%</span> <span class="tk-kw">endif</span> <span class="tk-cm">%}</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el <code>422</code> debe volver a la fila, no a una página aparte</span>
+    <p>
+      El formulario vive dentro de un <code>tbody</code>. Si la validación falla, la respuesta tiene
+      que ser el mismo fragmento con los valores y los errores; HTMX lo inserta en esa fila. Si la
+      ruta devolviera la página completa o un JSON, el usuario perdería el contexto y la tabla
+      quedaría rota.
+    </p>
+  </div>
+
+  <h3>2.4 · Lo que no cambia aunque cambie el formulario</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Datos que se muestran, datos que se envían y datos que se guardan</caption>
+      <thead>
+        <tr><th>Dato</th><th>Se muestra</th><th>Se envía</th><th>Se guarda</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>id</code></td><td>En la URL y en el <code>tbody</code></td><td>En la URL</td><td>No cambia</td></tr>
+        <tr><td><code>version</code></td><td>En el campo oculto</td><td>Sí</td><td>Sube en 1 tras el <code>UPDATE</code></td></tr>
+        <tr><td><code>nombre</code></td><td>En el input</td><td>Sí</td><td>Sí, si la versión coincide</td></tr>
+        <tr><td><code>precio</code></td><td>En el input</td><td>Sí</td><td>Sí, si la versión coincide</td></tr>
+        <tr><td><code>cantidad</code></td><td>En el input</td><td>Sí</td><td>Sí, si la versión coincide</td></tr>
+        <tr><td><code>descripcion</code></td><td>En el <code>textarea</code></td><td>Sí</td><td>Sí, o <code>NULL</code> si va vacía</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué debe mostrar el formulario después de un <code>422</code>?</p>
+      <button class="opcion" data-op="a">Los valores originales de la base</button>
+      <button class="opcion" data-op="b">Los valores que el usuario escribió y los mensajes de error</button>
+      <button class="opcion" data-op="c">Una página en blanco</button>
+      <button class="opcion" data-op="d">El JSON de Pydantic</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Por qué la versión está en el modelo de validación?</p>
+      <button class="opcion" data-op="a">Porque se guarda como una columna más del producto</button>
+      <button class="opcion" data-op="b">Porque el usuario la escribe a mano</button>
+      <button class="opcion" data-op="c">Porque reemplaza al <code>id</code></button>
+      <button class="opcion" data-op="d">Porque el servidor no debe confiar en el campo oculto y tiene que validarlo</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué pasa con la base si la validación falla?</p>
+      <button class="opcion" data-op="a">No se ejecuta ningún <code>UPDATE</code></button>
+      <button class="opcion" data-op="b">Se guarda solo el nombre</button>
+      <button class="opcion" data-op="c">Se guardan los valores originales</button>
+      <button class="opcion" data-op="d">Se borra la fila</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Qué campo del formulario no se guarda tal cual en la tabla?</p>
+      <button class="opcion" data-op="a"><code>nombre</code></button>
+      <button class="opcion" data-op="b"><code>precio</code></button>
+      <button class="opcion" data-op="c"><code>version</code></button>
+      <button class="opcion" data-op="d"><code>cantidad</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: Cargar el registro</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: actualizar sin pisar →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — ACTUALIZAR SIN PISAR
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · La escritura</div>
+    <h2>Actualizar sin pisar: el <em>UPDATE</em> condicional</h2>
+    <p class="proposito">
+      El <code>UPDATE</code> de una edición concurrente no es «escribe estas columnas en este
+      id». Es «escribe estas columnas en este id <strong>solo si la versión sigue siendo la que el
+      usuario vio</strong>». Esa condición es la que evita el <em>lost update</em>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: UPDATE con versión y RETURNING</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · La función del repositorio</h3>
+
+  <p class="primer-párrafo">
+    La función recibe el id, la versión esperada y los datos validados. El <code>WHERE</code>
+    combina las dos condiciones; el <code>RETURNING</code> devuelve la fila nueva con la versión
+    incrementada. Si no hay fila, devuelve <code>None</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>repositorio.py — actualizar_producto()</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">actualizar_producto</span>(conn, producto_id: <span class="tk-fn">int</span>, datos) -&gt; <span class="tk-fn">dict</span> | <span class="tk-kw">None</span>:
+    fila = <span class="tk-kw">await</span> conn.fetchrow(
+        <span class="tk-str">"""
+        UPDATE productos
+           SET nombre = $3,
+               precio = $4,
+               cantidad = $5,
+               descripcion = $6,
+               version = version + 1,
+               actualizado_en = now()
+         WHERE id = $1 AND version = $2
+        RETURNING id, nombre, precio, cantidad, descripcion,
+                  version, actualizado_en
+        """</span>,
+        producto_id,
+        datos.version,
+        datos.nombre,
+        datos.precio,
+        datos.cantidad,
+        datos.descripcion,
+    )
+    <span class="tk-kw">return</span> <span class="tk-fn">dict</span>(fila) <span class="tk-kw">if</span> fila <span class="tk-kw">is</span> <span class="tk-kw">not</span> <span class="tk-kw">None</span> <span class="tk-kw">else</span> <span class="tk-kw">None</span>
+</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>WHERE id = $1 AND version = $2</code></dt>
+      <dd>Las dos condiciones. El <code>id</code> elige la fila; la versión elige la copia. Si alguien guardó antes, la versión ya no coincide y el <code>UPDATE</code> no toca nada.</dd>
+    </div>
+    <div>
+      <dt><code>version = version + 1</code></dt>
+      <dd>La versión sube en la misma sentencia. No hay una lectura intermedia que otra petición pueda pisar.</dd>
+    </div>
+    <div>
+      <dt><code>actualizado_en = now()</code></dt>
+      <dd>La marca de tiempo se escribe en la base, no en Python. Así no depende de la zona horaria del servidor de aplicaciones.</dd>
+    </div>
+    <div>
+      <dt><code>RETURNING</code></dt>
+      <dd>Devuelve la fila actualizada, incluida la versión nueva. La plantilla puede mostrar el resultado sin una segunda consulta.</dd>
+    </div>
+    <div>
+      <dt><code>fetchrow</code> → <code>None</code></dt>
+      <dd>No hubo filas afectadas. La ruta debe averiguar si fue porque el producto no existe o porque la versión cambió.</dd>
+    </div>
+  </div>
+
+  <h3>3.2 · La ruta que distingue 404 de 409</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — después del UPDATE</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>actualizado = <span class="tk-kw">await</span> actualizar_producto(conn, producto_id, datos)
+
+<span class="tk-kw">if</span> actualizado <span class="tk-kw">is</span> <span class="tk-kw">None</span>:
+    actual = <span class="tk-kw">await</span> obtener_producto(conn, producto_id)
+    <span class="tk-kw">if</span> actual <span class="tk-kw">is</span> <span class="tk-kw">None</span>:
+        <span class="tk-kw">return</span> producto_no_encontrado(request, producto_id)
+
+    <span class="tk-kw">return</span> templates.<span class="tk-cls">TemplateResponse</span>(
+        request=request,
+        name=<span class="tk-str">"componentes/fila_editar.html"</span>,
+        context={
+            <span class="tk-str">"producto"</span>: {<span class="tk-str">"id"</span>: producto_id},
+            <span class="tk-str">"nombre"</span>: actual[<span class="tk-str">"nombre"</span>],
+            <span class="tk-str">"precio"</span>: actual[<span class="tk-str">"precio"</span>],
+            <span class="tk-str">"cantidad"</span>: actual[<span class="tk-str">"cantidad"</span>],
+            <span class="tk-str">"descripcion"</span>: actual[<span class="tk-str">"descripcion"</span>] <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+            <span class="tk-str">"version"</span>: actual[<span class="tk-str">"version"</span>],
+            <span class="tk-str">"errores"</span>: {
+                <span class="tk-str">"version"</span>: <span class="tk-str">"Otro usuario modificó este producto. Revisa los valores actuales y vuelve a guardar."</span>
+            },
+        },
+        status_code=<span class="tk-num">409</span>,
+    )
+
+<span class="tk-kw">return</span> templates.<span class="tk-cls">TemplateResponse</span>(
+    request=request,
+    name=<span class="tk-str">"componentes/fila_actualizada.html"</span>,
+    context={<span class="tk-str">"producto"</span>: actualizado},
+)
+</code></pre>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — <code>404</code> es «no existe»; <code>409</code> es «cambió debajo de ti»</span>
+    <p>
+      Los dos casos producen <code>UPDATE 0</code>, pero significan cosas distintas. Si el
+      producto no existe, el recurso desapareció: <code>404</code>. Si existe pero la versión no
+      coincide, el recurso sigue ahí y el usuario puede reconciliarse con los valores actuales:
+      <code>409 Conflict</code>. Responder <code>404</code> al conflicto oculta el problema;
+      responder <code>409</code> al producto borrado confunde al usuario.
+    </p>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — la comprobación de existencia no puede ir antes del UPDATE</span>
+    <p>
+      Si primero haces <code>SELECT</code> y después <code>UPDATE</code>, entre las dos consultas
+      otra petición puede borrar el producto o cambiar su versión. La condición del
+      <code>WHERE</code> es la que decide en el mismo instante de la escritura. El
+      <code>SELECT</code> posterior solo sirve para explicar <em>por qué</em> no se actualizó.
+    </p>
+  </div>
+
+  <h3>3.3 · La versión nueva vuelve a la fila</h3>
+
+  <p>
+    Después de guardar, la fila actualizada muestra los valores nuevos y su versión. La próxima vez
+    que el usuario pulse Editar, el <code>GET</code> cargará esa versión. Si no se actualizara el
+    campo oculto, la segunda edición fallaría con <code>409</code> contra su propio cambio.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>fila_actualizada.html — el aviso y la fila nueva</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">tbody</span> <span class="tk-attr">id</span>=<span class="tk-str">"producto-</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">tr</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">td</span> <span class="tk-attr">colspan</span>=<span class="tk-str">"5"</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"aviso-exito"</span><span class="tk-pun">&gt;</span>Producto actualizado correctamente.<span class="tk-pun">&lt;/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;/</span><span class="tk-tag">tr</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">tr</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.nombre</span> <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.precio</span> <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.cantidad</span> <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.descripcion</span> <span class="tk-kw">or</span> <span class="tk-str">""</span> <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">button</span> <span class="tk-attr">hx-get</span>=<span class="tk-str">"/productos/</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">/editar"</span>
+              <span class="tk-attr">hx-target</span>=<span class="tk-str">"#producto-</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span>
+              <span class="tk-attr">hx-swap</span>=<span class="tk-str">"outerHTML"</span><span class="tk-pun">&gt;</span>Editar<span class="tk-pun">&lt;/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;/</span><span class="tk-tag">tr</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">tbody</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <h3>3.4 · Historial y auditoría</h3>
+
+  <p>
+    Una edición con versión ya evita perder cambios, pero no dice <strong>quién</strong> cambió
+    qué. Si el producto es parte de un negocio, conviene guardar un historial en la misma
+    transacción que el <code>UPDATE</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — tabla de historial</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">CREATE</span> <span class="tk-kw">TABLE</span> <span class="tk-kw">IF</span> <span class="tk-kw">NOT</span> <span class="tk-kw">EXISTS</span> historial_productos <span class="tk-pun">(</span>
+    id          BIGSERIAL <span class="tk-kw">PRIMARY</span> <span class="tk-kw">KEY</span><span class="tk-pun">,</span>
+    producto_id <span class="tk-fn">INTEGER</span> <span class="tk-kw">NOT</span> <span class="tk-kw">NULL</span> <span class="tk-kw">REFERENCES</span> productos<span class="tk-pun">(</span>id<span class="tk-pun">)</span> <span class="tk-kw">ON</span> <span class="tk-kw">DELETE</span> <span class="tk-kw">CASCADE</span><span class="tk-pun">,</span>
+    <span class="tk-kw">version</span>     <span class="tk-fn">INTEGER</span> <span class="tk-kw">NOT</span> <span class="tk-kw">NULL</span><span class="tk-pun">,</span>
+    cambiado_en TIMESTAMPTZ <span class="tk-kw">NOT</span> <span class="tk-kw">NULL</span> <span class="tk-kw">DEFAULT</span> now<span class="tk-pun">()</span>
+<span class="tk-pun">);</span>
+</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>repositorio.py — UPDATE e historial en una transacción</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">async</span> <span class="tk-kw">with</span> conn.transaction():
+    fila = <span class="tk-kw">await</span> conn.fetchrow(sql_update, producto_id, datos.version, ...)
+    <span class="tk-kw">if</span> fila <span class="tk-kw">is</span> <span class="tk-kw">not</span> <span class="tk-kw">None</span>:
+        <span class="tk-kw">await</span> conn.execute(
+            <span class="tk-str">"INSERT INTO historial_productos (producto_id, version) VALUES ($1, $2)"</span>,
+            producto_id,
+            fila[<span class="tk-str">"version"</span>],
+        )
+<span class="tk-kw">return</span> <span class="tk-fn">dict</span>(fila) <span class="tk-kw">if</span> fila <span class="tk-kw">is</span> <span class="tk-kw">not</span> <span class="tk-kw">None</span> <span class="tk-kw">else</span> <span class="tk-kw">None</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — la transacción no reemplaza la condición de versión</span>
+    <p>
+      Una transacción garantiza que el <code>UPDATE</code> y el historial se guarden juntos; no
+      evita que dos usuarios editen a la vez. La condición <code>version = $2</code> sigue siendo
+      la que decide si la edición es válida. Son dos herramientas para dos problemas distintos.
+    </p>
+  </div>
+
+  <h3>3.5 · Laboratorio: el editor con versión</h3>
+
+  <p>
+    El editor de abajo simula una fila de <code>productos</code> con versión <code>3</code>.
+    Guarda un cambio normal, prueba un dato inválido y activa el conflicto para ver qué responde
+    el servidor cuando otra persona guardó antes.
+  </p>
+
+  <div class="laboratorio">
+    <div class="lab-cabecera">
+      <span class="etiqueta">Laboratorio</span>
+      <h4>Editar sin pisar: la versión decide</h4>
+      <p>
+        La validación y la base están simuladas en JavaScript. El panel muestra el estado HTTP, la
+        capa que actuó, el JSON de respuesta y el <code>UPDATE</code> que se habría ejecutado.
+      </p>
+    </div>
+
+    <div class="lab-cuerpo">
+      <form class="lab-form" data-ver-form novalidate>
+        <div class="campo-lab">
+          <label for="ver-nombre">Nombre</label>
+          <input id="ver-nombre" name="nombre" type="text" value="Teclado mecánico">
+        </div>
+
+        <div class="campo-lab">
+          <label for="ver-precio">Precio</label>
+          <input id="ver-precio" name="precio" type="text" value="189900" inputmode="decimal">
+        </div>
+
+        <div class="campo-lab">
+          <label for="ver-cantidad">Cantidad</label>
+          <input id="ver-cantidad" name="cantidad" type="number" value="12" min="0">
+        </div>
+
+        <div class="campo-lab">
+          <label for="ver-descripcion">Descripción</label>
+          <textarea id="ver-descripcion" name="descripcion" rows="3">Teclado con switches rojos</textarea>
+        </div>
+
+        <div class="campo-lab">
+          <label for="ver-version">Versión que estás editando</label>
+          <input id="ver-version" name="version" type="number" value="3" readonly>
+        </div>
+
+        <div class="campo-lab check">
+          <input id="ver-concurrente" name="concurrente" type="checkbox">
+          <label for="ver-concurrente">Otro usuario ya guardó una versión nueva</label>
+        </div>
+
+        <div class="campo-lab check">
+          <input id="ver-eliminado" name="eliminado" type="checkbox">
+          <label for="ver-eliminado">El producto fue eliminado mientras editabas</label>
+        </div>
+
+        <div class="lab-acciones">
+          <button type="submit" class="lab-enviar">Guardar cambios</button>
+          <button type="button" class="lab-ejemplo" data-ver-invalido>Ejemplo inválido</button>
+        </div>
+      </form>
+
+      <div class="lab-panel">
+        <div class="lab-estado neutro" data-ver-estado>Esperando una edición…</div>
+        <div class="lab-capa" data-ver-capa>Capa: —</div>
+        <pre class="lab-json" data-ver-json>{
+  "detail": "Aún no hay ninguna petición."
+}</pre>
+        <pre class="lab-sql" data-ver-sql>-- El UPDATE aparecerá aquí cuando guardes un cambio.</pre>
+        <button type="button" class="lab-limpiar" data-ver-limpiar>Reiniciar el laboratorio</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — qué mirar en el panel</span>
+    <p>
+      Con la edición normal, el <code>UPDATE</code> afecta una fila y la versión pasa de 3 a 4. Con
+      el conflicto activado, el mismo <code>UPDATE</code> afecta cero filas y la respuesta es
+      <code>409</code>: no se escribe nada. Con un precio negativo o una cantidad no numérica, el
+      <code>UPDATE</code> ni siquiera se prepara.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué condición evita el <em>lost update</em>?</p>
+      <button class="opcion" data-op="a"><code>WHERE id = $1</code> solamente</button>
+      <button class="opcion" data-op="b"><code>WHERE id = $1 AND version = $2</code></button>
+      <button class="opcion" data-op="c"><code>ORDER BY id</code></button>
+      <button class="opcion" data-op="d"><code>LIMIT 1</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> El <code>UPDATE</code> afectó cero filas y el producto existe. ¿Qué respondes?</p>
+      <button class="opcion" data-op="a"><code>200</code> con un mensaje de éxito</button>
+      <button class="opcion" data-op="b"><code>404</code></button>
+      <button class="opcion" data-op="c"><code>422</code></button>
+      <button class="opcion" data-op="d"><code>409</code> con un aviso de conflicto</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué hace <code>version = version + 1</code>?</p>
+      <button class="opcion" data-op="a">Sube la versión en la misma sentencia del <code>UPDATE</code></button>
+      <button class="opcion" data-op="b">Reinicia la versión a 1</button>
+      <button class="opcion" data-op="c">Borra la versión anterior</button>
+      <button class="opcion" data-op="d">Cambia el <code>id</code> del producto</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Para qué sirve el historial en una transacción?</p>
+      <button class="opcion" data-op="a">Para evitar que dos usuarios editen a la vez</button>
+      <button class="opcion" data-op="b">Para reemplazar la condición de versión</button>
+      <button class="opcion" data-op="c">Para guardar el <code>UPDATE</code> y su registro juntos, o ninguno</button>
+      <button class="opcion" data-op="d">Para mostrar el historial en la tabla de productos</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: Validar la edición</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de versiones</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija la
+      diferencia entre guardar y actualizar sin pisar.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora.
+    </p>
+
+    <div class="reglas">
+      <div class="regla">
+        <h4>Regla 20-20-20</h4>
+        <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+      </div>
+      <div class="regla">
+        <h4>Movimiento</h4>
+        <p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p>
+      </div>
+      <div class="regla">
+        <h4>Hidratación</h4>
+        <p>Un vaso de agua. La lectura densa agota más de lo que parece.</p>
+      </div>
+      <div class="regla">
+        <h4>Bitácora</h4>
+        <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora de versiones (5 minutos)</h3>
+
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿qué es un <em>lost update</em> y por qué no lo detecta un <code>UPDATE</code> normal?</li>
+    <li><strong>En una frase:</strong> ¿qué diferencia hay entre <code>404</code> y <code>409</code> después de un <code>UPDATE 0</code>?</li>
+    <li><strong>En una frase:</strong> ¿por qué la versión sube dentro del mismo <code>UPDATE</code> y no en una consulta aparte?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+
+  <div class="definiciones">
+    <div>
+      <dt>Lost update</dt>
+      <dd>Una actualización válida que se pierde porque otra petición escribe después con datos viejos.</dd>
+    </div>
+    <div>
+      <dt>Bloqueo optimista</dt>
+      <dd>No se bloquea la fila al leerla; al escribir se comprueba que la versión siga siendo la misma. Si cambió, se rechaza.</dd>
+    </div>
+    <div>
+      <dt>Versión</dt>
+      <dd>Un entero que sube en cada actualización y representa la copia que el usuario está viendo.</dd>
+    </div>
+    <div>
+      <dt><code>UPDATE</code> condicional</dt>
+      <dd>Un <code>UPDATE</code> cuyo <code>WHERE</code> incluye el <code>id</code> y la versión esperada.</dd>
+    </div>
+    <div>
+      <dt><code>RETURNING</code></dt>
+      <dd>La cláusula que devuelve la fila actualizada, incluida la versión nueva.</dd>
+    </div>
+    <div>
+      <dt><code>409 Conflict</code></dt>
+      <dd>El estado que indica que el recurso cambió desde que se cargó; el usuario debe reconciliarse con los valores actuales.</dd>
+    </div>
+    <div>
+      <dt><code>actualizado_en</code></dt>
+      <dd>La marca de tiempo de la última escritura. Se calcula en la base con <code>now()</code>.</dd>
+    </div>
+    <div>
+      <dt>Auditoría</dt>
+      <dd>El registro de qué cambió y cuándo, guardado en una tabla aparte dentro de la misma transacción.</dd>
+    </div>
+    <div>
+      <dt>Formulario precargado</dt>
+      <dd>Un formulario que llega con los valores actuales y la versión, no vacío.</dd>
+    </div>
+    <div>
+      <dt>Reconciliación</dt>
+      <dd>El proceso de mostrar al usuario los valores actuales después de un conflicto para que decida cómo continuar.</dd>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: Actualizar sin pisar</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Actividad →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — ACTIVIDAD: EDICIÓN CON VERSIÓN
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · Actividad de desarrollo</div>
+    <h2>Actividad 5.1 · <em>Editar productos sin perder cambios</em></h2>
+    <p class="proposito">
+      Vas a llevar la edición de la clase 11 al siguiente nivel: agregar versión y fecha de
+      actualización, cargar la versión en el formulario y ejecutar un <code>UPDATE</code> que
+      rechaza los cambios obsoletos. En 35 minutos tendrás una edición concurrente funcionando.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Actividad de desarrollo</b></span>
+      <span>🧭 <b>Producto: edición con versión y conflicto 409</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Actividad</span>
+      <h3>El catálogo que dos personas pueden editar</h3>
+    </div>
+
+    <p>
+      El proyecto TechStore ya permite editar un producto con un formulario inline y un
+      <code>UPDATE</code> por <code>id</code>. Modifícalo para que dos personas puedan editar el
+      mismo producto sin que la segunda pise el cambio de la primera. El formulario debe cargar la
+      versión, el <code>UPDATE</code> debe condicionarla y el servidor debe distinguir entre
+      «producto no encontrado» (<code>404</code>) y «producto modificado por otro»
+      (<code>409</code>).
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td><code>POST /productos/{id}</code> con nombre, precio, cantidad, descripción y versión</td>
+          </tr>
+          <tr>
+            <td><strong>Salida correcta</strong></td>
+            <td><code>200</code> con la fila actualizada y la versión nueva</td>
+          </tr>
+          <tr>
+            <td><strong>Salida inválida</strong></td>
+            <td><code>422</code> con el formulario, los valores escritos y los errores</td>
+          </tr>
+          <tr>
+            <td><strong>Conflicto</strong></td>
+            <td><code>409</code> con los valores actuales y un aviso de versión</td>
+          </tr>
+          <tr>
+            <td><strong>No existe</strong></td>
+            <td><code>404</code> con el fragmento de no encontrado</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>El <code>UPDATE</code> usa <code>$1</code>, <code>$2</code>, ... y <code>RETURNING</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong>SQL</strong>: columnas <code>version</code> y <code>actualizado_en</code> en <code>productos</code>.</li>
+      <li><strong><code>esquemas.py</code></strong>: <code>ProductoActualizar</code> con la versión validada.</li>
+      <li><strong><code>repositorio.py</code></strong>: <code>actualizar_producto</code> con <code>WHERE id AND version</code> y <code>RETURNING</code>.</li>
+      <li><strong><code>vistas.py</code></strong>: la ruta que distingue <code>422</code>, <code>404</code> y <code>409</code>.</li>
+      <li><strong><code>fila_editar.html</code></strong>: campo oculto <code>version</code> y errores por campo.</li>
+      <li><strong>Prueba manual</strong>: edición normal, edición obsoleta y producto inexistente.</li>
+    </ol>
+  </div>
+
+  <h3>5.2 · Paso 1: preparar la tabla</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — agregar versión y fecha</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>psql <span class="tk-str">"</span>$DATABASE_URL<span class="tk-str">"</span> <span class="tk-str">&lt;&lt;'SQL'
+ALTER TABLE productos
+    ADD COLUMN IF NOT EXISTS version INTEGER NOT NULL DEFAULT 1,
+    ADD COLUMN IF NOT EXISTS actualizado_en TIMESTAMPTZ NOT NULL DEFAULT now();
+SQL</span>
+</code></pre>
+  </div>
+
+  <p>
+    Los productos existentes quedan en versión <code>1</code>. La próxima edición los llevará a
+    <code>2</code> y escribirá la fecha de actualización.
+  </p>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el <code>GET</code> también necesita la versión</span>
+    <p>
+      Si el formulario no recibe la versión, el campo oculto se renderiza vacío y todos los
+      <code>POST</code> fallan con <code>422</code>. Antes de tocar el repositorio, agrega
+      <code>"version": producto["version"]</code> al contexto de la ruta
+      <code>GET /productos/{id}/editar</code>.
+    </p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — la versión en el contexto del GET</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>producto = <span class="tk-kw">await</span> obtener_producto(conn, producto_id)
+<span class="tk-kw">if</span> producto <span class="tk-kw">is</span> <span class="tk-kw">None</span>:
+    <span class="tk-kw">return</span> producto_no_encontrado(request, producto_id)
+
+<span class="tk-kw">return</span> templates.<span class="tk-cls">TemplateResponse</span>(
+    request=request,
+    name=<span class="tk-str">"componentes/fila_editar.html"</span>,
+    context={
+        <span class="tk-str">"producto"</span>: producto,
+        <span class="tk-str">"nombre"</span>: producto[<span class="tk-str">"nombre"</span>],
+        <span class="tk-str">"precio"</span>: producto[<span class="tk-str">"precio"</span>],
+        <span class="tk-str">"cantidad"</span>: producto[<span class="tk-str">"cantidad"</span>],
+        <span class="tk-str">"descripcion"</span>: producto[<span class="tk-str">"descripcion"</span>] <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+        <span class="tk-str">"version"</span>: producto[<span class="tk-str">"version"</span>],
+        <span class="tk-str">"errores"</span>: {},
+    },
+)
+</code></pre>
+  </div>
+
+  <h3>5.3 · Paso 2: el repositorio</h3>
+
+  <p>
+    Reemplaza la función <code>actualizar_producto</code> para que reciba el modelo validado y
+    devuelva la fila nueva o <code>None</code>. La clave está en el <code>WHERE</code> de dos
+    condiciones y en el <code>RETURNING</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>repositorio.py — actualizar solo si la versión coincide</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">actualizar_producto</span>(conn, producto_id: <span class="tk-fn">int</span>, datos) -&gt; <span class="tk-fn">dict</span> | <span class="tk-kw">None</span>:
+    fila = <span class="tk-kw">await</span> conn.fetchrow(
+        <span class="tk-str">"""
+        UPDATE productos
+           SET nombre = $3,
+               precio = $4,
+               cantidad = $5,
+               descripcion = $6,
+               version = version + 1,
+               actualizado_en = now()
+         WHERE id = $1 AND version = $2
+        RETURNING id, nombre, precio, cantidad, descripcion,
+                  version, actualizado_en
+        """</span>,
+        producto_id,
+        datos.version,
+        datos.nombre,
+        datos.precio,
+        datos.cantidad,
+        datos.descripcion,
+    )
+    <span class="tk-kw">return</span> <span class="tk-fn">dict</span>(fila) <span class="tk-kw">if</span> fila <span class="tk-kw">is</span> <span class="tk-kw">not</span> <span class="tk-kw">None</span> <span class="tk-kw">else</span> <span class="tk-kw">None</span>
+</code></pre>
+  </div>
+
+  <h3>5.4 · Paso 3: la ruta con tres salidas</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — validar, actualizar y distinguir el conflicto</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-fn">@router</span>.post(<span class="tk-str">"/productos/{producto_id}"</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">guardar_producto_vista</span>(
+    request: <span class="tk-cls">Request</span>,
+    conn: <span class="tk-cls">ConnectionDep</span>,
+    producto_id: <span class="tk-fn">int</span>,
+    nombre: <span class="tk-cls">Annotated</span>[<span class="tk-fn">str</span> | <span class="tk-kw">None</span>, <span class="tk-cls">Form</span>()] = <span class="tk-kw">None</span>,
+    precio: <span class="tk-cls">Annotated</span>[<span class="tk-fn">str</span> | <span class="tk-kw">None</span>, <span class="tk-cls">Form</span>()] = <span class="tk-kw">None</span>,
+    cantidad: <span class="tk-cls">Annotated</span>[<span class="tk-fn">str</span> | <span class="tk-kw">None</span>, <span class="tk-cls">Form</span>()] = <span class="tk-kw">None</span>,
+    descripcion: <span class="tk-cls">Annotated</span>[<span class="tk-fn">str</span> | <span class="tk-kw">None</span>, <span class="tk-cls">Form</span>()] = <span class="tk-kw">None</span>,
+    version: <span class="tk-cls">Annotated</span>[<span class="tk-fn">int</span> | <span class="tk-kw">None</span>, <span class="tk-cls">Form</span>()] = <span class="tk-kw">None</span>,
+):
+    <span class="tk-kw">try</span>:
+        datos = <span class="tk-cls">ProductoActualizar</span>(
+            nombre=nombre <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+            precio=precio,
+            cantidad=cantidad,
+            descripcion=descripcion <span class="tk-kw">or</span> <span class="tk-kw">None</span>,
+            version=version,
+        )
+    <span class="tk-kw">except</span> <span class="tk-cls">ValidationError</span> <span class="tk-kw">as</span> exc:
+        <span class="tk-kw">return</span> templates.<span class="tk-cls">TemplateResponse</span>(
+            request=request,
+            name=<span class="tk-str">"componentes/fila_editar.html"</span>,
+            context={
+                <span class="tk-str">"producto"</span>: {<span class="tk-str">"id"</span>: producto_id},
+                <span class="tk-str">"nombre"</span>: nombre <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"precio"</span>: precio <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"cantidad"</span>: cantidad <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"descripcion"</span>: descripcion <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"version"</span>: version <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"errores"</span>: errores_de_validacion(exc),
+            },
+            status_code=<span class="tk-num">422</span>,
+        )
+
+    actualizado = <span class="tk-kw">await</span> actualizar_producto(conn, producto_id, datos)
+    <span class="tk-kw">if</span> actualizado <span class="tk-kw">is</span> <span class="tk-kw">None</span>:
+        actual = <span class="tk-kw">await</span> obtener_producto(conn, producto_id)
+        <span class="tk-kw">if</span> actual <span class="tk-kw">is</span> <span class="tk-kw">None</span>:
+            <span class="tk-kw">return</span> producto_no_encontrado(request, producto_id)
+        <span class="tk-kw">return</span> templates.<span class="tk-cls">TemplateResponse</span>(
+            request=request,
+            name=<span class="tk-str">"componentes/fila_editar.html"</span>,
+            context={
+                <span class="tk-str">"producto"</span>: {<span class="tk-str">"id"</span>: producto_id},
+                <span class="tk-str">"nombre"</span>: actual[<span class="tk-str">"nombre"</span>],
+                <span class="tk-str">"precio"</span>: actual[<span class="tk-str">"precio"</span>],
+                <span class="tk-str">"cantidad"</span>: actual[<span class="tk-str">"cantidad"</span>],
+                <span class="tk-str">"descripcion"</span>: actual[<span class="tk-str">"descripcion"</span>] <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"version"</span>: actual[<span class="tk-str">"version"</span>],
+                <span class="tk-str">"errores"</span>: {
+                    <span class="tk-str">"version"</span>: <span class="tk-str">"Otro usuario modificó este producto. Revisa los valores actuales y vuelve a guardar."</span>
+                },
+            },
+            status_code=<span class="tk-num">409</span>,
+        )
+
+    <span class="tk-kw">return</span> templates.<span class="tk-cls">TemplateResponse</span>(
+        request=request,
+        name=<span class="tk-str">"componentes/fila_actualizada.html"</span>,
+        context={<span class="tk-str">"producto"</span>: actualizado},
+    )
+</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — el formulario de conflicto muestra la versión actual</span>
+    <p>
+      Cuando la versión no coincide, la ruta vuelve a consultar el producto y pinta el formulario
+      con los valores <strong>actuales</strong> y la versión <strong>actual</strong>. El usuario ve
+      lo que cambió el otro y puede decidir si guarda encima. Si se devolviera la versión vieja,
+      volvería a fallar en el siguiente intento.
+    </p>
+  </div>
+
+  <h3>5.5 · Paso 4: el campo oculto en la plantilla</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>fila_editar.html — la versión viaja con el formulario</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">form</span> <span class="tk-attr">hx-post</span>=<span class="tk-str">"/productos/</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span>
+      <span class="tk-attr">hx-target</span>=<span class="tk-str">"#producto-</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span>
+      <span class="tk-attr">hx-swap</span>=<span class="tk-str">"outerHTML"</span><span class="tk-pun">&gt;</span>
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">input</span> <span class="tk-attr">type</span>=<span class="tk-str">"hidden"</span> <span class="tk-attr">name</span>=<span class="tk-str">"version"</span> <span class="tk-attr">value</span>=<span class="tk-str">"</span><span class="tk-cm">{{</span> <span class="tk-fn">version</span> <span class="tk-cm">}}</span><span class="tk-str">"</span><span class="tk-pun">&gt;</span>
+
+  <span class="tk-cm">{%</span> <span class="tk-kw">if</span> <span class="tk-fn">errores.get</span>(<span class="tk-str">'version'</span>) <span class="tk-cm">%}</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"aviso-error"</span> <span class="tk-attr">role</span>=<span class="tk-str">"alert"</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">errores</span>[<span class="tk-str">'version'</span>] <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+  <span class="tk-cm">{%</span> <span class="tk-kw">endif</span> <span class="tk-cm">%}</span>
+
+  ...campos nombre, precio, cantidad y descripción...
+<span class="tk-pun">&lt;/</span><span class="tk-tag">form</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <h3>5.6 · Paso 5: probar los tres caminos</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — edición normal, conflicto y no encontrado</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># 1. Edición normal: versión 1 → 2 (200)
+</span>curl -i -X POST http://127.0.0.1:8000/productos/1 <span class="tk-str">\
+</span>  -d <span class="tk-str">"nombre=Teclado mecánico"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"precio=189900"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"cantidad=12"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"descripcion=Switches rojos"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"version=1"</span>
+
+<span class="tk-cm"># 2. La misma versión otra vez: conflicto (409)
+</span>curl -i -X POST http://127.0.0.1:8000/productos/1 <span class="tk-str">\
+</span>  -d <span class="tk-str">"nombre=Teclado mecánico"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"precio=199900"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"cantidad=10"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"descripcion=Switches rojos"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"version=1"</span>
+
+<span class="tk-cm"># 3. Producto inexistente: 404
+</span>curl -i -X POST http://127.0.0.1:8000/productos/99999 <span class="tk-str">\
+</span>  -d <span class="tk-str">"nombre=X"</span> -d <span class="tk-str">"precio=1"</span> -d <span class="tk-str">"cantidad=1"</span> -d <span class="tk-str">"version=1"</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — la segunda edición debe usar la versión nueva</span>
+    <p>
+      Después de la primera edición, el producto queda en versión <code>2</code>. Para editarlo de
+      nuevo hay que cargar el formulario y enviar <code>version=2</code>. Si reutilizas el
+      formulario viejo con <code>version=1</code>, el servidor responderá <code>409</code>. Eso no
+      es un error: es la protección funcionando.
+    </p>
+  </div>
+
+  <h3>5.7 · Antes de dar la actividad por terminada</h3>
+
+  <ol class="entregables">
+    <li>La tabla tiene <code>version</code> y <code>actualizado_en</code>.</li>
+    <li>El formulario carga los valores actuales y la versión.</li>
+    <li>La edición normal responde <code>200</code> y sube la versión.</li>
+    <li>La edición con una versión vieja responde <code>409</code> y no cambia la base.</li>
+    <li>El producto inexistente responde <code>404</code>.</li>
+    <li>Los datos inválidos responden <code>422</code> y conservan lo escrito.</li>
+    <li>El <code>UPDATE</code> usa <code>WHERE id = $1 AND version = $2</code>.</li>
+  </ol>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué columna permite detectar que otro usuario guardó antes?</p>
+      <button class="opcion" data-op="a"><code>id</code></button>
+      <button class="opcion" data-op="b"><code>nombre</code></button>
+      <button class="opcion" data-op="c"><code>version</code></button>
+      <button class="opcion" data-op="d"><code>precio</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> La primera edición deja el producto en versión 2. ¿Qué versión debe enviar la segunda edición?</p>
+      <button class="opcion" data-op="a">2, la versión que devolvió el servidor</button>
+      <button class="opcion" data-op="b">1, la original</button>
+      <button class="opcion" data-op="c">0</button>
+      <button class="opcion" data-op="d">El <code>id</code> del producto</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Qué devuelve la ruta si el <code>UPDATE</code> afectó cero filas y el producto existe?</p>
+      <button class="opcion" data-op="a"><code>200</code> con un aviso de éxito</button>
+      <button class="opcion" data-op="b"><code>404</code></button>
+      <button class="opcion" data-op="c"><code>422</code></button>
+      <button class="opcion" data-op="d"><code>409</code> con los valores actuales</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Qué demuestra que la edición fue concurrente y no un error de escritura?</p>
+      <button class="opcion" data-op="a">Que el navegador muestra un mensaje rojo</button>
+      <button class="opcion" data-op="b">Que la base no cambió y la respuesta es <code>409</code> por versión</button>
+      <button class="opcion" data-op="c">Que el formulario se cerró</button>
+      <button class="opcion" data-op="d">Que el <code>id</code> cambió</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: conflictos y errores →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — CONFLICTOS Y ERRORES
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · La respuesta</div>
+    <h2>Conflictos y errores: decir la <em>verdad</em> al usuario</h2>
+    <p class="proposito">
+      Una edición puede fallar por datos inválidos, por un producto que ya no existe o por una
+      versión que cambió. Cada caso tiene un código distinto y una acción distinta para el usuario.
+      Esta unidad ordena esos caminos y evita el error más caro: decir «guardado» cuando la base no
+      cambió.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: tabla de errores y respuestas coherentes</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · El mapa de errores de una edición</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Qué puede fallar y qué debería responder la API</caption>
+      <thead>
+        <tr><th>Situación</th><th>Qué ocurrió</th><th>Estado</th><th>Qué ve el usuario</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Precio negativo o cantidad no numérica</td><td>Pydantic no construye el modelo</td><td><code>422</code></td><td>Mensaje junto al campo, valores conservados</td></tr>
+        <tr><td>Versión vacía o cero</td><td>El campo oculto fue manipulado</td><td><code>422</code></td><td>«La versión del registro no es válida»</td></tr>
+        <tr><td>Producto borrado</td><td><code>UPDATE 0</code> y el <code>SELECT</code> no encuentra la fila</td><td><code>404</code></td><td>«No se encontró el producto con id N»</td></tr>
+        <tr><td>Otro usuario guardó antes</td><td><code>UPDATE 0</code> pero el producto existe</td><td><code>409</code></td><td>Valores actuales y «otro usuario modificó…»</td></tr>
+        <tr><td>Tabla o columna inexistente</td><td>Error de SQL</td><td><code>500</code></td><td>Mensaje genérico; detalle en el log</td></tr>
+        <tr><td>Base caída o pool no listo</td><td>Error de conexión</td><td><code>503</code></td><td>«Intenta de nuevo en unos segundos»</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — <code>409</code> no es un error del usuario</span>
+    <p>
+      Un <code>422</code> dice «lo que escribiste no cumple las reglas». Un <code>409</code> dice
+      «lo que escribiste era válido, pero el mundo cambió mientras editabas». Son dos acciones
+      distintas: en el primer caso el usuario corrige el campo; en el segundo revisa los valores
+      actuales y decide si quiere guardar encima.
+    </p>
+  </div>
+
+  <h3>6.2 · La respuesta de conflicto que se puede reconciliar</h3>
+
+  <p>
+    El <code>409</code> no debe ser una página en blanco ni un JSON técnico. La mejor respuesta es
+    el mismo formulario con los valores actuales, la versión actual y un aviso. Así el usuario ve
+    qué cambió y puede volver a guardar con la versión correcta.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>fila_editar.html — aviso de conflicto</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm">{%</span> <span class="tk-kw">if</span> <span class="tk-fn">errores.get</span>(<span class="tk-str">'version'</span>) <span class="tk-cm">%}</span>
+<span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"aviso-error"</span> <span class="tk-attr">role</span>=<span class="tk-str">"alert"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-cm">{{</span> <span class="tk-fn">errores</span>[<span class="tk-str">'version'</span>] <span class="tk-cm">}}</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+<span class="tk-cm">{%</span> <span class="tk-kw">endif</span> <span class="tk-cm">%}</span>
+
+<span class="tk-pun">&lt;</span><span class="tk-tag">input</span> <span class="tk-attr">type</span>=<span class="tk-str">"hidden"</span> <span class="tk-attr">name</span>=<span class="tk-str">"version"</span> <span class="tk-attr">value</span>=<span class="tk-str">"</span><span class="tk-cm">{{</span> <span class="tk-fn">version</span> <span class="tk-cm">}}</span><span class="tk-str">"</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — no devuelvas la versión vieja en el conflicto</span>
+    <p>
+      Si el formulario de conflicto conserva la versión que el usuario envió, el siguiente intento
+      volverá a fallar con <code>409</code>. El formulario debe construirse con la versión
+      <strong>actual</strong> de la base. Es la única forma de que el usuario pueda reconciliarse y
+      guardar.
+    </p>
+  </div>
+
+  <h3>6.3 · Los errores que no controla la ruta</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — manejadores de reserva</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">import</span> asyncpg
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">Request</span>
+<span class="tk-kw">from</span> fastapi.responses <span class="tk-kw">import</span> <span class="tk-cls">JSONResponse</span>
+<span class="tk-kw">from</span> loguru <span class="tk-kw">import</span> logger
+
+
+<span class="tk-fn">@app</span>.exception_handler(asyncpg.<span class="tk-cls">PostgresError</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">error_postgres</span>(
+    request: <span class="tk-cls">Request</span>, exc: asyncpg.<span class="tk-cls">PostgresError</span>
+) -&gt; <span class="tk-cls">JSONResponse</span>:
+    logger.error(<span class="tk-str">"PostgreSQL {}: {}"</span>, exc.sqlstate, exc)
+    <span class="tk-kw">return</span> <span class="tk-cls">JSONResponse</span>(
+        {<span class="tk-str">"detail"</span>: <span class="tk-str">"Error al guardar los cambios."</span>},
+        status_code=<span class="tk-num">500</span>,
+    )
+</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>422</code></dt>
+      <dd>La petición está bien formada, pero los datos no cumplen el modelo. Se corrige en el formulario.</dd>
+    </div>
+    <div>
+      <dt><code>404</code></dt>
+      <dd>El recurso no existe. No tiene sentido reintentar con los mismos datos.</dd>
+    </div>
+    <div>
+      <dt><code>409</code></dt>
+      <dd>El recurso cambió. El usuario debe reconciliarse con la versión actual.</dd>
+    </div>
+    <div>
+      <dt><code>500</code></dt>
+      <dd>Fallo interno. El cliente recibe un mensaje neutro; el equipo recibe el SQLSTATE y el stack trace en el log.</dd>
+    </div>
+    <div>
+      <dt><code>503</code></dt>
+      <dd>Fallo temporal de disponibilidad. Se puede reintentar después.</dd>
+    </div>
+  </div>
+
+  <h3>6.4 · Los errores que más se repiten</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Del síntoma a la causa</caption>
+      <thead>
+        <tr><th>Síntoma</th><th>Causa habitual</th><th>Qué revisar</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>El cambio de otro usuario desaparece</td><td>El <code>WHERE</code> solo usa <code>id</code></td><td>Agregar <code>AND version = $2</code></td></tr>
+        <tr><td>El formulario vuelve con los valores viejos después de <code>409</code></td><td>La ruta reutiliza el contexto del envío</td><td>Consultar el producto actual y pasar su versión</td></tr>
+        <tr><td>La segunda edición propia da <code>409</code></td><td>El formulario no actualizó la versión tras guardar</td><td>Volver a cargar el formulario o actualizar el campo oculto</td></tr>
+        <tr><td>El <code>UPDATE</code> afecta cero filas y se responde <code>200</code></td><td>No se comprueba el valor de retorno</td><td>Distinguir <code>None</code> y responder <code>404</code>/<code>409</code></td></tr>
+        <tr><td>El error de versión se muestra como error de precio</td><td>Se traduce todo a un mensaje genérico</td><td>Un mensaje por campo y un aviso para <code>version</code></td></tr>
+        <tr><td>El log guarda el formulario completo</td><td>Se registra <code>datos</code> en vez del id y la versión</td><td>Registrar solo metadatos, no datos personales</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el log del conflicto</span>
+    <p>
+      En un <code>409</code> conviene registrar el <code>id</code>, la versión enviada y la versión
+      actual. No hace falta guardar el nombre o la descripción del producto: para depurar el
+      conflicto bastan los números. Es la misma regla de privacidad de las clases anteriores.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué estado corresponde a una versión que ya no coincide?</p>
+      <button class="opcion" data-op="a"><code>200</code></button>
+      <button class="opcion" data-op="b"><code>404</code></button>
+      <button class="opcion" data-op="c"><code>409</code></button>
+      <button class="opcion" data-op="d"><code>500</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué debe mostrar el formulario después de un <code>409</code>?</p>
+      <button class="opcion" data-op="a">Los valores actuales y la versión actual, con un aviso</button>
+      <button class="opcion" data-op="b">Los valores viejos y la versión vieja</button>
+      <button class="opcion" data-op="c">Una página en blanco</button>
+      <button class="opcion" data-op="d">El JSON del error de PostgreSQL</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Cuándo se responde <code>500</code>?</p>
+      <button class="opcion" data-op="a">Cuando el precio es negativo</button>
+      <button class="opcion" data-op="b">Cuando la versión cambió</button>
+      <button class="opcion" data-op="c">Cuando el producto no existe</button>
+      <button class="opcion" data-op="d">Cuando hay un fallo interno de la base que el usuario no puede corregir</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Por qué no se debe responder <code>200</code> cuando el <code>UPDATE</code> afectó cero filas?</p>
+      <button class="opcion" data-op="a">Porque el navegador no entiende <code>200</code></button>
+      <button class="opcion" data-op="b">Porque se mentiría: la base no cambió y el usuario creería que sí</button>
+      <button class="opcion" data-op="c">Porque HTMX solo acepta <code>409</code></button>
+      <button class="opcion" data-op="d">Porque PostgreSQL prohíbe ese código</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: Actividad</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>Una edición <em>robusta</em>, no solo una que guarda</h2>
+    <p class="proposito">
+      En 45 minutos vas a cerrar la clase con una edición que otra persona puede mantener:
+      versión en la base, formulario precargado, <code>UPDATE</code> condicional, conflicto
+      reconciliable y pruebas que demuestran que los cuatro caminos siguen funcionando.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller integrador</b></span>
+      <span>🧭 <b>Producto: edición con versión y pruebas</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El encargo</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Encargo</span>
+      <h3>El catálogo editable que no pierde cambios</h3>
+    </div>
+
+    <p>
+      La actividad ya carga la versión y rechaza los cambios obsoletos. El taller añade lo que
+      falta para publicarlo: pruebas de los cuatro caminos, una respuesta de conflicto que el
+      usuario pueda entender y una decisión escrita sobre qué se validó en cada capa.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Contenido</strong></td>
+            <td><code>esquemas.py</code>, <code>repositorio.py</code>, <code>vistas.py</code>, la plantilla y las pruebas</td>
+          </tr>
+          <tr>
+            <td><strong>Regla de datos</strong></td>
+            <td>Nombre 1–100, precio &gt; 0, cantidad ≥ 0, descripción opcional</td>
+          </tr>
+          <tr>
+            <td><strong>Regla de concurrencia</strong></td>
+            <td><code>WHERE id = $1 AND version = $2</code>, versión nueva en el <code>RETURNING</code></td>
+          </tr>
+          <tr>
+            <td><strong>Regla de error</strong></td>
+            <td><code>422</code> para forma, <code>404</code> para ausencia, <code>409</code> para conflicto, <code>500</code> genérico</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Las pruebas se saltan sin <code>DATABASE_URL</code> y usan un producto existente</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>No se guardan datos personales en los logs del conflicto</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong>SQL</strong>: columnas <code>version</code> y <code>actualizado_en</code>.</li>
+      <li><strong><code>esquemas.py</code></strong>: <code>ProductoActualizar</code> con versión.</li>
+      <li><strong><code>repositorio.py</code></strong>: <code>UPDATE</code> condicional con <code>RETURNING</code>.</li>
+      <li><strong><code>vistas.py</code></strong>: tres salidas y un formulario de conflicto reconciliable.</li>
+      <li><strong><code>fila_editar.html</code></strong>: versión oculta, errores accesibles y valores conservados.</li>
+      <li><strong><code>test_edicion.py</code></strong>: edición válida, conflicto, <code>404</code> y <code>422</code>.</li>
+      <li><strong>Un párrafo escrito</strong> de unas 120 palabras: qué decidiste tú, qué decidió el enunciado y por qué.</li>
+    </ol>
+  </div>
+
+  <h3>7.2 · Las pruebas</h3>
+
+  <p>
+    Las pruebas usan <code>TestClient</code> y un producto real de la base. Primero leen la lista
+    para obtener un <code>id</code>, después el formulario para obtener la versión actual, y desde
+    ahí prueban los cuatro caminos.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — instalar y ejecutar</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>uv add --dev pytest
+uv run pytest -q
+</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>test_edicion.py — los cuatro caminos</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">import</span> os
+<span class="tk-kw">import</span> re
+
+<span class="tk-kw">import</span> pytest
+<span class="tk-kw">from</span> fastapi.testclient <span class="tk-kw">import</span> <span class="tk-cls">TestClient</span>
+
+pytestmark = pytest.mark.skipif(
+    <span class="tk-kw">not</span> os.getenv(<span class="tk-str">"DATABASE_URL"</span>),
+    reason=<span class="tk-str">"Requiere PostgreSQL y DATABASE_URL definida"</span>,
+)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">primer_producto</span>(cliente):
+    html = cliente.get(<span class="tk-str">"/productos"</span>).text
+    coincidencia = re.search(<span class="tk-str">r'id="producto-(\d+)"'</span>, html)
+    <span class="tk-kw">if</span> coincidencia <span class="tk-kw">is</span> <span class="tk-kw">None</span>:
+        pytest.skip(<span class="tk-str">"No hay productos en la base"</span>)
+    <span class="tk-kw">return</span> coincidencia.group(<span class="tk-num">1</span>)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">version_actual</span>(cliente, producto_id):
+    html = cliente.get(<span class="tk-str">f"/productos/{</span>producto_id<span class="tk-str">}/editar"</span>).text
+    coincidencia = re.search(<span class="tk-str">r'name="version"\s+value="(\d+)"'</span>, html)
+    <span class="tk-kw">return</span> coincidencia.group(<span class="tk-num">1</span>)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_edicion_valida_sube_version</span>():
+    <span class="tk-kw">from</span> main <span class="tk-kw">import</span> app
+
+    <span class="tk-kw">with</span> <span class="tk-cls">TestClient</span>(app) <span class="tk-kw">as</span> cliente:
+        producto_id = primer_producto(cliente)
+        version = version_actual(cliente, producto_id)
+        respuesta = cliente.post(
+            <span class="tk-str">f"/productos/{</span>producto_id<span class="tk-str">}"</span>,
+            data={
+                <span class="tk-str">"nombre"</span>: <span class="tk-str">"Producto editado"</span>,
+                <span class="tk-str">"precio"</span>: <span class="tk-str">"15000"</span>,
+                <span class="tk-str">"cantidad"</span>: <span class="tk-str">"7"</span>,
+                <span class="tk-str">"descripcion"</span>: <span class="tk-str">"Editado en la prueba"</span>,
+                <span class="tk-str">"version"</span>: version,
+            },
+        )
+        <span class="tk-kw">assert</span> respuesta.status_code == <span class="tk-num">200</span>
+        <span class="tk-kw">assert</span> <span class="tk-str">"Producto actualizado correctamente"</span> <span class="tk-kw">in</span> respuesta.text
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_version_vieja_devuelve_409</span>():
+    <span class="tk-kw">from</span> main <span class="tk-kw">import</span> app
+
+    <span class="tk-kw">with</span> <span class="tk-cls">TestClient</span>(app) <span class="tk-kw">as</span> cliente:
+        producto_id = primer_producto(cliente)
+        version = version_actual(cliente, producto_id)
+        datos = {
+            <span class="tk-str">"nombre"</span>: <span class="tk-str">"Producto editado"</span>,
+            <span class="tk-str">"precio"</span>: <span class="tk-str">"15000"</span>,
+            <span class="tk-str">"cantidad"</span>: <span class="tk-str">"7"</span>,
+            <span class="tk-str">"descripcion"</span>: <span class="tk-str">""</span>,
+            <span class="tk-str">"version"</span>: version,
+        }
+        primero = cliente.post(<span class="tk-str">f"/productos/{</span>producto_id<span class="tk-str">}"</span>, data=datos)
+        <span class="tk-kw">assert</span> primero.status_code == <span class="tk-num">200</span>
+
+        repetido = cliente.post(<span class="tk-str">f"/productos/{</span>producto_id<span class="tk-str">}"</span>, data=datos)
+        <span class="tk-kw">assert</span> repetido.status_code == <span class="tk-num">409</span>
+        <span class="tk-kw">assert</span> <span class="tk-str">"Otro usuario modificó"</span> <span class="tk-kw">in</span> repetido.text
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_producto_inexistente_devuelve_404</span>():
+    <span class="tk-kw">from</span> main <span class="tk-kw">import</span> app
+
+    <span class="tk-kw">with</span> <span class="tk-cls">TestClient</span>(app) <span class="tk-kw">as</span> cliente:
+        respuesta = cliente.post(
+            <span class="tk-str">"/productos/999999"</span>,
+            data={
+                <span class="tk-str">"nombre"</span>: <span class="tk-str">"Fantasma"</span>,
+                <span class="tk-str">"precio"</span>: <span class="tk-str">"1"</span>,
+                <span class="tk-str">"cantidad"</span>: <span class="tk-str">"1"</span>,
+                <span class="tk-str">"version"</span>: <span class="tk-str">"1"</span>,
+            },
+        )
+        <span class="tk-kw">assert</span> respuesta.status_code == <span class="tk-num">404</span>
+        <span class="tk-kw">assert</span> <span class="tk-str">"No se encontró"</span> <span class="tk-kw">in</span> respuesta.text
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_precio_invalido_devuelve_422</span>():
+    <span class="tk-kw">from</span> main <span class="tk-kw">import</span> app
+
+    <span class="tk-kw">with</span> <span class="tk-cls">TestClient</span>(app) <span class="tk-kw">as</span> cliente:
+        producto_id = primer_producto(cliente)
+        version = version_actual(cliente, producto_id)
+        respuesta = cliente.post(
+            <span class="tk-str">f"/productos/{</span>producto_id<span class="tk-str">}"</span>,
+            data={
+                <span class="tk-str">"nombre"</span>: <span class="tk-str">"Producto"</span>,
+                <span class="tk-str">"precio"</span>: <span class="tk-str">"-10"</span>,
+                <span class="tk-str">"cantidad"</span>: <span class="tk-str">"1"</span>,
+                <span class="tk-str">"version"</span>: version,
+            },
+        )
+        <span class="tk-kw">assert</span> respuesta.status_code == <span class="tk-num">422</span>
+        <span class="tk-kw">assert</span> <span class="tk-str">"precio"</span> <span class="tk-kw">in</span> respuesta.text.lower()
+</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — la prueba de conflicto necesita dos envíos</span>
+    <p>
+      Para provocar un <code>409</code> no basta con enviar una versión inventada: hay que enviar
+      una versión que <strong>haya sido válida</strong> y que el primer envío haya dejado atrás.
+      La prueba guarda con la versión actual y repite exactamente el mismo envío; el segundo ya es
+      obsoleto. Es la forma más realista de reproducir dos pestañas abiertas.
+    </p>
+  </div>
+
+  <h3>7.3 · Rúbrica de autoevaluación</h3>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación de la edición con versión</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Carga del formulario</td>
+          <td>El formulario empieza vacío</td>
+          <td>Carga los valores, pero no la versión</td>
+          <td>Carga valores, <code>NULL</code> como vacío y versión oculta</td>
+        </tr>
+        <tr>
+          <td>Validación</td>
+          <td>No hay modelo o todo es texto</td>
+          <td>Valida, pero pierde lo escrito al fallar</td>
+          <td><code>ProductoActualizar</code> valida y el formulario conserva los valores</td>
+        </tr>
+        <tr>
+          <td>UPDATE</td>
+          <td>Solo <code>WHERE id</code></td>
+          <td>Usa versión, pero no devuelve la fila nueva</td>
+          <td><code>WHERE id AND version</code>, <code>RETURNING</code> y versión incrementada</td>
+        </tr>
+        <tr>
+          <td>Conflicto</td>
+          <td>Responde <code>200</code> o <code>500</code></td>
+          <td>Responde <code>409</code>, pero sin valores actuales</td>
+          <td><code>409</code> con valores actuales, versión actual y aviso claro</td>
+        </tr>
+        <tr>
+          <td>Ausencia</td>
+          <td>Error <code>500</code></td>
+          <td><code>404</code> genérico sin fragmento</td>
+          <td><code>404</code> con fragmento de no encontrado en la fila</td>
+        </tr>
+        <tr>
+          <td>Auditoría</td>
+          <td>No existe</td>
+          <td>Se registra fuera de la transacción</td>
+          <td><code>UPDATE</code> e historial en la misma transacción</td>
+        </tr>
+        <tr>
+          <td>Pruebas</td>
+          <td>No hay o no arrancan</td>
+          <td>Cubren solo el caso feliz</td>
+          <td>Válido, <code>409</code>, <code>404</code> y <code>422</code> pasan</td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay nada escrito</td>
+          <td>Describe el qué, no el porqué</td>
+          <td>Decisión, motivo, límite de cada capa y consecuencia</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.4 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>Guardar no es actualizar sin pisar: un <code>UPDATE</code> normal puede borrar el cambio de otra persona.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p>La versión representa la copia que el usuario está viendo; el <code>id</code> representa el producto.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>El formulario se carga con los valores actuales y la versión; nunca empieza vacío.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p>Pydantic valida la forma y la versión antes de tocar la base; si falla, se conserva lo escrito.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p>El <code>UPDATE</code> usa <code>WHERE id = $1 AND version = $2</code> y devuelve la fila con <code>RETURNING</code>.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p><code>UPDATE 0</code> no es un solo caso: <code>404</code> si el producto no existe, <code>409</code> si la versión cambió.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p>El conflicto se reconcilia mostrando los valores y la versión actuales; nunca se responde «guardado» si la base no cambió.</p>
+    </div>
+  </div>
+
+  <h3>7.5 · Puente hacia la próxima clase</h3>
+
+  <p>
+    Tu edición ya no pierde cambios. La próxima operación del CRUD es la más delicada:
+    <strong>borrar</strong>. No se puede deshacer con un <code>409</code> ni reconciliar con una
+    versión. Por eso la clase siguiente trabaja la confirmación, el <code>DELETE</code>
+    parametrizado, los errores de integridad y la diferencia entre borrar de verdad y archivar.
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de la próxima clase</span>
+    <p>
+      Deja el proyecto con la versión aplicada, las cuatro pruebas en verde y un
+      <code>README.md</code> que explique cómo arrancarlo con <code>DATABASE_URL</code>.
+      Comprueba que una edición normal sube la versión, que una edición obsoleta responde
+      <code>409</code> y que el producto inexistente responde <code>404</code>.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 12</h2>
+    <p>
+      Has cerrado el ciclo de la edición segura: el formulario carga el registro y su versión,
+      Pydantic valida, PostgreSQL actualiza solo si la copia sigue vigente y el usuario recibe una
+      respuesta honesta cuando el mundo cambió. A partir de aquí, la pregunta ya no es cómo se
+      actualiza un dato, sino cómo se elimina sin arrepentirse.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: Conflictos y errores</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 12 · Edición de registros almacenados</span>
+  <p class="pie-sub">Formulario precargado · Pydantic · UPDATE condicional · Versión · 404 · 409</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

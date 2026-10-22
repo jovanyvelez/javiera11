@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 17 · GitHub: publica tu código</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 17 · <em>GitHub: publica tu código</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura: tu código en la nube</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">Git vs GitHub y el remote</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">El primer push y el ciclo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">README, licencia y perfil</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Actividad: publicar la biblioteca</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Colaborar: PR e issues</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: tu portafolio en GitHub</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> un repositorio público con README, PR archivado y tu perfil como portafolio.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>Tu código en la nube… y con tu <em>nombre</em></h2>
+    <p class="proposito">
+      La clase anterior te dio la máquina del tiempo: commits, ramas, historial. Pero ese álbum
+      vive en tu disco. Hoy lo subes a <strong>GitHub</strong>, el sitio donde vive el código del
+      mundo, y de paso activas tu primer <strong>portafolio</strong>: respaldo real, historial
+      visible y la puerta al trabajo colaborativo de verdad.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: cuenta creada y el mapa de los dos mundos</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · Tres accidentes que GitHub evita</h3>
+
+  <p class="primer-párrafo">
+    «Se me dañó el compu y perdí el semestre»: el proyecto que solo existe en un disco. «Te paso el
+    zip por WhatsApp»: la colaboración del paleolítico. «Ese repo es de hace 3 meses y no dice ni
+    qué es»: el proyecto sin README ni historia. Los tres mueren hoy.
+  </p>
+
+  <p>
+    Git ya guarda las fotos de tu proyecto. GitHub es la <strong>red social donde las publicas</strong>:
+    le pone una URL, un botón de compartir, comentarios (issues), la posibilidad de que otros
+    propongan cambios (Pull Requests) y un jardín de actividad que premia tu constancia. El álbum
+    funciona sin red social… pero la red social no funciona sin álbum. Por eso esta clase viene
+    después de la 16.
+  </p>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — Git no es GitHub</span>
+    <p>
+      <strong>Git</strong> es un programa que vive en tu computador: toma las fotos (commits),
+      trabaja sin internet y es libre para siempre. <strong>GitHub</strong> es un sitio web
+      (github.com) que guarda una copia del álbum en la nube y le pone una interfaz social. Uno no
+      sustituye al otro: se necesitan. Si Git se cae, tu historia sigue local; si GitHub se cae,
+      tu historia sigue en tu disco.
+    </p>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Lo que cambia cuando el álbum sale de tu disco</caption>
+      <thead>
+        <tr><th></th><th>Solo Git (clase 16)</th><th>Git + GitHub (hoy)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Dónde vive</strong></td><td>Un disco</td><td>Disco + nube, sincronizados</td></tr>
+        <tr><td><strong>Respaldo</strong></td><td>Ninguno, si el disco muere</td><td>La nube guarda archivos e historial</td></tr>
+        <tr><td><strong>Compartir</strong></td><td>Zip, pendrive, WhatsApp</td><td>Una URL que cualquiera puede abrir</td></tr>
+        <tr><td><strong>Colaborar</strong></td><td>Mandar archivos y rezar</td><td>Ramas, Pull Requests, issues</td></tr>
+        <tr><td><strong>Portafolio</strong></td><td>Invisible</td><td>Perfil, README y constancia pública</td></tr>
+        <tr><td><strong>Internet</strong></td><td>No hace falta</td><td>Hace falta para push y pull</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.2 · Crea tu cuenta ahora</h3>
+
+  <p>
+    Son diez minutos que conviene hacer <strong>antes de seguir leyendo</strong>. Necesitas una
+    cuenta de correo real y que revises: ahí llegan las notificaciones de GitHub.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>paso a paso — github.com/signup</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm">// 1. Entra a https://github.com/signup desde tu navegador.
+</span><span class="tk-cm">// 2. Correo: uno REAL y que revises (llegan las notificaciones).
+</span><span class="tk-cm">// 3. Contraseña: la de siempre, segura y no compartida.
+</span><span class="tk-cm">// 4. USERNAME — piénsalo bien, es tu marca pública:
+</span><span class="tk-cm">//      bien:  "saradev", "juanp-programa", "valentina-codes"
+</span><span class="tk-cm">//      mal:   "xX_dark_gamer_Xx"  (tu futura jefa verá ese nombre)
+</span><span class="tk-cm">// 5. Plan: elige "Free" (repos públicos ilimitados).
+</span><span class="tk-cm">// 6. Verifica tu correo (GitHub te manda un código).
+</span><span class="tk-cm">// 7. ¿Preguntas de preferencias? Puedes saltarlas todas.
+</span><span class="tk-cm">// Listo: tu URL personal ya existe → github.com/tuusuario</span></code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — tu username es tu marca</span>
+    <p>
+      En GitHub no hay apodos ni avatares de dragón: ese nombre aparece en cada proyecto que
+      publiques, en cada contribución y en las búsquedas. Cámbialo después si quieres
+      (Settings → Account), pero los enlaces viejos se rompen. Dos minutos de pensarlo ahora te
+      ahorran años de arrastrar un nombre feo. Y tu foto de perfil: un primer plano decente, no la
+      de WhatsApp con filtro de conejitos.
+    </p>
+  </div>
+
+  <h3>0.3 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cuadro de unidades, tiempos y productos esperados</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura y cuenta</td><td>20 min</td><td>Cuenta creada y verificada</td></tr>
+        <tr><td><strong>01</strong></td><td>Git vs GitHub y el remote</td><td>30 min</td><td><code>origin</code> conectado</td></tr>
+        <tr><td><strong>02</strong></td><td>Primer push y ciclo diario</td><td>30 min</td><td>Repo público con historia</td></tr>
+        <tr><td><strong>03</strong></td><td>README, licencia y perfil</td><td>30 min</td><td>Vitrina del proyecto</td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Actividad: publicar</td><td>35 min</td><td>Biblioteca en la nube</td></tr>
+        <tr><td><strong>06</strong></td><td>Colaborar: PR e issues</td><td>35 min</td><td>Primer PR archivado</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller integrador</td><td>45 min</td><td>Portafolio y feria de repos</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.4 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito estas tres preguntas:</p>
+
+  <ol>
+    <li>Si tu compu se pierde mañana, ¿qué parte de tu proyecto de la clase 16 sobrevive? ¿Y qué parte no?</li>
+    <li>¿Por qué un zip enviado por WhatsApp no es una forma seria de colaborar en código?</li>
+    <li>Si una beca te pidiera hoy el link de un proyecto tuyo, ¿qué le mandarías? ¿Ese link se entiende solo?</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: Git vs GitHub →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — GIT VS GITHUB Y EL REMOTO
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · El remoto</div>
+    <h2>Git vs GitHub y la dirección de tu <em>álbum</em></h2>
+    <p class="proposito">
+      Un remoto es simplemente una dirección donde hay otra copia del álbum. Git la guarda con un
+      apodo —por tradición, <code>origin</code>— y de ahí nacen los dos comandos de la clase:
+      <code>push</code> y <code>pull</code>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y demo</b></span>
+      <span>🧭 <b>Producto: el viaje del commit, de los dos mundos</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · La tabla que los separa para siempre</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>La confusión número uno de quien empieza</caption>
+      <thead>
+        <tr><th></th><th>Git</th><th>GitHub</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Qué es</strong></td><td>Un programa en tu computador</td><td>Un sitio web (github.com)</td></tr>
+        <tr><td><strong>Origen</strong></td><td>Linus Torvalds, 2005</td><td>Fundado en 2008; hoy lo usan más de 100 millones de personas</td></tr>
+        <tr><td><strong>Qué hace</strong></td><td>Toma las fotos: commits, ramas, historial</td><td>Guarda una copia del álbum y le pone interfaz social</td></tr>
+        <tr><td><strong>Internet</strong></td><td>Funciona sin internet</td><td>Necesita internet</td></tr>
+        <tr><td><strong>Precio</strong></td><td>Gratis y libre, para siempre</td><td>Plan gratis generoso (repos públicos ilimitados)</td></tr>
+        <tr><td><strong>Dónde se usa</strong></td><td>La terminal</td><td>El navegador (y se conecta con Git vía push/pull)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>1.2 · El remote: el apodo de una URL</h3>
+
+  <p class="primer-párrafo">
+    Registrar un remoto no sube nada. Solo le dice a Git: «hay otro álbum en esta dirección, y le
+    pondré <code>origin</code>». Es guardar un contacto en el celular: se hace una vez y queda en la
+    configuración del repo.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — registrar y verificar el remote</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git remote add origin https://github.com/tuusuario/biblioteca.git
+
+git remote -v
+<span class="tk-cm"># origin  https://github.com/tuusuario/biblioteca.git (fetch)
+# origin  https://github.com/tuusuario/biblioteca.git (push)</span></code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — ¿por qué «origin»?</span>
+    <p>
+      Es solo el apodo tradicional. Podrías llamarlo <code>mi-nube</code> y todo funcionaría igual…
+      pero el mundo dice <code>origin</code>, y con el mundo conviene seguirlo. Si un tutorial dice
+      <code>git push origin main</code>, está usando ese apodo; si lo hubieras llamado
+      <code>mi-nube</code>, escribirías <code>git push mi-nube main</code>.
+    </p>
+  </div>
+
+  <h3>1.3 · El viaje de un commit: de tu disco a la nube</h3>
+
+  <p>
+    Recorre las seis paradas. Este es el mapa mental de toda la clase: si entiendes este viaje, el
+    resto son detalles.
+  </p>
+
+  <div class="staging" data-viaje>
+    <div class="stage-cabecera">
+      <span class="etiqueta">Mapa</span>
+      <h4 data-parada-meta>Parada 1 de 6</h4>
+      <p>
+        Usa los botones de la izquierda como si hicieras el recorrido. El panel muestra qué pasa en
+        esa parada, el comando de siempre y por qué importa.
+      </p>
+    </div>
+
+    <div class="stage-cuerpo">
+      <div class="stage-archivos">
+        <button type="button" class="stage-btn" data-parada="1">1 · En tu compu</button>
+        <button type="button" class="stage-btn" data-parada="2">2 · El remote</button>
+        <button type="button" class="stage-btn" data-parada="3">3 · El push</button>
+        <button type="button" class="stage-btn" data-parada="4">4 · GitHub lo muestra</button>
+        <button type="button" class="stage-btn" data-parada="5">5 · Clone y pull</button>
+        <button type="button" class="stage-btn" data-parada="6">6 · El círculo</button>
+      </div>
+
+      <div class="stage-panel">
+        <div class="stage-comando" data-parada-titulo>Parada 1 · En tu compu — Git local</div>
+        <p data-parada-que></p>
+        <pre class="stage-salida" data-parada-comando></pre>
+        <p class="stage-porque" data-parada-porque></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — dos verbos, un puente</span>
+    <p>
+      <code>git push</code> significa «envía mis commits nuevos a la nube».
+      <code>git pull</code> significa «tráeme los commits que hay allá y que a mí me faltan». Nada
+      más. Con esos dos comandos, tu proyecto pasa de existir en un disco a existir en dos lugares,
+      y esa copia extra es respaldo, visibilidad y colaboración a la vez.
+    </p>
+  </div>
+
+  <h3>1.4 · Actividad en pareja — 5 minutos</h3>
+
+  <ol>
+    <li>Recorran las 6 paradas en voz alta, sin mirar los textos: cada uno narra tres.</li>
+    <li>Pregunta trampa 1: si borras tu carpeta local y haces <code>git clone</code> de tu propio GitHub… ¿qué recuperas? ¿El proyecto? ¿El historial? ¿Las dos?</li>
+    <li>Pregunta trampa 2: haces 3 commits y te olvidas del push. ¿Qué hay en la nube? ¿Qué hay en tu compu? ¿Dónde vive el respaldo hasta ahora?</li>
+  </ol>
+
+  <!-- QUIZ 1 -->
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué es <code>origin</code>?</p>
+      <button class="opcion" data-op="a">El nombre obligatorio de la rama principal</button>
+      <button class="opcion" data-op="b">El apodo tradicional que le das a la URL del remote de tu repo en la nube</button>
+      <button class="opcion" data-op="c">Un comando para crear repositorios</button>
+      <button class="opcion" data-op="d">La carpeta donde Git guarda los commits</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Cuál es la diferencia entre <code>git push</code> y <code>git pull</code>?</p>
+      <button class="opcion" data-op="a">push borra la nube y pull la restaura</button>
+      <button class="opcion" data-op="b">Son sinónimos</button>
+      <button class="opcion" data-op="c">push envía tus commits locales a la nube; pull trae los commits de la nube que te faltan</button>
+      <button class="opcion" data-op="d">push es para archivos y pull para carpetas</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué hace <code>git clone URL</code>?</p>
+      <button class="opcion" data-op="a">Trae el proyecto completo CON su historial: un álbum vivo, no un zip</button>
+      <button class="opcion" data-op="b">Descarga solo el archivo README</button>
+      <button class="opcion" data-op="c">Copia el proyecto sin el <code>.git</code></button>
+      <button class="opcion" data-op="d">Borra el repositorio de la nube</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Por qué la <code>-u</code> en <code>git push -u origin main</code>?</p>
+      <button class="opcion" data-op="a">Es de «urgent»: sube más rápido</button>
+      <button class="opcion" data-op="b">Actualiza Git a la última versión</button>
+      <button class="opcion" data-op="c">Borra los commits viejos de la nube</button>
+      <button class="opcion" data-op="d">Conecta tu <code>main</code> local con el <code>origin/main</code> de la nube, para que después solo escribas <code>git push</code></button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: El primer push →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — EL PRIMER PUSH Y EL CICLO
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · La URL pública</div>
+    <h2>El primer push y el ciclo de <em>todos los días</em></h2>
+    <p class="proposito">
+      Dos pasos que se hacen una sola vez —crear el repo vacío en la web y conectarlo— y después el
+      ciclo de siempre: <code>pull</code>, editar, <code>add</code>, <code>commit</code>,
+      <code>push</code>. El detalle que salva la clase: el repo de la web nace <strong>vacío</strong>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>💻 <b>Práctica guiada</b></span>
+      <span>🧭 <b>Producto: repo público con tu historia</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · Crear el repo en la web</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>paso 1 — github.com, botón New repository</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm">// 1. Entra a github.com con tu cuenta → botón "+" → "New repository".
+</span><span class="tk-cm">// 2. Repository name:  biblioteca
+</span><span class="tk-cm">// 3. Visibility: Public   ← el mundo lo verá (eso queremos: es tu portafolio)
+</span><span class="tk-cm">// 4. CRÍTICO — DEJA TODO LO DEMÁS DESMARCADO:
+</span><span class="tk-cm">//      sin "Add a README file"   sin .gitignore   sin licencia
+</span><span class="tk-cm">//    ¿Por qué? Esos archivos crearían commits allá que tú no tienes aquí,
+</span><span class="tk-cm">//    y las dos historias chocarían en el primer push. El repo nace VACÍO.
+</span><span class="tk-cm">// 5. Botón verde "Create repository".
+</span><span class="tk-cm">// 6. GitHub te muestra la URL: cópiala (botón de copiar del cuadrito HTTPS):
+</span><span class="tk-cm">//      https://github.com/tuusuario/biblioteca.git</span></code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el README inicial es una trampa</span>
+    <p>
+      Si marcas «Add a README file», GitHub crea un commit allá que tú no tienes en tu compu. Al
+      hacer el primer push, las dos historias chocan y Git rechaza el envío. El repo de la web debe
+      nacer <strong>vacío</strong>: tu historial local es el que manda. El README lo escribes tú,
+      aquí, y lo subes con commit.
+    </p>
+  </div>
+
+  <h3>2.2 · Conectar y subir</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>paso 2 — terminal, en tu biblioteca/</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># 1. Registrar la dirección (una sola vez en la vida de este repo):
+</span>git remote add origin https://github.com/tuusuario/biblioteca.git
+git remote -v
+
+<span class="tk-cm"># 2. Que tu rama se llame main, como en la nube:
+</span>git branch -M main
+
+<span class="tk-cm"># 3. El primer empujón — la -u conecta main con origin/main:
+</span>git push -u origin main
+<span class="tk-cm"># Enumerating objects: 42, done.
+# * [new branch]      main -&gt; main
+
+# 4. Abre la URL en el navegador y DISFRUTA:
+#    https://github.com/tuusuario/biblioteca  ← tu proyecto, publicado</span></code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt>HTTPS</dt>
+      <dd>La URL azul de siempre: <code>https://github.com/…</code>. Te identificas con el navegador la primera vez y el sistema lo recuerda. <strong>Perfecto para empezar</strong>.</dd>
+    </div>
+    <div>
+      <dt>SSH</dt>
+      <dd>Un formato raro: <code>git@github.com:…</code>. Requiere generar llaves criptográficas y subirlas a GitHub. Más rápido para profesionales; lo verás en la vida real.</dd>
+    </div>
+  </div>
+
+  <h3>2.3 · El día a día: Git te avisa solo</h3>
+
+  <p>
+    A partir de ahora, tu <code>git status</code> de siempre tiene una línea nueva: la relación
+    entre tu compu y la nube. Aprende a leerla — es el velocímetro del push.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — status bilingüe: local + nube</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git status
+<span class="tk-cm"># Your branch is ahead of 'origin/main' by 2 commits.
+#   (use "git push" to publish your local commits)
+# → vas GANANDO por 2 commits: súbelos con git push
+
+# Your branch is behind 'origin/main' by 3 commits.
+# → vas PERDIENDO por 3: bájalos con git pull
+
+# Your branch is up to date with 'origin/main'.
+# → nirvana.</span></code></pre>
+  </div>
+
+  <h3>2.4 · El ciclo diario</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>la rutina permanente de toda persona que programa</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm">#   ┌──► git pull      (bajar lo nuevo de la nube)
+#   │        │
+#   │        ▼
+#   │   editar + git add + git commit   (la clase 16)
+#   │        │
+#   │        ▼
+#   └──  git push     (subir tus fotos nuevas)</span></code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Villano: <code>! [rejected] — fetch first</code></span>
+    <p>
+      Trabajando con otra persona, esto va a pasar (es una certeza, no una posibilidad). No es un
+      error: es Git protegiendo el álbum común. Significa «en la nube hay commits que tú no tienes
+      y no voy a dejar que los tapes». La solución es la rutina en orden:
+      <code>git pull</code> (y si hay conflicto, resolverlo como en la clase 16), y recién entonces
+      <code>git push</code>. El rechazo es la red de seguridad trabajando.
+    </p>
+  </div>
+
+  <h3>2.5 · Actividad en pareja — 8 minutos</h3>
+
+  <ol>
+    <li>Haz un commit local nuevo y lee en <code>git status</code> la línea <em>ahead of</em>. ¿Cuántos commits te faltan por subir?</li>
+    <li>Súbelo y refresca la pestaña <strong>Commits</strong> de tu repo: el nuevo debe estar ahí.</li>
+    <li>Al revés: edita un archivo directamente en la web (ícono del lápiz → Commit changes) y haz <code>git pull</code>. Acabas de probar que la nube también puede ser el origen de cambios.</li>
+  </ol>
+
+  <!-- QUIZ 2 -->
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> Al crear el repo en github.com, ¿por qué NO marcamos «Add a README file»?</p>
+      <button class="opcion" data-op="a">Porque README es innecesario en GitHub</button>
+      <button class="opcion" data-op="b">Porque el plan gratis no lo permite</button>
+      <button class="opcion" data-op="c">Porque crearía commits allá que no existen en tu compu, y las dos historias chocarían en el primer push</button>
+      <button class="opcion" data-op="d">Porque el README se genera solo al hacer push</button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> Tu <code>git status</code> dice <em>«Your branch is ahead of 'origin/main' by 2 commits»</em>. ¿Qué significa?</p>
+      <button class="opcion" data-op="a">Que la nube tiene 2 commits más que tú</button>
+      <button class="opcion" data-op="b">Que tienes 2 commits locales sin subir: te falta un <code>git push</code></button>
+      <button class="opcion" data-op="c">Que cometiste 2 errores</button>
+      <button class="opcion" data-op="d">Que tu rama <code>main</code> está dañada</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> Te aparece <code>! [rejected] (fetch first)</code> al hacer push. ¿Qué pasó y qué haces?</p>
+      <button class="opcion" data-op="a">La nube está llena: hay que borrar commits</button>
+      <button class="opcion" data-op="b">Tu contraseña expiró</button>
+      <button class="opcion" data-op="c">Git falló: hay que borrar el repo y empezar de nuevo</button>
+      <button class="opcion" data-op="d">La nube tiene commits que a ti te faltan: <code>git pull</code> primero y después push</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> ¿Cuál es el ciclo diario completo del trabajo con remoto?</p>
+      <button class="opcion" data-op="a">pull al empezar → editar + add + commit durante el día → push al terminar</button>
+      <button class="opcion" data-op="b">push al empezar y pull al terminar</button>
+      <button class="opcion" data-op="c">clone todas las mañanas y push todas las noches</button>
+      <button class="opcion" data-op="d">Solo push: el pull lo hace GitHub automáticamente</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: Git vs GitHub</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: README y perfil →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — README, LICENCIA Y PERFIL
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · La vitrina</div>
+    <h2>README, licencia y <em>perfil</em>: el escaparate</h2>
+    <p class="proposito">
+      Cuando alguien entra a tu repo lo primero que ve <strong>no es tu código: es tu README</strong>.
+      Un proyecto brillante sin README parece abandonado; uno mediano con un README claro parece
+      profesional. Se escribe en Markdown —el mismo que ya conoces— y hoy le pones vitrina a tu
+      biblioteca y a tu cuenta.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: README con las cinco secciones</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · Las cinco secciones de un README</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Lo que responde cada sección</caption>
+      <thead>
+        <tr><th>Sección</th><th>La pregunta que responde</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Título + una frase</strong></td><td>¿Qué es esto, en 5 segundos?</td></tr>
+        <tr><td><strong>Qué hace</strong></td><td>¿Por qué me debería interesar?</td></tr>
+        <tr><td><strong>Cómo ejecutarlo</strong></td><td>¿Puedo verlo funcionando yo también?</td></tr>
+        <tr><td><strong>Estructura</strong></td><td>¿Está bien pensado por dentro?</td></tr>
+        <tr><td><strong>Autores + créditos</strong></td><td>¿Quién lo hizo y en qué contexto?</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>README.md — en la raíz de biblioteca/</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># 📚 Biblioteca escolar
+
+</span>App web del sistema de préstamos de la biblioteca del colegio:
+FastAPI + PostgreSQL + Jinja2 + htmx.
+
+<span class="tk-cm">## ✨ Qué hace
+
+</span>- Autores: crear, editar y borrar
+- Libros por autor con su historial
+- Cálculo de multas por atraso
+
+<span class="tk-cm">## 🚀 Cómo ejecutarlo
+
+</span><span class="tk-kw">```</span>
+pip install fastapi uvicorn jinja2 asyncpg pydantic
+<span class="tk-cm"># crea un .env con tu DATABASE_URL (ver .env.example)</span>
+uvicorn main:app --reload
+<span class="tk-kw">```</span>
+
+<span class="tk-cm">## 🏗️ Estructura
+
+</span>- <span class="tk-str">`nucleo/`</span> — conexión y configuración
+- <span class="tk-str">`dominio/`</span> — reglas, validación y SQL
+- <span class="tk-str">`presentacion/`</span> — rutas, plantillas y estáticos
+
+<span class="tk-cm">## 👩‍💻 Autores
+
+</span>Tu Nombre — clase de Herramientas de Programación II, 2026</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — dos trucos de Markdown en GitHub</span>
+    <p>
+      Todo lo de las clases de documentación funciona acá: <code>#</code> títulos,
+      <strong>**negrita**</strong>, <code>`código`</code>, listas, enlaces. Truco 1: los emojis se
+      pegan directo en el texto (📚 ✨ 🚀) y GitHub los renderiza. Truco 2: encierra bloques de
+      código con tres tildes invertidas y, si escribes <code>```python</code>, GitHub los pinta con
+      colores. Lo profesional es editarlo en VS Code y hacer commit + push como siempre.
+    </p>
+  </div>
+
+  <h3>3.2 · Tu perfil: el README de tu cuenta</h3>
+
+  <p>
+    GitHub tiene un truco precioso: si creas un repo llamado <strong>exactamente igual que tu
+    usuario</strong> (<code>tuusuario/tuusuario</code>), su README aparece en tu página de perfil.
+    Es la vitrina de TODO tu trabajo.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>perfil — tuusuario/tuusuario</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm">// 1. New repository → nómbralo EXACTAMENTE con tu username
+//    (GitHub te avisa: "is a special repository: its README
+//    appears on your profile!")
+</span><span class="tk-cm">// 2. Este repo SÍ lleva README inicial (márca "Add a README file")
+//    — no hay historial local que chocar: es nuevo y nace en la web.
+</span><span class="tk-cm">// 3. Edítalo con algo como:
+
+# Hola, soy Tu Nombre 👋
+
+Estudiante de grado once 🎓. Me gusta construir apps web con
+FastAPI y bases de datos PostgreSQL. Aprendiendo Git/GitHub en 2026.
+
+## Proyectos
+- 📚 Biblioteca escolar — FastAPI + htmx
+
+// 4. En Settings → Profile configura tu FOTO y un "Status".</span></code></pre>
+  </div>
+
+  <h3>3.3 · Licencia MIT: «puedes usar esto, dame crédito»</h3>
+
+  <p>
+    Un repo sin licencia es técnicamente «todos los derechos reservados»: nadie debería copiarlo.
+    Los repos de estudiantes usan la <strong>licencia MIT</strong>: permiso libre de usar y
+    modificar, con crédito. En la web: botón <em>Add file → Create new file</em> → nómbralo
+    <code>LICENSE</code> → GitHub te ofrece la plantilla → eliges MIT → commit. Un archivo, cero
+    drama legal, seriedad instantánea.
+  </p>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Villano: el repo fantasma</span>
+    <p>
+      El repo sin README, con nombres como <code>proyecto-final</code> o <code>prueba2</code> y sin
+      una línea de descripción, da la impresión exacta de estar abandonado — aunque el código adentro
+      sea brillante. En GitHub la primera impresión es digital: quien entra decide en 10 segundos si
+      sigue leyendo o cierra la pestaña. Además, en la página del repo, el ícono ⚙️ te deja poner una
+      <strong>descripción de una línea</strong> y <strong>topics</strong> (<code>fastapi</code>,
+      <code>python</code>, <code>postgresql</code>): dos detalles que multiplican la seriedad.
+    </p>
+  </div>
+
+  <h3>3.4 · Actividad en pareja — 8 minutos</h3>
+
+  <ol>
+    <li>Cada uno crea su <code>README.md</code> local, hace commit + push… y mira su repo en la web. ¿La portada cambió?</li>
+    <li>Intercambien URLs y lean el README del otro durante 30 segundos, como si fueran desconocidos. ¿Entendieron qué es, qué hace y cómo correrlo?</li>
+    <li>Mejoren una cosa cada uno a partir de esa lectura, y hagan el commit + push del arreglo.</li>
+    <li>Si alcanzan: creen el repo de perfil con su primer README personal.</li>
+  </ol>
+
+  <!-- QUIZ 3 -->
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Por qué el README es el archivo más importante de tu repo en GitHub?</p>
+      <button class="opcion" data-op="a">Porque GitHub exige tenerlo para publicar</button>
+      <button class="opcion" data-op="b">Porque es lo primero que ve quien entra: la portada y el vendedor de tu proyecto, 24 horas al día</button>
+      <button class="opcion" data-op="c">Porque sin él no se puede hacer push</button>
+      <button class="opcion" data-op="d">Porque guarda la configuración de Git</button>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Cómo se escribe el README de tu perfil?</p>
+      <button class="opcion" data-op="a">Se compra la suscripción Pro</button>
+      <button class="opcion" data-op="b">Editando tu correo de registro</button>
+      <button class="opcion" data-op="c">Creando un repo que se llame exactamente igual que tu username: su README aparece en el perfil</button>
+      <button class="opcion" data-op="d">No se puede: el perfil solo muestra tu foto</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿En qué formato se escribe el README y qué ventaja tiene en GitHub?</p>
+      <button class="opcion" data-op="a">Markdown — GitHub lo renderiza: títulos, listas, bloques de código y emojis</button>
+      <button class="opcion" data-op="b">Word — GitHub lo convierte a PDF</button>
+      <button class="opcion" data-op="c">HTML puro</button>
+      <button class="opcion" data-op="d">Texto plano sin formato</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Qué dice la licencia MIT, en palabras simples?</p>
+      <button class="opcion" data-op="a">Prohibido usar el código sin permiso escrito</button>
+      <button class="opcion" data-op="b">Que GitHub se queda con tu código</button>
+      <button class="opcion" data-op="c">Que el proyecto es solo para estudiantes</button>
+      <button class="opcion" data-op="d">«Puedes usar, copiar y modificar este código; solo dame crédito»</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: El primer push</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de la nube</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: fijar los dos mundos y el ciclo
+      antes de publicar de verdad y de colaborar.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la
+      bitácora.
+    </p>
+
+    <h4>Regla 20-20-20</h4>
+    <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+
+    <h4>Movimiento</h4>
+    <p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p>
+
+    <h4>Hidratación</h4>
+    <p>Un vaso de agua. El cerebro es 73 % agua; un vaso mejora la concentración.</p>
+
+    <h4>Bitácora</h4>
+    <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+  </div>
+
+  <h3>4.1 · Bitácora de la nube (5 minutos)</h3>
+
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿qué diferencia hay entre Git y GitHub?</li>
+    <li><strong>En una frase:</strong> ¿qué hace exactamente la <code>-u</code> del primer push?</li>
+    <li><strong>En una frase:</strong> ¿por qué el README es más importante que el código, al menos al principio?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+
+  <div class="definiciones">
+    <div>
+      <dt>Remote</dt>
+      <dd>La dirección de otra copia del álbum. El apodo tradicional es <code>origin</code>.</dd>
+    </div>
+    <div>
+      <dt>Push</dt>
+      <dd>Enviar tus commits locales a la nube.</dd>
+    </div>
+    <div>
+      <dt>Pull</dt>
+      <dd>Traer a tu compu los commits de la nube que te faltan.</dd>
+    </div>
+    <div>
+      <dt>Clone</dt>
+      <dd>Bajar un repositorio completo, con su historial, la primera vez.</dd>
+    </div>
+    <div>
+      <dt>README</dt>
+      <dd>El archivo que GitHub pinta en la portada del repo: la vitrina del proyecto.</dd>
+    </div>
+    <div>
+      <dt>Pull Request</dt>
+      <dd>Una página donde propones tus cambios para que alguien los revise y decida si se fusionan.</dd>
+    </div>
+    <div>
+      <dt>Issue</dt>
+      <dd>Una conversación de «esto está mal / falta»: un pendiente con dueño y comentarios.</dd>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: README y perfil</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Actividad →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — ACTIVIDAD: PUBLICAR
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · Taller de aplicación</div>
+    <h2>Actividad 5.1 · <em>Publicar la biblioteca</em></h2>
+    <p class="proposito">
+      En 35 minutos llevas tu <code>biblioteca/</code> a una URL pública: repo vacío en la web,
+      remote conectado, historia completa subida y secretos blindados. Al terminar, el proyecto
+      existe en dos mundos.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Práctica guiada</b></span>
+      <span>🧭 <b>Producto: biblioteca publicada y comprobada</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Actividad</span>
+      <h3>De la carpeta local a una URL</h3>
+    </div>
+
+    <p>
+      Publica tu proyecto de las clases 14–16 con el flujo completo: repo público y vacío, remote,
+      primer push, README y comprobación de secretos. El entregable no es un archivo: es una URL
+      que se entiende sin ti al lado.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>Tu carpeta <code>biblioteca/</code> con commits de la clase 16 y una cuenta de GitHub verificada</td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>Una URL pública con la historia completa y un README que se entiende solo</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>El repo de la web nace vacío: sin README, sin licencia, sin <code>.gitignore</code></td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td><code>.env</code> y <code>__pycache__/</code> no pueden existir en la nube</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>La pestaña Commits de la web debe mostrar todos tus commits locales</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong>Repo público</strong> creado vacío y conectado (<code>git remote -v</code> muestra <code>origin</code>).</li>
+      <li><strong>Historia completa subida</strong>: la pestaña Commits coincide con <code>git log --oneline</code>.</li>
+      <li><strong>README</strong> con las cinco secciones, commit y push.</li>
+      <li><strong>Secretos comprobados</strong> con tus propios ojos en la lista de archivos de la web.</li>
+    </ol>
+  </div>
+
+  <h3>5.2 · Paso 1: crear y conectar</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — la secuencia completa</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git remote add origin https://github.com/tuusuario/biblioteca.git
+git branch -M main
+git push -u origin main
+
+<span class="tk-cm"># Verifica: la URL debe abrirse y mostrar tus archivos</span>
+git remote -v
+git log --oneline</code></pre>
+  </div>
+
+  <h3>5.3 · Paso 2: la vitrina</h3>
+
+  <p>
+    Escribe el <code>README.md</code> con las cinco secciones de la unidad 3, haz commit + push, y
+    en la web agrega <strong>descripción de una línea</strong> y <strong>topics</strong>
+    (<code>fastapi</code>, <code>python</code>, <code>postgresql</code>, <code>htmx</code>).
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — publicar la vitrina</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git add README.md
+git commit -m "Agregar README con estructura del proyecto"
+git push
+
+<span class="tk-cm"># En la web: botón ⚙️ junto a About → descripción + topics
+# Licencia: Add file → Create new file → "LICENSE" → plantilla MIT</span></code></pre>
+  </div>
+
+  <h3>5.4 · Paso 3: la prueba de fuego de los secretos</h3>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Villano: el <code>.env</code> publicado</span>
+    <p>
+      Demuestra que tu <code>.gitignore</code> hace su trabajo: en la web, entra a la lista de
+      archivos del repo y busca <code>.env</code> y <code>__pycache__/</code>.
+      <strong>No deben existir allá.</strong> Si aparecen, para todo: un secreto en un repo público
+      se considera comprometido desde el primer segundo. Avisa a tu profe, cambia la clave y
+      arreglen el historial antes de seguir.
+    </p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — comprobación rápida</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git ls-files | grep -E <span class="tk-str">'\.env|__pycache__'</span>
+<span class="tk-cm"># Debe salir VACÍO. Si imprime algo, ese archivo se está
+# rastreando y viajó (o viajará) a la nube.</span></code></pre>
+  </div>
+
+  <!-- QUIZ 5 -->
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Cuál es el orden correcto para publicar por primera vez?</p>
+      <button class="opcion" data-op="a">Crear repo con README en la web → pull → push</button>
+      <button class="opcion" data-op="b">clone → commit → push</button>
+      <button class="opcion" data-op="c">Crear repo vacío en la web → remote add → push -u origin main</button>
+      <button class="opcion" data-op="d">push -u origin main → remote add</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> Descubres que tu <code>.env</code> está publicado. ¿Qué NO sirve?</p>
+      <button class="opcion" data-op="a">Borrarlo con un commit «ya no va» y seguir tranquilo</button>
+      <button class="opcion" data-op="b">Avisar al profe</button>
+      <button class="opcion" data-op="c">Cambiar la clave ya</button>
+      <button class="opcion" data-op="d">Arreglar el <code>.gitignore</code> y revisar el historial</button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Qué demuestra que la pestaña Commits de la web coincide con <code>git log</code>?</p>
+      <button class="opcion" data-op="a">Que el README está bien escrito</button>
+      <button class="opcion" data-op="b">Que subiste la historia completa, no una copia parcial</button>
+      <button class="opcion" data-op="c">Que el repo es público</button>
+      <button class="opcion" data-op="d">Que usaste SSH en vez de HTTPS</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Qué son los <em>topics</em> de un repo?</p>
+      <button class="opcion" data-op="a">Los nombres de las ramas</button>
+      <button class="opcion" data-op="b">Una lista de pendientes</button>
+      <button class="opcion" data-op="c">Los colaboradores del proyecto</button>
+      <button class="opcion" data-op="d">Etiquetas como <code>fastapi</code> o <code>python</code> que ayudan a encontrar y valorar el repo</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: Colaborar →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — COLABORAR
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · El equipo</div>
+    <h2>Colaborar: Pull Requests, issues y <em>portafolio</em></h2>
+    <p class="proposito">
+      Todo lo de la clase 16 (ramas) y el push de hoy se combinan en el flujo colaborativo estándar
+      del planeta: cada cambio viaja en una rama propia, se propone con un <strong>Pull Request</strong>
+      y se decide en equipo. Es el chat donde el código discute antes de entrar a <code>main</code>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: primer PR archivado y un issue educado</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · El flujo completo de un Pull Request</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal + web — el flujo estándar</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># 1. Rama nueva para la misión (clase 16):
+</span>git switch -c fix/titulo-inicio
+<span class="tk-cm"># …edita algo pequeño, add, commit…</span>
+git add .
+git commit -m "Corregir acentos del título de inicio"
+
+<span class="tk-cm"># 2. Subir la RAMA a la nube (la primera vez lleva -u):
+</span>git push -u origin fix/titulo-inicio
+<span class="tk-cm"># remote: Create a pull request for 'fix/titulo-inicio' on GitHub
+# ← ¡GitHub te da el link del PR!</span>
+
+<span class="tk-cm"># 3. Abre ese link (o el botón verde "Compare &amp; pull request").
+#    Escribe título y descripción y "Create".
+# 4. En "Files changed" revisa tu propio diff con calma.
+# 5. Botón verde "Merge pull request" → "Confirm merge".
+# 6. Vuelve a tu compu y baja el main actualizado:</span>
+git switch main
+git pull
+git branch -d fix/titulo-inicio</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Dos formas de entrar a main</caption>
+      <thead>
+        <tr><th></th><th>Directo a main</th><th>Vía Pull Request</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Cuándo</strong></td><td>Trabajas sol@ en un proyecto chico</td><td>Equipo — o para ti del futuro</td></tr>
+        <tr><td><strong>Revisión</strong></td><td>Nadie mira el diff</td><td>Otra persona comenta y aprueba</td></tr>
+        <tr><td><strong>Historia</strong></td><td>Commits sueltos en main</td><td>Una página con el diff y la discusión</td></tr>
+        <tr><td><strong>Protección</strong></td><td>Ninguna</td><td>main queda intocada sin revisión</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>6.2 · Issues: la sala de pendientes</h3>
+
+  <p>
+    Un <strong>issue</strong> es la conversación de «esto está mal / falta»: un pendiente con dueño,
+    descripción y comentarios. Un issue amable tiene cuatro partes — y el que lo lee entiende sin
+    preguntar.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>issue — la plantilla que sí se lee</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>Título: La página de libros muestra "Sin libros" aunque sí hay
+
+Pasos para reproducirlo:
+1. Entrar a /libros
+2. Registrar un autor con libros
+
+Qué esperaba: Ver la lista de libros del autor
+Qué pasa en realidad: "Sin libros" (y la consola muestra un error 500)
+
+<span class="tk-cm"># NO:  "no funciona" / "está dañado" / "urgente!!!"
+# SÍ:  pasos concretos + esperado + real.</span></code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Villano: el push directo a main en equipo</span>
+    <p>
+      Dos personas empujando directo a <code>main</code> todo el día es el clásico «¿por qué mi
+      código que funcionaba ya no funciona?», con la agravante de que nadie sabe quién rompió qué.
+      El PR no es burocracia: es el cinturón de seguridad del equipo. Cada cambio tiene una página
+      con su historia, y <code>git blame</code> deja de ser un dedo apuntador: todo pasó por un PR
+      visible.
+    </p>
+  </div>
+
+  <h3>6.3 · El jardín verde: tu marcador de constancia</h3>
+
+  <p>
+    En tu perfil, la grilla de cuadritos es el <strong>gráfico de contribuciones</strong>: cada
+    cuadro un día, cada cuadrito verde un día con commits tuyos. A los 16–17 años puede parecer un
+    juego… pero cuando apliques a una beca o a un primer trabajo tech, esa grilla verde y continua
+    es evidencia pública de constancia, con fecha. Cada push la riega.
+  </p>
+
+  <h3>6.4 · Buenas prácticas: de subir archivos a tener portafolio</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>La diferencia entre el proyecto fantasma y el proyecto estrella</caption>
+      <thead>
+        <tr><th>Práctica</th><th>Por qué</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Commits pequeños y frecuentes</strong></td><td>Cada foto cuenta una sola historia: se puede leer, revertir o revisar con precisión</td></tr>
+        <tr><td><strong>Mensajes que dicen QUÉ y POR QUÉ</strong></td><td>El <code>git log</code> es la autobiografía del proyecto</td></tr>
+        <tr><td><strong>push diario</strong></td><td>Un commit sin subir NO está respaldado</td></tr>
+        <tr><td><strong><code>.gitignore</code> blindado</strong></td><td>Los secretos en el historial no se borran con borrar el archivo</td></tr>
+        <tr><td><strong>README + descripción + topics</strong></td><td>Repo fantasma vs repo estrella: 10 minutos de escritura</td></tr>
+        <tr><td><strong>PR e issues educados</strong></td><td>El reflejo de cómo trabajas con otros</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>cheat sheet — tu rutina de GitHub en una tarjeta</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># ── AL EMPEZAR EL DÍA ──────────────────────────────</span>
+git pull
+
+<span class="tk-cm"># ── DURANTE EL DÍA (cada cambio) ───────────────────</span>
+git switch -c feature/lo-nuevo
+<span class="tk-cm"># …editar, guardar…</span>
+git diff
+git add .
+git commit -m "Qué hice y por qué, en una frase"
+
+<span class="tk-cm"># ── AL TERMINAR ────────────────────────────────────</span>
+git push
+
+<span class="tk-cm"># ── COLABORANDO (equipo) ───────────────────────────</span>
+git push -u origin feature/lo-nuevo
+<span class="tk-cm"># → abrir PR en la web → revisión → merge → pull</span></code></pre>
+  </div>
+
+  <h3>6.5 · Actividad en pareja — 10 minutos</h3>
+
+  <ol>
+    <li>Tu compañero/a te agrega como colaboradora (Settings → Collaborators). Haz lo mismo en sentido contrario.</li>
+    <li>Clona el repo del otro y propón una mejora pequeñita vía rama + push… pero <strong>no hagas merge tú</strong>: ábrele el Pull Request.</li>
+    <li>Cada uno revisa el PR que le llegó: mira el diff, escribe un comentario amable y útil, y recién ahí hace el merge.</li>
+    <li>Ábranse un issue mutuo con un «bug» inventado pero bien escrito (título + pasos + esperado + real).</li>
+  </ol>
+
+  <!-- QUIZ 6 -->
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué es un Pull Request?</p>
+      <button class="opcion" data-op="a">Un error de push que hay que corregir</button>
+      <button class="opcion" data-op="b">Una solicitud para borrar un repo</button>
+      <button class="opcion" data-op="c">Una página donde propones tus cambios para que alguien los revise y, si aprueba, se fusionen con main</button>
+      <button class="opcion" data-op="d">Un tipo de commit especial de GitHub</button>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cuál es el orden correcto del flujo con PR?</p>
+      <button class="opcion" data-op="a">rama → commit → push de la rama → abrir PR → revisión → merge → pull en tu main</button>
+      <button class="opcion" data-op="b">commit en main → push → abrir PR en main</button>
+      <button class="opcion" data-op="c">abrir PR → rama → commit → push</button>
+      <button class="opcion" data-op="d">push de main → rama → PR → merge automático</button>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p><strong>3.</strong> ¿Para qué sirve un issue bien escrito?</p>
+      <button class="opcion" data-op="a">Para culpar al que rompió el código</button>
+      <button class="opcion" data-op="b">Para reportar un bug o pedir algo nuevo con pasos concretos, lo esperado y lo que pasa</button>
+      <button class="opcion" data-op="c">Para bloquear el repositorio</button>
+      <button class="opcion" data-op="d">Para pedir permiso de hacer push</button>
+    </div>
+
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Qué es el «jardín verde» del perfil?</p>
+      <button class="opcion" data-op="a">Un adorno decorativo sin información</button>
+      <button class="opcion" data-op="b">La lista de tus repos con más estrellas</button>
+      <button class="opcion" data-op="c">El ranking de seguidores de GitHub</button>
+      <button class="opcion" data-op="d">El gráfico de contribuciones: evidencia pública de constancia, con fechas</button>
+    </div>
+
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: Actividad</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>Tu <em>portafolio</em> en GitHub</h2>
+    <p class="proposito">
+      En 45 minutos dejas publicado, presentado y defendible tu proyecto: repo vivo, vitrina, PR
+      archivado, perfil y la feria de repos de la clase. El entregable es una URL que se entiende
+      sin ti al lado.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller integrador</b></span>
+      <span>🧭 <b>Producto: portafolio público y feria de repos</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El encargo</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Encargo</span>
+      <h3>De la carpeta local a un repo estrella</h3>
+    </div>
+
+    <p>
+      El entregable de hoy no es un archivo: es una <strong>URL</strong>. Publica tu
+      <code>biblioteca/</code> con todo lo de la clase —remote, push, README, PR, perfil— y termina
+      con la <strong>feria de repos</strong>: la clase entera recorriendo los GitHub de sus
+      compañeros, poniendo estrellas y abriendo un issue educado.
+    </p>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong>Reto 1 — El repo vivo:</strong> público, vacío al nacer, con la historia completa de la clase 16.</li>
+      <li><strong>Reto 2 — La vitrina:</strong> README con las cinco secciones, descripción, topics y licencia MIT.</li>
+      <li><strong>Reto 3 — Blindaje:</strong> <code>.env</code> y <code>__pycache__/</code> ausentes en la nube, comprobado.</li>
+      <li><strong>Reto 4 — Tu primer PR:</strong> rama → push → PR con descripción → revisión → merge → pull.</li>
+      <li><strong>Reto 5 — Perfil y feria:</strong> repo <code>tuusuario/tuusuario</code>, 3 repos visitados, estrellas y 1 issue educado.</li>
+    </ol>
+  </div>
+
+  <h3>7.2 · Lista de verificación</h3>
+
+  <p>
+    Marca cada punto a medida que lo consigues. La lista se guarda en tu navegador, así que puedes
+    cerrar y volver.
+  </p>
+
+  <div class="staging" data-checklist>
+    <div class="stage-cabecera">
+      <span class="etiqueta">Verificación</span>
+      <h4 data-checklist-texto>0 / 10 · 0%</h4>
+      <p>De lo publicado. Reinicia la clase desde el final si quieres borrar el avance completo.</p>
+    </div>
+
+    <div class="stage-cuerpo">
+      <div class="stage-panel">
+        <div class="stage-comando">Lo que debe ser cierto al terminar</div>
+        <ul class="checklist">
+          <li><label><input type="checkbox"> Cuenta creada y verificada — username profesional, correo activo.</label></li>
+          <li><label><input type="checkbox"> Repo público creado VACÍO y conectado — <code>git remote -v</code> muestra origin.</label></li>
+          <li><label><input type="checkbox"> Historia completa subida — la pestaña Commits muestra todos los commits.</label></li>
+          <li><label><input type="checkbox"> Secretos blindados — <code>.env</code> y <code>__pycache__/</code> NO existen en el repo web.</label></li>
+          <li><label><input type="checkbox"> README publicado con las 5 secciones — incluye estructura y cómo ejecutar.</label></li>
+          <li><label><input type="checkbox"> Descripción + topics + licencia MIT — el panel About ya no está vacío.</label></li>
+          <li><label><input type="checkbox"> PR completo: rama → push → revisión → merge — y main local con pull.</label></li>
+          <li><label><input type="checkbox"> Perfil con foto y README personal — el repo <code>tuusuario/tuusuario</code> existe.</label></li>
+          <li><label><input type="checkbox"> Colaboración probada — agregaste y te agregaron; revisaste el PR de otra persona.</label></li>
+          <li><label><input type="checkbox"> Feria: 3 repos visitados, estrellas y 1 issue educado.</label></li>
+        </ul>
+        <div class="checklist-barra"><div class="checklist-barra-relleno" data-checklist-barra></div></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>7.3 · Las tres reglas que este taller no negocia</h3>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Regla 1 — el repo de la web nace vacío</span>
+    <p>
+      Sin README inicial, sin licencia, sin <code>.gitignore</code> en la web. Esos archivos crearían
+      commits allá que tú no tienes aquí, y el primer push chocaría. Tu historial local es el que
+      manda; la vitrina la escribes tú y la subes con commit.
+    </p>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Regla 2 — ningún secreto en la nube</span>
+    <p>
+      Un <code>.env</code> publicado se considera comprometido desde el primer segundo: no vale
+      borrarlo y seguir. Se cambia la clave, se arregla el <code>.gitignore</code> y se revisa el
+      historial. En un repo público, esto no es un detalle: es lo primero que mira quien audita.
+    </p>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Regla 3 — la URL se entiende sin ti</span>
+    <p>
+      Abre tu repo en el celular de tu compañero. Si necesita que le expliques qué es, cómo se
+      ejecuta o qué hace, el README todavía no está. El estándar no es «mi código funciona»: es
+      «otra persona puede entrar, entender y correrlo sin preguntarme».
+    </p>
+  </div>
+
+  <h3>7.4 · Rúbrica de autoevaluación</h3>
+
+  <p>Puntúa cada criterio de 0 a 2 y revisa los que hayan quedado en 0 o 1 antes de dar por terminado el taller.</p>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Publicación</td>
+          <td>El proyecto solo existe en tu disco</td>
+          <td>Hay repo, pero con historia incompleta</td>
+          <td>Repo público, historia completa y <code>origin</code> conectado</td>
+        </tr>
+        <tr>
+          <td>Vitrina</td>
+          <td>Sin README o con un renglón</td>
+          <td>README con alguna sección</td>
+          <td>Las cinco secciones, descripción, topics y licencia</td>
+        </tr>
+        <tr>
+          <td>Secretos</td>
+          <td><code>.env</code> visible en la web</td>
+          <td>Ignorados a medias</td>
+          <td>Comprobado con tus propios ojos que no están</td>
+        </tr>
+        <tr>
+          <td>Colaboración</td>
+          <td>No hay PR ni issues</td>
+          <td>Hay un PR sin revisión real</td>
+          <td>PR con descripción, revisión y merge; issue educado</td>
+        </tr>
+        <tr>
+          <td>Perfil</td>
+          <td>Sin foto ni README</td>
+          <td>Foto pero sin proyectos</td>
+          <td>README personal con proyectos enlazados</td>
+        </tr>
+        <tr>
+          <td>Constancia</td>
+          <td>Commits «cambios» y «init»</td>
+          <td>Algunos mensajes legibles</td>
+          <td>Commits pequeños, mensajes que cuentan historias</td>
+        </tr>
+        <tr>
+          <td>La URL ajena</td>
+          <td>No se entiende sin explicación</td>
+          <td>Se entiende a medias</td>
+          <td>Otra persona la abre y sabe qué es y cómo correrla</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.5 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>Git guarda el álbum local; GitHub lo publica en la nube con respaldo, portafolio y colaboración.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p><code>origin</code> es solo el apodo de una URL. <code>push</code> sube; <code>pull</code> baja. Tres verbos, todos los días.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>El repo de la web nace vacío: tu historial local es el que manda en el primer push.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p>El README es la portada y el vendedor de tu proyecto. Sin él, el código brillante parece abandonado.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p>Un secreto publicado no se arregla borrándolo: se cambia la clave, se blindaje el <code>.gitignore</code> y se limpia el historial.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p>El Pull Request es el cinturón de seguridad del equipo: rama → push → revisión → merge.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p>El portafolio no son los archivos: es una URL que se entiende sola, con historia, vitrina y constancia.</p>
+    </div>
+  </div>
+
+  <h3>7.6 · Puente hacia lo que viene</h3>
+
+  <p>
+    Con esta clase cierras el ciclo del código que se guarda, se organiza y se publica. Lo que
+    sigue depende de hacia dónde quieras crecer.
+  </p>
+
+  <ol>
+    <li>
+      <strong>Un proyecto personal por mes.</strong> No hace falta que sea grande: un repo bien
+      presentado al mes vale más que uno gigante a medias.
+    </li>
+    <li>
+      <strong>Despliegue.</strong> GitHub Pages publica HTML estático gratis; para tu API de
+      FastAPI, plataformas como Vercel, Railway o Render te dan una URL viva.
+    </li>
+    <li>
+      <strong>Trabajo en equipo de verdad.</strong> Issues con dueño, PR con plantilla, ramas por
+      misión. Las mismas herramientas que usan los proyectos que admiras.
+    </li>
+  </ol>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de cerrar el curso</span>
+    <p>
+      Escribe la URL de tu repo en tu hoja de vida y en tu biografía de perfil. Revisa que la
+      checklist de arriba esté completa y que el jardín verde no lleve semanas seco. Y guarda este
+      curso como repo: un currículo con las clases que construiste también es portafolio.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 17</h2>
+    <p>
+      Entraste con un proyecto que existía en un solo disco del mundo. Sales con una URL pública que
+      puedes poner en tu hoja de vida, un respaldo real en la nube, un README que trabaja por ti 24/7,
+      tu primer Pull Request archivado y un perfil que ya es portafolio. Git te dio la máquina del
+      tiempo; GitHub te dio el mundo. Lo que hagas con ese combo es lo que transformará tu jardín
+      verde en una carrera.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: Colaborar</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 17 · GitHub: publica tu código</span>
+  <p class="pie-sub">Remote · Push y pull · README · Pull Requests · Issues · Portafolio</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

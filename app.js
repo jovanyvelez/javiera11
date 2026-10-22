@@ -138,12 +138,15 @@ function cargarProgresoPorClase() {
     'curso-herr-6-funciones': 6,          // clase 6: Funciones y métodos
     'curso-herr-7-formularios': 6,          // clase 7: formularios y validación
     'curso-herr-8-conexion-bd': 6,       // clase 8: conexión a bases de datos
-    'curso-herr-9-repetitivas': 6,
-    'curso-herr-10-funciones': 6,
-    'curso-herr-11-estructura': 6,
-    'curso-herr-12-git': 6,                      // idem (clase 12: Git básico)
-    'curso-herr-13-github': 6,                   // idem (clase 13: GitHub)
-    'curso-herr-14-git-vscode': 6                // idem (clase 14: Git en VS Code)
+    'curso-herr-9-consultas-select': 6,
+    'curso-herr-10-insercion': 6,          // clase 10: inserción de datos
+    'curso-herr-11-edicion': 6,
+    'curso-herr-12-edicion-registros': 6,        // clase 12: edición con versión
+    'curso-herr-13-eliminacion': 6,              // clase 13: eliminación de registros
+    'curso-herr-14-interaccion': 6,             // idem (clase 14: interacción entre módulos)
+    'curso-herr-15-estructura': 6,             // clase 15: Estructuración del sistema CRUD
+    'curso-herr-16-git-moderno': 6,             // clase 16: Git moderno en el día a día
+    'curso-herr-17-github': 6                   // clase 17: GitHub — publica tu código
   };
 
   let totalGlobal = 0;
@@ -387,6 +390,15 @@ document.addEventListener('keydown', (e) => {
   } else if (e.key === 'o' || e.key === 'O') {
     const card = document.querySelector('.clase-card.herr-14');
     if (card) card.click();
+  } else if (e.key === 'l' || e.key === 'L') {
+    const card = document.querySelector('.clase-card.herr-15');
+    if (card) card.click();
+  } else if (e.key === 'y' || e.key === 'Y') {
+    const card = document.querySelector('.clase-card.herr-16');
+    if (card) card.click();
+  } else if (e.key === 'ñ' || e.key === 'Ñ') {
+    const card = document.querySelector('.clase-card.herr-17');
+    if (card) card.click();
   }
 });
 
@@ -398,7 +410,7 @@ window.addEventListener('load', () => {
                 'curso-csharp-9', 'curso-csharp-10',
                 'curso-analisis-diseno', 'curso-requerimientos',
                 'curso-elicitacion', 'curso-documentacion', 'curso-introduccion-diseno',
-                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3-css', 'curso-herr-4-python', 'curso-herr-5-repetitivas', 'curso-herr-6-funciones', 'curso-herr-7-formularios', 'curso-herr-8-conexion-bd', 'curso-herr-9-repetitivas', 'curso-herr-10-funciones', 'curso-herr-11-estructura', 'curso-herr-12-git', 'curso-herr-13-github', 'curso-herr-14-git-vscode'];
+                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3-css', 'curso-herr-4-python', 'curso-herr-5-repetitivas', 'curso-herr-6-funciones', 'curso-herr-7-formularios', 'curso-herr-8-conexion-bd', 'curso-herr-9-consultas-select', 'curso-herr-10-insercion', 'curso-herr-11-edicion', 'curso-herr-12-edicion-registros', 'curso-herr-13-eliminacion', 'curso-herr-14-interaccion', 'curso-herr-15-estructura', 'curso-herr-16-git-moderno', 'curso-herr-17-github'];
 
   let tienePrograma = false;
   let ultimaClase = null;

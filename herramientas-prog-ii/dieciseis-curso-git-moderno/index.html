@@ -1,0 +1,2303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 16 · Git moderno en el día a día</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 16 · <em>Git moderno en el día a día</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura: la máquina del tiempo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">Iniciar el repo y main</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">Stage y commits</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Ramas y merge</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Deshacer sin miedo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Errores y rutina diaria</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: tu historial</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> un repositorio propio con commits, una rama fusionada y un historial que sabes deshacer.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>La máquina del tiempo de tu <em>código</em></h2>
+    <p class="proposito">
+      Git guarda fotos de tu proyecto para que puedas volver, comparar y trabajar en paralelo sin
+      pisar a nadie. Esta clase te da el flujo mínimo que se usa todos los días —iniciar, preparar,
+      confirmar, ramificar, fusionar y deshacer— con los comandos actuales de Git 2.56.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: el mapa de las tres zonas</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · Tres accidentes que Git evita</h3>
+
+  <p class="primer-párrafo">
+    Son las 11:40 y entrega es a las 12:00. Dañas <code>app.py</code> con un cambio que no
+    entiendes, el último commit tiene un mensaje que dice «asdf», y ya subiste a la nube un cambio
+    que rompió la página. Sin Git, los tres problemas se resuelven con copias llamadas
+    <code>app_final_bueno_ahora_si.py</code>. Con Git, se resuelven con seis comandos que vas a
+    aprender en esta clase.
+  </p>
+
+  <p>
+    Git no es solo «subir código a GitHub». Es un <strong>historial local</strong> de fotos de tu
+    proyecto. Cada foto —un <em>commit</em>— guarda qué cambió, quién lo cambió y por qué. A partir
+    de ese historial puedes volver atrás, probar una idea en una rama y deshacer un error sin
+    perder el trabajo de los demás.
+  </p>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — guardar el archivo no es guardar la foto</span>
+    <p>
+      Guardar en el editor escribe el archivo en el disco. Un commit es distinto: congela una
+      versión del proyecto en el historial. Puedes tener el archivo guardado y, aun así, no tener
+      ningún commit. Y puedes tener un commit sin haber subido nada a internet: Git trabaja primero
+      en tu computadora.
+    </p>
+  </div>
+
+  <h3>0.2 · Las tres zonas y la foto</h3>
+
+  <div class="diagrama">
+    <div class="nodo cliente">
+      <div class="rotulo-nodo">1 · Working tree</div>
+      <h5>Tu carpeta</h5>
+      <p>Los archivos que editas. Aquí los cambios están «sin preparar».</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">git add</span>
+    </div>
+    <div class="nodo servidor">
+      <div class="rotulo-nodo">2 · Staging</div>
+      <h5>La bandeja</h5>
+      <p>Lo que decidiste incluir en la próxima foto. Aún no es un commit.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">git commit</span>
+    </div>
+    <div class="nodo datos">
+      <div class="rotulo-nodo">3 · Repository</div>
+      <h5>El álbum</h5>
+      <p>El historial de commits. Cada uno tiene un hash y un mensaje.</p>
+    </div>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Qué guarda cada zona</caption>
+      <thead>
+        <tr><th>Zona</th><th>Qué contiene</th><th>Cómo la miras</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Working tree</strong></td><td>Los archivos tal como están ahora</td><td><code>git status</code>, <code>git diff</code></td></tr>
+        <tr><td><strong>Staging area</strong></td><td>Los cambios elegidos para el próximo commit</td><td><code>git status</code>, <code>git diff --staged</code></td></tr>
+        <tr><td><strong>Repositorio</strong></td><td>Los commits confirmados</td><td><code>git log</code>, <code>git show</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Una rama es un <strong>nombre que apunta a un commit</strong>. Cuando haces un commit nuevo en
+    <code>main</code>, el nombre <code>main</code> avanza. Si creas <code>feature/saludo</code> y
+    haces commits allí, <code>main</code> se queda donde estaba. Esa es toda la magia: trabajar en
+    paralelo sin copiar carpetas.
+  </p>
+
+  <h3>0.3 · Git moderno: los comandos que sí se usan hoy</h3>
+
+  <p>
+    Esta clase se apoya en <strong>Git 2.56.0</strong>, publicado el <strong>28 de septiembre de
+    2026</strong> según la <a href="https://git-scm.com/docs/git/2.56.0" target="_blank"
+    rel="noopener">documentación oficial</a>. Los comandos de abajo existen desde Git 2.23 o antes,
+    así que funcionan en cualquier Git actual.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Lo viejo y lo claro</caption>
+      <thead>
+        <tr><th>Se usaba</th><th>Hoy es más claro</th><th>Por qué</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git checkout rama</code></td><td><code>git switch rama</code></td><td><code>switch</code> solo cambia de rama; no toca archivos</td></tr>
+        <tr><td><code>git checkout -b rama</code></td><td><code>git switch -c rama</code></td><td>Crea y se mueve en un solo paso, sin ambigüedad</td></tr>
+        <tr><td><code>git checkout -- app.py</code></td><td><code>git restore app.py</code></td><td><code>restore</code> solo restaura archivos</td></tr>
+        <tr><td><code>git reset HEAD app.py</code></td><td><code>git restore --staged app.py</code></td><td>Saca del staging sin tocar el archivo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>checkout</code> no está «deprecado»</span>
+    <p>
+      Git sigue manteniendo <code>git checkout</code> y no planea eliminarlo. Lo que cambió es la
+      recomendación: <code>switch</code> y <code>restore</code> separan dos acciones que
+      <code>checkout</code> mezclaba —cambiar de rama y restaurar archivos—. En documentación vieja
+      y en tutoriales de internet lo vas a encontrar; para tu trabajo diario, usa los comandos
+      claros.
+    </p>
+  </div>
+
+  <h3>0.4 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Unidades, tiempos y productos</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura y modelo mental</td><td>20 min</td><td>Las tres zonas identificadas</td></tr>
+        <tr><td><strong>01</strong></td><td>Iniciar el repositorio y renombrar a <code>main</code></td><td>30 min</td><td><code>git init -b main</code> y primer commit</td></tr>
+        <tr><td><strong>02</strong></td><td>Stage, commits y mensajes</td><td>30 min</td><td>Commits atómicos y legibles</td></tr>
+        <tr><td><strong>03</strong></td><td>Ramas, <code>switch</code>, merge y navegación</td><td>30 min</td><td>Una rama fusionada en <code>main</code></td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Deshacer: <code>restore</code>, <code>amend</code>, <code>reset</code>, <code>revert</code>, <code>reflog</code></td><td>35 min</td><td>La tabla de decisiones interiorizada</td></tr>
+        <tr><td><strong>06</strong></td><td>Errores comunes y rutina diaria</td><td>35 min</td><td>Un flujo de trabajo de 10 comandos</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller: tu historial</td><td>45 min</td><td>Repositorio propio con rama y rescate</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.5 · Lo que necesitas</h3>
+
+  <div class="definiciones">
+    <div>
+      <dt>Git instalado</dt>
+      <dd><code>git --version</code> debe responder 2.23 o superior. Esta clase se escribió con 2.56.0.</dd>
+    </div>
+    <div>
+      <dt>Una terminal</dt>
+      <dd>Bash, Zsh, PowerShell o la terminal de VS Code. Los comandos son los mismos.</dd>
+    </div>
+    <div>
+      <dt>Una carpeta de práctica</dt>
+      <dd>No uses tu carpeta de entregas para los ejercicios de borrado. Crea una carpeta nueva.</dd>
+    </div>
+    <div>
+      <dt>Un editor</dt>
+      <dd>VS Code, Nano o el que prefieras. Para esta clase alcanza con editar archivos de texto.</dd>
+    </div>
+    <div>
+      <dt>Nada de cuenta obligatoria</dt>
+      <dd>Todo el flujo de esta clase es local. La cuenta y el remoto aparecen solo en la parte opcional de <code>push</code>.</dd>
+    </div>
+  </div>
+
+  <h3>0.6 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito:</p>
+
+  <ol>
+    <li>¿Qué diferencia hay entre guardar un archivo, prepararlo y confirmarlo?</li>
+    <li>¿Por qué un commit no es lo mismo que un <code>push</code>?</li>
+    <li>¿Qué significa que una rama sea un nombre que apunta a un commit?</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: iniciar el repo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — INICIAR EL REPO Y MAIN
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · El origen</div>
+    <h2>Iniciar el repositorio y ponerle <em>main</em></h2>
+    <p class="proposito">
+      Antes del primer commit hay que crear el repositorio, configurar tu identidad y decidir cómo
+      se llama la rama principal. Git ya no te obliga a llamarla <code>master</code>: el estándar
+      actual es <code>main</code>, y se puede elegir al iniciar o renombrar después.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: repositorio con primer commit en main</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · Comprobar Git y configurar tu identidad</h3>
+
+  <p class="primer-párrafo">
+    Git firma cada commit con un nombre y un correo. Si no los configuras, el commit falla o queda
+    con una identidad inventada. Hazlo una vez por computadora con <code>--global</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — versión e identidad</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git --version
+
+git config --global user.name <span class="tk-str">"Tu Nombre"</span>
+git config --global user.email <span class="tk-str">"tu@correo.com"</span>
+
+<span class="tk-cm"># La rama inicial de todos los repos nuevos será main
+</span>git config --global init.defaultBranch main
+
+git config --global --list
+</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>user.name</code></dt>
+      <dd>El nombre que aparecerá como autor de cada commit. No tiene que ser tu nombre legal; usa el que quieras que vea tu equipo.</dd>
+    </div>
+    <div>
+      <dt><code>user.email</code></dt>
+      <dd>El correo asociado a los commits. En GitHub conviene que coincida con el de tu cuenta para que te atribuya la autoría.</dd>
+    </div>
+    <div>
+      <dt><code>init.defaultBranch main</code></dt>
+      <dd>Hace que <code>git init</code> cree <code>main</code> en lugar de <code>master</code>. Es una preferencia local; no cambia repos que ya existen.</dd>
+    </div>
+    <div>
+      <dt><code>--global</code></dt>
+      <dd>Aplica a todos tus repositorios. Sin <code>--global</code>, el ajuste vale solo para el repositorio actual.</dd>
+    </div>
+  </div>
+
+  <h3>1.2 · Crear el repositorio con <code>main</code> desde el inicio</h3>
+
+  <p>
+    <code>git init -b main</code> crea el repositorio y le pone <code>main</code> a la rama inicial
+    en un solo paso. Es la forma recomendada desde Git 2.28; no hace falta iniciar con
+    <code>master</code> y renombrar después.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — iniciar un repositorio nuevo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>mkdir bitacora-git
+<span class="tk-fn">cd</span> bitacora-git
+
+git init -b main
+git status
+</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>salida esperada (tu Git puede estar en español)</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>Initialized empty Git repository in /ruta/bitacora-git/.git/
+On branch main
+
+No commits yet
+
+nothing to commit (create/copy files and use "git add" to track)</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — qué es esa carpeta <code>.git</code></span>
+    <p>
+      <code>git init</code> crea una carpeta oculta <code>.git/</code> con todo el historial y la
+      configuración del repositorio. No la borres, no la edites a mano y no la copies dentro de otra
+      carpeta como si fuera un archivo normal. Si ves <code>.git</code>, estás dentro de un
+      repositorio.
+    </p>
+  </div>
+
+  <h3>1.3 · El primer archivo y el primer commit</h3>
+
+  <p>
+    Crea <code>app.py</code>, míralo con <code>git status</code>, prepáralo con <code>git add</code>
+    y confírmalo con <code>git commit</code>. El primer commit es la foto base de tu proyecto.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — del archivo al primer commit</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-fn">printf</span> <span class="tk-str">'def saludar():\n    return "Hola"\n'</span> &gt; app.py
+
+git status -sb
+<span class="tk-cm"># ?? app.py
+</span>
+git add app.py
+git status -sb
+<span class="tk-cm"># A  app.py
+</span>
+git commit -m <span class="tk-str">"crear el archivo inicial de la aplicación"</span>
+git log --oneline --decorate
+</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Los símbolos de <code>git status -sb</code></caption>
+      <thead>
+        <tr><th>Símbolo</th><th>Significado</th><th>Qué hacer</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>??</code></td><td>Archivo sin seguimiento: Git todavía no lo conoce</td><td><code>git add archivo</code></td></tr>
+        <tr><td><code>A</code></td><td>Archivo nuevo agregado al staging</td><td><code>git commit</code></td></tr>
+        <tr><td><code>M</code> a la derecha</td><td>Archivo modificado en la carpeta, aún sin preparar</td><td><code>git add archivo</code></td></tr>
+        <tr><td><code>M</code> a la izquierda</td><td>Cambio preparado para el próximo commit</td><td><code>git commit</code></td></tr>
+        <tr><td><code>D</code></td><td>Archivo eliminado</td><td><code>git add archivo</code> para confirmar la eliminación</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>1.4 · El <code>.gitignore</code> desde el primer día</h3>
+
+  <p>
+    No todo lo que hay en la carpeta debe entrar al historial. Los archivos temporales, las
+    dependencias y los secretos se excluyen con <code>.gitignore</code>. Ese archivo sí se
+    versiona; lo que contiene son patrones.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>.gitignore — un ejemplo para Python</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>__pycache__/
+*.pyc
+.venv/
+.env
+.vscode/
+.DS_Store</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — si ya lo preparaste, <code>.gitignore</code> no lo saca</span>
+    <p>
+      <code>.gitignore</code> evita que Git vea archivos nuevos, pero no elimina del staging uno
+      que ya agregaste. Si un archivo prohibido ya está preparado, sácalo con
+      <code>git restore --staged archivo</code> y confirma el <code>.gitignore</code>. Si ya está
+      en un commit, hay que sacarlo del historial con más cuidado.
+    </p>
+  </div>
+
+  <h3>1.5 · Renombrar <code>master</code> a <code>main</code></h3>
+
+  <p>
+    Si tu repositorio ya existe y su rama principal se llama <code>master</code>, se renombra con
+    <code>git branch -m</code>. Esto cambia el nombre local; no reescribe commits ni borra nada.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — renombrar la rama principal</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Ver cómo se llama la rama actual
+</span>git branch
+
+<span class="tk-cm"># Renombrar master a main (solo local)
+</span>git branch -m master main
+
+<span class="tk-cm"># Confirmar
+</span>git branch
+git status -sb
+</code></pre>
+  </div>
+
+  <p>
+    Si el repositorio ya tiene un remoto —por ejemplo, GitHub con <code>origin</code>— hay que
+    publicar la rama nueva, cambiar la rama predeterminada en la plataforma y recién entonces
+    borrar la vieja. No borres <code>master</code> del remoto antes de cambiar la predeterminada:
+    dejarías el repositorio apuntando a una rama que ya no existe.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — renombrar con remoto (opcional)</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># 1. Renombrar en local
+</span>git branch -m master main
+
+<span class="tk-cm"># 2. Subir main y dejarla como upstream
+</span>git push -u origin main
+
+<span class="tk-cm"># 3. En GitHub: Settings → Branches → cambiar la default a main
+</span>
+<span class="tk-cm"># 4. Recién ahora borrar la rama vieja del remoto
+</span>git push origin --delete master
+</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — el nombre no cambia el historial</span>
+    <p>
+      <code>git branch -m master main</code> mueve la etiqueta <code>main</code> al mismo commit
+      donde estaba <code>master</code>. Los commits, sus hashes y sus fechas no cambian. Lo que
+      cambia es el nombre de la rama y, si tienes remoto, la referencia que hay que volver a
+      publicar.
+    </p>
+  </div>
+
+  <h3>1.6 · Verificar antes de seguir</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — checklist del repositorio</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git status -sb          <span class="tk-cm"># debe decir: ## main
+</span>git log --oneline       <span class="tk-cm"># debe mostrar tu primer commit
+</span>git branch              <span class="tk-cm"># debe mostrar * main
+</span>git remote -v           <span class="tk-cm"># vacío si es local; origin si ya lo subiste
+</span></code></pre>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué hace <code>git init -b main</code>?</p>
+      <button class="opcion" data-op="a">Crea un commit llamado <code>main</code></button>
+      <button class="opcion" data-op="b">Descarga un repositorio de GitHub</button>
+      <button class="opcion" data-op="c">Crea el repositorio y llama <code>main</code> a la rama inicial</button>
+      <button class="opcion" data-op="d">Renombra todos los archivos a <code>main</code></button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Qué comando renombra una rama local <code>master</code> a <code>main</code>?</p>
+      <button class="opcion" data-op="a"><code>git rename master main</code></button>
+      <button class="opcion" data-op="b"><code>git branch -m master main</code></button>
+      <button class="opcion" data-op="c"><code>git switch master main</code></button>
+      <button class="opcion" data-op="d"><code>git commit --amend main</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Qué debes hacer antes de borrar <code>master</code> del remoto?</p>
+      <button class="opcion" data-op="a">Borrar el historial local</button>
+      <button class="opcion" data-op="b">Renombrar todos los commits</button>
+      <button class="opcion" data-op="c">Hacer un <code>git reset --hard</code></button>
+      <button class="opcion" data-op="d">Publicar <code>main</code> y cambiar la rama predeterminada en la plataforma</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> ¿Para qué sirve <code>.gitignore</code>?</p>
+      <button class="opcion" data-op="a">Para que Git no siga archivos temporales, dependencias o secretos</button>
+      <button class="opcion" data-op="b">Para borrar archivos del disco</button>
+      <button class="opcion" data-op="c">Para cambiar el nombre de la rama</button>
+      <button class="opcion" data-op="d">Para subir archivos a GitHub automáticamente</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: stage y commits →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — STAGE Y COMMITS
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · La foto</div>
+    <h2>Stage y commits: elegir qué entra en la <em>foto</em></h2>
+    <p class="proposito">
+      Un commit no debería ser «todo lo que cambié hoy». Debería ser una unidad con sentido: un
+      arreglo, una función, un documento. El staging existe para que elijas exactamente qué entra
+      en cada foto, aunque tengas diez archivos modificados.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: commits atómicos y legibles</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · Mirar antes de preparar</h3>
+
+  <p class="primer-párrafo">
+    <code>git status</code> es el GPS: dice en qué rama estás y qué archivos cambiaron. Pero no
+    muestra el contenido del cambio. Para eso están <code>git diff</code> —lo que aún no está
+    preparado— y <code>git diff --staged</code> —lo que ya está en el staging—.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — los tres diagnósticos</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git status -sb          <span class="tk-cm"># rama y archivos, en formato corto
+</span>git diff                <span class="tk-cm"># cambios en la carpeta que NO están preparados
+</span>git diff --staged       <span class="tk-cm"># cambios que SÍ están preparados para el commit
+</span></code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — <code>git diff</code> no muestra archivos nuevos</span>
+    <p>
+      Un archivo que Git todavía no conoce aparece como <code>??</code> en <code>git status</code>,
+      pero <code>git diff</code> no lo muestra: no hay versión anterior con la que compararlo. Para
+      verlo, prepáralo con <code>git add</code> y usa <code>git diff --staged</code>.
+    </p>
+  </div>
+
+  <h3>2.2 · Preparar archivos</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Formas de preparar cambios</caption>
+      <thead>
+        <tr><th>Comando</th><th>Qué prepara</th><th>Cuándo usarlo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git add app.py</code></td><td>Ese archivo completo</td><td>El caso normal y más seguro</td></tr>
+        <tr><td><code>git add app.py estilos.css</code></td><td>Varios archivos concretos</td><td>Cuando el commit toca esos dos</td></tr>
+        <tr><td><code>git add .</code></td><td>Todo lo nuevo o modificado desde la carpeta actual</td><td>Cuidado: puede incluir archivos que no querías</td></tr>
+        <tr><td><code>git add -p app.py</code></td><td>Solo algunos fragmentos del archivo</td><td>Cuando hay dos cambios distintos en el mismo archivo</td></tr>
+        <tr><td><code>git restore --staged app.py</code></td><td>Saca el archivo del staging sin tocar su contenido</td><td>Te arrepentiste de prepararlo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — <code>git add .</code> no es pecado, pero sí una decisión</span>
+    <p>
+      <code>git add .</code> es cómodo y en un proyecto pequeño suele estar bien. El problema es
+      que también prepara archivos temporales, capturas o credenciales que olvidaste ignorar. Antes
+      de usarlo, mira <code>git status</code>; si hay algo que no debe entrar, agrégalo a
+      <code>.gitignore</code> o prepáralo archivo por archivo.
+    </p>
+  </div>
+
+  <h3>2.3 · El mensaje del commit</h3>
+
+  <p>
+    El mensaje no es un trámite: es lo que vas a leer dentro de seis meses cuando algo falle. La
+    convención más extendida es una primera línea corta, en imperativo, que complete la frase
+    «Este commit va a…»; si hace falta, una línea en blanco y un cuerpo que explique el porqué.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Mensajes que ayudan y mensajes que estorban</caption>
+      <thead>
+        <tr><th>Bueno</th><th>Malo</th><th>Por qué</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>validar el correo antes de guardar</code></td><td><code>cambios</code></td><td>Dice qué hace y en qué parte</td></tr>
+        <tr><td><code>corregir el cálculo del IVA</code></td><td><code>fix</code></td><td>Se entiende sin abrir el diff</td></tr>
+        <tr><td><code>agregar la pantalla de reportes</code></td><td><code>asdf</code></td><td>No hay que adivinar</td></tr>
+        <tr><td><code>documentar cómo arrancar el proyecto</code></td><td><code>update README</code></td><td>Explica el para qué, no solo el archivo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — commit con título y cuerpo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git add app.py validaciones.py
+git commit -m <span class="tk-str">"validar el correo antes de guardar"</span> -m <span class="tk-str">"Rechaza direcciones sin @ y muestra el error junto al campo."</span>
+
+<span class="tk-cm"># Una sola línea también es válida
+</span>git add README.md
+git commit -m <span class="tk-str">"documentar cómo arrancar el proyecto"</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>git commit -am</code> solo mira archivos ya seguidos</span>
+    <p>
+      <code>git commit -am "..."</code> prepara y confirma los archivos que Git ya conoce, pero no
+      incluye archivos nuevos. Es cómodo para un cambio pequeño en un archivo existente; no
+      reemplaza a <code>git add</code> cuando hay archivos nuevos o cambios que quieres separar.
+    </p>
+  </div>
+
+  <h3>2.4 · Commits atómicos, no un revoltijo</h3>
+
+  <p>
+    Un commit atómico hace una sola cosa. Si el commit arregla el precio y además cambia el color
+    del botón, no puedes revertir el precio sin revertir el color. Separar en dos commits no es
+    burocracia: es lo que hace que deshacer sea fácil.
+  </p>
+
+  <div class="diagrama">
+    <div class="nodo cliente">
+      <div class="rotulo-nodo">Commit 1</div>
+      <h5>validar el correo</h5>
+      <p>Un archivo, una intención. Se puede revertir sin tocar el diseño.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">luego</span>
+    </div>
+    <div class="nodo servidor">
+      <div class="rotulo-nodo">Commit 2</div>
+      <h5>cambiar el color del botón</h5>
+      <p>Otro archivo, otra intención. Se puede revertir por separado.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">luego</span>
+    </div>
+    <div class="nodo datos">
+      <div class="rotulo-nodo">Commit 3</div>
+      <h5>documentar el cambio</h5>
+      <p>El README explica lo anterior; no mezcla código con documentación.</p>
+    </div>
+  </div>
+
+  <h3>2.5 · El historial</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — leer el álbum</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git log --oneline --decorate
+git log --oneline --graph --decorate --all
+git show HEAD
+git show HEAD~1:app.py
+</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>HEAD</code></dt>
+      <dd>El commit donde estás ahora. Normalmente es la punta de la rama actual.</dd>
+    </div>
+    <div>
+      <dt><code>HEAD~1</code></dt>
+      <dd>El commit anterior a <code>HEAD</code>. <code>HEAD~2</code> es dos atrás, y así.</dd>
+    </div>
+    <div>
+      <dt><code>--oneline</code></dt>
+      <dd>Una línea por commit: hash corto y mensaje. Es la vista más útil para el día a día.</dd>
+    </div>
+    <div>
+      <dt><code>--graph</code></dt>
+      <dd>Dibuja las ramas y fusiones con caracteres. Se entiende mejor junto a <code>--all</code>.</dd>
+    </div>
+    <div>
+      <dt><code>--decorate</code></dt>
+      <dd>Muestra los nombres de ramas y etiquetas junto a los commits.</dd>
+    </div>
+  </div>
+
+  <h3>2.6 · Laboratorio: la mesa de staging</h3>
+
+  <p>
+    Tienes tres archivos en estados distintos. Prepara uno, sácalo del staging, prepara otro y
+    confirma. Observa cómo cambia <code>git status</code> y qué queda en el historial. El simulador
+    no toca tu computadora: es una mesa de práctica.
+  </p>
+
+  <div class="staging" data-stage>
+    <div class="stage-cabecera">
+      <span class="etiqueta">Laboratorio</span>
+      <h4>Working tree → staging → commit</h4>
+      <p>
+        Usa los botones como si escribieras los comandos. El panel derecho muestra el estado y el
+        historial de commits de la práctica.
+      </p>
+    </div>
+
+    <div class="stage-cuerpo">
+      <div class="stage-archivos" data-stage-archivos></div>
+
+      <div class="stage-panel">
+        <div class="stage-comando" data-stage-comando>$ git status</div>
+        <pre class="stage-salida" data-stage-salida></pre>
+
+        <div class="stage-commit">
+          <input type="text" data-stage-mensaje placeholder="mensaje del commit" aria-label="Mensaje del commit">
+          <button type="button" data-stage-commit>git commit -m</button>
+        </div>
+
+        <pre class="stage-log" data-stage-log></pre>
+        <button type="button" class="stage-btn" data-stage-reset>Reiniciar la práctica</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — qué mirar en el simulador</span>
+    <p>
+      Un archivo <strong>modificado</strong> está en la carpeta pero no en la foto. Al prepararlo
+      pasa a <strong>en staging</strong>; si lo sacas, vuelve a modificado y tu cambio sigue ahí.
+      Solo el commit convierte lo preparado en historial. Si intentas confirmar sin nada preparado,
+      Git te lo dice: no inventa una foto vacía.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué muestra <code>git diff --staged</code>?</p>
+      <button class="opcion" data-op="a">Los cambios que aún no están preparados</button>
+      <button class="opcion" data-op="b">Los cambios que ya están en el staging</button>
+      <button class="opcion" data-op="c">Los commits de otra rama</button>
+      <button class="opcion" data-op="d">Los archivos ignorados</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> Preparaste un archivo por error. ¿Qué comando lo saca del staging sin borrar el cambio?</p>
+      <button class="opcion" data-op="a"><code>git restore app.py</code></button>
+      <button class="opcion" data-op="b"><code>git reset --hard</code></button>
+      <button class="opcion" data-op="c"><code>git commit --amend</code></button>
+      <button class="opcion" data-op="d"><code>git restore --staged app.py</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>3.</strong> ¿Qué hace <code>git commit -am "mensaje"</code>?</p>
+      <button class="opcion" data-op="a">Incluye también archivos nuevos sin seguimiento</button>
+      <button class="opcion" data-op="b">Sube el commit a GitHub</button>
+      <button class="opcion" data-op="c">Prepara y confirma solo archivos ya seguidos</button>
+      <button class="opcion" data-op="d">Borra los archivos no preparados</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> ¿Por qué conviene un commit atómico?</p>
+      <button class="opcion" data-op="a">Porque se puede revertir una sola intención sin arrastrar las demás</button>
+      <button class="opcion" data-op="b">Porque Git lo exige para hacer merge</button>
+      <button class="opcion" data-op="c">Porque ocupa menos espacio en disco</button>
+      <button class="opcion" data-op="d">Porque cambia el hash automáticamente</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: Iniciar el repo y main</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: ramas y merge →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — RAMAS Y MERGE
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · Los caminos</div>
+    <h2>Ramas: trabajar en paralelo y <em>volver</em></h2>
+    <p class="proposito">
+      Una rama es una línea de trabajo independiente. Puedes crear una para probar una idea,
+      cambiar de rama para revisar <code>main</code>, y fusionar cuando la idea esté lista. Si algo
+      sale mal, la rama se borra y <code>main</code> nunca se enteró.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: una rama creada, recorrida y fusionada</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · Una rama es un nombre que apunta a un commit</h3>
+
+  <p class="primer-párrafo">
+    Cuando creas una rama, Git no copia la carpeta ni duplica los archivos. Solo crea un nombre
+    nuevo que apunta al mismo commit donde estás. A partir de ahí, los commits que hagas en esa
+    rama mueven ese nombre, no el de <code>main</code>.
+  </p>
+
+  <div class="diagrama">
+    <div class="nodo cliente">
+      <div class="rotulo-nodo">main</div>
+      <h5>commit A</h5>
+      <p>La base estable. <code>main</code> apunta aquí.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">git switch -c<br>feature</span>
+    </div>
+    <div class="nodo servidor">
+      <div class="rotulo-nodo">feature</div>
+      <h5>commit B</h5>
+      <p>Tu idea nueva. <code>feature</code> avanza; <code>main</code> sigue en A.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">git merge<br>feature</span>
+    </div>
+    <div class="nodo datos">
+      <div class="rotulo-nodo">main</div>
+      <h5>commit A + B</h5>
+      <p>La idea ya está en <code>main</code>. La rama se puede borrar.</p>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — crear, listar y cambiar de rama</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git branch                      <span class="tk-cm"># lista ramas; * marca la actual
+</span>git switch -c feature/saludo    <span class="tk-cm"># crea Y se mueve a la rama nueva
+</span>git branch                      <span class="tk-cm"># * feature/saludo, main
+</span>
+git switch main                 <span class="tk-cm"># vuelve a main
+</span>git switch -                    <span class="tk-cm"># vuelve a la rama anterior
+</span>git switch feature/saludo       <span class="tk-cm"># va a una rama que ya existe
+</span></code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>git switch -c nombre</code></dt>
+      <dd>Crea la rama y te mueve a ella en un solo paso. Es el reemplazo claro de <code>git checkout -b</code>.</dd>
+    </div>
+    <div>
+      <dt><code>git switch nombre</code></dt>
+      <dd>Cambia a una rama existente. Conserva tus cambios sin confirmar si no chocan con la rama de destino.</dd>
+    </div>
+    <div>
+      <dt><code>git switch -</code></dt>
+      <dd>Vuelve a la rama en la que estabas antes. Muy útil para ir y volver entre dos ramas.</dd>
+    </div>
+    <div>
+      <dt><code>git branch -d nombre</code></dt>
+      <dd>Borra una rama ya fusionada. Si no está fusionada, Git se niega; <code>-D</code> fuerza el borrado y puede perder commits.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — cambiar de rama no es magia si tienes cambios sin confirmar</span>
+    <p>
+      Si tienes archivos modificados que chocan con la rama de destino, Git no te deja cambiar y te
+      pide confirmar o guardar esos cambios. No uses <code>--discard-changes</code> para «salir del
+      paso»: eso descarta tu trabajo. Confirma en un commit o guarda con <code>git stash</code>.
+    </p>
+  </div>
+
+  <h3>3.2 · Crear la rama, trabajar y fusionar</h3>
+
+  <p>
+    El flujo diario tiene cuatro momentos: crear la rama, hacer commits allí, volver a
+    <code>main</code> y fusionar. Si <code>main</code> no avanzó mientras trabajabas, el merge es
+    <em>fast-forward</em>: Git solo mueve el nombre hacia adelante, sin crear un commit extra.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — el ciclo completo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># 1. Crear la rama y moverse a ella
+</span>git switch -c feature/saludo
+
+<span class="tk-cm"># 2. Trabajar y confirmar en la rama
+</span><span class="tk-fn">printf</span> <span class="tk-str">'def saludar():\n    return "Hola, mundo"\n'</span> &gt; app.py
+git add app.py
+git commit -m <span class="tk-str">"saludar con el nombre del mundo"</span>
+
+<span class="tk-cm"># 3. Volver a main
+</span>git switch main
+
+<span class="tk-cm"># 4. Fusionar la rama en main
+</span>git merge feature/saludo
+
+<span class="tk-cm"># 5. Si ya está fusionada, borrar la rama local
+</span>git branch -d feature/saludo
+</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>salida típica del merge</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>Updating a1b2c3d..d4e5f6a
+Fast-forward
+ app.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)</code></pre>
+  </div>
+
+  <p>
+    Si quieres que quede un commit de merge explícito —aunque el merge pudiera ser
+    fast-forward— usa <code>--no-ff</code>. Sirve para conservar en el historial el momento en que
+    se integró la rama.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — merge con commit explícito</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git switch main
+git merge --no-ff feature/saludo -m <span class="tk-str">"integrar la rama de saludo"</span>
+</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Fast-forward o merge commit</caption>
+      <thead>
+        <tr><th>Tipo</th><th>Cuándo ocurre</th><th>Qué ves en el historial</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Fast-forward</strong></td><td><code>main</code> no avanzó desde que creaste la rama</td><td>Una línea recta; no hay commit de merge</td></tr>
+        <tr><td><strong>Merge commit</strong></td><td><code>main</code> y la rama avanzaron por separado, o usas <code>--no-ff</code></td><td>Un commit con dos padres y un mensaje de integración</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>3.3 · Navegar y ver el mapa</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — el mapa de ramas</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git branch -a                   <span class="tk-cm"># locales y remotas
+</span>git log --oneline --graph --decorate --all
+git switch -                    <span class="tk-cm"># alterna entre las dos últimas ramas
+</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>cómo se ve un merge en el grafo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>*   c68bda2 (HEAD -&gt; main) integrar la rama de saludo
+|\
+| * fada89b (feature/saludo) saludar con el nombre del mundo
+|/
+* ceb9f25 crear el archivo inicial de la aplicación</code></pre>
+  </div>
+
+  <p>
+    La línea vertical de la izquierda es la rama que se separó; la diagonal es el momento en que se
+    integró. No necesitas memorizar el dibujo: con <code>git log --graph --all</code> puedes
+    reconstruir qué pasó antes de borrar una rama.
+  </p>
+
+  <h3>3.4 · Cuando las dos ramas tocan la misma línea</h3>
+
+  <p>
+    Un merge automático funciona si los cambios están en archivos o líneas distintas. Si las dos
+    ramas modificaron la misma línea, Git no adivina: marca el conflicto y te pide decidir. No es un
+    error de Git; es una decisión humana.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — el merge se detiene</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git switch main
+git merge feature/precio
+<span class="tk-cm"># CONFLICT (content): Merge conflict in app.py
+# Automatic merge failed; fix conflicts and then commit the result.
+</span>
+git status
+<span class="tk-cm"># both modified: app.py
+</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>app.py — las marcas del conflicto</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">precio_final</span>(precio):
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; <span class="tk-cls">HEAD</span>
+    <span class="tk-kw">return</span> precio * <span class="tk-num">1.19</span>
+=======
+    <span class="tk-kw">return</span> precio * <span class="tk-num">1.21</span>
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/precio
+</code></pre>
+  </div>
+
+  <p>
+    El bloque entre <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> y <code>=======</code> es lo que
+    hay en tu rama actual; el bloque entre <code>=======</code> y
+    <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> es lo que trae la otra rama. Edita el archivo, deja la
+    versión correcta, borra las tres marcas, prepara y confirma.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — resolver y cerrar el merge</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Después de editar app.py y quitar las marcas:
+</span>git add app.py
+git commit -m <span class="tk-str">"resolver el conflicto del precio final"</span>
+
+<span class="tk-cm"># Si te arrepientes antes de terminar:
+</span>git merge --abort
+</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — <code>git merge --continue</code> también existe</span>
+    <p>
+      En un conflicto, Git deja el merge «a medias». <code>git commit</code> lo cierra con el
+      mensaje de merge; <code>git merge --continue</code> hace lo mismo y es más explícito.
+      <code>git merge --abort</code> vuelve al estado anterior al merge y no conserva la resolución
+      a medias.
+    </p>
+  </div>
+
+  <h3>3.5 · Borrar la rama sin perder la foto</h3>
+
+  <p>
+    Una rama fusionada se puede borrar con <code>git branch -d</code>: sus commits ya están en
+    <code>main</code>, así que no se pierde nada. Si la rama no está fusionada, Git se niega para
+    protegerte. <code>-D</code> fuerza el borrado y puede dejar commits inalcanzables; si de verdad
+    quieres descartarla, hazlo con intención, no por costumbre.
+  </p>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace <code>git switch -c feature/saludo</code>?</p>
+      <button class="opcion" data-op="a">Solo lista la rama</button>
+      <button class="opcion" data-op="b">Crea la rama y se mueve a ella</button>
+      <button class="opcion" data-op="c">Fusiona la rama en main</button>
+      <button class="opcion" data-op="d">Borra la rama</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Cuándo ocurre un fast-forward?</p>
+      <button class="opcion" data-op="a">Cuando hay un conflicto</button>
+      <button class="opcion" data-op="b">Cuando usas <code>--no-ff</code></button>
+      <button class="opcion" data-op="c">Cuando la rama tiene otro remoto</button>
+      <button class="opcion" data-op="d">Cuando main no avanzó desde que creaste la rama</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> El merge se detiene por un conflicto. ¿Qué debes hacer?</p>
+      <button class="opcion" data-op="a">Editar el archivo, quitar las marcas, <code>git add</code> y cerrar el merge</button>
+      <button class="opcion" data-op="b">Borrar la rama y empezar de nuevo</button>
+      <button class="opcion" data-op="c">Ejecutar <code>git reset --hard</code> siempre</button>
+      <button class="opcion" data-op="d">Subir el conflicto a GitHub sin resolverlo</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Qué hace <code>git switch -</code>?</p>
+      <button class="opcion" data-op="a">Borra la rama anterior</button>
+      <button class="opcion" data-op="b">Crea una rama sin nombre</button>
+      <button class="opcion" data-op="c">Vuelve a la rama en la que estabas antes</button>
+      <button class="opcion" data-op="d">Fusiona la rama actual con main</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: Stage y commits</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de comandos</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija la
+      diferencia entre preparar, confirmar y deshacer.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora.
+    </p>
+
+    <div class="reglas">
+      <div class="regla">
+        <h4>Regla 20-20-20</h4>
+        <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+      </div>
+      <div class="regla">
+        <h4>Movimiento</h4>
+        <p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p>
+      </div>
+      <div class="regla">
+        <h4>Hidratación</h4>
+        <p>Un vaso de agua. La lectura densa agota más de lo que parece.</p>
+      </div>
+      <div class="regla">
+        <h4>Bitácora</h4>
+        <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora de comandos (5 minutos)</h3>
+
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿qué diferencia hay entre <code>git add</code> y <code>git commit</code>?</li>
+    <li><strong>En una frase:</strong> ¿por qué <code>git switch -c</code> es más claro que <code>git checkout -b</code>?</li>
+    <li><strong>En una frase:</strong> ¿cuándo usarías <code>git revert</code> en vez de <code>git reset</code>?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+
+  <div class="definiciones">
+    <div>
+      <dt>Working tree</dt>
+      <dd>Los archivos de tu carpeta tal como están ahora, con o sin cambios guardados.</dd>
+    </div>
+    <div>
+      <dt>Staging area</dt>
+      <dd>La bandeja de cambios elegidos para el próximo commit.</dd>
+    </div>
+    <div>
+      <dt>Commit</dt>
+      <dd>Una foto del proyecto con un hash, un autor, una fecha y un mensaje.</dd>
+    </div>
+    <div>
+      <dt>HEAD</dt>
+      <dd>El commit o la rama donde estás ahora. Es el «tú estás aquí» del historial.</dd>
+    </div>
+    <div>
+      <dt>Rama</dt>
+      <dd>Un nombre que apunta a un commit; permite líneas de trabajo paralelas.</dd>
+    </div>
+    <div>
+      <dt>Fast-forward</dt>
+      <dd>Un merge que solo adelanta la rama, sin crear un commit de fusión.</dd>
+    </div>
+    <div>
+      <dt>Conflicto</dt>
+      <dd>Dos ramas modificaron la misma zona; Git pide una decisión humana.</dd>
+    </div>
+    <div>
+      <dt><code>restore</code></dt>
+      <dd>Restaura archivos desde el staging o desde un commit; no cambia de rama.</dd>
+    </div>
+    <div>
+      <dt><code>revert</code></dt>
+      <dd>Crea un commit nuevo que deshace otro, sin reescribir el historial compartido.</dd>
+    </div>
+    <div>
+      <dt><code>reflog</code></dt>
+      <dd>El registro local de todo lo que movió HEAD; sirve para rescatar commits.</dd>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: Ramas y merge</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: deshacer sin miedo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — DESHACER SIN MIEDO
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · La red de seguridad</div>
+    <h2>Deshacer sin miedo: cada desastre tiene su <em>comando</em></h2>
+    <p class="proposito">
+      La pregunta no es «¿cómo borro el último commit?», sino «¿qué quiero conservar?». Esta unidad
+      ordena las seis situaciones más comunes del día a día y te da el comando moderno, lo que
+      conserva y el riesgo de cada uno.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: la tabla de decisiones interiorizada</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · La tabla que resuelve el 90 %</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Seis situaciones, seis comandos</caption>
+      <thead>
+        <tr><th>Situación</th><th>Comando</th><th>Qué conserva</th><th>Riesgo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>«Dañé <code>app.py</code> y quiero volver a la última foto»</td>
+          <td><code>git restore app.py</code></td>
+          <td>La versión del staging (normalmente el último commit); descarta lo no confirmado</td>
+          <td><strong>Alto:</strong> los cambios sin guardar desaparecen</td>
+        </tr>
+        <tr>
+          <td>«Agregué al staging algo que no era»</td>
+          <td><code>git restore --staged app.py</code></td>
+          <td>Tu cambio en la carpeta; solo lo saca de la bandeja</td>
+          <td>Bajo: no borra el trabajo</td>
+        </tr>
+        <tr>
+          <td>«El commit quedó con un mensaje feo»</td>
+          <td><code>git commit --amend -m "nuevo"</code></td>
+          <td>El contenido; reescribe el último commit</td>
+          <td><strong>Medio:</strong> no lo uses si ya lo compartiste</td>
+        </tr>
+        <tr>
+          <td>«Me sobró el último commit (aún no lo he compartido)»</td>
+          <td><code>git reset --soft HEAD~1</code></td>
+          <td>Los cambios, en el staging, intactos</td>
+          <td><strong>Medio:</strong> reescribe el historial local</td>
+        </tr>
+        <tr>
+          <td>«Hay que deshacer un commit que ya compartieron»</td>
+          <td><code>git revert &lt;hash&gt;</code></td>
+          <td>El historial completo; crea un commit inverso</td>
+          <td>Bajo para el equipo; puede pedir resolver conflictos</td>
+        </tr>
+        <tr>
+          <td>«Hice algo horrible y no sé qué»</td>
+          <td><code>git reflog</code></td>
+          <td>El registro de dónde estabas; permite volver</td>
+          <td>El reflog es local y no es eterno</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — local y compartido no se deshacen igual</span>
+    <p>
+      Un commit que solo existe en tu computadora se puede reescribir con <code>amend</code> o
+      <code>reset</code>. Un commit que ya está en la rama compartida no se reescribe: se deshace
+      hacia adelante con <code>revert</code>. La regla es simple: si alguien más pudo descargarlo,
+      no cambies su historia; agrega un commit nuevo.
+    </p>
+  </div>
+
+  <h3>5.2 · Situación por situación</h3>
+
+  <h4>1. Descartar cambios de un archivo: <code>git restore</code></h4>
+
+  <p>
+    <code>git restore app.py</code> copia la versión que está en el staging sobre tu archivo de
+    trabajo. Si no habías preparado nada, esa versión es la del último commit. Es la forma moderna
+    de <code>git checkout -- app.py</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — descartar lo no confirmado</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git status -sb
+<span class="tk-cm">#  M app.py
+</span>
+git restore app.py
+git status -sb
+<span class="tk-cm"># (sin cambios)
+</span>
+<span class="tk-cm"># Si quieres recuperar la versión de un commit concreto:
+</span>git restore --source=HEAD~1 app.py
+</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — <code>restore</code> no pregunta</span>
+    <p>
+      Los cambios que no están en un commit ni en el staging se sobrescriben sin confirmación. Si
+      no estás seguro, antes de restaurar copia el archivo a otro nombre o crea un commit temporal.
+      Git no puede recuperar lo que nunca guardó.
+    </p>
+  </div>
+
+  <h4>2. Sacar algo del staging: <code>git restore --staged</code></h4>
+
+  <p>
+    Este comando saca el archivo del staging sin tocar su contenido. Si era un archivo existente,
+    vuelve a «modificado»; si era nuevo, vuelve a «sin seguimiento». Es el backspace del staging: el
+    archivo sigue en tu carpeta, con tu cambio intacto.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — despreparar sin borrar</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git add app.py
+git status -sb
+<span class="tk-cm"># M  app.py
+</span>
+git restore --staged app.py
+git status -sb
+<span class="tk-cm">#  M app.py
+</span></code></pre>
+  </div>
+
+  <h4>3. Corregir el último mensaje: <code>git commit --amend</code></h4>
+
+  <p>
+    <code>--amend</code> reemplaza el último commit por uno nuevo. Si solo cambias el mensaje,
+    usas <code>-m</code>; si además quieres incluir un archivo que olvidaste, lo preparas antes y
+    usas <code>--amend --no-edit</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — rehacer el último commit</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Solo cambiar el mensaje
+</span>git commit --amend -m <span class="tk-str">"validar el correo antes de guardar"</span>
+
+<span class="tk-cm"># Agregar un archivo olvidado, sin cambiar el mensaje
+</span>git add validaciones.py
+git commit --amend --no-edit
+</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — <code>amend</code> cambia el hash</span>
+    <p>
+      El commit corregido es un commit distinto, con otro hash. Si ya lo habías subido, tu rama
+      local y la remota dejan de coincidir. No uses <code>push --force</code> para tapar eso sin
+      coordinar: quien haya descargado el commit viejo tendrá problemas. Si ya es público, deja el
+      mensaje feo y sigue; o usa una corrección coordinada.
+    </p>
+  </div>
+
+  <h4>4. Deshacer el último commit local: <code>git reset --soft</code></h4>
+
+  <p>
+    <code>git reset --soft HEAD~1</code> mueve la rama un commit hacia atrás, pero deja los cambios
+    de ese commit en el staging. El commit desaparece del historial y el trabajo sigue ahí, listo
+    para volver a confirmarlo con otro mensaje o en otro commit.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — sacar la última foto sin perder el contenido</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git reset --soft HEAD~1
+git status
+<span class="tk-cm"># Changes to be committed:
+#        modified:   app.py
+</span>
+git commit -m <span class="tk-str">"mensaje mejor pensado"</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>--soft</code>, <code>--mixed</code> y <code>--hard</code></span>
+    <p>
+      <code>--soft</code> deja los cambios en el staging; <code>--mixed</code> (el modo por
+      defecto) los deja en la carpeta sin preparar; <code>--hard</code> los borra. Para «me sobró el
+      commit pero quiero el trabajo», usa <code>--soft</code>. <code>--hard</code> es para cuando
+      de verdad quieres descartar todo.
+    </p>
+  </div>
+
+  <h4>5. Deshacer un commit compartido: <code>git revert</code></h4>
+
+  <p>
+    <code>git revert &lt;hash&gt;</code> no borra el commit: crea uno nuevo que aplica los cambios
+    inversos. El historial sigue completo y quien ya descargó el commit original no pierde nada.
+    Es la opción correcta cuando el commit ya está en una rama compartida.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — revertir hacia adelante</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git log --oneline
+<span class="tk-cm"># d4e5f6a cambiar el precio del teclado
+# a1b2c3d crear la pantalla de inicio
+</span>
+git revert d4e5f6a
+<span class="tk-cm"># Abre el editor con el mensaje "Revert ..."; guarda y cierra.
+</span>
+git log --oneline
+<span class="tk-cm"># 9f2d1c4 Revert "cambiar el precio del teclado"
+# d4e5f6a cambiar el precio del teclado
+</span></code></pre>
+  </div>
+
+  <p>
+    Si el commit es un merge, <code>revert</code> necesita saber cuál de los dos padres invertir:
+    <code>git revert -m 1 &lt;hash&gt;</code>. Es un caso menos frecuente; lo importante es no
+    borrar el merge a la fuerza.
+  </p>
+
+  <h4>6. «Hice algo horrible»: <code>git reflog</code></h4>
+
+  <p>
+    El reflog es el historial de todo lo que movió <code>HEAD</code>, incluso cosas que ya no están
+    en ninguna rama: commits, cambios de rama, resets. Si hiciste un <code>reset --hard</code> por
+    error, ahí puedes encontrar el commit perdido.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — encontrar y rescatar</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git reflog
+<span class="tk-cm"># 9f2d1c4 HEAD@{0}: reset: moving to HEAD~1
+# a1b2c3d HEAD@{1}: commit: agregar el botón de guardar
+# 7e4f2a1 HEAD@{2}: commit: crear la pantalla de inicio
+</span>
+<span class="tk-cm"># Opción segura: crear una rama en el commit perdido
+</span>git switch -c rescate HEAD@{<span class="tk-num">1</span>}
+
+<span class="tk-cm"># Opción directa: mover la rama actual (descarta lo no confirmado)
+</span>git reset --hard HEAD@{<span class="tk-num">1</span>}
+</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el reflog es local y caduca</span>
+    <p>
+      El reflog vive en tu repositorio, no se sube a GitHub y Git lo va limpiando con el tiempo
+      (por defecto, 90 días para entradas alcanzables y 30 para las que no). No es una copia de
+      seguridad eterna: si el proyecto es importante, además de Git conviene un respaldo real.
+    </p>
+  </div>
+
+  <h3>5.3 · Laboratorio: ¿qué comando uso?</h3>
+
+  <p>
+    Lee la situación, elige el caso y compara. El panel muestra el comando, qué conserva y el
+    riesgo. No hay una sola respuesta «para todo»: la decisión depende de si el commit ya es
+    público y de si quieres conservar los cambios.
+  </p>
+
+  <div class="deshacer" data-undo>
+    <div class="undo-cabecera">
+      <span class="etiqueta">Laboratorio de decisiones</span>
+      <h4>Seis desastres, seis salidas</h4>
+      <p>
+        Elige la situación que se parezca a la tuya. El panel te dice qué hace el comando, qué
+        conserva y qué puedes perder.
+      </p>
+    </div>
+
+    <div class="undo-cuerpo">
+      <div class="undo-escenarios">
+        <button type="button" class="undo-caso activo" data-undo-caso="restore"><span class="undo-caso-n">01</span> Dañé <code>app.py</code> y quiero volver a la última foto</button>
+        <button type="button" class="undo-caso" data-undo-caso="unstage"><span class="undo-caso-n">02</span> Agregué al staging algo que no era</button>
+        <button type="button" class="undo-caso" data-undo-caso="amend"><span class="undo-caso-n">03</span> El commit quedó con un mensaje feo</button>
+        <button type="button" class="undo-caso" data-undo-caso="soft"><span class="undo-caso-n">04</span> Me sobró el último commit (aún no lo compartí)</button>
+        <button type="button" class="undo-caso" data-undo-caso="revert"><span class="undo-caso-n">05</span> Hay que deshacer un commit que ya compartieron</button>
+        <button type="button" class="undo-caso" data-undo-caso="reflog"><span class="undo-caso-n">06</span> Hice algo horrible y no sé qué</button>
+      </div>
+
+      <div class="undo-panel">
+        <p class="undo-titulo" data-undo-titulo></p>
+        <code class="undo-comando" data-undo-comando></code>
+        <p class="undo-explica" data-undo-explica></p>
+        <div class="undo-riesgo" data-undo-riesgo></div>
+        <pre class="undo-terminal" data-undo-terminal></pre>
+      </div>
+    </div>
+  </div>
+
+  <h3>5.4 · Las tres reglas de oro</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>Antes de deshacer, mira <code>git status</code> y <code>git log --oneline</code>: necesitas saber qué tienes y dónde estás.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p>Si el commit ya es público, no reescribas: <code>git revert</code>. Si es solo tuyo, <code>amend</code> o <code>reset --soft</code>.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>Si tienes dudas, crea una rama de rescate antes de usar <code>--hard</code>. Una rama extra no estorba; un commit perdido sí.</p>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> Quieres descartar los cambios no confirmados de <code>app.py</code>. ¿Qué usas?</p>
+      <button class="opcion" data-op="a"><code>git restore --staged app.py</code></button>
+      <button class="opcion" data-op="b"><code>git restore app.py</code></button>
+      <button class="opcion" data-op="c"><code>git revert app.py</code></button>
+      <button class="opcion" data-op="d"><code>git commit --amend app.py</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> Ya compartiste el commit y hay que deshacerlo. ¿Qué es seguro?</p>
+      <button class="opcion" data-op="a"><code>git reset --hard HEAD~1</code></button>
+      <button class="opcion" data-op="b"><code>git commit --amend</code></button>
+      <button class="opcion" data-op="c"><code>git push --force</code></button>
+      <button class="opcion" data-op="d"><code>git revert &lt;hash&gt;</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué conserva <code>git reset --soft HEAD~1</code>?</p>
+      <button class="opcion" data-op="a">Los cambios del commit, en el staging</button>
+      <button class="opcion" data-op="b">Nada: borra los archivos</button>
+      <button class="opcion" data-op="c">El commit y sus cambios, sin tocarlos</button>
+      <button class="opcion" data-op="d">Solo el mensaje del commit</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Para qué sirve <code>git reflog</code>?</p>
+      <button class="opcion" data-op="a">Para subir commits a GitHub</button>
+      <button class="opcion" data-op="b">Para borrar ramas viejas</button>
+      <button class="opcion" data-op="c">Para encontrar el commit donde estabas después de un reset o un cambio de rama</button>
+      <button class="opcion" data-op="d">Para cambiar el mensaje del último commit</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: errores y rutina diaria →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — ERRORES Y RUTINA DIARIA
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · El día a día</div>
+    <h2>Errores comunes y una rutina de <em>diez comandos</em></h2>
+    <p class="proposito">
+      Git no falla para hacerte la vida difícil: te protege de perder trabajo. Casi todos los
+      mensajes de error se resuelven mirando el estado, leyendo la pista y eligiendo entre conservar
+      o descartar. Esta unidad te da la rutina mínima y la tabla de emergencia.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: rutina diaria y tabla de errores</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · <code>git status</code> es el GPS</h3>
+
+  <p class="primer-párrafo">
+    Antes de cualquier comando, mira dónde estás y qué cambió. <code>git status -sb</code> te da la
+    rama y los archivos en dos columnas; <code>git log --oneline --decorate -5</code> te dice si tus
+    últimos commits son los que esperabas. Con esas dos fotos evitas el 80 % de los errores.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — la rutina de cada día</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git status -sb
+git log --oneline --decorate -5
+
+<span class="tk-cm"># Trabajar en una rama, no directamente en main
+</span>git switch main
+git pull --ff-only
+git switch -c feature/mi-cambio
+
+<span class="tk-cm"># Editar, revisar y confirmar
+</span>git diff
+git add app.py
+git commit -m <span class="tk-str">"describir el cambio en imperativo"</span>
+
+<span class="tk-cm"># Integrar y publicar
+</span>git switch main
+git merge feature/mi-cambio
+git push -u origin main
+</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — <code>pull --ff-only</code> evita merges sorpresa</span>
+    <p>
+      <code>git pull --ff-only</code> solo avanza si tu rama puede adelantarse sin crear un merge.
+      Si hay divergencia, te avisa y decides: <code>git pull --rebase</code> para reaplicar tus
+      commits encima, o un merge explícito. Es más predecible que un <code>pull</code> que a veces
+      crea un commit de merge sin que lo pidas.
+    </p>
+  </div>
+
+  <h3>6.2 · La tabla de emergencia</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Del mensaje al comando</caption>
+      <thead>
+        <tr><th>Lo que ves</th><th>Qué significa</th><th>Qué hacer</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>fatal: not a git repository</code></td>
+          <td>Estás en una carpeta sin <code>.git</code></td>
+          <td><code>cd</code> a la carpeta correcta o <code>git init -b main</code></td>
+        </tr>
+        <tr>
+          <td><code>nothing to commit, working tree clean</code></td>
+          <td>No hay cambios preparados</td>
+          <td>Edita, <code>git add</code> y vuelve a confirmar</td>
+        </tr>
+        <tr>
+          <td><code>Your local changes would be overwritten</code></td>
+          <td>Cambiar de rama pisaría archivos sin confirmar</td>
+          <td>Confirma, o guarda con <code>git stash</code>; no uses <code>--force</code> a ciegas</td>
+        </tr>
+        <tr>
+          <td><code>You are in 'detached HEAD' state</code></td>
+          <td>Estás en un commit, no en una rama</td>
+          <td><code>git switch main</code>, o crea una rama si quieres conservar lo que hagas</td>
+        </tr>
+        <tr>
+          <td><code>CONFLICT (content)</code></td>
+          <td>Dos ramas tocaron la misma zona</td>
+          <td>Edita, quita las marcas, <code>git add</code> y cierra el merge</td>
+        </tr>
+        <tr>
+          <td><code>failed to push some refs</code></td>
+          <td>El remoto tiene commits que no tienes</td>
+          <td><code>git pull --ff-only</code> o <code>--rebase</code>; no fuerces sin coordinar</td>
+        </tr>
+        <tr>
+          <td><code>Author identity unknown</code></td>
+          <td>Falta <code>user.name</code> o <code>user.email</code></td>
+          <td>Configura con <code>git config --global</code> y repite el commit</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>6.3 · Errores que se arreglan con calma</h3>
+
+  <h4>Commit en la rama equivocada</h4>
+
+  <p>
+    Hiciste un commit en <code>main</code> que debía ir en una rama. No hace falta borrar nada:
+    crea la rama en ese commit, vuelve a <code>main</code> y retrocede un paso. El commit queda en
+    la rama nueva.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — mover el commit a una rama</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># El commit está en main, pero debía estar en una rama
+</span>git switch -c feature/mi-cambio   <span class="tk-cm"># crea la rama apuntando al commit actual
+</span>git switch main
+git reset --hard HEAD~1            <span class="tk-cm"># mueve main un commit atrás
+</span>
+<span class="tk-cm"># El commit sigue vivo en feature/mi-cambio
+</span></code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — <code>reset --hard</code> borra cambios no confirmados</span>
+    <p>
+      En el paso anterior, <code>--hard</code> descarta lo que tengas sin confirmar en
+      <code>main</code>. Si hay trabajo suelto, confírmalo o guárdalo con <code>git stash</code>
+      antes. Para mover la rama sin tocar archivos, puedes usar <code>git reset --soft HEAD~1</code>
+      y luego limpiar el staging.
+    </p>
+  </div>
+
+  <h4>Guardar cambios sin confirmar: <code>git stash</code></h4>
+
+  <p>
+    Si necesitas cambiar de rama y no quieres confirmar todavía, guarda el trabajo en un cajón
+    temporal y recógelo después. No es un commit y no aparece en el historial de la rama.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — el cajón temporal</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git stash push -m <span class="tk-str">"cambio a medias"</span>
+git switch main
+<span class="tk-cm"># ...haces lo que necesitas...
+</span>git switch feature/mi-cambio
+git stash pop
+
+git stash list
+</code></pre>
+  </div>
+
+  <h4>Archivos que no deben entrar</h4>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Qué ignorar y qué nunca confirmar</caption>
+      <thead>
+        <tr><th>Archivo</th><th>Por qué</th><th>Qué hacer</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>__pycache__/</code>, <code>*.pyc</code></td><td>Se regeneran solos</td><td>Agregar a <code>.gitignore</code></td></tr>
+        <tr><td><code>.venv/</code>, <code>node_modules/</code></td><td>Dependencias pesadas y reproducibles</td><td>Ignorar; documentar cómo instalarlas</td></tr>
+        <tr><td><code>.env</code>, claves, tokens</td><td>Secretos: no deben quedar en el historial</td><td>Ignorar y usar variables de entorno</td></tr>
+        <tr><td>Capturas, videos, binarios grandes</td><td>Aumentan mucho el tamaño del repositorio</td><td>Guardar fuera o usar almacenamiento aparte</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>6.4 · La rutina de diez comandos</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p><code>git status -sb</code> — saber dónde estás.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p><code>git switch main</code> — volver a la base.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p><code>git pull --ff-only</code> — traer lo último sin merges sorpresa.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p><code>git switch -c feature/algo</code> — trabajar en una rama.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p><code>git diff</code> — revisar antes de preparar.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p><code>git add archivo</code> — elegir qué entra.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p><code>git commit -m "..."</code> — guardar la foto con un mensaje útil.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">08</div>
+      <p><code>git switch main</code> y <code>git merge feature/algo</code> — integrar.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">09</div>
+      <p><code>git push</code> — compartir, si hay remoto.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">10</div>
+      <p><code>git log --oneline --graph --all</code> — comprobar que el mapa tiene sentido.</p>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> Aparece <code>fatal: not a git repository</code>. ¿Qué revisas primero?</p>
+      <button class="opcion" data-op="a">El color del editor</button>
+      <button class="opcion" data-op="b">La velocidad de internet</button>
+      <button class="opcion" data-op="c">Que estás en la carpeta correcta y que existe <code>.git</code></button>
+      <button class="opcion" data-op="d">El mensaje del último commit</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> Quieres cambiar de rama, pero Git dice que tus cambios se sobrescribirían. ¿Qué haces?</p>
+      <button class="opcion" data-op="a">Usar <code>--force</code> sin mirar</button>
+      <button class="opcion" data-op="b">Confirmar los cambios o guardarlos con <code>git stash</code></button>
+      <button class="opcion" data-op="c">Borrar la carpeta <code>.git</code></button>
+      <button class="opcion" data-op="d">Ejecutar <code>git reset --hard</code> y seguir</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Qué significa estar en «detached HEAD»?</p>
+      <button class="opcion" data-op="a">Que el repositorio está corrupto</button>
+      <button class="opcion" data-op="b">Que no hay internet</button>
+      <button class="opcion" data-op="c">Que el commit no tiene mensaje</button>
+      <button class="opcion" data-op="d">Que estás en un commit, no en una rama; los commits nuevos pueden quedar sin rama</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> ¿Para qué sirve <code>git stash</code>?</p>
+      <button class="opcion" data-op="a">Guardar cambios sin confirmar para recogerlos después</button>
+      <button class="opcion" data-op="b">Subir commits a GitHub</button>
+      <button class="opcion" data-op="c">Borrar una rama fusionada</button>
+      <button class="opcion" data-op="d">Cambiar el mensaje del commit</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: Deshacer sin miedo</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>Tu propio <em>historial</em></h2>
+    <p class="proposito">
+      En 45 minutos vas a crear un repositorio real, hacer commits con sentido, abrir una rama,
+      fusionarla y practicar las seis salidas de emergencia. Al final tendrás un historial que
+      puedes explicar y un comando para cada desastre.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller integrador</b></span>
+      <span>🧭 <b>Producto: repositorio con rama fusionada y rescate</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El encargo</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Taller</span>
+      <h3>La bitácora que se puede deshacer</h3>
+    </div>
+
+    <p>
+      Crea un repositorio llamado <code>bitacora-git</code> en una carpeta nueva. Debe tener al
+      menos tres commits, una rama <code>feature/deshacer</code> fusionada en <code>main</code> y
+      una práctica documentada de cada comando de la tabla. No uses la carpeta de tus entregas:
+      este taller incluye borrados y resets a propósito.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>Una carpeta vacía y Git 2.23 o superior</td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>Repositorio local con <code>main</code>, una rama fusionada y un commit revertido</td>
+          </tr>
+          <tr>
+            <td><strong>Commits mínimos</strong></td>
+            <td>Tres, con mensajes en imperativo y contenido distinto</td>
+          </tr>
+          <tr>
+            <td><strong>Rama</strong></td>
+            <td><code>feature/deshacer</code>, creada con <code>git switch -c</code></td>
+          </tr>
+          <tr>
+            <td><strong>Práctica de deshacer</strong></td>
+            <td><code>restore</code>, <code>restore --staged</code>, <code>amend</code>, <code>reset --soft</code>, <code>revert</code>, <code>reflog</code></td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>No uses <code>push --force</code> ni <code>reset --hard</code> sobre trabajo sin confirmar</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong>Repositorio</strong> con <code>git init -b main</code> y al menos tres commits.</li>
+      <li><strong>Rama</strong> <code>feature/deshacer</code> con un commit propio, fusionada en <code>main</code>.</li>
+      <li><strong>Un commit revertido</strong> con <code>git revert</code> y su mensaje visible.</li>
+      <li><strong>Captura o texto</strong> de <code>git log --oneline --graph --all</code>.</li>
+      <li><strong>Tabla completada</strong> con los seis comandos, qué conservan y cuándo no usarlos.</li>
+      <li><strong>Un párrafo</strong> de 100–150 palabras: qué te costó y qué harías distinto.</li>
+    </ol>
+  </div>
+
+  <h3>7.2 · Paso a paso</h3>
+
+  <h4>Parte A — El repositorio y los commits</h4>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — crear la base</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>mkdir bitacora-git
+<span class="tk-fn">cd</span> bitacora-git
+git init -b main
+
+<span class="tk-cm"># Verifica que no quedó master
+</span>git branch
+
+<span class="tk-fn">printf</span> <span class="tk-str">'# Bitácora de Git\n'</span> &gt; README.md
+git add README.md
+git commit -m <span class="tk-str">"crear la bitácora del proyecto"</span>
+
+<span class="tk-fn">printf</span> <span class="tk-str">'def saludar():\n    return "Hola"\n'</span> &gt; app.py
+git add app.py
+git commit -m <span class="tk-str">"agregar el saludo inicial"</span>
+
+<span class="tk-fn">printf</span> <span class="tk-str">'__pycache__/\n*.pyc\n'</span> &gt; .gitignore
+git add .gitignore
+git commit -m <span class="tk-str">"ignorar archivos temporales de Python"</span>
+</code></pre>
+  </div>
+
+  <h4>Parte B — La rama y el merge</h4>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — una rama con una mejora</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git switch -c feature/deshacer
+
+<span class="tk-fn">printf</span> <span class="tk-str">'def saludar(nombre):\n    return f"Hola, {nombre}"\n'</span> &gt; app.py
+git add app.py
+git commit -m <span class="tk-str">"saludar por nombre"</span>
+
+git switch main
+git merge --no-ff feature/deshacer -m <span class="tk-str">"integrar el saludo por nombre"</span>
+git branch -d feature/deshacer
+
+git log --oneline --graph --decorate --all
+</code></pre>
+  </div>
+
+  <h4>Parte C — Las seis prácticas</h4>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — practicar sin miedo (en el repo del taller)</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># 1. restore: dañar app.py y volver al último commit
+</span><span class="tk-fn">printf</span> <span class="tk-str">'esto no era\n'</span> &gt; app.py
+git status -sb
+git restore app.py
+git status -sb
+
+<span class="tk-cm"># 2. restore --staged: preparar y despreparar
+</span><span class="tk-fn">printf</span> <span class="tk-str">'# nota temporal\n'</span> &gt;&gt; README.md
+git add README.md
+git status -sb
+git restore --staged README.md
+git status -sb
+git restore README.md
+
+<span class="tk-cm"># 3. amend: corregir el último mensaje
+</span>git commit --amend -m <span class="tk-str">"ignorar archivos temporales de Python y caché"</span>
+
+<span class="tk-cm"># 4. reset --soft: deshacer el último commit conservando el cambio
+</span>git reset --soft HEAD~1
+git status -sb
+git commit -m <span class="tk-str">"ignorar archivos temporales de Python"</span>
+
+<span class="tk-cm"># 5. revert: deshacer un commit que ya está en main
+</span><span class="tk-fn">printf</span> <span class="tk-str">'version temporal\n'</span> &gt;&gt; README.md
+git add README.md
+git commit -m <span class="tk-str">"agregar una nota temporal"</span>
+git revert --no-edit HEAD
+
+<span class="tk-cm"># 6. reflog: rescatar el commit antes del revert
+</span>git reflog -5
+git switch -c rescate HEAD@{<span class="tk-num">1</span>}
+git log --oneline -3
+</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el taller es un laboratorio, no producción</span>
+    <p>
+      Aquí puedes usar <code>--soft</code>, <code>revert</code> y <code>reflog</code> sin miedo
+      porque el repositorio es tuyo y no lo compartiste. En un proyecto real, antes de un
+      <code>reset</code> o un <code>amend</code> verifica que el commit no esté en la rama
+      compartida. La regla de oro no cambia: si ya lo tienen otros, <code>revert</code>.
+    </p>
+  </div>
+
+  <h3>7.3 · Verificación</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — checklist final</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>git status -sb                 <span class="tk-cm"># ## main, sin cambios pendientes
+</span>git log --oneline --decorate   <span class="tk-cm"># al menos 3 commits + revert
+</span>git log --oneline --graph --all
+git branch -a                  <span class="tk-cm"># main y, si la dejaste, rescate
+</span>git reflog -10                 <span class="tk-cm"># se ve el historial de movimientos
+</span></code></pre>
+  </div>
+
+  <h3>7.4 · Rúbrica de autoevaluación</h3>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación de Git</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Inicio</td>
+          <td>No hay repositorio</td>
+          <td>Hay repo, pero la rama se llama <code>master</code></td>
+          <td><code>git init -b main</code> o renombrada correctamente</td>
+        </tr>
+        <tr>
+          <td>Commits</td>
+          <td>Uno solo o mensajes vacíos</td>
+          <td>Tres commits, mensajes genéricos</td>
+          <td>Tres commits atómicos con mensajes en imperativo</td>
+        </tr>
+        <tr>
+          <td>Rama</td>
+          <td>No hay rama</td>
+          <td>Rama creada, no fusionada</td>
+          <td><code>switch -c</code>, commit propio y merge en <code>main</code></td>
+        </tr>
+        <tr>
+          <td><code>restore</code></td>
+          <td>No se practicó</td>
+          <td>Se usó, pero no se distingue de <code>--staged</code></td>
+          <td>Se practicaron las dos variantes y se explica el riesgo</td>
+        </tr>
+        <tr>
+          <td><code>amend</code> / <code>reset --soft</code></td>
+          <td>No se usaron</td>
+          <td>Se usaron sin entender qué conservan</td>
+          <td>Se usaron y se documentó qué queda en staging</td>
+        </tr>
+        <tr>
+          <td><code>revert</code></td>
+          <td>No hay commit revertido</td>
+          <td>Se intentó, pero se reescribió el historial</td>
+          <td>Commit inverso visible y explicación de por qué es seguro</td>
+        </tr>
+        <tr>
+          <td><code>reflog</code></td>
+          <td>No se usó</td>
+          <td>Se listó, pero no se rescató nada</td>
+          <td>Se rescató un commit en una rama de rescate</td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay texto</td>
+          <td>Describe comandos sin contexto</td>
+          <td>Explica decisiones, riesgos y qué haría distinto</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.5 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>Git guarda fotos, no solo archivos: un commit es una unidad con mensaje, autor y fecha.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p><code>git add</code> elige qué entra en la foto; <code>git commit</code> la guarda. No son lo mismo.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>Una rama es un nombre que apunta a un commit; cambiar de rama no copia la carpeta.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p><code>switch</code> y <code>restore</code> separan dos acciones que <code>checkout</code> mezclaba; son los comandos claros de hoy.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p>Si el commit es local, <code>amend</code> o <code>reset --soft</code>; si ya es público, <code>revert</code>.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p><code>git reflog</code> es la red de seguridad local: encuentra el commit que creías perdido.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p>La rutina diaria es corta: estado, rama, cambios, commit, merge y mapa. Lo demás es emergencia.</p>
+    </div>
+  </div>
+
+  <h3>7.6 · Puente hacia la próxima etapa</h3>
+
+  <p>
+    Ya tienes el flujo local de Git. El siguiente paso natural es compartirlo: un remoto en GitHub,
+    <code>push</code> y <code>pull</code>, ramas remotas y revisión de cambios con Pull Requests.
+    Ese tema se trabaja por separado; aquí lo importante es que el historial local sea claro antes
+    de subirlo.
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de cerrar</span>
+    <p>
+      Deja el repositorio del taller con <code>git status</code> limpio, al menos tres commits, una
+      rama fusionada y un <code>revert</code> visible. Si algo salió mal, no borres la carpeta:
+      usa <code>git reflog</code> y vuelve a intentarlo. Ese es exactamente el hábito que esta clase
+      quiere dejarte.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 16</h2>
+    <p>
+      Git no es un conjunto de comandos para memorizar: es un historial que puedes leer, ramificar y
+      deshacer. Con <code>init -b main</code>, <code>add</code>, <code>commit</code>,
+      <code>switch</code>, <code>merge</code>, <code>restore</code>, <code>revert</code> y
+      <code>reflog</code> tienes lo necesario para trabajar todos los días sin miedo a romper algo
+      que no puedas recuperar.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: Errores y rutina diaria</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 16 · Git moderno en el día a día</span>
+  <p class="pie-sub">init -b main · add · commit · switch · merge · restore · revert · reflog · Git 2.56</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

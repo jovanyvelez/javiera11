@@ -1,0 +1,2209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 11 · Edición de registros almacenados</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 11 · <em>Edición de registros almacenados</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura y programa</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">El viaje de una edición</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">Cargar los datos en el formulario</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Validar sin perder lo escrito</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Ejercicio: las consultas</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Ejercicio: las tres rutas</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: el catálogo editable</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> la «U» del CRUD: cargar un registro en un formulario y guardar sus cambios.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>El catálogo que <em>nadie puede corregir</em></h2>
+    <p class="proposito">
+      En las clases anteriores aprendiste a <strong>crear</strong> datos y a <strong>mostrar</strong>
+      datos. Hoy toca la tercera de las cuatro operaciones: <strong>corregir</strong> lo que ya
+      está guardado. Es la operación que más se parece a la vida real, porque los datos guardados
+      casi nunca están bien la primera vez.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: el mapa de las cuatro operaciones</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · La tienda TechStore</h3>
+
+  <p class="primer-párrafo">
+    La tienda <strong>TechStore</strong> vende audífonos, mouse y teclados. Su catálogo vive en
+    una tabla <code>productos</code> de PostgreSQL, y la aplicación web —FastAPI con HTMX— ya
+    funciona: se abre <code>/productos</code> y ahí está la lista, con el nombre, el precio y las
+    unidades disponibles de cada artículo.
+  </p>
+
+  <p>
+    Un martes por la tarde, el jefe descubre que el teclado mecánico aparece con el precio
+    <code>189.900</code> cuando debería ser <code>189.900</code>… no, cuando debería ser
+    <code>189.900</code> con el <strong>precio anterior</strong>, que era la mitad. Es un error
+    de una tecla. Y entonces se descubre el problema de verdad:
+  </p>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — no se puede corregir lo que no se puede editar</span>
+    <p>
+      La tabla <code>productos</code> se puede modificar con un <code>UPDATE</code> en SQL. Pero
+      <strong>en la aplicación no hay ningún botón «Editar»</strong>. El catálogo es de solo
+      lectura: se ve, se lista, se imprime… y no se puede cambiar. El único camino es abrir una
+      terminal, escribir SQL a mano, acordarse del <code>id</code> correcto y rezar para no
+      equivocarse de fila.
+    </p>
+    <p>
+      Ese es el problema de hoy: <strong>darle a la aplicación una manera de corregir un
+      registro</strong>. Y parece un detalle, hasta que uno descubre que «corregir un registro»
+      son en realidad <em>dos</em> problemas distintos, y que el segundo tiene una trampa que
+      puede borrar los datos que el usuario acababa de escribir.
+    </p>
+  </div>
+
+  <h3>0.2 · Las cuatro operaciones, y dónde estás</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>El CRUD y lo que ya has hecho en el curso</caption>
+      <thead>
+        <tr><th>Letra</th><th>Operación</th><th>En SQL</th><th>¿Dónde la viste?</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>C</strong></td>
+          <td>Crear un registro nuevo</td>
+          <td><code>INSERT INTO ...</code></td>
+          <td>Clase 10: inserción de datos desde formularios</td>
+        </tr>
+        <tr>
+          <td><strong>R</strong></td>
+          <td>Leer los registros</td>
+          <td><code>SELECT ... FROM ...</code></td>
+          <td>Clase 9: consultas <code>SELECT</code> sobre la tabla <code>productos</code></td>
+        </tr>
+        <tr>
+          <td><strong>U</strong></td>
+          <td><strong>Actualizar un registro que ya existe</strong></td>
+          <td><code>UPDATE ... WHERE id = $1</code></td>
+          <td><strong>Hoy</strong></td>
+        </tr>
+        <tr>
+          <td><strong>D</strong></td>
+          <td>Borrar un registro</td>
+          <td><code>DELETE FROM ... WHERE id = $1</code></td>
+          <td>Queda para el final del curso</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — por qué la «U» merece una clase entera</span>
+    <p>
+      Crear un registro es <em>escribir</em>: la información viene del usuario y se guarda tal
+      cual. Actualizar es <em>escribir sobre algo que ya existe</em>: hay que cargarlo, mostrarlo,
+      recibirlo, compararlo, decidir si vale la pena cambiarlo y, si no vale, <strong>devolverlo
+      intacto</strong>. Esa última parte —la que parece un detalle— es la que hoy se lleva media
+      clase.
+    </p>
+  </div>
+
+  <h3>0.3 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cuadro de unidades, tiempos y productos esperados</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura, el CRUD y el mapa del ejercicio</td><td>20 min</td><td>El repositorio descargado y el problema escrito</td></tr>
+        <tr><td><strong>01</strong></td><td>El viaje de una edición: dos vueltas al servidor</td><td>30 min</td><td>El diagrama de los dos viajes, con HTMX</td></tr>
+        <tr><td><strong>02</strong></td><td>Cargar los datos actuales en el formulario</td><td>30 min</td><td>La ruta <code>GET /productos/{id}/editar</code> entendida</td></tr>
+        <tr><td><strong>03</strong></td><td>Validar sin perder lo que el usuario escribió</td><td>30 min</td><td>El laboratorio del editor, funcionando</td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Ejercicio 5.1 · Las consultas del repositorio</td><td>35 min</td><td>Los <code>SELECT</code> y el <code>UPDATE</code> parametrizado</td></tr>
+        <tr><td><strong>06</strong></td><td>Ejercicio 6.1 · Las tres rutas y las tres plantillas</td><td>35 min</td><td>Editar, guardar y cancelar funcionando</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller integrador</td><td>45 min</td><td>El flujo completo probados de punta a punta</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.4 · Los archivos con los que vas a trabajar</h3>
+
+  <p>
+    El ejercicio viene en un repositorio de Git, con el código y las plantillas ya escritas, y
+    los huecos marcados con <code>TODO</code>. Tu trabajo es llenarlos. La estructura completa
+    está en el repositorio <code>jovanyvelez/ejercicio</code>:
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejercicio — los archivos del proyecto</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>ejercicio/
+├── <span class="tk-kw">main.py</span>                     <span class="tk-cm"># crea la app y enciende el servidor</span>
+├── <span class="tk-kw">database.py</span>                 <span class="tk-cm"># el pool de conexiones a PostgreSQL</span>
+├── <span class="tk-kw">dependencias.py</span>             <span class="tk-cm"># la conexión llega a las vistas sola</span>
+├── <span class="tk-kw">esquemas.py</span>                 <span class="tk-cm"># TODO(1) las reglas de validación</span>
+├── <span class="tk-kw">repositorio.py</span>              <span class="tk-cm"># TODO(2,3,4) las consultas SQL</span>
+├── <span class="tk-kw">vistas.py</span>                   <span class="tk-cm"># TODO(5,6) las rutas de edición</span>
+└── <span class="tk-kw">templates/</span>
+    ├── <span class="tk-kw">base.html</span>
+    ├── <span class="tk-kw">productos.html</span>            <span class="tk-cm"># la página con la tabla</span>
+    └── <span class="tk-kw">componentes/</span>
+        ├── <span class="tk-kw">fila_producto.html</span>     <span class="tk-cm"># la fila normal, con el botón Editar</span>
+        ├── <span class="tk-kw">fila_editar.html</span>       <span class="tk-cm"># el formulario de edición</span>
+        ├── <span class="tk-kw">fila_actualizada.html</span>  <span class="tk-cm"># la fila nueva, con el aviso</span>
+        └── <span class="tk-kw">producto_no_encontrado.html</span></code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — las plantillas ya están hechas</span>
+    <p>
+      Fíjate en lo que el repositorio <strong>no</strong> te pide hacer: las plantillas. No
+      tienes que escribir el HTML del formulario, ni el de la fila, ni el del aviso. Ya están
+      escritas y solo necesitan que les pases los datos correctos. Tu trabajo es el de_python:
+      buscar el registro, validarlo, guardarlo y responder con la plantilla adecuada.
+    </p>
+  </div>
+
+  <h3>0.5 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito estas tres preguntas:</p>
+
+  <ol>
+    <li>¿En qué se diferencia «crear un registro» de «actualizar un registro»?</li>
+    <li>Si el formulario de edición aparece <strong>vacío</strong>, ¿qué pasaría al Guardar?</li>
+    <li>¿Por qué no basta con decir «haz un <code>UPDATE</code>»?</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: el viaje de una edición →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — EL VIAJE DE UNA EDICIÓN
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · El mapa</div>
+    <h2>El viaje de una <em>edición</em></h2>
+    <p class="proposito">
+      Corregir un registro son <strong>dos viajes al servidor</strong>, no uno. El primero carga
+      el formulario con lo que hay guardado; el segundo guarda lo que el usuario escribió. Esta
+      unidad dibuja el mapa completo y muestra las cuatro etiquetas de HTMX que lo hacen posible
+      sin recargar la página.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: el diagrama de los dos viajes</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · Dos viajes, no uno</h3>
+
+  <p class="primer-párrafo">
+    La intuición dice que editar es «mandar los datos y ya». Pero el servidor no sabe qué está
+    guardado hasta que alguien se lo pregunta. Y la pantalla no puede mostrar un formulario con
+    los valores actuales si no los ha recibido. Por eso el proceso son dos idas y venidas.
+  </p>
+
+  <div class="diagrama">
+    <div class="nodo cliente">
+      <div class="rotulo-nodo">1 · GET</div>
+      <h5>Pide el formulario</h5>
+      <p>El botón «Editar» pide <code>/productos/5/editar</code> y el servidor responde con el formulario vacío… con los datos dentro.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">Petición<br>HTTP</span>
+    </div>
+    <div class="nodo servidor">
+      <div class="rotulo-nodo">Pasos 2 y 3</div>
+      <h5>Busca y renderiza</h5>
+      <p>Busca el registro por su <code>id</code>, mete sus valores en la plantilla y devuelve el HTML del formulario.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">◀──</span>
+      <span class="etiqueta">HTML<br>del formulario</span>
+    </div>
+    <div class="nodo datos">
+      <div class="rotulo-nodo">Paso 4</div>
+      <h5>El usuario escribe</h5>
+      <p>La fila se convierte en un formulario con los valores guardados. El usuario corrige lo que quiera.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">POST</span>
+    </div>
+    <div class="nodo servidor">
+      <div class="rotulo-nodo">Pasos 5 a 8</div>
+      <h5>Valida y guarda</h5>
+      <p>Recibe, valida, ejecuta el <code>UPDATE</code> y devuelve el fragmento nuevo: la fila actualizada o el formulario con los errores.</p>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — por qué no es un solo viaje</span>
+    <p>
+      Podrías «optimizar» y mandar solo el campo cambiado. Pero entonces el formulario aparecería
+      <strong>vacío</strong>, el usuario no vería los demás valores, y al guardar se
+      <strong>borrarían</strong>. Es el error clásico de la edición: parece que funciona y está
+      destruyendo datos.
+    </p>
+  </div>
+
+  <h3>1.2 · La primera vuelta: pedir el formulario</h3>
+
+  <p>
+    La ruta que entrega el formulario es una sola línea de firma y dos de cuerpo. Todavía no la
+    escribiremos —eso es el ejercicio de la unidad 6— pero sí hay que entender qué tiene que
+    hacer.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — la ruta que carga el formulario</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">async def</span> <span class="tk-fn">editar_producto_vista</span>(request: <span class="tk-cls">Request</span>, conn: <span class="tk-cls">ConnectionDep</span>, producto_id: <span class="tk-cls">int</span>):
+    <span class="tk-cm"># 1. Buscar el registro en la base de datos</span>
+    producto = <span class="tk-kw">await</span> <span class="tk-fn">obtener_producto</span>(conn, producto_id)
+
+    <span class="tk-cm"># 2. Si no existe, avisar (no reventar)</span>
+    <span class="tk-kw">if</span> producto <span class="tk-kw">is None</span>:
+        <span class="tk-kw">return</span> <span class="tk-fn">templates.TemplateResponse</span>(
+            request=request,
+            name=<span class="tk-str">"componentes/producto_no_encontrado.html"</span>,
+            context={<span class="tk-str">"producto_id"</span>: producto_id},
+        )
+
+    <span class="tk-cm"># 3. Devolver el formulario con los valores guardados</span>
+    <span class="tk-kw">return</span> <span class="tk-fn">templates.TemplateResponse</span>(
+        request=request,
+        name=<span class="tk-str">"componentes/fila_editar.html"</span>,
+        context={
+            <span class="tk-str">"producto"</span>: producto,
+            <span class="tk-str">"nombre"</span>: producto[<span class="tk-str">"nombre"</span>],
+            <span class="tk-str">"precio"</span>: producto[<span class="tk-str">"precio"</span>],
+            <span class="tk-str">"cantidad"</span>: producto[<span class="tk-str">"cantidad"</span>],
+            <span class="tk-str">"descripcion"</span>: producto[<span class="tk-str">"descripcion"</span>] <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+            <span class="tk-str">"errores"</span>: {},
+        },
+    )</code></pre>
+  </div>
+
+  <h3>1.3 · La segunda vuelta: enviar los cambios</h3>
+
+  <p>
+    La ruta que guarda es la que decide. Recibe los cuatro campos del formulario y tiene tres
+    caminos posibles:
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Los tres finales de la ruta <code>POST /productos/{id}</code></caption>
+      <thead>
+        <tr><th>Situación</th><th>Qué hace</th><th>Responde</th><th>Código</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Los datos <strong>no son válidos</strong></td>
+          <td>No toca la base de datos. Vuelve el formulario con <strong>lo que escribió el usuario</strong> y un mensaje por campo</td>
+          <td><code>fila_editar.html</code></td>
+          <td><strong>422</strong></td>
+        </tr>
+        <tr>
+          <td>Los datos <strong>son válidos</strong></td>
+          <td>Ejecuta el <code>UPDATE</code> sobre ese <code>id</code> y devuelve la fila nueva</td>
+          <td><code>fila_actualizada.html</code></td>
+          <td><strong>200</strong></td>
+        </tr>
+        <tr>
+          <td>El <code>id</code> <strong>no existe</strong></td>
+          <td>Avisa sin error de servidor</td>
+          <td><code>producto_no_encontrado.html</code></td>
+          <td><strong>200</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el orden de las comprobaciones importa</span>
+    <p>
+      Si primero ejecutas el <code>UPDATE</code> y después compruebas si el <code>id</code> existe,
+      ya es tarde. Y si validas después de guardar, un precio negativo ya está en la base de
+      datos. El orden correcto es siempre el mismo: <strong>buscar → validar → guardar</strong>.
+    </p>
+  </div>
+
+  <h3>1.4 · Las cuatro etiquetas de HTMX</h3>
+
+  <p>
+    HTMX es lo que hace que todo esto ocurra sin recargar la página. No es magia: son cuatro
+    atributos en el HTML que le dicen al navegador qué pedir y a quién reemplazar.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las cuatro etiquetas y lo que hace cada una</caption>
+      <thead>
+        <tr><th>Atributo</th><th>Qué significa</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>hx-get</code></td>
+          <td>Al hacer clic, pide esta URL</td>
+          <td><code>hx-get="/productos/5/editar"</code></td>
+        </tr>
+        <tr>
+          <td><code>hx-post</code></td>
+          <td>Al enviar el formulario, manda los datos a esta URL</td>
+          <td><code>hx-post="/productos/5"</code></td>
+        </tr>
+        <tr>
+          <td><code>hx-target</code></td>
+          <td>A qué elemento se le mete la respuesta</td>
+          <td><code>hx-target="#producto-5"</code></td>
+        </tr>
+        <tr>
+          <td><code>hx-swap</code></td>
+          <td>Cómo se reemplaza: entero o por fuera</td>
+          <td><code>hx-swap="outerHTML"</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>componentes/fila_producto.html — la fila con el botón Editar</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-tag">&lt;tbody</span> <span class="tk-attr">id</span>=<span class="tk-str">"producto-{{ producto.id }}"</span><span class="tk-tag">&gt;</span>
+    <span class="tk-tag">&lt;tr&gt;</span>
+        <span class="tk-tag">&lt;td&gt;</span>{{ producto.nombre }}<span class="tk-tag">&lt;/td&gt;</span>
+        <span class="tk-tag">&lt;td&gt;</span>{{ producto.precio }}<span class="tk-tag">&lt;/td&gt;</span>
+        <span class="tk-tag">&lt;td&gt;</span>{{ producto.cantidad }}<span class="tk-tag">&lt;/td&gt;</span>
+        <span class="tk-tag">&lt;td&gt;</span>
+            <span class="tk-tag">&lt;button</span>
+                <span class="tk-attr">hx-get</span>=<span class="tk-str">"/productos/{{ producto.id }}/editar"</span>
+                <span class="tk-attr">hx-target</span>=<span class="tk-str">"#producto-{{ producto.id }}"</span>
+                <span class="tk-attr">hx-swap</span>=<span class="tk-str">"outerHTML"</span><span class="tk-tag">&gt;</span>
+                Editar
+            <span class="tk-tag">&lt;/button&gt;</span>
+        <span class="tk-tag">&lt;/td&gt;</span>
+    <span class="tk-tag">&lt;/tr&gt;</span>
+<span class="tk-tag">&lt;/tbody&gt;</span></code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — qué significa <code>outerHTML</code></span>
+    <p>
+      «Reemplaza el elemento entero por su equivalente», incluido él mismo. La alternativa,
+      <code>innerHTML</code>, metería el HTML nuevo <em>dentro</em> del elemento viejo. Como el
+      <code>tbody</code> viejo seguiría ahí, la página terminaría con <strong>dos filas</strong>
+      del mismo producto: la nueva y la vieja. <code>outerHTML</code> es el que corresponde
+      cuando el servidor devuelve un elemento completo que sustituye a otro.
+    </p>
+  </div>
+
+  <h3>1.5 · Por qué cada fila es su propio <code>tbody</code></h3>
+
+  <p>
+    Un detalle de HTML que parece unimportant y decide que todo funcione: cada producto vive en
+    su propio <code>tbody</code>, no en una sola tabla con muchas filas. Es lo que permite
+    reemplazar <strong>una</strong> fila y dejar las demás intactas.
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — la regla general</span>
+    <p>
+      Cuando un servidor devuelve un fragmento que va a sustituir a una parte de la página, esa
+      parte tiene que ser un elemento identificable por sí solo. Un <code>id</code> único y
+      acotado: <code>id="producto-5"</code>. Con eso, <code>hx-target="#producto-5"</code>
+      sabe a quién reemplazar, y el resto de la tabla ni se entera.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Por qué editar un registro son dos viajes al servidor?</p>
+      <button class="opcion" data-op="a">Porque el servidor no puede hacer dos cosas en una petición</button>
+      <button class="opcion" data-op="b">Porque primero hay que cargar los valores guardados y después guardar los nuevos</button>
+      <button class="opcion" data-op="c">Porque HTMX no admite <code>POST</code></button>
+      <button class="opcion" data-op="d">No hace falta: un solo viaje es suficiente</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué hace <code>hx-swap="outerHTML"</code>?</p>
+      <button class="opcion" data-op="a">Añade el contenido nuevo dentro del elemento viejo</button>
+      <button class="opcion" data-op="b">Cambia el color de la fila</button>
+      <button class="opcion" data-op="c">Recarga la página entera</button>
+      <button class="opcion" data-op="d">Sustituye el elemento completo por la respuesta del servidor</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Por qué cada producto está en su propio <code>tbody</code>?</p>
+      <button class="opcion" data-op="a">Para poder reemplazar una sola fila sin tocar las demás</button>
+      <button class="opcion" data-op="b">Porque HTML no permite más de cinco filas por tabla</button>
+      <button class="opcion" data-op="c">Por estética: las filas se ven mejor separadas</button>
+      <button class="opcion" data-op="d">Para que el <code>id</code> del producto sea más corto</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿En qué orden deben hacerse las cosas en la ruta que guarda?</p>
+      <button class="opcion" data-op="a">Validar → buscar → guardar</button>
+      <button class="opcion" data-op="b">Guardar → validar → buscar</button>
+      <button class="opcion" data-op="c">Buscar → validar → guardar</button>
+      <button class="opcion" data-op="d">Buscar → guardar → validar</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: cargar los datos en el formulario →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — CARGAR LOS DATOS EN EL FORMULARIO
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · La primera vuelta</div>
+    <h2>Cargar los datos actuales <em>en el formulario</em></h2>
+    <p class="proposito">
+      El formulario de edición tiene una diferencia con cualquier otro: <strong>viene lleno</strong>.
+      Esta unidad explica cómo se lo llena, por qué un formulario vacío sería un desastre, y qué
+      pasa cuando el registro que se pide no existe.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: la ruta <code>GET .../editar</code> entendida</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · El contexto: lo que la plantilla necesita</h3>
+
+  <p class="primer-párrafo">
+    Jinja2 no busca datos por su cuenta: recibe un diccionario llamado <code>context</code> y
+    usa lo que hay dentro. La plantilla <code>fila_editar.html</code> necesita seis cosas.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las seis claves del contexto y para qué sirve cada una</caption>
+      <thead>
+        <tr><th>Clave</th><th>Qué lleva</th><th>Por qué está</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>producto</code></td><td>El registro completo</td><td>Solo para el <code>id</code> del <code>tbody</code> y de los botones</td></tr>
+        <tr><td><code>nombre</code></td><td>El nombre guardado</td><td>Para rellenar el <code>value</code> del campo</td></tr>
+        <tr><td><code>precio</code></td><td>El precio guardado</td><td>Ídem</td></tr>
+        <tr><td><code>cantidad</code></td><td>Las unidades guardadas</td><td>Ídem</td></tr>
+        <tr><td><code>descripcion</code></td><td>La descripción guardada</td><td>Ídem</td></tr>
+        <tr><td><code>errores</code></td><td>Un diccionario vacío <code>{}</code></td><td>La plantilla pregunta <code>errores.nombre</code> y así no revienta</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — por qué <code>errores</code> se pasa vacío y no se omite</span>
+    <p>
+      La plantilla tiene esto:
+    </p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>fila_editar.html — la pregunta que se le hace al contexto</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>{% <span class="tk-kw">if</span> errores.nombre %}<span class="tk-tag">&lt;p</span> <span class="tk-attr">class</span>=<span class="tk-str">"error"</span><span class="tk-tag">&gt;</span>{{ errores.nombre }}<span class="tk-tag">&lt;/p&gt;</span>{% <span class="tk-kw">endif</span> %}</code></pre>
+  </div>
+
+  <p>
+    Si en el contexto no existiera la clave <code>errores</code>, Jinja2 lanzaría un error al
+    renderizar. Pasándola vacía —un <code>{}</code>— la pregunta simplemente devuelve «falsy» y
+    el mensaje no aparece. Por eso la plantilla es la <strong>misma</strong> en los dos casos:
+    la que abre el formulario y la que vuelve con errores. Lo único que cambia es lo que lleva
+    <code>errores</code> dentro.
+  </p>
+
+  <h3>2.2 · El atributo que carga el dato</h3>
+
+  <p>
+    En HTML, el valor inicial de un campo de texto se escribe en el atributo <code>value</code>.
+    Y en Jinja2, <code>{{ nombre }}</code> es una expresión que se sustituye por el valor de la
+    variable <code>nombre</code> del contexto. Las dos piezas juntas son el mecanismo completo de
+    la carga.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>fila_editar.html — los cuatro campos con su valor</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-tag">&lt;label&gt;</span>Nombre:
+    <span class="tk-tag">&lt;input</span> <span class="tk-attr">type</span>=<span class="tk-str">"text"</span> <span class="tk-attr">name</span>=<span class="tk-str">"nombre"</span> <span class="tk-attr">value</span>=<span class="tk-str">"{{ nombre }}"</span>
+           <span class="tk-attr">class</span>=<span class="tk-str">"{{ 'invalid' if errores.nombre else '' }}"</span><span class="tk-tag">&gt;</span>
+<span class="tk-tag">&lt;/label&gt;</span>
+
+<span class="tk-tag">&lt;label&gt;</span>Precio:
+    <span class="tk-tag">&lt;input</span> <span class="tk-attr">type</span>=<span class="tk-str">"text"</span> <span class="tk-attr">name</span>=<span class="tk-str">"precio"</span> <span class="tk-attr">value</span>=<span class="tk-str">"{{ precio }}"</span>
+           <span class="tk-attr">inputmode</span>=<span class="tk-str">"decimal"</span><span class="tk-tag">&gt;</span>
+<span class="tk-tag">&lt;/label&gt;</span>
+
+<span class="tk-tag">&lt;label&gt;</span>Cantidad:
+    <span class="tk-tag">&lt;input</span> <span class="tk-attr">type</span>=<span class="tk-str">"number"</span> <span class="tk-attr">name</span>=<span class="tk-str">"cantidad"</span> <span class="tk-attr">value</span>=<span class="tk-str">"{{ cantidad }}"</span><span class="tk-tag">&gt;</span>
+<span class="tk-tag">&lt;/label&gt;</span>
+
+<span class="tk-tag">&lt;label&gt;</span>Descripción:
+    <span class="tk-tag">&lt;textarea</span> <span class="tk-attr">name</span>=<span class="tk-str">"descripcion"</span><span class="tk-tag">&gt;</span>{{ descripcion }}<span class="tk-tag">&lt;/textarea&gt;</span>
+<span class="tk-tag">&lt;/label&gt;</span></code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el <code>textarea</code> es distinto</span>
+    <p>
+      Un <code>textarea</code> no lleva <code>value</code>: su contenido va <strong>dentro</strong>
+      de la etiqueta, entre <code>&lt;textarea&gt;</code> y <code>&lt;/textarea&gt;</code>. Por eso
+      la descripción se escribe así: <code>{{ descripcion }}</code> en el medio. Es un detalle
+      pequeño que rompe la plantilla si se olvida.
+    </p>
+  </div>
+
+  <h3>2.3 · Lo que el servidor devuelve de verdad</h3>
+
+  <p>
+    Esta es la respuesta completa del servidor a <code>GET /productos/2/editar</code>, con el
+    producto «Mouse ergonómico» guardado. Fíjate en los <code>value</code>: ahí está la carga.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>la respuesta real de GET /productos/2/editar</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-tag">&lt;tbody</span> <span class="tk-attr">id</span>=<span class="tk-str">"producto-2"</span><span class="tk-tag">&gt;</span>
+    <span class="tk-tag">&lt;tr&gt;</span>
+        <span class="tk-tag">&lt;td</span> <span class="tk-attr">colspan</span>=<span class="tk-str">"5"</span><span class="tk-tag">&gt;</span>
+            <span class="tk-tag">&lt;form</span>
+                <span class="tk-attr">hx-post</span>=<span class="tk-str">"/productos/2"</span>
+                <span class="tk-attr">hx-target</span>=<span class="tk-str">"#producto-2"</span>
+                <span class="tk-attr">hx-swap</span>=<span class="tk-str">"outerHTML"</span><span class="tk-tag">&gt;</span>
+
+                <span class="tk-tag">&lt;div&gt;</span>
+                    <span class="tk-tag">&lt;label&gt;</span>Nombre:
+                        <span class="tk-tag">&lt;input</span> <span class="tk-attr">type</span>=<span class="tk-str">"text"</span> <span class="tk-attr">name</span>=<span class="tk-str">"nombre"</span> <span class="tk-attr">value</span>=<span class="tk-str">"Mouse ergonómico"</span>
+                               <span class="tk-attr">class</span>=<span class="tk-str">""</span><span class="tk-tag">&gt;</span>
+                    <span class="tk-tag">&lt;/label&gt;</span>
+                <span class="tk-tag">&lt;/div&gt;</span>
+
+                <span class="tk-tag">&lt;div&gt;</span>
+                    <span class="tk-tag">&lt;label&gt;</span>Precio:
+                        <span class="tk-tag">&lt;input</span> <span class="tk-attr">type</span>=<span class="tk-str">"text"</span> <span class="tk-attr">name</span>=<span class="tk-str">"precio"</span> <span class="tk-attr">value</span>=<span class="tk-str">"45900.0"</span>
+                               <span class="tk-attr">class</span>=<span class="tk-str">""</span>
+                               <span class="tk-attr">inputmode</span>=<span class="tk-str">"decimal"</span><span class="tk-tag">&gt;</span>
+                    <span class="tk-tag">&lt;/label&gt;</span>
+                <span class="tk-tag">&lt;/div&gt;</span>
+
+                <span class="tk-tag">&lt;div&gt;</span>
+                    <span class="tk-tag">&lt;label&gt;</span>Cantidad:
+                        <span class="tk-tag">&lt;input</span> <span class="tk-attr">type</span>=<span class="tk-str">"number"</span> <span class="tk-attr">name</span>=<span class="tk-str">"cantidad"</span> <span class="tk-attr">value</span>=<span class="tk-str">"32"</span>
+                               <span class="tk-attr">class</span>=<span class="tk-str">""</span><span class="tk-tag">&gt;</span>
+                    <span class="tk-tag">&lt;/label&gt;</span>
+                <span class="tk-tag">&lt;/div&gt;</span>
+
+                <span class="tk-tag">&lt;div&gt;</span>
+                    <span class="tk-tag">&lt;label&gt;</span>Descripción:
+                        <span class="tk-tag">&lt;textarea</span> <span class="tk-attr">name</span>=<span class="tk-str">"descripcion"</span><span class="tk-tag">&gt;</span><span class="tk-tag">&lt;/textarea&gt;</span>
+                    <span class="tk-tag">&lt;/label&gt;</span>
+                <span class="tk-tag">&lt;/div&gt;</span>
+
+                <span class="tk-tag">&lt;button</span> <span class="tk-attr">type</span>=<span class="tk-str">"submit"</span> <span class="tk-attr">class</span>=<span class="tk-str">"guardar"</span><span class="tk-tag">&gt;</span>Guardar<span class="tk-tag">&lt;/button&gt;</span>
+                <span class="tk-tag">&lt;button</span> <span class="tk-attr">type</span>=<span class="tk-str">"button"</span> <span class="tk-attr">class</span>=<span class="tk-str">"cancelar"</span>
+                        <span class="tk-attr">hx-get</span>=<span class="tk-str">"/productos/2/cancelar"</span>
+                        <span class="tk-attr">hx-target</span>=<span class="tk-str">"#producto-2"</span>
+                        <span class="tk-attr">hx-swap</span>=<span class="tk-str">"outerHTML"</span><span class="tk-tag">&gt;</span>
+                    Cancelar
+                <span class="tk-tag">&lt;/button&gt;</span>
+            <span class="tk-tag">&lt;/form&gt;</span>
+        <span class="tk-tag">&lt;/td&gt;</span>
+    <span class="tk-tag">&lt;/tr&gt;</span>
+<span class="tk-tag">&lt;/tbody&gt;</span></code></pre>
+  </div>
+
+  <h3>2.4 · Por qué el formulario no puede empezar vacío</h3>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el error que destruye datos</span>
+    <p>
+      Imagina que la ruta <code>editar_producto_vista</code> devuelve el formulario con el
+      contexto <code>{"producto": producto, "errores": {}}</code> y <strong>se olvida</strong> de
+      las claves <code>nombre</code>, <code>precio</code> y <code>cantidad</code>. La plantilla
+      funciona: Jinja2 pone <code>value=""</code> y el formulario aparece <strong>vacío</strong>.
+    </p>
+    <p>
+      El usuario ve cuatro campos en blanco, piensa que tiene que escribir el producto
+      completo, escribe solo lo que quiere cambiar… y al Guardar, el <code>UPDATE</code> escribe
+      <strong>todos</strong> los campos, incluidos los que no tocó. Los otros campos se borran.
+      Y lo peor: la aplicación no dio ningún error. Funcionó. Eso es lo que hace el error tan
+      peligroso.
+    </p>
+  </div>
+
+  <h3>2.5 · El registro que no existe</h3>
+
+  <p>
+    Si alguien escribe <code>/productos/99999/editar</code> en la barra del navegador, no hay
+    ningún producto con ese <code>id</code>. El servidor no debe romperse: debe <strong>avisar</strong>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>producto_no_encontrado.html — el aviso</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-tag">&lt;tbody</span> <span class="tk-attr">id</span>=<span class="tk-str">"producto-{{ producto_id }}"</span><span class="tk-tag">&gt;</span>
+    <span class="tk-tag">&lt;tr&gt;</span>
+        <span class="tk-tag">&lt;td</span> <span class="tk-attr">colspan</span>=<span class="tk-str">"5"</span><span class="tk-tag">&gt;</span>
+            <span class="tk-tag">&lt;div</span> <span class="tk-attr">class</span>=<span class="tk-str">"aviso-error"</span><span class="tk-tag">&gt;</span>
+                No se encontró el producto con id {{ producto_id }}.
+            <span class="tk-tag">&lt;/div&gt;</span>
+        <span class="tk-tag">&lt;/td&gt;</span>
+    <span class="tk-tag">&lt;/tr&gt;</span>
+<span class="tk-tag">&lt;/tbody&gt;</span></code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — «no existe» no es un error de servidor</span>
+    <p>
+      Un <code>id</code> que no está en la tabla es una <strong>situación prevista</strong>, no un
+      fallo. La respuesta es un HTML con un aviso y un código <code>200</code>. Si en cambio
+      devuelves un error <code>500</code>, el usuario ve una página de servidor caído por haber
+      escrito un número en la barra de direcciones. El estado <code>404</code> se reserva para
+      cuando la <em>ruta</em> no existe, no el dato.
+    </p>
+  </div>
+
+  <h3>2.6 · El tipo del precio</h3>
+
+  <p>
+    Un detalle que solo aparece cuando la base de datos es real: la columna <code>precio</code>
+    es de tipo <code>NUMERIC</code>, y PostgreSQL devuelve los números decimales como
+    <code>Decimal</code>, no como <code>float</code>. La diferencia se ve al imprimir:
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>El mismo número, vengado de dos maneras distintas</caption>
+      <thead>
+        <tr><th>Tipo</th><th>Valor</th><th>Qué se imprime</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>float</code> de Python</td><td><code>45900.0</code></td><td><code>45900.0</code></td></tr>
+        <tr><td><code>Decimal</code> de PostgreSQL</td><td><code>45900.00</code></td><td><code>45900.00</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — por qué importa</span>
+    <p>
+      <code>Decimal</code> conserva los ceros finales porque en una tabla de precios
+      <code>45900.00</code> y <code>45900.0</code> no son el mismo número para quien lee la
+      pantalla: uno dice «cuarenta y cinco mil novecientos», el otro «cuarenta y cinco mil novecientos
+      con nada». Los <code>float</code> también acumulan errores de redondeo en las operaciones
+      con dinero; <code>Decimal</code> no. Por eso las columnas de precio son <code>NUMERIC</code>
+      y no <code>REAL</code>.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué hace que un formulario de edición aparezca con los datos guardados?</p>
+      <button class="opcion" data-op="a">Que el JavaScript del navegador rellena los campos</button>
+      <button class="opcion" data-op="b">Que la base de datos tiene un formulario</button>
+      <button class="opcion" data-op="c">Que el servidor pasa los valores en el <code>context</code> y la plantilla los escribe en <code>value</code></button>
+      <button class="opcion" data-op="d">Que el usuario los teclea</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué pasa si el formulario de edición aparece vacío y el usuario solo cambia el precio?</p>
+      <button class="opcion" data-op="a">Al guardar se borran los demás campos, porque el <code>UPDATE</code> los escribe todos</button>
+      <button class="opcion" data-op="b">No pasa nada: solo se actualiza el precio</button>
+      <button class="opcion" data-op="c">El servidor rechaza el envío con un error 422</button>
+      <button class="opcion" data-op="d">El navegador pide los datos otra vez</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Por qué la plantilla recibe <code>errores</code> aunque no haya errores?</p>
+      <button class="opcion" data-op="a">Para que el diccionario no se pueda modificar</button>
+      <button class="opcion" data-op="b">Porque Jinja2 no admite diccionarios vacíos</button>
+      <button class="opcion" data-op="c">Porque las variables tienen que aparecer en orden alfabético</button>
+      <button class="opcion" data-op="d">Porque la plantilla pregunta <code>errores.nombre</code> y la clave debe existir siempre</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> Un <code>id</code> que no está en la tabla, ¿qué debe devolver el servidor?</p>
+      <button class="opcion" data-op="a">Un error 500</button>
+      <button class="opcion" data-op="b">Un HTML con un aviso, sin error de servidor</button>
+      <button class="opcion" data-op="c">Un error 404 con la lista de productos</button>
+      <button class="opcion" data-op="d">Una página en blanco</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: El viaje de una edición</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: validar sin perder lo escrito →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — VALIDAR SIN PERDER LO ESCRITO
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · La segunda vuelta</div>
+    <h2>Validar sin <em>perder lo que el usuario escribió</em></h2>
+    <p class="proposito">
+      La parte más delicada de editar. El servidor tiene que rechazar los datos malos
+      <strong>sin</strong> castigar al usuario, y sobre todo <strong>sin</strong> devolverle un
+      formulario vacío que le haga perder lo que llevaba tres minutos escribiendo. Esta unidad
+      termina con el laboratorio, donde puedes ver el viaje entero.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: el laboratorio del editor funcionando</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · La conversión ingenua</h3>
+
+  <p class="primer-párrafo">
+    Todo formulario envía <strong>texto</strong>. El precio llega como <code>"45900.00"</code>,
+    no como número. La intuición dice «convertirlo»: <code>float(precio)</code>. Y esa es
+    exactamente la trampa.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — lo que pasa con un precio mal escrito</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>precio = <span class="tk-str">"abc"</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">float</span>(precio))
+<span class="tk-cm"># ValueError: could not convert string to float: 'abc'</span></code></pre>
+  </div>
+
+  <p>
+    Ese <code>ValueError</code> sube por la ruta y FastAPI lo convierte en un <strong>error
+    500</strong>: una página de «Internal Server Error» con un volcado de traza en la terminal.
+    El usuario escribió mal un precio y perdió el formulario entero.
+  </p>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el error 500 no es un error de validación</span>
+    <p>
+      Un <code>500</code> dice «el servidor se rompió». Un <code>422</code> dice «los datos no
+      sirven». El usuario solo puede corregir lo segundo. Cuando el error 500 aparece, el
+      problema está en <strong>tu código</strong>: alguien convierte una cadena sin
+      mirar lo que venía.
+    </p>
+  </div>
+
+  <h3>3.2 · Quién hace la conversión: el esquema</h3>
+
+  <p>
+    La solución es no convertir a mano. Pydantic <strong>convierte y valida en el mismo paso</strong>:
+    recibe el texto, lo convierte si puede y, si no puede, te da un error con el detalle de qué
+    campo falló y por qué.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>esquemas.py — las reglas, escritas una vez</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> pydantic <span class="tk-kw">import</span> <span class="tk-cls">BaseModel</span>, <span class="tk-cls">Field</span>
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">ProductoActualizar</span>(<span class="tk-cls">BaseModel</span>):
+    <span class="tk-str">"""Datos que el estudiante envía al editar un producto."""</span>
+
+    nombre: <span class="tk-cls">str</span> = <span class="tk-fn">Field</span>(min_length=<span class="tk-num">1</span>, max_length=<span class="tk-num">100</span>)
+    precio: <span class="tk-cls">float</span> = <span class="tk-fn">Field</span>(gt=<span class="tk-num">0</span>)
+    cantidad: <span class="tk-cls">int</span> = <span class="tk-fn">Field</span>(ge=<span class="tk-num">0</span>)
+    descripcion: <span class="tk-cls">str</span> | <span class="tk-cls">None</span> = <span class="tk-cls">None</span></code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>python — lo que hace el esquema con el texto que llega</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">ProductoActualizar(nombre="Mouse", precio="19.99", cantidad="5")</div>
+      <div class="consola-salida">precio=19.99  cantidad=5  ← el texto se convirtió solo</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada">ProductoActualizar(nombre="Mouse", precio="abc", cantidad="5")</div>
+      <div class="consola-salida">ValidationError: precio</div>
+      <div class="consola-salida">  Input should be a valid number, unable to parse string as a number</div>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — «19.99» entra bien porque el esquema lo pide como número</span>
+    <p>
+      Pydantic convierte el texto al tipo que declaraste. Como declaraste <code>precio: float</code>,
+      la cadena <code>"19.99"</code> se convierte en <code>19.99</code>. Y como declaraste
+      <code>cantidad: int</code>, la cadena <code>"5"</code> se convierte en <code>5</code>. Si
+      declaraste <code>cantidad: str</code>, se quedaría como texto y tendrías que convertirla
+      tú. <strong>El tipo que declaras decide quién convierte.</strong>
+    </p>
+  </div>
+
+  <h3>3.3 · Del error de Pydantic al mensaje del formulario</h3>
+
+  <p>
+    El mensaje que da Pydantic es técnico: <em>«Input should be a greater than 0»</em>. Es
+    preciso, pero un estudiante de once grado no entiende esa frase. La plantilla, en cambio, ya
+    sabe mostrar un mensaje bajo cada campo. Solo falta traducir.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — traducir los errores a mensajes del formulario</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>MENSAJES = {
+    <span class="tk-str">"nombre"</span>: <span class="tk-str">"El nombre es obligatorio y no puede pasar de 100 caracteres."</span>,
+    <span class="tk-str">"precio"</span>: <span class="tk-str">"El precio debe ser un número mayor que cero."</span>,
+    <span class="tk-str">"cantidad"</span>: <span class="tk-str">"La cantidad debe ser un número entero que no sea negativo."</span>,
+}
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">errores_en_espanol</span>(excepcion: <span class="tk-cls">ValidationError</span>) -&gt; <span class="tk-cls">dict</span>[<span class="tk-cls">str</span>, <span class="tk-cls">str</span>]:
+    <span class="tk-str">"""Traduce los errores de Pydantic a un mensaje por campo."""</span>
+    errores = {}
+    <span class="tk-kw">for</span> error <span class="tk-kw">in</span> excepcion.<span class="tk-fn">errors</span>():
+        campo = error[<span class="tk-str">"loc"</span>][<span class="tk-num">0</span>]
+        errores[campo] = MENSAJES.<span class="tk-fn">get</span>(campo, <span class="tk-str">"Revisa este valor."</span>)
+    <span class="tk-kw">return</span> errores</code></pre>
+  </div>
+
+  <p>
+    <code>error["loc"][0]</code> es el <strong>nombre del campo</strong> que falló: Pydantic lo
+    guarda como una lista, y el primer elemento es el campo. Con eso se arma un diccionario
+    <code>{"precio": "El precio debe ser…"}</code>, y la plantilla lo muestra con
+    <code>{{ errores.precio }}</code>.
+  </p>
+
+  <h3>3.4 · La regla que decide la clase: se conserva lo escrito</h3>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — dos formas de volver a mostrar el formulario</span>
+    <p>
+      Cuando la validación falla hay dos maneras de responder, y solo una es correcta.
+    </p>
+    <p>
+      <strong>La incorrecta:</strong> volver a buscar el registro y mostrar sus valores originales.
+      El usuario ve el formulario limpio, como si no hubiera escrito nada. Pierde su trabajo y no
+      entiende qué pasó. Parece que el servidor «se ha olvidado» de lo que dijo.
+    </p>
+    <p>
+      <strong>La correcta:</strong> volver a mostrar el formulario con <strong>los valores que
+      el usuario acaba de escribir</strong>, más el mensaje de error bajo cada campo que falló.
+      El usuario ve lo que escribió, ve qué está mal, corrige solo ese campo y vuelve a guardar.
+    </p>
+    <p>
+      La diferencia entre las dos es una línea del contexto: en la correcta se pasan
+      <code>nombre</code>, <code>precio</code> y <code>cantidad</code> con <strong>lo que llegó
+      en la petición</strong>, no con lo que hay en la base de datos.
+    </p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — la respuesta cuando la validación falla</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">async def</span> <span class="tk-fn">guardar_producto_vista</span>(request, conn, producto_id, nombre, precio, cantidad, descripcion):
+    <span class="tk-kw">try</span>:
+        datos = <span class="tk-cls">ProductoActualizar</span>(
+            nombre=nombre <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+            precio=precio <span class="tk-kw">if</span> precio <span class="tk-kw">not in</span> (<span class="tk-cls">None</span>, <span class="tk-str">""</span>) <span class="tk-kw">else</span> <span class="tk-cls">None</span>,
+            cantidad=cantidad <span class="tk-kw">if</span> cantidad <span class="tk-kw">not in</span> (<span class="tk-cls">None</span>, <span class="tk-str">""</span>) <span class="tk-kw">else</span> <span class="tk-cls">None</span>,
+            descripcion=descripcion <span class="tk-kw">or</span> <span class="tk-cls">None</span>,
+        )
+    <span class="tk-kw">except</span> <span class="tk-cls">ValidationError</span> <span class="tk-kw">as</span> excepcion:
+        <span class="tk-cm"># No se toca la base de datos. Se vuelve a mostrar el formulario</span>
+        <span class="tk-cm"># con los valores que escribió el usuario y el mensaje de error.</span>
+        <span class="tk-kw">return</span> <span class="tk-fn">templates.TemplateResponse</span>(
+            request=request,
+            name=<span class="tk-str">"componentes/fila_editar.html"</span>,
+            context={
+                <span class="tk-str">"producto"</span>: {<span class="tk-str">"id"</span>: producto_id},
+                <span class="tk-str">"nombre"</span>: nombre <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"precio"</span>: precio <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"cantidad"</span>: cantidad <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"descripcion"</span>: descripcion <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"errores"</span>: <span class="tk-fn">errores_en_espanol</span>(excepcion),
+            },
+            status_code=<span class="tk-num">422</span>,
+        )</code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>la respuesta real del servidor cuando los datos no sirven</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">POST /productos/2  (nombre="", precio="0", cantidad="-3")</div>
+      <div class="consola-salida">HTTP 422 Unprocessable Entity</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-salida">&lt;label&gt;Nombre:</div>
+      <div class="consola-salida">    &lt;input type="text" name="nombre" value="" class="invalid"&gt;</div>
+      <div class="consola-salida">    &lt;p class="error"&gt;El nombre es obligatorio y no puede pasar de 100 caracteres.&lt;/p&gt;</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-salida">&lt;label&gt;Precio:</div>
+      <div class="consola-salida">    &lt;input type="text" name="precio" value="0" class="invalid"&gt;</div>
+      <div class="consola-salida">    &lt;p class="error"&gt;El precio debe ser un número mayor que cero.&lt;/p&gt;</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-salida">&lt;label&gt;Cantidad:</div>
+      <div class="consola-salida">    &lt;input type="number" name="cantidad" value="-3" class="invalid"&gt;</div>
+      <div class="consola-salida">    &lt;p class="error"&gt;La cantidad debe ser un número entero que no sea negativo.&lt;/p&gt;</div>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — el <code>value="0"</code> y el <code>value="-3"</code></span>
+    <p>
+      Mira los valores que vuelven: <code>"0"</code> y <code>"-3"</code>. Son <strong>los que
+      escribió el usuario</strong>, no los que estaban guardados (<code>45900.0</code> y
+      <code>32</code>). Y el <code>class="invalid"</code> en el campo marca visualmente qué está
+      mal. Eso es lo que hace la plantilla con
+      <code>{{ 'invalid' if errores.precio else '' }}</code>.
+    </p>
+  </div>
+
+  <h3>3.5 · Laboratorio: el editor en miniatura</h3>
+
+  <div class="editor" data-editor>
+    <div class="editor-cabecera">
+      <span class="etiqueta">Laboratorio</span>
+      <h4>La «U» del CRUD, en tu navegador</h4>
+      <p>
+        Esta caja es una <strong>simulación</strong>: el catálogo está en memoria y la validación
+        está escrita en JavaScript. Tu aplicación real usará PostgreSQL y Pydantic. Pulsa
+        «Editar», cambia algo y guarda: verás las dos peticiones, la consulta que se ejecutaría
+        y la respuesta del servidor.
+      </p>
+    </div>
+
+    <div class="editor-cuerpo">
+      <div class="editor-lado">
+        <p class="editor-titulo">Catálogo · productos</p>
+        <table class="editor-tabla">
+          <thead>
+            <tr><th>Id</th><th>Nombre</th><th>Precio</th><th>Cant.</th><th></th></tr>
+          </thead>
+          <tbody data-ed-tabla></tbody>
+        </table>
+
+        <p class="editor-titulo">Formulario de edición</p>
+        <form class="editor-form" data-ed-form novalidate>
+          <div class="editor-campo campo-lab">
+            <label for="ed-nombre">Nombre</label>
+            <input id="ed-nombre" name="nombre" type="text">
+            <span class="editor-error" data-ed-error="nombre"></span>
+          </div>
+          <div class="editor-campo campo-lab">
+            <label for="ed-precio">Precio</label>
+            <input id="ed-precio" name="precio" type="text" inputmode="decimal">
+            <span class="editor-error" data-ed-error="precio"></span>
+          </div>
+          <div class="editor-campo campo-lab">
+            <label for="ed-cantidad">Cantidad</label>
+            <input id="ed-cantidad" name="cantidad" type="number">
+            <span class="editor-error" data-ed-error="cantidad"></span>
+          </div>
+          <div class="editor-campo campo-lab">
+            <label for="ed-descripcion">Descripción</label>
+            <textarea id="ed-descripcion" name="descripcion" rows="3"></textarea>
+          </div>
+          <div class="editor-acciones">
+            <button type="submit" class="editor-boton guardar">Guardar cambios</button>
+            <button type="button" class="editor-boton cancelar" data-ed-cancelar>Cancelar</button>
+            <button type="button" class="editor-boton" data-ed-reiniciar>Reiniciar catálogo</button>
+          </div>
+        </form>
+
+        <div class="editor-aviso" data-ed-aviso>
+          Pulsa <strong>Editar</strong> en cualquier fila para cargar ese registro en el
+          formulario. Todavía no has cargado ninguno.
+        </div>
+      </div>
+
+      <div class="editor-consola" data-ed-consola></div>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — qué demuestra el laboratorio</span>
+    <p>
+      Mira la consola de la derecha después de cada acción. Verás tres cosas que en el
+      ejercicio real ocurren en el servidor: <strong>la petición</strong> que sale, <strong>la
+      consulta</strong> que se prepara con sus parámetros, y <strong>la respuesta</strong> que
+      vuelve. Fíjate también en que, cuando la validación falla, el catálogo <strong>no cambia</strong>:
+      el registro guardado sigue igual, y el formulario conserva lo que escribiste.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Por qué el esquema de Pydantic evita el error 500 con un precio mal escrito?</p>
+      <button class="opcion" data-op="a">Porque ignora los campos que no puede convertir</button>
+      <button class="opcion" data-op="b">Porque la ruta convierte el precio antes de validar</button>
+      <button class="opcion" data-op="c">Porque convierte y valida en el mismo paso, y avisa con un error controlado</button>
+      <button class="opcion" data-op="b">Porque el navegador no deja escribir letras en el campo</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> Cuando la validación falla, ¿qué valores debe mostrar el formulario?</p>
+      <button class="opcion" data-op="a">Los que el usuario acaba de escribir</button>
+      <button class="opcion" data-op="b">Los que estaban guardados en la base de datos</button>
+      <button class="opcion" data-op="c">Los de otro producto del catálogo</button>
+      <button class="opcion" data-op="d">Ninguno: el formulario debe aparecer vacío</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Qué pasa con la base de datos cuando la validación falla?</p>
+      <button class="opcion" data-op="a">Se guarda el registro a medias</button>
+      <button class="opcion" data-op="b">Se guardan solo los campos que sí pasaron</button>
+      <button class="opcion" data-op="c">Se hace una copia de seguridad automática</button>
+      <button class="opcion" data-op="d">No se toca: el <code>UPDATE</code> ni siquiera se ejecuta</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Por qué se traduce el error de Pydantic a un diccionario por campo?</p>
+      <button class="opcion" data-op="a">Porque Pydantic no devuelve errores en español</button>
+      <button class="opcion" data-op="b">Porque la plantilla muestra <code>errores.campo</code> bajo cada campo con error</button>
+      <button class="opcion" data-op="c">Porque el navegador no entiende los diccionarios</button>
+      <button class="opcion" data-op="d">Para que el error se pueda guardar en la base de datos</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: Cargar los datos en el formulario</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de lectura</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija por
+      escrito lo que has leído hasta ahora.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora.
+    </p>
+
+    <div class="reglas">
+      <div class="regla">
+        <h4>Regla 20-20-20</h4>
+        <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+      </div>
+      <div class="regla">
+        <h4>Movimiento</h4>
+        <p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p>
+      </div>
+      <div class="regla">
+        <h4>Hidratación</h4>
+        <p>Un vaso de agua. La lectura densa agota más de lo que parece.</p>
+      </div>
+      <div class="regla">
+        <h4>Bitácora</h4>
+        <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora de lectura (5 minutos)</h3>
+
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿por qué editar un registro son dos viajes al servidor?</li>
+    <li><strong>En una frase:</strong> ¿qué se rompe si el formulario de edición aparece vacío?</li>
+    <li><strong>En una frase:</strong> ¿qué debe hacer el servidor cuando la validación falla?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+
+  <p>
+    Estas siete palabras aparecerán en el taller final. Léelas ahora; las definiciones son
+    aproximadas y se afinarán en las unidades siguientes.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>Registro</dt>
+      <dd>Una fila de la tabla: un producto con su id, su nombre, su precio, su cantidad y su descripción.</dd>
+    </div>
+    <div>
+      <dt>Clave primaria</dt>
+      <dd>La columna <code>id</code>: el número que identifica un registro y lo distingue de todos los demás.</dd>
+    </div>
+    <div>
+      <dt>Contexto</dt>
+      <dd>El diccionario de datos que se le pasa a la plantilla para que pueda dibujar el HTML.</dd>
+    </div>
+    <div>
+      <dt>Validación</dt>
+      <dd>Las reglas que decide si un dato sirve. En este ejercicio viven en el esquema de Pydantic.</dd>
+    </div>
+    <div>
+      <dt>Parametrizar</dt>
+      <dd>Escribir la consulta con huecos <code>$1</code>, <code>$2</code>… y mandar los valores aparte, nunca pegados dentro del texto.</dd>
+    </div>
+    <div>
+      <dt>Fragmento</dt>
+      <dd>Un pedazo de HTML que el servidor devuelve para reemplazar una parte de la página, no la página entera.</dd>
+    </div>
+    <div>
+      <dt>CRUD</dt>
+      <dd>Las cuatro operaciones sobre datos: Create, Read, Update y Delete. Hoy: Update.</dd>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: Validar sin perder lo escrito</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Ejercicio práctico →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — EJERCICIO: LAS CONSULTAS DEL REPOSITORIO
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · Taller de aplicación</div>
+    <h2>Ejercicio 5.1 · <em>Las consultas del repositorio</em></h2>
+    <p class="proposito">
+      La capa de datos es el suelo de la edición. En 35 minutos escribirás las tres consultas
+      que sostienen todo el flujo: las dos que <strong>leen</strong> el registro y la que lo
+      <strong>actualiza</strong>. El <code>UPDATE</code> de hoy tiene una regla que no se negocia.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: <code>repositorio.py</code> con sus tres consultas</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>Las tres consultas de la tienda TechStore</h3>
+    </div>
+
+    <p>
+      En <code>repositorio.py</code> hay tres funciones con su <code>TODO</code>. Tu trabajo es
+      escribirlas. No es la parte más vistosa del ejercicio, pero es la que decide que nada se
+      guarde donde no debe.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>Una conexión (<code>conn</code>) y, cuando hace falta, un <code>producto_id</code></td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>Una lista de diccionarios, un diccionario, o <code>None</code></td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Todas las consultas usan parámetros <code>$1</code>, <code>$2</code>…: nunca se concatena texto recibido dentro del SQL</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>El <code>UPDATE</code> identifica el registro por <code>WHERE id = $1</code> y por nada más</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Las funciones <strong>no imprimen</strong>: devuelven el dato</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong><code>obtener_productos(conn)</code></strong>: devuelve todos los productos como
+        lista de diccionarios, ordenados por nombre.
+      </li>
+      <li>
+        <strong><code>obtener_producto(conn, producto_id)</code></strong>: devuelve el diccionario
+        del producto con ese <code>id</code>, o <code>None</code> si no existe.
+      </li>
+      <li>
+        <strong><code>actualizar_producto(conn, producto_id, nombre, precio, cantidad, descripcion)</code></strong>:
+        ejecuta el <code>UPDATE</code> y devuelve <code>True</code> si modificó una fila,
+        <code>False</code> si no había ninguna.
+      </li>
+      <li>
+        <strong>Los <code>SELECT</code> con sus cinco columnas</strong>: <code>id</code>,
+        <code>nombre</code>, <code>precio</code>, <code>cantidad</code> y <code>descripcion</code>.
+      </li>
+      <li>
+        <strong>El <code>UPDATE</code> completo</strong>: las cuatro columnas que cambian y el
+        <code>WHERE id = $1</code>.
+      </li>
+      <li>
+        <strong>Que el <code>UPDATE</code> devuelva un booleano</strong>, no la cadena
+        <code>"UPDATE 1"</code> cruda.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-5-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-5-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        Fíjate en el orden de los parámetros del <code>UPDATE</code>: <code>$1</code> es el
+        <code>id</code> y los demás van del <code>$2</code> al <code>$5</code>. El <code>id</code>
+        va primero porque es el que identifica la fila; los que cambian van después, en el orden
+        en que los pones en el <code>SET</code>.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>repositorio.py — solución de referencia</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Este archivo concentra todas las consultas SQL del ejercicio.</span>
+<span class="tk-cm"># Todas usan parámetros ($1, $2, ...): nunca se concatenan valores</span>
+<span class="tk-cm"># recibidos del formulario dentro del texto SQL.</span>
+
+
+<span class="tk-kw">async def</span> <span class="tk-fn">obtener_productos</span>(conn) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]:
+    <span class="tk-str">"""Devuelve todos los productos, ordenados por nombre."""</span>
+    filas = <span class="tk-kw">await</span> conn.<span class="tk-fn">fetch</span>(
+        <span class="tk-str">"SELECT id, nombre, precio, cantidad, descripcion "</span>
+        <span class="tk-str">"FROM productos ORDER BY nombre"</span>
+    )
+    <span class="tk-kw">return</span> [<span class="tk-fn">dict</span>(fila) <span class="tk-kw">for</span> fila <span class="tk-kw">in</span> filas]
+
+
+<span class="tk-kw">async def</span> <span class="tk-fn">obtener_producto</span>(conn, producto_id: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">dict</span> | <span class="tk-cls">None</span>:
+    <span class="tk-str">"""Busca un producto por su clave primaria (id)."""</span>
+    fila = <span class="tk-kw">await</span> conn.<span class="tk-fn">fetchrow</span>(
+        <span class="tk-str">"SELECT id, nombre, precio, cantidad, descripcion "</span>
+        <span class="tk-str">"FROM productos WHERE id = $1"</span>,
+        producto_id,
+    )
+    <span class="tk-kw">return</span> <span class="tk-fn">dict</span>(fila) <span class="tk-kw">if</span> fila <span class="tk-kw">else</span> <span class="tk-cls">None</span>
+
+
+<span class="tk-kw">async def</span> <span class="tk-fn">actualizar_producto</span>(
+    conn,
+    producto_id: <span class="tk-cls">int</span>,
+    nombre: <span class="tk-cls">str</span>,
+    precio: <span class="tk-cls">float</span>,
+    cantidad: <span class="tk-cls">int</span>,
+    descripcion: <span class="tk-cls">str</span> | <span class="tk-cls">None</span>,
+) -&gt; <span class="tk-cls">bool</span>:
+    <span class="tk-str">"""Actualiza un producto identificado por su clave primaria (id).
+
+    Devuelve True si la consulta modificó una fila, False si no existía.
+    """</span>
+    resultado = <span class="tk-kw">await</span> conn.<span class="tk-fn">execute</span>(
+        <span class="tk-str">"UPDATE productos "</span>
+        <span class="tk-str">"SET nombre = $2, precio = $3, cantidad = $4, descripcion = $5 "</span>
+        <span class="tk-str">"WHERE id = $1"</span>,
+        producto_id,
+        nombre,
+        precio,
+        cantidad,
+        descripcion,
+    )
+    <span class="tk-kw">return</span> resultado == <span class="tk-str">"UPDATE 1"</span></code></pre>
+  </div>
+
+    <p>
+      La línea que más se olvida es <code>conn.fetch(...)</code> y <code>conn.fetchrow(...)</code>:
+      asyncpg devuelve <strong>filas</strong>, no diccionarios. Por eso hay que convertirlas con
+      <code>dict(fila)</code>. Y <code>fetchrow</code> devuelve <code>None</code> si no encuentra
+      nada: de ahí el <code>if fila else None</code>.
+    </p>
+    </div>
+  </div>
+
+  <h3>5.2 · La regla que no se negocia: nunca concatenar</h3>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — la forma prohibida</span>
+    <p>
+      Esta consulta parece más cómoda y es un <strong>error grave</strong>:
+    </p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la forma que NO se debe escribir</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># ¡NUNCA! El texto recibido se mete dentro del SQL</span>
+consulta = <span class="tk-fn">f</span><span class="tk-str">"UPDATE productos SET nombre = '{nombre}' WHERE id = {id}"</span>
+
+<span class="tk-cm"># Si el nombre es:  O'Brien'; DROP TABLE productos; --</span>
+<span class="tk-cm"># la consulta se convierte en dos sentencias y la tabla se va.</span></code></pre>
+  </div>
+
+  <p>
+    Con parámetros, el mismo nombre llega como un <strong>valor</strong> y no como parte del
+    texto de la consulta. PostgreSQL lo trata como dato, nunca como código.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>La misma operación, escrita de las dos maneras</caption>
+      <thead>
+        <tr><th></th><th>Con concatenación</th><th>Con parámetros</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>El texto llega al servidor</td>
+          <td>Como parte de la instrucción</td>
+          <td>Como un valor, con su tipo</td>
+        </tr>
+        <tr>
+          <td>Un <code>'</code> en el nombre</td>
+          <td>Rompe la consulta</td>
+          <td>Es simplemente un apóstrofo</td>
+        </tr>
+        <tr>
+          <td>Un <code>id</code> con texto</td>
+          <td>Se ejecuta la consulta equivocada</td>
+          <td>PostgreSQL dice que el tipo no coincide</td>
+        </tr>
+        <tr>
+          <td>Un <code>DROP TABLE</code></td>
+          <td><strong>Borra la tabla</strong></td>
+          <td>Se guarda como texto, sin efecto</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — cómo funciona por dentro</span>
+    <p>
+      Cuando envías una consulta con <code>$1</code>, el servidor de PostgreSQL la <strong>prepara
+      primero</strong>: analiza el texto, decide qué hacer con cada hueco y guarda un plan. Solo
+      entonces llegan los valores, ya separados del texto. Por eso una consulta parametrizada
+      además de ser segura es <strong>más rápida</strong>: el plan se calcula una vez y se
+      reutiliza.
+    </p>
+  </div>
+
+  <h3>5.3 · «UPDATE 1» y «UPDATE 0»</h3>
+
+  <p>
+    Cuando asyncpg ejecuta un <code>UPDATE</code>, no devuelve las filas modificadas: devuelve
+    una <strong>cadena</strong> con el número de filas afectadas. Eso es lo que te dice si el
+    registro existía.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Lo que devuelve la consulta y lo que significa</caption>
+      <thead>
+        <tr><th>Devuelve</th><th>Significa</th><th>Qué debe hacer la ruta</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>"UPDATE 1"</code></td>
+          <td>Se modificó una fila: el producto existía</td>
+          <td>Devolver <code>fila_actualizada.html</code></td>
+        </tr>
+        <tr>
+          <td><code>"UPDATE 0"</code></td>
+          <td>No se modificó nada: el <code>id</code> no existe</td>
+          <td>Devolver <code>producto_no_encontrado.html</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Por qué el <code>UPDATE</code> usa <code>WHERE id = $1</code>?</p>
+      <button class="opcion" data-op="a">Porque es más rápido que buscar por el nombre</button>
+      <button class="opcion" data-op="b">Porque PostgreSQL no admite <code>WHERE</code> por texto</button>
+      <button class="opcion" data-op="c">Porque modifica únicamente el registro con esa clave primaria y deja los demás intactos</button>
+      <button class="opcion" data-op="d">Porque <code>$1</code> es el precio</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué devuelve <code>conn.fetchrow(...)</code> cuando el <code>id</code> no existe?</p>
+      <button class="opcion" data-op="a"><code>None</code></button>
+      <button class="opcion" data-op="b">Una lista vacía</button>
+      <button class="opcion" data-op="c">La cadena <code>"UPDATE 0"</code></button>
+      <button class="opcion" data-op="d">Un error 404</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Por qué nunca se deben concatenar los valores dentro del SQL?</p>
+      <button class="opcion" data-op="a">Porque asyncpg no lo permite</button>
+      <button class="opcion" data-op="b">Porque las consultas quedarían más largas</button>
+      <button class="opcion" data-op="c">Porque el <code>WHERE</code> dejaría de funcionar</button>
+      <button class="opcion" data-op="d">Porque un texto con un apóstrofo puede cambiar el significado de la consulta y ejecutar otra cosa</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Qué significa que asyncpg devuelva <code>"UPDATE 1"</code>?</p>
+      <button class="opcion" data-op="a">Que la consulta estaba mal escrita</button>
+      <button class="opcion" data-op="b">Que se modificó exactamente una fila</button>
+      <button class="opcion" data-op="c">Que el producto tiene una unidad</button>
+      <button class="opcion" data-op="d">Que la consulta tardó un milisegundo</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: las tres rutas de edición →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — EJERCICIO: LAS TRES RUTAS
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · Taller de aplicación</div>
+    <h2>Ejercicio 6.1 · <em>Las tres rutas de edición</em></h2>
+    <p class="proposito">
+      Ya tienes la capa de datos. Ahora la capa web: las tres rutas que convierten la pulseación
+      de un botón en un registro corregido. En 35 minutos escribirás el <code>GET</code> que
+      carga el formulario y el <code>POST</code> que lo guarda, y los conectarás con las
+      plantillas que ya existen.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: editar, guardar y cancelar funcionando</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>Editar, guardar y cancelar</h3>
+    </div>
+
+    <p>
+      En <code>vistas.py</code> hay dos rutas con su <code>TODO</code>. La de cancelar ya está
+      hecha y te sirve de ejemplo: hace exactamente lo mismo que la de guardar, pero sin tocar
+      nada.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>El <code>producto_id</code> de la URL y, en el POST, los cuatro campos del formulario</td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>Un fragmento HTML: el formulario, la fila actualizada o el aviso de «no encontrado»</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>La ruta del POST debe buscar, validar y <strong>después</strong> guardar</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Si la validación falla, el código es <strong>422</strong> y se devuelven los valores escritos</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>La ruta nunca escribe texto directamente: siempre devuelve una plantilla</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong><code>GET /productos/{producto_id}/editar</code></strong>: busca el producto y
+        renderiza <code>fila_editar.html</code> con los seis datos del contexto. Si no existe,
+        renderiza <code>producto_no_encontrado.html</code>.
+      </li>
+      <li>
+        <strong><code>POST /productos/{producto_id}</code></strong>: valida con
+        <code>ProductoActualizar</code> y, según el resultado, responde con uno de los tres
+        fragmentos.
+      </li>
+      <li>
+        <strong>La traducción de errores</strong>: la función <code>errores_en_espanol()</code> que
+        convierte los errores de Pydantic en un mensaje por campo.
+      </li>
+      <li>
+        <strong>La comprobación de existencia</strong> en el POST: buscar el producto <em>antes</em>
+        de guardar, para poder avisar si no está.
+      </li>
+      <li>
+        <strong>La respuesta del éxito</strong> con <code>fila_actualizada.html</code> y el
+        producto <strong>ya guardado</strong> (volviéndolo a leer de la base de datos).
+      </li>
+    </ol>
+
+    <div class="recuadro precision">
+      <span class="rotulo">Pista — por qué se vuelve a leer el producto</span>
+      <p>
+        Después del <code>UPDATE</code> podrías mostrar los valores que tú enviaste. Pero
+        <strong>volver a leerlo</strong> es más honesto: lo que se pinta en pantalla es
+        <em>exactamente</em> lo que quedó guardado, con el formato de la base de datos
+        (un <code>Decimal</code> con dos decimales, por ejemplo). Y si la base de datos
+        cambiara el valor por su cuenta, la pantalla mostraría la verdad.
+      </p>
+    </div>
+
+    <button class="solucion-btn" data-solucion="solucion-6-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-6-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La estructura de la ruta del POST es la que resuelve el problema de la clase: primero el
+        <code>try/except</code> que valida, y <strong>solo si no hay errores</strong> se toca la
+        base de datos.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — la ruta que guarda, solución de referencia</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">async def</span> <span class="tk-fn">guardar_producto_vista</span>(
+    request: <span class="tk-cls">Request</span>,
+    conn: <span class="tk-cls">ConnectionDep</span>,
+    producto_id: <span class="tk-cls">int</span>,
+    nombre: <span class="tk-cls">Annotated</span>[<span class="tk-cls">str</span> | <span class="tk-cls">None</span>, <span class="tk-fn">Form</span>()] = <span class="tk-cls">None</span>,
+    precio: <span class="tk-cls">Annotated</span>[<span class="tk-cls">str</span> | <span class="tk-cls">None</span>, <span class="tk-fn">Form</span>()] = <span class="tk-cls">None</span>,
+    cantidad: <span class="tk-cls">Annotated</span>[<span class="tk-cls">str</span> | <span class="tk-cls">None</span>, <span class="tk-fn">Form</span>()] = <span class="tk-cls">None</span>,
+    descripcion: <span class="tk-cls">Annotated</span>[<span class="tk-cls">str</span> | <span class="tk-cls">None</span>, <span class="tk-fn">Form</span>()] = <span class="tk-cls">None</span>,
+):
+    <span class="tk-kw">try</span>:
+        datos = <span class="tk-cls">ProductoActualizar</span>(
+            nombre=nombre <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+            precio=precio <span class="tk-kw">if</span> precio <span class="tk-kw">not in</span> (<span class="tk-cls">None</span>, <span class="tk-str">""</span>) <span class="tk-kw">else</span> <span class="tk-cls">None</span>,
+            cantidad=cantidad <span class="tk-kw">if</span> cantidad <span class="tk-kw">not in</span> (<span class="tk-cls">None</span>, <span class="tk-str">""</span>) <span class="tk-kw">else</span> <span class="tk-cls">None</span>,
+            descripcion=descripcion <span class="tk-kw">or</span> <span class="tk-cls">None</span>,
+        )
+    <span class="tk-kw">except</span> <span class="tk-cls">ValidationError</span> <span class="tk-kw">as</span> excepcion:
+        <span class="tk-kw">return</span> <span class="tk-fn">templates.TemplateResponse</span>(
+            request=request,
+            name=<span class="tk-str">"componentes/fila_editar.html"</span>,
+            context={
+                <span class="tk-str">"producto"</span>: {<span class="tk-str">"id"</span>: producto_id},
+                <span class="tk-str">"nombre"</span>: nombre <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"precio"</span>: precio <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"cantidad"</span>: cantidad <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"descripcion"</span>: descripcion <span class="tk-kw">or</span> <span class="tk-str">""</span>,
+                <span class="tk-str">"errores"</span>: <span class="tk-fn">errores_en_espanol</span>(excepcion),
+            },
+            status_code=<span class="tk-num">422</span>,
+        )
+
+    producto = <span class="tk-kw">await</span> <span class="tk-fn">obtener_producto</span>(conn, producto_id)
+    <span class="tk-kw">if</span> producto <span class="tk-kw">is None</span>:
+        <span class="tk-kw">return</span> <span class="tk-fn">templates.TemplateResponse</span>(
+            request=request,
+            name=<span class="tk-str">"componentes/producto_no_encontrado.html"</span>,
+            context={<span class="tk-str">"producto_id"</span>: producto_id},
+        )
+
+    <span class="tk-kw">await</span> <span class="tk-fn">actualizar_producto</span>(
+        conn,
+        producto_id,
+        datos.nombre,
+        datos.precio,
+        datos.cantidad,
+        datos.descripcion,
+    )
+
+    actualizado = <span class="tk-kw">await</span> <span class="tk-fn">obtener_producto</span>(conn, producto_id)
+    <span class="tk-kw">return</span> <span class="tk-fn">templates.TemplateResponse</span>(
+        request=request,
+        name=<span class="tk-str">"componentes/fila_actualizada.html"</span>,
+        context={<span class="tk-str">"producto"</span>: actualizado},
+    )</code></pre>
+  </div>
+
+    <p>
+      Nota una cosa: el <code>try/except</code> cubre <strong>solo</strong> la construcción del
+      esquema. Si el <code>UPDATE</code> fallara, su error se vería: y debe verse, porque sería
+      un problema real de la aplicación.
+    </p>
+    </div>
+  </div>
+
+  <h3>6.2 · La lista de comprobaciones</h3>
+
+  <p>
+    El ejercicio trae una lista de comprobaciones. Estas son las que de verdad separan un
+    «funciona en mi máquina» de un «funciona siempre»:
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las nueve comprobaciones del ejercicio</caption>
+      <thead>
+        <tr><th>#</th><th>Qué pruebas</th><th>Respuesta esperada</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>El catálogo se ve en <code>/productos</code></td><td>La tabla con las cinco columnas</td></tr>
+        <tr><td>2</td><td>Pulsas «Editar»</td><td>El formulario aparece con los valores actuales, sin recargar</td></tr>
+        <tr><td>3</td><td>Pulsas «Cancelar»</td><td>Vuelve la fila normal, sin cambios</td></tr>
+        <tr><td>4</td><td>Envías el formulario vacío</td><td>Errores, y la base de datos <strong>sin cambios</strong></td></tr>
+        <tr><td>5</td><td>Escribes un precio negativo o cero</td><td>Un mensaje de error bajo ese campo</td></tr>
+        <tr><td>6</td><td>Escribes una cantidad no numérica</td><td>Error, y el valor escrito <strong>se conserva</strong></td></tr>
+        <tr><td>7</td><td>Envías datos válidos</td><td>La fila muestra los valores nuevos y el aviso de éxito</td></tr>
+        <tr><td>8</td><td>Editas el producto A</td><td>El producto B <strong>no cambia</strong></td></tr>
+        <tr><td>9</td><td>Abres <code>/productos/99999/editar</code></td><td>El aviso de «no encontrado», no un error 500</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — la comprobación 8 es la importante</span>
+    <p>
+      Editar el producto A y ver que el B no cambió no es una casualidad: es la consecuencia
+      directa de <code>WHERE id = $1</code>. Si esa cláusula falta, el <code>UPDATE</code> se
+      aplica a <strong>todas</strong> las filas de la tabla y todas quedan con el mismo nombre y
+      el mismo precio. Y la aplicación no dará ningún error: pamphlets todo lo que pediste.
+    </p>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — uvicorn main:app --reload</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">uvicorn main:app --reload</div>
+      <div class="consola-salida">INFO:     Started server process [1284]</div>
+      <div class="consola-salida">INFO:     Waiting for application startup.</div>
+      <div class="consola-salida">INFO:     Application startup complete.</div>
+      <div class="consola-salida">INFO:     Uvicorn running on http://127.0.0.1:8000</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada">curl -X POST http://127.0.0.1:8000/productos/3 -d "nombre=Teclado mecánico" -d "precio=199900" -d "cantidad=7"</div>
+      <div class="consola-salida">HTTP/1.1 200 OK</div>
+      <div class="consola-salida">&lt;div class="aviso-exito"&gt;Producto actualizado correctamente.&lt;/div&gt;</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué debe hacer la ruta del POST si el <code>id</code> no existe?</p>
+      <button class="opcion" data-op="a">Devolver un error 500</button>
+      <button class="opcion" data-op="b">Devolver <code>producto_no_encontrado.html</code> con un aviso</button>
+      <button class="opcion" data-op="c">No hacer nada y devolver 200</button>
+      <button class="opcion" data-op="d">Crear el producto con los datos enviados</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Por qué el <code>try/except</code> debe envolver solo la construcción del esquema?</p>
+      <button class="opcion" data-op="a">Para que el código ocupe menos líneas</button>
+      <button class="opcion" data-op="b">Porque Pydantic solo funciona dentro de un <code>try</code></button>
+      <button class="opcion" data-op="c">Para no tener que importar <code>ValidationError</code></button>
+      <button class="opcion" data-op="d">Para que solo se silencien los errores de validación y los de la base de datos se vean</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Por qué se vuelve a leer el producto después del <code>UPDATE</code>?</p>
+      <button class="opcion" data-op="a">Para mostrar exactamente lo que quedó guardado, con el formato de la base de datos</button>
+      <button class="opcion" data-op="b">Porque el <code>UPDATE</code> no devuelve las filas</button>
+      <button class="opcion" data-op="c">Para comprobar que el usuario tenía permiso</button>
+      <button class="opcion" data-op="d">Para volver a validarlo</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Qué pasa si se olvida la cláusula <code>WHERE id = $1</code> en el <code>UPDATE</code>?</p>
+      <button class="opcion" data-op="a">La consulta da error de sintaxis</button>
+      <button class="opcion" data-op="b">No se modifica ninguna fila</button>
+      <button class="opcion" data-op="c">Se modifican todas las filas de la tabla, sin ningún aviso</button>
+      <button class="opcion" data-op="d">Se modifican solo las filas que tienen el mismo nombre</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: Las consultas del repositorio</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller integrador →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER INTEGRADOR
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>Taller · <em>El catálogo que sí se puede corregir</em></h2>
+    <p class="proposito">
+      Las dos unidades anteriores dejaron las piezas: las consultas y las rutas. Ahora se montan
+      en un solo programa, se prueban de punta a punta y se escribe el taller.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller de desarrollo</b></span>
+      <span>🧭 <b>Producto: el flujo completo, probados y escrito</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Taller</span>
+      <h3>La «U» del CRUD, de punta a punta</h3>
+    </div>
+
+    <p>
+      Termina el ejercicio: implementa los cinco <code>TODO</code> del repositorio, sube el
+      servidor y recorre el flujo completo. Después, escribe el párrafo que explica qué
+      reasaron las decisiones que tomaste.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Archivos</strong></td>
+            <td><code>esquemas.py</code> (1 TODO), <code>repositorio.py</code> (3 TODO) y <code>vistas.py</code> (2 TODO)</td>
+          </tr>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>La tabla <code>productos</code> de PostgreSQL y las peticiones del navegador</td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>El catálogo con un botón «Editar» que funciona de verdad</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Las plantillas no se tocan: solo se les pasan los datos correctos</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Nada de <code>print</code> en el servidor: la respuesta es el HTML</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>El <code>UPDATE</code> solo puede tocar la fila con el <code>id</code> de la URL</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li>
+        <strong>Los cinco <code>TODO</code> implementados</strong>: el esquema, las tres consultas
+        y las dos rutas.
+      </li>
+      <li>
+        <strong>Las nueve comprobaciones del ejercicio</strong> marcadas, una por una, en el
+        cuaderno.
+      </li>
+      <li>
+        <strong>Un caso extra que no está en la lista</strong>: inventa una comprobación que
+        detecte un fallo tuyo y pruébala. Pista: ¿qué pasa si el usuario pulsa «Guardar» dos
+        veces seguidas?
+      </li>
+      <li>
+        <strong>Un párrafo escrito</strong> que explique por qué el formulario vuelve con los
+        valores escritos y no con los guardados.
+      </li>
+      <li>
+        <strong>El commit</strong> de tu solución con un mensaje que explique qué cambió.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="taller-solucion">Ver un modelo de respuesta</button>
+
+    <div class="solucion" id="taller-solucion">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        El orden de las operaciones dentro de la ruta del POST es la respuesta al misterio del
+        enunciado. Y un buen párrafo deargumentación no describe lo que hiciste: explica por qué
+        lo hiciste así.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>el esqueleto de la ruta, con sus tres salidas</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">async def</span> <span class="tk-fn">guardar_producto_vista</span>(conn, producto_id, nombre, precio, cantidad, descripcion):
+    <span class="tk-cm"># 1. VALIDAR — si falla, no se toca la base de datos</span>
+    <span class="tk-kw">try</span>:
+        datos = <span class="tk-cls">ProductoActualizar</span>(nombre=nombre, precio=precio, cantidad=cantidad, descripcion=descripcion)
+    <span class="tk-kw">except</span> <span class="tk-cls">ValidationError</span> <span class="tk-kw">as</span> excepcion:
+        <span class="tk-kw">return</span> <span class="tk-fn">fila_editar</span>(..., status_code=<span class="tk-num">422</span>)   <span class="tk-cm"># con lo escrito</span>
+
+    <span class="tk-cm"># 2. BUSCAR — para poder avisar si el id no existe</span>
+    producto = <span class="tk-kw">await</span> <span class="tk-fn">obtener_producto</span>(conn, producto_id)
+    <span class="tk-kw">if</span> producto <span class="tk-kw">is None</span>:
+        <span class="tk-kw">return</span> <span class="tk-fn">no_encontrado</span>(producto_id)
+
+    <span class="tk-cm"># 3. GUARDAR — y solo aquí se toca la base de datos</span>
+    <span class="tk-kw">await</span> <span class="tk-fn">actualizar_producto</span>(conn, producto_id, datos.nombre, datos.precio, datos.cantidad, datos.descripcion)
+    <span class="tk-kw">return</span> <span class="tk-fn">fila_actualizada</span>(<span class="tk-kw">await</span> <span class="tk-fn">obtener_producto</span>(conn, producto_id))</code></pre>
+  </div>
+
+    <p>
+      Un párrafo de argumentación para este ejercicio puede ser:
+    </p>
+
+    <blockquote class="recuadro nota">
+      <p>
+        Cuando la validación falla, devuelvo el formulario con los valores que escribió el
+        usuario y no con los que estaban guardados, porque si le muestro los originales
+        <strong>perdería su trabajo</strong> y tendría que escribirlo otra vez. Además, el
+        <code>UPDATE</code> está dentro del <code>WHERE id = $1</code> para que al corregir un
+        producto no se cambien los demás. Decidí devolver un <code>422</code> y no un
+        <code>500</code> porque el error es del dato, no del servidor: el usuario puede
+        corregirlo sin ayuda.
+      </p>
+    </blockquote>
+    </div>
+  </div>
+
+  <h3>7.2 · El caso que no está en la lista</h3>
+
+  <p>
+    La lista de comprobaciones es buena, pero está pensada para el camino previsto. Un buen
+    programador busca el camino que <em>no</em> está previsto. El más importante de esta clase
+    es este:
+  </p>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — «Guardar» dos veces</span>
+    <p>
+      Si el usuario pulsa «Guardar» dos veces muy rápido, se mandan <strong>dos</strong>
+      peticiones. Las dos validan bien y las dos ejecutan su <code>UPDATE</code>. El resultado
+      visible es el mismo, así que parece inofensivo… pero la segunda petición se ejecutó con
+      los datos <em>anteriores</em> en la base de datos y puede dejar la fila en un estado
+      inesperado.
+    </p>
+    <p>
+      ¿Cómo lo resolverías? Pistas: el botón se puede deshabilitar mientras se guarda; o se
+      puede usar <code>SELECT ... FOR UPDATE</code> para bloquear la fila; o se puede incluir un
+      número de versión en la tabla y comprobar que no haya cambiado. Ninguna de las tres es
+      obligatoria en el ejercicio, pero saber que el problema existe ya te pone por delante del
+      90 % de los que developpen esto.
+    </p>
+  </div>
+
+  <h3>7.3 · Rúbrica de autoevaluación</h3>
+
+  <p>
+    Puntúa cada criterio de 0 a 2 y revisa los que hayas quedado en 0 o 1 antes de dar por terminado
+    el taller.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación del editor de registros</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Carga del formulario</td>
+          <td>El formulario aparece vacío</td>
+          <td>Aparece con algunos valores y otros en blanco</td>
+          <td>Aparece con los cuatro valores guardados</td>
+        </tr>
+        <tr>
+          <td>Validación</td>
+          <td>Se convierte a mano y un texto malo rompe la aplicación</td>
+          <td>Valida, pero los mensajes son los de Pydantic en inglés</td>
+          <td>Valida con el esquema y traduce los mensajes al español</td>
+        </tr>
+        <tr>
+          <td>Conservación de lo escrito</td>
+          <td>Al fallar, el formulario vuelve con los valores originales</td>
+          <td>Vuelve con lo escrito, pero solo de los campos con error</td>
+          <td>Vuelve con lo escrito en los cuatro campos</td>
+        </tr>
+        <tr>
+          <td>Consultas parametrizadas</td>
+          <td>Se concatena texto dentro del SQL</td>
+          <td>Los <code>SELECT</code> están parametrizados y el <code>UPDATE</code> no</td>
+          <td>Las tres consultas usan <code>$1</code>, <code>$2</code>…</td>
+        </tr>
+        <tr>
+          <td>Alcance del <code>UPDATE</code></td>
+          <td>No tiene <code>WHERE</code>: cambia toda la tabla</td>
+          <td>Tiene <code>WHERE</code> por otro campo que no es el <code>id</code></td>
+          <td>Tiene <code>WHERE id = $1</code> y solo toca esa fila</td>
+        </tr>
+        <tr>
+          <td>Casos raros</td>
+          <td>Un <code>id</code> inexistente da error 500</td>
+          <td>El <code>id</code> inexistente avisa, pero la validación va después</td>
+          <td>Valida, busca y guarda, en ese orden, con aviso en cada salida</td>
+        </tr>
+        <tr>
+          <td>Separación de responsabilidades</td>
+          <td>Las rutas hacen <code>print</code> y la lógica está en las vistas</td>
+          <td>Las consultas están en el repositorio pero la conversión está en la ruta</td>
+          <td>El repositorio consulta, el esquema valida y la ruta solo coordina</td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay nada escrito</td>
+          <td>Describe el qué, no el porqué</td>
+          <td>Decisión, motivo, apartamiento del enunciado y consecuencia</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.4 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>Editar es un viaje de ida y vuelta: primero se carga lo guardado, después se guarda lo nuevo.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p>El formulario de edición llega lleno. Un formulario vacío no es «limpio»: es un formulario que va a borrar lo que no toques.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>El orden no se negocia: buscar, validar y <em>luego</em> guardar. Al revés, un dato malo llega a la base de datos.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p>Cuando la validación falla, el usuario recibe <strong>lo que escribió</strong>: perder su trabajo es la peor respuesta posible.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p>Un 422 significa «el dato no sirve»; un 500 significa «el servidor se rompió». Solo el primero se puede corregir.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p>Las consultas se parametrizan siempre. Un valor pegado dentro del texto SQL puede cambiar lo que la consulta hace.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p><code>WHERE id = $1</code> es lo que separa «corregir un registro» de «corregir todos los registros».</p>
+    </div>
+  </div>
+
+  <h3>7.5 · Puente hacia la próxima clase</h3>
+
+  <p>
+    El catálogo ya se puede corregir. Con esto tienes las tres primeras operaciones del CRUD
+    sobre datos de verdad: crear, leer y actualizar. Falta la cuarta —borrar— y faltan cosas
+    más grandes: <strong>que tu trabajo no se pierda</strong>.
+  </p>
+
+  <p>
+    Porque ahora mismo, si escribes un <code>UPDATE</code> con un error y pulsas Enter, ya no
+    hay vuelta atrás. No hay historial, no hay «deshacer», no hay versión anterior. La próxima
+    clase es precisamente sobre eso:
+  </p>
+
+  <ol>
+    <li>
+      <strong>Guardar una foto de tu código</strong> antes de tocarlo, para poder volver atrás.
+      Eso es <strong>Git</strong>: un historial que no se rompe aunque el código se rompa.
+    </li>
+    <li>
+      <strong>Un commit con un mensaje que explique el cambio</strong>, para que dentro de seis
+      meses sepas qué hiciste y por qué.
+    </li>
+    <li>
+      <strong>Un repositorio en el que trabajar sin miedo</strong>: el <code>ejercicio</code> que
+      descargaste es un repositorio de Git, y tu solución es el commit que hoy te falta.
+    </li>
+  </ol>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de la próxima clase</span>
+    <p>
+      Deja el taller funcionando y <strong>guarda una foto de tu solución en Git</strong>. Si
+      todavía no sabes usar Git, no te preocupes: la próxima clase empieza desde cero. Solo
+      necesitas tener el proyecto en un repositorio y un commit con un mensaje que diga, por
+      ejemplo, <code>Implementa la edición de productos: esquema, consultas y rutas</code>.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 11</h2>
+    <p>
+      Has cerrado el ciclo de los datos: el servidor los recibe (clase 4), los recorre (clase 5),
+      los organiza en funciones (clase 6), los valida en formularios (clase 7) y hoy los
+      <strong>corrige</strong>. La «U» del CRUD está hecha: el catálogo de la tienda ya no es de
+      solo lectura. A partir de aquí, la pregunta ya no es cómo se cambia un dato, sino cómo se
+      evita perder el trabajo.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: Las tres rutas de edición</button>
+    <button class="btn-siguiente" data-ir="0">✓ Marcar el taller como terminado y volver al inicio</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 11 · Edición de registros almacenados</span>
+  <p class="pie-sub">El viaje de una edición · Cargar el formulario · Validar sin perder lo escrito · El UPDATE parametrizado</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

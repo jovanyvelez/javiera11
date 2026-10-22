@@ -1,0 +1,1939 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 15 · Estructuración del sistema CRUD</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 15 · <em>Estructuración del sistema CRUD</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura y programa</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">El APIRouter</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">Qué archivo va en cada carpeta</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Unir las piezas con include_router</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Ejercicio: partir main.py</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Ejercicio: prefijos y dependencias</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: el proyecto estructurado</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> el CRUD completo, repartido en carpetas y unido con <code>include_router</code>.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>El archivo que <em>ya no cabe</em></h2>
+    <p class="proposito">
+      Las cuatro últimas clases construyeron el CRUD completo: conectar con la base de datos,
+      consultar, insertar y actualizar. Todo eso vive hoy en un solo archivo, <code>main.py</code>.
+      Esta clase no añade functionality: <strong>reparte lo que ya tienes</strong> en un
+      proyecto con carpetas, donde cada archivo tiene un sitio y una responsabilidad.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: el diagnóstico del archivo gigante</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · Cuatro clases en un solo archivo</h3>
+
+  <p class="primer-párrafo">
+    Abre tu <code>main.py</code> y mira su tamaño. Si has seguido el curso desde la clase 8, ahora
+    mismo tiene un poco más de <strong>doscientas líneas</strong>. Y en esas doscientas líneas
+    vive de todo: la conexión con PostgreSQL, el modelo de Pydantic, las consultas SQL, las
+    dependencias, las rutas, las plantillas y el arranque del servidor.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — el archivo donde acaba todo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># main.py — 213 líneas, seis responsabilidades</span>
+
+<span class="tk-kw">import</span> os                                     <span class="tk-cm"># 1. configuración</span>
+<span class="tk-kw">import</span> asyncpg                                <span class="tk-cm"># 2. base de datos</span>
+<span class="tk-kw">from</span> pydantic <span class="tk-kw">import</span> <span class="tk-cls">BaseModel</span>, <span class="tk-cls">Field</span>   <span class="tk-cm"># 3. modelos</span>
+<span class="tk-kw">from</span> fastapi.<span class="tk-cls">templating</span> <span class="tk-kw">import</span> <span class="tk-cls">Jinja2Templates</span>
+
+<span class="tk-cls">DATABASE_URL</span> = os.environ[<span class="tk-str">"DATABASE_URL"</span>]     <span class="tk-cm"># 1. configuración</span>
+
+<span class="tk-kw">class</span> <span class="tk-cls">ProductoActualizar</span>(<span class="tk-cls">BaseModel</span>):          <span class="tk-cm"># 3. modelos</span>
+    ...
+
+<span class="tk-kw">async def</span> <span class="tk-fn">obtener_productos</span>(conn): ...              <span class="tk-cm"># 4. consultas</span>
+<span class="tk-kw">async def</span> <span class="tk-fn">actualizar_producto</span>(conn, producto_id): ...     <span class="tk-cm"># 4. consultas</span>
+
+<span class="tk-kw">async def</span> <span class="tk-fn">get_connection</span>():                          <span class="tk-cm"># 5. dependencias</span>
+    ...
+
+app = <span class="tk-cls">FastAPI</span>()                                       <span class="tk-cm"># 6. arranque</span>
+
+<span class="tk-kw">@</span>app.<span class="tk-fn">get</span>(<span class="tk-str">"/productos"</span>)                          <span class="tk-cm"># 6. rutas</span>
+<span class="tk-kw">async def</span> <span class="tk-fn">listar_productos</span>(request, conn): ...
+<span class="tk-kw">@</span>app.<span class="tk-fn">post</span>(<span class="tk-str">"/productos"</span>)                         <span class="tk-cm"># 6. rutas</span>
+<span class="tk-kw">async def</span> <span class="tk-fn">crear_producto</span>(request, conn, nombre): ...</code></pre>
+  </div>
+
+  <h3>0.2 · El problema no es el código: es dónde vive</h3>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — un archivo largo no es lo mismo que un código malo</span>
+    <p>
+      El código de tu <code>main.py</code> es <strong>correcto</strong>. Funciona, pasa las
+      comprobaciones y no tiene un solo error. El problema es otro: cuando todo vive en el mismo
+      sitio, <strong>cualquier cambio toca el mismo archivo</strong>.
+    </p>
+    <p>
+      Concretamente: para corregir el precio de un producto tienes que abrir doscientas líneas,
+      encontrar la función correcta entre once, y rezar por no pisar la de al lado. Para saber
+      qué hace la aplicación entera, hay que leerla entera. Y para que otra persona toque el
+      repositorio sin romperte las rutas, no hay manera: <strong>todo está en el mismo archivo y
+      todo es el mismo problema</strong>.
+    </p>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Los tres síntomas del archivo que ya no cabe</caption>
+      <thead>
+        <tr><th>Síntoma</th><th>Lo que se ve</th><th>La causa real</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Buscar cuesta</td>
+          <td>«¿En qué línea estaba la consulta?»</td>
+          <td>Todo está mezclado: hay que leer para encontrar</td>
+        </tr>
+        <tr>
+          <td>Los cambios se pisan</td>
+          <td>Dos personas tocan el mismo archivo</td>
+          <td>No hay separación entre responsabilidades</td>
+        </tr>
+        <tr>
+          <td>Probar es difícil</td>
+          <td>Para probar el repositorio hay que levantar el servidor</td>
+          <td>Las rutas y las consultas están pegadas</td>
+        </tr>
+        <tr>
+          <td>El arranque se rompe</td>
+          <td>Un error de sintaxis tumba la aplicación entera</td>
+          <td>Un archivo es una sola unidad: todo o nada</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.3 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cuadro de unidades, tiempos y productos esperados</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura, el archivo gigante y el diagnóstico</td><td>20 min</td><td>La lista de responsabilidades mezcladas</td></tr>
+        <tr><td><strong>01</strong></td><td>El <code>APIRouter</code>: un router por archivo</td><td>30 min</td><td>Un router propio y la app que lo incluye</td></tr>
+        <tr><td><strong>02</strong></td><td>Qué archivo va en cada carpeta</td><td>30 min</td><td>El árbol del proyecto y la regla de importaciones</td></tr>
+        <tr><td><strong>03</strong></td><td>Unir las piezas: <code>include_router</code> (+ laboratorio)</td><td>30 min</td><td>El organizador de archivos funcionando</td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Ejercicio 5.1 · Partir <code>main.py</code> en routers</td><td>35 min</td><td>El proyecto con <code>app/routers/</code></td></tr>
+        <tr><td><strong>06</strong></td><td>Ejercicio 6.1 · Prefijos, tags y dependencias</td><td>35 min</td><td>Las rutas bajo <code>/api</code> y con su documentación</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller integrador</td><td>45 min</td><td>El CRUD completo estructurado y probado</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.4 · La idea central de la clase</h3>
+
+  <p>
+    La idea cabe en una frase: <strong>un router por archivo, y una aplicación que solo sabe
+    unirlos</strong>. Ni más ni menos. Todo lo demás —las carpetas, los prefijos, las
+    dependencias— son consecuencia de esa frase.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el antes y el después de la misma aplicación</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># ANTES: un archivo, seis responsabilidades</span>
+main.py  <span class="tk-str">"(213 líneas: config, base de datos, modelos, consultas, rutas…)"</span>
+
+<span class="tk-cm"># DESPUÉS: cada archivo con una responsabilidad, y uno que solo las une</span>
+app/
+├── main.py            <span class="tk-cm"># 12 líneas: crea FastAPI e incluye los routers</span>
+├── config.py          <span class="tk-cm"># la configuración</span>
+├── database.py        <span class="tk-cm"># el pool de conexiones</span>
+├── esquemas.py        <span class="tk-cm"># los modelos</span>
+├── repositorio.py     <span class="tk-cm"># las consultas</span>
+├── dependencias.py    <span class="tk-cm"># las dependencias compartidas</span>
+└── routers/
+    └── productos.py   <span class="tk-cm"># las rutas de productos</span></code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — esto no es «programación modular» abstracta</span>
+    <p>
+      Hay una diferencia entre esto y el tema teórico de los módulos. Aquí no se trata de que el
+      código «sea más elegante», sino de algo muy concreto: <strong>tus rutas dejan de poder
+      romper tu repositorio</strong>, y tú puedes cambiar el pool de conexiones sin tocar una sola
+      línea de las rutas. Esa es la prueba de que la separación sirve.
+    </p>
+  </div>
+
+  <h3>0.5 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito estas tres preguntas:</p>
+
+  <ol>
+    <li>¿Cuántas responsabilidades distintas tiene tu <code>main.py</code> ahora mismo?</li>
+    <li>¿Qué línea tocarías para cambiar la tarifa de la multa, y cuántas tendrías que tocar si la lógica estuviera repetida en tres sitios?</li>
+    <li>Si mañana aparece una tabla nueva —por ejemplo <code>ventas</code>—, ¿en qué parte de tu archivo actual iría?</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: el APIRouter →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — EL APIROUTER
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · La pieza nueva</div>
+    <h2>El <em>APIRouter</em>: un router por archivo</h2>
+    <p class="proposito">
+      La herramienta que hace posible toda la clase cabe en dos palabras: <code>APIRouter</code>.
+      Es un grupo de rutas con nombre propio, que vive en un archivo propio y que después la
+      aplicación principal incluye. Esta unidad la presenta y muestra el cambio exacto que
+      produce.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: un router propio y la app que lo incluye</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · Qué es un <code>APIRouter</code></h3>
+
+  <p class="primer-párrafo">
+    FastAPI tiene dos cosas que se parecen mucho: la aplicación <code>app</code> y el router
+    <code>router</code>. Los dos se declaran igual, con una línea:
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la misma línea, dos objetos distintos</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">APIRouter</span>, <span class="tk-cls">FastAPI</span>
+
+app = <span class="tk-cls">FastAPI</span>(title=<span class="tk-str">"TechStore"</span>)   <span class="tk-cm"># la aplicación completa</span>
+router = <span class="tk-cls">APIRouter</span>()                          <span class="tk-cm"># un grupo de rutas</span></code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>La diferencia entre la aplicación y el router</caption>
+      <thead>
+        <tr><th></th><th><code>FastAPI()</code></th><th><code>APIRouter()</code></th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Es</td>
+          <td>La aplicación que se arranca</td>
+          <td>Un trozo de la aplicación</td>
+        </tr>
+        <tr>
+          <td>Vive en</td>
+          <td><code>app/main.py</code>, normalmente</td>
+          <td>Un archivo por módulo, dentro de <code>routers/</code></td>
+        </tr>
+        <tr>
+          <td>Se usa con</td>
+          <td><code>uvicorn app.main:app</code></td>
+          <td><code>app.include_router(router)</code></td>
+        </tr>
+        <tr>
+          <td>Declara rutas con</td>
+          <td><code>@app.get(...)</code></td>
+          <td><code>@router.get(...)</code></td>
+        </tr>
+        <tr>
+          <td>Se puede incluir en</td>
+          <td>Nada: es la raíz</td>
+          <td>Una aplicación <em>y</em> otro <code>APIRouter</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>1.2 · El cambio: de <code>@app.get</code> a <code>@router.get</code></h3>
+
+  <p>
+    Pasar de un archivo gigante a un proyecto con carpetas empieza con un cambio de tres
+    caracteres. En cada archivo de rutas, se sustituye <code>@app</code> por <code>@router</code>:
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — app/routers/productos.py</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">APIRouter</span>, <span class="tk-cls">Request</span>
+<span class="tk-kw">from</span> fastapi.<span class="tk-cls">templating</span> <span class="tk-kw">import</span> <span class="tk-cls">Jinja2Templates</span>
+
+<span class="tk-kw">from</span> ..<span class="tk-fn">dependencias</span> <span class="tk-kw">import</span> <span class="tk-cls">ConnectionDep</span>
+<span class="tk-kw">from</span> ..<span class="tk-fn">repositorio</span> <span class="tk-kw">import</span> <span class="tk-fn">obtener_productos</span>
+
+<span class="tk-cm"># El router se declara una vez, con su nombre</span>
+router = <span class="tk-cls">APIRouter</span>()
+templates = <span class="tk-cls">Jinja2Templates</span>(directory=<span class="tk-str">"templates"</span>)
+
+
+<span class="tk-kw">@</span>router.<span class="tk-fn">get</span>(<span class="tk-str">"/productos"</span>)
+<span class="tk-kw">async def</span> <span class="tk-fn">listar_productos</span>(request: <span class="tk-cls">Request</span>, conn: <span class="tk-cls">ConnectionDep</span>):
+    <span class="tk-str">"""Muestra la página con la lista de productos."""</span>
+    productos = <span class="tk-kw">await</span> <span class="tk-fn">obtener_productos</span>(conn)
+    <span class="tk-kw">return</span> <span class="tk-fn">templates.TemplateResponse</span>(
+        request=request,
+        name=<span class="tk-str">"productos.html"</span>,
+        context={<span class="tk-str">"productos"</span>: productos},
+    )</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — el router no es un archivo, es un objeto</span>
+    <p>
+      Fíjate en que <code>router = APIRouter()</code> es una <strong>variable</strong> que vive en
+      el módulo. Eso no es un detalle: es lo que permite que el archivo del router sea importado
+      y que su <code>router</code> se pase a la aplicación. Es el mismo mecanismo que en la
+      clase 6, cuando una función devolvía un valor y quien la llamaba decidía qué hacer con él.
+    </p>
+  </div>
+
+  <h3>1.3 · La aplicación que solo arma</h3>
+
+  <p>
+    Y el <code>main.py</code> nuevo se queda con muy poco:
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — app/main.py</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">FastAPI</span>
+
+<span class="tk-kw">from</span> .routers <span class="tk-kw">import</span> productos
+
+app = <span class="tk-cls">FastAPI</span>(title=<span class="tk-str">"TechStore"</span>)
+
+<span class="tk-cm"># Una línea por router: aquí solo se une, no se programa</span>
+app.<span class="tk-fn">include_router</span>(productos.router, prefix=<span class="tk-str">"/api"</span>, tags=[<span class="tk-str">"productos"</span>])</code></pre>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — el archivo que se lee en diez segundos</span>
+    <p>
+      Un <code>main.py</code> de doce líneas se lee entero y se entiende entero: esto es la
+      aplicación, esto es lo que incluye. Si mañana hay diez módulos más, serán diez líneas más.
+      <strong>Ese es el objetivo</strong>: que el archivo de arranque no crezca con el proyecto,
+      sino que siga siendo una lista de piezas.
+    </p>
+  </div>
+
+  <h3>1.4 · Qué gana y qué cuesta</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>El balance honesto de dividir el archivo</caption>
+      <thead>
+        <tr><th>Se gana</th><th>Se cuesta</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Cada archivo se puede leer solo</td>
+          <td>Hay que escribir imports y acordarse de la ruta</td>
+        </tr>
+        <tr>
+          <td>Un error en las consultas no tumba las rutas</td>
+          <td>Un error de import sí tumba el arranque</td>
+        </tr>
+        <tr>
+          <td>Dos personas pueden tocar archivos distintos</td>
+          <td>Hay que pactar qué archivo hace qué</td>
+        </tr>
+        <tr>
+          <td>El repositorio se puede probar sin el servidor</td>
+          <td>Las rutas pierden acceso directo a las variables de su archivo</td>
+        </tr>
+        <tr>
+          <td>La documentación se separa por router</td>
+          <td>Hay que recordar <code>include_router</code> al añadir un módulo</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — la respuesta de un import</span>
+    <p>
+      En un solo archivo, una función puede usar cualquier variable que haya arriba. Al dividir,
+      eso deja de ser automático: si <code>productos.py</code> usa <code>templates</code> y no lo
+      importa, el error aparece <strong>al arrancar</strong>, no al escribir. Es el precio de la
+      separación, y se paga una sola vez: en la primera clase, cuando el ImportError te enseñe
+      exactamente qué falta.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuál es la diferencia entre <code>app</code> y <code>router</code>?</p>
+      <button class="opcion" data-op="a">Ninguna: son dos nombres para lo mismo</button>
+      <button class="opcion" data-op="b"><code>app</code> es la aplicación que se arranca; <code>router</code> es un grupo de rutas que se incluye en ella</button>
+      <button class="opcion" data-op="c"><code>router</code> solo sirve para las bases de datos</button>
+      <button class="opcion" data-op="d"><code>app</code> puede incluir routers, pero un router no puede incluir nada</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué hay que cambiar para pasar una ruta de <code>main.py</code> a un archivo de router?</p>
+      <button class="opcion" data-op="a">El nombre de la función, para que no se repita</button>
+      <button class="opcion" data-op="b">Hay que reescribir la ruta con <code>include_router</code></button>
+      <button class="opcion" data-op="c">Hay que añadir <code>if __name__ == "__main__"</code></button>
+      <button class="opcion" data-op="d">El decorador: de <code>@app.get</code> a <code>@router.get</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Por qué <code>router</code> se declara como variable (<code>router = APIRouter()</code>)?</p>
+      <button class="opcion" data-op="a">Para poder importarlo desde <code>main.py</code> y pasárselo a <code>include_router</code></button>
+      <button class="opcion" data-op="b">Porque Python lo exige</button>
+      <button class="opcion" data-op="c">Para que las rutas se guarden en mayúsculas</button>
+      <button class="opcion" data-op="d">Para poder renombrarlo después</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Qué señala que la separación por carpetas funciona?</p>
+      <button class="opcion" data-op="a">Que el archivo <code>main.py</code> tiene menos líneas</button>
+      <button class="opcion" data-op="b">Que ya no hay errores en el programa</button>
+      <button class="opcion" data-op="c">Que se puede cambiar el pool de conexiones sin tocar ni una línea de las rutas</button>
+      <button class="opcion" data-op="d">Que el servidor arranca más rápido</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: qué archivo va en cada carpeta →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — QUÉ ARCHIVO VA EN CADA CARPETA
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · El mapa del proyecto</div>
+    <h2>Qué archivo va en <em>cada carpeta</em></h2>
+    <p class="proposito">
+      Un <code>APIRouter</code> por archivo no basta: si los archivos se nombran al azar, el
+      proyecto sigue siendo ilegible. Esta unidad define <strong>tres responsabilidades</strong>
+      y muestra a qué archivo corresponde cada cosa, más la regla que decide qué archivos pueden
+      importarse entre sí.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: el árbol del proyecto y su regla de importaciones</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · El árbol del proyecto</h3>
+
+  <p class="primer-párrafo">
+    Este es el proyecto de la tienda después de la clase. Las carpetas no son un capricho: cada
+    una responde a una pregunta.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el árbol del proyecto estructurado</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>tienda/
+├── app/
+│   ├── <span class="tk-kw">__init__.py</span>            <span class="tk-cm"># vacío: hace que app sea un paquete</span>
+│   ├── <span class="tk-kw">main.py</span>                <span class="tk-cm"># crea FastAPI e incluye los routers</span>
+│   ├── <span class="tk-kw">config.py</span>              <span class="tk-cm"># lee la configuración del entorno</span>
+│   ├── <span class="tk-kw">database.py</span>            <span class="tk-cm"># el pool de conexiones a PostgreSQL</span>
+│   ├── <span class="tk-kw">dependencias.py</span>        <span class="tk-cm"># las dependencias compartidas</span>
+│   ├── <span class="tk-kw">esquemas.py</span>            <span class="tk-cm"># los modelos de Pydantic</span>
+│   ├── <span class="tk-kw">repositorio.py</span>         <span class="tk-cm"># las consultas SQL</span>
+│   └── <span class="tk-kw">routers/</span>
+│       ├── <span class="tk-kw">__init__.py</span>        <span class="tk-cm"># vacío: hace que routers sea un paquete</span>
+│       └── <span class="tk-kw">productos.py</span>       <span class="tk-cm"># las rutas de productos</span>
+├── <span class="tk-kw">templates/</span>
+│   ├── <span class="tk-kw">base.html</span>
+│   └── <span class="tk-kw">productos.html</span>
+├── <span class="tk-kw">.env</span>                      <span class="tk-cm"># la contraseña: nunca en Git</span>
+├── <span class="tk-kw">.gitignore</span>
+├── <span class="tk-kw">requirements.txt</span>
+└── <span class="tk-kw">pyproject.toml</span></code></pre>
+  </div>
+
+  <h3>2.2 · Las tres responsabilidades</h3>
+
+  <p>
+    Siete archivos, pero solo <strong>tres preguntas</strong>. Y cada archivo responde a una:
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las tres responsabilidades y sus archivos</caption>
+      <thead>
+        <tr><th>Responsabilidad</th><th>La pregunta que responde</th><th>Archivos</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Las rutas</strong></td>
+          <td>«¿Qué pasa cuando alguien pide esta URL?»</td>
+          <td><code>routers/productos.py</code></td>
+        </tr>
+        <tr>
+          <td><strong>La lógica</strong></td>
+          <td>«¿Qué reglas se aplican a los datos y cómo se guardan?»</td>
+          <td><code>esquemas.py</code>, <code>repositorio.py</code></td>
+        </tr>
+        <tr>
+          <td><strong>La infraestructura</strong></td>
+          <td>«¿De dónde sale la conexión y de dónde la configuración?»</td>
+          <td><code>config.py</code>, <code>database.py</code>, <code>dependencias.py</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — por qué «routers» y no «productos»</span>
+    <p>
+      La carpeta se llama <code>routers/</code> y no <code>productos/</code> porque lo que agrupa
+      sus archivos no es <em>la entidad</em>, sino <em>el tipo de cosa que hacen</em>. Dentro de
+      <code>routers/</code> puede haber <code>productos.py</code>, <code>ventas.py</code>,
+      <code>usuarios.py</code>… y todos son rutas. Si la carpeta se llamara <code>productos/</code>,
+      el día que llegue <code>ventas</code> tendrías que crear una carpeta con el mismo nombre y
+      acabarías con <code>productos/productos.py</code>.
+    </p>
+  </div>
+
+  <h3>2.3 · La regla de las importaciones</h3>
+
+  <p>
+    La estructura no es solo dónde va cada archivo: es <strong>hacia dónde puede mirar cada
+    archivo</strong>. Y esa regla es una pirámide, no una red.
+  </p>
+
+  <div class="diagrama">
+    <div class="nodo servidor">
+      <div class="rotulo-nodo">Capa 1</div>
+      <h5>Las rutas</h5>
+      <p><code>routers/</code> puede importar de la lógica y de la infraestructura. Nunca al revés.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">▲</span>
+      <span class="etiqueta">puede<br>importar</span>
+    </div>
+    <div class="nodo cliente">
+      <div class="rotulo-nodo">Capa 2</div>
+      <h5>La lógica</h5>
+      <p><code>esquemas.py</code> y <code>repositorio.py</code> no saben nada de HTTP ni de rutas.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">▲</span>
+      <span class="etiqueta">puede<br>importar</span>
+    </div>
+    <div class="nodo datos">
+      <div class="rotulo-nodo">Capa 3</div>
+      <h5>La infraestructura</h5>
+      <p><code>config.py</code>, <code>database.py</code> y <code>dependencias.py</code> no saben nada del dominio.</p>
+    </div>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el import que rompe la pirámide</span>
+    <p>
+      La forma más común de arruinar la estructura es que <code>repositorio.py</code> importe de
+      <code>routers/productos.py</code>: «es que necesito la plantilla de aquí». En ese momento
+      las dos capas quedan atadas, el repositorio deja de poder probarse solo y el día que
+      quieras reutilizarlo en otro proyecto no podrás.
+    </p>
+    <p>
+      La salida es siempre la misma: <strong>copia el dato que necesitas hacia abajo</strong>, no
+      lo que necesitas hacia arriba. Si el repositorio necesita la plantilla, lo que necesita es
+      el <em>contenido</em>, no el archivo que lo pinta.
+    </p>
+  </div>
+
+  <h3>2.4 · <code>__init__.py</code>: el detalle que lo hace posible</h3>
+
+  <p>
+    En Python, una carpeta no es un paquete automáticamente: necesita un archivo
+    <code>__init__.py</code> dentro. Puede estar vacío.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — las dos formas de importar</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Desde app/main.py: el punto significa «dentro de mi paquete»</span>
+<span class="tk-kw">from</span> .routers <span class="tk-kw">import</span> productos
+
+<span class="tk-cm"># Desde app/routers/productos.py: dos puntos para subir un nivel</span>
+<span class="tk-kw">from</span> ..dependencias <span class="tk-kw">import</span> <span class="tk-cls">ConnectionDep</span>
+<span class="tk-kw">from</span> ..repositorio <span class="tk-kw">import</span> <span class="tk-fn">obtener_productos</span>
+
+<span class="tk-cm"># Con el punto inicial, el proyecto se puede mover a cualquier carpeta</span>
+<span class="tk-cm"># y seguir funcionando. Sin él, solo funciona desde la raíz.</span></code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — el error que da el tutorial cuando falta</span>
+    <p>
+      Si olvidas el <code>__init__.py</code> en <code>app/routers/</code>, el
+      <code>from .routers import productos</code> falla con un
+      <code>ModuleNotFoundError: No module named 'app.routers'</code>. El mensaje parece
+      encryption, pero la causa es una: <strong>una carpeta sin <code>__init__.py</code> no es un
+      paquete</strong>, y sin paquete no hay import que valga.
+    </p>
+  </div>
+
+  <h3>2.5 · Lo que NO es una buena estructura</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Dos errores de estructura que se ven en proyectos reales</caption>
+      <thead>
+        <tr><th>Lo que se hace</th><th>Por qué falla</th><th>Lo que debería ser</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Una carpeta por persona<br>(<code>juan/</code>, <code>ana/</code>)</td>
+          <td>Las carpetas se vacían cuando la persona se va, y el código acaba junto sin relación</td>
+          <td>Una carpeta por <strong>responsabilidad</strong></td>
+        </tr>
+        <tr>
+          <td>Una carpeta por entidad<br>(<code>productos/</code>, <code>ventas/</code>)</td>
+          <td>Cada producto se repite en cada carpeta: modelo, consulta, ruta, plantilla</td>
+          <td>Una carpeta por <strong>tipo de archivo</strong></td>
+        </tr>
+        <tr>
+          <td>Todo junto, pero con nombres largos<br>(<code>productos_routes_avanzado_v2.py</code>)</td>
+          <td>El nombre no dice nada de la responsabilidad: el archivo sigue mezclando todo</td>
+          <td>El nombre <strong>es</strong> la responsabilidad</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Por qué la carpeta se llama <code>routers/</code> y no <code>productos/</code>?</p>
+      <button class="opcion" data-op="a">Porque es más corta de escribir</button>
+      <button class="opcion" data-op="b">Porque es la convención de FastAPI</button>
+      <button class="opcion" data-op="c">Porque agrupa por el tipo de cosa que hacen los archivos: todos son rutas</button>
+      <button class="opcion" data-op="d">Porque dentro solo puede haber archivos de rutas</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> Según la pirámide de importaciones, ¿qué puede importar <code>repositorio.py</code>?</p>
+      <button class="opcion" data-op="a">Nada del proyecto: vive por debajo de las rutas</button>
+      <button class="opcion" data-op="b"><code>routers/productos.py</code>, si lo necesita</button>
+      <button class="opcion" data-op="c"><code>main.py</code></button>
+      <button class="opcion" data-op="b">Cualquier cosa, Python no lo impide</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Para qué sirve el <code>__init__.py</code> dentro de una carpeta?</p>
+      <button class="opcion" data-op="a">Para guardar ahí las constantes del proyecto</button>
+      <button class="opcion" data-op="b">Para que Python sepa qué versión usar</button>
+      <button class="opcion" data-op="c">Para que la carpeta aparezca en GitHub</button>
+      <button class="opcion" data-op="d">Para que la carpeta sea un paquete y se pueda importar desde ella</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Qué problema tiene organizar el proyecto con una carpeta por persona?</p>
+      <button class="opcion" data-op="a">Que Python no lo permite</button>
+      <button class="opcion" data-op="b">Que las carpetas se quedan vacías y el código acaba junto, sin relación</button>
+      <button class="opcion" data-op="c">Que ocupa más espacio en el disco</button>
+      <button class="opcion" data-op="d">Que obliga a usar más archivos <code>__init__.py</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: El APIRouter</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: unir las piezas →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — UNIR LAS PIEZAS
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · La unión</div>
+    <h2>Unir las piezas con <em>include_router</em></h2>
+    <p class="proposito">
+      Ya tienes las piezas en sus archivos. Falta la pieza que las une y decide cómo se llaman
+      por fuera. Esta unidad muestra las cuatro cosas que puedes decidir al incluir un router —
+      prefijo, tags, dependencias y respuestas— y termina con un laboratorio donde repartes tú
+      los archivos.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: el organizador de archivos funcionando</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · El prefijo: la dirección pública de tus rutas</h3>
+
+  <p class="primer-párrafo">
+    En el router, la ruta se escribe sin prefijo: <code>@router.get("/productos")</code>. El
+    prefijo lo decide quien incluye el router. Esto tiene una ventaja práctica: el <strong>archivo
+    del router no sabe</strong> si sus rutas se van a servir en <code>/productos</code> o en
+    <code>/api/v1/productos</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el prefijo lo pone el que incluye</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># app/routers/productos.py — el archivo no menciona ningún prefijo</span>
+<span class="tk-kw">@</span>router.<span class="tk-fn">get</span>(<span class="tk-str">"/productos"</span>)
+<span class="tk-kw">async def</span> <span class="tk-fn">listar_productos</span>(request, conn): ...
+
+<span class="tk-cm"># app/main.py — aquí se decide cómo se llaman por fuera</span>
+app.<span class="tk-fn">include_router</span>(productos.router, prefix=<span class="tk-str">"/api"</span>)
+
+<span class="tk-cm"># El resultado: GET /api/productos</span></code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — el esquema de la API, que es la prueba</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">curl http://127.0.0.1:8000/openapi.json | grep -A 1 '"/api/productos"'</div>
+      <div class="consola-salida">"/api/productos": {</div>
+      <div class="consola-salida">    "get": { "tags": ["productos"], ... }</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada">curl http://127.0.0.1:8000/api/productos -o /dev/null -w '%{http_code}\n'</div>
+      <div class="consola-salida">200</div>
+    </div>
+  </div>
+
+  <h3>3.2 · Los tags: la documentación se ordena sola</h3>
+
+  <p>
+    El <code>tag</code> no cambia lo que hace la ruta: cambia <strong>cómo aparece en la
+    documentación automática</strong> de FastAPI (<code>/docs</code>). Es la manera de que, con
+    veinte rutas, la página siga siendo legible: cada router es un grupo.
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — el tag es una decisión de arquitectura</span>
+    <p>
+      Cuando defines los tags por router (<code>tags=["productos"]</code>), el grupo de la
+      documentación coincide con el grupo de archivos. Eso no es casualidad: significa que quien
+      lee <code>/docs</code> y quien abre <code>app/routers/</code> ven <strong>las mismas
+      cosas</strong>. Si el tag fuera <code>"API v1"</code> o <code>"datos"</code>, esa
+      correspondencia se pierde.
+    </p>
+  </div>
+
+  <h3>3.3 · Las dependencias: una regla para todo un router</h3>
+
+  <p>
+    La cuarta pieza es la más útil en la práctica. Puedes colgar una <strong>dependencia</strong>
+    al incluir el router, y se aplicará a <em>todas</em> sus rutas sin tocar ni una de ellas.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — incluir con prefijo, tag, dependencia y respuestas</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">Depends</span>, <span class="tk-cls">FastAPI</span>
+
+<span class="tk-kw">from</span> .dependencias <span class="tk-kw">import</span> <span class="tk-fn">get_token_header</span>
+<span class="tk-kw">from</span> .routers <span class="tk-kw">import</span> productos
+
+app = <span class="tk-cls">FastAPI</span>(title=<span class="tk-str">"TechStore"</span>)
+
+app.<span class="tk-fn">include_router</span>(productos.router, prefix=<span class="tk-str">"/api"</span>, tags=[<span class="tk-str">"productos"</span>])
+
+app.<span class="tk-fn">include_router</span>(
+    admin.router,
+    prefix=<span class="tk-str">"/admin"</span>,
+    tags=[<span class="tk-str">"admin"</span>],
+    dependencies=[<span class="tk-fn">Depends</span>(<span class="tk-fn">get_token_header</span>)],
+    responses={<span class="tk-num">404</span>: {<span class="tk-str">"description"</span>: <span class="tk-str">"No encontrado"</span>}},
+)</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las cuatro decisiones que se toman al incluir un router</caption>
+      <thead>
+        <tr><th>Parámetro</th><th>Qué decide</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>prefix</code></td><td>Por dónde empiezan las rutas</td><td><code>/api</code></td></tr>
+        <tr><td><code>tags</code></td><td>En qué grupo salen en la documentación</td><td><code>["productos"]</code></td></tr>
+        <tr><td><code>dependencies</code></td><td>Qué se ejecuta antes de cada ruta</td><td><code>[Depends(get_token_header)]</code></td></tr>
+        <tr><td><code>responses</code></td><td>Qué errores se documentan</td><td><code>{404: {...}}</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el mismo router, dos veces</span>
+    <p>
+      Como <code>include_router</code> no modifica el router original, puedes incluirlo <strong>dos
+      veces</strong> con prefijos distintos: una para la versión pública y otra para la interna.
+      Es un uso avanzado, pero sirve para entender que el router es un objeto y no una lista
+      fija de rutas.
+    </p>
+  </div>
+
+  <h3>3.4 · Laboratorio: el organizador de archivos</h3>
+
+  <div class="organizador" data-organizador>
+    <div class="organizador-cabecera">
+      <span class="etiqueta">Laboratorio</span>
+      <h4>Reparte los bloques de código en sus carpetas</h4>
+      <p>
+        Aquí tienes los ocho bloques de un <code>main.py</code> gigante, ya mezclados. Tu trabajo
+        es decidir <strong>en qué archivo vive cada uno</strong>. No hay una respuesta única en el
+        mundo real, pero aquí sí la hay: la de la pirámide de la unidad 2.
+      </p>
+    </div>
+
+    <div class="organizador-cuerpo">
+      <div class="org-bloques" data-org-bloques></div>
+      <div class="org-arbol" data-org-arbol></div>
+    </div>
+
+    <div style="padding: 0 1.3rem 1.3rem;">
+      <div class="org-acciones">
+        <button type="button" class="org-boton comprobar" data-org-comprobar>Comprobar</button>
+        <button type="button" class="org-boton" data-org-reiniciar>Reiniciar</button>
+      </div>
+      <div class="org-veredicto" data-org-veredicto>Pulsa «Comprobar» cuando hayas repartido los ocho bloques.</div>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — lo que el laboratorio enseña</span>
+    <p>
+      Repartir los bloques no es un juego de sorts: es el <strong>momento en que decides qué
+      puede depender de qué</strong>. Si pones las consultas en <code>routers/productos.py</code>,
+      el repositorio deja de existir como pieza reutilizable. Si pones el pool de conexiones en
+      <code>main.py</code>, las rutas ya no pueden obtener una conexión sin importarlo todo.
+    </p>
+  </div>
+
+  <h3>3.5 · El <code>entrypoint</code>: dónde está tu aplicación</h3>
+
+  <p>
+    Con la aplicación en <code>app/main.py</code>, el comando de arranque tiene que saber dónde
+    buscarla. Se le dice una sola vez, en <code>pyproject.toml</code>:
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — pyproject.toml</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>[project]
+name = <span class="tk-str">"techstore"</span>
+version = <span class="tk-str">"0.1.0"</span>
+requires-python = <span class="tk-str">">=3.10"</span>
+dependencies = [<span class="tk-str">"fastapi[standard]"</span>, <span class="tk-str">"asyncpg"</span>, <span class="tk-str">"jinja2"</span>]
+
+[tool.fastapi]
+entrypoint = <span class="tk-str">"app.main:app"</span></code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — qué significa <code>app.main:app</code></span>
+    <p>
+      Es una ruta de importación con dos partes: <code>app.main</code> es el módulo (el archivo
+      <code>app/main.py</code> dentro del paquete <code>app</code>) y <code>app</code> es el
+      objeto que se busca dentro de él (la variable <code>app = FastAPI()</code>). El equivalente
+      escrito a mano sería <code>from app.main import app</code>. Es exactamente la misma idea que
+      <code>include_router</code>, pero en la otra dirección: en vez de incluir un router en la
+      app, la app <strong>se encuentra</strong> a partir de su ruta.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué efecto tiene <code>prefix="/api"</code> al incluir un router?</p>
+      <button class="opcion" data-op="a">Ninguno: solo es un comentario para el lector</button>
+      <button class="opcion" data-op="b">Hace que las rutas solo se puedan llamar desde el servidor</button>
+      <button class="opcion" data-op="c">Las rutas del router quedan disponibles bajo ese prefijo</button>
+      <button class="opcion" data-op="d">Cambia el nombre de las funciones del router</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Para qué sirve el parámetro <code>tags</code>?</p>
+      <button class="opcion" data-op="a">Para agrupar las rutas en la documentación automática de FastAPI</button>
+      <button class="opcion" data-op="b">ParaHtML</button>
+      <button class="opcion" data-op="c">Para filtrar las peticiones por base de datos</button>
+      <button class="opcion" data-op="d">Para ordenar las funciones dentro del archivo</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Quéules la ventaja de una dependencia colgada en <code>include_router</code>?</p>
+      <button class="opcion" data-op="a">Que el servidor arranca más rápido</button>
+      <button class="opcion" data-op="b">Que las rutas quedan más cortas</button>
+      <button class="opcion" data-op="c">Que la documentación muestra más errores</button>
+      <button class="opcion" data-op="d">Que se aplica a todas las rutas del router sin tocar ninguna</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Qué indica <code>entrypoint = "app.main:app"</code>?</p>
+      <button class="opcion" data-op="a">Que el proyecto se llama <code>app</code></button>
+      <button class="opcion" data-op="b">Que la aplicación se encuentra en el módulo <code>app.main</code>, en el objeto <code>app</code></button>
+      <button class="opcion" data-op="c">Que el puerto por defecto es el 8000</button>
+      <button class="opcion" data-op="d">Que el entrypoint es obligatorio en Python</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: Qué archivo va en cada carpeta</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de lectura</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija por
+      escrito lo que has leído hasta ahora.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora.
+    </p>
+
+    <div class="reglas">
+      <div class="regla">
+        <h4>Regla 20-20-20</h4>
+        <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+      </div>
+      <div class="regla">
+        <h4>Movimiento</h4>
+        <p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p>
+      </div>
+      <div class="regla">
+        <h4>Hidratación</h4>
+        <p>Un vaso de agua. La lectura densa agota más de lo que parece.</p>
+      </div>
+      <div class="regla">
+        <h4>Bitácora</h4>
+        <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora de lectura (5 minutos)</h3>
+
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿qué cambia exactamente en una ruta al pasar de <code>@app.get</code> a <code>@router.get</code>?</li>
+    <li><strong>En una frase:</strong> ¿por qué el <code>__init__.py</code> es imprescindible?</li>
+    <li><strong>En una frase:</strong> ¿qué le impide a <code>repositorio.py</code> importar de <code>routers/</code>?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+
+  <p>
+    Estas siete palabras aparecerán en el taller final. Léelas ahora; las definiciones son
+    aproximadas y se afinarán en las unidades siguientes.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>Router</dt>
+      <dd>Un grupo de rutas con nombre propio: <code>router = APIRouter()</code>. Se declara en un archivo y se incluye en la aplicación.</dd>
+    </div>
+    <div>
+      <dt>Prefijo</dt>
+      <dd>La parte de la URL que se antepone a todas las rutas de un router: <code>/api</code>.</dd>
+    </div>
+    <div>
+      <dt>Tag</dt>
+      <dd>La etiqueta que agrupa las rutas en la documentación automática de FastAPI.</dd>
+    </div>
+    <div>
+      <dt>Dependencia</dt>
+      <dd>Una función que se ejecuta antes de la ruta y que le entrega algo: una conexión, un usuario, un token.</dd>
+    </div>
+    <div>
+      <dt>Paquete</dt>
+      <dd>Una carpeta con <code>__init__.py</code>. Es lo que hace posible importar de dentro de ella.</dd>
+    </div>
+    <div>
+      <dt>Import relativo</dt>
+      <dd>Importar usando puntos: <code>.</code> es el paquete actual, <code>..</code> es el de arriba.</dd>
+    </div>
+    <div>
+      <dt>Entrypoint</dt>
+      <dd>La ruta donde está tu aplicación: <code>app.main:app</code> en <code>pyproject.toml</code>.</dd>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: Unir las piezas con include_router</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Ejercicio práctico →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — EJERCICIO: PARTIR MAIN.PY EN ROUTERS
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · Taller de aplicación</div>
+    <h2>Ejercicio 5.1 · <em>Partir <code>main.py</code> en routers</em></h2>
+    <p class="proposito">
+      El CRUD de las clases 8 a 13 vive en un solo archivo. En 35 minutos lo vas a repartir en
+      siete, siguiendo la pirámide, y vas a comprobar que <strong>la aplicación sigue
+      funcionando exactamente igual</strong>. Esa última parte es la importante: si algo cambia,
+      es que has repartido mal.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: el proyecto con <code>app/routers/</code> funcionando</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>El CRUD, repartido</h3>
+    </div>
+
+    <p>
+      Toma tu proyecto del CRUD completo y llévalo a la estructura de la unidad 2. El orden
+      importa: <strong>primero crea los archivos vacíos, después mueve el código</strong>. Si
+      mueves bloques y los pruebas a la vez, no sabrás qué rompió qué.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>Tu <code>main.py</code> actual, con las cuatro operaciones del CRUD</td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>El mismo proyecto, en siete archivos dentro de <code>app/</code></td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>El comportamiento de la aplicación <strong>no puede cambiar</strong>: mismas rutas, mismos resultados</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Ningún archivo puede importar de un archivo de capa superior</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Los archivos vacíos <code>__init__.py</code> se quedan vacíos</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong>La carpeta <code>app/</code></strong> con su <code>__init__.py</code>, y dentro la
+        subcarpeta <code>routers/</code> con el suyo.
+      </li>
+      <li>
+        <strong><code>app/config.py</code></strong>: la lectura de <code>DATABASE_URL</code> desde
+        el entorno.
+      </li>
+      <li>
+        <strong><code>app/database.py</code></strong>: el pool de conexiones y su ciclo de vida
+        (abrir al arrancar, cerrar al apagar).
+      </li>
+      <li>
+        <strong><code>app/dependencias.py</code></strong>: <code>get_connection()</code> y el
+        <code>ConnectionDep</code> de la clase 11.
+      </li>
+      <li>
+        <strong><code>app/esquemas.py</code></strong>: los modelos de Pydantic, sin cambios.
+      </li>
+      <li>
+        <strong><code>app/repositorio.py</code></strong>: las consultas SQL, sin cambios.
+      </li>
+      <li>
+        <strong><code>app/routers/productos.py</code></strong>: el router y <strong>todas</strong>
+        las rutas del CRUD de productos.
+      </li>
+      <li>
+        <strong><code>app/main.py</code></strong>: la creación de la app y el
+        <code>include_router</code>. Nada más.
+      </li>
+      <li>
+        <strong>La comprobación final</strong>: que <code>/api/productos</code> siga
+        respondiendo lo mismo que antes.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="solucion-5-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-5-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La única diferencia con tu <code>main.py</code> es dónde está cada cosa y cómo se llama
+        lo que se importa. El código de las rutas es <strong>idéntico</strong>: solo cambia
+        <code>@app</code> por <code>@router</code> y el <code>from</code> de arriba.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>app/routers/productos.py — el router del CRUD</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">APIRouter</span>, <span class="tk-cls">Request</span>
+<span class="tk-kw">from</span> fastapi.<span class="tk-cls">templating</span> <span class="tk-kw">import</span> <span class="tk-cls">Jinja2Templates</span>
+<span class="tk-kw">from</span> pydantic <span class="tk-kw">import</span> <span class="tk-cls">ValidationError</span>
+
+<span class="tk-kw">from</span> ..dependencias <span class="tk-kw">import</span> <span class="tk-cls">ConnectionDep</span>
+<span class="tk-kw">from</span> ..esquemas <span class="tk-kw">import</span> <span class="tk-cls">ProductoActualizar</span>
+<span class="tk-kw">from</span> ..repositorio <span class="tk-kw">import</span> <span class="tk-fn">actualizar_producto</span>, <span class="tk-fn">obtener_producto</span>, <span class="tk-fn">obtener_productos</span>
+
+router = <span class="tk-cls">APIRouter</span>()
+templates = <span class="tk-cls">Jinja2Templates</span>(directory=<span class="tk-str">"templates"</span>)
+
+
+<span class="tk-kw">@</span>router.<span class="tk-fn">get</span>(<span class="tk-str">"/productos"</span>)
+<span class="tk-kw">async def</span> <span class="tk-fn">listar_productos</span>(request: <span class="tk-cls">Request</span>, conn: <span class="tk-cls">ConnectionDep</span>):
+    <span class="tk-str">"""Muestra la página con la lista de productos."""</span>
+    productos = <span class="tk-kw">await</span> <span class="tk-fn">obtener_productos</span>(conn)
+    <span class="tk-kw">return</span> <span class="tk-fn">templates.TemplateResponse</span>(
+        request=request,
+        name=<span class="tk-str">"productos.html"</span>,
+        context={<span class="tk-str">"productos"</span>: productos},
+    )
+
+
+<span class="tk-kw">@</span>router.<span class="tk-fn">post</span>(<span class="tk-str">"/productos"</span>)
+<span class="tk-kw">async def</span> <span class="tk-fn">crear_producto</span>(request: <span class="tk-cls">Request</span>, conn: <span class="tk-cls">ConnectionDep</span>, nombre: <span class="tk-cls">str</span>, precio: <span class="tk-cls">float</span>):
+    <span class="tk-str">"""Valida y guarda un producto nuevo."""</span>
+    ...
+
+
+<span class="tk-kw">@</span>router.<span class="tk-fn">get</span>(<span class="tk-str">"/productos/{producto_id}/editar"</span>)
+<span class="tk-kw">async def</span> <span class="tk-fn">editar_producto_vista</span>(request: <span class="tk-cls">Request</span>, conn: <span class="tk-cls">ConnectionDep</span>, producto_id: <span class="tk-cls">int</span>):
+    <span class="tk-str">"""Carga el formulario de edición con los valores guardados."""</span>
+    ...
+
+
+<span class="tk-kw">@</span>router.<span class="tk-fn">post</span>(<span class="tk-str">"/productos/{producto_id}"</span>)
+<span class="tk-kw">async def</span> <span class="tk-fn">guardar_producto_vista</span>(request: <span class="tk-cls">Request</span>, conn: <span class="tk-cls">ConnectionDep</span>, producto_id: <span class="tk-cls">int</span>, nombre: <span class="tk-cls">str</span>, precio: <span class="tk-cls">float</span>):
+    <span class="tk-str">"""Valida y actualiza el producto."""</span>
+    ...</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>app/main.py — la aplicación entera</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> contextlib <span class="tk-kw">import</span> <span class="tk-cls">asynccontextmanager</span>
+
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">FastAPI</span>
+
+<span class="tk-kw">from</span> .config <span class="tk-kw">import</span> <span class="tk-cls">DATABASE_URL</span>
+<span class="tk-kw">from</span> .database <span class="tk-kw">import</span> db
+<span class="tk-kw">from</span> .routers <span class="tk-kw">import</span> productos
+
+
+<span class="tk-kw">@</span><span class="tk-cls">asynccontextmanager</span>
+<span class="tk-kw">async def</span> <span class="tk-fn">lifespan</span>(app: <span class="tk-cls">FastAPI</span>):
+    <span class="tk-cm"># Al arrancar la aplicación se crea el pool de conexiones.</span>
+    <span class="tk-kw">await</span> db.<span class="tk-fn">connect</span>(<span class="tk-cls">DATABASE_URL</span>)
+    <span class="tk-kw">yield</span>
+    <span class="tk-cm"># Al apagar la aplicación, el pool se cierra.</span>
+    <span class="tk-kw">await</span> db.<span class="tk-fn">close</span>()
+
+
+app = <span class="tk-cls">FastAPI</span>(title=<span class="tk-str">"TechStore"</span>, lifespan=<span class="tk-fn">lifespan</span>)
+
+<span class="tk-cm"># Una línea por router: aquí solo se une, no se programa</span>
+app.<span class="tk-fn">include_router</span>(productos.router, prefix=<span class="tk-str">"/api"</span>, tags=[<span class="tk-str">"productos"</span>])</code></pre>
+  </div>
+
+    <p>
+      Y el <code>database.py</code> también cambia un detalle: ahora importa la configuración
+      con <code>from .config import DATABASE_URL</code>, en vez de leer <code>os.environ</code>
+      en el sitio. La infraestructura habla con la infraestructura; nadie más lee el entorno.
+    </p>
+  </div>
+    </div>
+
+  <h3>5.2 · La comprobación que importa</h3>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — si el comportamiento cambia, la repartición está mal</span>
+    <p>
+      Repartir el código <strong>no puede cambiar lo que hace la aplicación</strong>. Si antes de
+      repartir tenías <code>GET /productos</code> y después de repartir tienes
+      <code>GET /api/productos</code>, has introducido un cambio de comportamiento sin querer.
+      Y lo mismo con los códigos de respuesta y con el contenido del HTML.
+    </p>
+    <p>
+      La forma de comprobarlo no es «a ver si funciona»: es <strong>comparar el esquema de la
+      API</strong> antes y después. Es un archivo JSON que FastAPI genera solo, y que te dice
+      exactamente qué rutas tienes y con qué forma.
+    </p>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — el esquema de la API, la prueba de que nada cambió</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">curl -s http://127.0.0.1:8000/openapi.json | python -c "import json,sys; d=json.load(sys.stdin); [print(m.upper(), r) for r,o in d['paths'].items() for m in o]"</div>
+      <div class="consola-salida">GET /api/productos</div>
+      <div class="consola-salida">POST /api/productos</div>
+      <div class="consola-salida">GET /api/productos/{producto_id}/editar</div>
+      <div class="consola-salida">POST /api/productos/{producto_id}</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada">curl http://127.0.0.1:8000/api/productos -o /dev/null -w '%{http_code}\n'</div>
+      <div class="consola-salida">200</div>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — las cuatro rutas del CRUD en una sola línea</span>
+    <p>
+      Fíjate en que las cuatro operaciones del CRUD aparecen ahora como cuatro rutas bajo el mismo
+      prefijo. Antes estaban repartidas entre funciones sueltas de un archivo; ahora están
+      <strong>explícitamente enumeradas</strong> en un solo sitio, y cada una tiene su archivo (o
+      su función) detrás. Eso es lo que hace una API legible: primero el contrato, después la
+      implementación.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Por qué conviene crear los archivos vacíos antes de mover el código?</p>
+      <button class="opcion" data-op="a">Porque Python no permite mover código entre archivos</button>
+      <button class="opcion" data-op="b">Para poder saber qué error rompe cada cambio</button>
+      <button class="opcion" data-op="c">Porque es más rápido</button>
+      <button class="opcion" data-op="d">Para que Git registre mejor los cambios</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué debería cambiar en el código de las rutas al moverlo al router?</p>
+      <button class="opcion" data-op="a">Hay que reescribirlo con nombres más cortos</button>
+      <button class="opcion" data-op="b">Hay que cambiar todos los <code>async def</code> por <code>def</code></button>
+      <button class="opcion" data-op="c">Hay que añadir <code>response_model</code> a cada ruta</button>
+      <button class="opcion" data-op="d">Prácticamente nada: el decorador y los imports</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Cómo se comprueba que la repartición no rompió nada?</p>
+      <button class="opcion" data-op="a">Comparando el esquema OpenAPI y las respuestas antes y después</button>
+      <button class="opcion" data-op="b">Contando las líneas de cada archivo</button>
+      <button class="opcion" data-op="c">Mirando si el <code>main.py</code> tiene menos de 20 líneas</button>
+      <button class="opcion" data-op="d">Esperando a que un usuario lo pruebe</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Por qué <code>database.py</code> importa <code>DATABASE_URL</code> de <code>config.py</code>?</p>
+      <button class="opcion" data-op="a">Para que el archivo tenga más líneas</button>
+      <button class="opcion" data-op="b">Porque <code>os.environ</code> no funciona en un módulo</button>
+      <button class="opcion" data-op="c">Porque solo la infraestructura lee el entorno; el resto no necesita saber de dónde sale</button>
+      <button class="opcion" data-op="d">Para evitar el <code>__init__.py</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: prefijos y dependencias →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — EJERCICIO: PREFIJOS Y DEPENDENCIAS
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · Taller de aplicación</div>
+    <h2>Ejercicio 6.1 · <em>Prefijos, tags y dependencias</em></h2>
+    <p class="proposito">
+      Los archivos ya están repartidos. Ahora decides <strong>cómo se ven por fuera</strong>: qué
+      prefijo tienen las rutas, en qué grupo salen en la documentación y qué tiene que pasar
+      antes de que una ruta pueda ejecutarse. En 35 minutos le pones las tres cosas a tu proyecto.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: las rutas bajo <code>/api</code> y con su documentación</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>La API pública de la tienda</h3>
+    </div>
+
+    <p>
+      Añade a tu proyecto un segundo router y configura las decisiones de la unidad 3. El
+      objetivo no es «que funcione»: es que la <strong>documentación automática</strong> de
+      FastAPI (<code>/docs</code>) muestre las rutas agrupadas y con su prefijo, sin tocar una
+      sola línea de las vistas.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>El proyecto estructurado del ejercicio anterior</td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>Dos routers con prefijos y tags distintos, y una dependencia compartida</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Las decisiones se toman <strong>en <code>main.py</code></strong>, no dentro del router</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>El router nuevo no puede importar nada de <code>main.py</code>: la pirámide manda</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>La dependencia se ejecuta <em>antes</em> de la ruta y le entrega un valor</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong>El router de productos</strong> incluido con <code>prefix="/api"</code> y
+        <code>tags=["productos"]</code>.
+      </li>
+      <li>
+        <strong>Un segundo router</strong> en <code>app/routers/ventas.py</code>, con su propio
+        <code>APIRouter</code> y al menos una ruta.
+      </li>
+      <li>
+        <strong>El prefijo <code>/admin</code></strong> para ese segundo router, con su propio
+        tag, <strong>sin tocar el archivo del router</strong>.
+      </li>
+      <li>
+        <strong>Una dependencia compartida</strong> en <code>app/dependencias.py</code> que se
+        aplique a todas las rutas del router de administración.
+      </li>
+      <li>
+        <strong>Las respuestas documentadas</strong>: al menos un código de error en el
+        <code>responses</code> del router.
+      </li>
+      <li>
+        <strong>La comprobación</strong>: que <code>/openapi.json</code> muestre las dos
+        secciones, con sus prefijos y sus tags.
+      </li>
+    </ol>
+
+    <div class="recuadro precision">
+      <span class="rotulo">Pista — el error de la pirámide</span>
+      <p>
+        Si al crear <code>app/routers/ventas.py</code> te appetitece importar
+        <code>from ..main import app</code> para registrar la ruta ahí, no lo hagas: eso es un
+        círculo. El router se registra <strong>en <code>main.py</code></strong>, y en ningún otro
+        sitio. Si necesitas datos de la app, pásalos por una dependencia.
+      </p>
+    </div>
+
+    <button class="solucion-btn" data-solucion="solucion-6-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-6-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La respuesta son tres archivos. Y fíjate en que <code>main.py</code> es el único que
+        decide: los routers no saben con qué prefijo se van a servir.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>app/routers/ventas.py — el segundo router</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">APIRouter</span>
+
+<span class="tk-kw">from</span> ..dependencias <span class="tk-kw">import</span> <span class="tk-cls">AdminDep</span>
+
+router = <span class="tk-cls">APIRouter</span>()
+
+
+<span class="tk-kw">@</span>router.<span class="tk-fn">get</span>(<span class="tk-str">"/ventas"</span>)
+<span class="tk-kw">async def</span> <span class="tk-fn">listar_ventas</span>(admin: <span class="tk-cls">AdminDep</span>):
+    <span class="tk-str">"""Muestra las ventas. Solo un administrador puede verlo."""</span>
+    <span class="tk-kw">return</span> {<span class="tk-str">"ventas"</span>: [], <span class="tk-str">"quien_lo_pide"</span>: admin}</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>app/dependencias.py — la dependencia compartida</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> typing <span class="tk-kw">import</span> <span class="tk-cls">Annotated</span>
+
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">Depends</span>, <span class="tk-cls">Header</span>, <span class="tk-cls">HTTPException</span>
+
+<span class="tk-kw">async def</span> <span class="tk-fn">get_admin</span>(x_token: <span class="tk-cls">str</span> = <span class="tk-fn">Header</span>(alias=<span class="tk-str">"X-Token"</span>)) -&gt; <span class="tk-cls">str</span>:
+    <span class="tk-str">"""Exige un token de administrador y devuelve quién es."""</span>
+    <span class="tk-kw">if</span> x_token != <span class="tk-str">"secreto-admin"</span>:
+        <span class="tk-kw">raise</span> <span class="tk-cls">HTTPException</span>(status_code=<span class="tk-num">403</span>, detail=<span class="tk-str">"No autorizado"</span>)
+    <span class="tk-kw">return</span> <span class="tk-str">"la administradora"</span>
+
+
+AdminDep = <span class="tk-cls">Annotated</span>[<span class="tk-cls">str</span>, <span class="tk-fn">Depends</span>(<span class="tk-fn">get_admin</span>)]</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>app/main.py — donde se toman las decisiones</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">Depends</span>, <span class="tk-cls">FastAPI</span>
+
+<span class="tk-kw">from</span> .dependencias <span class="tk-kw">import</span> <span class="tk-fn">get_admin</span>
+<span class="tk-kw">from</span> .routers <span class="tk-kw">import</span> productos, ventas
+
+app = <span class="tk-cls">FastAPI</span>(title=<span class="tk-str">"TechStore"</span>)
+
+app.<span class="tk-fn">include_router</span>(
+    productos.router,
+    prefix=<span class="tk-str">"/api"</span>,
+    tags=[<span class="tk-str">"productos"</span>],
+)
+
+app.<span class="tk-fn">include_router</span>(
+    ventas.router,
+    prefix=<span class="tk-str">"/admin"</span>,
+    tags=[<span class="tk-str">"administración"</span>],
+    dependencies=[<span class="tk-fn">Depends</span>(<span class="tk-fn">get_admin</span>)],
+    responses={<span class="tk-num">403</span>: {<span class="tk-str">"description"</span>: <span class="tk-str">"Se necesita un token de administrador"</span>}},
+)</code></pre>
+  </div>
+
+    <p>
+      Fíjate en el detalle final: la dependencia aparece <strong>dos veces</strong>, y con dos
+      propósitos distintos. En <code>ventas.py</code> la ruta la pide para <em>usar</em> el valor
+      (y por eso el parámetro <code>admin</code>); en <code>main.py</code> la dependency se cuelga
+      al router para que se ejecute en <strong>todas</strong> sus rutas. La primera <em>usa</em> el
+      valor; la segunda <em>lo exige</em>.
+    </p>
+  </div>
+    </div>
+
+  <h3>6.2 · Comprobación</h3>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — las dos secciones en la documentación</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">curl -s http://127.0.0.1:8000/openapi.json | python -c "import json,sys; d=json.load(sys.stdin); [print(m.upper(), r, o[m].get('tags')) for r,o in d['paths'].items() for m in o]"</div>
+      <div class="consola-salida">GET /api/productos ['productos']</div>
+      <div class="consola-salida">GET /admin/ventas ['administración']</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada">curl -s http://127.0.0.1:8000/admin/ventas -o /dev/null -w '%{http_code}\n'</div>
+      <div class="consola-salida">403</div>
+      <div class="consola-salida">   ← sin token, la dependencia lo impide</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-entrada">curl -s http://127.0.0.1:8000/admin/ventas -H "X-Token: secreto-admin" -w '\n%{http_code}\n'</div>
+      <div class="consola-salida">{"ventas":[],"quien_lo_pide":"lalz_AND_min"}</div>
+      <div class="consola-salida">200</div>
+    </div>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — la dependencia hace el trabajo invisible</span>
+    <p>
+      Fíjate en el <code>403</code>: <strong>ninguna de las dos rutas del router de administración
+      contiene la comprobación del token</strong>. La hizo la dependencia, antes de que la ruta
+      empezara. Si mañana añades una tercera ruta a ese router, también queda protegida, sin que
+      escribas una línea. Eso es lo que compra una dependencia compartida.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Dónde se decide el prefijo de las rutas de un router?</p>
+      <button class="opcion" data-op="a">Dentro del archivo del router, en el decorador</button>
+      <button class="opcion" data-op="b">En el <code>__init__.py</code> de la carpeta</button>
+      <button class="opcion" data-op="c">En <code>main.py</code>, al llamar a <code>include_router</code></button>
+      <button class="opcion" data-op="d">En <code>pyproject.toml</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué diferencia hay entre poner la dependencia en el router y ponerla en <code>main.py</code>?</p>
+      <button class="opcion" data-op="a">En el router, la usan todas las rutas de ese router; en <code>main.py</code>, se cuelga al router entero</button>
+      <button class="opcion" data-op="b">No hay diferencia: hacen lo mismo</button>
+      <button class="opcion" data-op="c">En <code>main.py</code> es opcional</button>
+      <button class="opcion" data-op="d">La del router se ejecuta después de la ruta</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Por qué una ruta del router de administración devuelve <code>403</code> sin que su código lo diga?</p>
+      <button class="opcion" data-op="a">Porque FastAPI bloquea las rutas nuevas por defecto</button>
+      <button class="opcion" data-op="b">Porque el router no tiene etiqueta de administrador</button>
+      <button class="opcion" data-op="c">Porque el <code>prefix</code> está mal escrito</button>
+      <button class="opcion" data-op="d">Porque la dependencia se ejecuta antes de la ruta y aborta la petición</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Por qué el router de ventas no puede importar <code>app.main</code>?</p>
+      <button class="opcion" data-op="a">Porque <code>main.py</code> no tiene <code>__init__.py</code></button>
+      <button class="opcion" data-op="b">Porque rompería la pirámide: la capa de rutas no importa hacia arriba</button>
+      <button class="opcion" data-op="c">Porque Python no lo prohíbe técnicamente</button>
+      <button class="opcion" data-op="d">Porque daría un error de sintaxis</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: Partir main.py en routers</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller integrador →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER INTEGRADOR
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>Taller · <em>El CRUD con estructura</em></h2>
+    <p class="proposito">
+      Las dos unidades anteriores dejaron las piezas: los archivos y las decisiones. Ahora se
+      montan en un proyecto completo, se comprueba que el CRUD entero sigue funcionando y se
+      escribe el taller.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller de desarrollo</b></span>
+      <span>🧭 <b>Producto: el CRUD completo estructurado y documentado</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Taller</span>
+      <h3>La tienda, ordenada</h3>
+    </div>
+
+    <p>
+      Aplica lo de las dos unidades anteriores a tu proyecto completo del CRUD: los cuatro
+      archivos de infraestructura y lógica, el router de productos con las cuatro rutas, y el
+      <code>main.py</code> que solo une. Después, verifica que todo sigue igual.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Estructura</strong></td>
+            <td><code>app/</code> con <code>main.py</code>, <code>config.py</code>, <code>database.py</code>, <code>dependencias.py</code>, <code>esquemas.py</code>, <code>repositorio.py</code> y <code>routers/</code></td>
+          </tr>
+          <tr>
+            <td><strong>Rutas</strong></td>
+            <td>Las cuatro del CRUD bajo el prefijo <code>/api</code>, con el tag <code>productos</code></td>
+          </tr>
+          <tr>
+            <td><strong>Comprobación</strong></td>
+            <td>Las cuatro rutas responden, el esquema OpenAPI las muestra y el repositorio se puede probar sin el servidor</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Ningún archivo importa hacia arriba en la pirámide</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td><code>main.py</code> no tiene consultas SQL ni plantillas</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li>
+        <strong>El árbol completo</strong> con los siete archivos y los dos <code>__init__.py</code>.
+      </li>
+      <li>
+        <strong>Las cuatro rutas del CRUD</strong> funcionando bajo <code>/api</code>.
+      </li>
+      <li>
+        <strong>Una captura del esquema OpenAPI</strong> con las rutas y sus tags.
+      </li>
+      <li>
+        <strong>La prueba de que el repositorio es independiente</strong>: un archivo de prueba
+        que llama a <code>obtener_productos()</code> sin importar FastAPI.
+      </li>
+      <li>
+        <strong>Un párrafo escrito</strong> que explique qué archivo cambiarías si mañana la base
+        de datos pasara de PostgreSQL a otra cosa, y por qué sería un solo archivo.
+      </li>
+    </ol>
+
+    <button class="solucion-btn" data-solucion="taller-solucion">Ver un modelo de respuesta</button>
+
+    <div class="solucion" id="taller-solucion">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        El párrafo del entregable 5 es donde se demuestra que la clase valió la pena. No es una
+        descripción: es un <strong>pronóstico</strong>. Si puedes decir «cambiaré este archivo y
+        solo este» y es verdad, la estructura está bien.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>prueba_repositorio.py — la prueba de independencia</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm">"""Este archivo no importa FastAPI: solo el repositorio."""</span>
+
+<span class="tk-kw">import</span> asyncio
+
+<span class="tk-kw">from</span> app.repositorio <span class="tk-kw">import</span> <span class="tk-fn">obtener_productos</span>
+
+
+<span class="tk-kw">async def</span> <span class="tk-fn">main</span>() -&gt; <span class="tk-cls">None</span>:
+    <span class="tk-cm"># Una conexión falsa: el repositorio no sabe de dónde viene.</span>
+    <span class="tk-kw">class</span> <span class="tk-cls">ConexionFalsa</span>:
+        <span class="tk-kw">async def</span> <span class="tk-fn">fetch</span>(<span class="tk-kw">self</span>, consulta, *args):
+            <span class="tk-kw">return</span> [{<span class="tk-str">"id"</span>: <span class="tk-num">1</span>, <span class="tk-str">"nombre"</span>: <span class="tk-str">"Teclado mecánico"</span>, <span class="tk-str">"precio"</span>: <span class="tk-num">189900</span>, <span class="tk-str">"cantidad"</span>: <span class="tk-num">7</span>, <span class="tk-str">"descripcion"</span>: <span class="tk-str">""</span>}]
+
+    productos = <span class="tk-kw">await</span> <span class="tk-fn">obtener_productos</span>(<span class="tk-cls">ConexionFalsa</span>())
+    <span class="tk-fn">print</span>(productos)
+
+
+<span class="tk-kw">if</span> __name__ == <span class="tk-str">"__main__"</span>:
+    asyncio.<span class="tk-fn">run</span>(<span class="tk-fn">main</span>())</code></pre>
+  </div>
+
+    <p>
+      Ese archivo es la mejor prueba de la clase: <strong>el repositorio se usa sin FastAPI, sin
+      servidor y sin base de datos</strong>. Antes de dividir, eso era imposible: la función de
+      consultas estaba enterrada en un archivo que, al importarse, arrancaba la aplicación
+      entera.
+    </p>
+    </div>
+  </div>
+
+  <h3>7.2 · Rúbrica de autoevaluación</h3>
+
+  <p>
+    Puntúa cada criterio de 0 a 2 y revisa los que hayas quedado en 0 o 1 antes de dar por terminado
+    el taller.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación del proyecto estructurado</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Separación de archivos</td>
+          <td>Todo sigue en un solo archivo</td>
+          <td>Hay carpetas, pero cada archivo mezcla responsabilidades</td>
+          <td>Cada archivo tiene una responsabilidad y un nombre que la dice</td>
+        </tr>
+        <tr>
+          <td>Routers</td>
+          <td>No hay <code>APIRouter</code>: las rutas van con <code>@app</code></td>
+          <td>Hay un router, pero todas las rutas en el mismo archivo</td>
+          <td>Un router por módulo, incluidos en <code>main.py</code></td>
+        </tr>
+        <tr>
+          <td>Regla de importaciones</td>
+          <td>Los routers importan <code>main.py</code> o archivos de capa superior</td>
+          <td>Hay algún import que rompe la pirámide</td>
+          <td>Solo se importa hacia abajo, y se puede explicar por qué</td>
+        </tr>
+        <tr>
+          <td><code>__init__.py</code></td>
+          <td>Faltan y el import falla</td>
+          <td>Están pero tienen código que no les toca</td>
+          <td>Existen y están vacíos, como corresponde</td>
+        </tr>
+        <tr>
+          <td>Prefijos y tags</td>
+          <td>Las rutas se sirven sin prefijo y sin agrupar</td>
+          <td>Hay prefijo pero no tag, o al revés</td>
+          <td>Prefijo y tag por router, y la documentación sale ordenada</td>
+        </tr>
+        <tr>
+          <td>Comportamiento intacto</td>
+          <td>Al repartir, alguna ruta dejó de responder igual</td>
+          <td>Las rutas responden pero con otros códigos</td>
+          <td>El esquema y las respuestas son los mismos que antes de repartir</td>
+        </tr>
+        <tr>
+          <td>Pruebas de independencia</td>
+          <td>No hay ninguna</td>
+          <td>Hay una prueba, pero necesita el servidor en marcha</td>
+          <td>El repositorio se usa en un archivo que no importa FastAPI</td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay nada escrito</td>
+          <td>Describe el qué, no el porqué</td>
+          <td>Decisión, motivo, apartamiento del enunciado y consecuencia</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.3 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>Un <code>APIRouter</code> es un grupo de rutas con nombre propio. Cambiar <code>@app.get</code> por <code>@router.get</code> es todo el truco.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p>La aplicación deja de programar y pasa a <strong>unir</strong>: un <code>main.py</code> de doce líneas que se lee entero.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>Las carpetas son por responsabilidad —rutas, lógica, infraestructura— y no por entidad ni por persona.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p>Las importaciones van en una sola dirección: hacia abajo. Un círculo entre capas destruye la reutilización.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p>Un <code>__init__.py</code> vacío convierte una carpeta en un paquete. Sin él, no hay import que valga.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p>El prefijo, el tag y la dependencia se deciden al incluir el router: el archivo de rutas no sabe cómo se llama por fuera.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p>La prueba de que la estructura funciona es poder cambiar una pieza sin tocar las demás. Si no puedes, todavía no está estructurado.</p>
+    </div>
+  </div>
+
+  <h3>7.4 · Puente: qué sigue después del CRUD</h3>
+
+  <p>
+    Tu CRUD está completo y, por fin, <strong>ordenado</strong>: las cuatro operaciones están
+    repartidas en archivos con nombre, la aplicación solo las une y la documentación automática
+    las muestra agrupadas. Ese era el objetivo de las últimas seis clases.
+  </p>
+
+  <p>
+    Pero hay algo que sigue pendiente, y es lo que convierte un proyecto escolar en algo que se
+    puede volver a abrir dentro de seis meses:
+  </p>
+
+  <ol>
+    <li>
+      <strong>Un historial de cambios.</strong> Ahora mismo, si rompes algo, no hay forma de
+      volver atrás: el único «deshacer» es volver a escribir el archivo a mano. La herramienta
+      para eso la tienes vista en la <strong>clase 14</strong>: Git.
+    </li>
+    <li>
+      <strong>Un commit que explique cada cambio.</strong> «Arreglado» no sirve de nada dentro de
+      seis meses; «muevo el pool a <code>database.py</code> para poder cambiar de motor» sí.
+    </li>
+    <li>
+      <strong>Pruebas que no dependan del navegador.</strong> La prueba de la unidad 7 —un archivo
+      que usa el repositorio sin importar FastAPI— es el primer paso. A partir de ahí, la ruta
+      siguiente es automatizar esas pruebas para que se ejecuten solas en cada commit.
+    </li>
+  </ol>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de cerrar el curso</span>
+    <p>
+      Guarda este proyecto <strong>completo</strong> en un repositorio de Git, con un commit por
+      cada unidad de la clase: uno para la repartición en routers, otro para los prefijos y las
+      dependencias. La clase 14 explica Git en detalle; lo único que necesitas ahora es tener el
+      proyecto en un repositorio y dos commits con mensajes claros.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 15</h2>
+    <p>
+      Has cerrado el ciclo de la estructura: el CRUD completo —conexión, consulta, inserción y
+      edición— repartido en archivos con una responsabilidad cada uno, unidos por una aplicación
+      que solo sabe unirlos. El proyecto ya se puede leer de un vistazo y, sobre todo, ya se
+      puede cambiar en una pieza sin miedo a romper las demás. A partir de aquí, la pregunta ya
+      no es dónde vive el código, sino cómo no perderlo.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: Prefijos, tags y dependencias</button>
+    <button class="btn-siguiente" data-ir="0">✓ Marcar el taller como terminado y volver al inicio</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 15 · Estructuración del sistema CRUD</span>
+  <p class="pie-sub">El APIRouter · Las carpetas del proyecto · include_router · Prefijos, tags y dependencias</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

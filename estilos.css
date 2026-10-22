@@ -129,23 +129,30 @@
   --herr-8-a:        #34d399;   /* Clase 8 Herr — esmeralda/ámbar (Base de datos) */
   --herr-8-b:        #fbbf24;
 
-  --herr-9-a:        #14b8a6;   /* Clase 9 Herr — teal/violeta (Repetitivas) */
+  --herr-9-a:        #14b8a6;   /* Clase 9 Herr — teal/violeta (Consultas SELECT) */
   --herr-9-b:        #8b5cf6;
 
-  --herr-10-a:       #38bdf8;   /* Clase 10 Herr — celeste/dorado (Funciones) */
+  --herr-10-a:       #38bdf8;   /* Clase 10 Herr — azul cielo/oro (Inserción de datos) */
   --herr-10-b:       #eab308;
 
-  --herr-11-a:       #1d4ed8;   /* Clase 11 Herr — azul/terracota (Estructura) */
-  --herr-11-b:       #b45309;
+  --herr-11-a:       #e879f9;   /* Clase 11 Herr — fucsia/turquesa (Edición de registros) */
+  --herr-11-b:       #2dd4bf;
 
-  --herr-12-a:       #f05033;   /* Clase 12 Herr — naranja Git/ámbar (Git básico) */
-  --herr-12-b:       #ffc857;
+  --herr-12-a:       #f97316;   /* Clase 12 Herr — naranja edición/turquesa versión (Edición) */
+  --herr-12-b:       #2dd4bf;
 
-  --herr-13-a:       #3fb950;   /* Clase 13 Herr — verde merge/azul link (GitHub) */
-  --herr-13-b:       #58a6ff;
+  --herr-13-a:       #f43f5e;   /* Clase 13 Herr — rosa peligro/índigo integridad (Borrado) */
+  --herr-13-b:       #818cf8;
 
-  --herr-14-a:       #007acc;   /* Clase 14 Herr — azul VS Code/cian (Git en VS Code) */
+  --herr-14-a:       #007acc;   /* Clase 14 Herr — azul VS Code/cian (Interacción entre módulos) */
   --herr-14-b:       #4dd0ff;
+
+  --herr-15-a:       #fdba74;   /* Clase 15 Herr — naranja carpeta/azul plano (Estructuración CRUD) */
+  --herr-15-b:       #93c5fd;
+  --herr-16-a:       #22d3ee;   /* Clase 16 Herr — cian terminal/lima commit (Git moderno) */
+  --herr-16-b:       #a3e635;
+  --herr-17-a:       #6e5494;   /* Clase 17 Herr — púrpura GitHub/azul link (Publicar tu código) */
+  --herr-17-b:       #79b8ff;
 
   --gris:            #94a3b8;
 
@@ -579,6 +586,10 @@ main {
 .clase-card.herr-13::before { background: linear-gradient(90deg, var(--herr-13-a), var(--herr-13-b)); }
 .clase-card.herr-14::before { background: linear-gradient(90deg, var(--herr-14-a), var(--herr-14-b)); }
 
+.clase-card.herr-15::before { background: linear-gradient(90deg, var(--herr-15-a), var(--herr-15-b)); }
+.clase-card.herr-16::before { background: linear-gradient(90deg, var(--herr-16-a), var(--herr-16-b)); }
+.clase-card.herr-17::before { background: linear-gradient(90deg, var(--herr-17-a), var(--herr-17-b)); }
+
 .clase-card:hover {
   transform: translateY(-6px) scale(1.01);
   border-color: var(--dorado);
@@ -651,6 +662,10 @@ main {
 .clase-card.herr-12 .clase-badge { background: linear-gradient(135deg, var(--herr-12-a), var(--herr-12-b)); color: #000; }
 .clase-card.herr-13 .clase-badge { background: linear-gradient(135deg, var(--herr-13-a), var(--herr-13-b)); color: #fff; }
 .clase-card.herr-14 .clase-badge { background: linear-gradient(135deg, var(--herr-14-a), var(--herr-14-b)); color: #000; }
+
+.clase-card.herr-15 .clase-badge { background: linear-gradient(135deg, var(--herr-15-a), var(--herr-15-b)); color: #241300; }
+.clase-card.herr-16 .clase-badge { background: linear-gradient(135deg, var(--herr-16-a), var(--herr-16-b)); color: #04121a; }
+.clase-card.herr-17 .clase-badge { background: linear-gradient(135deg, var(--herr-17-a), var(--herr-17-b)); color: #fff; }
 
 .clase-badge.gris {
   background: rgba(148, 163, 184, 0.2);

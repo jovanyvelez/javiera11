@@ -1,0 +1,2074 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 13 · Eliminación de registros</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 13 · <em>Eliminación de registros</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura: borrar no tiene deshacer</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">Confirmar antes de borrar</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">El DELETE seguro</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Integridad y borrado lógico</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Actividad: eliminar productos</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Errores y confirmaciones</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: borrado robusto</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> borrado de productos con confirmación, <code>DELETE</code> parametrizado y errores de integridad controlados.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>Borrar no tiene <em>deshacer</em></h2>
+    <p class="proposito">
+      Crear y editar se pueden corregir. Borrar, no: una vez ejecutado el <code>DELETE</code>, el
+      registro no está. Por eso esta operación necesita tres cosas que las anteriores no tenían:
+      una <strong>confirmación</strong>, un <strong>identificador inequívoco</strong> y un
+      <strong>control de integridad</strong>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: el mapa de un borrado seguro</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · El producto que desapareció sin querer</h3>
+
+  <p class="primer-párrafo">
+    En TechStore, el botón <strong>Eliminar</strong> estaba al lado de <strong>Editar</strong>. Un
+    vendedor quiso corregir un precio, pulsó el botón equivocado y confirmó sin leer. El producto
+    desapareció de la tabla y de la base. No había copia, no había historial y el cliente que lo
+    estaba mirando ya no pudo comprarlo.
+  </p>
+
+  <p>
+    La aplicación no falló: hizo exactamente lo que le pidieron. El problema es que una operación
+    destructiva no puede tener la misma fricción que una lectura. Necesita una pausa, una pregunta
+    clara y un servidor que se niegue a borrar cuando hacerlo rompería algo más.
+  </p>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — borrar no es «editar a vacío»</span>
+    <p>
+      Un <code>UPDATE</code> deja una fila con otros valores. Un <code>DELETE</code> elimina la
+      fila. La diferencia importa porque las relaciones con otras tablas —pedidos, autores,
+      auditorías— apuntan a esa fila. Si desaparece, esas referencias quedan huérfanas o el motor
+      rechaza la operación. El borrado no es una edición: es una operación con reglas propias.
+    </p>
+  </div>
+
+  <h3>0.2 · La «D» del CRUD</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las cuatro operaciones y el riesgo de cada una</caption>
+      <thead>
+        <tr><th>Operación</th><th>Qué hace</th><th>Riesgo principal</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Create</strong></td><td>Inserta una fila</td><td>Duplicados o datos inválidos</td></tr>
+        <tr><td><strong>Read</strong></td><td>Consulta filas</td><td>Ninguno: no modifica nada</td></tr>
+        <tr><td><strong>Update</strong></td><td>Cambia valores</td><td>Pisar el cambio de otro usuario</td></tr>
+        <tr><td><strong>Delete</strong></td><td>Elimina una fila</td><td><strong>Pérdida irreversible</strong> y ruptura de referencias</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.3 · El viaje de un borrado</h3>
+
+  <div class="diagrama">
+    <div class="nodo cliente">
+      <div class="rotulo-nodo">1 · Confirmar</div>
+      <h5>El navegador pregunta</h5>
+      <p><code>hx-confirm</code> muestra el nombre del producto y espera una decisión.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">si acepta<br>DELETE</span>
+    </div>
+    <div class="nodo servidor">
+      <div class="rotulo-nodo">2 · Ejecutar</div>
+      <h5><code>DELETE ... WHERE id = $1</code></h5>
+      <p>El servidor borra solo la fila indicada y comprueba cuántas eliminó.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">1 o 0<br>filas</span>
+    </div>
+    <div class="nodo datos">
+      <div class="rotulo-nodo">3 · Responder</div>
+      <h5>Éxito, 404 o conflicto</h5>
+      <p>La fila desaparece o se muestra por qué no se pudo borrar.</p>
+    </div>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Los resultados posibles de un <code>DELETE</code></caption>
+      <thead>
+        <tr><th>Resultado</th><th>Qué significa</th><th>Respuesta</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>DELETE 1</code></td><td>La fila existía y se eliminó</td><td>Fragmento con el aviso de éxito</td></tr>
+        <tr><td><code>DELETE 0</code></td><td>La fila ya no existía</td><td><code>404</code> con el aviso de no encontrado</td></tr>
+        <tr><td><code>RestrictViolationError</code> / <code>ForeignKeyViolationError</code></td><td>Otra tabla depende de esa fila</td><td><code>409</code> con «no se puede eliminar»</td></tr>
+        <tr><td>Error de conexión o de SQL</td><td>La operación no se pudo ejecutar</td><td><code>500</code>/<code>503</code> genérico; detalle en el log</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.4 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Unidades, tiempos y productos</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura y mapa del borrado</td><td>20 min</td><td>Los tres resultados identificados</td></tr>
+        <tr><td><strong>01</strong></td><td>Confirmar antes de borrar</td><td>30 min</td><td>Botón con <code>hx-delete</code> y <code>hx-confirm</code></td></tr>
+        <tr><td><strong>02</strong></td><td>El <code>DELETE</code> seguro</td><td>30 min</td><td>Consulta parametrizada y <code>DELETE 1/0</code></td></tr>
+        <tr><td><strong>03</strong></td><td>Integridad y borrado lógico</td><td>30 min</td><td><code>409</code> por referencias y <code>deleted_at</code></td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Actividad 5.1 · Eliminar productos</td><td>35 min</td><td>Borrado funcionando en TechStore</td></tr>
+        <tr><td><strong>06</strong></td><td>Errores y confirmaciones</td><td>35 min</td><td><code>404</code>, <code>409</code> y mensajes honestos</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller · Borrado robusto</td><td>45 min</td><td>Pruebas y decisión escrita</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.5 · Lo que vas a construir</h3>
+
+  <p>
+    El proyecto es el mismo <strong>TechStore</strong> de las clases 10 a 12, en el repositorio
+    <a href="https://github.com/jovanyvelez/ejercicio2" target="_blank" rel="noopener">ejercicio2</a>.
+    La tabla <code>productos</code> ya se puede listar y editar. Hoy le agregarás la operación que
+    falta: eliminar un producto con confirmación previa y sin mentirle al usuario.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>los archivos del borrado</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>ejercicio2/
+├── templates/componentes/fila_producto.html    botón Eliminar
+├── templates/componentes/fila_eliminada.html   aviso de éxito
+├── repositorio.py                              eliminar_producto()
+├── vistas.py                                   DELETE /productos/{id}
+└── templates/base.html                         config de HTMX para 404/409</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Herramientas del proyecto</caption>
+      <thead>
+        <tr><th>Herramienta</th><th>Versión de referencia</th><th>Para qué</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Python</strong></td><td>3.14 o superior</td><td>El lenguaje del proyecto</td></tr>
+        <tr><td><strong>FastAPI</strong></td><td>0.141 o superior</td><td>Rutas y respuestas HTML</td></tr>
+        <tr><td><strong>asyncpg</strong></td><td>0.31 o superior</td><td>El <code>DELETE</code> parametrizado</td></tr>
+        <tr><td><strong>Jinja2</strong></td><td>La del proyecto</td><td>El botón y los fragmentos</td></tr>
+        <tr><td><strong>HTMX</strong></td><td>2.0 o superior</td><td>Confirmación y reemplazo de la fila</td></tr>
+        <tr><td><strong>PostgreSQL</strong></td><td>17 u 18</td><td>La tabla y las claves foráneas</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.6 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito:</p>
+
+  <ol>
+    <li>¿Por qué un borrado necesita confirmación y una consulta no?</li>
+    <li>¿Qué diferencia hay entre <code>DELETE 1</code> y <code>DELETE 0</code>?</li>
+    <li>Si otro producto depende del que quieres borrar, ¿qué debería hacer la aplicación?</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: confirmar antes de borrar →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — CONFIRMAR ANTES DE BORRAR
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · La pausa</div>
+    <h2>Confirmar antes de borrar: la petición que <em>no sale</em></h2>
+    <p class="proposito">
+      La confirmación no es un adorno: es la única barrera entre un clic accidental y una pérdida
+      irreversible. Esta unidad explica cómo HTMX la implementa, qué pasa cuando el usuario cancela
+      y por qué cancelar debe significar <strong>cero peticiones al servidor</strong>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: botón de borrado con confirmación</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · El botón del repositorio</h3>
+
+  <p class="primer-párrafo">
+    En la tabla de productos, cada fila tiene un botón <strong>Eliminar</strong>. HTMX intercepta
+    el clic, muestra una confirmación del navegador y, solo si el usuario acepta, envía un
+    <code>DELETE</code> a <code>/productos/{id}</code>. La respuesta reemplaza únicamente el
+    <code>tbody</code> de esa fila.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>fila_producto.html — el botón Eliminar</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">button</span> <span class="tk-attr">class</span>=<span class="tk-str">"eliminar"</span>
+        <span class="tk-attr">hx-delete</span>=<span class="tk-str">"/productos/</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span>
+        <span class="tk-attr">hx-confirm</span>=<span class="tk-str">"¿Eliminar el producto «</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.nombre</span> <span class="tk-cm">}}</span><span class="tk-str">»? Esta acción no se puede deshacer."</span>
+        <span class="tk-attr">hx-target</span>=<span class="tk-str">"#producto-</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span>
+        <span class="tk-attr">hx-swap</span>=<span class="tk-str">"outerHTML"</span><span class="tk-pun">&gt;</span>
+  Eliminar
+<span class="tk-pun">&lt;/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>hx-delete</code></dt>
+      <dd>La ruta que se llamará con el método HTTP <code>DELETE</code>. No es un <code>POST</code> disfrazado: el método importa y el servidor lo declara con <code>@router.delete</code>.</dd>
+    </div>
+    <div>
+      <dt><code>hx-confirm</code></dt>
+      <dd>El texto que HTMX muestra en un cuadro de confirmación del navegador antes de enviar. Si el usuario cancela, no se envía nada.</dd>
+    </div>
+    <div>
+      <dt><code>hx-target</code></dt>
+      <dd>El <code>tbody</code> de esa fila. La respuesta del servidor se inserta ahí, no en toda la tabla.</dd>
+    </div>
+    <div>
+      <dt><code>hx-swap</code></dt>
+      <dd><code>outerHTML</code> reemplaza el <code>tbody</code> completo. La fila desaparece o se convierte en el aviso de error.</dd>
+    </div>
+    <div>
+      <dt>El nombre en el mensaje</dt>
+      <dd>Incluye <code>producto.nombre</code> para que el usuario sepa exactamente qué está a punto de borrar. «¿Eliminar este producto?» no es suficiente.</dd>
+    </div>
+  </div>
+
+  <h3>1.2 · Cancelar significa cero peticiones</h3>
+
+  <p>
+    La confirmación ocurre <strong>en el navegador</strong>, antes de que HTMX construya la
+    petición. Si el usuario pulsa «Cancelar», el servidor no recibe nada: no hay
+    <code>DELETE</code>, no hay fila borrada y no hay nada que deshacer. Esa es la diferencia entre
+    una confirmación real y un aviso que se muestra después de borrar.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Qué ocurre en cada decisión</caption>
+      <thead>
+        <tr><th>Decisión</th><th>Navegador</th><th>Servidor</th><th>Base de datos</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>El usuario cancela</td><td>Cierra el cuadro</td><td>No recibe nada</td><td>No cambia</td></tr>
+        <tr><td>El usuario acepta</td><td>Envía <code>DELETE /productos/5</code></td><td>Ejecuta la ruta</td><td><code>DELETE 1</code></td></tr>
+        <tr><td>El producto ya no existe</td><td>Envía la petición</td><td>Responde <code>404</code></td><td><code>DELETE 0</code></td></tr>
+        <tr><td>Otra tabla depende del producto</td><td>Envía la petición</td><td>Responde <code>409</code></td><td>La base rechaza el borrado</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — <code>hx-confirm</code> no reemplaza la validación del servidor</span>
+    <p>
+      La confirmación vive en el navegador y se puede desactivar con DevTools o con
+      <code>curl</code>. El servidor no puede confiar en que el usuario confirmó: debe verificar el
+      <code>id</code>, aplicar las reglas de integridad y responder correctamente. La confirmación
+      es una ayuda para el usuario, no un control de seguridad.
+    </p>
+  </div>
+
+  <h3>1.3 · Una confirmación que se pueda leer</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cómo escribir el mensaje de confirmación</caption>
+      <thead>
+        <tr><th>Bien</th><th>Mal</th><th>Por qué</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>«¿Eliminar el producto «Teclado mecánico»? Esta acción no se puede deshacer.»</td><td>«¿Estás seguro?»</td><td>El usuario no sabe qué va a borrar</td></tr>
+        <tr><td>Un botón rojo con la palabra «Eliminar»</td><td>Un botón gris junto a «Guardar»</td><td>El color y la posición deben indicar peligro</td></tr>
+        <tr><td>El botón se deshabilita mientras se envía</td><td>Se puede pulsar varias veces</td><td>Evita peticiones duplicadas y mensajes confusos</td></tr>
+        <tr><td>El foco vuelve a un lugar seguro al cancelar</td><td>El foco se pierde</td><td>Accesibilidad para teclado y lectores de pantalla</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — confirmación nativa o modal propio</span>
+    <p>
+      <code>hx-confirm</code> usa el cuadro del navegador: es rápido, accesible y no requiere
+      JavaScript propio. Un modal propio permite más contexto —mostrar la ficha del producto,
+      pedir el nombre para confirmar— pero hay que cuidar el foco, <kbd>Esc</kbd>, el fondo y la
+      navegación por teclado. Para esta clase, la confirmación nativa es suficiente y más segura
+      que un modal mal hecho.
+    </p>
+  </div>
+
+  <h3>1.4 · El botón también después de editar</h3>
+
+  <p>
+    La fila que devuelve una edición exitosa se construye con la plantilla
+    <code>fila_actualizada.html</code>. Si esa plantilla no incluye el botón Eliminar, el producto
+    se puede borrar antes de editarlo, pero no después. Es un detalle fácil de olvidar y una
+    inconsistencia visible para el usuario.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>fila_actualizada.html — los dos botones</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">button</span> <span class="tk-attr">hx-get</span>=<span class="tk-str">"/productos/</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">/editar"</span>
+          <span class="tk-attr">hx-target</span>=<span class="tk-str">"#producto-</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span>
+          <span class="tk-attr">hx-swap</span>=<span class="tk-str">"outerHTML"</span><span class="tk-pun">&gt;</span>Editar<span class="tk-pun">&lt;/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+
+  <span class="tk-pun">&lt;</span><span class="tk-tag">button</span> <span class="tk-attr">class</span>=<span class="tk-str">"eliminar"</span>
+          <span class="tk-attr">hx-delete</span>=<span class="tk-str">"/productos/</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span>
+          <span class="tk-attr">hx-confirm</span>=<span class="tk-str">"¿Eliminar «</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.nombre</span> <span class="tk-cm">}}</span><span class="tk-str">»? Esta acción no se puede deshacer."</span>
+          <span class="tk-attr">hx-target</span>=<span class="tk-str">"#producto-</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span>
+          <span class="tk-attr">hx-swap</span>=<span class="tk-str">"outerHTML"</span><span class="tk-pun">&gt;</span>Eliminar<span class="tk-pun">&lt;/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <h3>1.5 · Doble clic, doble borrado</h3>
+
+  <p>
+    Si el usuario pulsa dos veces rápido, HTMX puede enviar dos peticiones. La primera borra;
+    la segunda llega cuando la fila ya no existe y responde <code>404</code>. El resultado no es
+    catastrófico, pero la interfaz muestra un error después de un éxito. Deshabilitar el botón
+    mientras se envía evita esa carrera.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>HTMX — deshabilitar el botón durante la petición</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">button</span> <span class="tk-attr">class</span>=<span class="tk-str">"eliminar"</span>
+        <span class="tk-attr">hx-delete</span>=<span class="tk-str">"/productos/5"</span>
+        <span class="tk-attr">hx-confirm</span>=<span class="tk-str">"¿Eliminar el producto?"</span>
+        <span class="tk-attr">hx-disabled-elt</span>=<span class="tk-str">"this"</span>
+        <span class="tk-attr">hx-target</span>=<span class="tk-str">"#producto-5"</span>
+        <span class="tk-attr">hx-swap</span>=<span class="tk-str">"outerHTML"</span><span class="tk-pun">&gt;</span>
+  Eliminar
+<span class="tk-pun">&lt;/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>hx-disabled-elt</code> no cancela la petición</span>
+    <p>
+      Deshabilitar el botón impide un segundo clic, pero no cancela la primera petición. Si el
+      usuario quiere cancelar una operación ya enviada, necesita otra herramienta —un
+      <code>hx-preserve</code>, un <code>AbortController</code> o un flujo de borrado lógico—. Para
+      esta clase, lo importante es que el doble clic no produzca dos borrados.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace <code>hx-confirm</code> si el usuario cancela?</p>
+      <button class="opcion" data-op="a">Envía un <code>DELETE</code> y luego lo deshace</button>
+      <button class="opcion" data-op="b">No envía ninguna petición al servidor</button>
+      <button class="opcion" data-op="c">Envía un <code>GET</code> para comprobar</button>
+      <button class="opcion" data-op="d">Borra la fila solo en el navegador</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Por qué el mensaje debe incluir el nombre del producto?</p>
+      <button class="opcion" data-op="a">Porque HTMX lo exige</button>
+      <button class="opcion" data-op="b">Para que la petición sea más rápida</button>
+      <button class="opcion" data-op="c">Para que el servidor sepa qué borrar</button>
+      <button class="opcion" data-op="d">Para que el usuario sepa exactamente qué va a eliminar</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué método HTTP usa <code>hx-delete</code>?</p>
+      <button class="opcion" data-op="a"><code>DELETE</code></button>
+      <button class="opcion" data-op="b"><code>POST</code></button>
+      <button class="opcion" data-op="c"><code>GET</code></button>
+      <button class="opcion" data-op="d"><code>PUT</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Por qué el botón Eliminar debe aparecer también en la fila actualizada?</p>
+      <button class="opcion" data-op="a">Porque HTMX lo borra al editar</button>
+      <button class="opcion" data-op="b">Porque el servidor lo exige en el <code>UPDATE</code></button>
+      <button class="opcion" data-op="c">Porque la fila que devuelve la edición se construye con otra plantilla y debe conservar las acciones</button>
+      <button class="opcion" data-op="d">Porque el botón desaparece de la base de datos</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: el DELETE seguro →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — EL DELETE SEGURO
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · La sentencia</div>
+    <h2>El <em>DELETE</em> seguro: una fila, un id, un resultado</h2>
+    <p class="proposito">
+      Un borrado seguro no adivina: recibe la clave primaria, ejecuta un <code>DELETE</code>
+      parametrizado y comprueba cuántas filas eliminó. Esta unidad escribe la consulta, la ruta y
+      el fragmento que reemplaza la fila, y explica por qué «DELETE 0» nunca puede mostrarse como
+      éxito.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: DELETE parametrizado y fragmento de éxito</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · La función del repositorio</h3>
+
+  <p class="primer-párrafo">
+    La función recibe la conexión y el <code>id</code>. El <code>WHERE</code> usa un parámetro
+    posicional; no se concatena nada. <code>conn.execute</code> devuelve una cadena que dice
+    cuántas filas se eliminaron: <code>"DELETE 1"</code> o <code>"DELETE 0"</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>repositorio.py — eliminar_producto()</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">eliminar_producto</span>(conn, producto_id: <span class="tk-fn">int</span>) -&gt; <span class="tk-fn">bool</span>:
+    <span class="tk-str">"""Elimina un producto por su clave primaria.
+
+    Devuelve True si borró una fila, False si el id no existía.
+    """</span>
+    resultado = <span class="tk-kw">await</span> conn.execute(
+        <span class="tk-str">"""
+        DELETE FROM productos
+         WHERE id = $1
+        """</span>,
+        producto_id,
+    )
+    <span class="tk-kw">return</span> resultado == <span class="tk-str">"DELETE 1"</span>
+</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>WHERE id = $1</code></dt>
+      <dd>La única condición. El <code>id</code> es la clave primaria; no se borra por nombre porque puede haber dos productos con el mismo nombre.</dd>
+    </div>
+    <div>
+      <dt><code>execute</code></dt>
+      <dd>Ejecuta una sentencia que no devuelve filas. En un <code>DELETE</code>, el texto de retorno empieza por <code>"DELETE"</code> y termina con el número de filas afectadas.</dd>
+    </div>
+    <div>
+      <dt><code>"DELETE 1"</code></dt>
+      <dd>Se eliminó exactamente una fila. Es el único caso de éxito.</dd>
+    </div>
+    <div>
+      <dt><code>"DELETE 0"</code></dt>
+      <dd>No se eliminó nada: el id no existía o ya había sido borrado. No es un éxito.</dd>
+    </div>
+    <div>
+      <dt><code>bool</code></dt>
+      <dd>La función traduce la cadena a un valor que la ruta puede usar sin conocer los detalles de asyncpg.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — <code>DELETE 0</code> no es un error de SQL</span>
+    <p>
+      PostgreSQL no lanza una excepción cuando el <code>WHERE</code> no encuentra filas. La
+      sentencia termina bien con <code>"DELETE 0"</code>. Si la ruta no comprueba ese valor, va a
+      responder <code>200</code> y a mostrar «Producto eliminado» aunque no se haya borrado nada.
+      Ese es el falso éxito que esta clase quiere evitar.
+    </p>
+  </div>
+
+  <h3>2.2 · La ruta que responde con un fragmento</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — DELETE /productos/{id}</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-fn">@router</span>.delete(<span class="tk-str">"/productos/{producto_id}"</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">eliminar_producto_vista</span>(
+    request: <span class="tk-cls">Request</span>,
+    conn: <span class="tk-cls">ConnectionDep</span>,
+    producto_id: <span class="tk-fn">int</span>,
+):
+    eliminado = <span class="tk-kw">await</span> eliminar_producto(conn, producto_id)
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> eliminado:
+        <span class="tk-kw">return</span> producto_no_encontrado(request, producto_id)
+
+    <span class="tk-kw">return</span> templates.<span class="tk-cls">TemplateResponse</span>(
+        request=request,
+        name=<span class="tk-str">"componentes/fila_eliminada.html"</span>,
+        context={<span class="tk-str">"producto_id"</span>: producto_id},
+    )
+</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>DELETE</code> es idempotente, pero el resultado no es el mismo</span>
+    <p>
+      Repetir un <code>DELETE</code> no borra dos filas: la segunda vez ya no hay nada que borrar.
+      Por eso se dice que el método es idempotente en su efecto. El código de la segunda respuesta
+      puede ser <code>404</code> (esta clase) o <code>204</code> (un cliente que considera que el
+      recurso ya está ausente). Lo importante es que la interfaz no muestre «eliminado» la segunda
+      vez si no se eliminó nada.
+    </p>
+  </div>
+
+  <h3>2.3 · El fragmento de éxito</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>fila_eliminada.html — la fila se convierte en aviso</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">tbody</span> <span class="tk-attr">id</span>=<span class="tk-str">"producto-</span><span class="tk-cm">{{</span> <span class="tk-fn">producto_id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">tr</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">td</span> <span class="tk-attr">colspan</span>=<span class="tk-str">"5"</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"aviso-exito"</span><span class="tk-pun">&gt;</span>
+        Producto eliminado correctamente.
+      <span class="tk-pun">&lt;/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;/</span><span class="tk-tag">tr</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">tbody</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <p>
+    La fila no desaparece del todo: se convierte en un aviso. Así el usuario ve que la operación
+    ocurrió y la tabla conserva la posición. Si se quitara el <code>tbody</code> sin dejar rastro,
+    el usuario podría dudar de si el clic funcionó.
+  </p>
+
+  <h3>2.4 · La variante con <code>RETURNING</code></h3>
+
+  <p>
+    Si además del éxito quieres mostrar el nombre del producto borrado o guardarlo en una
+    auditoría, puedes usar <code>DELETE ... RETURNING</code>. La consulta devuelve la fila que
+    acaba de desaparecer.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>repositorio.py — borrar y devolver la fila</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">eliminar_producto</span>(conn, producto_id: <span class="tk-fn">int</span>) -&gt; <span class="tk-fn">dict</span> | <span class="tk-kw">None</span>:
+    fila = <span class="tk-kw">await</span> conn.fetchrow(
+        <span class="tk-str">"""
+        DELETE FROM productos
+         WHERE id = $1
+        RETURNING id, nombre, precio, cantidad, descripcion
+        """</span>,
+        producto_id,
+    )
+    <span class="tk-kw">return</span> <span class="tk-fn">dict</span>(fila) <span class="tk-kw">if</span> fila <span class="tk-kw">is</span> <span class="tk-kw">not</span> <span class="tk-kw">None</span> <span class="tk-kw">else</span> <span class="tk-kw">None</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — dos formas, el mismo resultado</span>
+    <p>
+      <code>execute</code> + comparar <code>"DELETE 1"</code> es suficiente cuando solo necesitas
+      saber si borraste. <code>fetchrow</code> + <code>RETURNING</code> es mejor cuando necesitas
+      los datos del registro eliminado, por ejemplo para escribir una auditoría o para mostrar
+      «Se eliminó Teclado mecánico». No uses las dos a la vez: elige la que cuente la historia que
+      necesitas.
+    </p>
+  </div>
+
+  <h3>2.5 · Nunca por nombre</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>la diferencia entre borrar uno y borrar varios</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm">-- MAL: si hay dos productos con ese nombre, borra los dos
+</span><span class="tk-kw">DELETE</span> <span class="tk-kw">FROM</span> productos <span class="tk-kw">WHERE</span> nombre = <span class="tk-str">'Teclado mecánico'</span><span class="tk-pun">;</span>
+
+<span class="tk-cm">-- BIEN: la clave primaria identifica una sola fila
+</span><span class="tk-kw">DELETE</span> <span class="tk-kw">FROM</span> productos <span class="tk-kw">WHERE</span> id = $<span class="tk-num">1</span><span class="tk-pun">;</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — el nombre no es una clave</span>
+    <p>
+      En TechStore puede haber dos productos llamados «Teclado mecánico» de distinto proveedor. El
+      nombre es un dato descriptivo; el <code>id</code> es la identidad. Borrar por nombre es una
+      operación de varios registros disfrazada de una: afecta a filas que el usuario no eligió.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué devuelve <code>conn.execute</code> después de borrar una fila?</p>
+      <button class="opcion" data-op="a"><code>True</code></button>
+      <button class="opcion" data-op="b">La cadena <code>"DELETE 1"</code></button>
+      <button class="opcion" data-op="c">La fila eliminada</button>
+      <button class="opcion" data-op="d">Un <code>None</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué significa <code>"DELETE 0"</code>?</p>
+      <button class="opcion" data-op="a">Que se borraron cero tablas</button>
+      <button class="opcion" data-op="b">Que la consulta falló</button>
+      <button class="opcion" data-op="c">Que el producto se borró dos veces</button>
+      <button class="opcion" data-op="d">Que ninguna fila coincidió con el <code>WHERE</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Por qué no se borra por nombre?</p>
+      <button class="opcion" data-op="a">Porque puede haber varias filas con el mismo nombre y se borrarían todas</button>
+      <button class="opcion" data-op="b">Porque PostgreSQL no permite <code>WHERE nombre</code></button>
+      <button class="opcion" data-op="c">Porque el nombre siempre es único</button>
+      <button class="opcion" data-op="d">Porque el nombre es más lento que el <code>id</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Para qué sirve <code>DELETE ... RETURNING</code>?</p>
+      <button class="opcion" data-op="a">Para borrar más rápido</button>
+      <button class="opcion" data-op="b">Para evitar el <code>WHERE</code></button>
+      <button class="opcion" data-op="c">Para recuperar los datos de la fila eliminada</button>
+      <button class="opcion" data-op="d">Para deshacer el borrado</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: Confirmar antes de borrar</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: integridad y borrado lógico →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — INTEGRIDAD Y BORRADO LÓGICO
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · La integridad</div>
+    <h2>Cuando el producto <em>todavía importa</em>: referencias y borrado lógico</h2>
+    <p class="proposito">
+      No todos los registros se pueden borrar: un producto con pedidos, un autor con libros o una
+      cuenta con movimientos. Esta unidad explica cómo PostgreSQL rechaza esos borrados, cómo se
+      responde con <code>409</code> y cuándo conviene archivar en vez de eliminar.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: 409 por integridad y borrado lógico</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · La clave foránea que protege el historial</h3>
+
+  <p class="primer-párrafo">
+    En una tienda real, un producto puede aparecer en pedidos. Si borras el producto, los pedidos
+    quedan apuntando a una fila que ya no existe. PostgreSQL lo impide con una clave foránea: la
+    tabla <code>pedidos</code> declara que su <code>producto_id</code> debe existir en
+    <code>productos</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — un pedido que referencia un producto</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">CREATE</span> <span class="tk-kw">TABLE</span> pedidos <span class="tk-pun">(</span>
+    id          BIGSERIAL <span class="tk-kw">PRIMARY</span> <span class="tk-kw">KEY</span><span class="tk-pun">,</span>
+    producto_id <span class="tk-fn">INTEGER</span> <span class="tk-kw">NOT</span> <span class="tk-kw">NULL</span>
+        <span class="tk-kw">REFERENCES</span> productos<span class="tk-pun">(</span>id<span class="tk-pun">)</span> <span class="tk-kw">ON</span> <span class="tk-kw">DELETE</span> <span class="tk-kw">RESTRICT</span><span class="tk-pun">,</span>
+    cantidad    <span class="tk-fn">INTEGER</span> <span class="tk-kw">NOT</span> <span class="tk-kw">NULL</span> <span class="tk-kw">CHECK</span> <span class="tk-pun">(</span>cantidad &gt; <span class="tk-num">0</span><span class="tk-pun">)</span>
+<span class="tk-pun">);</span>
+</code></pre>
+  </div>
+
+  <p>
+    Al intentar borrar un producto que tiene pedidos, PostgreSQL rechaza la operación. Con
+    <code>ON DELETE RESTRICT</code> lanza <code>RestrictViolationError</code> (SQLSTATE
+    <code>23001</code>); con el valor por defecto <code>NO ACTION</code> lanza
+    <code>ForeignKeyViolationError</code> (SQLSTATE <code>23503</code>). La aplicación debe capturar
+    los dos y explicar por qué no se puede borrar.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Qué hace cada acción al borrar el producto padre</caption>
+      <thead>
+        <tr><th>Acción</th><th>Qué pasa con los pedidos</th><th>Cuándo usarla</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>ON DELETE RESTRICT</code></td><td>El borrado falla si hay pedidos</td><td>Cuando el historial es valioso y no debe perderse</td></tr>
+        <tr><td><code>ON DELETE CASCADE</code></td><td>Se borran también los pedidos</td><td>Cuando los hijos no tienen sentido sin el padre</td></tr>
+        <tr><td><code>ON DELETE SET NULL</code></td><td>El pedido queda sin producto</td><td>Cuando el pedido debe sobrevivir, pero sin referencia</td></tr>
+        <tr><td>Sin clave foránea</td><td>Quedan referencias huérfanas</td><td>Nunca en un modelo relacional serio</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — <code>CASCADE</code> no es una solución mágica</span>
+    <p>
+      <code>ON DELETE CASCADE</code> hace que el borrado funcione, pero puede borrar mucho más de
+      lo que el usuario cree. Si un producto tiene cien pedidos, borrar el producto borra los cien
+      pedidos. La pregunta no es «¿cómo hago que el borrado no falle?», sino «¿qué historial
+      quiero conservar?».
+    </p>
+  </div>
+
+  <h3>3.2 · Convertir la violación en un <code>409</code></h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — capturar la referencia</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">import</span> asyncpg
+
+
+<span class="tk-fn">@router</span>.delete(<span class="tk-str">"/productos/{producto_id}"</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">eliminar_producto_vista</span>(
+    request: <span class="tk-cls">Request</span>,
+    conn: <span class="tk-cls">ConnectionDep</span>,
+    producto_id: <span class="tk-fn">int</span>,
+):
+    <span class="tk-kw">try</span>:
+        eliminado = <span class="tk-kw">await</span> eliminar_producto(conn, producto_id)
+    <span class="tk-kw">except</span> (asyncpg.<span class="tk-cls">RestrictViolationError</span>, asyncpg.<span class="tk-cls">ForeignKeyViolationError</span>):
+        <span class="tk-kw">return</span> templates.<span class="tk-cls">TemplateResponse</span>(
+            request=request,
+            name=<span class="tk-str">"componentes/producto_con_pedidos.html"</span>,
+            context={<span class="tk-str">"producto_id"</span>: producto_id},
+            status_code=<span class="tk-num">409</span>,
+        )
+
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> eliminado:
+        <span class="tk-kw">return</span> producto_no_encontrado(request, producto_id)
+
+    <span class="tk-kw">return</span> templates.<span class="tk-cls">TemplateResponse</span>(
+        request=request,
+        name=<span class="tk-str">"componentes/fila_eliminada.html"</span>,
+        context={<span class="tk-str">"producto_id"</span>: producto_id},
+    )
+</code></pre>
+  </div>
+
+  <p>
+    El fragmento de conflicto no es un error de servidor: es un aviso de negocio. Debe explicar
+    que el producto tiene pedidos y ofrecer una salida —archivarlo, revisar los pedidos o
+    cancelar—. Un <code>500</code> genérico no le dice al usuario qué hacer.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>producto_con_pedidos.html</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">tbody</span> <span class="tk-attr">id</span>=<span class="tk-str">"producto-</span><span class="tk-cm">{{</span> <span class="tk-fn">producto_id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">tr</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">td</span> <span class="tk-attr">colspan</span>=<span class="tk-str">"5"</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"aviso-error"</span><span class="tk-pun">&gt;</span>
+        No se puede eliminar: el producto tiene pedidos asociados.
+        Puedes archivarlo para que deje de aparecer en el catálogo.
+      <span class="tk-pun">&lt;/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;/</span><span class="tk-tag">tr</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">tbody</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <h3>3.3 · Borrado lógico: archivar en vez de borrar</h3>
+
+  <p>
+    Si el negocio necesita conservar el historial, el borrado físico no es la herramienta. Se
+    agrega una columna <code>deleted_at</code>: el registro sigue en la tabla, pero las consultas
+    lo ignoran. «Borrar» se convierte en un <code>UPDATE</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>SQL — borrado lógico</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">ALTER</span> <span class="tk-kw">TABLE</span> productos
+    <span class="tk-kw">ADD</span> <span class="tk-kw">COLUMN</span> <span class="tk-kw">IF</span> <span class="tk-kw">NOT</span> <span class="tk-kw">EXISTS</span> deleted_at TIMESTAMPTZ<span class="tk-pun">;</span>
+
+<span class="tk-cm">-- «Borrar» es archivar:
+</span><span class="tk-kw">UPDATE</span> productos
+   <span class="tk-kw">SET</span> deleted_at = now<span class="tk-pun">()</span>
+ <span class="tk-kw">WHERE</span> id = $<span class="tk-num">1</span> <span class="tk-kw">AND</span> deleted_at <span class="tk-kw">IS</span> <span class="tk-kw">NULL</span><span class="tk-pun">;</span>
+
+<span class="tk-cm">-- Las consultas del catálogo filtran los archivados:
+</span><span class="tk-kw">SELECT</span> id<span class="tk-pun">,</span> nombre<span class="tk-pun">,</span> precio<span class="tk-pun">,</span> cantidad<span class="tk-pun">,</span> descripcion
+  <span class="tk-kw">FROM</span> productos
+ <span class="tk-kw">WHERE</span> deleted_at <span class="tk-kw">IS</span> <span class="tk-kw">NULL</span>
+ <span class="tk-kw">ORDER</span> <span class="tk-kw">BY</span> nombre<span class="tk-pun">;</span>
+</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Borrado físico frente a borrado lógico</caption>
+      <thead>
+        <tr><th></th><th>Físico (<code>DELETE</code>)</th><th>Lógico (<code>deleted_at</code>)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>El dato desaparece</td><td>Sí</td><td>No: queda archivado</td></tr>
+        <tr><td>Se puede recuperar</td><td>No, salvo un respaldo</td><td>Sí, con otro <code>UPDATE</code></td></tr>
+        <tr><td>El <code>id</code> se puede reutilizar</td><td>No</td><td>No, mientras la fila exista</td></tr>
+        <tr><td>Consultas</td><td>No necesitan filtro</td><td>Todas deben filtrar <code>deleted_at IS NULL</code></td></tr>
+        <tr><td>Unicidad</td><td>El nombre queda libre</td><td>El nombre sigue ocupado salvo un índice parcial</td></tr>
+        <tr><td>Uso típico</td><td>Datos de prueba, registros sin historial</td><td>Productos, usuarios, cuentas con auditoría</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — el borrado lógico no es gratis</span>
+    <p>
+      Cada consulta del catálogo tiene que recordar el filtro <code>deleted_at IS NULL</code>. Si
+      una vista lo olvida, el producto archivado reaparece. Además, un índice <code>UNIQUE</code>
+      sobre el nombre impide crear un producto nuevo con el mismo nombre mientras el archivado
+      siga en la tabla. Se resuelve con un índice parcial:
+      <code>CREATE UNIQUE INDEX ... WHERE deleted_at IS NULL</code>. Es potente, pero exige
+      disciplina.
+    </p>
+  </div>
+
+  <h3>3.4 · Auditoría del borrado</h3>
+
+  <p>
+    Si el borrado es físico y el negocio necesita saber qué se borró, guarda una fila en una tabla
+    de archivo antes de eliminar. Hazlo en la misma transacción: o se guarda el archivo y se borra,
+    o no ocurre ninguna de las dos cosas.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>repositorio.py — archivar y borrar en una transacción</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">async</span> <span class="tk-kw">with</span> conn.transaction():
+    fila = <span class="tk-kw">await</span> conn.fetchrow(
+        <span class="tk-str">"DELETE FROM productos WHERE id = $1 RETURNING *"</span>,
+        producto_id,
+    )
+    <span class="tk-kw">if</span> fila <span class="tk-kw">is</span> <span class="tk-kw">not</span> <span class="tk-kw">None</span>:
+        <span class="tk-kw">await</span> conn.execute(
+            <span class="tk-str">"""
+            INSERT INTO productos_eliminados
+                (producto_id, nombre, precio, cantidad)
+            VALUES ($1, $2, $3, $4)
+            """</span>,
+            fila[<span class="tk-str">"id"</span>],
+            fila[<span class="tk-str">"nombre"</span>],
+            fila[<span class="tk-str">"precio"</span>],
+            fila[<span class="tk-str">"cantidad"</span>],
+        )
+</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — borrar también es un permiso</span>
+    <p>
+      En una aplicación real, no cualquier usuario puede eliminar. El borrado se protege con
+      autenticación y roles: un vendedor quizá pueda archivar, pero solo un administrador puede
+      borrar definitivamente. La clase no implementa login, pero el diseño debe dejar claro dónde
+      iría esa comprobación.
+    </p>
+  </div>
+
+  <h3>3.5 · Laboratorio: confirmar, borrar y fallar</h3>
+
+  <p>
+    Este laboratorio simula la fila de un producto y su botón Eliminar. Abre la confirmación,
+    cancela una vez y confirma otra. Cambia el escenario para ver qué responde el servidor cuando
+    el producto ya no existe, cuando tiene pedidos o cuando la base falla.
+  </p>
+
+  <div class="borrado" data-del>
+    <div class="del-cabecera">
+      <span class="etiqueta">Laboratorio</span>
+      <h4>La confirmación antes del DELETE</h4>
+      <p>
+        La fila y la base están simuladas. El panel muestra el estado, la capa, el JSON, el
+        <code>DELETE</code> y si la petición llegó a salir del navegador.
+      </p>
+    </div>
+
+    <div class="del-cuerpo">
+      <div class="del-zona">
+        <div class="del-fila" data-del-fila>
+          <strong>Teclado mecánico</strong> · $189.900 · 12 unidades
+          <button type="button" class="del-boton" data-del-abrir>Eliminar</button>
+        </div>
+
+        <div class="del-confirmacion" data-del-confirmacion hidden>
+          <h5>¿Eliminar «Teclado mecánico»?</h5>
+          <p>Esta acción no se puede deshacer.</p>
+          <div class="del-acciones">
+            <button type="button" class="del-boton peligro" data-del-confirmar>Sí, eliminar</button>
+            <button type="button" class="del-boton" data-del-cancelar>Cancelar</button>
+          </div>
+          <div class="del-escenario">
+            <label for="del-escenario">Escenario:</label>
+            <select id="del-escenario" data-del-escenario>
+              <option value="normal">Producto normal</option>
+              <option value="missing">Ya no existe</option>
+              <option value="fk">Tiene pedidos asociados</option>
+              <option value="error">Error de base de datos</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="del-escenario">
+          <button type="button" class="del-boton" data-del-reiniciar>Reiniciar laboratorio</button>
+        </div>
+      </div>
+
+      <div class="lab-panel">
+        <div class="lab-estado neutro" data-del-estado>Esperando una decisión…</div>
+        <div class="lab-capa" data-del-capa>Capa: —</div>
+        <div class="del-peticion" data-del-peticion>Petición enviada: NO</div>
+        <pre class="lab-json" data-del-json>{
+  "detail": "Aún no hay ninguna petición."
+}</pre>
+        <pre class="lab-sql" data-del-sql>-- El DELETE aparecerá aquí cuando confirmes.</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — lo que demuestra el laboratorio</span>
+    <p>
+      Al abrir la confirmación, la petición todavía no salió: el panel dice «Petición enviada:
+      NO». Al cancelar, sigue sin salir. Solo al confirmar aparece el <code>DELETE</code>. En el
+      escenario con pedidos, la base rechaza el borrado con <code>409</code> y la fila no
+      desaparece. Esa es la diferencia entre una interfaz honesta y una que siempre dice «listo».
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué produce borrar un producto con pedidos y <code>ON DELETE RESTRICT</code>?</p>
+      <button class="opcion" data-op="a">Se borran los pedidos también</button>
+      <button class="opcion" data-op="b"><code>RestrictViolationError</code> y el producto no se borra</button>
+      <button class="opcion" data-op="c">El pedido queda con <code>producto_id = NULL</code></button>
+      <button class="opcion" data-op="d">La tabla se bloquea para siempre</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué hace <code>ON DELETE CASCADE</code>?</p>
+      <button class="opcion" data-op="a">Archiva el producto</button>
+      <button class="opcion" data-op="b">Impide el borrado</button>
+      <button class="opcion" data-op="c">Pone <code>NULL</code> en el pedido</button>
+      <button class="opcion" data-op="d">Borra también las filas hijas que dependen del producto</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué es el borrado lógico?</p>
+      <button class="opcion" data-op="a">Marcar la fila con <code>deleted_at</code> y filtrarla en las consultas</button>
+      <button class="opcion" data-op="b">Borrar la fila y guardar una copia en memoria</button>
+      <button class="opcion" data-op="c">Cambiar el <code>id</code> por <code>NULL</code></button>
+      <button class="opcion" data-op="d">Ejecutar <code>DELETE</code> dentro de una transacción</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Qué estado se devuelve cuando el borrado choca con una clave foránea?</p>
+      <button class="opcion" data-op="a"><code>200</code></button>
+      <button class="opcion" data-op="b"><code>404</code></button>
+      <button class="opcion" data-op="c"><code>409</code></button>
+      <button class="opcion" data-op="d"><code>422</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: El DELETE seguro</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora del borrado</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija la
+      diferencia entre borrar, archivar y rechazar.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora.
+    </p>
+
+    <div class="reglas">
+      <div class="regla">
+        <h4>Regla 20-20-20</h4>
+        <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+      </div>
+      <div class="regla">
+        <h4>Movimiento</h4>
+        <p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p>
+      </div>
+      <div class="regla">
+        <h4>Hidratación</h4>
+        <p>Un vaso de agua. La lectura densa agota más de lo que parece.</p>
+      </div>
+      <div class="regla">
+        <h4>Bitácora</h4>
+        <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora del borrado (5 minutos)</h3>
+
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿por qué cancelar en la confirmación no debe enviar ninguna petición?</li>
+    <li><strong>En una frase:</strong> ¿qué diferencia hay entre <code>DELETE 0</code>, <code>404</code> y <code>409</code>?</li>
+    <li><strong>En una frase:</strong> ¿cuándo conviene archivar con <code>deleted_at</code> en vez de borrar?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+
+  <div class="definiciones">
+    <div>
+      <dt>Operación destructiva</dt>
+      <dd>Una acción que elimina datos y no se puede deshacer con un <code>UPDATE</code>.</dd>
+    </div>
+    <div>
+      <dt><code>hx-confirm</code></dt>
+      <dd>La confirmación nativa de HTMX. Si el usuario cancela, la petición no sale.</dd>
+    </div>
+    <div>
+      <dt><code>DELETE 1</code></dt>
+      <dd>Se borró exactamente una fila.</dd>
+    </div>
+    <div>
+      <dt><code>DELETE 0</code></dt>
+      <dd>Ninguna fila coincidió; el producto no existe o ya fue borrado.</dd>
+    </div>
+    <div>
+      <dt>Clave foránea</dt>
+      <dd>Una columna que referencia la clave primaria de otra tabla y protege la integridad.</dd>
+    </div>
+    <div>
+      <dt><code>ON DELETE RESTRICT</code></dt>
+      <dd>Impide borrar el padre mientras existan hijos que lo referencian.</dd>
+    </div>
+    <div>
+      <dt><code>ON DELETE CASCADE</code></dt>
+      <dd>Borra los hijos cuando se borra el padre. Es potente y peligroso.</dd>
+    </div>
+    <div>
+      <dt><code>deleted_at</code></dt>
+      <dd>La columna del borrado lógico: si tiene fecha, la fila está archivada.</dd>
+    </div>
+    <div>
+      <dt>Auditoría</dt>
+      <dd>El registro de qué se borró y cuándo, guardado antes o después del borrado.</dd>
+    </div>
+    <div>
+      <dt>Falso éxito</dt>
+      <dd>Responder <code>200</code> y «eliminado» cuando la base no borró nada.</dd>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: Integridad y borrado lógico</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Actividad →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — ACTIVIDAD: ELIMINAR PRODUCTOS
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · Actividad de desarrollo</div>
+    <h2>Actividad 5.1 · <em>Eliminar un producto sin falsos éxitos</em></h2>
+    <p class="proposito">
+      Vas a incorporar el borrado al proyecto TechStore: botón con confirmación, consulta
+      parametrizada, ruta que distingue éxito de no encontrado y un fragmento que reemplaza la fila.
+      En 35 minutos tendrás la «D» del CRUD funcionando.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Actividad de desarrollo</b></span>
+      <span>🧭 <b>Producto: DELETE /productos/{id} probado</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Actividad</span>
+      <h3>El botón que pregunta antes de borrar</h3>
+    </div>
+
+    <p>
+      La tabla de productos ya permite listar y editar. Agrega el borrado: cada fila debe tener un
+      botón <strong>Eliminar</strong>, la confirmación debe mostrar el nombre del producto y el
+      servidor debe ejecutar un <code>DELETE</code> por <code>id</code>. Si el producto ya no
+      existe, la fila debe mostrar un aviso con <code>404</code>; si tiene pedidos, un
+      <code>409</code>. Nunca debe mostrarse «eliminado» cuando la base no cambió.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td><code>DELETE /productos/{id}</code>, precedido por la confirmación del navegador</td>
+          </tr>
+          <tr>
+            <td><strong>Salida correcta</strong></td>
+            <td><code>200</code> con el fragmento de producto eliminado</td>
+          </tr>
+          <tr>
+            <td><strong>No existe</strong></td>
+            <td><code>404</code> con el fragmento de no encontrado</td>
+          </tr>
+          <tr>
+            <td><strong>Conflicto de integridad</strong></td>
+            <td><code>409</code> con un aviso de pedidos asociados</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td><code>DELETE FROM productos WHERE id = $1</code>, nunca por nombre</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Si el usuario cancela, no se envía ninguna petición</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong><code>fila_producto.html</code></strong>: botón Eliminar con <code>hx-delete</code> y <code>hx-confirm</code>.</li>
+      <li><strong><code>fila_actualizada.html</code></strong>: el mismo botón después de editar.</li>
+      <li><strong><code>repositorio.py</code></strong>: <code>eliminar_producto</code> con parámetro <code>$1</code>.</li>
+      <li><strong><code>vistas.py</code></strong>: ruta <code>DELETE</code> con éxito, <code>404</code> y <code>409</code>.</li>
+      <li><strong><code>fila_eliminada.html</code></strong>: el aviso de éxito.</li>
+      <li><strong>Prueba manual</strong>: borrar, volver a borrar y probar un producto con pedidos.</li>
+    </ol>
+  </div>
+
+  <h3>5.2 · Paso 1: el botón en las dos plantillas</h3>
+
+  <p>
+    Agrega el botón en <code>fila_producto.html</code> y en <code>fila_actualizada.html</code>. Si
+    solo lo agregas en la primera, después de editar el producto la fila pierde la opción de
+    borrado.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>el botón completo, con confirmación y protección de doble clic</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">button</span> <span class="tk-attr">class</span>=<span class="tk-str">"eliminar"</span>
+        <span class="tk-attr">hx-delete</span>=<span class="tk-str">"/productos/</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span>
+        <span class="tk-attr">hx-confirm</span>=<span class="tk-str">"¿Eliminar «</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.nombre</span> <span class="tk-cm">}}</span><span class="tk-str">»? Esta acción no se puede deshacer."</span>
+        <span class="tk-attr">hx-disabled-elt</span>=<span class="tk-str">"this"</span>
+        <span class="tk-attr">hx-target</span>=<span class="tk-str">"#producto-</span><span class="tk-cm">{{</span> <span class="tk-fn">producto.id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span>
+        <span class="tk-attr">hx-swap</span>=<span class="tk-str">"outerHTML"</span><span class="tk-pun">&gt;</span>
+  Eliminar
+<span class="tk-pun">&lt;/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <p>
+    Abre la pestaña <em>Network</em> de las herramientas del navegador. Al pulsar Eliminar y
+    cancelar la confirmación, no debe aparecer ninguna petición. Al aceptar, debe aparecer un
+    <code>DELETE /productos/5</code>.
+  </p>
+
+  <h3>5.3 · Paso 2: la función y la ruta</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>repositorio.py — el DELETE</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">eliminar_producto</span>(conn, producto_id: <span class="tk-fn">int</span>) -&gt; <span class="tk-fn">bool</span>:
+    resultado = <span class="tk-kw">await</span> conn.execute(
+        <span class="tk-str">"DELETE FROM productos WHERE id = $1"</span>,
+        producto_id,
+    )
+    <span class="tk-kw">return</span> resultado == <span class="tk-str">"DELETE 1"</span>
+</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>vistas.py — la ruta con tres salidas</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-fn">@router</span>.delete(<span class="tk-str">"/productos/{producto_id}"</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">eliminar_producto_vista</span>(
+    request: <span class="tk-cls">Request</span>,
+    conn: <span class="tk-cls">ConnectionDep</span>,
+    producto_id: <span class="tk-fn">int</span>,
+):
+    <span class="tk-kw">try</span>:
+        eliminado = <span class="tk-kw">await</span> eliminar_producto(conn, producto_id)
+    <span class="tk-kw">except</span> (asyncpg.<span class="tk-cls">RestrictViolationError</span>, asyncpg.<span class="tk-cls">ForeignKeyViolationError</span>):
+        <span class="tk-kw">return</span> templates.<span class="tk-cls">TemplateResponse</span>(
+            request=request,
+            name=<span class="tk-str">"componentes/producto_con_pedidos.html"</span>,
+            context={<span class="tk-str">"producto_id"</span>: producto_id},
+            status_code=<span class="tk-num">409</span>,
+        )
+
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> eliminado:
+        <span class="tk-kw">return</span> producto_no_encontrado(request, producto_id)
+
+    <span class="tk-kw">return</span> templates.<span class="tk-cls">TemplateResponse</span>(
+        request=request,
+        name=<span class="tk-str">"componentes/fila_eliminada.html"</span>,
+        context={<span class="tk-str">"producto_id"</span>: producto_id},
+    )
+</code></pre>
+  </div>
+
+  <h3>5.4 · Paso 3: el fragmento de éxito</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>fila_eliminada.html</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">tbody</span> <span class="tk-attr">id</span>=<span class="tk-str">"producto-</span><span class="tk-cm">{{</span> <span class="tk-fn">producto_id</span> <span class="tk-cm">}}</span><span class="tk-str">"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">tr</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">td</span> <span class="tk-attr">colspan</span>=<span class="tk-str">"5"</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">div</span> <span class="tk-attr">class</span>=<span class="tk-str">"aviso-exito"</span><span class="tk-pun">&gt;</span>Producto eliminado correctamente.<span class="tk-pun">&lt;/</span><span class="tk-tag">div</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;/</span><span class="tk-tag">td</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;/</span><span class="tk-tag">tr</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">tbody</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <h3>5.5 · Paso 4: mostrar también el <code>409</code></h3>
+
+  <p>
+    La configuración de HTMX del proyecto habilita el intercambio de <code>404</code> y
+    <code>422</code>, pero no de <code>409</code>. Si no la amplías, el aviso de «tiene pedidos»
+    no se verá en la fila. Agrega la entrada de <code>409</code> a
+    <code>responseHandling</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>base.html — habilitar el swap de 409</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">meta</span> <span class="tk-attr">name</span>=<span class="tk-str">"htmx-config"</span> <span class="tk-attr">content</span>=<span class="tk-str">'{
+  "responseHandling": [
+    {"code": "204", "swap": false},
+    {"code": "[23]..", "swap": true},
+    {"code": "404", "swap": true},
+    {"code": "409", "swap": true},
+    {"code": "422", "swap": true},
+    {"code": "[45]..", "swap": false, "error": true}
+  ]
+}'</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el 409 también puede ser JSON</span>
+    <p>
+      Si la ruta devuelve un fragmento HTML, HTMX lo inserta en la fila. Si devuelve JSON, no hay
+      nada que insertar. Para esta actividad, el <code>409</code> debe ser el fragmento
+      <code>producto_con_pedidos.html</code>, no un <code>JSONResponse</code>. La API JSON y la
+      interfaz HTML pueden compartir la lógica, pero no el formato de respuesta.
+    </p>
+  </div>
+
+  <h3>5.6 · Paso 5: probar los tres caminos</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — borrar, repetir y probar un producto con pedidos</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># 1. Borrado normal: 200 y aviso de éxito
+</span>curl -i -X DELETE http://127.0.0.1:8000/productos/1
+
+<span class="tk-cm"># 2. El mismo id otra vez: 404, no un segundo éxito
+</span>curl -i -X DELETE http://127.0.0.1:8000/productos/1
+
+<span class="tk-cm"># 3. Producto con pedidos: 409
+</span>curl -i -X DELETE http://127.0.0.1:8000/productos/2
+</code></pre>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — comprueba la base después de cada borrado</span>
+    <p>
+      Usa <code>psql "$DATABASE_URL" -c "SELECT id, nombre FROM productos ORDER BY id;"</code>
+      después de cada operación. La interfaz puede ocultar un error; la tabla no. Verifica que el
+      producto borrado desapareció, que el segundo intento no borró otra fila y que el producto con
+      pedidos sigue ahí.
+    </p>
+  </div>
+
+  <h3>5.7 · Antes de dar la actividad por terminada</h3>
+
+  <ol class="entregables">
+    <li>El botón Eliminar aparece en la fila normal y en la fila actualizada.</li>
+    <li>Cancelar la confirmación no envía ninguna petición.</li>
+    <li>El borrado normal responde <code>200</code> y muestra el aviso.</li>
+    <li>El segundo borrado responde <code>404</code>, no <code>200</code>.</li>
+    <li>El producto con pedidos responde <code>409</code> y no se borra.</li>
+    <li>El <code>DELETE</code> usa <code>WHERE id = $1</code>.</li>
+    <li>El <code>409</code> está habilitado en <code>responseHandling</code> de HTMX.</li>
+  </ol>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué se envía al servidor si el usuario cancela la confirmación?</p>
+      <button class="opcion" data-op="a">Un <code>DELETE</code> con un flag de cancelación</button>
+      <button class="opcion" data-op="b">Un <code>GET</code> para comprobar el producto</button>
+      <button class="opcion" data-op="c">Nada: la petición no sale del navegador</button>
+      <button class="opcion" data-op="d">Un <code>POST</code> de vuelta a la lista</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Qué responde la ruta si <code>eliminar_producto</code> devuelve <code>False</code>?</p>
+      <button class="opcion" data-op="a"><code>404</code> con el fragmento de no encontrado</button>
+      <button class="opcion" data-op="b"><code>200</code> con el aviso de éxito</button>
+      <button class="opcion" data-op="c"><code>409</code> siempre</button>
+      <button class="opcion" data-op="d"><code>500</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Qué excepción produce un producto con pedidos si la clave es <code>RESTRICT</code>?</p>
+      <button class="opcion" data-op="a"><code>UniqueViolationError</code></button>
+      <button class="opcion" data-op="b"><code>UndefinedTableError</code></button>
+      <button class="opcion" data-op="c"><code>QueryCanceledError</code></button>
+      <button class="opcion" data-op="d"><code>RestrictViolationError</code></button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Por qué el botón debe estar también en <code>fila_actualizada.html</code>?</p>
+      <button class="opcion" data-op="a">Porque el servidor lo exige en el <code>UPDATE</code></button>
+      <button class="opcion" data-op="b">Porque la fila que devuelve una edición se construye con esa plantilla y debe conservar la opción de borrar</button>
+      <button class="opcion" data-op="c">Porque el botón se borra de la base al editar</button>
+      <button class="opcion" data-op="d">Porque HTMX no permite un botón en dos plantillas</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: errores y confirmaciones →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — ERRORES Y CONFIRMACIONES
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · La respuesta</div>
+    <h2>Errores y confirmaciones: nunca un <em>éxito falso</em></h2>
+    <p class="proposito">
+      El error más grave de un borrado no es un <code>500</code>: es un <code>200</code> que dice
+      «eliminado» cuando la fila sigue ahí. Esta unidad ordena los estados, las confirmaciones y
+      los mensajes para que la interfaz cuente siempre lo que pasó.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: tabla de errores y respuestas coherentes</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · El mapa de errores de un borrado</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Qué puede fallar y qué debería responder la API</caption>
+      <thead>
+        <tr><th>Situación</th><th>Qué ocurrió</th><th>Estado</th><th>Qué ve el usuario</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Producto existente</td><td><code>DELETE 1</code></td><td><code>200</code></td><td>«Producto eliminado correctamente»</td></tr>
+        <tr><td>Producto ya borrado</td><td><code>DELETE 0</code></td><td><code>404</code></td><td>«No se encontró el producto con id N»</td></tr>
+        <tr><td>Producto con pedidos</td><td><code>RestrictViolationError</code> (23001) o <code>ForeignKeyViolationError</code> (23503)</td><td><code>409</code></td><td>«No se puede eliminar: tiene pedidos»</td></tr>
+        <tr><td><code>id</code> no numérico en la URL</td><td>FastAPI no convierte el parámetro</td><td><code>422</code></td><td>Mensaje de ruta inválida</td></tr>
+        <tr><td>Tabla o columna inexistente</td><td>Error de SQL</td><td><code>500</code></td><td>Mensaje genérico; detalle en el log</td></tr>
+        <tr><td>Base caída o pool no listo</td><td>Error de conexión</td><td><code>503</code></td><td>«Intenta de nuevo en unos segundos»</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — <code>404</code> no es un fallo del servidor</span>
+    <p>
+      Que un producto ya no exista es un resultado normal de un borrado repetido o de un enlace
+      viejo. No es un <code>500</code>. El <code>404</code> le dice al usuario que el recurso no
+      está; el <code>500</code> le dice que el servidor falló. Confundirlos hace que el usuario
+      reintente cuando no debe o que el equipo busque un bug que no existe.
+    </p>
+  </div>
+
+  <h3>6.2 · El falso éxito</h3>
+
+  <p>
+    El error más peligroso es el que no parece un error. Si la ruta ignora el valor de retorno de
+    <code>eliminar_producto</code> y siempre devuelve el fragmento de éxito, el usuario ve
+    «Producto eliminado» aunque la base no haya borrado nada.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>la diferencia entre un borrado honesto y uno falso</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># MAL: siempre responde éxito, aunque no se haya borrado nada</span>
+<span class="tk-kw">await</span> eliminar_producto(conn, producto_id)
+<span class="tk-kw">return</span> templates.<span class="tk-cls">TemplateResponse</span>(
+    request=request,
+    name=<span class="tk-str">"componentes/fila_eliminada.html"</span>,
+    context={<span class="tk-str">"producto_id"</span>: producto_id},
+)
+
+<span class="tk-cm"># BIEN: el resultado decide la respuesta</span>
+eliminado = <span class="tk-kw">await</span> eliminar_producto(conn, producto_id)
+<span class="tk-kw">if</span> <span class="tk-kw">not</span> eliminado:
+    <span class="tk-kw">return</span> producto_no_encontrado(request, producto_id)
+</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el <code>200</code> no se elige por costumbre</span>
+    <p>
+      Un <code>200</code> significa «la operación se realizó». Si el <code>DELETE</code> afectó
+      cero filas, la operación no se realizó. Usar <code>200</code> porque «es más fácil para
+      HTMX» es una decisión de interfaz que miente sobre el resultado. HTMX puede intercambiar
+      <code>404</code> y <code>409</code> si se configura; no hay que falsear el estado.
+    </p>
+  </div>
+
+  <h3>6.3 · HTMX 2 y el intercambio de errores</h3>
+
+  <p>
+    HTMX 2 no inserta por defecto las respuestas <code>4xx</code>. El proyecto lo resuelve con
+    <code>&lt;meta name="htmx-config"&gt;</code> y una lista de <code>responseHandling</code>. Para
+    que el aviso de <code>409</code> se vea, esa lista debe incluir el código.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>base.html — la lista completa</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">meta</span> <span class="tk-attr">name</span>=<span class="tk-str">"htmx-config"</span> <span class="tk-attr">content</span>=<span class="tk-str">'{
+  "responseHandling": [
+    {"code": "204", "swap": false},
+    {"code": "[23]..", "swap": true},
+    {"code": "404", "swap": true},
+    {"code": "409", "swap": true},
+    {"code": "422", "swap": true},
+    {"code": "[45]..", "swap": false, "error": true}
+  ]
+}'</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — HTMX 4.0 cambia la regla</span>
+    <p>
+      En HTMX 4.0, las respuestas <code>4xx</code> se intercambian por defecto, salvo
+      <code>204</code> y <code>304</code>. Si actualizas el proyecto, la configuración de
+      <code>responseHandling</code> deja de ser necesaria para <code>404</code>/<code>409</code>,
+      pero no está de más documentar qué se espera. El proyecto de esta clase usa HTMX 2.0.4 y
+      necesita la lista.
+    </p>
+  </div>
+
+  <h3>6.4 · Doble clic, doble petición</h3>
+
+  <p>
+    Sin protección, un doble clic puede enviar dos <code>DELETE</code>. El primero responde
+    <code>200</code>; el segundo, <code>404</code>. La fila muestra un error después de un éxito y
+    el usuario no entiende qué pasó. Deshabilitar el botón durante la petición evita la carrera.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>hx-disabled-elt — un clic, una petición</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">button</span> <span class="tk-attr">hx-delete</span>=<span class="tk-str">"/productos/5"</span>
+        <span class="tk-attr">hx-confirm</span>=<span class="tk-str">"¿Eliminar el producto?"</span>
+        <span class="tk-attr">hx-disabled-elt</span>=<span class="tk-str">"this"</span>
+        <span class="tk-attr">hx-target</span>=<span class="tk-str">"#producto-5"</span>
+        <span class="tk-attr">hx-swap</span>=<span class="tk-str">"outerHTML"</span><span class="tk-pun">&gt;</span>
+  Eliminar
+<span class="tk-pun">&lt;/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <h3>6.5 · Los errores que más se repiten</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Del síntoma a la causa</caption>
+      <thead>
+        <tr><th>Síntoma</th><th>Causa habitual</th><th>Qué revisar</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>«Producto eliminado» pero sigue en la tabla</td><td>Se ignora el retorno de <code>eliminar_producto</code></td><td>Comprobar <code>DELETE 1</code> antes de responder éxito</td></tr>
+        <tr><td>El aviso de <code>409</code> no aparece</td><td>HTMX 2 no intercambia <code>409</code> sin configuración</td><td>Agregar <code>{"code":"409","swap":true}</code></td></tr>
+        <tr><td>El producto se borra pero la fila muestra error</td><td>Doble clic: la segunda petición recibe <code>404</code></td><td><code>hx-disabled-elt</code> o deshabilitar el botón</td></tr>
+        <tr><td>Se borran dos productos con el mismo nombre</td><td>El <code>WHERE</code> usa <code>nombre</code></td><td>Usar la clave primaria <code>id</code></td></tr>
+        <tr><td>El borrado con pedidos responde <code>500</code></td><td>No se captura <code>RestrictViolationError</code> ni <code>ForeignKeyViolationError</code></td><td>Capturar y responder <code>409</code> con un fragmento</td></tr>
+        <tr><td>El log guarda el producto completo</td><td>Se registra la fila en vez del id</td><td>Registrar solo el id y el resultado</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — qué registrar en un borrado</span>
+    <p>
+      Un log útil dice: id borrado, resultado (<code>DELETE 1</code>/<code>DELETE 0</code>),
+      SQLSTATE si hubo error y usuario que lo solicitó. No hace falta guardar el nombre o la
+      descripción: para depurar el borrado bastan el id y el resultado. Si el negocio necesita el
+      dato, va en la tabla de auditoría, no en el log.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué debe responder una ruta si <code>eliminar_producto</code> devuelve <code>False</code>?</p>
+      <button class="opcion" data-op="a"><code>200</code> con el aviso de éxito</button>
+      <button class="opcion" data-op="b"><code>404</code> con el fragmento de no encontrado</button>
+      <button class="opcion" data-op="c"><code>409</code> siempre</button>
+      <button class="opcion" data-op="d"><code>302</code> a la lista</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué produce un producto con pedidos y <code>ON DELETE RESTRICT</code>?</p>
+      <button class="opcion" data-op="a">Un <code>404</code></button>
+      <button class="opcion" data-op="b">Un <code>200</code> con aviso</button>
+      <button class="opcion" data-op="c">Un <code>422</code></button>
+      <button class="opcion" data-op="d">Un <code>409</code> con <code>RestrictViolationError</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Por qué HTMX 2 no muestra el <code>409</code> sin configuración?</p>
+      <button class="opcion" data-op="a">Porque por defecto no intercambia respuestas <code>4xx</code></button>
+      <button class="opcion" data-op="b">Porque el <code>409</code> no existe en HTTP</button>
+      <button class="opcion" data-op="c">Porque Jinja2 no renderiza el fragmento</button>
+      <button class="opcion" data-op="d">Porque PostgreSQL bloquea la respuesta</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Qué evita el doble clic en Eliminar?</p>
+      <button class="opcion" data-op="a">Cambiar el método a <code>POST</code></button>
+      <button class="opcion" data-op="b">Quitar la confirmación</button>
+      <button class="opcion" data-op="c">Deshabilitar el botón mientras se envía la petición</button>
+      <button class="opcion" data-op="d">Responder siempre <code>200</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: Actividad</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>Un borrado <em>robusto</em>, no solo un botón rojo</h2>
+    <p class="proposito">
+      En 45 minutos vas a cerrar la clase con un borrado que otra persona puede mantener:
+      confirmación clara, <code>DELETE</code> parametrizado, <code>404</code>/<code>409</code>
+      honestos, archivo o borrado lógico y pruebas que demuestren los tres caminos.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller integrador</b></span>
+      <span>🧭 <b>Producto: borrado con pruebas y decisión escrita</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El encargo</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Encargo</span>
+      <h3>La papelera de TechStore</h3>
+    </div>
+
+    <p>
+      La actividad ya borra con confirmación. El taller añade lo que falta para publicarlo:
+      pruebas de los tres caminos, una decisión sobre borrado físico o lógico y un registro de
+      auditoría. Elige una de las dos estrategias y justifícala; no puedes dejar la decisión
+      implícita.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Contenido</strong></td>
+            <td><code>fila_producto.html</code>, <code>fila_eliminada.html</code>, <code>repositorio.py</code>, <code>vistas.py</code>, pruebas</td>
+          </tr>
+          <tr>
+            <td><strong>Estrategia</strong></td>
+            <td>Borrado físico con auditoría <strong>o</strong> borrado lógico con <code>deleted_at</code></td>
+          </tr>
+          <tr>
+            <td><strong>Confirmación</strong></td>
+            <td><code>hx-confirm</code> con el nombre del producto; cancelar no envía nada</td>
+          </tr>
+          <tr>
+            <td><strong>Integridad</strong></td>
+            <td><code>RESTRICT</code> y <code>RestrictViolationError</code>/<code>ForeignKeyViolationError</code> → <code>409</code></td>
+          </tr>
+          <tr>
+            <td><strong>Errores</strong></td>
+            <td><code>404</code> para ausencia, <code>409</code> para dependencias, <code>500</code> genérico para fallo interno</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Las pruebas se saltan sin <code>DATABASE_URL</code>; nunca muestran éxito si no se borró</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong>Botón Eliminar</strong> en la fila normal y en la fila actualizada.</li>
+      <li><strong><code>eliminar_producto</code></strong> con <code>WHERE id = $1</code> y resultado booleano.</li>
+      <li><strong>Ruta</strong> con éxito, <code>404</code> y <code>409</code>.</li>
+      <li><strong>Fragmentos</strong> de éxito, no encontrado y producto con pedidos.</li>
+      <li><strong><code>test_borrado.py</code></strong>: borrar, repetir y <code>id</code> inválido.</li>
+      <li><strong>Un párrafo escrito</strong> de unas 120 palabras: borrado físico o lógico, por qué y qué se pierde.</li>
+    </ol>
+  </div>
+
+  <h3>7.2 · Las pruebas</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — instalar y ejecutar</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>uv add --dev pytest
+uv run pytest -q
+</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>test_borrado.py — éxito, repetición y ruta inválida</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">import</span> os
+<span class="tk-kw">import</span> re
+
+<span class="tk-kw">import</span> pytest
+<span class="tk-kw">from</span> fastapi.testclient <span class="tk-kw">import</span> <span class="tk-cls">TestClient</span>
+
+pytestmark = pytest.mark.skipif(
+    <span class="tk-kw">not</span> os.getenv(<span class="tk-str">"DATABASE_URL"</span>),
+    reason=<span class="tk-str">"Requiere PostgreSQL y DATABASE_URL definida"</span>,
+)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">primer_producto</span>(cliente):
+    html = cliente.get(<span class="tk-str">"/productos"</span>).text
+    coincidencia = re.search(<span class="tk-str">r'id="producto-(\d+)"'</span>, html)
+    <span class="tk-kw">if</span> coincidencia <span class="tk-kw">is</span> <span class="tk-kw">None</span>:
+        pytest.skip(<span class="tk-str">"No hay productos en la base"</span>)
+    <span class="tk-kw">return</span> coincidencia.group(<span class="tk-num">1</span>)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_borrar_producto_existente</span>():
+    <span class="tk-kw">from</span> main <span class="tk-kw">import</span> app
+
+    <span class="tk-kw">with</span> <span class="tk-cls">TestClient</span>(app) <span class="tk-kw">as</span> cliente:
+        producto_id = primer_producto(cliente)
+        respuesta = cliente.delete(<span class="tk-str">f"/productos/{</span>producto_id<span class="tk-str">}"</span>)
+        <span class="tk-kw">assert</span> respuesta.status_code == <span class="tk-num">200</span>
+        <span class="tk-kw">assert</span> <span class="tk-str">"Producto eliminado correctamente"</span> <span class="tk-kw">in</span> respuesta.text
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_borrar_dos_veces_devuelve_404</span>():
+    <span class="tk-kw">from</span> main <span class="tk-kw">import</span> app
+
+    <span class="tk-kw">with</span> <span class="tk-cls">TestClient</span>(app) <span class="tk-kw">as</span> cliente:
+        producto_id = primer_producto(cliente)
+        primera = cliente.delete(<span class="tk-str">f"/productos/{</span>producto_id<span class="tk-str">}"</span>)
+        <span class="tk-kw">assert</span> primera.status_code == <span class="tk-num">200</span>
+
+        segunda = cliente.delete(<span class="tk-str">f"/productos/{</span>producto_id<span class="tk-str">}"</span>)
+        <span class="tk-kw">assert</span> segunda.status_code == <span class="tk-num">404</span>
+        <span class="tk-kw">assert</span> <span class="tk-str">"No se encontró"</span> <span class="tk-kw">in</span> segunda.text
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_id_invalido_devuelve_422</span>():
+    <span class="tk-kw">from</span> main <span class="tk-kw">import</span> app
+
+    <span class="tk-kw">with</span> <span class="tk-cls">TestClient</span>(app) <span class="tk-kw">as</span> cliente:
+        respuesta = cliente.delete(<span class="tk-str">"/productos/abc"</span>)
+        <span class="tk-kw">assert</span> respuesta.status_code == <span class="tk-num">422</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el producto de prueba tiene que ser borrable</span>
+    <p>
+      Si el primer producto de la lista tiene pedidos, la prueba de borrado exitoso recibirá
+      <code>409</code> y fallará. Usa un producto sin pedidos o prepara datos de prueba limpios
+      antes de ejecutar la suite. La prueba de conflicto se hace aparte, creando un pedido para un
+      producto concreto.
+    </p>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — la prueba no puede usar el mismo producto dos veces</span>
+    <p>
+      <code>test_borrar_producto_existente</code> y <code>test_borrar_dos_veces</code> toman el
+      primer producto de la lista. Si se ejecutan en orden, el primero borra el producto y el
+      segundo toma otro. Si la base se queda sin productos, las pruebas se saltan con un mensaje
+      claro. En un proyecto real se crearían productos de prueba en una transacción y se
+      revertirían al final.
+    </p>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — la confirmación no se prueba con TestClient</span>
+    <p>
+      <code>hx-confirm</code> vive en el navegador. <code>TestClient</code> no muestra el cuadro ni
+      puede simular que el usuario cancela: envía la petición directamente. La confirmación se
+      verifica manualmente en la pestaña <em>Network</em>. Lo que sí se prueba en el servidor es
+      que un <code>DELETE</code> sin fila responde <code>404</code> y no un falso éxito.
+    </p>
+  </div>
+
+  <h3>7.3 · Rúbrica de autoevaluación</h3>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación del borrado</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Confirmación</td>
+          <td>El botón borra sin preguntar</td>
+          <td>Pregunta, pero el mensaje no identifica el producto</td>
+          <td><code>hx-confirm</code> con el nombre y cancelar sin petición</td>
+        </tr>
+        <tr>
+          <td>DELETE</td>
+          <td>Concatena el id en el SQL</td>
+          <td>Parametrizado, pero borra por nombre o sin <code>WHERE</code></td>
+          <td><code>DELETE ... WHERE id = $1</code> y resultado booleano</td>
+        </tr>
+        <tr>
+          <td>Éxito</td>
+          <td>Siempre responde <code>200</code></td>
+          <td>Responde <code>200</code> sin comprobar <code>DELETE 1</code></td>
+          <td>Solo responde éxito si se borró una fila</td>
+        </tr>
+        <tr>
+          <td>Ausencia</td>
+          <td><code>500</code></td>
+          <td><code>404</code> sin fragmento</td>
+          <td><code>404</code> con el aviso en la fila</td>
+        </tr>
+        <tr>
+          <td>Integridad</td>
+          <td>No hay clave foránea ni captura</td>
+          <td>Hay FK, pero el error llega como <code>500</code></td>
+          <td><code>RestrictViolationError</code>/<code>ForeignKeyViolationError</code> → <code>409</code> con explicación</td>
+        </tr>
+        <tr>
+          <td>Doble clic</td>
+          <td>Se puede enviar varias veces</td>
+          <td>Se deshabilita, pero no se nota</td>
+          <td>Botón deshabilitado y una sola petición</td>
+        </tr>
+        <tr>
+          <td>Pruebas</td>
+          <td>No hay o no arrancan</td>
+          <td>Cubren solo el borrado exitoso</td>
+          <td>Éxito, repetición <code>404</code> y ruta inválida pasan</td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay nada escrito</td>
+          <td>Describe el qué, no el porqué</td>
+          <td>Estrategia, motivo, qué se pierde y qué se conserva</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.4 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>Borrar es la única operación del CRUD que no se puede corregir con otra operación: la confirmación es parte del diseño.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p><code>hx-confirm</code> pregunta en el navegador; si el usuario cancela, el servidor no recibe nada.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>El <code>DELETE</code> se identifica por la clave primaria y usa <code>$1</code>; nunca por el nombre ni por concatenación.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p><code>DELETE 1</code> es éxito; <code>DELETE 0</code> es <code>404</code>. Responder <code>200</code> a los dos es un falso éxito.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p>Las claves foráneas protegen el historial; una violación se traduce en <code>409</code>, no en <code>500</code>.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p>Si el historial importa, se archiva con <code>deleted_at</code> o con una tabla de auditoría antes de borrar.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p>La interfaz debe contar lo que pasó: éxito solo si se borró, <code>404</code> si no estaba y <code>409</code> si dependía de otro registro.</p>
+    </div>
+  </div>
+
+  <h3>7.5 · Puente hacia la próxima clase</h3>
+
+  <p>
+    Has cerrado las cuatro operaciones del CRUD: crear, leer, actualizar y eliminar. Lo que sigue
+    es llevar ese conjunto a un proyecto completo, con varias tablas relacionadas, permisos y un
+    flujo de trabajo que otra persona pueda mantener.
+  </p>
+
+  <ol>
+    <li>
+      <strong>Relaciones más ricas.</strong> Un producto con pedidos, un autor con libros, una
+      venta con líneas. Las claves foráneas y las transacciones son el pegamento.
+    </li>
+    <li>
+      <strong>Permisos.</strong> No todos los usuarios pueden borrar. La ruta necesita saber quién
+      llama y qué rol tiene antes de ejecutar el <code>DELETE</code>.
+    </li>
+    <li>
+      <strong>Migraciones.</strong> Cambiar el esquema —agregar <code>deleted_at</code>, una tabla
+      de auditoría— se hace con migraciones versionadas, no con un <code>ALTER</code> copiado a
+      mano en producción.
+    </li>
+  </ol>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de la próxima clase</span>
+    <p>
+      Deja el proyecto con el borrado funcionando, las pruebas en verde y una decisión escrita:
+      ¿borras de verdad o archivas con <code>deleted_at</code>? Comprueba que cancelar no envía
+      nada, que el segundo borrado responde <code>404</code> y que un producto con pedidos responde
+      <code>409</code>.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 13</h2>
+    <p>
+      Has cerrado el CRUD: crear, leer, actualizar y eliminar. El borrado te obligó a pensar en lo
+      que no se puede deshacer, en lo que depende de un registro y en la diferencia entre decir
+      «listo» y decir la verdad. Esa es la última pieza del catálogo, y la primera regla de
+      cualquier aplicación que guarde datos de personas.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: Errores y confirmaciones</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 13 · Eliminación de registros</span>
+  <p class="pie-sub">Confirmación · hx-delete · DELETE parametrizado · Integridad · 404 · 409 · Borrado lógico</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
