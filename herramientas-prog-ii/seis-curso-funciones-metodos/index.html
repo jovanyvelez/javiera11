@@ -1,0 +1,2356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 6 · Funciones y métodos: escribir una vez, usar mil veces</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 6 · <em>Funciones y métodos: escribir una vez, usar mil veces</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura y programa</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">La anatomía de una función</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">El paso de parámetros</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">El retorno de valores</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Ejercicio: partir el informe</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Ejercicio: de función a método</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: biblioteca.py</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> un módulo <code>biblioteca.py</code> con funciones puras y una clase <code>Prestamo</code>, listo para que el servidor los use.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>La misma lógica, <em>escrita tres veces</em></h2>
+    <p class="proposito">
+      La clase anterior te dio el motor: los bucles recorren los datos y los contadores los cuentan.
+      Pero aquel programa tenía un defecto invisible: la lógica de la multa estaba escrita dentro
+      del programa, en un solo lugar. Esta clase le da la pieza que convierte ese programa en algo
+      que se puede <strong>mantener</strong>: las <strong>funciones</strong>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: diagnóstico de código repetido</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · La regla que hoy se rompe tres veces</h3>
+
+  <p class="primer-párrafo">
+    La biblioteca no tiene una multa: tiene <strong>muchas multas</strong>. En la pantalla del
+    registro, cuando un estudiante devuelve el libro. En el reporte del mes, cuando la
+    bibliotecaria cierra el archivo. En el correo de recordatorio, cuando avisa que el préstamo
+    lleva demasiado tiempo. Y dentro de cada una de esas pantallas hay la misma pregunta:
+    <em>¿cuánto se cobra por este retraso?</em>
+  </p>
+
+  <p>
+    Hoy, esa pregunta está resuelta tres veces, con el mismo cálculo escrito tres veces. Y la
+    tarifa se cambió el mes pasado —de 50 a 60 pesos por día—, así que el cálculo se tuvo que
+    cambiar tres veces también. La tercera se olvidó.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la misma lógica, escrita tres veces</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># En la pantalla de registro</span>
+dias = <span class="tk-num">30</span>
+multa = dias * <span class="tk-num">50</span>
+<span class="tk-kw">if</span> multa &gt; <span class="tk-num">500</span>:
+    multa = <span class="tk-num">500</span>
+
+<span class="tk-cm"># En el reporte del mes</span>
+dias = <span class="tk-num">30</span>
+multa = dias * <span class="tk-num">50</span>
+<span class="tk-kw">if</span> multa &gt; <span class="tk-num">500</span>:
+    multa = <span class="tk-num">500</span>
+
+<span class="tk-cm"># En el correo de recordatorio</span>
+dias = <span class="tk-num">30</span>
+multa = dias * <span class="tk-num">60</span>      <span class="tk-cm"># ¡esta vez con 60!</span>
+<span class="tk-kw">if</span> multa &gt; <span class="tk-num">500</span>:
+    multa = <span class="tk-num">500</span></code></pre>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — repetir no es reutilizar</span>
+    <p>
+      <strong>Repetir</strong> es volver a escribir lo mismo. <strong>Reutilizar</strong> es que el
+      mismo texto del programa esté en un solo sitio y lo usen varios lugares. La diferencia no se
+      ve en el momento en que escribes: se ve el día que hay que cambiarlo. Con el código
+      repetido de arriba, cambiar la tarifa significa buscar tres lugares y acordarse de los tres. Con una
+      función, significa cambiar <strong>una línea</strong>.
+    </p>
+    <p>
+      Y hay un segundo efecto, más difícil de medir: el código repetido no se puede <em>probar</em>
+      por partes. Si la multa está escrita tres veces, no hay forma de comprobar «¿la multa de 30
+      días es 500?» sin ejecutar el programa entero. Si está en una función, basta con llamarla.
+    </p>
+  </div>
+
+  <h3>0.2 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Cuadro de unidades, tiempos y productos esperados</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura, programa y diagnóstico del código repetido</td><td>20 min</td><td>Lista de la lógica que está duplicada</td></tr>
+        <tr><td><strong>01</strong></td><td>La anatomía de una función: <code>def</code>, <code>return</code> y ámbito</td><td>30 min</td><td>La primera función, que devuelve en vez de imprimir</td></tr>
+        <tr><td><strong>02</strong></td><td>El paso de parámetros: posicionales, con nombre y por defecto</td><td>30 min</td><td>Una función con tres formas de llamarse</td></tr>
+        <tr><td><strong>03</strong></td><td>El retorno de valores: tuplas, <code>None</code> y contratos</td><td>30 min</td><td>Funciones con contrato escrito y probado</td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Ejercicio 5.1 · Partir el informe en funciones</td><td>35 min</td><td><code>biblioteca.py</code> y un <code>informe.py</code> que solo muestra</td></tr>
+        <tr><td><strong>06</strong></td><td>Ejercicio 6.1 · De función a método: la clase <code>Prestamo</code></td><td>35 min</td><td>Una clase con métodos, estáticos y de clase</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller integrador</td><td>45 min</td><td>Módulo <code>biblioteca.py</code> completo y servidor que lo consume</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.3 · La idea central de la clase</h3>
+
+  <p>
+    Una función es un <strong>bloque con nombre</strong> que hace un trabajo y te entrega el
+    resultado. Escribes el trabajo una vez; después lo llamas tantas veces como quieras, con datos
+    distintos cada vez.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la misma tarea, escrita de dos maneras</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># A mano: hay que escribir el cálculo cada vez</span>
+<span class="tk-fn">print</span>(<span class="tk-str">"Multa por 30 días: 500"</span>)
+<span class="tk-fn">print</span>(<span class="tk-str">"Multa por 3 días: 150"</span>)
+
+<span class="tk-cm"># Con una función: se escribe una vez y se llama con datos distintos</span>
+<span class="tk-kw">def</span> <span class="tk-fn">calcular_multa</span>(dias: <span class="tk-cls">int</span>, tarifa: <span class="tk-cls">int</span> = <span class="tk-num">50</span>, tope: <span class="tk-cls">int</span> = <span class="tk-num">500</span>) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">"""Devuelve la multa por un préstamo retrasado."""</span>
+    <span class="tk-kw">return</span> <span class="tk-fn">min</span>(dias * tarifa, tope)
+
+<span class="tk-fn">print</span>(<span class="tk-fn">calcular_multa</span>(<span class="tk-num">30</span>))
+<span class="tk-fn">print</span>(<span class="tk-fn">calcular_multa</span>(<span class="tk-num">3</span>))</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — una función es una promesa</span>
+    <p>
+      La línea <code>def calcular_multa(dias, tarifa=50, tope=500):</code> es una promesa: <em>«si me
+      das unos días, te devuelvo una multa»</em>. Quien lee el código no necesita saber si el
+      préstamo viene del registro, del reporte o del correo: eso es problema del <strong>dato</strong>,
+      no del cálculo. Es el mismo criterio con el que se escribe una función que no sabe cuántos
+      registros vendrán de la base de datos.
+    </p>
+  </div>
+
+  <h3>0.4 · Los datos con los que vas a trabajar</h3>
+
+  <p>
+    Todo el curso sigue usando el mismo archivo: los préstamos de un mes. Cada línea es un
+    préstamo, y los tres datos van separados por punto y coma. Copia el contenido en un archivo
+    llamado <code>prestamos.txt</code>, en la carpeta donde vas a trabajar.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>prestamos.txt — el archivo de datos del mes</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cls">Ana</span> <span class="tk-cls">Torres</span>;<span class="tk-cls">El</span> principito;<span class="tk-num">15</span>
+<span class="tk-cls">Luis</span> <span class="tk-cls">Díaz</span>;<span class="tk-cls">Cien</span> años de soledad;<span class="tk-num">30</span>
+<span class="tk-cls">Sara</span> <span class="tk-cls">Ríos</span>;<span class="tk-cls">El</span> principito;<span class="tk-num">7</span>
+<span class="tk-cls">Julián</span> <span class="tk-cls">Mora</span>;<span class="tk-cls">Pedro</span> <span class="tk-cls">Páramo</span>;<span class="tk-num">22</span>
+<span class="tk-cls">Ana</span> <span class="tk-cls">Torres</span>;<span class="tk-cls">Pedro</span> <span class="tk-cls">Páramo</span>;<span class="tk-num">9</span>
+<span class="tk-cls">Carla</span> <span class="tk-cls">Restrepo</span>;<span class="tk-cls">La</span> casa de los espíritus;<span class="tk-num">12</span>
+<span class="tk-cls">Mateo</span> <span class="tk-cls">Vidal</span>;<span class="tk-cls">Harry</span> <span class="tk-cls">Potter</span> y la piedra filosofal;<span class="tk-num">6</span>
+<span class="tk-cls">Sara</span> <span class="tk-cls">Ríos</span>;<span class="tk-cls">Cien</span> años de soledad;<span class="tk-num">18</span>
+<span class="tk-cls">Julián</span> <span class="tk-cls">Mora</span>;<span class="tk-cls">El</span> principito;<span class="tk-num">11</span>
+<span class="tk-cls">Carla</span> <span class="tk-cls">Restrepo</span>;<span class="tk-cls">Pedro</span> <span class="tk-cls">Páramo</span>;<span class="tk-num">25</span>
+<span class="tk-cls">Mateo</span> <span class="tk-cls">Vidal</span>;<span class="tk-cls">La</span> casa de los espíritus;<span class="tk-num">8</span>
+<span class="tk-cls">Ana</span> <span class="tk-cls">Torres</span>;<span class="tk-cls">Harry</span> <span class="tk-cls">Potter</span> y la piedra filosofal;<span class="tk-num">14</span>
+<span class="tk-cls">Sofía</span> <span class="tk-cls">Núñez</span>;<span class="tk-cls">El</span> principito;<span class="tk-num">6</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — preparar la carpeta de trabajo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Crear la carpeta y entrar en ella</span>
+<span class="tk-fn">mkdir</span> biblioteca
+<span class="tk-fn">cd</span> biblioteca
+
+<span class="tk-cm"># Comprobar que el archivo quedó bien guardado</span>
+<span class="tk-fn">cat</span> prestamos.txt</code></pre>
+  </div>
+
+  <h3>0.5 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito estas tres preguntas:</p>
+
+  <ol>
+    <li>¿Cuántas veces está escrita la lógica de la multa en tu programa de la clase 5?</li>
+    <li>Si mañana sube la tarifa de 50 a 60 pesos, ¿cuántos lugares del código tienes que tocar?</li>
+    <li>¿Qué parte de tu programa de la clase 5 está haciendo dos cosas a la vez?</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: la anatomía de una función →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — LA ANATOMÍA DE UNA FUNCIÓN
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · El bloque con nombre</div>
+    <h2>La anatomía de una <em>función</em></h2>
+    <p class="proposito">
+      Cuatro piezas y ninguna más: el nombre, los parámetros, el cuerpo y el <code>return</code>.
+      Esta unidad las presenta una por una y explica la diferencia que decide el resto del
+      curso: <em>una función que devuelve no es lo mismo que una función que imprime</em>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: la primera función que devuelve</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · La primera función</h3>
+
+  <p class="primer-párrafo">
+    Una función se escribe con la palabra <code>def</code>, el nombre, los paréntesis con los
+    parámetros, dos puntos y el cuerpo sangrado. No hay nada mágico: es un bloque con nombre.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la anatomía de una función</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">saludar</span>(nombre: <span class="tk-cls">str</span>) -&gt; <span class="tk-cls">str</span>:
+    <span class="tk-str">"""Devuelve un saludo con el nombre recibido."""</span>
+    saludo = <span class="tk-fn">f</span><span class="tk-str">"Hola, {nombre}"</span>
+    <span class="tk-kw">return</span> saludo</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt>La palabra <code>def</code></dt>
+      <dd>Significa «definición»: a partir de aquí empieza el bloque de la función. Todo lo que está sangrado debajo forma su cuerpo.</dd>
+    </div>
+    <div>
+      <dt>El nombre</dt>
+      <dd>Es el identificador con el que se la llama después. Elija un nombre que diga qué hace: <code>calcular_multa</code> es mejor que <code>cosas</code>.</dd>
+    </div>
+    <div>
+      <dt>Los parámetros</dt>
+      <dd>Los nombres entre paréntesis. Son los datos que la función <em>necesita</em> para trabajar. Aquí, un nombre.</dd>
+    </div>
+    <div>
+      <dt>La anotación de salida</dt>
+      <dd>El <code>-&gt; str</code> dice qué tipo de dato devuelve. Python no lo obliga, pero ayuda a quien lee el código.</dd>
+    </div>
+    <div>
+      <dt>La cadena de documentación</dt>
+      <dd>El texto entre comillas triples, justo debajo. Explica en una frase qué hace la función. Es lo primero que se lee.</dd>
+    </div>
+    <div>
+      <dt>El <code>return</code></dt>
+      <dd>La salida. Entrega un valor y termina la función en ese punto.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — definir no es llamar</span>
+    <p>
+      Escribir la función no la ejecuta: solo la <strong>registra</strong> con su nombre. El programa
+      sigue exactamente igual hasta que alguien la llama escribiendo su nombre y sus argumentos.
+      Por eso puedes definir veinte funciones y no usar ninguna: el programa no se quejará.
+    </p>
+  </div>
+
+  <h3>1.2 · Cómo se llama una función</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — definir, llamar, guardar el resultado</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">saludar</span>(nombre: <span class="tk-cls">str</span>) -&gt; <span class="tk-cls">str</span>:
+    <span class="tk-str">"""Devuelve un saludo con el nombre recibido."""</span>
+    <span class="tk-kw">return</span> <span class="tk-fn">f</span><span class="tk-str">"Hola, {nombre}"</span>
+
+mensaje = <span class="tk-fn">saludar</span>(<span class="tk-str">"Sara"</span>)
+<span class="tk-fn">print</span>(mensaje)
+
+<span class="tk-fn">print</span>(<span class="tk-fn">saludar</span>(<span class="tk-str">"Julián"</span>))
+<span class="tk-fn">print</span>(<span class="tk-fn">saludar</span>(<span class="tk-str">"Ana"</span>))</code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — uv run python saludo.py</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">uv run python saludo.py</div>
+      <div class="consola-salida">Hola, Sara</div>
+      <div class="consola-salida">Hola, Julián</div>
+      <div class="consola-salida">Hola, Ana</div>
+    </div>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — el nombre de la función es su documentación</span>
+    <p>
+      Cuando leas el programa dentro de seis meses, no vas a leer el cuerpo de la función: vas a
+      leer su <strong>firma</strong> y su <strong>llamada</strong>. Si el nombre dice lo que hace
+      —<code>calcular_multa</code>, <code>total_dias</code>, <code>generar_informe</code>—, ya
+      sabes el80 % de lo que hace sin abrirla. Por eso en Python se usan verbos y frases cortas en
+      <code>snake_case</code>: <code>escribir_linea</code>, <code>buscar_estudiante</code>.
+    </p>
+  </div>
+
+  <h3>1.3 · Imprimir o devolver: la diferencia que decide todo</h3>
+
+  <p>
+    Esta es la idea más importante de la clase. Hay dos maneras de dejar un resultado: <strong>imprimirlo</strong>
+    o <strong>devolverlo</strong>. Las dos se ven iguales en la pantalla la primera vez, y se
+    comportan de forma completamente distinta en cuanto el programa crece.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la función que imprime y la función que devuelve</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">calcular_multa</span>(dias: <span class="tk-cls">int</span>, tarifa: <span class="tk-cls">int</span> = <span class="tk-num">50</span>, tope: <span class="tk-cls">int</span> = <span class="tk-num">500</span>) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">"""Devuelve la multa por un préstamo retrasado."""</span>
+    <span class="tk-kw">return</span> <span class="tk-fn">min</span>(dias * tarifa, tope)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">mostrar_multa</span>(dias: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">None</span>:
+    <span class="tk-str">"""Imprime la multa. No devuelve nada."""</span>
+    <span class="tk-fn">print</span>(<span class="tk-fn">f</span><span class="tk-str">"Multa por {dias} días: {calcular_multa(dias)}"</span>)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">obtener_multa</span>(dias: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">"""Devuelve la multa para poder guardarla o sumarla."""</span>
+    <span class="tk-kw">return</span> <span class="tk-fn">calcular_multa</span>(dias)
+
+
+<span class="tk-fn">mostrar_multa</span>(<span class="tk-num">30</span>)
+total = <span class="tk-fn">obtener_multa</span>(<span class="tk-num">30</span>)
+total += <span class="tk-fn">obtener_multa</span>(<span class="tk-num">5</span>)
+<span class="tk-fn">print</span>(<span class="tk-fn">f</span><span class="tk-str">"Total: {total}"</span>)</code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — uv run python multas.py</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">uv run python multas.py</div>
+      <div class="consola-salida">Multa por 30 días: 500</div>
+      <div class="consola-salida">Total: 750</div>
+    </div>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Imprimir y devolver no son intercambiables</caption>
+      <thead>
+        <tr><th></th><th>Función que <strong>imprime</strong></th><th>Función que <strong>devuelve</strong></th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Qué produce</td>
+          <td>Texto en la pantalla</td>
+          <td>Un valor que puedes guardar</td>
+        </tr>
+        <tr>
+          <td>Se puede sumar</td>
+          <td>No: <code>mostrar_multa(30)</code> vale <code>None</code></td>
+          <td>Sí: <code>obtener_multa(30) + 5</code></td>
+        </tr>
+        <tr>
+          <td>Se puede probar</td>
+          <td>Casi no: hay que mirar la pantalla</td>
+          <td>Sí: se compara con el valor esperado</td>
+        </tr>
+        <tr>
+          <td>Dónde va el resultado</td>
+          <td>Solo a la terminal</td>
+          <td>A donde tú quieras: variable, archivo, web</td>
+        </tr>
+        <tr>
+          <td>Se puede reutilizar</td>
+          <td>No: queda atada a la pantalla</td>
+          <td>Sí: es el objeto de la reutilización</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — la función que imprime y devuelve a la vez</span>
+    <p>
+      Es tentador escribir una función que imprima el resultado <em>y</em> que además lo devuelva.
+      Funciona, pero rompe la regla que estás aprendiendo: si la función imprime, ya decidió dónde
+      va el resultado, y el lugar que la llama no puede elegir otro. Escribe <strong>una función,
+      una tarea</strong>: o calcula y devuelve, o muestra. Si más adelante hace falta mostrar, se
+      llama a la que devuelve desde el sitio que decide mostrar.
+    </p>
+  </div>
+
+  <h3>1.4 · El ámbito: lo de dentro y lo de fuera</h3>
+
+  <p>
+    Una función tiene su propio mundo. Las variables que se crean dentro de ella <strong>solo
+    existen dentro</strong>: se llaman variables locales. Al terminar la función, desaparecen.
+    Por eso dos funciones pueden usar la misma variable de nombre sin interferir.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — una constante global y una variable local</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>TARIFA = <span class="tk-num">50</span>   <span class="tk-cm"># constante del módulo: visible para todos</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">multa_con_global</span>(dias: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">"""Usa la tarifa del módulo."""</span>
+    <span class="tk-kw">return</span> dias * TARIFA
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">multa_con_local</span>(dias: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">"""Usa su propia tarifa, que desaparece al terminar."""</span>
+    tarifa = <span class="tk-num">60</span>
+    <span class="tk-kw">return</span> dias * tarifa
+
+
+<span class="tk-fn">print</span>(<span class="tk-fn">multa_con_global</span>(<span class="tk-num">10</span>))
+<span class="tk-fn">print</span>(<span class="tk-fn">multa_con_local</span>(<span class="tk-num">10</span>))</code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — uv run python ambito.py</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">uv run python ambito.py</div>
+      <div class="consola-salida">500</div>
+      <div class="consola-salida">600</div>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — modificar una variable de fuera es un caso especial</span>
+    <p>
+      Leer una constante global está bien. <strong>Cambiarla</strong> es otra historia: Python
+      exige que declares que te refieres a la de fuera con la palabra <code>global</code>. Y
+      aunque funcione, es una mala idea casi siempre, porque cualquier parte del programa podría
+      cambiar el valor sin que nadie lo note. Si necesitas «contar» algo, devuélvelo y que lo
+      guarde quien llama.
+    </p>
+  </div>
+
+  <h3>1.5 · El orden de las cosas y el bloque <code>main()</code></h3>
+
+  <p>
+    Las funciones se definen <strong>antes</strong> de usarse. Y el programa tiene una puerta de
+    entrada, que es la convención de Python: <code>if __name__ == "__main__":</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la estructura de un programa con funciones</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">calcular_multa</span>(dias: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">"""Devuelve la multa por un préstamo retrasado."""</span>
+    <span class="tk-kw">return</span> <span class="tk-fn">min</span>(dias * <span class="tk-num">50</span>, <span class="tk-num">500</span>)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">main</span>() -&gt; <span class="tk-cls">None</span>:
+    <span class="tk-str">"""El programa principal: aquí sí se muestra."""</span>
+    prestamos = [<span class="tk-num">30</span>, <span class="tk-num">7</span>, <span class="tk-num">22</span>]
+    <span class="tk-kw">for</span> dias <span class="tk-kw">in</span> prestamos:
+        <span class="tk-fn">print</span>(<span class="tk-fn">f</span><span class="tk-str">"{dias} días -&gt; {calcular_multa(dias)}"</span>)
+
+
+<span class="tk-kw">if</span> __name__ == <span class="tk-str">"__main__"</span>:
+    <span class="tk-fn">main</span>()</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — por qué el <code>main()</code> con esa puerta</span>
+    <p>
+      <code>__name__</code> vale <code>"__main__"</code> solo cuando ejecutas el archivo
+      directamente. Si otro archivo hace <code>import informe</code>, el código se carga pero
+      <code>main()</code> <strong>no</strong> se ejecuta. Ese detalle es exactamente lo que hace
+      posible la reutilización: tu módulo puede tener funciones que se importan sin arrancar
+      nada. En el taller final lo vas a ver funcionando.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué hace <code>return</code> dentro de una función?</p>
+      <button class="opcion" data-op="a">Imprime el valor en la pantalla</button>
+      <button class="opcion" data-op="b">Entrega el valor a quien la llamó y termina la función</button>
+      <button class="opcion" data-op="c">Guarda el valor en una variable global</button>
+      <button class="opcion" data-op="d">Repite la función con el valor devuelto</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Cuál es la diferencia entre una función que imprime y una que devuelve?</p>
+      <button class="opcion" data-op="a">Ninguna: se escriben igual</button>
+      <button class="opcion" data-op="b">La que imprime es más rápida</button>
+      <button class="opcion" data-op="c">La que devuelve no se puede usar dentro de un <code>print</code></button>
+      <button class="opcion" data-op="d">La que devuelve entrega un valor que se puede guardar y usar; la que imprime solo escribe en la pantalla</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> Una variable creada dentro de una función, ¿dónde existe?</p>
+      <button class="opcion" data-op="a">Solo dentro de esa función: es una variable local</button>
+      <button class="opcion" data-op="b">En todo el programa, desde que se crea</button>
+      <button class="opcion" data-op="c">En el archivo, pero solo si se usa <code>global</code></button>
+      <button class="opcion" data-op="d">Depende de si la función es larga o corta</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Para qué sirve <code>if __name__ == "__main__":</code>?</p>
+      <button class="opcion" data-op="a">Para que el programa se ejecute más rápido</button>
+      <button class="opcion" data-op="b">Para declarar las constantes del módulo</button>
+      <button class="opcion" data-op="c">Para que el bloque solo corra al ejecutar el archivo, y no al importarlo</button>
+      <button class="opcion" data-op="d">Para terminar el programa cuando hay un error</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: el paso de parámetros →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — EL PASO DE PARÁMETROS
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · La entrada</div>
+    <h2>El paso de <em>parámetros</em></h2>
+    <p class="proposito">
+      Una función que no recibe datos hace siempre lo mismo. Esta unidad explica las tres formas
+      de pasarle datos: <strong>por posición</strong>, <strong>con nombre</strong> y <strong>por
+      defecto</strong>— y por qué la última es la que hace que una función se pueda reutilizar en
+      lugares distintos.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: una función con tres formas de llamarse</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · Parámetros posicionales</h3>
+
+  <p class="primer-párrafo">
+    La forma más simple: se escriben los datos en el orden en que la función los espera. El primer
+    valor que escribes es el primer parámetro, el segundo es el segundo, y así.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — parámetros posicionales</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">calcular_multa</span>(dias: <span class="tk-cls">int</span>, tarifa: <span class="tk-cls">int</span> = <span class="tk-num">50</span>, tope: <span class="tk-cls">int</span> = <span class="tk-num">500</span>) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">"""Devuelve la multa por un préstamo retrasado."""</span>
+    <span class="tk-kw">return</span> <span class="tk-fn">min</span>(dias * tarifa, tope)
+
+
+<span class="tk-fn">print</span>(<span class="tk-fn">calcular_multa</span>(<span class="tk-num">3</span>))              <span class="tk-cm"># 3 días, tarifa 50</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">calcular_multa</span>(<span class="tk-num">3</span>, <span class="tk-num">60</span>))          <span class="tk-cm"># 3 días, tarifa 60</span></code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el orden importa y no se nota</span>
+    <p>
+      Si la función espera <code>(dias, tarifa)</code> y tú escribes <code>calcular_multa(60, 3)</code>,
+      Python no protestará: le has dicho que hay 60 días y una tarifa de 3. El resultado será un
+      número, pero será el número equivocado. Estos son los errores más difíciles de encontrar,
+      porque el programa <strong>funciona</strong>.
+    </p>
+  </div>
+
+  <h3>2.2 · Parámetros con nombre</h3>
+
+  <p>
+    La segunda forma es más segura: se escribe el nombre del parámetro junto al valor. El orden
+    deja de importar, y quien lee la llamada sabe qué número es cuál.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — parámetros con nombre</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-fn">print</span>(<span class="tk-fn">calcular_multa</span>(dias=<span class="tk-num">3</span>, tarifa=<span class="tk-num">60</span>))
+<span class="tk-fn">print</span>(<span class="tk-fn">calcular_multa</span>(dias=<span class="tk-num">3</span>, tope=<span class="tk-num">100</span>))</code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — uv run python parametros.py</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">uv run python parametros.py</div>
+      <div class="consola-salida">150</div>
+      <div class="consola-salida">180</div>
+      <div class="consola-salida">180</div>
+      <div class="consola-salida">100</div>
+    </div>
+  </div>
+
+  <h3>2.3 · Parámetros por defecto</h3>
+
+  <p>
+    La tercera forma es la que hace posible la reutilización. Un parámetro con valor por defecto
+    se puede <strong>omitir</strong> al llamar: la función usa ese valor. Y el valor por defecto
+    puede cambiarse, sin tocar el cuerpo de la función.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las cuatro llamadas a la misma función</caption>
+      <thead>
+        <tr><th>La llamada</th><th><code>dias</code></th><th><code>tarifa</code></th><th><code>tope</code></th><th>Devuelve</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>calcular_multa(3)</code></td><td>3</td><td>50</td><td>500</td><td>150</td></tr>
+        <tr><td><code>calcular_multa(3, 60)</code></td><td>3</td><td>60</td><td>500</td><td>180</td></tr>
+        <tr><td><code>calcular_multa(dias=3, tarifa=60)</code></td><td>3</td><td>60</td><td>500</td><td>180</td></tr>
+        <tr><td><code>calcular_multa(3, tope=100)</code></td><td>3</td><td>50</td><td>100</td><td>100</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — el valor por defecto es una decisión de negocio</span>
+    <p>
+      ¿Por qué <code>tarifa=50</code> y no <code>tarifa=60</code>? Porque 50 es el valor que la
+      biblioteca usa <em>hoy</em>. El día que suba a 60, se cambia <strong>una línea</strong> — y
+      todos los que llamaban a la función sin especificar tarifa se actualizan solos. Si la
+      tarifa estuviera escrita en el cuerpo de la función, habría que buscarla en cada sitio.
+    </p>
+  </div>
+
+  <h3>2.4 · Las reglas de los parámetros</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las reglas del orden de los parámetros</caption>
+      <thead>
+        <tr><th>Regla</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Los parámetros <strong>sin</strong> valor por defecto van <strong>primero</strong></td>
+          <td><code>def f(dias, tarifa=50)</code> es válido; <code>def f(tarifa=50, dias)</code> no lo es</td>
+        </tr>
+        <tr>
+          <td>Los parámetros <strong>con</strong> valor por defecto van <strong>al final</strong></td>
+          <td>Si no, Python no sabría dónde termina la lista de obligatorios</td>
+        </tr>
+        <tr>
+          <td>Al llamar, o se usa <strong>todos</strong> posicionales o <strong>todos</strong> con nombre</td>
+          <td><code>f(3, 60)</code> o <code>f(dias=3, tarifa=60)</code>, pero no <code>f(3, tarifa=60)</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — los parámetros sin valor por defecto son obligatorios</span>
+    <p>
+      Si un parámetro no tiene valor por defecto, <strong>hay que darlo</strong> al llamar. Si te
+      olvidas, Python responde con un <code>TypeError</code> que dice exactamente qué falta:
+      <code>calcular_multa() missing 1 required positional argument: 'dias'</code>. Ese mensaje es
+      tu amigo: te dice qué parámetro no llegó y en qué forma se esperaba.
+    </p>
+  </div>
+
+  <h3>2.5 · <code>*args</code> y <code>**kwargs</code>: cuando la cantidad no es fija</h3>
+
+  <p>
+    A veces no sabes de antemano cuántos datos llegan: la suma de una lista de días, o un conjunto
+    de campos que arma el usuario. Python tiene dos herramientas para eso.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — cantidad variable de argumentos</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">sumar</span>(*valores: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">"""Suma todos los valores recibidos, sean los que sean."""</span>
+    <span class="tk-kw">return</span> <span class="tk-fn">sum</span>(valores)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">tarjeta</span>(**campos: <span class="tk-cls">str</span>) -&gt; <span class="tk-cls">str</span>:
+    <span class="tk-str">"""Construye una tarjeta con los campos recibidos."""</span>
+    <span class="tk-kw">return</span> <span class="tk-str">" | "</span>.<span class="tk-fn">join</span>(<span class="tk-fn">f</span><span class="tk-str">"{clave}: {valor}"</span> <span class="tk-kw">for</span> clave, valor <span class="tk-kw">in</span> campos.<span class="tk-fn">items</span>())
+
+
+<span class="tk-fn">print</span>(<span class="tk-fn">sumar</span>(<span class="tk-num">1</span>, <span class="tk-num">2</span>, <span class="tk-num">3</span>))            <span class="tk-cm"># 6</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">sumar</span>())                          <span class="tk-cm"># 0</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">sumar</span>(<span class="tk-num">10</span>, <span class="tk-num">20</span>, <span class="tk-num">30</span>, <span class="tk-num">40</span>))     <span class="tk-cm"># 100</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">tarjeta</span>(titulo=<span class="tk-str">"El principito"</span>, autor=<span class="tk-str">"Saint-Exupéry"</span>))</code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — uv run python variables.py</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">uv run python variables.py</div>
+      <div class="consola-salida">6</div>
+      <div class="consola-salida">0</div>
+      <div class="consola-salida">100</div>
+      <div class="consola-salida">titulo: El principito | autor: Saint-Exupéry</div>
+    </div>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — <code>*args</code> no es un comodín de uso libre</span>
+    <p>
+      Que exista no significa que haya que usarla. Una función con <code>*args</code> no dice
+      nada sobre qué espera: puede recibir dos valores o doscientos, y quien la llama no tiene
+      forma de saberlo. Úsala solo cuando la cantidad de datos sea <strong>de verdad</strong>
+      variable (una lista de días, un formulario con campos libres). Para todo lo demás, dos o
+      tres parámetros con nombre se leen mucho mejor.
+    </p>
+  </div>
+
+  <h3>2.6 · Qué información merece un parámetro</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>De la firma se deduce el uso de la función</caption>
+      <thead>
+        <tr><th>Firma</th><th>Lo que comunica</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>calcular_multa(dias, tarifa=50)</code></td><td>Qué necesita y qué puede cambiar</td></tr>
+        <tr><td><code>calcular_multa(d, t=50)</code></td><td>Nada: hay que abrir el cuerpo para saber qué es <code>d</code></td></tr>
+        <tr><td><code>generar_informe(prestamos, limite=20)</code></td><td>Que devuelve un informe de esos préstamos</td></tr>
+        <tr><td><code>generar_informe(p)</code></td><td>Nada: <code>p</code> podría ser cualquier cosa</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — un parámetro que no se usa es un parámetro de más</span>
+    <p>
+      Si tu función recibe <code>estudiante</code> pero nunca lo usa, ese parámetro sobra: es ruido
+      que obliga a leer dos líneas para entender una. O lo usas (para escribir «Ana Torres debe…»),
+      o lo quitas. Una firma corta y honesta vale más que una firma completa e inflada.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué significa que un parámetro tenga valor por defecto?</p>
+      <button class="opcion" data-op="a">Que la función lo puede modificar por dentro</button>
+      <button class="opcion" data-op="b">Que es un parámetro opcional que se puede omitir al llamar</button>
+      <button class="opcion" data-op="c">Que se puede omitir al llamar y se usa ese valor si no se da otro</button>
+      <button class="opcion" data-op="d">Que siempre vale lo mismo y no se puede cambiar</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Por qué los parámetros con valor por defecto deben ir al final?</p>
+      <button class="opcion" data-op="a">Porque Python no sabría dónde termina la lista de parámetros obligatorios</button>
+      <button class="opcion" data-op="b">Porque es una regla de estilo, no un error</button>
+      <button class="opcion" data-op="c">Porque los parámetros opcionales no pueden tener anotación de tipo</button>
+      <button class="opcion" data-op="d">Porque así se ejecutan más rápido</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Cuál de estas llamadas está bien formada?</p>
+      <button class="opcion" data-op="a"><code>calcular_multa(3, 60)</code></button>
+      <button class="opcion" data-op="b"><code>calcular_multa(dias=3, 60)</code></button>
+      <button class="opcion" data-op="c"><code>calcular_multa(3, tarifa=60)</code></button>
+      <button class="opcion" data-op="d"><code>calcular_multa(dias=3, tarifa=60)</code></button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Cuándo conviene usar <code>*args</code>?</p>
+      <button class="opcion" data-op="a">Siempre: es la forma más moderna de escribir funciones</button>
+      <button class="opcion" data-op="b">Cuando la cantidad de datos recibidos es de verdad variable</button>
+      <button class="opcion" data-op="c">Cuando la función no tiene parámetros con nombre</button>
+      <button class="opcion" data-op="d">Nunca: Python ya tiene una forma mejor de hacerlo</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: La anatomía de una función</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: el retorno de valores →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — EL RETORNO DE VALORES
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · La salida</div>
+    <h2>El retorno de <em>valores</em></h2>
+    <p class="proposito">
+      Ya sabes que la función devuelve. Ahora la unidad trata de <strong>qué</strong> devuelve y
+      <strong>cómo se declara</strong> ese contrato: el conjunto de reglas que dicen qué entra,
+      qué sale y qué pasa en los casos raros. Un contrato escrito es la diferencia entre un
+      programa que se puede probar y uno que no.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: funciones con contrato y pruebas</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · <code>return</code>: la puerta de salida</h3>
+
+  <p class="primer-párrafo">
+    <code>return</code> entrega un valor y <strong>termina la función</strong> en ese punto. Todo lo
+    que esté escrito después, en esa función, no se ejecuta nunca.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — el return termina la función</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">clasificar</span>(dias: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">str</span>:
+    <span class="tk-str">"""Clasifica un préstamo por sus días."""</span>
+    <span class="tk-kw">if</span> dias &lt;= <span class="tk-num">5</span>:
+        <span class="tk-kw">return</span> <span class="tk-str">"en plazo"</span>
+    <span class="tk-kw">if</span> dias &lt;= <span class="tk-num">20</span>:
+        <span class="tk-str">"vuelve tarde pero no se multa"</span>
+        <span class="tk-kw">return</span> <span class="tk-str">"retrasado"</span>
+    <span class="tk-kw">return</span> <span class="tk-str">"muy retrasado"</span></code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el <code>return</code> que se olvidó</span>
+    <p>
+      En el fragmento de arriba hay una línea que no hace nada: <code>"vuelve tarde pero no se
+      multa"</code>. Es una cadena suelta, sin <code>return</code>, y Python la descarta en
+      silencio. La función sigue funcionando, pero el resultado para ese caso sería
+      <code>None</code> en vez de <code>"retrasado"</code>. Es el error más silencioso que hay:
+      el programa no se rompe, solo devuelve la respuesta equivocada.
+    </p>
+  </div>
+
+  <h3>3.2 · Devolver varios valores: la tupla</h3>
+
+  <p>
+    A veces una función produce dos o tres datos relacionados. Python los devuelve juntos, en una
+    <strong>tupla</strong>, y quien llama los separa al instante.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — una función que devuelve dos valores</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">calcular_multa</span>(dias: <span class="tk-cls">int</span>, tarifa: <span class="tk-cls">int</span> = <span class="tk-num">50</span>, tope: <span class="tk-cls">int</span> = <span class="tk-num">500</span>) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">"""Devuelve la multa por un préstamo retrasado."""</span>
+    <span class="tk-kw">return</span> <span class="tk-fn">min</span>(dias * tarifa, tope)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">evaluar_prestamo</span>(dias: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">tuple</span>[<span class="tk-cls">str</span>, <span class="tk-cls">int</span>]:
+    <span class="tk-str">"""Devuelve el estado del préstamo y la multa que corresponde."""</span>
+    <span class="tk-kw">if</span> dias &lt;= <span class="tk-num">5</span>:
+        <span class="tk-kw">return</span> (<span class="tk-str">"en plazo"</span>, <span class="tk-num">0</span>)
+    <span class="tk-kw">return</span> (<span class="tk-str">"retrasado"</span>, <span class="tk-fn">calcular_multa</span>(dias))
+
+
+estado, multa = <span class="tk-fn">evaluar_prestamo</span>(<span class="tk-num">30</span>)
+<span class="tk-fn">print</span>(<span class="tk-fn">f</span><span class="tk-str">"{estado}: {multa}"</span>)</code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — uv run python tupla.py</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">uv run python tupla.py</div>
+      <div class="consola-salida">retrasado: 500</div>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — devuelve la tupla, no sus partes</span>
+    <p>
+      <code>return ("retrasado", 500)</code> devuelve <strong>un</strong> dato: una tupla de dos
+      elementos. La línea <code>estado, multa = evaluar_prestamo(30)</code> es lo que la separa en
+      dos variables, y por eso a la izquierda hay dos nombres. Si te sobran o te faltan, Python te
+      avisa con <code>ValueError</code>.
+    </p>
+  </div>
+
+  <h3>3.3 · <code>None</code>: cuando no hay nada que devolver</h3>
+
+  <p>
+    Toda función devuelve algo, aunque no haya escrito <code>return</code>. Si no hay
+    <code>return</code>, Python devuelve <code>None</code> por su cuenta: el valor «nada».
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — una función que puede no encontrar nada</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">buscar_estudiante</span>(nombre: <span class="tk-cls">str</span>) -&gt; <span class="tk-cls">str</span> | <span class="tk-cls">None</span>:
+    <span class="tk-str">"""Devuelve el nombre completo, o None si no está en la lista."""</span>
+    <span class="tk-kw">if</span> nombre == <span class="tk-str">"Sara"</span>:
+        <span class="tk-kw">return</span> <span class="tk-str">"Sara Ríos"</span>
+    <span class="tk-kw">if</span> nombre == <span class="tk-str">"Julián"</span>:
+        <span class="tk-kw">return</span> <span class="tk-str">"Julián Mora"</span>
+    <span class="tk-kw">return</span> <span class="tk-cls">None</span>
+
+
+<span class="tk-fn">print</span>(<span class="tk-fn">buscar_estudiante</span>(<span class="tk-str">"Sara"</span>))     <span class="tk-cm"># Sara Ríos</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">buscar_estudiante</span>(<span class="tk-str">"Ana"</span>))      <span class="tk-cm"># None</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">buscar_estudiante</span>(<span class="tk-str">"Nadie"</span>))   <span class="tk-cm"># None</span></code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — uv run python ninguno.py</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">uv run python ninguno.py</div>
+      <div class="consola-salida">Sara Ríos</div>
+      <div class="consola-salida">None</div>
+      <div class="consola-salida">None</div>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — <code>None</code> no es lo mismo que una cadena vacía</span>
+    <p>
+      <code>None</code> significa «no hay valor». La cadena vacía <code>""</code> significa «hay un
+      valor, y es texto sin contenido». Esa diferencia importa al escribir la anotación de
+      salida: <code>-&gt; str | None</code> deja claro que el valor puede faltar, y quien use la
+      función sabrá que tiene que comprobarlo.
+    </p>
+  </div>
+
+  <h3>3.4 · El contrato de una función</h3>
+
+  <p>
+    Cuando una función está bien escrita, su <strong>contrato</strong> se puede leer sin ver su
+    cuerpo: qué recibe, qué devuelve y qué pasa con los casos raros. Ese contrato es lo que hace
+    que la función se pueda usar sin miedo.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>El contrato de <code>evaluar_prestamo(dias)</code></caption>
+      <thead>
+        <tr><th>Pregunta</th><th>Respuesta</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>¿Qué recibe?</td><td>Un entero: los días que lleva prestado el libro</td></tr>
+        <tr><td>¿Qué devuelve?</td><td>Una tupla con el estado (texto) y la multa (número)</td></tr>
+        <tr><td>¿Y si los días son negativos?</td><td>No está contemplado: es un dato inválido y lo decide quien llama</td></tr>
+        <tr><td>¿Imprime algo?</td><td>No. Imprimir es responsabilidad de quien la llama</td></tr>
+        <tr><td>¿Puede fallar?</td><td>No: no hay entradas de archivo ni de red</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — el contrato se escribe antes del cuerpo</span>
+    <p>
+      Cuando te pidan una función, escribe primero la frase que responde «¿qué recibe y qué
+      devuelve?» y la anotación de tipo. Solo después el cuerpo. Si no sabes qué devolver, es
+      que todavía no sabes qué tarea le estás pidiendo: ese es el momento de pensarlo, no de
+      programar a ciegas.
+    </p>
+  </div>
+
+  <h3>3.5 · Por qué devolver permite probar</h3>
+
+  <p>
+    Una función que devuelve un valor se puede comprobar <strong>sin mirarla</strong>. Se le da
+    una entrada, se compara la salida con lo que debería ser, y se sabe si funciona.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — comprobar una función con assert</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">def</span> <span class="tk-fn">sumar_dias</span>(dias: <span class="tk-cls">list</span>[<span class="tk-cls">int</span>]) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">"""Devuelve la suma de los días de la lista."""</span>
+    <span class="tk-kw">return</span> <span class="tk-fn">sum</span>(dias)
+
+
+<span class="tk-kw">assert</span> <span class="tk-fn">sumar_dias</span>([<span class="tk-num">1</span>, <span class="tk-num">2</span>, <span class="tk-num">3</span>]) == <span class="tk-num">6</span>
+<span class="tk-kw">assert</span> <span class="tk-fn">sumar_dias</span>([]) == <span class="tk-num">0</span>
+<span class="tk-kw">assert</span> <span class="tk-fn">sumar_dias</span>([<span class="tk-num">30</span>]) == <span class="tk-num">30</span>
+<span class="tk-fn">print</span>(<span class="tk-str">"Todas las pruebas pasaron"</span>)</code></pre>
+  </div>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — uv run python pruebas.py</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">uv run python pruebas.py</div>
+      <div class="consola-salida">Todas las pruebas pasaron</div>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>assert</code> no es un <code>print</code></span>
+    <p>
+      Un <code>print</code> te dice lo que pasó; un <code>assert</code> te dice lo que <strong>tenía
+      que pasar</strong>. Si la comprobación falla, Python detiene el programa con un
+      <code>AssertionError</code> y te dice qué línea falló. Por eso la comprobación va
+      <em>antes</em> de escribir el código: primero la regla, después el cumplimiento.
+    </p>
+  </div>
+
+  <h3>3.6 · La regla de oro: una función, una tarea</h3>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — «calcular» y «mostrar» son dos tareas</span>
+    <p>
+      La tentación más fuerte al escribir funciones es hacerlas útiles de más: que lean el archivo,
+      que calculen, que formateen y que impriman, todo en un solo bloque. Funciona la primera vez.
+      La segunda vez, cuando alguien quiera usar <em>solo</em> el cálculo, no puede: el archivo se
+      lee, la pantalla se ensucia y el resultado no se puede guardar.
+    </p>
+    <p>
+      La regla que resuelve esto: <strong>una función hace una tarea y devuelve el resultado</strong>.
+      Si necesita leer datos, que los reciba como parámetro. Si necesita mostrarlos, que lo haga
+      quien la llama. Con esa regla, cada pieza se puede probar por separado y el programa se
+      puede armar como un rompecabezas.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué devuelve una función que no tiene ningún <code>return</code>?</p>
+      <button class="opcion" data-op="a">Una cadena vacía</button>
+      <button class="opcion" data-op="b"><code>None</code></button>
+      <button class="opcion" data-op="c">Un error</button>
+      <button class="opcion" data-op="d">El valor del último <code>print</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué ventaja tiene que una función devuelva una tupla?</p>
+      <button class="opcion" data-op="a">Ocupa menos memoria</button>
+      <button class="opcion" data-op="b">Se puede imprimir más rápido</button>
+      <button class="opcion" data-op="c">Evita el uso de <code>return</code></button>
+      <button class="opcion" data-op="d">Puede entregar varios datos relacionados que se separan al instante</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué es el contrato de una función?</p>
+      <button class="opcion" data-op="a">La promesa de qué recibe, qué devuelve y qué ocurre en los casos raros</button>
+      <button class="opcion" data-op="b">La lista de las variables globales que usa</button>
+      <button class="opcion" data-op="c">El texto que aparece en la documentación del editor</button>
+      <button class="opcion" data-op="d">El orden en que se declaran sus parámetros</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Por qué conviene que las funciones devuelvan en vez de imprimir?</p>
+      <button class="opcion" data-op="a">Porque el <code>print</code> ya no existe en Python 3</button>
+      <button class="opcion" data-op="b">Porque imprimir es más lento</button>
+      <button class="opcion" data-op="c">Porque el valor devuelto se puede guardar, comprobar y reutilizar</button>
+      <button class="opcion" data-op="d">Porque las funciones que devuelven son más cortas</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: El paso de parámetros</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de lectura</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija por
+      escrito lo que has leído hasta ahora.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora.
+    </p>
+
+    <div class="reglas">
+      <div class="regla">
+        <h4>Regla 20-20-20</h4>
+        <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+      </div>
+      <div class="regla">
+        <h4>Movimiento</h4>
+        <p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p>
+      </div>
+      <div class="regla">
+        <h4>Hidratación</h4>
+        <p>Un vaso de agua. La lectura densa agota más de lo que parece.</p>
+      </div>
+      <div class="regla">
+        <h4>Bitácora</h4>
+        <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora de lectura (5 minutos)</h3>
+
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿qué diferencia hay entre una función que imprime y una que devuelve?</li>
+    <li><strong>En una frase:</strong> ¿qué ventaja tiene un parámetro con valor por defecto?</li>
+    <li><strong>En una frase:</strong> ¿qué es el ámbito de una función?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+
+  <p>
+    Estas siete palabras aparecerán en el taller final. Léelas ahora; las definiciones son
+    aproximadas y se afinarán en las unidades siguientes.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>Función</dt>
+      <dd>Bloque con nombre que hace un trabajo y devuelve un resultado. Se define con <code>def</code>.</dd>
+    </div>
+    <div>
+      <dt>Parámetro</dt>
+      <dd>Dato que la función necesita para trabajar. Es el nombre que va en la definición.</dd>
+    </div>
+    <div>
+      <dt>Argumento</dt>
+      <dd>El valor concreto que se le pasa al llamar. Parámetro es lo que se pide; argumento es lo que se da.</dd>
+    </div>
+    <div>
+      <dt>Retorno</dt>
+      <dd>El valor que la función entrega con <code>return</code>. Termina la función en ese punto.</dd>
+    </div>
+    <div>
+      <dt>Ámbito</dt>
+      <dd>La zona donde un nombre existe. Las variables creadas dentro de una función son locales.</dd>
+    </div>
+    <div>
+      <dt>Método</dt>
+      <dd>Una función que vive dentro de una clase y recibe el propio objeto en el parámetro <code>self</code>.</dd>
+    </div>
+    <div>
+      <dt>Reutilizar</dt>
+      <dd>Usar el mismo texto del programa desde varios sitios, escribiéndolo una sola vez.</dd>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: El retorno de valores</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Ejercicio práctico →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — EJERCICIO: PARTIR EL INFORME EN FUNCIONES
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · Taller de aplicación</div>
+    <h2>Ejercicio 5.1 · <em>Partir el informe en funciones</em></h2>
+    <p class="proposito">
+      Tu <code>informe.py</code> de la clase 5 funciona, pero toda su lógica vive dentro de
+      <code>main()</code>. En 35 minutos lo partirás en un módulo de funciones puras y dejarás el
+      programa principal con tres líneas. Es la primera vez que el código de la clase se vuelve
+      <strong>reutilizable</strong>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: <code>biblioteca.py</code> y un <code>informe.py</code> que solo muestra</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>El módulo reutilizable de la biblioteca</h3>
+    </div>
+
+    <p>
+      La bibliotecaria ya tiene el archivo <code>prestamos.txt</code> y el programa
+      <code>informe.py</code> que lo procesa. Ese programa funciona, pero su lógica está
+      <strong>enterrada</strong>: todo ocurre dentro de <code>main()</code>. Eso significa que nadie
+      puede usar «el total de días» sin imprimir el informe entero.
+    </p>
+
+    <p>
+      Escribe un módulo nuevo, <code>biblioteca.py</code>, que contenga la lógica en funciones
+      sueltas, y deja <code>informe.py</code> como un programa que solo lee los datos, llama a las
+      funciones y muestra el resultado.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>El archivo <code>prestamos.txt</code>: una línea por préstamo, con tres datos separados por punto y coma</td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>El mismo informe que imprimía la clase 5, con los mismos números</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td><code>biblioteca.py</code> no imprime absolutamente nada: solo calcula y devuelve</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td><code>informe.py</code> importa lo que necesita con <code>from biblioteca import ...</code></td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Ninguna función de <code>biblioteca.py</code> lee el archivo por su cuenta: la ruta llega como parámetro</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Todo préstamo que supere el límite se considera largo, y ese límite es un parámetro de <code>prestamos_largos(prestamos, limite=20)</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong><code>leer_prestamos(ruta)</code></strong>: abre el archivo y devuelve una lista de
+        diccionarios con las claves <code>estudiante</code>, <code>titulo</code> y <code>dias</code>.
+      </li>
+      <li>
+        <strong><code>total_dias(prestamos)</code></strong>: devuelve la suma de todos los días,
+        con un acumulador.
+      </li>
+      <li>
+        <strong><code>promedio_dias(prestamos)</code></strong>: devuelve el promedio; y
+        <code>0.0</code> si la lista está vacía, para no dividir entre cero.
+      </li>
+      <li>
+        <strong><code>contar_por_titulo(prestamos)</code></strong>: devuelve un diccionario con
+        cuántos préstamos hay de cada título.
+      </li>
+      <li>
+        <strong><code>prestamos_largos(prestamos, limite=20)</code></strong>: devuelve los
+        préstamos que superan el límite.
+      </li>
+      <li>
+        <strong><code>generar_informe(prestamos, limite=20)</code></strong>: devuelve el informe
+        completo como un <strong>texto</strong>, uniendo sus líneas.
+      </li>
+      <li>
+        <strong>Las constantes</strong> <code>LIMITE_DIAS</code>, <code>TARIFA_MULTA</code> y
+        <code>TOPE_MULTA</code> al principio del módulo.
+      </li>
+      <li>
+        <strong>Anotaciones de tipo y cadenas de documentación</strong> en todas las funciones.
+      </li>
+    </ol>
+
+    <div class="recuadro precision">
+      <span class="rotulo">Pista — el detalle que más cuesta</span>
+      <p>
+        <code>generar_informe()</code> devuelve un texto, no una lista de líneas. Para unir las
+        líneas en un solo texto está <code>"\n".join(lineas)</code>. Y el <code>\n</code> es un
+        «salto de línea»: en el archivo se escribe con la barra invertida, porque dentro de las
+        comillas <code>"\n"</code> sería solo una barra y una <em>n</em>.
+      </p>
+    </div>
+
+    <button class="solucion-btn" data-solucion="solucion-5-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-5-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La parte que más se olvida es la lectura del archivo. Las demás funciones son
+        acumuladores y contadores que ya sabes escribir. Fíjate sobre todo en las dos primeras
+        líneas de <code>leer_prestamos()</code>: todo el recorrido depende de ellas.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>biblioteca.py — el módulo de funciones</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-str">"""Funciones de la biblioteca. Este módulo no imprime nada: solo calcula."""</span>
+
+LIMITE_DIAS = <span class="tk-num">20</span>
+TARIFA_MULTA = <span class="tk-num">50</span>
+TOPE_MULTA = <span class="tk-num">500</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">leer_prestamos</span>(ruta: <span class="tk-cls">str</span>) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]:
+    <span class="tk-str">"""Lee el archivo de préstamos y devuelve la lista de diccionarios."""</span>
+    prestamos = []
+    <span class="tk-kw">with</span> <span class="tk-fn">open</span>(ruta, <span class="tk-str">"r"</span>, encoding=<span class="tk-str">"utf-8"</span>) <span class="tk-kw">as</span> archivo:
+        <span class="tk-kw">for</span> linea <span class="tk-kw">in</span> archivo:
+            linea = linea.<span class="tk-fn">strip</span>()
+            <span class="tk-kw">if not</span> linea:
+                <span class="tk-kw">continue</span>
+            estudiante, titulo, dias = linea.<span class="tk-fn">split</span>(<span class="tk-str">";"</span>)
+            prestamos.<span class="tk-fn">append</span>({
+                <span class="tk-str">"estudiante"</span>: estudiante,
+                <span class="tk-str">"titulo"</span>: titulo,
+                <span class="tk-str">"dias"</span>: <span class="tk-fn">int</span>(dias),
+            })
+    <span class="tk-kw">return</span> prestamos
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">total_dias</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-str">"""Devuelve la suma de los días de todos los préstamos."""</span>
+    suma = <span class="tk-num">0</span>
+    <span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> prestamos:
+        suma += prestamo[<span class="tk-str">"dias"</span>]
+    <span class="tk-kw">return</span> suma
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">promedio_dias</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">float</span>:
+    <span class="tk-str">"""Devuelve el promedio de días; 0.0 si no hay préstamos."""</span>
+    <span class="tk-kw">if not</span> prestamos:
+        <span class="tk-kw">return</span> <span class="tk-num">0.0</span>
+    <span class="tk-kw">return</span> <span class="tk-fn">total_dias</span>(prestamos) / <span class="tk-fn">len</span>(prestamos)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">contar_por_titulo</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">dict</span>[<span class="tk-cls">str</span>, <span class="tk-cls">int</span>]:
+    <span class="tk-str">"""Devuelve cuántos préstamos hay de cada título."""</span>
+    conteo = {}
+    <span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> prestamos:
+        titulo = prestamo[<span class="tk-str">"titulo"</span>]
+        conteo[titulo] = conteo.<span class="tk-fn">get</span>(titulo, <span class="tk-num">0</span>) + <span class="tk-num">1</span>
+    <span class="tk-kw">return</span> conteo
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">prestamos_largos</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>], limite: <span class="tk-cls">int</span> = LIMITE_DIAS) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]:
+    <span class="tk-str">"""Devuelve los préstamos que superan el límite de días."""</span>
+    largos = []
+    <span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> prestamos:
+        <span class="tk-kw">if</span> prestamo[<span class="tk-str">"dias"</span>] &gt; limite:
+            largos.<span class="tk-fn">append</span>(prestamo)
+    <span class="tk-kw">return</span> largos
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">generar_informe</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>], limite: <span class="tk-cls">int</span> = LIMITE_DIAS) -&gt; <span class="tk-cls">str</span>:
+    <span class="tk-str">"""Devuelve el informe del mes como un texto."""</span>
+    lineas = []
+    lineas.<span class="tk-fn">append</span>(<span class="tk-str">"=== Recuento del mes ==="</span>)
+    lineas.<span class="tk-fn">append</span>(<span class="tk-fn">f</span><span class="tk-str">"Préstamos registrados: {len(prestamos)}"</span>)
+    lineas.<span class="tk-fn">append</span>(<span class="tk-fn">f</span><span class="tk-str">"Total de días:          {total_dias(prestamos)}"</span>)
+    lineas.<span class="tk-fn">append</span>(<span class="tk-fn">f</span><span class="tk-str">"Promedio de días:       {promedio_dias(prestamos):.1f}"</span>)
+    largos = <span class="tk-fn">prestamos_largos</span>(prestamos, limite)
+    lineas.<span class="tk-fn">append</span>(<span class="tk-fn">f</span><span class="tk-str">"Préstamos de más de {limite} días: {len(largos)}"</span>)
+    <span class="tk-kw">return</span> <span class="tk-str">"\n"</span>.<span class="tk-fn">join</span>(lineas)</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>informe.py — el programa que solo muestra</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-str">"""Imprime el informe del mes. Toda la lógica vive en biblioteca.py."""</span>
+
+<span class="tk-kw">from</span> biblioteca <span class="tk-kw">import</span> <span class="tk-fn">generar_informe</span>, <span class="tk-fn">leer_prestamos</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">main</span>() -&gt; <span class="tk-cls">None</span>:
+    <span class="tk-str">"""El programa principal: lee los datos y muestra el informe."""</span>
+    prestamos = <span class="tk-fn">leer_prestamos</span>(<span class="tk-str">"prestamos.txt"</span>)
+    <span class="tk-fn">print</span>(<span class="tk-fn">generar_informe</span>(prestamos))
+
+
+<span class="tk-kw">if</span> __name__ == <span class="tk-str">"__main__"</span>:
+    <span class="tk-fn">main</span>()</code></pre>
+  </div>
+
+    <p>
+      Fíjate en lo que quedó: <code>informe.py</code> tiene <strong>tres líneas de programa</strong>.
+      Todo el trabajo está en <code>biblioteca.py</code>, y ese archivo no sabe nada de la pantalla.
+    </p>
+    </div>
+  </div>
+
+  <h3>5.2 · Comprobación</h3>
+
+  <p>
+    Ejecuta el programa y compara la salida con la de la clase 5: los números tienen que ser los
+    mismos. Si no coinciden, el error está en lo que moviste de sitio.
+  </p>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — uv run python informe.py</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">uv run python informe.py</div>
+      <div class="consola-salida">=== Recuento del mes ===</div>
+      <div class="consola-salida">Préstamos registrados: 13</div>
+      <div class="consola-salida">Total de días:          183</div>
+      <div class="consola-salida">Promedio de días:       14.1</div>
+      <div class="consola-salida">Préstamos de más de 20 días: 3</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-salida">Préstamos por título:</div>
+      <div class="consola-salida">  El principito: 4</div>
+      <div class="consola-salida">  Pedro Páramo: 3</div>
+      <div class="consola-salida">  Cien años de soledad: 2</div>
+      <div class="consola-salida">  La casa de los espíritus: 2</div>
+      <div class="consola-salida">  Harry Potter y la piedra filosofal: 2</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-salida">Préstamos largos:</div>
+      <div class="consola-salida">  Luis Díaz — Cien años de soledad (30 días)</div>
+      <div class="consola-salida">  Julián Mora — Pedro Páramo (22 días)</div>
+      <div class="consola-salida">  Carla Restrepo — Pedro Páramo (25 días)</div>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el orden de las líneas importadas</span>
+    <p>
+      La salida no sale en el orden en que se escribieron las funciones, sino en el orden en que
+      las escribiste en el <code>append()</code>. Por eso el bloque de títulos va al final aunque
+      <code>contar_por_titulo()</code> esté definida antes: el orden del archivo y el orden de la
+      salida son cosas distintas.
+    </p>
+  </div>
+
+  <h3>5.3 · La prueba que demuestra la reutilización</h3>
+
+  <p>
+    Aquí está la prueba de que tu trabajo quedó bien: <strong>otra persona</strong> puede usar tus
+    funciones sin haber leído tu programa. Abre el intérprete y pide solo lo que necesitas.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — usar el módulo sin ejecutar el informe</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> biblioteca <span class="tk-kw">import</span> <span class="tk-fn">leer_prestamos</span>, <span class="tk-fn">total_dias</span>, <span class="tk-fn">contar_por_titulo</span>
+
+prestamos = <span class="tk-fn">leer_prestamos</span>(<span class="tk-str">"prestamos.txt"</span>)
+
+<span class="tk-fn">print</span>(<span class="tk-fn">total_dias</span>(prestamos))          <span class="tk-cm"># 183</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">contar_por_titulo</span>(prestamos))    <span class="tk-cm"># {'El principito': 4, ...}</span></code></pre>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — por qué esto importa para el servidor</span>
+    <p>
+      El día que la biblioteca quiera mostrar el total de días <em>en una página web</em>, y no
+      en una terminal, va a necesitar exactamente esto: una función que calcule el total y no se
+      preocupe de cómo se muestra. Hoy has construido la pieza que el servidor va a usar, sin
+      saber todavía que existe un servidor. Eso es lo que significa <em>reutilizar</em>.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Por qué <code>biblioteca.py</code> no debe imprimir nada?</p>
+      <button class="opcion" data-op="a">Porque <code>print</code> es más lento que <code>return</code></button>
+      <button class="opcion" data-op="b">Porque así sus funciones se pueden usar desde cualquier sitio, sin ensuciar la pantalla</button>
+      <button class="opcion" data-op="c">Porque Python no permite imprimir desde un módulo</button>
+      <button class="opcion" data-op="d">Porque el archivo se importa una sola vez</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Por qué <code>leer_prestamos()</code> recibe la ruta como parámetro en vez de leer el archivo por su cuenta?</p>
+      <button class="opcion" data-op="a">Para que el archivo se abra más rápido</button>
+      <button class="opcion" data-op="b">Porque Python no puede abrir archivos dentro de funciones</button>
+      <button class="opcion" data-op="c">Para que la ruta se pueda escribir más de una vez</button>
+      <button class="opcion" data-op="d">Para que la función se pueda probar con cualquier archivo y no quede atada a uno</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué significa que <code>informe.py</code> termine con <code>if __name__ == "__main__":</code>?</p>
+      <button class="opcion" data-op="a">Que el bloque solo se ejecute al correr el archivo, y no al importarlo</button>
+      <button class="opcion" data-op="b">Que el programa se repite para siempre</button>
+      <button class="opcion" data-op="c">Que las funciones no se pueden importar</button>
+      <button class="opcion" data-op="d">Que el informe se escribe en un archivo</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Qué debe devolver <code>promedio_dias([])</code>?</p>
+      <button class="opcion" data-op="a">Un error, porque no se puede dividir</button>
+      <button class="opcion" data-op="b">Ninguna</button>
+      <button class="opcion" data-op="c"><code>0.0</code>, para no dividir entre cero</button>
+      <button class="opcion" data-op="d">El promedio de los préstamos anteriores</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: de función a método →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — EJERCICIO: DE FUNCIÓN A MÉTODO
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · Taller de aplicación</div>
+    <h2>Ejercicio 6.1 · <em>De función a método</em></h2>
+    <p class="proposito">
+      Tus funciones del ejercicio anterior reciben datos sueltos y devuelven números. Ahora vas a
+      dar un paso más: reunir cada préstamo en un <strong>objeto</strong> que sepa calcular su
+      propia multa y su propio estado. En 35 minutos escribirás la clase <code>Prestamo</code>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Ejercicio de desarrollo</b></span>
+      <span>🧭 <b>Producto: la clase <code>Prestamo</code> con sus métodos</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · Por qué una clase</h3>
+
+  <p class="primer-párrafo">
+    El problema de las funciones sueltas es que los datos viajan sueltos. Si una función necesita
+    el estudiante, el título y los días, tiene que recibir tres parámetros; y quien la llama
+    puede equivocarse de orden. Una clase agrupa esos tres datos en <strong>un</strong> objeto y
+    le da las operaciones que se pueden hacer con él.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>ejemplo — la misma pregunta, con funciones y con un objeto</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Con funciones sueltas: los datos viajan sueltos</span>
+<span class="tk-kw">def</span> <span class="tk-fn">multa_de</span>(dias: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">int</span>:
+    <span class="tk-kw">return</span> <span class="tk-fn">min</span>(dias * <span class="tk-num">50</span>, <span class="tk-num">500</span>)
+
+<span class="tk-fn">multa_de</span>(<span class="tk-num">30</span>)   <span class="tk-cm"># ¿y esto de quién es?</span>
+
+
+<span class="tk-cm"># Con una clase: el objeto lleva sus datos y sabe lo suyo</span>
+<span class="tk-kw">class</span> <span class="tk-cls">Prestamo</span>:
+    <span class="tk-kw">def</span> <span class="tk-fn">__init__</span>(<span class="tk-kw">self</span>, estudiante: <span class="tk-cls">str</span>, titulo: <span class="tk-cls">str</span>, dias: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">None</span>:
+        <span class="tk-kw">self</span>.estudiante = estudiante
+        <span class="tk-kw">self</span>.titulo = titulo
+        <span class="tk-kw">self</span>.dias = dias
+
+    <span class="tk-kw">def</span> <span class="tk-fn">multa</span>(<span class="tk-kw">self</span>) -&gt; <span class="tk-cls">int</span>:
+        <span class="tk-kw">return</span> <span class="tk-fn">min</span>(<span class="tk-kw">self</span>.dias * <span class="tk-num">50</span>, <span class="tk-num">500</span>)
+
+
+prestamo = <span class="tk-cls">Prestamo</span>(<span class="tk-str">"Ana Torres"</span>, <span class="tk-str">"El principito"</span>, <span class="tk-num">30</span>)
+<span class="tk-fn">print</span>(prestamo.<span class="tk-fn">multa</span>())   <span class="tk-cm"># 500, y se sabe de quién es</span></code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>self</code> es el objeto que llama</span>
+    <p>
+      Cuando escribes <code>prestamo.multa()</code>, Python mete el objeto <code>prestamo</code>
+      dentro de la función, en el primer parámetro, que por eso se llama <code>self</code>. Por eso
+      <code>self.dias</code> es «los días de <em>este</em> préstamo». Dentro de la función, <code>self</code>
+      no es un nombre reservado: puedes llamarlo como quieras, pero <strong>todo el mundo</strong> le
+      pone <code>self</code>, y es mejor no inventar.
+    </p>
+  </div>
+
+  <h3>6.2 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Ejercicio</span>
+      <h3>La clase Prestamo</h3>
+    </div>
+
+    <p>
+      Escribe un archivo <code>prestamo.py</code> con una clase <code>Prestamo</code> que represente
+      un préstamo de la biblioteca. Cada objeto debe saber responder: <em>¿de quién es?, ¿qué
+      título tiene?, ¿cuántos días lleva?, ¿cuánto es la multa?, ¿está retrasado?, ¿en qué
+      estado está?</em>
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>Un estudiante, un título y un número de días</td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>Un objeto que responde preguntas sobre sí mismo, y un texto legible con <code>print</code></td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Un método que no usa <code>self</code> debe ser <code>@staticmethod</code></td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Un método que construye objetos a partir de otra cosa debe ser <code>@classmethod</code></td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>El método <code>multa()</code> no imprime: devuelve el número</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Requisitos</h4>
+    <ol class="entregables">
+      <li>
+        <strong><code>__init__(self, estudiante, titulo, dias)</code></strong>: guarda los tres
+        datos en el objeto con <code>self.</code>.
+      </li>
+      <li>
+        <strong>El atributo de clase <code>DIAS_DE_GRACIA = 5</code></strong>: los días que un
+        préstamo puede tener sin considerarse retrasado.
+      </li>
+      <li>
+        <strong><code>multa(self)</code></strong>: devuelve la multa del préstamo, con el tope de
+        500 pesos.
+      </li>
+      <li>
+        <strong><code>atrasado(self)</code></strong>: devuelve <code>True</code> o <code>False</code>
+        según si pasó el período de gracia.
+      </li>
+      <li>
+        <strong><code>estado(self)</code></strong>: devuelve el texto <code>"en plazo"</code> o
+        <code>"retrasado"</code>.
+      </li>
+      <li>
+        <strong><code>__str__(self)</code></strong>: devuelve una descripción legible del préstamo.
+      </li>
+      <li>
+        <strong><code>normalizar(titulo)</code> como <code>@staticmethod</code></strong>: limpia un
+        título y lo deja con mayúsculas iniciales.
+      </li>
+      <li>
+        <strong><code>desde_linea(linea)</code> como <code>@classmethod</code></strong>: construye
+        un préstamo a partir de una línea del archivo.
+      </li>
+      <li>
+        <strong>Anotaciones de tipo y cadenas de documentación</strong> en todos los métodos.
+      </li>
+    </ol>
+
+    <div class="recuadro precision">
+      <span class="rotulo">Pista — la diferencia entre <code>staticmethod</code> y <code>classmethod</code></span>
+      <p>
+        Un <code>@staticmethod</code> es una función que vive dentro de la clase pero <strong>no
+        necesita el objeto</strong>: recibe solo lo que tú le pases. Un <code>@classmethod</code>
+        recibe la <strong>clase</strong> en el primer parámetro, que por eso se llama
+        <code>cls</code>, y por eso puede construir objetos de esa misma clase. Con
+        <code>cls</code> puedes escribir <code>cls(estudiante, titulo, dias)</code> y obtener un
+        <code>Prestamo</code> aunque el método esté en otra subclase.
+      </p>
+    </div>
+
+    <button class="solucion-btn" data-solucion="solucion-6-1">Ver una solución de referencia</button>
+
+    <div class="solucion" id="solucion-6-1">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La línea que hace todo el trabajo es <code>self.normalizar(titulo)</code> dentro de
+        <code>__init__</code>: el título se limpia <strong>una sola vez</strong>, al construir el
+        objeto, y todas las demás respuestas usan la versión limpia.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>prestamo.py — la clase Prestamo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-str">"""La clase Prestamo: un préstamo con sus propios métodos."""</span>
+
+TARIFA_MULTA = <span class="tk-num">50</span>
+TOPE_MULTA = <span class="tk-num">500</span>
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">Prestamo</span>:
+    <span class="tk-str">"""Un préstamo de la biblioteca."""</span>
+
+    DIAS_DE_GRACIA = <span class="tk-num">5</span>
+
+    <span class="tk-kw">def</span> <span class="tk-fn">__init__</span>(<span class="tk-kw">self</span>, estudiante: <span class="tk-cls">str</span>, titulo: <span class="tk-cls">str</span>, dias: <span class="tk-cls">int</span>) -&gt; <span class="tk-cls">None</span>:
+        <span class="tk-kw">self</span>.estudiante = estudiante
+        <span class="tk-kw">self</span>.titulo = <span class="tk-kw">self</span>.<span class="tk-fn">normalizar</span>(titulo)
+        <span class="tk-kw">self</span>.dias = dias
+
+    <span class="tk-kw">def</span> <span class="tk-fn">multa</span>(<span class="tk-kw">self</span>) -&gt; <span class="tk-cls">int</span>:
+        <span class="tk-str">"""Devuelve la multa de este préstamo."""</span>
+        <span class="tk-kw">return</span> <span class="tk-fn">min</span>(<span class="tk-kw">self</span>.dias * TARIFA_MULTA, TOPE_MULTA)
+
+    <span class="tk-kw">def</span> <span class="tk-fn">atrasado</span>(<span class="tk-kw">self</span>) -&gt; <span class="tk-cls">bool</span>:
+        <span class="tk-str">"""True si el préstamo pasó el período de gracia."""</span>
+        <span class="tk-kw">return</span> <span class="tk-kw">self</span>.dias &gt; <span class="tk-kw">self</span>.DIAS_DE_GRACIA
+
+    <span class="tk-kw">def</span> <span class="tk-fn">estado</span>(<span class="tk-kw">self</span>) -&gt; <span class="tk-cls">str</span>:
+        <span class="tk-str">"""Devuelve 'en plazo' o 'retrasado'."""</span>
+        <span class="tk-kw">return</span> <span class="tk-str">"retrasado"</span> <span class="tk-kw">if</span> <span class="tk-kw">self</span>.<span class="tk-fn">atrasado</span>() <span class="tk-kw">else</span> <span class="tk-str">"en plazo"</span>
+
+    <span class="tk-kw">def</span> <span class="tk-fn">__str__</span>(<span class="tk-kw">self</span>) -&gt; <span class="tk-cls">str</span>:
+        <span class="tk-str">"""Devuelve una descripción legible del préstamo."""</span>
+        <span class="tk-kw">return</span> <span class="tk-fn">f</span><span class="tk-str">"{self.titulo} — {self.estudiante} ({self.dias} días, {self.estado()})"</span>
+
+    <span class="tk-kw">@staticmethod</span>
+    <span class="tk-kw">def</span> <span class="tk-fn">normalizar</span>(titulo: <span class="tk-cls">str</span>) -&gt; <span class="tk-cls">str</span>:
+        <span class="tk-str">"""Limpia un título: sin espacios de más y con mayúsculas iniciales."""</span>
+        <span class="tk-kw">return</span> <span class="tk-str">" "</span>.<span class="tk-fn">join</span>(titulo.<span class="tk-fn">split</span>()).<span class="tk-fn">title</span>()
+
+    <span class="tk-kw">@classmethod</span>
+    <span class="tk-kw">def</span> <span class="tk-fn">desde_linea</span>(cls, linea: <span class="tk-cls">str</span>) -&gt; <span class="tk-str">"Prestamo"</span>:
+        <span class="tk-str">"""Construye un préstamo a partir de una línea del archivo."""</span>
+        estudiante, titulo, dias = linea.<span class="tk-fn">strip</span>().<span class="tk-fn">split</span>(<span class="tk-str">";"</span>)
+        <span class="tk-kw">return</span> cls(estudiante, titulo, <span class="tk-fn">int</span>(dias))</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>demo.py — usar la clase</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> prestamo <span class="tk-kw">import</span> <span class="tk-cls">Prestamo</span>
+
+prestamos = [
+    <span class="tk-cls">Prestamo</span>(<span class="tk-str">"Ana Torres"</span>, <span class="tk-str">"El principito"</span>, <span class="tk-num">3</span>),
+    <span class="tk-cls">Prestamo</span>(<span class="tk-str">"Julián Mora"</span>, <span class="tk-str">"Pedro Páramo"</span>, <span class="tk-num">22</span>),
+    <span class="tk-cls">Prestamo</span>(<span class="tk-str">"Sara Ríos"</span>, <span class="tk-str">"Cien años de soledad"</span>, <span class="tk-num">7</span>),
+]
+
+<span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> prestamos:
+    <span class="tk-fn">print</span>(prestamo)</code></pre>
+  </div>
+
+    <p>
+      Fíjate en el bucle: <code>for prestamo in prestamos:</code> y <code>print(prestamo)</code>.
+      No hay ningún <code>["titulo"]</code> ni ningún <code>["dias"]</code>: el objeto sabe
+      contarse solo. Eso es lo que aporta una clase.
+    </p>
+    </div>
+  </div>
+
+  <h3>6.3 · Comprobación</h3>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — uv run python demo.py</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">uv run python demo.py</div>
+      <div class="consola-salida">El Principito — Ana Torres (3 días, en plazo)</div>
+      <div class="consola-salida">Pedro Páramo — Julián Mora (22 días, retrasado)</div>
+      <div class="consola-salida">Cien Años De Soledad — Sara Ríos (7 días, retrasado)</div>
+    </div>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el <code>__init__</code> que no se llama</span>
+    <p>
+      El <code>__init__</code> es el método que se ejecuta <strong>automáticamente</strong> al crear
+      el objeto con <code>Prestamo(...)</code>. Es el que recibe los datos y los guarda. Si te
+      olvidas de poner <code>self.estudiante = estudiante</code>, el objeto se crea sin
+      estudiante y el error aparece mucho más tarde, en un sitio que no tiene nada que ver. Es el
+      mismo error de siempre: los datos se pierden en el camino.
+    </p>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — <code>__str__</code> es el nombre que Python ya conoce</span>
+    <p>
+      Los nombres que empiezan y terminan con dos guiones bajos no son inventos: Python ya los
+      usa para cosas concretas. <code>__init__</code> es el constructor; <code>__str__</code> es lo
+      que se muestra cuando haces <code>print(prestamo)</code>. Escribir <code>__str__</code> es
+      «enseñarle a Python cómo se ve» tu objeto, no inventar un método nuevo.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué es <code>self</code> dentro de un método?</p>
+      <button class="opcion" data-op="a">Una palabra reservada que no se puede cambiar</button>
+      <button class="opcion" data-op="b">El nombre de la clase donde se definió el método</button>
+      <button class="opcion" data-op="c">El objeto concreto que está llamando al método</button>
+      <button class="opcion" data-op="d">Una variable global del módulo</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Cuándo se usa <code>@staticmethod</code>?</p>
+      <button class="opcion" data-op="a">Cuando el método no necesita el objeto: es una función que vive dentro de la clase</button>
+      <button class="opcion" data-op="b">Cuando el método tiene que modificar el objeto</button>
+      <button class="opcion" data-op="c">Cuando el método devuelve <code>None</code></button>
+      <button class="opcion" data-op="d">Cuando el método es el constructor</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Para qué sirve <code>__str__</code>?</p>
+      <button class="opcion" data-op="a">Para convertir el objeto en un número</button>
+      <button class="opcion" data-op="b">Para leer el archivo del préstamo</button>
+      <button class="opcion" data-op="c">Para imprimir el código fuente de la clase</button>
+      <button class="opcion" data-op="d">Para decidir cómo se muestra el objeto cuando se imprime</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Cuál es la ventaja de tener un objeto <code>Prestamo</code> en vez de tres variables sueltas?</p>
+      <button class="opcion" data-op="a">Ocupa menos memoria</button>
+      <button class="opcion" data-op="b">Los datos y las operaciones van juntos: no se pueden mezclar por error</button>
+      <button class="opcion" data-op="c">Es la única forma de guardar texto en Python</button>
+      <button class="opcion" data-op="d">Permite saltarse las anotaciones de tipo</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: Partir el informe en funciones</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller integrador →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER INTEGRADOR
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>Taller · <em>Una biblioteca que se puede reusar</em></h2>
+    <p class="proposito">
+      Las dos unidades anteriores dejaron las piezas: un módulo de funciones puras y una clase
+      con sus métodos. Ahora las montas en un solo programa, compruebas que el servidor puede
+      usarlas y dejas el taller escrito.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller de desarrollo</b></span>
+      <span>🧭 <b>Producto: <code>biblioteca.py</code> completo y un servidor que lo consume</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Taller</span>
+      <h3>El módulo <code>biblioteca.py</code> y su consumidor</h3>
+    </div>
+
+    <p>
+      La biblioteca necesita un solo archivo con toda la lógica del negocio, y muchos programas
+      que lo usen sin enterarse. Eso es lo que vas a construir: un módulo que se pueda importar
+      desde cualquier sitio, con funciones que devuelven y una clase que sabe responderse.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Archivos</strong></td>
+            <td><code>prestamo.py</code> (la clase), <code>biblioteca.py</code> (las funciones) e <code>informe.py</code> (el programa)</td>
+          </tr>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>El archivo <code>prestamos.txt</code></td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>Un informe en la terminal y, en el servidor, una respuesta con el mismo texto</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Ninguna función imprime: todas devuelven. El único que imprime es <code>informe.py</code></td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Las funciones de <code>biblioteca.py</code> no conocen la clase: trabajan con diccionarios</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>La clase <code>Prestamo</code> no lee archivos ni imprime: solo responde</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li>
+        <strong><code>prestamo.py</code></strong> con la clase <code>Prestamo</code> completa:
+        <code>__init__</code>, <code>multa</code>, <code>atrasado</code>, <code>estado</code>,
+        <code>__str__</code>, el <code>@staticmethod normalizar</code> y el
+        <code>@classmethod desde_linea</code>.
+      </li>
+      <li>
+        <strong><code>biblioteca.py</code></strong> con las funciones
+        <code>leer_prestamos</code>, <code>total_dias</code>, <code>promedio_dias</code>,
+        <code>contar_por_titulo</code>, <code>prestamos_largos</code> y
+        <code>generar_informe</code>, más las tres constantes.
+      </li>
+      <li>
+        <strong>Dos funciones de combinación</strong> que conecten las dos piezas:
+        <code>prestamos_como_objetos(lineas)</code> (devuelve objetos
+        <code>Prestamo</code>) y <code>resumen_de_estados(prestamos)</code> (devuelve cuántos
+        préstamos hay en plazo y cuántos están retrasados).
+      </li>
+      <li>
+        <strong><code>informe.py</code></strong> con su <code>main()</code> y la puerta
+        <code>if __name__ == "__main__":</code>.
+      </li>
+      <li>
+        <strong><code>app.py</code></strong> con FastAPI y una ruta <code>/informe</code> que use
+        el módulo, importándolo con <code>from biblioteca import ...</code>.
+      </li>
+      <li>
+        <strong>Un párrafo escrito</strong> que explique qué se reutilizó y por qué el módulo no
+        imprime.
+      </li>
+    </ol>
+
+    <div class="recuadro precision">
+      <span class="rotulo">Pista — el orden de las piezas</span>
+      <p>
+        <code>biblioteca.py</code> puede importar de <code>prestamo.py</code> si lo necesita, pero
+        <code>prestamo.py</code> <strong>no debe</strong> importar de <code>biblioteca.py</code>:
+        eso sería un círculo, y Python se quejaría. Piensa en una pirámide: lo de abajo no sabe
+        nada de lo de arriba.
+      </p>
+    </div>
+
+    <button class="solucion-btn" data-solucion="taller-solucion">Ver un modelo de respuesta</button>
+
+    <div class="solucion" id="taller-solucion">
+      <h4>Modelo de respuesta</h4>
+
+      <p>
+        La función que sostiene el taller es <code>generar_informe()</code>: no imprime nada,
+        <strong>devuelve un texto</strong>. Esa es la diferencia entre un programa y un módulo, y
+        es lo que hará que el servidor pueda usarlo sin adaptarlo.
+      </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>biblioteca.py — las funciones de combinación</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> prestamo <span class="tk-kw">import</span> <span class="tk-cls">Prestamo</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">prestamos_como_objetos</span>(lineas: <span class="tk-cls">list</span>[<span class="tk-cls">str</span>]) -&gt; <span class="tk-cls">list</span>[<span class="tk-cls">Prestamo</span>]:
+    <span class="tk-str">"""Convierte líneas del archivo en objetos Prestamo."""</span>
+    prestamos = []
+    <span class="tk-kw">for</span> linea <span class="tk-kw">in</span> lineas:
+        <span class="tk-kw">if not</span> linea.<span class="tk-fn">strip</span>():
+            <span class="tk-kw">continue</span>
+        prestamos.<span class="tk-fn">append</span>(<span class="tk-cls">Prestamo</span>.<span class="tk-fn">desde_linea</span>(linea))
+    <span class="tk-kw">return</span> prestamos
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">resumen_de_estados</span>(prestamos: <span class="tk-cls">list</span>[<span class="tk-cls">dict</span>]) -&gt; <span class="tk-cls">dict</span>[<span class="tk-cls">str</span>, <span class="tk-cls">int</span>]:
+    <span class="tk-str">"""Devuelve cuántos préstamos hay en plazo y cuántos retrasados."""</span>
+    resumen = {<span class="tk-str">"en plazo"</span>: <span class="tk-num">0</span>, <span class="tk-str">"retrasado"</span>: <span class="tk-num">0</span>}
+    <span class="tk-kw">for</span> prestamo <span class="tk-kw">in</span> prestamos:
+        estado = <span class="tk-str">"retrasado"</span> <span class="tk-kw">if</span> prestamo[<span class="tk-str">"dias"</span>] &gt; <span class="tk-num">5</span> <span class="tk-kw">else</span> <span class="tk-str">"en plazo"</span>
+        resumen[estado] = resumen.<span class="tk-fn">get</span>(estado, <span class="tk-num">0</span>) + <span class="tk-num">1</span>
+    <span class="tk-kw">return</span> resumen</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>app.py — el servidor que usa el módulo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">FastAPI</span>
+<span class="tk-kw">from</span> fastapi.<span class="tk-cls">responses</span> <span class="tk-kw">import</span> <span class="tk-cls">PlainTextResponse</span>
+
+<span class="tk-kw">from</span> biblioteca <span class="tk-kw">import</span> <span class="tk-fn">generar_informe</span>, <span class="tk-fn">leer_prestamos</span>
+
+app = <span class="tk-cls">FastAPI</span>(title=<span class="tk-str">"Biblioteca"</span>)
+
+
+<span class="tk-kw">@</span>app.<span class="tk-fn">get</span>(<span class="tk-str">"/informe"</span>, response_class=<span class="tk-cls">PlainTextResponse</span>)
+<span class="tk-kw">def</span> <span class="tk-fn">informe</span>() -&gt; <span class="tk-cls">str</span>:
+    <span class="tk-str">"""Devuelve el informe del mes como texto plano."""</span>
+    prestamos = <span class="tk-fn">leer_prestamos</span>(<span class="tk-str">"prestamos.txt"</span>)
+    <span class="tk-kw">return</span> <span class="tk-fn">generar_informe</span>(prestamos)</code></pre>
+  </div>
+
+    <p>
+      Fíjate en la ruta del servidor: no tiene una sola línea de lógica. Solo lee el archivo,
+      llama a la función y devuelve lo que recibe. Esa ruta podría mostrar el resultado en HTML,
+      en JSON o en un archivo: la función no se entera, y no debería enterarse.
+    </p>
+    </div>
+  </div>
+
+  <h3>7.2 · Comprobación del taller</h3>
+
+  <div class="consola">
+    <div class="consola-cabecera">
+      <span class="code-dots"><span></span><span></span><span></span></span>
+      <span>terminal — uv run python informe.py</span>
+    </div>
+    <div class="consola-cuerpo">
+      <div class="consola-entrada">uv run python informe.py</div>
+      <div class="consola-salida">=== Recuento del mes ===</div>
+      <div class="consola-salida">Préstamos registrados: 13</div>
+      <div class="consola-salida">Total de días:          183</div>
+      <div class="consola-salida">Promedio de días:       14.1</div>
+      <div class="consola-salida">Préstamos de más de 20 días: 3</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-salida">Préstamos por título:</div>
+      <div class="consola-salida">  El principito: 4</div>
+      <div class="consola-salida">  Pedro Páramo: 3</div>
+      <div class="consola-salida">  Cien años de soledad: 2</div>
+      <div class="consola-salida">  La casa de los espíritus: 2</div>
+      <div class="consola-salida">  Harry Potter y la piedra filosofal: 2</div>
+      <div class="consola-vacio">&nbsp;</div>
+      <div class="consola-salida">Préstamos largos:</div>
+      <div class="consola-salida">  Luis Díaz — Cien años de soledad (30 días)</div>
+      <div class="consola-salida">  Julián Mora — Pedro Páramo (22 días)</div>
+      <div class="consola-salida">  Carla Restrepo — Pedro Páramo (25 días)</div>
+    </div>
+  </div>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — la prueba de fuego del taller</span>
+    <p>
+      Arranca el servidor y entra a <code>http://localhost:8000/informe</code>. Lo que ves en el
+      navegador tiene que ser <strong>exactamente</strong> lo mismo que ves en la terminal. Si es
+      así, tu función <code>generar_informe()</code> está bien hecha: no sabe nada de la terminal
+      ni del navegador, y por eso sirve para los dos.
+    </p>
+  </div>
+
+  <h3>7.3 · Rúbrica de autoevaluación</h3>
+
+  <p>
+    Puntúa cada criterio de 0 a 2 y revisa los que hayas quedado en 0 o 1 antes de dar por terminado
+    el taller.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación del módulo reutilizable</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Separación de responsabilidades</td>
+          <td><code>biblioteca.py</code> imprime o lee archivos por su cuenta</td>
+          <td>Las funciones devuelven, pero alguna todavía imprime</td>
+          <td>Todas devuelven; el único que imprime es <code>informe.py</code></td>
+        </tr>
+        <tr>
+          <td>Parámetros bien elegidos</td>
+          <td>La ruta o el archivo están escritos dentro de la función</td>
+          <td>Algunos datos llegan como parámetros y otros están fijos</td>
+          <td>Todo lo que varía llega como parámetro, con valores por defecto donde tiene sentido</td>
+        </tr>
+        <tr>
+          <td>Contratos</td>
+          <td>No hay anotaciones ni documentación</td>
+          <td>Hay anotaciones en algunas funciones</td>
+          <td>Todas las funciones tienen anotación, documentación y casos claros definidos</td>
+        </tr>
+        <tr>
+          <td>Reutilización real</td>
+          <td>El servidor copia la lógica del módulo</td>
+          <td>El servidor llama a una función pero reescribe el resto</td>
+          <td>El servidor solo llama funciones; la lógica vive una sola vez</td>
+        </tr>
+        <tr>
+          <td>La clase</td>
+          <td>No hay clase, o la clase solo guarda datos</td>
+          <td>Hay métodos, pero alguno no usa <code>self</code> sin ser <code>@staticmethod</code></td>
+          <td>La clase responde sobre sí misma y no lee archivos ni imprime</td>
+        </tr>
+        <tr>
+          <td>Pruebas</td>
+          <td>No hay ninguna comprobación</td>
+          <td>Hay <code>assert</code> en un solo caso</td>
+          <td>Hay <code>assert</code> para el caso normal y para los casos vacíos o raros</td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay nada escrito</td>
+          <td>Describe el qué, no el porqué</td>
+          <td>Decisión, motivo, apartamiento del enunciado y consecuencia</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.4 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>Una función es un bloque con nombre que hace un trabajo y devuelve el resultado.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p>Devolver no es imprimir: lo devuelto se puede guardar, comparar y reutilizar; lo impreso, no.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>El <code>return</code> es la puerta de salida: entrega el valor y termina la función ahí.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p>Un parámetro con valor por defecto hace que una función sirva en varios sitios y que el negocio cambie en una línea.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p>Las variables de dentro son locales: por eso dos funciones pueden usar el mismo nombre sin chocarse.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p>Un método es una función que vive en una clase y recibe el objeto en <code>self</code>.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p>Reutilizar no es repetir: es que el mismo texto del programa esté en un solo sitio y lo usen muchos.</p>
+    </div>
+  </div>
+
+  <h3>7.5 · Puente hacia la próxima clase</h3>
+
+  <p>
+    Hoy tu informe es un <strong>texto</strong>: una cadena con líneas y todo, construida a mano.
+    Es un informe que se puede leer en una terminal y también en el navegador, pero sigue siendo
+    texto plano: no tiene títulos, ni listas, ni colores.
+  </p>
+
+  <p>
+    La próxima clase resuelve exactamente eso, con las herramientas de las clases 2 y 3. Cuatro
+    cosas de hoy siguen vivas allí:
+  </p>
+
+  <ol>
+    <li>
+      <strong>La función que devuelve el contenido</strong> es el modelo de lo que hará la
+      plantilla: un <code>generar_informe()</code> que devuelve el texto y una plantilla que decide
+      cómo se ve.
+    </li>
+    <li>
+      <strong>La lista de diccionarios que devuelve <code>leer_prestamos()</code></strong> es
+      exactamente lo que la plantilla va a recibir para pintar una tabla de libros.
+    </li>
+    <li>
+      <strong>Los bucles que recorren los datos</strong> son los mismos que usará el motor de
+      plantillas. El <code>{% for %}</code> es un <code>for</code> de Python con otra sintaxis, y
+      la idea es la misma.
+    </li>
+    <li>
+      <strong>El módulo <code>biblioteca.py</code></strong> es el archivo que la plantilla
+      importará. Lo que hoy se importa con <code>from biblioteca import ...</code> se importará
+      igual, y la lógica del negocio no cambiaría ni una línea.
+    </li>
+  </ol>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de la próxima clase</span>
+    <p>
+      Guarda tu taller en un repositorio de Git con un mensaje de commit claro, y comprueba que
+      <code>uv run python informe.py</code> imprime el informe, que
+      <code>uv run python -c "from biblioteca import total_dias; print(total_dias([]))"</code>
+      devuelve <code>0</code> sin romperse, y que la ruta <code>/informe</code> del servidor
+      devuelve el mismo texto que la terminal.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 6</h2>
+    <p>
+      Has cerrado el ciclo de la estructura: el servidor recibe datos (clase 4), los recorre con
+      bucles (clase 5) y ahora los organiza en funciones y métodos que se pueden volver a usar
+      desde cualquier parte. A partir de aquí, la pregunta ya no es cómo se calcula el informe,
+      sino cómo se pone en una página.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: De función a método</button>
+    <button class="btn-siguiente" data-ir="0">✓ Marcar el taller como terminado y volver al inicio</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 6 · Funciones y métodos: escribir una vez, usar mil veces</span>
+  <p class="pie-sub">Anatomía de la función · El paso de parámetros · El retorno de valores · Métodos y reutilización</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

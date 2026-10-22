@@ -1,0 +1,2714 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 7 · Formularios y validación del input del usuario</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 7 · <em>Formularios y validación del input del usuario</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura y programa</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">El viaje del dato</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">Captura con HTML</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Validación en el backend</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Actividad: formulario de contacto</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Errores que se entienden</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: contacto en producción</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> un formulario de contacto funcional con FastAPI, validación Pydantic, errores en español y pruebas automáticas.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>El formulario es la <em>frontera</em></h2>
+    <p class="proposito">
+      Todo lo que tu programa sabe del mundo exterior entra por una puerta. En esta clase esa
+      puerta tiene nombre: <code>&lt;form&gt;</code>. Y todo lo que entra por ella es
+      <strong>texto</strong>, es <strong>opcional</strong> y es <strong>sospechoso</strong> hasta
+      que el servidor demuestra lo contrario.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: decisiones de validación escritas</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · El formulario que aceptaba todo</h3>
+
+  <p class="primer-párrafo">
+    El club de robótica del colegio abrió un formulario para recibir inscripciones. La primera
+    semana llegaron cuarenta mensajes. La segunda, tres mil. Alguien descubrió que el campo
+    <code>nombre</code> aceptaba ocho mil caracteres, que el campo <code>correo</code> aceptaba
+    cualquier cosa y que el botón de enviar no tenía ningún límite. La bandeja se llenó de basura
+    y el mensaje de un estudiante real se perdió entre dos mil novecientos noventa y nueve
+    mensajes automáticos.
+  </p>
+
+  <p>
+    El formulario no estaba roto: estaba <strong>abierto</strong>. Aceptaba todo lo que le llegara,
+    y todo lo que le llegaba era tratado como si fuera verdad. Ninguna de las dos cosas es un
+    detalle de estilo: son la diferencia entre un sistema que sirve y un sistema que se puede
+    llenar de basura en una tarde.
+  </p>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — un formulario no es una página: es un contrato</span>
+    <p>
+      Una página se mira. Un formulario se <strong>cumple</strong>. Sus campos, sus tipos y sus
+      límites son las cláusulas de un contrato entre quien escribe y quien recibe. Si el contrato
+      dice «nombre de 3 a 60 caracteres», el servidor tiene que poder demostrar que se cumplió.
+      El navegador ayuda a redactarlo, pero <strong>no es el notario</strong>.
+    </p>
+  </div>
+
+  <h3>0.2 · Las dos validaciones</h3>
+
+  <p>
+    «Validar el formulario» suena a una sola cosa. Son dos, con trabajos distintos, y confundirlas
+    es el error que produce la mayoría de los formularios inseguros.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Las dos validaciones y el trabajo de cada una</caption>
+      <thead>
+        <tr><th></th><th>Validación del navegador</th><th>Validación del servidor</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Dónde vive</strong></td>
+          <td>En el HTML: <code>required</code>, <code>type="email"</code>, <code>minlength</code>, <code>pattern</code></td>
+          <td>En Python: el modelo Pydantic y las reglas de la ruta</td>
+        </tr>
+        <tr>
+          <td><strong>Para qué sirve</strong></td>
+          <td>Avisar pronto y evitar un viaje inútil al servidor</td>
+          <td>Decidir qué entra y qué no entra, sin excepciones</td>
+        </tr>
+        <tr>
+          <td><strong>Se puede desactivar</strong></td>
+          <td>Sí: con DevTools, con <code>curl</code> o con <code>novalidate</code></td>
+          <td>No: está en el código que se ejecuta en el servidor</td>
+        </tr>
+        <tr>
+          <td><strong>Qué pasa si falla</strong></td>
+          <td>El navegador no envía y muestra un globo de texto</td>
+          <td>La petición se rechaza con <code>422</code> y un cuerpo de errores</td>
+        </tr>
+        <tr>
+          <td><strong>Su límite</strong></td>
+          <td>No conoce reglas del negocio ni protege de un atacante</td>
+          <td>No puede evitar que el usuario escriba mal: solo rechazarlo</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — las dos son necesarias, pero no valen lo mismo</span>
+    <p>
+      La del navegador es una <strong>cortesía</strong>: hace que la experiencia sea agradable. La
+      del servidor es una <strong>garantía</strong>: es la única que se cumple siempre. Un
+      formulario sin validación del navegador es incómodo; un formulario sin validación del
+      servidor es una puerta abierta. En esta clase vas a construir las dos, y vas a comprobar con
+      tus propias manos que la primera se puede saltar.
+    </p>
+  </div>
+
+  <h3>0.3 · El formulario que no valida nada</h3>
+
+  <p>
+    Este es el punto de partida. La ruta compila, responde <code>200</code> y acepta un mensaje de
+    ochocientos mil caracteres. El problema no es la sintaxis: es que no hay ninguna regla.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — la puerta abierta</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> typing <span class="tk-kw">import</span> <span class="tk-cls">Annotated</span>
+
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">FastAPI</span>, <span class="tk-cls">Form</span>
+
+app = <span class="tk-cls">FastAPI</span>()
+
+
+<span class="tk-fn">@app</span>.post(<span class="tk-str">"/contacto"</span>)
+<span class="tk-kw">def</span> <span class="tk-fn">recibir</span>(
+    nombre: <span class="tk-cls">Annotated</span>[<span class="tk-fn">str</span>, <span class="tk-cls">Form</span>()],
+    mensaje: <span class="tk-cls">Annotated</span>[<span class="tk-fn">str</span>, <span class="tk-cls">Form</span>()],
+) -&gt; <span class="tk-fn">dict</span>[<span class="tk-fn">str</span>, <span class="tk-fn">str</span>]:
+    <span class="tk-kw">return</span> {<span class="tk-str">"recibido"</span>: mensaje}
+</code></pre>
+  </div>
+
+  <p>
+    <code>Form()</code> hace que el campo sea obligatorio: si no llega, la petición se rechaza.
+    Pero un campo obligatorio no es un campo <em>válido</em>. Un nombre vacío llega, un correo
+    inventado llega, un mensaje de ocho mil caracteres llega. La diferencia entre «está» y «sirve»
+    es exactamente el tema de esta clase.
+  </p>
+
+  <h3>0.4 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Unidades, tiempos y productos esperados</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura, programa y decisiones</td><td>20 min</td><td>Tres reglas de validación escritas</td></tr>
+        <tr><td><strong>01</strong></td><td>El viaje del dato: de HTML a FastAPI</td><td>30 min</td><td>Un formulario mínimo que responde</td></tr>
+        <tr><td><strong>02</strong></td><td>Captura de datos con formularios HTML</td><td>30 min</td><td>El formulario de contacto completo</td></tr>
+        <tr><td><strong>03</strong></td><td>Validación en el backend con Pydantic</td><td>30 min</td><td>El modelo <code>Contacto</code> con reglas</td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Actividad 5.1 · Formulario de contacto funcional</td><td>35 min</td><td>La aplicación corriendo de punta a punta</td></tr>
+        <tr><td><strong>06</strong></td><td>Errores que se entienden y patrón PRG</td><td>35 min</td><td>Errores en español y éxito sin reenvíos</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller: contacto listo para producción</td><td>45 min</td><td>La app con pruebas y decisión escrita</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.5 · Lo que vas a construir</h3>
+
+  <p>
+    Al final de la clase tendrás una carpeta pequeña, pero completa. No es un ejercicio suelto:
+    es la misma estructura que usarías para el formulario de contacto de un sitio real.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>contacto/ — la estructura del proyecto</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>contacto/
+│
+├── main.py                  las rutas: GET /, POST /contacto, GET /gracias
+├── modelos.py               el modelo Contacto con las reglas de validación
+├── plantillas/
+│   ├── contacto.html        el formulario, con sus errores
+│   └── gracias.html         la confirmación
+└── test_contacto.py         cuatro pruebas automáticas</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Herramientas y versiones de referencia</caption>
+      <thead>
+        <tr><th>Herramienta</th><th>Versión de referencia</th><th>Para qué</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Python</strong></td><td>3.12 o superior</td><td>El lenguaje del servidor</td></tr>
+        <tr><td><strong>FastAPI</strong></td><td>0.159 o superior</td><td>Rutas, formularios y documentación automática</td></tr>
+        <tr><td><strong>Pydantic</strong></td><td>2.14 o superior</td><td>El modelo y las reglas de validación</td></tr>
+        <tr><td><strong>Jinja2</strong></td><td>La que trae <code>fastapi[standard]</code></td><td>Las plantillas HTML</td></tr>
+        <tr><td><strong>uv</strong></td><td>La actual</td><td>Crear el proyecto, instalar y ejecutar</td></tr>
+        <tr><td><strong>pytest</strong></td><td>La actual</td><td>Las pruebas del taller</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — las versiones cambian, las ideas no</span>
+    <p>
+      Los modelos de formulario de FastAPI existen desde la versión <code>0.113</code>; la
+      posibilidad de prohibir campos extra, desde la <code>0.114</code>. Si tu versión es más
+      nueva, todo lo que sigue funciona igual. Si es más vieja, el modelo de formulario no
+      existirá y tendrás que declarar un <code>Form()</code> por campo: el resto de la clase
+      —tipos, límites, validadores, errores— se aplica exactamente igual.
+    </p>
+  </div>
+
+  <h3>0.6 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito estas tres preguntas. No hay respuestas correctas todavía: son las que la clase va a resolver.</p>
+
+  <ol>
+    <li>¿Qué diferencia hay entre <code>required</code> en el HTML y una regla de validación en el servidor?</li>
+    <li>Si el navegador ya avisa cuando el correo está mal, ¿por qué el servidor tiene que volver a comprobarlo?</li>
+    <li>¿Qué debería hacer el servidor si llega un campo que el formulario no tiene?</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: el viaje del dato →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — EL VIAJE DEL DATO
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · La petición</div>
+    <h2>El viaje del dato: de una caja de texto a un <em>objeto Python</em></h2>
+    <p class="proposito">
+      Cuando pulsas «Enviar» ocurren seis cosas en menos de un segundo. Entender ese recorrido es
+      lo que permite responder la pregunta más útil del desarrollo web: «¿en qué punto se perdió
+      mi dato?».
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: un formulario mínimo que responde</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · Los seis pasos de un envío</h3>
+
+  <div class="diagrama">
+    <div class="nodo cliente">
+      <div class="rotulo-nodo">Paso 1</div>
+      <h5>El navegador recoge</h5>
+      <p>Toma cada control con <code>name</code> y construye parejas <code>nombre=valor</code>.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">Petición<br>HTTP</span>
+    </div>
+    <div class="nodo servidor">
+      <div class="rotulo-nodo">Pasos 2 y 3</div>
+      <h5>El servidor recibe</h5>
+      <p>Lee el cuerpo, lo decodifica y lo entrega a FastAPI como datos del formulario.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">Datos<br>validados</span>
+    </div>
+    <div class="nodo datos">
+      <div class="rotulo-nodo">Pasos 4, 5 y 6</div>
+      <h5>Tu función decide</h5>
+      <p>Pydantic convierte y valida; tu ruta recibe un objeto y responde con una página o un error.</p>
+    </div>
+  </div>
+
+  <p>
+    El paso 1 es el que más se olvida. El navegador no envía «el formulario»: envía una lista de
+    parejas. Si un control no tiene <code>name</code>, no existe para el servidor. Si está
+    deshabilitado, no existe. Si es un checkbox sin marcar, no existe. Esa lista tiene un nombre
+    técnico: los <strong>controles exitosos</strong> (<em>successful controls</em>).
+  </p>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — el atributo que manda es <code>name</code></span>
+    <p>
+      <code>id</code> sirve para el <code>for</code> de la etiqueta, para el CSS y para el
+      JavaScript. <code>name</code> sirve para el servidor. Un campo puede tener
+      <code>id="correo"</code> y <code>name="email"</code>: el servidor recibirá
+      <code>email</code>. Cuando un formulario «no manda nada», la primera revisión es siempre la
+      misma: ¿tiene <code>name</code>? ¿coincide con lo que espera la ruta?
+    </p>
+  </div>
+
+  <h3>1.2 · <code>GET</code> o <code>POST</code>: dónde viaja el dato</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Los dos métodos que usarás en un formulario</caption>
+      <thead>
+        <tr><th></th><th><code>GET</code></th><th><code>POST</code></th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Dónde van los datos</strong></td>
+          <td>En la URL, después del <code>?</code></td>
+          <td>En el cuerpo de la petición</td>
+        </tr>
+        <tr>
+          <td><strong>Se ven</strong></td>
+          <td>Sí: quedan en el historial y en los registros del servidor</td>
+          <td>No: no aparecen en la URL</td>
+        </tr>
+        <tr>
+          <td><strong>Límite de tamaño</strong></td>
+          <td>El de la URL: unos pocos miles de caracteres</td>
+          <td>El que ponga el servidor; puede ser grande</td>
+        </tr>
+        <tr>
+          <td><strong>Se puede recargar sin repetir</strong></td>
+          <td>Sí: es idempotente, volver a pedirlo no cambia nada</td>
+          <td>No: recargar puede enviar el mensaje dos veces</td>
+        </tr>
+        <tr>
+          <td><strong>Para qué se usa</strong></td>
+          <td>Buscar, filtrar, paginar, compartir un enlace</td>
+          <td>Crear, enviar, iniciar sesión, modificar</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — un mensaje nunca viaja en un <code>GET</code></span>
+    <p>
+      Si pones <code>method="get"</code> en el formulario de contacto, el mensaje completo
+      terminará en la barra de direcciones, en el historial del navegador y en los registros del
+      servidor. Además, si el texto es largo, la URL se corta o el servidor la rechaza. Para
+      enviar información usa <code>POST</code>; para consultar información usa <code>GET</code>.
+    </p>
+  </div>
+
+  <h3>1.3 · Qué hay dentro del cuerpo</h3>
+
+  <p>
+    Con <code>method="post"</code> y sin archivos, el navegador envía el cuerpo con el tipo
+    <code>application/x-www-form-urlencoded</code>. Es una sola línea de parejas separadas por
+    <code>&amp;</code>, con los caracteres especiales codificados.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>el cuerpo real de un envío</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>nombre=Ana+Torres&amp;correo=ana%40colegio.edu.co&amp;asunto=consulta&amp;mensaje=Hola%2C+quiero+inscribirme.</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>+</code></dt>
+      <dd>Un espacio. En este formato, el espacio se codifica como <code>+</code> para no romper la línea.</dd>
+    </div>
+    <div>
+      <dt><code>%40</code></dt>
+      <dd>El carácter <code>@</code>, escrito en hexadecimal. <code>%2C</code> es la coma y <code>%C3%B1</code> sería la <code>ñ</code> en UTF-8.</dd>
+    </div>
+    <div>
+      <dt><code>&amp;</code></dt>
+      <dd>El separador entre parejas. Si un valor contuviera un <code>&amp;</code> sin codificar, el servidor creería que empieza otro campo.</dd>
+    </div>
+    <div>
+      <dt><code>multipart/form-data</code></dt>
+      <dd>El otro formato, obligatorio cuando el formulario sube archivos. Lleva cada campo en su propia «parte», con nombre y tipo.</dd>
+    </div>
+  </div>
+
+  <h3>1.4 · Del cuerpo al parámetro: <code>Form()</code></h3>
+
+  <p>
+    FastAPI hace la traducción. Le dices el nombre del campo y el tipo que esperas, y él busca ese
+    nombre en el formulario, lo convierte y te lo entrega. El nombre del parámetro de Python
+    <strong>tiene que coincidir</strong> con el <code>name</code> del HTML.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — el formulario mínimo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> typing <span class="tk-kw">import</span> <span class="tk-cls">Annotated</span>
+
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">FastAPI</span>, <span class="tk-cls">Form</span>
+<span class="tk-kw">from</span> fastapi.responses <span class="tk-kw">import</span> <span class="tk-cls">HTMLResponse</span>
+
+app = <span class="tk-cls">FastAPI</span>()
+
+
+<span class="tk-fn">@app</span>.get(<span class="tk-str">"/"</span>, response_class=<span class="tk-cls">HTMLResponse</span>)
+<span class="tk-kw">def</span> <span class="tk-fn">mostrar_formulario</span>() -&gt; <span class="tk-fn">str</span>:
+    <span class="tk-kw">return</span> <span class="tk-str">"""</span>
+<span class="tk-str">    &lt;form method="post" action="/saludo"&gt;</span>
+<span class="tk-str">      &lt;label for="nombre"&gt;Tu nombre&lt;/label&gt;</span>
+<span class="tk-str">      &lt;input id="nombre" name="nombre" type="text" required&gt;</span>
+<span class="tk-str">      &lt;button type="submit"&gt;Saludar&lt;/button&gt;</span>
+<span class="tk-str">    &lt;/form&gt;</span>
+    <span class="tk-str">"""</span>
+
+
+<span class="tk-fn">@app</span>.post(<span class="tk-str">"/saludo"</span>)
+<span class="tk-kw">def</span> <span class="tk-fn">saludar</span>(nombre: <span class="tk-cls">Annotated</span>[<span class="tk-fn">str</span>, <span class="tk-cls">Form</span>()]) -&gt; <span class="tk-fn">dict</span>[<span class="tk-fn">str</span>, <span class="tk-fn">str</span>]:
+    <span class="tk-kw">return</span> {<span class="tk-str">"mensaje"</span>: <span class="tk-str">f"Hola, {</span>nombre<span class="tk-str">}"</span>}
+</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — instalar y arrancar</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>uv add <span class="tk-str">"fastapi[standard]"</span>
+uv run fastapi dev main.py
+
+<span class="tk-cm"># Abre http://127.0.0.1:8000, escribe un nombre y pulsa Saludar.
+# La respuesta es {"mensaje": "Hola, ..."} y /docs muestra la ruta.
+</span></code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — la dependencia que casi nadie recuerda</span>
+    <p>
+      Para leer formularios, FastAPI necesita <code>python-multipart</code>. El grupo
+      <code>fastapi[standard]</code> ya lo incluye. Si instalas solo <code>fastapi</code>, el
+      error dirá que falta <code>python-multipart</code> cuando pulses «Enviar», no al arrancar.
+      Si eso pasa, añádelo: <code>uv add python-multipart</code>.
+    </p>
+  </div>
+
+  <h3>1.5 · Cuando el campo no llega</h3>
+
+  <p>
+    Estos son los cinco motivos por los que un campo que ves en pantalla no aparece en el
+    servidor. Los cinco son más frecuentes que cualquier error de FastAPI.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Por qué un campo no llega al servidor</caption>
+      <thead>
+        <tr><th>Síntoma</th><th>Causa habitual</th><th>Cómo se corrige</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>El campo no aparece en <code>request.form()</code></td><td>No tiene atributo <code>name</code></td><td>Añadirlo con el nombre que espera la ruta</td></tr>
+        <tr><td>La ruta responde <code>422</code> y dice «missing»</td><td>El <code>name</code> está escrito distinto: <code>correo</code> frente a <code>email</code></td><td>Unificar el nombre en HTML, modelo y ruta</td></tr>
+        <tr><td>El campo está fuera del formulario</td><td>El <code>&lt;input&gt;</code> quedó después de <code>&lt;/form&gt;</code></td><td>Moverlo dentro o usar el atributo <code>form="id-del-form"</code></td></tr>
+        <tr><td>El checkbox no llega cuando está desmarcado</td><td>Un checkbox sin marcar no es un control exitoso</td><td>Darle un valor por defecto en el modelo o comprobarlo como opcional</td></tr>
+        <tr><td>El archivo llega vacío o como texto</td><td>Falta <code>enctype="multipart/form-data"</code></td><td>Añadirlo al <code>&lt;form&gt;</code> y usar <code>UploadFile</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>1.6 · La variante dinámica: <code>request.form()</code></h3>
+
+  <p>
+    Cuando los campos no se conocen de antemano —una encuesta que cambia, un formulario que el
+    usuario construye— no se puede declarar un parámetro por campo. Ahí se lee el formulario
+    completo como un diccionario.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — leer todos los campos</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">FastAPI</span>, <span class="tk-cls">Request</span>
+
+app = <span class="tk-cls">FastAPI</span>()
+
+
+<span class="tk-fn">@app</span>.post(<span class="tk-str">"/contacto"</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">recibir_cualquier_campo</span>(request: <span class="tk-cls">Request</span>) -&gt; <span class="tk-fn">dict</span>[<span class="tk-fn">str</span>, <span class="tk-fn">str</span>]:
+    formulario = <span class="tk-kw">await</span> request.form()
+    <span class="tk-kw">return</span> {
+        <span class="tk-str">"campos"</span>: <span class="tk-str">", "</span>.join(formulario.keys()),
+        <span class="tk-str">"mensaje"</span>: <span class="tk-fn">str</span>(formulario.get(<span class="tk-str">"mensaje"</span>, <span class="tk-str">""</span>)),
+    }
+</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — dinámico no significa sin reglas</span>
+    <p>
+      <code>request.form()</code> entrega exactamente lo que llegó, sin validar nada. Si el
+      formulario es dinámico, la validación se escribe a mano: lista de campos permitidos,
+      longitud máxima por campo, tipos y valores aceptados. «No sé qué campos vendrán» no es una
+      excusa para aceptar cualquier cosa; es una razón para tener una lista blanca.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué envía el navegador al pulsar «Enviar»?</p>
+      <button class="opcion" data-op="a">El HTML completo del formulario</button>
+      <button class="opcion" data-op="b">Las parejas <code>nombre=valor</code> de los controles exitosos</button>
+      <button class="opcion" data-op="c">Solo el texto del botón pulsado</button>
+      <button class="opcion" data-op="d">Una captura de pantalla del formulario</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Por qué el mensaje de contacto debe viajar en un <code>POST</code> y no en un <code>GET</code>?</p>
+      <button class="opcion" data-op="a">Porque <code>GET</code> no admite texto</button>
+      <button class="opcion" data-op="b">Porque <code>POST</code> es más rápido</button>
+      <button class="opcion" data-op="c">Porque en <code>GET</code> el contenido quedaría en la URL, el historial y los registros</button>
+      <button class="opcion" data-op="d">Porque HTML no permite formularios con <code>GET</code></button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> Un campo tiene <code>id="correo"</code> pero no tiene <code>name</code>. ¿Qué recibe el servidor?</p>
+      <button class="opcion" data-op="a">Nada: el campo no se envía</button>
+      <button class="opcion" data-op="b">El valor con la clave <code>correo</code></button>
+      <button class="opcion" data-op="c">El valor con la clave <code>id</code></button>
+      <button class="opcion" data-op="d">Un error de HTML antes de enviar</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Para qué sirve <code>python-multipart</code>?</p>
+      <button class="opcion" data-op="a">Para instalar FastAPI</button>
+      <button class="opcion" data-op="b">Para validar direcciones de correo</button>
+      <button class="opcion" data-op="c">Para generar la documentación automática</button>
+      <button class="opcion" data-op="d">Para leer el cuerpo de los formularios y los archivos</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: captura con HTML →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — CAPTURA CON FORMULARIOS HTML
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · La captura</div>
+    <h2>Captura de datos con <em>formularios HTML</em></h2>
+    <p class="proposito">
+      Un formulario es la interfaz entre una persona y una base de datos que todavía no existe.
+      Cada campo que escribes es una promesa sobre el dato que vas a recibir. Esta unidad construye
+      el formulario de contacto completo, campo por campo, y explica qué promete cada atributo.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: el formulario de contacto completo</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · El formulario de contacto</h3>
+
+  <p class="primer-párrafo">
+    Este es el formulario que vas a usar durante el resto de la clase. Léelo completo antes de
+    copiarlo: cada atributo está ahí por una razón, y en la tabla siguiente están todas.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>plantillas/contacto.html — el formulario completo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm">&lt;!DOCTYPE html&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-tag">html</span> <span class="tk-attr">lang</span>=<span class="tk-str">"es"</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-tag">head</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">meta</span> <span class="tk-attr">charset</span>=<span class="tk-str">"UTF-8"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">meta</span> <span class="tk-attr">name</span>=<span class="tk-str">"viewport"</span> <span class="tk-attr">content</span>=<span class="tk-str">"width=device-width, initial-scale=1.0"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">title</span><span class="tk-pun">&gt;</span>Contacto · Club de Robótica<span class="tk-pun">&lt;/</span><span class="tk-tag">title</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">head</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-tag">body</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">main</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">h1</span><span class="tk-pun">&gt;</span>Escribe al club<span class="tk-pun">&lt;/</span><span class="tk-tag">h1</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>Respondemos en dos días hábiles.<span class="tk-pun">&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+
+    <span class="tk-pun">&lt;</span><span class="tk-tag">form</span> <span class="tk-attr">action</span>=<span class="tk-str">"/contacto"</span> <span class="tk-attr">method</span>=<span class="tk-str">"post"</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>=<span class="tk-str">"nombre"</span><span class="tk-pun">&gt;</span>Nombre completo<span class="tk-pun">&lt;/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;&lt;</span><span class="tk-tag">br</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">input</span> <span class="tk-attr">id</span>=<span class="tk-str">"nombre"</span> <span class="tk-attr">name</span>=<span class="tk-str">"nombre"</span> <span class="tk-attr">type</span>=<span class="tk-str">"text"</span>
+               <span class="tk-attr">required</span> <span class="tk-attr">minlength</span>=<span class="tk-str">"3"</span> <span class="tk-attr">maxlength</span>=<span class="tk-str">"60"</span> <span class="tk-attr">autocomplete</span>=<span class="tk-str">"name"</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+
+      <span class="tk-pun">&lt;</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>=<span class="tk-str">"correo"</span><span class="tk-pun">&gt;</span>Correo electrónico<span class="tk-pun">&lt;/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;&lt;</span><span class="tk-tag">br</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">input</span> <span class="tk-attr">id</span>=<span class="tk-str">"correo"</span> <span class="tk-attr">name</span>=<span class="tk-str">"correo"</span> <span class="tk-attr">type</span>=<span class="tk-str">"email"</span>
+               <span class="tk-attr">required</span> <span class="tk-attr">maxlength</span>=<span class="tk-str">"120"</span> <span class="tk-attr">autocomplete</span>=<span class="tk-str">"email"</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+
+      <span class="tk-pun">&lt;</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>=<span class="tk-str">"asunto"</span><span class="tk-pun">&gt;</span>Asunto<span class="tk-pun">&lt;/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;&lt;</span><span class="tk-tag">br</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">select</span> <span class="tk-attr">id</span>=<span class="tk-str">"asunto"</span> <span class="tk-attr">name</span>=<span class="tk-str">"asunto"</span> <span class="tk-attr">required</span><span class="tk-pun">&gt;</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">option</span> <span class="tk-attr">value</span>=<span class="tk-str">""</span><span class="tk-pun">&gt;</span>Elige una opción<span class="tk-pun">&lt;/</span><span class="tk-tag">option</span><span class="tk-pun">&gt;</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">option</span> <span class="tk-attr">value</span>=<span class="tk-str">"consulta"</span><span class="tk-pun">&gt;</span>Consulta general<span class="tk-pun">&lt;/</span><span class="tk-tag">option</span><span class="tk-pun">&gt;</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">option</span> <span class="tk-attr">value</span>=<span class="tk-str">"soporte"</span><span class="tk-pun">&gt;</span>Soporte técnico<span class="tk-pun">&lt;/</span><span class="tk-tag">option</span><span class="tk-pun">&gt;</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">option</span> <span class="tk-attr">value</span>=<span class="tk-str">"sugerencia"</span><span class="tk-pun">&gt;</span>Sugerencia<span class="tk-pun">&lt;/</span><span class="tk-tag">option</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;/</span><span class="tk-tag">select</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+
+      <span class="tk-pun">&lt;</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>=<span class="tk-str">"mensaje"</span><span class="tk-pun">&gt;</span>Mensaje<span class="tk-pun">&lt;/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;&lt;</span><span class="tk-tag">br</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">textarea</span> <span class="tk-attr">id</span>=<span class="tk-str">"mensaje"</span> <span class="tk-attr">name</span>=<span class="tk-str">"mensaje"</span> <span class="tk-attr">rows</span>=<span class="tk-str">"6"</span> <span class="tk-attr">cols</span>=<span class="tk-str">"50"</span>
+                  <span class="tk-attr">required</span> <span class="tk-attr">minlength</span>=<span class="tk-str">"20"</span> <span class="tk-attr">maxlength</span>=<span class="tk-str">"800"</span><span class="tk-pun">&gt;&lt;/</span><span class="tk-tag">textarea</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+
+      <span class="tk-pun">&lt;</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">input</span> <span class="tk-attr">type</span>=<span class="tk-str">"checkbox"</span> <span class="tk-attr">name</span>=<span class="tk-str">"acepta"</span> <span class="tk-attr">value</span>=<span class="tk-str">"true"</span> <span class="tk-attr">required</span><span class="tk-pun">&gt;</span>
+          Acepto que el club use mis datos para responderme.
+        <span class="tk-pun">&lt;/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+
+      <span class="tk-pun">&lt;</span><span class="tk-tag">button</span> <span class="tk-attr">type</span>=<span class="tk-str">"submit"</span><span class="tk-pun">&gt;</span>Enviar mensaje<span class="tk-pun">&lt;/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;/</span><span class="tk-tag">form</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;/</span><span class="tk-tag">main</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">body</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">html</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <h3>2.2 · Campo por campo: la promesa y su comprobación</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>El contrato del formulario de contacto</caption>
+      <thead>
+        <tr><th>Campo</th><th><code>name</code></th><th>Tipo HTML</th><th>Regla del navegador</th><th>Regla del servidor</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Nombre</td>
+          <td><code>nombre</code></td>
+          <td><code>text</code></td>
+          <td><code>required</code>, 3 a 60 caracteres</td>
+          <td><code>StringConstraints(min_length=3, max_length=60)</code></td>
+        </tr>
+        <tr>
+          <td>Correo</td>
+          <td><code>correo</code></td>
+          <td><code>email</code></td>
+          <td><code>required</code>, máximo 120, formato de correo</td>
+          <td><code>EmailStr</code></td>
+        </tr>
+        <tr>
+          <td>Asunto</td>
+          <td><code>asunto</code></td>
+          <td><code>select</code></td>
+          <td><code>required</code>, una de tres opciones</td>
+          <td><code>Literal["consulta", "soporte", "sugerencia"]</code></td>
+        </tr>
+        <tr>
+          <td>Mensaje</td>
+          <td><code>mensaje</code></td>
+          <td><code>textarea</code></td>
+          <td><code>required</code>, 20 a 800 caracteres</td>
+          <td><code>StringConstraints(min_length=20, max_length=800)</code></td>
+        </tr>
+        <tr>
+          <td>Consentimiento</td>
+          <td><code>acepta</code></td>
+          <td><code>checkbox</code></td>
+          <td><code>required</code>: hay que marcarlo</td>
+          <td><code>bool</code> y un validador que exige <code>True</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — el formulario promete; el modelo comprueba</span>
+    <p>
+      Las dos columnas se parecen, pero no son iguales. <code>type="email"</code> acepta
+      <code>ana@colegio</code> (sin punto en el dominio), porque el estándar HTML es permisivo.
+      <code>EmailStr</code> es más estricto y exige un dominio con punto. Esa diferencia es
+      normal y es la razón por la que el servidor vuelve a comprobar: las reglas del navegador
+      son un subconjunto cómodo, no la definición del dato.
+    </p>
+  </div>
+
+  <h3>2.3 · La validación nativa del navegador</h3>
+
+  <p>
+    HTML trae un pequeño motor de validación. No necesita JavaScript y funciona antes de que el
+    formulario salga del navegador. Estos son los atributos que más se usan.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Atributos de validación nativa</caption>
+      <thead>
+        <tr><th>Atributo</th><th>Qué exige</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>required</code></td><td>Que el campo no esté vacío</td><td><code>&lt;input required&gt;</code></td></tr>
+        <tr><td><code>minlength</code> / <code>maxlength</code></td><td>Longitud mínima y máxima del texto</td><td><code>minlength="3" maxlength="60"</code></td></tr>
+        <tr><td><code>min</code> / <code>max</code> / <code>step</code></td><td>Rango y salto de un número o una fecha</td><td><code>&lt;input type="number" min="1" max="10"&gt;</code></td></tr>
+        <tr><td><code>pattern</code></td><td>Una expresión regular contra el valor completo</td><td><code>pattern="[0-9]{6}"</code></td></tr>
+        <tr><td><code>type="email"</code></td><td>Una forma básica de correo</td><td><code>&lt;input type="email"&gt;</code></td></tr>
+        <tr><td><code>type="url"</code></td><td>Una URL con esquema</td><td><code>&lt;input type="url"&gt;</code></td></tr>
+        <tr><td><code>accept</code></td><td>Los tipos de archivo permitidos al subir</td><td><code>accept="image/png,image/jpeg"</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Cuando el usuario pulsa «Enviar», el navegador revisa cada control. Si alguno no cumple, no
+    envía la petición y muestra su propio globo de error, en el idioma del navegador y con un
+    diseño que no puedes cambiar. Ese globo es cómodo, pero no es tuyo.
+  </p>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — <code>novalidate</code>: apagar el motor del navegador</span>
+    <p>
+      El atributo <code>novalidate</code> en el <code>&lt;form&gt;</code> desactiva toda la
+      validación nativa. Es útil para probar el servidor y para construir una validación propia
+      con JavaScript. En producción no se pone por capricho: si lo quitas, recuperas gratis los
+      avisos inmediatos y la accesibilidad que ya trae el navegador.
+    </p>
+  </div>
+
+  <h3>2.4 · Accesibilidad: el formulario también se escucha</h3>
+
+  <p>
+    Un formulario no se usa solo con el ratón. Se usa con el teclado, con un lector de pantalla,
+    con el zoom al 200 % y con el dedo en una pantalla pequeña. Cuatro decisiones resuelven casi
+    todos los problemas.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>Una etiqueta por campo</dt>
+      <dd>Cada <code>&lt;input&gt;</code> tiene su <code>&lt;label for="id"&gt;</code>. Al pulsar la etiqueta, el cursor salta al campo; el lector de pantalla anuncia el nombre. Un <code>placeholder</code> no sustituye a la etiqueta: desaparece al escribir y suele tener poco contraste.</dd>
+    </div>
+    <div>
+      <dt>Los grupos, con <code>fieldset</code></dt>
+      <dd>Un grupo de radios o de checkboxes relacionados va dentro de <code>&lt;fieldset&gt;</code> con un <code>&lt;legend&gt;</code>. Así se anuncia «Asunto: consulta, soporte o sugerencia» como una sola pregunta.</dd>
+    </div>
+    <div>
+      <dt>El error, en texto</dt>
+      <dd>El color rojo no es un mensaje. El error se escribe, se asocia al campo con <code>aria-describedby</code> y se marca el campo con <code>aria-invalid="true"</code>.</dd>
+    </div>
+    <div>
+      <dt>El foco, visible</dt>
+      <dd>Nunca se quita el contorno del foco sin poner otro. Quien navega con <kbd>Tab</kbd> necesita saber dónde está.</dd>
+    </div>
+  </div>
+
+  <h3>2.5 · Los errores que se repiten</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Errores frecuentes al escribir un formulario</caption>
+      <thead>
+        <tr><th>Error</th><th>Consecuencia</th><th>Corrección</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Usar solo <code>placeholder</code></td><td>La etiqueta desaparece y el campo queda sin nombre accesible</td><td>Añadir un <code>&lt;label&gt;</code> visible</td></tr>
+        <tr><td>Olvidar <code>name</code></td><td>El campo nunca llega al servidor</td><td>Poner el mismo nombre que espera la ruta</td></tr>
+        <tr><td><code>type="text"</code> para el correo</td><td>El móvil no muestra la arroba y no hay ayuda de formato</td><td><code>type="email"</code> y <code>inputmode="email"</code></td></tr>
+        <tr><td><code>maxlength</code> enorme o ausente</td><td>Un mensaje de un millón de caracteres puede agotar la memoria</td><td>Un límite razonable, también en el servidor</td></tr>
+        <tr><td><code>required</code> en un campo oculto</td><td>El formulario no se puede enviar y el error es invisible</td><td>No marcar como obligatorio lo que el usuario no puede ver</td></tr>
+        <tr><td><code>&lt;button&gt;</code> sin <code>type</code></td><td>Dentro de un formulario, el valor por defecto es <code>submit</code></td><td>Escribir <code>type="submit"</code> o <code>type="button"</code></td></tr>
+        <tr><td>Dos campos con el mismo <code>name</code></td><td>El servidor recibe una lista o el último valor, según el caso</td><td>Nombres únicos, salvo en checkboxes agrupados</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>2.6 · La prueba que rompe la ilusión</h3>
+
+  <p>
+    Abre la terminal y envía el formulario sin pasar por el navegador. <code>curl</code> no lee
+    <code>required</code>, no ejecuta JavaScript y no muestra globos de error. Si el servidor
+    acepta esto, no tiene validación: tiene una sugerencia.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — un envío que el navegador nunca permitiría</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>curl -i -X POST http://127.0.0.1:8000/contacto <span class="tk-str">\
+</span>  -d <span class="tk-str">"nombre=Al"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"correo=ana@"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"asunto=otro"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"mensaje=corto"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"acepta=true"</span>
+</code></pre>
+  </div>
+
+  <p>
+    La respuesta debería ser un <code>422</code> con la lista de errores, no un <code>200</code>.
+    Esa respuesta la produce Pydantic, y es el tema de la unidad siguiente. Si tu ruta devuelve
+    <code>200</code>, acabas de descubrir que la única validación que tenías era la del navegador.
+  </p>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué atributo hace que el valor de un campo viaje al servidor?</p>
+      <button class="opcion" data-op="a"><code>id</code></button>
+      <button class="opcion" data-op="b"><code>placeholder</code></button>
+      <button class="opcion" data-op="c"><code>name</code></button>
+      <button class="opcion" data-op="d"><code>autocomplete</code></button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Qué hace <code>required</code> en el servidor?</p>
+      <button class="opcion" data-op="a">Rechaza el campo si está vacío, aunque el navegador lo omita</button>
+      <button class="opcion" data-op="b">Nada: es una regla del navegador y se puede saltar</button>
+      <button class="opcion" data-op="c">Convierte el campo en obligatorio en Pydantic</button>
+      <button class="opcion" data-op="d">Cifra el valor antes de enviarlo</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Por qué conviene un <code>&lt;label for="correo"&gt;</code>?</p>
+      <button class="opcion" data-op="a">Porque sin él el campo no se envía</button>
+      <button class="opcion" data-op="b">Porque cambia el tipo de dato a correo</button>
+      <button class="opcion" data-op="c">Porque el servidor lo exige en el modelo</button>
+      <button class="opcion" data-op="d">Porque asocia un nombre visible y accesible al campo</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> Un checkbox sin marcar, ¿qué envía?</p>
+      <button class="opcion" data-op="a">Nada: no es un control exitoso</button>
+      <button class="opcion" data-op="b">El valor <code>false</code></button>
+      <button class="opcion" data-op="c">Una cadena vacía con su <code>name</code></button>
+      <button class="opcion" data-op="d">El texto de la etiqueta</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: El viaje del dato</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: validación en el backend →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — VALIDACIÓN EN EL BACKEND
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · La garantía</div>
+    <h2>Validación en el <em>backend</em>: la única que no se puede saltar</h2>
+    <p class="proposito">
+      El navegador es un empleado amable, no un guardia. Esta unidad pone la frontera donde de
+      verdad importa: el modelo Pydantic que decide qué entra, con tipos, límites, valores
+      permitidos y reglas propias del negocio.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: el modelo Contacto con reglas</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · La frontera de confianza</h3>
+
+  <p class="primer-párrafo">
+    Imagina que el formulario es la ventanilla de una oficina. La ventanilla sirve para ordenar la
+    fila y para que la gente sepa qué papeles traer. Pero el funcionario que recibe los papeles no
+    puede fiarse de que estén completos solo porque hay un cartel que lo dice: tiene que revisarlos
+    uno por uno. El servidor es ese funcionario.
+  </p>
+
+  <p>
+    En seguridad informática, esa línea se llama <strong>frontera de confianza</strong>. Todo lo
+    que está por fuera —el navegador, la red, el formulario, el JavaScript, <code>curl</code>— es
+    territorio no confiable. Todo lo que está por dentro —tu código Python— es lo único que puedes
+    dar por cierto. La validación del servidor es la aduana que cruza esa línea.
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — la misma regla en cualquier lenguaje</span>
+    <p>
+      Esto no es una costumbre de FastAPI. Cualquier servidor —Django, Express, Spring, Laravel—
+      recibe texto sin validar y tiene que convertirlo en un dato seguro. Cambia la herramienta,
+      no la obligación. Aprender a pensar en «qué entra» y «qué se guarda» vale más que memorizar
+      un decorador.
+    </p>
+  </div>
+
+  <h3>3.2 · El modelo <code>Contacto</code></h3>
+
+  <p>
+    Un modelo Pydantic es una clase que describe un dato válido. Cada atributo es un campo; cada
+    tipo es una regla; cada <code>Field</code> o <code>StringConstraints</code> es un límite. Si
+    el dato no cumple, el modelo no se construye y FastAPI responde <code>422</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>modelos.py — el contrato del contacto</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-str">"""Modelos de validación del formulario de contacto."""</span>
+
+<span class="tk-kw">from</span> typing <span class="tk-kw">import</span> <span class="tk-cls">Annotated</span>, <span class="tk-cls">Literal</span>
+
+<span class="tk-kw">from</span> pydantic <span class="tk-kw">import</span> <span class="tk-cls">BaseModel</span>, <span class="tk-cls">ConfigDict</span>, <span class="tk-cls">EmailStr</span>, <span class="tk-cls">StringConstraints</span>, field_validator
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">Contacto</span>(<span class="tk-cls">BaseModel</span>):
+    <span class="tk-str">"""Datos que acepta el formulario de contacto del club."""</span>
+
+    model_config = <span class="tk-cls">ConfigDict</span>(str_strip_whitespace=<span class="tk-kw">True</span>, extra=<span class="tk-str">"forbid"</span>)
+
+    nombre: <span class="tk-cls">Annotated</span>[<span class="tk-fn">str</span>, <span class="tk-cls">StringConstraints</span>(min_length=<span class="tk-num">3</span>, max_length=<span class="tk-num">60</span>)]
+    correo: <span class="tk-cls">EmailStr</span>
+    asunto: <span class="tk-cls">Literal</span>[<span class="tk-str">"consulta"</span>, <span class="tk-str">"soporte"</span>, <span class="tk-str">"sugerencia"</span>]
+    mensaje: <span class="tk-cls">Annotated</span>[<span class="tk-fn">str</span>, <span class="tk-cls">StringConstraints</span>(min_length=<span class="tk-num">20</span>, max_length=<span class="tk-num">800</span>)]
+    acepta: <span class="tk-fn">bool</span>
+    sitio: <span class="tk-fn">str</span> = <span class="tk-str">""</span>
+
+    <span class="tk-fn">@field_validator</span>(<span class="tk-str">"acepta"</span>)
+    <span class="tk-fn">@classmethod</span>
+    <span class="tk-kw">def</span> <span class="tk-fn">debe_aceptar</span>(<span class="tk-fn">cls</span>, valor: <span class="tk-fn">bool</span>) -&gt; <span class="tk-fn">bool</span>:
+        <span class="tk-str">"""La casilla de consentimiento no es opcional."""</span>
+        <span class="tk-kw">if</span> <span class="tk-kw">not</span> valor:
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"Debes aceptar para enviar el mensaje."</span>)
+        <span class="tk-kw">return</span> valor
+
+    <span class="tk-fn">@field_validator</span>(<span class="tk-str">"mensaje"</span>)
+    <span class="tk-fn">@classmethod</span>
+    <span class="tk-kw">def</span> <span class="tk-fn">sin_enlaces</span>(<span class="tk-fn">cls</span>, valor: <span class="tk-fn">str</span>) -&gt; <span class="tk-fn">str</span>:
+        <span class="tk-str">"""Un formulario de contacto no necesita enlaces en el primer mensaje."""</span>
+        <span class="tk-kw">if</span> <span class="tk-str">"http://"</span> <span class="tk-kw">in</span> valor <span class="tk-kw">or</span> <span class="tk-str">"https://"</span> <span class="tk-kw">in</span> valor:
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"El mensaje no puede contener enlaces."</span>)
+        <span class="tk-kw">return</span> valor
+
+    <span class="tk-fn">@field_validator</span>(<span class="tk-str">"sitio"</span>)
+    <span class="tk-fn">@classmethod</span>
+    <span class="tk-kw">def</span> <span class="tk-fn">trampa_vacia</span>(<span class="tk-fn">cls</span>, valor: <span class="tk-fn">str</span>) -&gt; <span class="tk-fn">str</span>:
+        <span class="tk-str">"""El campo invisible debe llegar vacío: si trae algo, es un robot."""</span>
+        <span class="tk-kw">if</span> valor:
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"El campo invisible debe estar vacío."</span>)
+        <span class="tk-kw">return</span> valor
+</code></pre>
+  </div>
+
+  <p>
+    Hay seis decisiones importantes en esas pocas líneas. Vale la pena leerlas despacio.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>str_strip_whitespace=True</code></dt>
+      <dd>Recorta los espacios de los extremos <strong>antes</strong> de medir. Un nombre <code>"  Ana  "</code> se valida como <code>"Ana"</code>. Sin esto, un texto de tres espacios pasaría un mínimo de tres y llegaría a la base de datos como basura.</dd>
+    </div>
+    <div>
+      <dt><code>extra="forbid"</code></dt>
+      <dd>Si el formulario trae un campo que el modelo no declara, la petición se rechaza. Es una defensa contra campos inesperados y contra la tentación de aceptar «cualquier cosa extra».</dd>
+    </div>
+    <div>
+      <dt><code>StringConstraints(min_length=3, max_length=60)</code></dt>
+      <dd>El límite vive junto al tipo, no en un <code>if</code> suelto. Se documenta solo en <code>/docs</code> y se prueba solo.</dd>
+    </div>
+    <div>
+      <dt><code>EmailStr</code></dt>
+      <dd>Valida la forma del correo con <code>email-validator</code>. No comprueba que el buzón exista: eso solo se sabe enviando un correo. <code>fastapi[standard]</code> ya trae la dependencia.</dd>
+    </div>
+    <div>
+      <dt><code>Literal[...]</code></dt>
+      <dd>El asunto solo puede ser uno de tres valores. No es una sugerencia del <code>select</code>: es una lista cerrada en el servidor.</dd>
+    </div>
+    <div>
+      <dt><code>field_validator</code></dt>
+      <dd>Una regla que no cabe en un tipo: el consentimiento tiene que ser verdadero, el mensaje no puede llevar enlaces, el campo trampa tiene que estar vacío. Si falla, se lanza <code>ValueError</code> y FastAPI lo convierte en <code>422</code>.</dd>
+    </div>
+  </div>
+
+  <h3>3.3 · El modelo como formulario</h3>
+
+  <p>
+    Desde FastAPI <code>0.113</code>, un modelo Pydantic se puede declarar directamente como
+    formulario con <code>Annotated[Contacto, Form()]</code>. FastAPI extrae cada campo del cuerpo,
+    lo valida y te entrega un objeto <code>Contacto</code> ya construido.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — recibir el modelo completo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> typing <span class="tk-kw">import</span> <span class="tk-cls">Annotated</span>
+
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">FastAPI</span>, <span class="tk-cls">Form</span>
+<span class="tk-kw">from</span> fastapi.responses <span class="tk-kw">import</span> <span class="tk-cls">RedirectResponse</span>
+
+<span class="tk-kw">from</span> modelos <span class="tk-kw">import</span> <span class="tk-cls">Contacto</span>
+
+app = <span class="tk-cls">FastAPI</span>()
+
+
+<span class="tk-fn">@app</span>.post(<span class="tk-str">"/contacto"</span>)
+<span class="tk-kw">def</span> <span class="tk-fn">recibir_contacto</span>(datos: <span class="tk-cls">Annotated</span>[<span class="tk-cls">Contacto</span>, <span class="tk-cls">Form</span>()]) -&gt; <span class="tk-cls">RedirectResponse</span>:
+    <span class="tk-cm"># Aquí iría guardar el mensaje o enviarlo por correo.</span>
+    <span class="tk-fn">print</span>(<span class="tk-str">f"Contacto recibido: asunto={</span>datos.asunto<span class="tk-str">}"</span>)
+    <span class="tk-kw">return</span> <span class="tk-cls">RedirectResponse</span>(url=<span class="tk-str">"/gracias"</span>, status_code=<span class="tk-num">303</span>)
+</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — un <code>Form()</code> por campo también existe</span>
+    <p>
+      Antes de los modelos de formulario se escribía un parámetro por campo:
+      <code>nombre: Annotated[str, Form(min_length=3, max_length=60)]</code>. Sigue funcionando y
+      es perfecto para dos o tres campos. El modelo gana cuando hay reglas compartidas,
+      validadores propios o varios formularios parecidos: se escribe una vez y se reutiliza. En
+      esta clase usamos el modelo porque el contacto tiene seis campos y tres reglas que no caben
+      en un tipo.
+    </p>
+  </div>
+
+  <h3>3.4 · Lo que el servidor comprueba y el navegador no puede</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Reglas que solo existen en el backend</caption>
+      <thead>
+        <tr><th>Regla</th><th>¿La puede hacer el HTML?</th><th>¿Por qué debe hacerla el servidor?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Longitud máxima del mensaje</td><td>Sí, con <code>maxlength</code></td><td>El navegador se puede saltar; el servidor no</td></tr>
+        <tr><td>Forma del correo</td><td>Sí, con <code>type="email"</code></td><td>El estándar HTML es más permisivo que <code>EmailStr</code></td></tr>
+        <tr><td>Asunto dentro de una lista</td><td>Sí, con <code>&lt;select&gt;</code></td><td><code>curl</code> puede enviar cualquier valor</td></tr>
+        <tr><td>Consentimiento verdadero</td><td>Sí, con <code>required</code></td><td>Un checkbox ausente o falso debe rechazarse en el servidor</td></tr>
+        <tr><td>Sin enlaces en el primer mensaje</td><td>No</td><td>Es una regla del club, no del navegador</td></tr>
+        <tr><td>Campo trampa vacío</td><td>No</td><td>Es una defensa antispam que el robot no debe ver</td></tr>
+        <tr><td>Campos extra prohibidos</td><td>No</td><td>El cliente puede inventar claves que el formulario no tiene</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>3.5 · El <code>422</code> que produce todo esto</h3>
+
+  <p>
+    Si alguien envía datos inválidos, FastAPI no llama a tu función. Responde antes, con el estado
+    <code>422 Unprocessable Entity</code> y un cuerpo JSON que describe cada error. Este es el
+    cuerpo real de un envío con cuatro errores.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>respuesta 422 — el contrato de errores de FastAPI</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">{</span>
+  <span class="tk-attr">"detail"</span><span class="tk-pun">:</span> <span class="tk-pun">[</span>
+    <span class="tk-pun">{</span>
+      <span class="tk-attr">"type"</span><span class="tk-pun">:</span> <span class="tk-str">"string_too_short"</span><span class="tk-pun">,</span>
+      <span class="tk-attr">"loc"</span><span class="tk-pun">:</span> <span class="tk-pun">[</span><span class="tk-str">"body"</span><span class="tk-pun">,</span> <span class="tk-str">"nombre"</span><span class="tk-pun">],</span>
+      <span class="tk-attr">"msg"</span><span class="tk-pun">:</span> <span class="tk-str">"String should have at least 3 characters"</span><span class="tk-pun">,</span>
+      <span class="tk-attr">"input"</span><span class="tk-pun">:</span> <span class="tk-str">"Al"</span><span class="tk-pun">,</span>
+      <span class="tk-attr">"ctx"</span><span class="tk-pun">:</span> <span class="tk-pun">{</span><span class="tk-attr">"min_length"</span><span class="tk-pun">:</span> <span class="tk-num">3</span><span class="tk-pun">}</span>
+    <span class="tk-pun">},</span>
+    <span class="tk-pun">{</span>
+      <span class="tk-attr">"type"</span><span class="tk-pun">:</span> <span class="tk-str">"value_error"</span><span class="tk-pun">,</span>
+      <span class="tk-attr">"loc"</span><span class="tk-pun">:</span> <span class="tk-pun">[</span><span class="tk-str">"body"</span><span class="tk-pun">,</span> <span class="tk-str">"correo"</span><span class="tk-pun">],</span>
+      <span class="tk-attr">"msg"</span><span class="tk-pun">:</span> <span class="tk-str">"value is not a valid email address: There must be something after the @-sign."</span><span class="tk-pun">,</span>
+      <span class="tk-attr">"input"</span><span class="tk-pun">:</span> <span class="tk-str">"ana@"</span><span class="tk-pun">,</span>
+      <span class="tk-attr">"ctx"</span><span class="tk-pun">:</span> <span class="tk-pun">{</span><span class="tk-attr">"reason"</span><span class="tk-pun">:</span> <span class="tk-str">"There must be something after the @-sign."</span><span class="tk-pun">}</span>
+    <span class="tk-pun">},</span>
+    <span class="tk-pun">{</span>
+      <span class="tk-attr">"type"</span><span class="tk-pun">:</span> <span class="tk-str">"literal_error"</span><span class="tk-pun">,</span>
+      <span class="tk-attr">"loc"</span><span class="tk-pun">:</span> <span class="tk-pun">[</span><span class="tk-str">"body"</span><span class="tk-pun">,</span> <span class="tk-str">"asunto"</span><span class="tk-pun">],</span>
+      <span class="tk-attr">"msg"</span><span class="tk-pun">:</span> <span class="tk-str">"Input should be 'consulta', 'soporte' or 'sugerencia'"</span><span class="tk-pun">,</span>
+      <span class="tk-attr">"input"</span><span class="tk-pun">:</span> <span class="tk-str">"otro"</span><span class="tk-pun">,</span>
+      <span class="tk-attr">"ctx"</span><span class="tk-pun">:</span> <span class="tk-pun">{</span><span class="tk-attr">"expected"</span><span class="tk-pun">:</span> <span class="tk-str">"'consulta', 'soporte' or 'sugerencia'"</span><span class="tk-pun">}</span>
+    <span class="tk-pun">},</span>
+    <span class="tk-pun">{</span>
+      <span class="tk-attr">"type"</span><span class="tk-pun">:</span> <span class="tk-str">"string_too_short"</span><span class="tk-pun">,</span>
+      <span class="tk-attr">"loc"</span><span class="tk-pun">:</span> <span class="tk-pun">[</span><span class="tk-str">"body"</span><span class="tk-pun">,</span> <span class="tk-str">"mensaje"</span><span class="tk-pun">],</span>
+      <span class="tk-attr">"msg"</span><span class="tk-pun">:</span> <span class="tk-str">"String should have at least 20 characters"</span><span class="tk-pun">,</span>
+      <span class="tk-attr">"input"</span><span class="tk-pun">:</span> <span class="tk-str">"corto"</span><span class="tk-pun">,</span>
+      <span class="tk-attr">"ctx"</span><span class="tk-pun">:</span> <span class="tk-pun">{</span><span class="tk-attr">"min_length"</span><span class="tk-pun">:</span> <span class="tk-num">20</span><span class="tk-pun">}</span>
+    <span class="tk-pun">}</span>
+  <span class="tk-pun">]</span>
+<span class="tk-pun">}</span>
+</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>detail</code></dt>
+      <dd>La lista de errores. Cada elemento es un campo que no cumplió una regla.</dd>
+    </div>
+    <div>
+      <dt><code>loc</code></dt>
+      <dd>La ruta del campo dentro de la petición. <code>["body", "nombre"]</code> significa «en el cuerpo, el campo nombre». El último elemento es el nombre que usarás para pintar el error junto al campo.</dd>
+    </div>
+    <div>
+      <dt><code>type</code></dt>
+      <dd>El identificador estable del error: <code>string_too_short</code>, <code>literal_error</code>, <code>value_error</code>, <code>missing</code>. Es lo que se traduce a un mensaje en español sin depender del texto en inglés.</dd>
+    </div>
+    <div>
+      <dt><code>msg</code></dt>
+      <dd>El mensaje en inglés que genera Pydantic. Es útil para depurar, pero no es lo que se le muestra al usuario final.</dd>
+    </div>
+    <div>
+      <dt><code>input</code></dt>
+      <dd>El valor que llegó. Nunca se debe devolver tal cual en una página sin escapar: es dato del usuario.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — el <code>422</code> es para quien programa, no para quien escribe</span>
+    <p>
+      «String should have at least 3 characters» no es un mensaje para un estudiante de once. La
+      unidad 6 traduce estos errores y los devuelve dentro del formulario. Antes de eso, conviene
+      ver el <code>422</code> en carne propia: es la prueba de que la validación del servidor está
+      funcionando aunque el navegador esté desactivado.
+    </p>
+  </div>
+
+  <h3>3.6 · Validadores: reglas que no caben en un tipo</h3>
+
+  <p>
+    Un validador es una función que recibe el valor ya convertido y lo devuelve, o lanza
+    <code>ValueError</code> si no cumple. Se declara con <code>@field_validator("campo")</code> y
+    <code>@classmethod</code>. El valor que recibe ya pasó por el tipo, así que <code>acepta</code>
+    llega como <code>bool</code>, no como el texto <code>"true"</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>modelos.py — tres validadores con propósitos distintos</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-fn">@field_validator</span>(<span class="tk-str">"acepta"</span>)
+<span class="tk-fn">@classmethod</span>
+<span class="tk-kw">def</span> <span class="tk-fn">debe_aceptar</span>(<span class="tk-fn">cls</span>, valor: <span class="tk-fn">bool</span>) -&gt; <span class="tk-fn">bool</span>:
+    <span class="tk-kw">if</span> <span class="tk-kw">not</span> valor:
+        <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"Debes aceptar para enviar el mensaje."</span>)
+    <span class="tk-kw">return</span> valor
+
+
+<span class="tk-fn">@field_validator</span>(<span class="tk-str">"mensaje"</span>)
+<span class="tk-fn">@classmethod</span>
+<span class="tk-kw">def</span> <span class="tk-fn">sin_enlaces</span>(<span class="tk-fn">cls</span>, valor: <span class="tk-fn">str</span>) -&gt; <span class="tk-fn">str</span>:
+    <span class="tk-kw">if</span> <span class="tk-str">"http://"</span> <span class="tk-kw">in</span> valor <span class="tk-kw">or</span> <span class="tk-str">"https://"</span> <span class="tk-kw">in</span> valor:
+        <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"El mensaje no puede contener enlaces."</span>)
+    <span class="tk-kw">return</span> valor
+
+
+<span class="tk-fn">@field_validator</span>(<span class="tk-str">"sitio"</span>)
+<span class="tk-fn">@classmethod</span>
+<span class="tk-kw">def</span> <span class="tk-fn">trampa_vacia</span>(<span class="tk-fn">cls</span>, valor: <span class="tk-fn">str</span>) -&gt; <span class="tk-fn">str</span>:
+    <span class="tk-kw">if</span> valor:
+        <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"El campo invisible debe estar vacío."</span>)
+    <span class="tk-kw">return</span> valor
+</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — no lances <code>HTTPException</code> dentro de un validador</span>
+    <p>
+      Dentro de un validador, la forma correcta de fallar es <code>raise ValueError(...)</code>.
+      Pydantic lo recoge, lo convierte en un error de validación y FastAPI responde <code>422</code>
+      como con cualquier otra regla. Si lanzas <code>HTTPException</code>, rompes esa cadena y el
+      error sale por un camino que no es el de los demás campos.
+    </p>
+  </div>
+
+  <h3>3.7 · Las dos validaciones, otra vez</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Qué aporta cada capa</caption>
+      <thead>
+        <tr><th>Criterio</th><th>Navegador</th><th>Servidor</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Velocidad de respuesta</td><td>Inmediata, sin red</td><td>Depende del viaje al servidor</td></tr>
+        <tr><td>Calidad de la experiencia</td><td>Buena si se cuida el HTML</td><td>Puede ser excelente con una página de errores</td></tr>
+        <tr><td>Se puede saltar</td><td>Sí, siempre</td><td>No, si el código está bien</td></tr>
+        <tr><td>Conoce reglas del negocio</td><td>No</td><td>Sí</td></tr>
+        <tr><td>Protege la base de datos</td><td>No</td><td>Sí</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>1.</strong> ¿Qué hace <code>extra="forbid"</code> en el modelo?</p>
+      <button class="opcion" data-op="a">Prohíbe los correos repetidos</button>
+      <button class="opcion" data-op="b">Obliga a que todos los campos sean texto</button>
+      <button class="opcion" data-op="c">Impide que el formulario se envíe dos veces</button>
+      <button class="opcion" data-op="d">Rechaza los campos que el modelo no declara</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Qué valida <code>EmailStr</code>?</p>
+      <button class="opcion" data-op="a">Que el buzón exista y reciba correos</button>
+      <button class="opcion" data-op="b">La forma del correo, no su existencia</button>
+      <button class="opcion" data-op="c">Que el dominio sea de Colombia</button>
+      <button class="opcion" data-op="d">Que el correo no esté repetido en la base de datos</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué estado devuelve FastAPI cuando un campo no cumple el modelo?</p>
+      <button class="opcion" data-op="a"><code>422</code></button>
+      <button class="opcion" data-op="b"><code>200</code></button>
+      <button class="opcion" data-op="c"><code>500</code></button>
+      <button class="opcion" data-op="d"><code>302</code></button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Cuándo se recorta el texto si el modelo tiene <code>str_strip_whitespace=True</code>?</p>
+      <button class="opcion" data-op="a">Después de medir la longitud</button>
+      <button class="opcion" data-op="b">Solo si el campo es opcional</button>
+      <button class="opcion" data-op="c">Antes de medir la longitud</button>
+      <button class="opcion" data-op="d">Nunca: hay que recortarlo a mano</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>5.</strong> Dentro de un validador, ¿cómo se indica que el valor no es válido?</p>
+      <button class="opcion" data-op="a">Con <code>return False</code></button>
+      <button class="opcion" data-op="b">Lanzando <code>ValueError</code></button>
+      <button class="opcion" data-op="c">Con <code>raise HTTPException(400)</code></button>
+      <button class="opcion" data-op="d">Escribiendo en <code>request.form()</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: Captura con HTML</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>bitácora de lectura</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija por
+      escrito lo que has leído hasta ahora.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora.
+    </p>
+
+    <div class="reglas">
+      <div class="regla">
+        <h4>Regla 20-20-20</h4>
+        <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+      </div>
+      <div class="regla">
+        <h4>Movimiento</h4>
+        <p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p>
+      </div>
+      <div class="regla">
+        <h4>Hidratación</h4>
+        <p>Un vaso de agua. La lectura densa agota más de lo que parece.</p>
+      </div>
+      <div class="regla">
+        <h4>Bitácora</h4>
+        <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora de lectura (5 minutos)</h3>
+
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿qué viaja en la URL de un <code>GET</code> y qué viaja en el cuerpo de un <code>POST</code>?</li>
+    <li><strong>En una frase:</strong> ¿por qué el servidor no puede confiar en <code>required</code>?</li>
+    <li><strong>En una frase:</strong> ¿qué diferencia hay entre <code>type="email"</code> y <code>EmailStr</code>?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+
+  <p>
+    Estas diez palabras aparecerán en la actividad y en el taller. Léelas ahora; las definiciones
+    se afinan en las unidades siguientes.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>Control exitoso</dt>
+      <dd>Un campo que el navegador incluye en el envío: tiene <code>name</code>, no está deshabilitado y, si es una casilla, está marcado.</dd>
+    </div>
+    <div>
+      <dt>Payload</dt>
+      <dd>El contenido que viaja en el cuerpo de la petición. En un formulario, la lista de parejas <code>nombre=valor</code>.</dd>
+    </div>
+    <div>
+      <dt><code>application/x-www-form-urlencoded</code></dt>
+      <dd>El formato del cuerpo cuando no hay archivos: parejas separadas por <code>&amp;</code>, con espacios como <code>+</code> y caracteres especiales en hexadecimal.</dd>
+    </div>
+    <div>
+      <dt><code>multipart/form-data</code></dt>
+      <dd>El formato del cuerpo cuando hay archivos. Cada campo viaja en su propia parte, con nombre y tipo.</dd>
+    </div>
+    <div>
+      <dt>Validación</dt>
+      <dd>Comprobar que un dato cumple las reglas antes de usarlo. No es lo mismo que limpiarlo o transformarlo.</dd>
+    </div>
+    <div>
+      <dt>Normalización</dt>
+      <dd>Convertir el dato a una forma canónica antes de guardarlo: recortar espacios, pasar a minúsculas un correo, unificar el formato de un teléfono.</dd>
+    </div>
+    <div>
+      <dt><code>422</code></dt>
+      <dd>El estado que devuelve FastAPI cuando la petición está bien formada pero los datos no cumplen el modelo.</dd>
+    </div>
+    <div>
+      <dt>PRG</dt>
+      <dd><em>Post/Redirect/Get</em>: después de un <code>POST</code> exitoso se responde con una redirección y el navegador hace un <code>GET</code>. Evita reenviar el formulario al recargar.</dd>
+    </div>
+    <div>
+      <dt>Honeypot</dt>
+      <dd>Un campo invisible para las personas y visible para los robots. Si llega relleno, la petición se rechaza.</dd>
+    </div>
+    <div>
+      <dt>Sanitización</dt>
+      <dd>Neutralizar el contenido peligroso antes de mostrarlo o guardarlo. En HTML, la herramienta principal es escapar la salida, no borrar caracteres a mano.</dd>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: Validación en el backend</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: Actividad →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — ACTIVIDAD: FORMULARIO DE CONTACTO
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · Actividad de desarrollo</div>
+    <h2>Actividad 5.1 · <em>El formulario de contacto funcional</em></h2>
+    <p class="proposito">
+      Las cuatro unidades anteriores dieron las piezas: el formulario, el viaje del dato, el
+      modelo y el <code>422</code>. Ahora se juntan en una aplicación que se abre en el navegador,
+      recibe un mensaje, lo valida y responde. En 35 minutos tendrás algo que funciona de punta a
+      punta.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>💻 <b>Actividad de desarrollo</b></span>
+      <span>🧭 <b>Producto: la app de contacto corriendo</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · El enunciado</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Actividad</span>
+      <h3>El buzón del Club de Robótica</h3>
+    </div>
+
+    <p>
+      El club necesita un formulario de contacto que no se pueda llenar de basura. Debe recibir
+      nombre, correo, asunto, mensaje y consentimiento; aceptar solo datos válidos; mostrar el
+      formulario otra vez con los errores en español cuando algo falle; y confirmar con una página
+      de gracias cuando todo salga bien. El mensaje todavía no se guarda en una base de datos: se
+      deja preparado para la clase siguiente.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>Un <code>POST /contacto</code> con seis campos de formulario</td>
+          </tr>
+          <tr>
+            <td><strong>Salida correcta</strong></td>
+            <td><code>303</code> hacia <code>/gracias</code>, una página sin datos del usuario</td>
+          </tr>
+          <tr>
+            <td><strong>Salida con errores</strong></td>
+            <td><code>422</code> con el mismo formulario, los valores conservados y un mensaje por campo</td>
+          </tr>
+          <tr>
+            <td><strong>Regla de oro</strong></td>
+            <td>El navegador puede ayudar, pero el servidor decide</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Sin base de datos y sin envío de correo: un <code>print</code> registra el asunto</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Las plantillas usan Jinja2 y escapan la salida por defecto</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong><code>modelos.py</code></strong>: el modelo <code>Contacto</code> de la unidad 3, con sus tres validadores.</li>
+      <li><strong><code>main.py</code></strong>: las rutas <code>GET /</code>, <code>POST /contacto</code> y <code>GET /gracias</code>, más el manejador de errores.</li>
+      <li><strong><code>plantillas/contacto.html</code></strong>: el formulario con etiquetas, límites y espacio para los errores.</li>
+      <li><strong><code>plantillas/gracias.html</code></strong>: la confirmación.</li>
+      <li><strong>Una prueba manual</strong>: un envío válido y uno inválido, con la evidencia de cada respuesta.</li>
+    </ol>
+  </div>
+
+  <h3>5.2 · Antes de escribir código: el laboratorio</h3>
+
+  <p>
+    El formulario de abajo imita, en tu navegador, lo que hará el servidor. Tiene las mismas
+    reglas, el mismo formato de error y el mismo campo trampa. Úsalo para ver qué responde un
+    backend cuando el dato no cumple, sin instalar nada.
+  </p>
+
+  <div class="laboratorio">
+    <div class="lab-cabecera">
+      <span class="etiqueta">Laboratorio</span>
+      <h4>El backend, imitado en tu navegador</h4>
+      <p>
+        La validación de esta caja es una <strong>simulación</strong>: vive en JavaScript y se
+        puede saltar. La de tu aplicación vivirá en Python y será la que decida. El objetivo es
+        que veas la forma de la respuesta antes de escribirla.
+      </p>
+    </div>
+
+    <div class="lab-cuerpo">
+      <form class="lab-form" data-lab-form novalidate>
+        <div class="campo-lab">
+          <label for="lab-nombre">Nombre completo</label>
+          <input id="lab-nombre" name="nombre" type="text" placeholder="Ana Torres" autocomplete="name">
+        </div>
+
+        <div class="campo-lab">
+          <label for="lab-correo">Correo electrónico</label>
+          <input id="lab-correo" name="correo" type="email" placeholder="ana@colegio.edu.co" autocomplete="email">
+        </div>
+
+        <div class="campo-lab">
+          <label for="lab-asunto">Asunto</label>
+          <select id="lab-asunto" name="asunto">
+            <option value="">Elige una opción</option>
+            <option value="consulta">Consulta general</option>
+            <option value="soporte">Soporte técnico</option>
+            <option value="sugerencia">Sugerencia</option>
+          </select>
+        </div>
+
+        <div class="campo-lab">
+          <label for="lab-mensaje">Mensaje</label>
+          <textarea id="lab-mensaje" name="mensaje" rows="5" placeholder="Cuéntanos qué necesitas…"></textarea>
+        </div>
+
+        <div class="campo-lab check">
+          <input id="lab-acepta" name="acepta" type="checkbox" value="true">
+          <label for="lab-acepta">Acepto que el club use mis datos para responderme.</label>
+        </div>
+
+        <div class="campo-lab trampa">
+          <label for="lab-sitio">No rellenes este campo</label>
+          <input id="lab-sitio" name="sitio" type="text" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div class="lab-acciones">
+          <button type="submit" class="lab-enviar">Enviar al servidor simulado</button>
+          <button type="button" class="lab-ejemplo" data-lab-ejemplo>Cargar un ejemplo inválido</button>
+        </div>
+      </form>
+
+      <div class="lab-panel">
+        <div class="lab-estado neutro" data-lab-estado>Esperando un envío…</div>
+        <pre class="lab-json" data-lab-json>{
+  "detail": "Aún no hay ninguna petición."
+}</pre>
+        <button type="button" class="lab-limpiar" data-lab-limpiar>Limpiar la simulación</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — lo que el laboratorio demuestra</span>
+    <p>
+      Si escribes un nombre de dos letras, el panel muestra un <code>422</code> con
+      <code>loc: ["body", "nombre"]</code>. Si escribes un correo sin dominio, muestra
+      <code>loc: ["body", "correo"]</code>. Si rellenas el campo invisible, lo rechaza. Es
+      exactamente la estructura del <code>422</code> de FastAPI que viste en la unidad 3, y es la
+      que tu manejador va a traducir a mensajes en español.
+    </p>
+  </div>
+
+  <h3>5.3 · Paso 1: crear el proyecto</h3>
+
+  <p>
+    Crea una carpeta nueva y añade FastAPI con el grupo <code>standard</code>. Ese grupo trae
+    Uvicorn, Jinja2, <code>python-multipart</code>, el cliente de pruebas y la validación de
+    correos.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — crear la carpeta y las dependencias</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>uv init contacto
+<span class="tk-fn">cd</span> contacto
+uv add <span class="tk-str">"fastapi[standard]"</span>
+mkdir plantillas
+
+<span class="tk-cm"># La estructura queda así:
+# contacto/
+# ├── main.py
+# ├── modelos.py
+# ├── plantillas/
+# └── pyproject.toml
+</span></code></pre>
+  </div>
+
+  <h3>5.4 · Paso 2: el modelo</h3>
+
+  <p>
+    Crea <code>modelos.py</code> con el contenido de la unidad 3.2. No lo reescribas de memoria:
+    cópialo, léelo y comprueba que entiendes cada línea. Los tres validadores son los que
+    convierten un formulario cualquiera en el formulario del club.
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Aplicación — el modelo es la pieza que se reutiliza</span>
+    <p>
+      El mismo <code>Contacto</code> puede usarse en la ruta del formulario, en una prueba
+      automática y, más adelante, en una ruta que reciba JSON desde una aplicación móvil. Cambia
+      el transporte; el contrato del dato sigue siendo el mismo. Por eso conviene que el modelo
+      viva en su propio archivo y no dentro de la ruta.
+    </p>
+  </div>
+
+  <h3>5.5 · Paso 3: las rutas y el manejador de errores</h3>
+
+  <p>
+    <code>main.py</code> tiene tres rutas y un manejador. La ruta <code>POST</code> no comprueba
+    nada a mano: recibe el modelo ya validado. Si la validación falla, FastAPI ni siquiera entra
+    a la función; el manejador de <code>RequestValidationError</code> toma el control y devuelve
+    el formulario con los errores.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — la aplicación completa</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-str">"""Formulario de contacto del Club de Robótica."""</span>
+
+<span class="tk-kw">from</span> typing <span class="tk-kw">import</span> <span class="tk-cls">Annotated</span>
+
+<span class="tk-kw">from</span> fastapi <span class="tk-kw">import</span> <span class="tk-cls">FastAPI</span>, <span class="tk-cls">Form</span>, <span class="tk-cls">Request</span>
+<span class="tk-kw">from</span> fastapi.exceptions <span class="tk-kw">import</span> <span class="tk-cls">RequestValidationError</span>
+<span class="tk-kw">from</span> fastapi.responses <span class="tk-kw">import</span> <span class="tk-cls">HTMLResponse</span>, <span class="tk-cls">RedirectResponse</span>
+<span class="tk-kw">from</span> fastapi.templating <span class="tk-kw">import</span> <span class="tk-cls">Jinja2Templates</span>
+
+<span class="tk-kw">from</span> modelos <span class="tk-kw">import</span> <span class="tk-cls">Contacto</span>
+
+app = <span class="tk-cls">FastAPI</span>(title=<span class="tk-str">"Contacto del Club de Robótica"</span>)
+templates = <span class="tk-cls">Jinja2Templates</span>(directory=<span class="tk-str">"plantillas"</span>)
+
+<span class="tk-cls">TRADUCCIONES</span> = {
+    <span class="tk-str">"missing"</span>: <span class="tk-str">"Este campo es obligatorio."</span>,
+    <span class="tk-str">"string_too_short"</span>: <span class="tk-str">"El texto es demasiado corto."</span>,
+    <span class="tk-str">"string_too_long"</span>: <span class="tk-str">"El texto es demasiado largo."</span>,
+    <span class="tk-str">"string_type"</span>: <span class="tk-str">"Escribe un texto válido."</span>,
+    <span class="tk-str">"value_error"</span>: <span class="tk-str">"El valor no es válido."</span>,
+    <span class="tk-str">"literal_error"</span>: <span class="tk-str">"Elige una de las opciones disponibles."</span>,
+    <span class="tk-str">"bool_parsing"</span>: <span class="tk-str">"Marca la casilla para continuar."</span>,
+    <span class="tk-str">"extra_forbidden"</span>: <span class="tk-str">"El formulario contiene un campo no permitido."</span>,
+}
+
+
+<span class="tk-fn">@app</span>.get(<span class="tk-str">"/"</span>, response_class=<span class="tk-cls">HTMLResponse</span>)
+<span class="tk-kw">def</span> <span class="tk-fn">mostrar_formulario</span>(request: <span class="tk-cls">Request</span>) -&gt; <span class="tk-cls">HTMLResponse</span>:
+    <span class="tk-str">"""Pinta el formulario vacío."""</span>
+    <span class="tk-kw">return</span> templates.<span class="tk-cls">TemplateResponse</span>(
+        request=request,
+        name=<span class="tk-str">"contacto.html"</span>,
+        context={<span class="tk-str">"errores"</span>: {}, <span class="tk-str">"valores"</span>: {}},
+    )
+
+
+<span class="tk-fn">@app</span>.post(<span class="tk-str">"/contacto"</span>)
+<span class="tk-kw">def</span> <span class="tk-fn">recibir_contacto</span>(datos: <span class="tk-cls">Annotated</span>[<span class="tk-cls">Contacto</span>, <span class="tk-cls">Form</span>()]) -&gt; <span class="tk-cls">RedirectResponse</span>:
+    <span class="tk-str">"""Valida, atiende y redirige (patrón POST-Redirect-GET)."""</span>
+    <span class="tk-fn">print</span>(<span class="tk-str">f"Contacto recibido: asunto={</span>datos.asunto<span class="tk-str">}"</span>)
+    <span class="tk-kw">return</span> <span class="tk-cls">RedirectResponse</span>(url=<span class="tk-str">"/gracias"</span>, status_code=<span class="tk-num">303</span>)
+
+
+<span class="tk-fn">@app</span>.get(<span class="tk-str">"/gracias"</span>, response_class=<span class="tk-cls">HTMLResponse</span>)
+<span class="tk-kw">def</span> <span class="tk-fn">mostrar_gracias</span>(request: <span class="tk-cls">Request</span>) -&gt; <span class="tk-cls">HTMLResponse</span>:
+    <span class="tk-str">"""Página de confirmación, ya sin datos del formulario."""</span>
+    <span class="tk-kw">return</span> templates.<span class="tk-cls">TemplateResponse</span>(request=request, name=<span class="tk-str">"gracias.html"</span>)
+
+
+<span class="tk-fn">@app</span>.exception_handler(<span class="tk-cls">RequestValidationError</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">errores_de_validacion</span>(
+    request: <span class="tk-cls">Request</span>, exc: <span class="tk-cls">RequestValidationError</span>
+) -&gt; <span class="tk-cls">HTMLResponse</span>:
+    <span class="tk-str">"""Devuelve el formulario con los valores y los errores en español."""</span>
+    errores: <span class="tk-fn">dict</span>[<span class="tk-fn">str</span>, <span class="tk-fn">str</span>] = {}
+    <span class="tk-kw">for</span> error <span class="tk-kw">in</span> exc.errors():
+        campo = <span class="tk-fn">str</span>(error[<span class="tk-str">"loc"</span>][-<span class="tk-num">1</span>])
+        <span class="tk-kw">if</span> campo == <span class="tk-str">"correo"</span>:
+            errores[campo] = <span class="tk-str">"Escribe un correo válido, por ejemplo ana@colegio.edu.co."</span>
+        <span class="tk-kw">elif</span> campo == <span class="tk-str">"acepta"</span>:
+            errores[campo] = <span class="tk-str">"Debes aceptar para enviar el mensaje."</span>
+        <span class="tk-kw">elif</span> campo == <span class="tk-str">"sitio"</span>:
+            errores[campo] = <span class="tk-str">"El formulario no pasó la comprobación antispam."</span>
+        <span class="tk-kw">else</span>:
+            errores[campo] = <span class="tk-cls">TRADUCCIONES</span>.get(error[<span class="tk-str">"type"</span>], <span class="tk-str">"Revisa este campo."</span>)
+
+    formulario = <span class="tk-kw">await</span> request.form()
+    <span class="tk-kw">return</span> templates.<span class="tk-cls">TemplateResponse</span>(
+        request=request,
+        name=<span class="tk-str">"contacto.html"</span>,
+        context={<span class="tk-str">"errores"</span>: errores, <span class="tk-str">"valores"</span>: formulario},
+        status_code=<span class="tk-num">422</span>,
+    )
+</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>await request.form()</code> dentro del manejador</span>
+    <p>
+      El manejador necesita los valores que el usuario escribió para volver a pintarlos. Starlette
+      guarda el formulario ya leído en la petición, así que <code>await request.form()</code> los
+      devuelve sin consumir el cuerpo otra vez. El resultado es un <code>FormData</code> que se
+      comporta como un diccionario: en la plantilla se usa <code>valores.get("nombre", "")</code>.
+    </p>
+  </div>
+
+  <h3>5.6 · Paso 4: el formulario con espacio para los errores</h3>
+
+  <p>
+    Esta plantilla es la de la unidad 2 con tres añadidos: conserva lo que el usuario escribió,
+    marca el campo con <code>aria-invalid</code> y pinta el mensaje debajo. Jinja2 escapa los
+    valores automáticamente, así que las comillas y los signos <code>&lt;</code> no rompen el HTML.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>plantillas/contacto.html — formulario con errores</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm">&lt;!DOCTYPE html&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-tag">html</span> <span class="tk-attr">lang</span>=<span class="tk-str">"es"</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-tag">head</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">meta</span> <span class="tk-attr">charset</span>=<span class="tk-str">"UTF-8"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">meta</span> <span class="tk-attr">name</span>=<span class="tk-str">"viewport"</span> <span class="tk-attr">content</span>=<span class="tk-str">"width=device-width, initial-scale=1.0"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">title</span><span class="tk-pun">&gt;</span>Contacto · Club de Robótica<span class="tk-pun">&lt;/</span><span class="tk-tag">title</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">head</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-tag">body</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">main</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">h1</span><span class="tk-pun">&gt;</span>Escribe al club<span class="tk-pun">&lt;/</span><span class="tk-tag">h1</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>Respondemos en dos días hábiles.<span class="tk-pun">&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+
+    <span class="tk-cm">{%</span> <span class="tk-kw">if</span> <span class="tk-fn">errores.get</span>(<span class="tk-str">'sitio'</span>) <span class="tk-cm">%}</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">p</span> <span class="tk-attr">role</span>=<span class="tk-str">"alert"</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">errores</span>[<span class="tk-str">'sitio'</span>] <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+    <span class="tk-cm">{%</span> <span class="tk-kw">endif</span> <span class="tk-cm">%}</span>
+
+    <span class="tk-pun">&lt;</span><span class="tk-tag">form</span> <span class="tk-attr">action</span>=<span class="tk-str">"/contacto"</span> <span class="tk-attr">method</span>=<span class="tk-str">"post"</span> <span class="tk-attr">novalidate</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>=<span class="tk-str">"nombre"</span><span class="tk-pun">&gt;</span>Nombre completo<span class="tk-pun">&lt;/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;&lt;</span><span class="tk-tag">br</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">input</span> <span class="tk-attr">id</span>=<span class="tk-str">"nombre"</span> <span class="tk-attr">name</span>=<span class="tk-str">"nombre"</span> <span class="tk-attr">type</span>=<span class="tk-str">"text"</span>
+               <span class="tk-attr">value</span>=<span class="tk-str">"</span><span class="tk-cm">{{</span> <span class="tk-fn">valores.get</span>(<span class="tk-str">'nombre'</span>, <span class="tk-str">''</span>) <span class="tk-cm">}}</span><span class="tk-str">"</span>
+               <span class="tk-attr">required</span> <span class="tk-attr">minlength</span>=<span class="tk-str">"3"</span> <span class="tk-attr">maxlength</span>=<span class="tk-str">"60"</span> <span class="tk-attr">autocomplete</span>=<span class="tk-str">"name"</span>
+               <span class="tk-cm">{%</span> <span class="tk-kw">if</span> <span class="tk-fn">errores.get</span>(<span class="tk-str">'nombre'</span>) <span class="tk-cm">%}</span><span class="tk-attr">aria-invalid</span>=<span class="tk-str">"true"</span> <span class="tk-attr">aria-describedby</span>=<span class="tk-str">"error-nombre"</span><span class="tk-cm">{%</span> <span class="tk-kw">endif</span> <span class="tk-cm">%}</span><span class="tk-pun">&gt;</span>
+        <span class="tk-cm">{%</span> <span class="tk-kw">if</span> <span class="tk-fn">errores.get</span>(<span class="tk-str">'nombre'</span>) <span class="tk-cm">%}</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">span</span> <span class="tk-attr">id</span>=<span class="tk-str">"error-nombre"</span> <span class="tk-attr">role</span>=<span class="tk-str">"alert"</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">errores</span>[<span class="tk-str">'nombre'</span>] <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">span</span><span class="tk-pun">&gt;</span>
+        <span class="tk-cm">{%</span> <span class="tk-kw">endif</span> <span class="tk-cm">%}</span>
+      <span class="tk-pun">&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+
+      <span class="tk-pun">&lt;</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>=<span class="tk-str">"correo"</span><span class="tk-pun">&gt;</span>Correo electrónico<span class="tk-pun">&lt;/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;&lt;</span><span class="tk-tag">br</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">input</span> <span class="tk-attr">id</span>=<span class="tk-str">"correo"</span> <span class="tk-attr">name</span>=<span class="tk-str">"correo"</span> <span class="tk-attr">type</span>=<span class="tk-str">"email"</span>
+               <span class="tk-attr">value</span>=<span class="tk-str">"</span><span class="tk-cm">{{</span> <span class="tk-fn">valores.get</span>(<span class="tk-str">'correo'</span>, <span class="tk-str">''</span>) <span class="tk-cm">}}</span><span class="tk-str">"</span>
+               <span class="tk-attr">required</span> <span class="tk-attr">maxlength</span>=<span class="tk-str">"120"</span> <span class="tk-attr">autocomplete</span>=<span class="tk-str">"email"</span>
+               <span class="tk-cm">{%</span> <span class="tk-kw">if</span> <span class="tk-fn">errores.get</span>(<span class="tk-str">'correo'</span>) <span class="tk-cm">%}</span><span class="tk-attr">aria-invalid</span>=<span class="tk-str">"true"</span> <span class="tk-attr">aria-describedby</span>=<span class="tk-str">"error-correo"</span><span class="tk-cm">{%</span> <span class="tk-kw">endif</span> <span class="tk-cm">%}</span><span class="tk-pun">&gt;</span>
+        <span class="tk-cm">{%</span> <span class="tk-kw">if</span> <span class="tk-fn">errores.get</span>(<span class="tk-str">'correo'</span>) <span class="tk-cm">%}</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">span</span> <span class="tk-attr">id</span>=<span class="tk-str">"error-correo"</span> <span class="tk-attr">role</span>=<span class="tk-str">"alert"</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">errores</span>[<span class="tk-str">'correo'</span>] <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">span</span><span class="tk-pun">&gt;</span>
+        <span class="tk-cm">{%</span> <span class="tk-kw">endif</span> <span class="tk-cm">%}</span>
+      <span class="tk-pun">&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+
+      <span class="tk-pun">&lt;</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>=<span class="tk-str">"asunto"</span><span class="tk-pun">&gt;</span>Asunto<span class="tk-pun">&lt;/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;&lt;</span><span class="tk-tag">br</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">select</span> <span class="tk-attr">id</span>=<span class="tk-str">"asunto"</span> <span class="tk-attr">name</span>=<span class="tk-str">"asunto"</span> <span class="tk-attr">required</span><span class="tk-pun">&gt;</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">option</span> <span class="tk-attr">value</span>=<span class="tk-str">""</span><span class="tk-pun">&gt;</span>Elige una opción<span class="tk-pun">&lt;/</span><span class="tk-tag">option</span><span class="tk-pun">&gt;</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">option</span> <span class="tk-attr">value</span>=<span class="tk-str">"consulta"</span> <span class="tk-cm">{%</span> <span class="tk-kw">if</span> <span class="tk-fn">valores.get</span>(<span class="tk-str">'asunto'</span>) == <span class="tk-str">'consulta'</span> <span class="tk-cm">%}</span><span class="tk-attr">selected</span><span class="tk-cm">{%</span> <span class="tk-kw">endif</span> <span class="tk-cm">%}</span><span class="tk-pun">&gt;</span>Consulta general<span class="tk-pun">&lt;/</span><span class="tk-tag">option</span><span class="tk-pun">&gt;</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">option</span> <span class="tk-attr">value</span>=<span class="tk-str">"soporte"</span> <span class="tk-cm">{%</span> <span class="tk-kw">if</span> <span class="tk-fn">valores.get</span>(<span class="tk-str">'asunto'</span>) == <span class="tk-str">'soporte'</span> <span class="tk-cm">%}</span><span class="tk-attr">selected</span><span class="tk-cm">{%</span> <span class="tk-kw">endif</span> <span class="tk-cm">%}</span><span class="tk-pun">&gt;</span>Soporte técnico<span class="tk-pun">&lt;/</span><span class="tk-tag">option</span><span class="tk-pun">&gt;</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">option</span> <span class="tk-attr">value</span>=<span class="tk-str">"sugerencia"</span> <span class="tk-cm">{%</span> <span class="tk-kw">if</span> <span class="tk-fn">valores.get</span>(<span class="tk-str">'asunto'</span>) == <span class="tk-str">'sugerencia'</span> <span class="tk-cm">%}</span><span class="tk-attr">selected</span><span class="tk-cm">{%</span> <span class="tk-kw">endif</span> <span class="tk-cm">%}</span><span class="tk-pun">&gt;</span>Sugerencia<span class="tk-pun">&lt;/</span><span class="tk-tag">option</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;/</span><span class="tk-tag">select</span><span class="tk-pun">&gt;</span>
+        <span class="tk-cm">{%</span> <span class="tk-kw">if</span> <span class="tk-fn">errores.get</span>(<span class="tk-str">'asunto'</span>) <span class="tk-cm">%}</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">span</span> <span class="tk-attr">id</span>=<span class="tk-str">"error-asunto"</span> <span class="tk-attr">role</span>=<span class="tk-str">"alert"</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">errores</span>[<span class="tk-str">'asunto'</span>] <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">span</span><span class="tk-pun">&gt;</span>
+        <span class="tk-cm">{%</span> <span class="tk-kw">endif</span> <span class="tk-cm">%}</span>
+      <span class="tk-pun">&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+
+      <span class="tk-pun">&lt;</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>=<span class="tk-str">"mensaje"</span><span class="tk-pun">&gt;</span>Mensaje<span class="tk-pun">&lt;/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;&lt;</span><span class="tk-tag">br</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">textarea</span> <span class="tk-attr">id</span>=<span class="tk-str">"mensaje"</span> <span class="tk-attr">name</span>=<span class="tk-str">"mensaje"</span> <span class="tk-attr">rows</span>=<span class="tk-str">"6"</span> <span class="tk-attr">cols</span>=<span class="tk-str">"50"</span>
+                  <span class="tk-attr">required</span> <span class="tk-attr">minlength</span>=<span class="tk-str">"20"</span> <span class="tk-attr">maxlength</span>=<span class="tk-str">"800"</span>
+                  <span class="tk-cm">{%</span> <span class="tk-kw">if</span> <span class="tk-fn">errores.get</span>(<span class="tk-str">'mensaje'</span>) <span class="tk-cm">%}</span><span class="tk-attr">aria-invalid</span>=<span class="tk-str">"true"</span> <span class="tk-attr">aria-describedby</span>=<span class="tk-str">"error-mensaje"</span><span class="tk-cm">{%</span> <span class="tk-kw">endif</span> <span class="tk-cm">%}</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">valores.get</span>(<span class="tk-str">'mensaje'</span>, <span class="tk-str">''</span>) <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">textarea</span><span class="tk-pun">&gt;</span>
+        <span class="tk-cm">{%</span> <span class="tk-kw">if</span> <span class="tk-fn">errores.get</span>(<span class="tk-str">'mensaje'</span>) <span class="tk-cm">%}</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">span</span> <span class="tk-attr">id</span>=<span class="tk-str">"error-mensaje"</span> <span class="tk-attr">role</span>=<span class="tk-str">"alert"</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">errores</span>[<span class="tk-str">'mensaje'</span>] <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">span</span><span class="tk-pun">&gt;</span>
+        <span class="tk-cm">{%</span> <span class="tk-kw">endif</span> <span class="tk-cm">%}</span>
+      <span class="tk-pun">&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+
+      <span class="tk-pun">&lt;</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">input</span> <span class="tk-attr">type</span>=<span class="tk-str">"checkbox"</span> <span class="tk-attr">name</span>=<span class="tk-str">"acepta"</span> <span class="tk-attr">value</span>=<span class="tk-str">"true"</span> <span class="tk-attr">required</span><span class="tk-pun">&gt;</span>
+          Acepto que el club use mis datos para responderme.
+        <span class="tk-pun">&lt;/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+        <span class="tk-cm">{%</span> <span class="tk-kw">if</span> <span class="tk-fn">errores.get</span>(<span class="tk-str">'acepta'</span>) <span class="tk-cm">%}</span>
+          <span class="tk-pun">&lt;</span><span class="tk-tag">span</span> <span class="tk-attr">role</span>=<span class="tk-str">"alert"</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">errores</span>[<span class="tk-str">'acepta'</span>] <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">span</span><span class="tk-pun">&gt;</span>
+        <span class="tk-cm">{%</span> <span class="tk-kw">endif</span> <span class="tk-cm">%}</span>
+      <span class="tk-pun">&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+
+      <span class="tk-pun">&lt;</span><span class="tk-tag">p</span> <span class="tk-attr">hidden</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">label</span> <span class="tk-attr">for</span>=<span class="tk-str">"sitio"</span><span class="tk-pun">&gt;</span>No rellenes este campo<span class="tk-pun">&lt;/</span><span class="tk-tag">label</span><span class="tk-pun">&gt;</span>
+        <span class="tk-pun">&lt;</span><span class="tk-tag">input</span> <span class="tk-attr">id</span>=<span class="tk-str">"sitio"</span> <span class="tk-attr">name</span>=<span class="tk-str">"sitio"</span> <span class="tk-attr">type</span>=<span class="tk-str">"text"</span> <span class="tk-attr">tabindex</span>=<span class="tk-str">"-1"</span> <span class="tk-attr">autocomplete</span>=<span class="tk-str">"off"</span><span class="tk-pun">&gt;</span>
+      <span class="tk-pun">&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+
+      <span class="tk-pun">&lt;</span><span class="tk-tag">button</span> <span class="tk-attr">type</span>=<span class="tk-str">"submit"</span><span class="tk-pun">&gt;</span>Enviar mensaje<span class="tk-pun">&lt;/</span><span class="tk-tag">button</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;/</span><span class="tk-tag">form</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;/</span><span class="tk-tag">main</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">body</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">html</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <h3>5.7 · Paso 5: la página de gracias</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>plantillas/gracias.html</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm">&lt;!DOCTYPE html&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-tag">html</span> <span class="tk-attr">lang</span>=<span class="tk-str">"es"</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-tag">head</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">meta</span> <span class="tk-attr">charset</span>=<span class="tk-str">"UTF-8"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">meta</span> <span class="tk-attr">name</span>=<span class="tk-str">"viewport"</span> <span class="tk-attr">content</span>=<span class="tk-str">"width=device-width, initial-scale=1.0"</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">title</span><span class="tk-pun">&gt;</span>Mensaje recibido<span class="tk-pun">&lt;/</span><span class="tk-tag">title</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">head</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;</span><span class="tk-tag">body</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">main</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">h1</span><span class="tk-pun">&gt;</span>Mensaje recibido<span class="tk-pun">&lt;/</span><span class="tk-tag">h1</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>Gracias por escribirle al club. Te responderemos al correo que dejaste.<span class="tk-pun">&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+    <span class="tk-pun">&lt;</span><span class="tk-tag">p</span><span class="tk-pun">&gt;&lt;</span><span class="tk-tag">a</span> <span class="tk-attr">href</span>=<span class="tk-str">"/"</span><span class="tk-pun">&gt;</span>Enviar otro mensaje<span class="tk-pun">&lt;/</span><span class="tk-tag">a</span><span class="tk-pun">&gt;&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span>
+  <span class="tk-pun">&lt;/</span><span class="tk-tag">main</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">body</span><span class="tk-pun">&gt;</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">html</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <h3>5.8 · Paso 6: ejecutar y probar</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — arrancar el servidor</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>uv run fastapi dev main.py
+
+<span class="tk-cm"># FastAPI CLI - Development mode
+# Serving at: http://127.0.0.1:8000
+# API docs:   http://127.0.0.1:8000/docs
+</span></code></pre>
+  </div>
+
+  <p>
+    Abre <code>http://127.0.0.1:8000</code> y envía un mensaje válido. Deberías terminar en
+    <code>/gracias</code> con un <code>303</code> en la pestaña Red. Después prueba los errores:
+    escribe un nombre de dos letras, un correo sin dominio, un mensaje de diez caracteres y deja
+    la casilla sin marcar. El formulario debe volver con los valores y un mensaje por campo.
+  </p>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — <code>novalidate</code> no es «quitar la validación»</span>
+    <p>
+      La plantilla de la actividad lleva <code>novalidate</code> a propósito: apaga solo la
+      validación del navegador para que el servidor sea quien responda y puedas ver sus errores en
+      pantalla. La validación de Python sigue intacta. En un formulario real puedes quitar el
+      atributo y ganar los avisos inmediatos del navegador; el servidor seguirá rechazando con
+      <code>422</code> lo que llegue mal, aunque la petición venga de <code>curl</code>.
+    </p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — la misma prueba sin navegador</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Envío válido: debe responder 303 y redirigir a /gracias
+</span>curl -i -X POST http://127.0.0.1:8000/contacto <span class="tk-str">\
+</span>  -d <span class="tk-str">"nombre=Ana Torres"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"correo=ana@colegio.edu.co"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"asunto=consulta"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"mensaje=Quiero inscribirme en el club de robotica."</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"acepta=true"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"sitio="</span>
+
+<span class="tk-cm"># Envío inválido: debe responder 422 y devolver el formulario con errores
+</span>curl -i -X POST http://127.0.0.1:8000/contacto <span class="tk-str">\
+</span>  -d <span class="tk-str">"nombre=Al"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"correo=ana@"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"asunto=otro"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"mensaje=corto"</span> <span class="tk-str">\
+</span>  -d <span class="tk-str">"acepta=true"</span>
+</code></pre>
+  </div>
+
+  <h3>5.9 · Antes de dar la actividad por terminada</h3>
+
+  <ol class="entregables">
+    <li>El formulario se abre en <code>/</code> y llega a <code>/contacto</code> con <code>POST</code>.</li>
+    <li>Un envío válido responde <code>303</code> y muestra <code>/gracias</code>.</li>
+    <li>Un envío inválido responde <code>422</code> y vuelve a pintar el formulario con los valores.</li>
+    <li>Los mensajes de error están en español y aparecen junto al campo que falló.</li>
+    <li>El campo <code>sitio</code> existe, está oculto y no se puede ver con <kbd>Tab</kbd>.</li>
+    <li>La consola del servidor registra el asunto, no el contenido del mensaje.</li>
+  </ol>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — los tres fallos más comunes de esta actividad</span>
+    <p>
+      <strong>Uno:</strong> el campo del HTML se llama <code>correo</code> y el modelo espera
+      <code>email</code>; el <code>422</code> dice «missing» y el formulario parece roto.
+      <strong>Dos:</strong> el formulario no tiene <code>enctype</code> y se intenta subir un
+      archivo; el archivo llega como texto. <strong>Tres:</strong> se devuelve el formulario con
+      <code>200</code> en vez de <code>422</code>; el navegador cree que todo salió bien y el
+      usuario no entiende por qué no avanzó.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué hace la ruta <code>POST /contacto</code> con el modelo?</p>
+      <button class="opcion" data-op="a">Lo valida a mano con una serie de <code>if</code></button>
+      <button class="opcion" data-op="b">Lo guarda en la base de datos antes de validarlo</button>
+      <button class="opcion" data-op="c">Recibe un objeto ya validado o deja que el manejador de errores responda</button>
+      <button class="opcion" data-op="d">Lo devuelve como JSON sin mirarlo</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>2.</strong> ¿Para qué se usa <code>await request.form()</code> en el manejador?</p>
+      <button class="opcion" data-op="a">Para recuperar los valores escritos y volver a pintarlos</button>
+      <button class="opcion" data-op="b">Para enviar el formulario por correo</button>
+      <button class="opcion" data-op="c">Para validar el modelo otra vez</button>
+      <button class="opcion" data-op="d">Para redirigir a <code>/gracias</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Por qué el éxito responde <code>303</code> y no <code>200</code>?</p>
+      <button class="opcion" data-op="a">Porque <code>200</code> no existe en FastAPI</button>
+      <button class="opcion" data-op="b">Porque el formulario tiene un error de sintaxis</button>
+      <button class="opcion" data-op="c">Porque <code>303</code> es más rápido</button>
+      <button class="opcion" data-op="d">Porque después de un <code>POST</code> conviene redirigir a un <code>GET</code> y evitar reenvíos</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>4.</strong> ¿Qué debe pasar si el campo trampa llega relleno?</p>
+      <button class="opcion" data-op="a">Se ignora y el mensaje se guarda</button>
+      <button class="opcion" data-op="b">Se rechaza la petición</button>
+      <button class="opcion" data-op="c">Se borra el campo y se continúa</button>
+      <button class="opcion" data-op="d">Se muestra el contenido en la página de gracias</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: errores que se entienden →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — ERRORES QUE SE ENTIENDEN
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · La respuesta</div>
+    <h2>Errores que se <em>entienden</em> y éxito que no se repite</h2>
+    <p class="proposito">
+      Un <code>422</code> en inglés es una prueba de que el servidor está funcionando. También es
+      una mala experiencia. Esta unidad traduce los errores, los coloca junto al campo que falló y
+      convierte el éxito en una redirección que no reenvía el mensaje al recargar.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: errores en español y patrón PRG</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · El mensaje que ve el usuario no es el <code>422</code></h3>
+
+  <p class="primer-párrafo">
+    El cuerpo de errores de FastAPI está diseñado para quien programa: tiene <code>type</code>,
+    <code>loc</code>, <code>msg</code> e <code>input</code>. Un estudiante de once que escribe su
+    nombre con dos letras no necesita saber que el tipo es <code>string_too_short</code>; necesita
+    leer «El nombre debe tener al menos 3 caracteres» debajo del campo.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>El mismo error, contado para dos públicos</caption>
+      <thead>
+        <tr><th>Para quien programa</th><th>Para quien escribe</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>{"type": "string_too_short", "loc": ["body", "nombre"], "ctx": {"min_length": 3}}</code></td>
+          <td>«El nombre debe tener al menos 3 caracteres.»</td>
+        </tr>
+        <tr>
+          <td><code>{"type": "value_error", "loc": ["body", "correo"]}</code></td>
+          <td>«Escribe un correo válido, por ejemplo ana@colegio.edu.co.»</td>
+        </tr>
+        <tr>
+          <td><code>{"type": "literal_error", "loc": ["body", "asunto"]}</code></td>
+          <td>«Elige una de las opciones disponibles.»</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — traducir no es ocultar</span>
+    <p>
+      Un mensaje claro dice <strong>qué pasó</strong> y <strong>cómo corregirlo</strong>. No dice
+      «error de validación» ni «datos inválidos»: eso no ayuda a nadie. Tampoco revela detalles
+      internos como el nombre de la columna de la base de datos o la ruta del archivo. La regla es
+      sencilla: <em>lo suficiente para corregir, nada más de lo necesario</em>.
+    </p>
+  </div>
+
+  <h3>6.2 · El manejador, línea por línea</h3>
+
+  <p>
+    El manejador de la unidad 5 es corto, pero cada línea tiene una razón. Esta es la versión
+    comentada.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — el manejador de errores explicado</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-fn">@app</span>.exception_handler(<span class="tk-cls">RequestValidationError</span>)
+<span class="tk-kw">async</span> <span class="tk-kw">def</span> <span class="tk-fn">errores_de_validacion</span>(
+    request: <span class="tk-cls">Request</span>, exc: <span class="tk-cls">RequestValidationError</span>
+) -&gt; <span class="tk-cls">HTMLResponse</span>:
+    <span class="tk-str">"""Devuelve el formulario con los valores y los errores en español."""</span>
+
+    <span class="tk-cm"># 1. Un diccionario campo -&gt; mensaje. La plantilla lo consulta por nombre.</span>
+    errores: <span class="tk-fn">dict</span>[<span class="tk-fn">str</span>, <span class="tk-fn">str</span>] = {}
+
+    <span class="tk-cm"># 2. exc.errors() trae un error por cada regla incumplida.</span>
+    <span class="tk-kw">for</span> error <span class="tk-kw">in</span> exc.errors():
+        <span class="tk-cm"># 3. loc es ("body", "nombre"); el último elemento es el campo.</span>
+        campo = <span class="tk-fn">str</span>(error[<span class="tk-str">"loc"</span>][-<span class="tk-num">1</span>])
+
+        <span class="tk-cm"># 4. Los mensajes se eligen por campo y por tipo, no por el texto en inglés.</span>
+        <span class="tk-kw">if</span> campo == <span class="tk-str">"correo"</span>:
+            errores[campo] = <span class="tk-str">"Escribe un correo válido, por ejemplo ana@colegio.edu.co."</span>
+        <span class="tk-kw">elif</span> campo == <span class="tk-str">"acepta"</span>:
+            errores[campo] = <span class="tk-str">"Debes aceptar para enviar el mensaje."</span>
+        <span class="tk-kw">elif</span> campo == <span class="tk-str">"sitio"</span>:
+            errores[campo] = <span class="tk-str">"El formulario no pasó la comprobación antispam."</span>
+        <span class="tk-kw">else</span>:
+            errores[campo] = <span class="tk-cls">TRADUCCIONES</span>.get(error[<span class="tk-str">"type"</span>], <span class="tk-str">"Revisa este campo."</span>)
+
+    <span class="tk-cm"># 5. Los valores que el usuario escribió, para no perderlos.</span>
+    formulario = <span class="tk-kw">await</span> request.form()
+
+    <span class="tk-cm"># 6. Se vuelve a pintar el formulario, con 422, no con 200.</span>
+    <span class="tk-kw">return</span> templates.<span class="tk-cls">TemplateResponse</span>(
+        request=request,
+        name=<span class="tk-str">"contacto.html"</span>,
+        context={<span class="tk-str">"errores"</span>: errores, <span class="tk-str">"valores"</span>: formulario},
+        status_code=<span class="tk-num">422</span>,
+    )
+</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt>Por qué <code>loc[-1]</code></dt>
+      <dd>La ruta completa es <code>["body", "nombre"]</code>. El último elemento es el nombre del campo, que es lo que la plantilla usa para decidir dónde pintar el error. Si algún día hay modelos anidados, la ruta puede ser más larga; el último elemento sigue siendo el campo.</dd>
+    </div>
+    <div>
+      <dt>Por qué un diccionario</dt>
+      <dd>La plantilla necesita responder «¿hay error en <code>correo</code>?». Un diccionario lo responde en una línea; una lista obligaría a recorrerla en cada campo.</dd>
+    </div>
+    <div>
+      <dt>Por qué <code>TRADUCCIONES.get(...)</code></dt>
+      <dd>El tipo es un identificador estable; el texto en inglés puede cambiar entre versiones de Pydantic. Traducir por tipo es más robusto que buscar frases.</dd>
+    </div>
+    <div>
+      <dt>Por qué <code>422</code></dt>
+      <dd>La petición está bien construida, pero su contenido no se puede procesar. <code>400</code> se reserva para peticiones mal formadas; <code>422</code> comunica «entiendo la forma, pero los datos no cumplen».</dd>
+    </div>
+  </div>
+
+  <h3>6.3 · La tabla de traducciones</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Los tipos de error más frecuentes y su mensaje</caption>
+      <thead>
+        <tr><th><code>type</code></th><th>Qué significa</th><th>Mensaje sugerido</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>missing</code></td><td>El campo no llegó</td><td>Este campo es obligatorio.</td></tr>
+        <tr><td><code>string_too_short</code></td><td>El texto no alcanza el mínimo</td><td>El texto es demasiado corto.</td></tr>
+        <tr><td><code>string_too_long</code></td><td>El texto supera el máximo</td><td>El texto es demasiado largo.</td></tr>
+        <tr><td><code>string_type</code></td><td>Llegó algo que no es texto</td><td>Escribe un texto válido.</td></tr>
+        <tr><td><code>value_error</code></td><td>Un validador propio dijo que no</td><td>El valor no es válido.</td></tr>
+        <tr><td><code>literal_error</code></td><td>El valor no está en la lista permitida</td><td>Elige una de las opciones disponibles.</td></tr>
+        <tr><td><code>bool_parsing</code></td><td>No se pudo interpretar como verdadero/falso</td><td>Marca la casilla para continuar.</td></tr>
+        <tr><td><code>extra_forbidden</code></td><td>Llegó un campo que el modelo no declara</td><td>El formulario contiene un campo no permitido.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — un mensaje por campo, no uno por error</span>
+    <p>
+      Si un campo incumple dos reglas a la vez, Pydantic puede devolver dos errores. El
+      diccionario se queda con el último, y eso está bien: mostrar dos mensajes apilados bajo el
+      mismo campo confunde más que ayudar. Si quieres controlar cuál se muestra, ordena los
+      errores por campo o quédate con el primero:
+      <code>errores.setdefault(campo, mensaje)</code>.
+    </p>
+  </div>
+
+  <h3>6.4 · La plantilla que conserva y señala</h3>
+
+  <p>
+    La plantilla de la actividad ya hace lo importante: conserva el valor, marca el campo y pinta
+    el mensaje. Estas son las tres piezas que hay que mirar con lupa.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>contacto.html — el campo y su error</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">input</span> <span class="tk-attr">id</span>=<span class="tk-str">"correo"</span> <span class="tk-attr">name</span>=<span class="tk-str">"correo"</span> <span class="tk-attr">type</span>=<span class="tk-str">"email"</span>
+       <span class="tk-attr">value</span>=<span class="tk-str">"</span><span class="tk-cm">{{</span> <span class="tk-fn">valores.get</span>(<span class="tk-str">'correo'</span>, <span class="tk-str">''</span>) <span class="tk-cm">}}</span><span class="tk-str">"</span>
+       <span class="tk-attr">required</span> <span class="tk-attr">maxlength</span>=<span class="tk-str">"120"</span> <span class="tk-attr">autocomplete</span>=<span class="tk-str">"email"</span>
+       <span class="tk-cm">{%</span> <span class="tk-kw">if</span> <span class="tk-fn">errores.get</span>(<span class="tk-str">'correo'</span>) <span class="tk-cm">%}</span><span class="tk-attr">aria-invalid</span>=<span class="tk-str">"true"</span> <span class="tk-attr">aria-describedby</span>=<span class="tk-str">"error-correo"</span><span class="tk-cm">{%</span> <span class="tk-kw">endif</span> <span class="tk-cm">%}</span><span class="tk-pun">&gt;</span>
+
+<span class="tk-cm">{%</span> <span class="tk-kw">if</span> <span class="tk-fn">errores.get</span>(<span class="tk-str">'correo'</span>) <span class="tk-cm">%}</span>
+  <span class="tk-pun">&lt;</span><span class="tk-tag">span</span> <span class="tk-attr">id</span>=<span class="tk-str">"error-correo"</span> <span class="tk-attr">role</span>=<span class="tk-str">"alert"</span><span class="tk-pun">&gt;</span><span class="tk-cm">{{</span> <span class="tk-fn">errores</span>[<span class="tk-str">'correo'</span>] <span class="tk-cm">}}</span><span class="tk-pun">&lt;/</span><span class="tk-tag">span</span><span class="tk-pun">&gt;</span>
+<span class="tk-cm">{%</span> <span class="tk-kw">endif</span> <span class="tk-cm">%}</span>
+</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>value="{{ valores.get('correo', '') }}"</code></dt>
+      <dd>Devuelve al usuario lo que escribió. Sin esto, un error en el último campo obliga a reescribir todo el formulario, que es la forma más rápida de perder un mensaje.</dd>
+    </div>
+    <div>
+      <dt><code>aria-invalid="true"</code></dt>
+      <dd>Le dice al lector de pantalla que el campo tiene un problema. No cambia el aspecto por sí solo; el CSS puede usar <code>[aria-invalid="true"]</code> para resaltarlo.</dd>
+    </div>
+    <div>
+      <dt><code>aria-describedby="error-correo"</code></dt>
+      <dd>Asocia el campo con el texto del error. Al enfocar el campo, el lector anuncia también el mensaje. El <code>id</code> del <code>span</code> tiene que coincidir exactamente.</dd>
+    </div>
+    <div>
+      <dt><code>role="alert"</code></dt>
+      <dd>Hace que el mensaje se anuncie en cuanto aparece. Se usa con moderación: si hay diez alertas a la vez, el lector se vuelve un ruido.</dd>
+    </div>
+  </div>
+
+  <p>
+    Un detalle extra de accesibilidad: cuando la página vuelve con errores, conviene llevar el foco
+    al primer campo inválido. Son tres líneas de JavaScript al final de la plantilla.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>contacto.html — llevar el foco al primer error</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-pun">&lt;</span><span class="tk-tag">script</span><span class="tk-pun">&gt;</span>
+  <span class="tk-kw">const</span> primerError = <span class="tk-fn">document</span><span class="tk-pun">.</span>querySelector<span class="tk-pun">(</span><span class="tk-str">'[aria-invalid="true"]'</span><span class="tk-pun">);</span>
+  <span class="tk-kw">if</span> <span class="tk-pun">(</span>primerError<span class="tk-pun">)</span> primerError<span class="tk-pun">.</span>focus<span class="tk-pun">();</span>
+<span class="tk-pun">&lt;/</span><span class="tk-tag">script</span><span class="tk-pun">&gt;</span>
+</code></pre>
+  </div>
+
+  <h3>6.5 · El patrón PRG: éxito sin reenvíos</h3>
+
+  <p>
+    Después de un <code>POST</code> exitoso, la respuesta no es una página: es una redirección.
+    El navegador hace un <code>GET</code> a <code>/gracias</code> y la barra de direcciones cambia.
+    Si el usuario recarga, recarga el <code>GET</code>, no el <code>POST</code>. El mensaje no se
+    envía dos veces.
+  </p>
+
+  <div class="diagrama">
+    <div class="nodo cliente">
+      <div class="rotulo-nodo">1 · POST</div>
+      <h5>El formulario envía</h5>
+      <p>El navegador manda los datos a <code>/contacto</code>.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">Validar<br>y atender</span>
+    </div>
+    <div class="nodo servidor">
+      <div class="rotulo-nodo">2 · 303</div>
+      <h5>El servidor redirige</h5>
+      <p>Responde <code>303 See Other</code> con <code>Location: /gracias</code>.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo vuelta">◀──</span>
+      <span class="etiqueta">GET<br>/gracias</span>
+    </div>
+    <div class="nodo datos">
+      <div class="rotulo-nodo">3 · 200</div>
+      <h5>La confirmación</h5>
+      <p>Recargar vuelve a pedir <code>/gracias</code>, no reenvía el mensaje.</p>
+    </div>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Qué responder en cada caso</caption>
+      <thead>
+        <tr><th>Situación</th><th>Respuesta</th><th>Por qué</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Datos válidos</td><td><code>303</code> a <code>/gracias</code></td><td>Evita el reenvío al recargar y deja una URL limpia</td></tr>
+        <tr><td>Datos inválidos</td><td><code>422</code> con el formulario</td><td>El usuario corrige en el mismo lugar, sin perder lo escrito</td></tr>
+        <tr><td>Mensaje no encontrado</td><td><code>404</code></td><td>La página no existe; no es un error del formulario</td></tr>
+        <tr><td>Fallo del servidor</td><td><code>500</code></td><td>No se debe culpar al usuario de un error interno</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — no redirijas cuando hay errores</span>
+    <p>
+      Una tentación frecuente es redirigir siempre y mostrar los errores con un mensaje flash.
+      Para un formulario pequeño es peor: el usuario pierde lo que escribió y el error queda lejos
+      del campo. La regla es: <strong>éxito redirige, error vuelve a pintar</strong>. El código
+      <code>422</code> es parte de la respuesta del formulario, no una página aparte.
+    </p>
+  </div>
+
+  <h3>6.6 · Seguridad y privacidad en el formulario</h3>
+
+  <div class="definiciones">
+    <div>
+      <dt>Escapar la salida</dt>
+      <dd>Jinja2 escapa por defecto en las plantillas <code>.html</code>. No uses <code>|safe</code> con datos del usuario: un mensaje con <code>&lt;script&gt;</code> se ejecutaría en el navegador de quien lo lea. Escapar es la defensa principal contra XSS.</dd>
+    </div>
+    <div>
+      <dt>Limitar la entrada</dt>
+      <dd>Un máximo de 800 caracteres no es una molestia: es una defensa contra el agotamiento de memoria y contra mensajes imposibles de moderar. El límite se pone en el modelo, no solo en el HTML.</dd>
+    </div>
+    <div>
+      <dt>No registrar de más</dt>
+      <dd>El asunto basta para saber que llegó un contacto. Guardar el mensaje completo en los registros del servidor es un riesgo de privacidad y no ayuda a depurar. Si se guarda, que sea en la base de datos y con acceso restringido.</dd>
+    </div>
+    <div>
+      <dt>Honeypot y ritmo</dt>
+      <dd>Un campo invisible y un límite de envíos por minuto reducen el spam. El honeypot se implementa en el modelo; el límite de ritmo se hace en el servidor o en un proxy, y se estudia más adelante.</dd>
+    </div>
+    <div>
+      <dt>CSRF, cuando hay sesión</dt>
+      <dd>Si el formulario viaja con una cookie de sesión, otro sitio podría enviarlo en nombre del usuario. Ahí hace falta un token CSRF. Un formulario público de contacto no tiene ese problema, pero conviene saber que existe.</dd>
+    </div>
+    <div>
+      <dt><code>EmailStr</code> no verifica el buzón</dt>
+      <dd>Comprueba la forma, no la existencia. La única prueba de que el correo funciona es enviar un mensaje de confirmación. No prometas en la página que el correo «es válido»: promete que tiene forma de correo.</dd>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué se devuelve cuando el formulario tiene errores?</p>
+      <button class="opcion" data-op="a">Una redirección a <code>/gracias</code> con un mensaje flash</button>
+      <button class="opcion" data-op="b">El formulario otra vez, con los valores y los errores, y estado <code>422</code></button>
+      <button class="opcion" data-op="c">Un <code>200</code> con el JSON de FastAPI</button>
+      <button class="opcion" data-op="d">Una página en blanco con el código del error</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>2.</strong> ¿Para qué sirve <code>aria-describedby</code>?</p>
+      <button class="opcion" data-op="a">Para cambiar el color del borde del campo</button>
+      <button class="opcion" data-op="b">Para que el campo sea obligatorio</button>
+      <button class="opcion" data-op="c">Para asociar el campo con el texto del error y que el lector lo anuncie</button>
+      <button class="opcion" data-op="d">Para enviar el error al servidor</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Por qué el éxito usa <code>303</code>?</p>
+      <button class="opcion" data-op="a">Para que recargar no vuelva a enviar el <code>POST</code></button>
+      <button class="opcion" data-op="b">Porque <code>303</code> es el único código que entiende Jinja2</button>
+      <button class="opcion" data-op="c">Para que el navegador guarde el formulario en caché</button>
+      <button class="opcion" data-op="d">Porque <code>200</code> no permite mostrar HTML</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Qué hace Jinja2 con <code>{{ valores.get('mensaje', '') }}</code>?</p>
+      <button class="opcion" data-op="a">Ejecuta el mensaje como JavaScript</button>
+      <button class="opcion" data-op="b">Borra las etiquetas HTML del mensaje</button>
+      <button class="opcion" data-op="c">Lo envía por correo</button>
+      <button class="opcion" data-op="d">Lo escapa antes de insertarlo en el HTML</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: Actividad</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER INTEGRADOR
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>Un formulario de contacto <em>listo para producción</em></h2>
+    <p class="proposito">
+      En 45 minutos vas a cerrar la clase con algo que no es un ejercicio: es una pieza de
+      software con contrato, errores legibles y pruebas. La diferencia entre «funciona en mi
+      computador» y «funciona» cabe en cuatro pruebas automáticas.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller integrador</b></span>
+      <span>🧭 <b>Producto: app de contacto con pruebas y decisión escrita</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El encargo</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Encargo</span>
+      <h3>El buzón del club, versión que se puede publicar</h3>
+    </div>
+
+    <p>
+      La actividad de la unidad 5 ya recibe y valida. El taller añade lo que falta para que otra
+      persona pueda mantenerla: pruebas que demuestren que las reglas funcionan, un registro que no
+      guarde datos personales y una decisión escrita sobre qué se validó en cada capa y por qué.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Contenido</strong></td>
+            <td>Dos archivos de aplicación, dos plantillas y un archivo de pruebas</td>
+          </tr>
+          <tr>
+            <td><strong>Regla de validación</strong></td>
+            <td>Todo campo tiene tipo, límite y mensaje; los campos extra se rechazan</td>
+          </tr>
+          <tr>
+            <td><strong>Regla de experiencia</strong></td>
+            <td>Éxito con <code>303</code>; error con <code>422</code> y valores conservados</td>
+          </tr>
+          <tr>
+            <td><strong>Regla de privacidad</strong></td>
+            <td>El registro menciona el asunto, nunca el mensaje ni el correo</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción</strong></td>
+            <td>Sin base de datos y sin envío real de correo: se dejan preparados</td>
+          </tr>
+          <tr>
+            <td><strong>Restricción del taller</strong></td>
+            <td>Las cuatro pruebas se ejecutan con <code>uv run pytest</code> y pasan sin red</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong><code>modelos.py</code></strong>: el modelo <code>Contacto</code> con <code>extra="forbid"</code>, recorte de espacios, <code>EmailStr</code>, <code>Literal</code>, consentimiento, sin enlaces y honeypot.</li>
+      <li><strong><code>main.py</code></strong>: rutas, manejador de errores y registro sin datos personales.</li>
+      <li><strong><code>plantillas/contacto.html</code></strong> y <strong><code>gracias.html</code></strong>: accesibles, con errores por campo y valores conservados.</li>
+      <li><strong><code>test_contacto.py</code></strong>: cuatro pruebas que cubran éxito, correo inválido, mensaje corto y honeypot.</li>
+      <li><strong>Un párrafo escrito</strong> de unas 120 palabras: qué decidiste tú, qué decidió el enunciado y por qué.</li>
+    </ol>
+  </div>
+
+  <h3>7.2 · Las pruebas</h3>
+
+  <p>
+    <code>TestClient</code> envía peticiones reales a tu aplicación sin abrir un navegador. Es la
+    forma más rápida de comprobar que un cambio no rompió una regla. Añade <code>pytest</code> como
+    dependencia de desarrollo.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — instalar las pruebas</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>uv add --dev pytest
+uv run pytest -q
+</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>test_contacto.py — cuatro pruebas, cuatro reglas</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> fastapi.testclient <span class="tk-kw">import</span> <span class="tk-cls">TestClient</span>
+
+<span class="tk-kw">from</span> main <span class="tk-kw">import</span> app
+
+cliente = <span class="tk-cls">TestClient</span>(app)
+
+<span class="tk-cls">DATOS_VALIDOS</span> = {
+    <span class="tk-str">"nombre"</span>: <span class="tk-str">"Ana Torres"</span>,
+    <span class="tk-str">"correo"</span>: <span class="tk-str">"ana@colegio.edu.co"</span>,
+    <span class="tk-str">"asunto"</span>: <span class="tk-str">"consulta"</span>,
+    <span class="tk-str">"mensaje"</span>: <span class="tk-str">"Quiero inscribirme en el club de robótica este semestre."</span>,
+    <span class="tk-str">"acepta"</span>: <span class="tk-str">"true"</span>,
+    <span class="tk-str">"sitio"</span>: <span class="tk-str">""</span>,
+}
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_formulario_valido_redirige</span>():
+    respuesta = cliente.post(
+        <span class="tk-str">"/contacto"</span>, data=<span class="tk-cls">DATOS_VALIDOS</span>, follow_redirects=<span class="tk-kw">False</span>
+    )
+    <span class="tk-kw">assert</span> respuesta.status_code == <span class="tk-num">303</span>
+    <span class="tk-kw">assert</span> respuesta.headers[<span class="tk-str">"location"</span>] == <span class="tk-str">"/gracias"</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_correo_invalido_devuelve_422</span>():
+    datos = <span class="tk-cls">DATOS_VALIDOS</span> | {<span class="tk-str">"correo"</span>: <span class="tk-str">"ana@"</span>}
+    respuesta = cliente.post(<span class="tk-str">"/contacto"</span>, data=datos)
+    <span class="tk-kw">assert</span> respuesta.status_code == <span class="tk-num">422</span>
+    <span class="tk-kw">assert</span> <span class="tk-str">"correo válido"</span> <span class="tk-kw">in</span> respuesta.text
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_mensaje_corto_no_pasa</span>():
+    datos = <span class="tk-cls">DATOS_VALIDOS</span> | {<span class="tk-str">"mensaje"</span>: <span class="tk-str">"Hola"</span>}
+    respuesta = cliente.post(<span class="tk-str">"/contacto"</span>, data=datos)
+    <span class="tk-kw">assert</span> respuesta.status_code == <span class="tk-num">422</span>
+    <span class="tk-kw">assert</span> <span class="tk-str">"demasiado corto"</span> <span class="tk-kw">in</span> respuesta.text
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_honeypot_relleno_se_rechaza</span>():
+    datos = <span class="tk-cls">DATOS_VALIDOS</span> | {<span class="tk-str">"sitio"</span>: <span class="tk-str">"https://spam.example"</span>}
+    respuesta = cliente.post(<span class="tk-str">"/contacto"</span>, data=datos)
+    <span class="tk-kw">assert</span> respuesta.status_code == <span class="tk-num">422</span>
+    <span class="tk-kw">assert</span> <span class="tk-str">"antispam"</span> <span class="tk-kw">in</span> respuesta.text
+</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>follow_redirects=False</code></span>
+    <p>
+      Por defecto, <code>TestClient</code> sigue las redirecciones y la prueba vería el
+      <code>200</code> de <code>/gracias</code>, no el <code>303</code>. Con
+      <code>follow_redirects=False</code> se comprueba el código real y la cabecera
+      <code>Location</code>. Es la diferencia entre probar «la página final» y probar «la
+      decisión del servidor».
+    </p>
+  </div>
+
+  <h3>7.3 · El registro que no guarda el mensaje</h3>
+
+  <p>
+    En la actividad se usa un <code>print</code> para ver que la ruta se ejecutó. En el taller se
+    cambia por el módulo <code>logging</code>, que permite niveles y destinos. Lo importante no es
+    la herramienta: es <strong>qué se escribe</strong>. El asunto sirve para saber que llegó un
+    contacto; el mensaje y el correo son datos de una persona.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>main.py — un registro útil y discreto</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">import</span> logging
+
+logger = logging.getLogger(<span class="tk-str">"contacto"</span>)
+
+
+<span class="tk-fn">@app</span>.post(<span class="tk-str">"/contacto"</span>)
+<span class="tk-kw">def</span> <span class="tk-fn">recibir_contacto</span>(datos: <span class="tk-cls">Annotated</span>[<span class="tk-cls">Contacto</span>, <span class="tk-cls">Form</span>()]) -&gt; <span class="tk-cls">RedirectResponse</span>:
+    <span class="tk-cm"># Sirve para saber que llegó un contacto sin guardar datos personales.</span>
+    logger.info(<span class="tk-str">"Contacto recibido: asunto=%s"</span>, datos.asunto)
+    <span class="tk-kw">return</span> <span class="tk-cls">RedirectResponse</span>(url=<span class="tk-str">"/gracias"</span>, status_code=<span class="tk-num">303</span>)
+</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — <code>print</code> no es un registro</span>
+    <p>
+      <code>print</code> escribe en la salida estándar y desaparece cuando el servidor corre como
+      servicio. <code>logging</code> permite niveles, formato y destino. Pero el cambio no es
+      solo técnico: un <code>print(f"{datos.nombre}: {datos.mensaje}")</code> deja el mensaje
+      completo en los registros, donde cualquiera con acceso al servidor puede leerlo. El asunto
+      es suficiente.
+    </p>
+  </div>
+
+  <h3>7.4 · Rúbrica de autoevaluación</h3>
+
+  <p>
+    Puntúa cada criterio de 0 a 2 y revisa los que hayas quedado en 0 o 1 antes de dar por terminado
+    el taller.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación del formulario de contacto</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Contrato del dato</td>
+          <td>No hay modelo o todos los campos son <code>str</code> sin límites</td>
+          <td>Hay modelo, pero falta algún límite o el consentimiento no se exige</td>
+          <td>Todos los campos tienen tipo, límite y regla; los extra se rechazan</td>
+        </tr>
+        <tr>
+          <td>Validación del servidor</td>
+          <td>La única validación está en el HTML</td>
+          <td>El modelo valida, pero algún caso se comprueba solo en el navegador</td>
+          <td>El servidor rechaza todo lo que el navegador podría dejar pasar</td>
+        </tr>
+        <tr>
+          <td>Errores</td>
+          <td>Se devuelve el JSON de FastAPI o un <code>200</code> con el formulario</td>
+          <td>Hay mensajes en español, pero no se conservan los valores</td>
+          <td>Cada error se asocia a su campo, en español, con el valor conservado</td>
+        </tr>
+        <tr>
+          <td>Flujo de éxito</td>
+          <td>El <code>POST</code> responde con la página directamente</td>
+          <td>Hay redirección, pero con un código que no evita el reenvío</td>
+          <td><code>303</code> a <code>/gracias</code>; recargar no reenvía</td>
+        </tr>
+        <tr>
+          <td>Accesibilidad</td>
+          <td>Los campos no tienen etiqueta o el error es solo color</td>
+          <td>Hay etiquetas, pero falta <code>aria-invalid</code> o el texto del error</td>
+          <td>Etiquetas, <code>aria-describedby</code>, <code>aria-invalid</code> y foco en el primer error</td>
+        </tr>
+        <tr>
+          <td>Pruebas</td>
+          <td>No hay pruebas o no se ejecutan</td>
+          <td>Hay una o dos pruebas, pero no cubren el honeypot</td>
+          <td>Las cuatro pruebas pasan y cubren éxito, correo, longitud y honeypot</td>
+        </tr>
+        <tr>
+          <td>Privacidad</td>
+          <td>El registro guarda el mensaje y el correo completos</td>
+          <td>El registro guarda el asunto, pero también algún dato personal</td>
+          <td>El registro solo menciona el asunto; los datos se quedan en la petición</td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay nada escrito</td>
+          <td>Describe el qué, no el porqué</td>
+          <td>Decisión, motivo, apartamiento del enunciado y consecuencia</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.5 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>Un formulario es una frontera: todo lo que entra por él es texto, es opcional y es sospechoso hasta que el servidor lo demuestra.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p>El atributo <code>name</code> es el que viaja; el <code>id</code> solo sirve para la etiqueta y el CSS. Un campo sin <code>name</code> no existe para el servidor.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>La validación del navegador es una cortesía; la del servidor es una garantía. Las dos se escriben, pero solo una decide.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p><code>422</code> no es un error del programa: es la respuesta correcta cuando el contenido no cumple el contrato.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p>Un buen error dice qué pasó y cómo corregirlo, aparece junto al campo y conserva lo que la persona ya había escrito.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p>Después de un <code>POST</code> exitoso, redirigir con <code>303</code> evita que recargar envíe el mensaje dos veces.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p>Las pruebas con <code>TestClient</code> convierten las reglas del formulario en algo que se puede comprobar en segundos, no en una promesa.</p>
+    </div>
+  </div>
+
+  <h3>7.6 · Puente hacia la próxima clase</h3>
+
+  <p>
+    Tu formulario ya recibe, valida y responde. Pero el mensaje se pierde al terminar la petición:
+    se imprime un asunto y nada más. La próxima pieza es <strong>guardarlo</strong>.
+  </p>
+
+  <ol>
+    <li>
+      <strong>Una tabla <code>mensajes</code></strong> con las mismas columnas que el modelo:
+      nombre, correo, asunto, mensaje, fecha y estado. La validación de hoy es la que impide que
+      entren datos que la tabla no puede sostener.
+    </li>
+    <li>
+      <strong>Una consulta parametrizada</strong> para insertar. Nunca se arma SQL concatenando el
+      mensaje del usuario: eso es la puerta de la inyección SQL, el equivalente de dejar el
+      formulario abierto.
+    </li>
+    <li>
+      <strong>Un correo de confirmación</strong> para probar que el buzón existe. <code>EmailStr</code>
+      validó la forma; el correo valida la realidad.
+    </li>
+  </ol>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de la próxima clase</span>
+    <p>
+      Guarda el proyecto en un repositorio con un <code>README.md</code> que explique cómo
+      arrancarlo, y deja las cuatro pruebas en verde. En la clase siguiente vamos a necesitar esta
+      versión exacta para comparar el formulario que solo responde con el que además guarda.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 7</h2>
+    <p>
+      Has cerrado el ciclo del dato que entra: el formulario lo captura, el navegador lo ayuda a
+      escribir, el servidor lo valida, Pydantic lo convierte en un objeto y la respuesta lo
+      confirma o lo corrige. A partir de aquí, la pregunta ya no es cómo se recibe un mensaje, sino
+      dónde se guarda y quién puede leerlo.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: Errores que se entienden</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 7 · Formularios y validación del input del usuario</span>
+  <p class="pie-sub">Captura con HTML · El viaje del dato · Validación con Pydantic · Formulario de contacto · Errores y PRG</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

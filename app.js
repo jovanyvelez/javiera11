@@ -135,7 +135,8 @@ function cargarProgresoPorClase() {
     'curso-herr-3-css': 6,                   // clase 3: CSS para diseño responsivo
     'curso-herr-4-python': 6,               // clase 4: Introducción al lenguaje backend (Python)
     'curso-herr-5-repetitivas': 6,      // clase 5: Estructuras repetitivas
-    'curso-herr-6': 6,
+    'curso-herr-6-funciones': 6,          // clase 6: Funciones y métodos
+    'curso-herr-7-formularios': 6,          // clase 7: formularios y validación
     'curso-herr-8': 6,
     'curso-herr-9-repetitivas': 6,
     'curso-herr-10-funciones': 6,
@@ -237,11 +238,11 @@ function actualizarBarraClase(card, pct) {
 function animarStats() {
   // Los 3 primeros son fijos
   animarNumero(document.getElementById('stat-cursos'),  0, 6,  800);
-  animarNumero(document.getElementById('stat-clases'), 0, 39, 900);
+  animarNumero(document.getElementById('stat-clases'), 0, 40, 900);
   // El cuarto (horas) tiene "+" al final
   const elHoras = document.getElementById('stat-horas');
   if (elHoras) {
-    animarNumero(elHoras, 0, 140, 1000, valor => valor + '+');
+    animarNumero(elHoras, 0, 150, 1000, valor => valor + '+');
   }
   // El de progreso ya se actualiza en cargarProgresoPorClase
 }
@@ -362,7 +363,10 @@ document.addEventListener('keydown', (e) => {
   } else if (e.key === 'r' || e.key === 'R') {
     const card = document.querySelector('.clase-card.herr-6');
     if (card) card.click();
-    } else if (e.key === 'u' || e.key === 'U') {
+  } else if (e.key === 'k' || e.key === 'K') {
+    const card = document.querySelector('.clase-card.herr-7');
+    if (card) card.click();
+  } else if (e.key === 'u' || e.key === 'U') {
     const card = document.querySelector('.clase-card.herr-8');
     if (card) card.click();
   } else if (e.key === 'i' || e.key === 'I') {
@@ -394,7 +398,7 @@ window.addEventListener('load', () => {
                 'curso-csharp-9', 'curso-csharp-10',
                 'curso-analisis-diseno', 'curso-requerimientos',
                 'curso-elicitacion', 'curso-documentacion', 'curso-introduccion-diseno',
-                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3-css', 'curso-herr-4-python', 'curso-herr-5-repetitivas', 'curso-herr-6', 'curso-herr-8', 'curso-herr-9-repetitivas', 'curso-herr-10-funciones', 'curso-herr-11-estructura', 'curso-herr-12-git', 'curso-herr-13-github', 'curso-herr-14-git-vscode'];
+                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3-css', 'curso-herr-4-python', 'curso-herr-5-repetitivas', 'curso-herr-6-funciones', 'curso-herr-7-formularios', 'curso-herr-8', 'curso-herr-9-repetitivas', 'curso-herr-10-funciones', 'curso-herr-11-estructura', 'curso-herr-12-git', 'curso-herr-13-github', 'curso-herr-14-git-vscode'];
 
   let tienePrograma = false;
   let ultimaClase = null;

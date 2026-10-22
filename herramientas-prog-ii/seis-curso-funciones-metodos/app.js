@@ -1,6 +1,9 @@
 /* ============================================================
    CLASE seis — HERRAMIENTAS DE PROGRAMACIÓN II
-   Lógica de navegación, quizzes y taller
+   Tema: "Uso de funciones o métodos: paso de parámetros,
+   retorno de valores y reutilización de código"
+   Lógica de navegación, cuestionarios y progreso
+   Esqueleto mínimo compartido: sin módulos interactivos propios.
 ============================================================ */
 
 const TOTAL_MODULOS = 8;
@@ -9,13 +12,8 @@ const estado = {
   moduloActual: 0,
   completados: new Set(),
   quizzes: {},
-  badges: new Set(),
-  xp: 0
+  badges: new Set()
 };
-
-const XP_POR_MODULO = 30;
-const XP_POR_QUIZ_PERFECTO = 25;
-const XP_TOTAL = 640;
 
 document.addEventListener('DOMContentLoaded', () => {
   cargarProgreso();
@@ -23,20 +21,45 @@ document.addEventListener('DOMContentLoaded', () => {
   configurarBotonesInternos();
   configurarCopiarCodigo();
   configurarQuizzes();
+  configurarSoluciones();
   configurarTeclado();
   actualizarUI();
 });
 
-const STORAGE_KEY = 'curso-herr-6';
+const STORAGE_KEY = 'curso-herr-6-funciones';
 
+/* Unidades que cuentan para el avance (0 = apertura, 4 = intervalo). */
+const UNIDADES_EVALUABLES = [1, 2, 3, 5, 6, 7];
+
+const ETIQUETAS = [
+  'Apertura y programa',
+  'La anatomía de una función',
+  'El paso de parámetros',
+  'El retorno de valores',
+  'Intervalo',
+  'Ejercicio: partir el informe en funciones',
+  'Ejercicio: de función a método',
+  'Taller: biblioteca.py reutilizable'
+];
+
+/* Constancia que se otorga al completar cada unidad. */
+const BADGES_MODULO = {
+  1: 'Anatomía de la función',
+  2: 'Paso de parámetros',
+  3: 'Retorno de valores',
+  5: 'Informe en funciones',
+  6: 'Métodos de clase',
+  7: 'Módulo reutilizable'
+};
+
+/* ---------- PERSISTENCIA ---------- */
 function guardarProgreso() {
   try {
     const datos = {
       moduloActual: estado.moduloActual,
       completados: [...estado.completados],
       quizzes: estado.quizzes,
-      badges: [...estado.badges],
-      xp: estado.xp
+      badges: [...estado.badges]
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
   } catch (e) {}
@@ -50,7 +73,6 @@ function cargarProgreso() {
     estado.completados = new Set(datos.completados || []);
     estado.quizzes = datos.quizzes || {};
     estado.badges = new Set(datos.badges || []);
-    estado.xp = datos.xp || 0;
   } catch (e) {}
 }
 
@@ -69,10 +91,9 @@ function configurarBotonesInternos() {
       irAModulo(m);
     });
   });
+
   document.querySelectorAll('[data-reiniciar]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (confirm('¿Quieres volver al inicio? Tu progreso se conserva.')) irAModulo(0);
-    });
+    btn.addEventListener('click', () => reiniciarCurso());
   });
 }
 
@@ -93,52 +114,40 @@ function irAModulo(n) {
 function marcarCompletado(n) {
   if (estado.completados.has(n)) return;
   estado.completados.add(n);
-  estado.xp = Math.min(XP_TOTAL, estado.xp + XP_POR_MODULO);
 
-  const badgesModulo = {0: "🚀 Iniciado", 1: "📄 Plantillas", 2: "🧬 Herencia", 3: "🧩 Macros", 4: "☕ Descansado", 5: "🔲 Partials", 6: "📨 TemplateResponse", 7: "🛠️ Jinja2 Master"};
-  if (badgesModulo[n]) otorgarBadge(badgesModulo[n]);
+  if (BADGES_MODULO[n]) otorgarBadge(BADGES_MODULO[n]);
 
-  if (estado.completados.size === TOTAL_MODULOS) {
-    otorgarBadge('🏆 Jinja2 Dominado');
+  if (UNIDADES_EVALUABLES.every(u => estado.completados.has(u))) {
+    otorgarBadge('Reutilización completa');
   }
 
-  mostrarToast(`🎉 ¡+${XP_POR_MODULO} XP! Módulo ${n} completado`);
   guardarProgreso();
+  actualizarUI();
 }
 
 function otorgarBadge(nombre) {
   if (estado.badges.has(nombre)) return;
   estado.badges.add(nombre);
-  mostrarToast(`🎖️ Insignia: ${nombre}`);
-  actualizarUI();
-}
-
-function addXP(cantidad) {
-  estado.xp = Math.min(XP_TOTAL, estado.xp + cantidad);
-  guardarProgreso();
+  mostrarToast('Constancia obtenida: ' + nombre);
   actualizarUI();
 }
 
 function actualizarUI() {
-  const completables = [1, 2, 3, 5, 6, 7];
-  const total = completables.length;
-  const completos = completables.filter(m => estado.completados.has(m)).length;
+  const total = UNIDADES_EVALUABLES.length;
+  const completos = UNIDADES_EVALUABLES.filter(m => estado.completados.has(m)).length;
   const pct = Math.round((completos / total) * 100);
 
   const barra = document.getElementById('barra');
   if (barra) barra.style.width = pct + '%';
 
   const ptxt = document.getElementById('porcentaje');
-  if (ptxt) ptxt.textContent = pct + '%';
+  if (ptxt) ptxt.textContent = pct + ' %';
 
-  const mAct = document.getElementById('modulo-actual');
+  const mAct = document.getElementById('unidad-actual');
   if (mAct) {
-    const labels = ['Inicio', 'Plantillas', 'Herencia', 'Macros', 'Descanso', 'Partials', 'TemplateResponse', 'Taller'];
-    mAct.textContent = labels[estado.moduloActual] || ('Módulo ' + estado.moduloActual);
+    const n = estado.moduloActual;
+    mAct.textContent = 'Unidad ' + n + ' · ' + (ETIQUETAS[n] || '');
   }
-
-  const xpEl = document.getElementById('xp-display');
-  if (xpEl) xpEl.textContent = `${estado.xp} / ${XP_TOTAL} XP`;
 
   const badgesCont = document.getElementById('badges');
   if (badgesCont) {
@@ -151,19 +160,23 @@ function actualizarUI() {
     });
   }
 
+  const vacio = document.querySelector('.constancias-vacio');
+  if (vacio) vacio.classList.toggle('oculto', estado.badges.size > 0);
+
   document.querySelectorAll('.btn-modulo').forEach(btn => {
     const m = parseInt(btn.dataset.modulo, 10);
     btn.classList.toggle('completado', estado.completados.has(m));
   });
 }
 
+/* ---------- COPIAR CÓDIGO ---------- */
 function configurarCopiarCodigo() {
   document.querySelectorAll('.copy-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const code = btn.closest('.code-wrap').querySelector('code, pre').innerText;
       navigator.clipboard.writeText(code).then(() => {
         const original = btn.textContent;
-        btn.textContent = '✅ Copiado';
+        btn.textContent = 'Copiado';
         btn.classList.add('ok');
         setTimeout(() => { btn.textContent = original; btn.classList.remove('ok'); }, 1800);
       });
@@ -171,7 +184,7 @@ function configurarCopiarCodigo() {
   });
 }
 
-/* ---------- QUIZZES ---------- */
+/* ---------- CUESTIONARIOS ---------- */
 function configurarQuizzes() {
   document.querySelectorAll('.quiz').forEach(quiz => {
     const idQuiz = quiz.dataset.quiz;
@@ -216,27 +229,39 @@ function verificarQuizCompleto(quiz, idQuiz) {
   const total = preguntas.length;
   estado.quizzes[idQuiz] = { aciertos, total };
 
-  if (aciertos === total && !quiz.dataset.recompensado) {
-    quiz.dataset.recompensado = 'true';
-    addXP(XP_POR_QUIZ_PERFECTO);
-  }
-
   const res = quiz.querySelector('.resultado-quiz');
   if (res) {
     res.classList.add('visible');
     if (aciertos === total) {
       res.classList.add('exito');
-      res.innerHTML = `🎉 ¡Perfecto! ${aciertos}/${total}. (+${XP_POR_QUIZ_PERFECTO} XP)`;
+      res.textContent = 'Dominado: ' + aciertos + '/' + total + '. La unidad está comprensible.';
     } else if (aciertos >= total / 2) {
       res.classList.add('parcial');
-      res.textContent = `👍 ${aciertos}/${total} correctas. ¡Buen intento!`;
+      res.textContent = 'Comprensión parcial: ' + aciertos + '/' + total + '. Conviene releer los recuadros señalados.';
     } else {
       res.classList.add('parcial');
-      res.textContent = `🤔 ${aciertos}/${total}. Te invitamos a releer el módulo.`;
+      res.textContent = 'Insuficiente: ' + aciertos + '/' + total + '. Se recomienda volver a la unidad y rehacer el cuestionario.';
     }
   }
 
   guardarProgreso();
+}
+
+/* ---------- SOLUCIONES PLEGABLES ---------- */
+function configurarSoluciones() {
+  document.querySelectorAll('[data-solucion]').forEach(btn => {
+    btn.addEventListener('click', () => toggleSolucion(btn.dataset.solucion));
+  });
+}
+
+function toggleSolucion(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const visible = el.classList.toggle('visible');
+  document.querySelectorAll('[data-solucion="' + id + '"]').forEach(btn => {
+    if (!btn.dataset.textoOriginal) btn.dataset.textoOriginal = btn.textContent;
+    btn.textContent = visible ? 'Ocultar la respuesta' : btn.dataset.textoOriginal;
+  });
 }
 
 /* ---------- ATAJOS DE TECLADO ---------- */
@@ -254,24 +279,27 @@ function configurarTeclado() {
   });
 }
 
+/* ---------- REINICIO ---------- */
+function reiniciarCurso() {
+  if (!confirm('¿Quieres borrar tu avance de esta clase? Se borrarán las unidades completadas y las constancias.')) return;
+  estado.moduloActual = 0;
+  estado.completados.clear();
+  estado.quizzes = {};
+  estado.badges.clear();
+  guardarProgreso();
+  irAModulo(0);
+  mostrarToast('Avance reiniciado.');
+}
+
 /* ---------- TOAST ---------- */
 function mostrarToast(mensaje) {
   const toast = document.createElement('div');
+  toast.className = 'toast';
   toast.textContent = mensaje;
-  Object.assign(toast.style, {
-    position: 'fixed', bottom: '30px', right: '30px',
-    background: 'linear-gradient(135deg, #f59e0b, #a855f7)',
-    color: '#fff', padding: '0.9rem 1.4rem', borderRadius: '30px',
-    fontWeight: '700', boxShadow: '0 10px 30px rgba(0,0,0,0.4)',
-    zIndex: '1000', transition: 'all 0.4s ease',
-    opacity: '0', transform: 'translateY(20px)',
-    maxWidth: '90%', fontSize: '0.92rem'
-  });
   document.body.appendChild(toast);
-  requestAnimationFrame(() => { toast.style.opacity = '1'; toast.style.transform = 'translateY(0)'; });
+  requestAnimationFrame(() => toast.classList.add('visible'));
   setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateY(20px)';
+    toast.classList.remove('visible');
     setTimeout(() => toast.remove(), 400);
   }, 3000);
 }

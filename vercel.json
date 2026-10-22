@@ -33,12 +33,12 @@
     },
     {
       "source": "/herramientas-prog-ii/siete-curso-htmx-bootstrap",
-      "destination": "/herramientas-prog-ii/tres-curso-css-responsivo/index.html",
+      "destination": "/herramientas-prog-ii/siete-curso-formularios-validacion/index.html",
       "permanent": true
     },
     {
       "source": "/herramientas-prog-ii/siete-curso-htmx-bootstrap/:path*",
-      "destination": "/herramientas-prog-ii/tres-curso-css-responsivo/:path*",
+      "destination": "/herramientas-prog-ii/siete-curso-formularios-validacion/:path*",
       "permanent": true
     },
     {
@@ -59,6 +59,16 @@
     {
       "source": "/herramientas-prog-ii/cinco-curso-pydantic-validacion/:path*",
       "destination": "/herramientas-prog-ii/cinco-curso-estructuras-repetitivas/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/seis-curso-jinja2-plantillas",
+      "destination": "/herramientas-prog-ii/seis-curso-funciones-metodos/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/herramientas-prog-ii/seis-curso-jinja2-plantillas/:path*",
+      "destination": "/herramientas-prog-ii/seis-curso-funciones-metodos/:path*",
       "permanent": true
     }
   ]

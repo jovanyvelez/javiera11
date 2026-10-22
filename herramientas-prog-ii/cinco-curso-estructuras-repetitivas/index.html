@@ -2450,33 +2450,49 @@ dias = <span class="tk-num">0</span>
   <h3>7.6 · Puente hacia la próxima clase</h3>
 
   <p>
-    Hoy tu informe es un <strong>texto</strong>: una cadena con líneas y todo, construida a mano
-    con <code>"\n".join(...)</code>. Es un informe que se puede leer en una terminal, pero no se
-    puede poner en una página web sin pelearte con las etiquetas.
+    Hoy tu informe funciona, pero tiene una limitación que todavía no has notado: <strong>toda su
+    lógica vive dentro de <code>main()</code></strong>. El programa lee, cuenta, acumula, arma el
+    texto y lo muestra, todo en un solo bloque. Mientras el informe sea lo único que hace el
+    programa, eso no importa. Pero en cuanto otra parte de la aplicación quiera el total de días
+    —un correo, una página web, un botón— no hay forma de pedirlo sin volver a imprimir el
+    informe entero.
   </p>
 
   <p>
-    La próxima clase resuelve exactamente eso, con las herramientas de la clase 2 y la clase 3. Tres
-    cosas de hoy siguen vivas allí:
+    La próxima clase resuelve exactamente eso, y es la pieza que une esta clase con las que
+    vinieron antes. Cuatro cosas de hoy siguen vivas allí:
   </p>
 
   <ol>
     <li>
-      <strong>Los bucles que recorren los datos</strong> son exactamente los que usará el motor de
-      plantillas para pintar una lista de libros. El <code>{% for %}</code> de Jinja2 es un
-      <code>for</code> de Python con otra sintaxis, y la idea es la misma.
+      <strong>Las funciones que ya sabes escribir</strong> —<code>total_dias()</code>,
+      <code>contar_por_titulo()</code>— se convertirán en funciones de verdad: con nombre, con
+      parámetros y con un <code>return</code> que devuelve el resultado en vez de imprimirlo.
     </li>
     <li>
-      <strong>La lista de diccionarios que devuelve <code>leer_prestamos()</code></strong> es el
-      modelo que la plantilla va a recibir. El bucle produce los datos; la plantilla produce la
-      página. Separar esas dos cosas es lo que convierte un programa de terminal en un sitio web.
+      <strong>La lista de diccionarios que produces</strong> será un dato que se le pase a esas
+      funciones. Quien llama decide de dónde viene; la función solo decide qué hacer con él.
     </li>
     <li>
-      <strong>El informe que devuelve un texto</strong> es el modelo de lo quesoon hará
-      <code>generar_informe()</code>: una función que devuelve contenido en vez de imprimirlo, para
-      que quien lo use decida dónde va.
+      <strong>Los bucles que recorren los datos</strong> no cambian: siguen siendo los mismos.
+      Lo que cambia es <em>dónde</em> viven, para que puedan usarse desde más de un sitio.
+    </li>
+    <li>
+      <strong>La constante del límite de días</strong> dejará de estar escrita en el medio del
+      programa para pasar a ser un parámetro con valor por defecto: un solo lugar donde cambiarla.
     </li>
   </ol>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — la idea que ordena toda la clase que viene</span>
+    <p>
+      Escribir una lógica una sola vez y usarla desde varios sitios tiene un nombre corto:
+      <strong>DRY</strong>, de <em>Don't Repeat Yourself</em>. No es una regla de estilo: es lo que
+      separa un programa que se puede cambiar de uno que no. Cuando el día de mañana haya que
+      subir la tarifa de la multa, la respuesta va a ser «cambio una línea», y no «busco dónde la
+      escribí tres veces».
+    </p>
+  </div>
 
   <div class="recuadro aplicacion">
     <span class="rotulo">Antes de la próxima clase</span>
