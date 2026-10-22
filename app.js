@@ -239,13 +239,15 @@ function actualizarBarraClase(card, pct) {
 
 /* ---------- ANIMACIÓN DE NÚMEROS EN STATS ---------- */
 function animarStats() {
-  // Los 3 primeros son fijos
+  // Los 3 primeros son fijos. Deben coincidir con los valores de index.html:
+  // la animación sobrescribe el texto inicial, así que un valor aquí desactualizado
+  // pisa el número correcto del HTML.
   animarNumero(document.getElementById('stat-cursos'),  0, 6,  800);
-  animarNumero(document.getElementById('stat-clases'), 0, 40, 900);
+  animarNumero(document.getElementById('stat-clases'), 0, 43, 900);
   // El cuarto (horas) tiene "+" al final
   const elHoras = document.getElementById('stat-horas');
   if (elHoras) {
-    animarNumero(elHoras, 0, 150, 1000, valor => valor + '+');
+    animarNumero(elHoras, 0, 158, 1000, valor => valor + '+');
   }
   // El de progreso ya se actualiza en cargarProgresoPorClase
 }
