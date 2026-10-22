@@ -146,7 +146,12 @@ function cargarProgresoPorClase() {
     'curso-herr-14-interaccion': 6,             // idem (clase 14: interacción entre módulos)
     'curso-herr-15-estructura': 6,             // clase 15: Estructuración del sistema CRUD
     'curso-herr-16-git-moderno': 6,             // clase 16: Git moderno en el día a día
-    'curso-herr-17-github': 6                   // clase 17: GitHub — publica tu código
+    'curso-herr-17-github': 6,                   // clase 17: GitHub — publica tu código
+    'curso-herr-18-orm': 6,                      // clase 18: Aprendiendo SQLModel I
+    'curso-herr-19-contrato': 6,                // clase 19: Aprendiendo SQLModel II
+    'curso-herr-20-conectadas': 6,               // clase 20: Aprendiendo SQLModel III
+    'curso-herr-21-relaciones': 6,               // clase 21: Aprendiendo SQLModel IV
+    'curso-herr-22-muchos': 6                    // clase 22: Aprendiendo SQLModel V
   };
 
   let totalGlobal = 0;
@@ -242,12 +247,12 @@ function animarStats() {
   // Los 3 primeros son fijos. Deben coincidir con los valores de index.html:
   // la animación sobrescribe el texto inicial, así que un valor aquí desactualizado
   // pisa el número correcto del HTML.
-  animarNumero(document.getElementById('stat-cursos'),  0, 6,  800);
+  animarNumero(document.getElementById('stat-cursos'),  0, 4,  800);
   animarNumero(document.getElementById('stat-clases'), 0, 48, 900);
   // El cuarto (horas) tiene "+" al final
   const elHoras = document.getElementById('stat-horas');
   if (elHoras) {
-    animarNumero(elHoras, 0, 178, 1000, valor => valor + '+');
+    animarNumero(elHoras, 0, 188, 1000, valor => valor + '+');
   }
   // El de progreso ya se actualiza en cargarProgresoPorClase
 }
@@ -258,7 +263,10 @@ function animarNumero(el, desde, hasta, duracion, formato) {
   formato = formato || (v => v.toString());
 
   function paso(t) {
-    const prog = Math.min((t - inicio) / duracion, 1);
+    // El timestamp de requestAnimationFrame puede ser anterior al instante en que
+    // se capturó performance.now(); sin acotarlo, el easing devuelve valores
+    // negativos y el contador muestra «-1 %» durante un fotograma.
+    const prog = Math.min(Math.max((t - inicio) / duracion, 0), 1);
     // Easing: ease-out cubic
     const eased = 1 - Math.pow(1 - prog, 3);
     const valor = Math.round(desde + (hasta - desde) * eased);
@@ -426,7 +434,10 @@ window.addEventListener('load', () => {
                 'curso-csharp-9', 'curso-csharp-10',
                 'curso-analisis-diseno', 'curso-requerimientos',
                 'curso-elicitacion', 'curso-documentacion', 'curso-introduccion-diseno',
-                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3-css', 'curso-herr-4-python', 'curso-herr-5-repetitivas', 'curso-herr-6-funciones', 'curso-herr-7-formularios', 'curso-herr-8-conexion-bd', 'curso-herr-9-consultas-select', 'curso-herr-10-insercion', 'curso-herr-11-edicion', 'curso-herr-12-edicion-registros', 'curso-herr-13-eliminacion', 'curso-herr-14-interaccion', 'curso-herr-15-estructura', 'curso-herr-16-git-moderno', 'curso-herr-17-github'];
+                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3-css', 'curso-herr-4-python', 'curso-herr-5-repetitivas', 'curso-herr-6-funciones', 'curso-herr-7-formularios', 'curso-herr-8-conexion-bd', 'curso-herr-9-consultas-select', 'curso-herr-10-insercion', 'curso-herr-11-edicion', 'curso-herr-12-edicion-registros', 'curso-herr-13-eliminacion', 'curso-herr-14-interaccion', 'curso-herr-15-estructura', 'curso-herr-16-git-moderno', 'curso-herr-17-github',
+                 // Serie «Aprendiendo SQLModel» (clases 18 a 22)
+                 'curso-herr-18-orm', 'curso-herr-19-contrato', 'curso-herr-20-conectadas',
+                 'curso-herr-21-relaciones', 'curso-herr-22-muchos'];
 
   let tienePrograma = false;
   let ultimaClase = null;

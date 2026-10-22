@@ -711,6 +711,54 @@ main {
   flex-grow: 1;
 }
 
+/* Subtítulo de tema: la línea que dice de qué va la clase dentro de su serie */
+.clase-card .clase-tema {
+  flex-grow: 0;
+  margin-top: -0.35rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--texto-muy-suave);
+  text-transform: uppercase;
+}
+
+/* Divisor de serie: separa un bloque de clases encadenadas del resto */
+.serie-divisor {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  margin: 0.6rem 0 0.2rem;
+  padding: 1rem 1.2rem;
+  border: 1px solid rgba(103, 232, 249, 0.28);
+  border-left: 3px solid var(--cyan);
+  border-radius: var(--radio);
+  background: rgba(6, 182, 212, 0.07);
+}
+
+.serie-divisor-icono {
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.serie-divisor strong {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cyan-cl);
+  margin-bottom: 0.35rem;
+}
+
+.serie-divisor p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--texto-suave);
+  max-width: 78ch;
+}
+
 .clase-meta {
   display: flex;
   gap: 0.8rem;

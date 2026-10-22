@@ -2206,3 +2206,126 @@ figura {
   .tablero-cuerpo { grid-template-columns: 1fr; }
   .tablero-izq { border-right: none; border-bottom: 1px solid var(--linea); }
 }
+
+/* ============================================================
+   HILO DE SERIE — el encadenamiento de las clases del ORM
+============================================================ */
+.hilo-serie {
+  margin: 1.6rem 0;
+  padding: 1.1rem 1.3rem 1.2rem;
+  background: var(--papel);
+  border: 1px solid var(--linea);
+  border-left: 3px solid var(--acento);
+  border-radius: var(--radio);
+}
+
+.hilo-serie .rotulo {
+  display: block;
+  font-family: var(--mono);
+  font-size: .64rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--acento-2);
+  margin-bottom: .45rem;
+}
+
+.hilo-lead {
+  font-size: .92rem;
+  color: var(--texto-2);
+  margin: 0 0 .9rem;
+}
+
+.hilo-pasos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: .3rem;
+}
+
+.hilo-paso,
+.hilo-pago {
+  display: flex;
+  align-items: baseline;
+  gap: .6rem;
+  font-size: .92rem;
+  color: var(--texto-2);
+}
+
+.hilo-pago a {
+  display: flex;
+  align-items: baseline;
+  gap: .6rem;
+  flex: 1;
+  text-decoration: none;
+  color: inherit;
+  padding: .12rem 0;
+  border-bottom: 1px solid transparent;
+  transition: var(--transicion);
+}
+
+.hilo-pago a:hover {
+  color: var(--acento-claro);
+  border-bottom-color: var(--acento);
+}
+
+.hilo-num {
+  font-family: var(--mono);
+  font-size: .72rem;
+  letter-spacing: .12em;
+  color: var(--acento-2);
+  flex-shrink: 0;
+  width: 2.2rem;
+}
+
+.hilo-texto { flex: 1; }
+
+.hilo-paso.actual {
+  color: var(--texto);
+  font-weight: 600;
+}
+
+.hilo-paso.actual .hilo-num { color: var(--acento); }
+
+.hilo-aqui {
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--acento);
+  flex-shrink: 0;
+}
+
+.cierre-serie {
+  font-size: .92rem !important;
+  border-top: 1px solid var(--linea);
+  padding-top: 1.2rem;
+  margin-top: 1.4rem !important;
+}
+
+.cierre-serie a {
+  color: var(--acento-2);
+  text-decoration: none;
+  border-bottom: 1px solid var(--acento-2);
+}
+
+.cierre-serie a:hover { color: var(--acento-2-claro); }
+
+/* Subtítulo de la cabecera: el tema de la clase bajo el nombre de la serie */
+.marca-titulo {
+  display: flex;
+  flex-direction: column;
+  gap: .05rem;
+  min-width: 0;
+}
+
+.marca-subtitulo {
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--texto-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
