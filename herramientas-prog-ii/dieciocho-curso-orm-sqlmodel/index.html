@@ -29,7 +29,7 @@
   <aside class="indice">
     <div class="indice-titulo">Índice de la clase</div>
     <ol>
-      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura y programa</span></button></li>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura y Parte 0</span></button></li>
       <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">El modelo que es la tabla</span></button></li>
       <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">El motor y las tablas</span></button></li>
       <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">La sesión: la unidad de trabajo</span></button></li>
@@ -59,7 +59,7 @@
 <section class="modulo activo" data-modulo="0">
 
   <div class="portada">
-    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura y Parte 0</div>
     <h2>El CRUD que ya sabes, <em>por dentro</em></h2>
     <p class="proposito">
       Las clases 8 a 15 construyeron un CRUD completo con SQL directo: la conexión, el
@@ -68,25 +68,167 @@
       de ser solo un validador y pasa a <strong>ser también la tabla</strong>.
     </p>
     <div class="meta-modulo">
-      <span>⏱ <b>20 minutos</b></span>
-      <span>📄 <b>Lectura y preparación</b></span>
-      <span>🧭 <b>Producto: el mapa de lo que ya sabes</b></span>
+      <span>⏱ <b>50 minutos</b></span>
+      <span>📄 <b>Lectura, Parte 0 y preparación</b></span>
+      <span>🧭 <b>Producto: el puente desde 6B hasta SQLModel</b></span>
     </div>
   </div>
 
   <div class="hilo-serie">
     <span class="rotulo">Hilo de la serie · Aprendiendo SQLModel</span>
     <p class="hilo-lead">
-      Esta clase es la <strong>parte I de cinco</strong> de la serie «Aprendiendo SQLModel». Las cinco van
-      encadenadas: cada una arranca donde terminó la anterior, así que el orden importa.
+      Esta clase es la <strong>parte I de cinco</strong> de la serie «Aprendiendo SQLModel», precedida
+      por una <strong>Parte 0</strong> que conecta lo que ya sabes de objetos con Pydantic y SQLModel.
+      Las cinco partes van encadenadas: cada una arranca donde terminó la anterior.
     </p>
     <ol class="hilo-pasos">
+      <li class="hilo-paso"><span class="hilo-num">0</span><span class="hilo-texto">Del objeto al modelo</span><span class="hilo-aqui">prefacio</span></li>
       <li class="hilo-paso actual"><span class="hilo-num">I</span><span class="hilo-texto">El modelo que es la tabla</span><span class="hilo-aqui">estás aquí</span></li>
       <li class="hilo-pago"><a href="../diecinueve-curso-contrato-api/index.html"><span class="hilo-num">II</span><span class="hilo-texto">El contrato de la API</span></a></li>
       <li class="hilo-pago"><a href="../veinte-curso-tablas-conectadas/index.html"><span class="hilo-num">III</span><span class="hilo-texto">Tablas conectadas: la clave foránea y el JOIN</span></a></li>
       <li class="hilo-pago"><a href="../veintiuno-curso-relaciones-orm/index.html"><span class="hilo-num">IV</span><span class="hilo-texto">Relaciones en el ORM</span></a></li>
       <li class="hilo-pago"><a href="../veintidos-curso-muchos-a-muchos/index.html"><span class="hilo-num">V</span><span class="hilo-texto">Muchos a muchos: la tabla intermedia</span></a></li>
     </ol>
+  </div>
+
+  <h3 id="parte-0">0.0 · Parte 0: del objeto al modelo</h3>
+
+  <p class="primer-párrafo">
+    En la <a href="../seis-b-curso-objetos-python/index.html">clase 6B</a> construiste clases,
+    instancias, métodos e invariantes. Esta Parte 0 no repite esa teoría: la usa como puente.
+    Primero verás cómo Pydantic convierte una clase en un contrato de validación; después, cómo
+    SQLModel convierte una clase en una tabla. La Unidad 1 entrará en el detalle de
+    <code>table=True</code>, el motor y la sesión.
+  </p>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — qué es y qué no es esta Parte 0</span>
+    <p>
+      Es un <strong>capítulo de enlace</strong>, no una repetición de 6B. Si vienes de 6B, aquí
+      reconoces lo que ya sabes y ves dónde encaja. Si llegaste por otro camino, esta Parte 0 te
+      da el mínimo para seguir: una clase, una instancia, atributos y validación.
+    </p>
+  </div>
+
+  <h4>0.0.1 · Lo que ya tienes de 6B</h4>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>La base que no se vuelve a explicar</caption>
+      <thead>
+        <tr><th>Idea de 6B</th><th>Cómo aparece en un modelo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>class Producto:</code></td><td>La clase que describe un dato o una tabla</td></tr>
+        <tr><td><code>__init__</code> y <code>self</code></td><td>La instancia que se construye y se valida</td></tr>
+        <tr><td>Atributos</td><td>Campos del modelo; en SQLModel, columnas</td></tr>
+        <tr><td>Métodos</td><td>Comportamiento del objeto; no todo modelo necesita métodos</td></tr>
+        <tr><td>Invariantes</td><td>Reglas que el modelo debe cumplir antes de existir</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>0.0.2 · Pydantic: la clase que valida</h4>
+
+  <p>
+    Un modelo de Pydantic es una clase que hereda de <code>BaseModel</code>. Las anotaciones
+    declaran los campos y <code>Field</code> añade las reglas. Al construir el objeto, Pydantic
+    valida y convierte; si algo falla, lanza <code>ValidationError</code> con todos los errores.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>pydantic — el contrato de entrada</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> pydantic <span class="tk-kw">import</span> <span class="tk-cls">BaseModel</span>, <span class="tk-cls">Field</span>, <span class="tk-cls">ValidationError</span>
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">ProductoEntrada</span>(<span class="tk-cls">BaseModel</span>):
+    nombre: <span class="tk-fn">str</span> = <span class="tk-cls">Field</span>(min_length=<span class="tk-num">1</span>, max_length=<span class="tk-num">100</span>)
+    precio: <span class="tk-fn">float</span> = <span class="tk-cls">Field</span>(gt=<span class="tk-num">0</span>)
+    cantidad: <span class="tk-fn">int</span> = <span class="tk-cls">Field</span>(ge=<span class="tk-num">0</span>)
+
+
+p = <span class="tk-cls">ProductoEntrada</span>(nombre=<span class="tk-str">"Teclado"</span>, precio=<span class="tk-num">189900</span>, cantidad=<span class="tk-num">12</span>)
+<span class="tk-fn">print</span>(p.nombre)          <span class="tk-cm"># Teclado</span>
+<span class="tk-fn">print</span>(p.model_dump())    <span class="tk-cm"># {'nombre': 'Teclado', ...}</span>
+
+<span class="tk-kw">try</span>:
+    <span class="tk-cls">ProductoEntrada</span>(nombre=<span class="tk-str">""</span>, precio=-<span class="tk-num">1</span>, cantidad=<span class="tk-num">2</span>)
+<span class="tk-kw">except</span> <span class="tk-cls">ValidationError</span> <span class="tk-kw">as</span> error:
+    <span class="tk-fn">print</span>(<span class="tk-fn">len</span>(error.errors()))  <span class="tk-cm"># 2</span>
+</code></pre>
+  </div>
+
+  <p>
+    <code>ProductoEntrada</code> sigue siendo una clase y <code>p</code> sigue siendo una
+    instancia. Lo nuevo es que la validación está declarada en el modelo, no escrita a mano en un
+    formulario. Es el mismo principio de 6B, aplicado a la frontera de la aplicación.
+  </p>
+
+  <h4>0.0.3 · SQLModel: la clase que es la tabla</h4>
+
+  <p>
+    SQLModel lleva la idea un paso más allá: además de validar, la clase describe la tabla. Con
+    <code>table=True</code>, cada atributo se convierte en una columna y cada instancia en una fila
+    cuando la sesión la guarda.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>sqlmodel — la clase que también es la tabla</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> sqlmodel <span class="tk-kw">import</span> <span class="tk-cls">Field</span>, <span class="tk-cls">SQLModel</span>
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">Producto</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    <span class="tk-fn">id</span>: <span class="tk-fn">int</span> | <span class="tk-kw">None</span> = <span class="tk-cls">Field</span>(default=<span class="tk-kw">None</span>, primary_key=<span class="tk-kw">True</span>)
+    nombre: <span class="tk-fn">str</span>
+    precio: <span class="tk-fn">float</span>
+    cantidad: <span class="tk-fn">int</span> = <span class="tk-num">0</span>
+
+
+<span class="tk-cm"># La clase describe la tabla "producto".</span>
+<span class="tk-cm"># Una instancia será una fila cuando la sesión la guarde.</span>
+producto = <span class="tk-cls">Producto</span>(nombre=<span class="tk-str">"Teclado"</span>, precio=<span class="tk-num">189900</span>, cantidad=<span class="tk-num">12</span>)
+</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — Pydantic y SQLModel no son lo mismo</span>
+    <p>
+      <code>ProductoEntrada</code> es un contrato para datos que llegan de fuera; no tiene
+      <code>id</code> ni tabla. <code>Producto</code> es un modelo de persistencia: tiene clave
+      primaria y columnas. En un proyecto serio suelen convivir, y la Parte I te mostrará cuándo
+      usar cada uno.
+    </p>
+  </div>
+
+  <h4>0.0.4 · Checkpoint antes de la Unidad 1</h4>
+
+  <p>Responde en tu cuaderno; si puedes explicar estas tres, estás listo para SQLModel I:</p>
+
+  <ol>
+    <li>¿Qué diferencia hay entre <code>ProductoEntrada</code> y <code>Producto</code>?</li>
+    <li>¿Qué parte de 6B sigue siendo idéntica en los dos modelos?</li>
+    <li>¿Qué tendrá que añadir la Unidad 1 para que <code>Producto</code> llegue a una base real?</li>
+  </ol>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de seguir</span>
+    <p>
+      Si vienes de 6B, no vuelvas a estudiar <code>class</code>, <code>self</code> ni los métodos:
+      ya están en tu modelo mental. Si algo de eso te suena nuevo, abre 6B y revisa la Unidad 1.
+      La Parte I asume que puedes leer una clase y construir una instancia.
+    </p>
   </div>
 
   <h3>0.1 · La promesa de la clase 8</h3>
@@ -128,7 +270,7 @@
       <tbody>
         <tr>
           <td><strong>El modelo que es la tabla</strong></td>
-          <td>Clase 10: un modelo de Pydantic que valida el formulario</td>
+          <td>Clases 6B y 7: una clase con atributos y un modelo Pydantic que valida</td>
           <td>Ahora el mismo modelo <em>define la tabla</em>: el esquema nace del código</td>
         </tr>
         <tr>
@@ -154,14 +296,14 @@
         <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
       </thead>
       <tbody>
-        <tr><td><strong>00</strong></td><td>Apertura, la promesa de la clase 8 y el mapa</td><td>20 min</td><td>El mapa de lo que ya sabes</td></tr>
-        <tr><td><strong>01</strong></td><td>El modelo que también es la tabla</td><td>30 min</td><td>Un modelo con <code>table=True</code> y su <code>id</code> bien declarado</td></tr>
-        <tr><td><strong>02</strong></td><td>El motor y las tablas</td><td>30 min</td><td>Un motor a SQLite y las tablas creadas al arrancar</td></tr>
-        <tr><td><strong>03</strong></td><td>La sesión: la unidad de trabajo (+ laboratorio)</td><td>30 min</td><td>El simulador de la sesión, funcionando</td></tr>
+        <tr><td><strong>00</strong></td><td>Apertura, Parte 0, la promesa de la clase 8 y el mapa</td><td>50 min</td><td>El puente desde 6B hasta SQLModel</td></tr>
+        <tr><td><strong>01</strong></td><td>El modelo que también es la tabla</td><td>25 min</td><td>Un modelo con <code>table=True</code> y su <code>id</code> bien declarado</td></tr>
+        <tr><td><strong>02</strong></td><td>El motor y las tablas</td><td>25 min</td><td>Un motor a SQLite y las tablas creadas al arrancar</td></tr>
+        <tr><td><strong>03</strong></td><td>La sesión: la unidad de trabajo (+ laboratorio)</td><td>25 min</td><td>El simulador de la sesión, funcionando</td></tr>
         <tr><td><strong>04</strong></td><td>Intervalo y bitácora</td><td>15 min</td><td>Tres anotaciones</td></tr>
-        <tr><td><strong>05</strong></td><td>Ejercicio 5.1 · El CRUD con ORM</td><td>35 min</td><td>Las cuatro operaciones con ORM</td></tr>
-        <tr><td><strong>06</strong></td><td>Ejercicio 6.1 · La app que responde</td><td>35 min</td><td>La app con <code>/docs</code> y sus errores</td></tr>
-        <tr><td><strong>07</strong></td><td>Taller integrador</td><td>45 min</td><td>El catálogo con ORM, funcionando de punta a punta</td></tr>
+        <tr><td><strong>05</strong></td><td>Ejercicio 5.1 · El CRUD con ORM</td><td>30 min</td><td>Las cuatro operaciones con ORM</td></tr>
+        <tr><td><strong>06</strong></td><td>Ejercicio 6.1 · La app que responde</td><td>30 min</td><td>La app con <code>/docs</code> y sus errores</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller integrador</td><td>40 min</td><td>El catálogo con ORM, funcionando de punta a punta</td></tr>
       </tbody>
     </table>
   </div>
@@ -233,7 +375,7 @@
       tabla</strong>. Una sola clase describirá las columnas, los tipos y la clave primaria.
     </p>
     <div class="meta-modulo">
-      <span>⏱ <b>30 minutos</b></span>
+      <span>⏱ <b>25 minutos</b></span>
       <span>📄 <b>Lectura y práctica</b></span>
       <span>🧭 <b>Producto: un modelo con <code>table=True</code></b></span>
     </div>
@@ -445,7 +587,7 @@ CREATE INDEX ix_producto_nombre ON producto (nombre)</code></pre>
       guarda conexiones, las <strong>fabrica</strong>.
     </p>
     <div class="meta-modulo">
-      <span>⏱ <b>30 minutos</b></span>
+      <span>⏱ <b>25 minutos</b></span>
       <span>📄 <b>Lectura y práctica</b></span>
       <span>🧭 <b>Producto: un motor y las tablas creadas al arrancar</b></span>
     </div>
@@ -649,7 +791,7 @@ engine = <span class="tk-fn">create_engine</span>(postgresql_url, pool_pre_ping=
       concepto más importante del ORM y el que más cuesta hasta que «suena» la explicación.
     </p>
     <div class="meta-modulo">
-      <span>⏱ <b>30 minutos</b></span>
+      <span>⏱ <b>25 minutos</b></span>
       <span>📄 <b>Lectura y práctica</b></span>
       <span>🧭 <b>Producto: el simulador de la sesión, funcionando</b></span>
     </div>
@@ -936,12 +1078,12 @@ SessionDep = <span class="tk-cls">Annotated</span>[<span class="tk-cls">Session<
     <div class="ojo"><span class="linea"></span> Unidad 05 · Taller de aplicación</div>
     <h2>Ejercicio 5.1 · <em>El CRUD con ORM</em></h2>
     <p class="proposito">
-      Las cuatro operaciones de la clase 9 a la 13, reescritas con el ORM. En 35 minutos
+      Las cuatro operaciones de la clase 9 a la 13, reescritas con el ORM. En 30 minutos
       escribirás las cuatro rutas y comprobarás que devuelven <strong>exactamente lo mismo</strong>
       que las versiones con SQL directo.
     </p>
     <div class="meta-modulo">
-      <span>⏱ <b>35 minutos</b></span>
+      <span>⏱ <b>30 minutos</b></span>
       <span>💻 <b>Ejercicio de desarrollo</b></span>
       <span>🧭 <b>Producto: las cuatro rutas funcionando</b></span>
     </div>
@@ -1181,10 +1323,10 @@ app = <span class="tk-cls">FastAPI</span>(title=<span class="tk-str">"TechStore"
     <p class="proposito">
       La aplicación ya funciona. Ahora hay que entender <strong>qué está viendo quien la
       consume</strong>: la documentación automática, los códigos de error y el esquema que se
-      publica solo. En 35 minutos lo compruebas y lo dejas documentado.
+      publica solo. En 30 minutos lo compruebas y lo dejas documentado.
     </p>
     <div class="meta-modulo">
-      <span>⏱ <b>35 minutos</b></span>
+      <span>⏱ <b>30 minutos</b></span>
       <span>💻 <b>Ejercicio de desarrollo</b></span>
       <span>🧭 <b>Producto: la API con su documentación y sus errores</b></span>
     </div>
@@ -1398,7 +1540,7 @@ app = <span class="tk-cls">FastAPI</span>(title=<span class="tk-str">"TechStore"
       el taller.
     </p>
     <div class="meta-modulo">
-      <span>⏱ <b>45 minutos</b></span>
+      <span>⏱ <b>40 minutos</b></span>
       <span>💻 <b>Taller de desarrollo</b></span>
       <span>🧭 <b>Producto: la API del catálogo funcionando y documentada</b></span>
     </div>

@@ -38,7 +38,7 @@ const ETIQUETAS = [
   'Métodos y estado',
   'Validar el objeto',
   'Intervalo',
-  'Herencia, Pydantic y ORM',
+  'Herencia y composición',
   'Errores de diseño',
   'Taller: modelo de dominio'
 ];
@@ -48,7 +48,7 @@ const BADGES_MODULO = {
   1: 'Primer objeto',
   2: 'Estado y métodos',
   3: 'Invariantes',
-  5: 'Puente a Pydantic',
+  5: 'Herencia y composición',
   6: 'Diseño limpio',
   7: 'Modelo de dominio'
 };

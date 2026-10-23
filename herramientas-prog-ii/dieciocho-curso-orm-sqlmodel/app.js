@@ -33,7 +33,7 @@ const STORAGE_KEY = 'curso-herr-18-orm';
 const UNIDADES_EVALUABLES = [1, 2, 3, 5, 6, 7];
 
 const ETIQUETAS = [
-  'Apertura y programa',
+  'Apertura y Parte 0',
   'El modelo que es la tabla',
   'El motor y las tablas',
   'La sesión: la unidad de trabajo',

@@ -31,7 +31,7 @@
       <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">Métodos y estado</span></button></li>
       <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Validar el objeto</span></button></li>
       <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
-      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Herencia, Pydantic y ORM</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Herencia y composición</span></button></li>
       <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Errores de diseño</span></button></li>
       <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: modelo de dominio</span></button></li>
     </ol>
@@ -151,35 +151,18 @@
     que vas a escribir hoy, pero con más comodidades.
   </p>
 
-  <div class="code-wrap">
-    <div class="code-header">
-      <div class="code-header-left">
-        <div class="code-dots"><span></span><span></span><span></span></div>
-        <span>la misma idea, tres niveles</span>
-      </div>
-      <button class="copy-btn">Copiar</button>
-    </div>
-<pre><code><span class="tk-cm"># 1. Tu clase de hoy</span>
-<span class="tk-kw">class</span> <span class="tk-cls">Producto</span>:
-    <span class="tk-kw">def</span> <span class="tk-fn">__init__</span>(<span class="tk-fn">self</span>, nombre: <span class="tk-fn">str</span>, precio: <span class="tk-fn">float</span>):
-        <span class="tk-fn">self</span>.nombre = nombre
-        <span class="tk-fn">self</span>.precio = precio
-
-<span class="tk-cm"># 2. Un modelo de Pydantic (clase 7 en adelante)</span>
-<span class="tk-kw">from</span> pydantic <span class="tk-kw">import</span> <span class="tk-cls">BaseModel</span>, <span class="tk-cls">Field</span>
-
-<span class="tk-kw">class</span> <span class="tk-cls">ProductoEntrada</span>(<span class="tk-cls">BaseModel</span>):
-    nombre: <span class="tk-fn">str</span> = <span class="tk-cls">Field</span>(min_length=<span class="tk-num">1</span>)
-    precio: <span class="tk-fn">float</span> = <span class="tk-cls">Field</span>(gt=<span class="tk-num">0</span>)
-
-<span class="tk-cm"># 3. Un modelo de ORM (clase 18 en adelante)</span>
-<span class="tk-kw">from</span> sqlmodel <span class="tk-kw">import</span> <span class="tk-cls">Field</span>, <span class="tk-cls">SQLModel</span>
-
-<span class="tk-kw">class</span> <span class="tk-cls">ProductoDB</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
-    <span class="tk-fn">id</span>: <span class="tk-fn">int</span> | <span class="tk-kw">None</span> = <span class="tk-cls">Field</span>(default=<span class="tk-kw">None</span>, primary_key=<span class="tk-kw">True</span>)
-    nombre: <span class="tk-fn">str</span>
-    precio: <span class="tk-fn">float</span>
-</code></pre>
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Tu clase de hoy y las dos capas que vienen después</caption>
+      <thead>
+        <tr><th>Nivel</th><th>Qué añade</th><th>Dónde se estudia</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Tu clase</strong></td><td>Atributos, métodos e invariantes escritos a mano</td><td>Esta clase, 6B</td></tr>
+        <tr><td><strong>Pydantic</strong></td><td>Validación declarativa para datos que vienen de fuera</td><td>Clase 7 y Parte 0 de SQLModel</td></tr>
+        <tr><td><strong>ORM</strong></td><td>La clase también describe la tabla y sus columnas</td><td><a href="../dieciocho-curso-orm-sqlmodel/index.html#parte-0">Clase 18, Parte 0</a></td></tr>
+      </tbody>
+    </table>
   </div>
 
   <div class="recuadro nota">
@@ -206,7 +189,7 @@
         <tr><td><strong>02</strong></td><td>Métodos, estado y <code>@dataclass</code></td><td>30 min</td><td><code>valor_total()</code>, descuento y stock</td></tr>
         <tr><td><strong>03</strong></td><td>Validación e invariantes</td><td>30 min</td><td>Objetos que rechazan datos inválidos</td></tr>
         <tr><td><strong>04</strong></td><td>Intervalo y vocabulario</td><td>15 min</td><td>Tres anotaciones</td></tr>
-        <tr><td><strong>05</strong></td><td>Herencia, Pydantic y ORM</td><td>35 min</td><td>El puente conceptual a las clases siguientes</td></tr>
+        <tr><td><strong>05</strong></td><td>Herencia y composición</td><td>30 min</td><td>La relación «es un» y la relación «tiene un»</td></tr>
         <tr><td><strong>06</strong></td><td>Errores de diseño y cuándo usar cada modelo</td><td>35 min</td><td>Tabla de decisión</td></tr>
         <tr><td><strong>07</strong></td><td>Taller: <code>Producto</code> + <code>Carrito</code></td><td>45 min</td><td>Modelo con composición y pruebas</td></tr>
       </tbody>
@@ -878,53 +861,38 @@ p = <span class="tk-cls">Producto</span>(<span class="tk-str">"Teclado"</span>, 
     </p>
   </div>
 
-  <h3>3.3 · El mismo trabajo, con Pydantic</h3>
+  <h3>3.3 · El puente: la validación declarativa</h3>
 
   <p>
-    Pydantic hace lo que acabas de escribir, pero a partir de anotaciones: valida tipos, rangos y
-    campos obligatorios, y devuelve todos los errores juntos. Así lo usarás en la clase 7 para los
-    formularios y en las clases de ORM para los modelos.
+    Pydantic hace lo mismo que acabas de escribir, pero declara las reglas en las anotaciones y
+    devuelve todos los errores juntos. No lo vas a implementar aquí: lo estudiarás en la clase 7
+    para los formularios y, con más detalle, en la <a href="../dieciocho-curso-orm-sqlmodel/index.html#parte-0"><strong>Parte 0 de la serie SQLModel</strong></a>.
+    Lo importante es que reconozcas la idea: un objeto que no acepta datos inválidos.
   </p>
-
-  <div class="code-wrap">
-    <div class="code-header">
-      <div class="code-header-left">
-        <div class="code-dots"><span></span><span></span><span></span></div>
-        <span>pydantic — el mismo contrato, declarado</span>
-      </div>
-      <button class="copy-btn">Copiar</button>
-    </div>
-<pre><code><span class="tk-kw">from</span> pydantic <span class="tk-kw">import</span> <span class="tk-cls">BaseModel</span>, <span class="tk-cls">Field</span>, <span class="tk-cls">ValidationError</span>
-
-
-<span class="tk-kw">class</span> <span class="tk-cls">Producto</span>(<span class="tk-cls">BaseModel</span>):
-    nombre: <span class="tk-fn">str</span> = <span class="tk-cls">Field</span>(min_length=<span class="tk-num">1</span>, max_length=<span class="tk-num">100</span>)
-    precio: <span class="tk-fn">float</span> = <span class="tk-cls">Field</span>(gt=<span class="tk-num">0</span>)
-    cantidad: <span class="tk-fn">int</span> = <span class="tk-cls">Field</span>(ge=<span class="tk-num">0</span>)
-
-
-<span class="tk-kw">try</span>:
-    p = <span class="tk-cls">Producto</span>(nombre=<span class="tk-str">""</span>, precio=-<span class="tk-num">1</span>, cantidad=<span class="tk-num">2</span>)
-<span class="tk-kw">except</span> <span class="tk-cls">ValidationError</span> <span class="tk-kw">as</span> error:
-    <span class="tk-fn">print</span>(error.errors())
-    <span class="tk-cm"># [{'type': 'string_too_short', 'loc': ('nombre',), ...},</span>
-    <span class="tk-cm">#  {'type': 'greater_than', 'loc': ('precio',), ...}]</span>
-</code></pre>
-  </div>
 
   <div class="contenedor-tabla">
     <table class="tabla-compara">
-      <caption>Validación a mano y validación declarada</caption>
+      <caption>Lo que ya sabes y lo que añadirá Pydantic</caption>
       <thead>
-        <tr><th></th><th>Tu clase</th><th>Pydantic</th></tr>
+        <tr><th>Tu clase de hoy</th><th>Pydantic</th></tr>
       </thead>
       <tbody>
-        <tr><td>Dónde se escribe la regla</td><td>En <code>if</code> dentro de <code>__init__</code></td><td>En anotaciones y <code>Field</code></td></tr>
-        <tr><td>Cuántos errores devuelve</td><td>El primero que encuentra</td><td>Una lista con todos</td></tr>
-        <tr><td>Convierte tipos</td><td>No, salvo que lo programes</td><td>Sí, por ejemplo <code>"12"</code> → <code>12</code></td></tr>
-        <tr><td>Cuándo usarla</td><td>Para entender y para modelos internos simples</td><td>Para datos que vienen de fuera: formularios, JSON, API</td></tr>
+        <tr><td><code>if</code> dentro de <code>__init__</code></td><td>Reglas en anotaciones y <code>Field</code></td></tr>
+        <tr><td>Lanza el primer <code>ValueError</code></td><td>Acumula todos los errores en <code>ValidationError</code></td></tr>
+        <tr><td>No convierte tipos</td><td>Convierte, por ejemplo, <code>"12"</code> en <code>12</code></td></tr>
+        <tr><td>Ideal para entender y para modelos internos</td><td>Ideal para datos externos: formularios, JSON y API</td></tr>
       </tbody>
     </table>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — el taller de esta clase no usa Pydantic</span>
+    <p>
+      El taller construye el modelo con una clase normal y, si quieres, con
+      <code>@dataclass</code>. Pydantic aparece después, cuando el dato viene de un formulario o de
+      la red. Mezclar las dos cosas ahora te haría creer que Pydantic es una forma de escribir
+      clases normales; en realidad es una capa para validar la frontera.
+    </p>
   </div>
 
   <h3>3.4 · Laboratorio: construye el objeto</h3>
@@ -1149,17 +1117,18 @@ p = <span class="tk-cls">Producto</span>(<span class="tk-str">"Teclado"</span>, 
 <section class="modulo" data-modulo="5">
 
   <div class="portada">
-    <div class="ojo"><span class="linea"></span> Unidad 05 · El puente</div>
-    <h2>De tu clase a <em>Pydantic</em> y al ORM</h2>
+    <div class="ojo"><span class="linea"></span> Unidad 05 · Relaciones</div>
+    <h2>Herencia y composición: <em>es un</em> o <em>tiene un</em></h2>
     <p class="proposito">
-      Ya sabes construir objetos y validarlos. Ahora verás dos usos reales de las clases en el
-      backend: heredar para especializar un producto y declarar modelos que Pydantic valida y que un
-      ORM convierte en filas de PostgreSQL. No es magia nueva: es la misma idea con más herramientas.
+      Dos objetos pueden relacionarse de dos formas muy distintas. Un producto digital
+      <strong>es un</strong> producto: hereda. Un carrito <strong>tiene</strong> productos:
+      compone. Elegir bien evita jerarquías artificiales y te prepara para los modelos de Pydantic
+      y del ORM, que también usan estas relaciones.
     </p>
     <div class="meta-modulo">
-      <span>⏱ <b>35 minutos</b></span>
+      <span>⏱ <b>30 minutos</b></span>
       <span>📄 <b>Lectura y práctica</b></span>
-      <span>🧭 <b>Producto: el mapa clase → Pydantic → ORM</b></span>
+      <span>🧭 <b>Producto: una jerarquía y una composición bien elegidas</b></span>
     </div>
   </div>
 
@@ -1204,8 +1173,8 @@ p = <span class="tk-cls">Producto</span>(<span class="tk-str">"Teclado"</span>, 
 
 
 digital = <span class="tk-cls">ProductoDigital</span>(<span class="tk-str">"Curso de Git"</span>, <span class="tk-num">49900</span>, <span class="tk-num">999</span>, <span class="tk-str">"git.pdf"</span>)
-<span class="tk-fn">print</span>(digital.entregar())          <span class="tk-cm"># Descarga del archivo git.pdf</span>
-<span class="tk-fn">print</span>(<span class="tk-fn">isinstance</span>(digital, <span class="tk-cls">Producto</span>))  <span class="tk-cm"># True</span>
+<span class="tk-fn">print</span>(digital.entregar())              <span class="tk-cm"># Descarga del archivo git.pdf</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">isinstance</span>(digital, <span class="tk-cls">Producto</span>))   <span class="tk-cm"># True</span>
 </code></pre>
   </div>
 
@@ -1250,140 +1219,47 @@ digital = <span class="tk-cls">ProductoDigital</span>(<span class="tk-str">"Curs
     </table>
   </div>
 
-  <h3>5.3 · Pydantic: la clase que valida sola</h3>
-
-  <p>
-    Pydantic recibe una clase que hereda de <code>BaseModel</code>, lee las anotaciones y construye
-    un objeto validado. Si un dato no cumple, lanza <code>ValidationError</code> con todos los
-    errores. Es el puente directo entre lo que acabas de aprender y los formularios de la clase 7.
-  </p>
-
-  <div class="code-wrap">
-    <div class="code-header">
-      <div class="code-header-left">
-        <div class="code-dots"><span></span><span></span><span></span></div>
-        <span>pydantic — construir un objeto validado</span>
-      </div>
-      <button class="copy-btn">Copiar</button>
-    </div>
-<pre><code><span class="tk-kw">from</span> pydantic <span class="tk-kw">import</span> <span class="tk-cls">BaseModel</span>, <span class="tk-cls">Field</span>
-
-
-<span class="tk-kw">class</span> <span class="tk-cls">Producto</span>(<span class="tk-cls">BaseModel</span>):
-    nombre: <span class="tk-fn">str</span> = <span class="tk-cls">Field</span>(min_length=<span class="tk-num">1</span>, max_length=<span class="tk-num">100</span>)
-    precio: <span class="tk-fn">float</span> = <span class="tk-cls">Field</span>(gt=<span class="tk-num">0</span>)
-    cantidad: <span class="tk-fn">int</span> = <span class="tk-cls">Field</span>(ge=<span class="tk-num">0</span>)
-
-
-p = <span class="tk-cls">Producto</span>(nombre=<span class="tk-str">"Teclado"</span>, precio=<span class="tk-num">189900</span>, cantidad=<span class="tk-num">12</span>)
-<span class="tk-fn">print</span>(p.nombre)             <span class="tk-cm"># Teclado</span>
-<span class="tk-fn">print</span>(p.model_dump())       <span class="tk-cm"># {'nombre': 'Teclado', 'precio': 189900.0, 'cantidad': 12}</span>
-
-<span class="tk-cm"># También puede validar un diccionario que viene de un JSON:</span>
-datos = {<span class="tk-str">"nombre"</span>: <span class="tk-str">"Mouse"</span>, <span class="tk-str">"precio"</span>: <span class="tk-num">89900</span>, <span class="tk-str">"cantidad"</span>: <span class="tk-num">25</span>}
-q = <span class="tk-cls">Producto</span>.model_validate(datos)
-<span class="tk-fn">print</span>(q.precio)             <span class="tk-cm"># 89900.0</span>
-</code></pre>
-  </div>
-
-  <div class="recuadro nota">
-    <span class="rotulo">Nota — Pydantic no «convierte en diccionario» el objeto</span>
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — heredar no es «reutilizar porque sí»</span>
     <p>
-      <code>Producto(...)</code> devuelve una instancia de <code>Producto</code>, con atributos y
-      métodos heredados de <code>BaseModel</code>. <code>model_dump()</code> es solo una forma de
-      exportar sus datos cuando necesitas un diccionario para JSON o para la base. El objeto sigue
-      siendo un objeto.
+      La herencia crea un acoplamiento fuerte: si cambia el padre, cambia la hija. Úsala cuando la
+      relación «es un» sea verdadera y estable. Si solo quieres reutilizar dos métodos, una función
+      o una clase auxiliar suele ser mejor que una jerarquía inventada.
     </p>
   </div>
 
-  <h3>5.4 · ORM: la clase que representa una tabla</h3>
+  <h3>5.3 · El puente que se estudia en SQLModel 0</h3>
 
   <p>
-    Un ORM (Object-Relational Mapping) traduce objetos a filas. Con SQLModel, una clase con
-    <code>table=True</code> representa una tabla; cada atributo es una columna y cada instancia es
-    una fila. Al guardar el objeto con una sesión, el ORM genera el <code>INSERT</code>.
+    Pydantic y SQLModel también usan estas relaciones: un modelo de entrada
+    <code>class Producto(BaseModel)</code> hereda de <code>BaseModel</code>, y un modelo de tabla
+    <code>class Producto(SQLModel, table=True)</code> hereda de <code>SQLModel</code>. Hasta ahí
+    llega esta clase: te llevas la idea de herencia y composición, no la implementación de esas
+    librerías.
   </p>
-
-  <div class="code-wrap">
-    <div class="code-header">
-      <div class="code-header-left">
-        <div class="code-dots"><span></span><span></span><span></span></div>
-        <span>sqlmodel — la clase es la tabla</span>
-      </div>
-      <button class="copy-btn">Copiar</button>
-    </div>
-<pre><code><span class="tk-kw">from</span> sqlmodel <span class="tk-kw">import</span> <span class="tk-cls">Field</span>, <span class="tk-cls">Session</span>, <span class="tk-cls">SQLModel</span>
-
-
-<span class="tk-kw">class</span> <span class="tk-cls">Producto</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
-    <span class="tk-fn">id</span>: <span class="tk-fn">int</span> | <span class="tk-kw">None</span> = <span class="tk-cls">Field</span>(default=<span class="tk-kw">None</span>, primary_key=<span class="tk-kw">True</span>)
-    nombre: <span class="tk-fn">str</span>
-    precio: <span class="tk-fn">float</span>
-    cantidad: <span class="tk-fn">int</span> = <span class="tk-num">0</span>
-
-
-producto = <span class="tk-cls">Producto</span>(nombre=<span class="tk-str">"Teclado"</span>, precio=<span class="tk-num">189900</span>, cantidad=<span class="tk-num">12</span>)
-
-<span class="tk-cm"># engine ya está configurado por la aplicación
-</span><span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
-    session.add(producto)
-    session.commit()
-    session.refresh(producto)
-
-<span class="tk-fn">print</span>(producto.id)  <span class="tk-cm"># la base asignó el id</span>
-</code></pre>
-  </div>
 
   <div class="contenedor-tabla">
     <table class="tabla-compara">
-      <caption>La misma clase, tres responsabilidades</caption>
+      <caption>Dónde se estudia cada capa</caption>
       <thead>
-        <tr><th>Nivel</th><th>La clase representa</th><th>Qué aporta</th></tr>
+        <tr><th>Capa</th><th>Qué aporta</th><th>Dónde se estudia</th></tr>
       </thead>
       <tbody>
-        <tr><td>Tu clase</td><td>Un producto del dominio</td><td>Reglas y comportamiento escritos por ti</td></tr>
-        <tr><td>Pydantic</td><td>Un contrato de entrada/salida</td><td>Validación declarativa y errores estructurados</td></tr>
-        <tr><td>ORM</td><td>Una tabla de la base</td><td>Traducción objeto ↔ fila, consultas y relaciones</td></tr>
+        <tr><td>Objetos en Python</td><td>Clases, instancias, métodos, validación e invariantes</td><td>Esta clase, 6B</td></tr>
+        <tr><td>Pydantic</td><td>Validación declarativa de datos externos</td><td>Clase 7 y Parte 0 de SQLModel</td></tr>
+        <tr><td>ORM / SQLModel</td><td>La clase también define la tabla y las filas</td><td><a href="../dieciocho-curso-orm-sqlmodel/index.html#parte-0">Clase 18, Parte 0</a></td></tr>
       </tbody>
     </table>
   </div>
 
-  <div class="recuadro distincion">
-    <span class="rotulo">Distinción — no mezcles los tres modelos sin querer</span>
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — lo que acabas de aprender no se repite</span>
     <p>
-      En un proyecto real suele haber un modelo de dominio, uno de entrada (Pydantic) y uno de
-      persistencia (ORM). A veces se combinan, pero no son lo mismo: el de entrada no debería tener
-      <code>id</code>, el de base sí; el de dominio puede tener métodos de negocio, el de entrada no.
-      Esta separación evita que un formulario pueda cambiar el <code>id</code> de una fila.
+      En SQLModel 0 no vas a volver a estudiar <code>class</code>, <code>self</code> ni los
+      métodos: eso ya lo tienes. Allí vas a ver qué cambia cuando la clase hereda de
+      <code>BaseModel</code> o de <code>SQLModel</code>, y cómo se convierte en un objeto validado
+      o en una fila de la base de datos.
     </p>
-  </div>
-
-  <h3>5.5 · El mapa completo</h3>
-
-  <div class="diagrama">
-    <div class="nodo cliente">
-      <div class="rotulo-nodo">1 · Tu clase</div>
-      <h5>Producto</h5>
-      <p>Atributos, validación y métodos como <code>valor_total()</code>.</p>
-    </div>
-    <div class="flecha">
-      <span class="glifo">──▶</span>
-      <span class="etiqueta">hereda /<br>declara</span>
-    </div>
-    <div class="nodo servidor">
-      <div class="rotulo-nodo">2 · Pydantic</div>
-      <h5><code>BaseModel</code></h5>
-      <p>Valida lo que llega del formulario o del JSON antes de crear el objeto.</p>
-    </div>
-    <div class="flecha">
-      <span class="glifo">──▶</span>
-      <span class="etiqueta">traduce</span>
-    </div>
-    <div class="nodo datos">
-      <div class="rotulo-nodo">3 · ORM</div>
-      <h5><code>SQLModel</code></h5>
-      <p>Convierte la instancia en una fila de <code>productos</code>.</p>
-    </div>
   </div>
 
   <div class="quiz" data-quiz="5">
@@ -1403,18 +1279,18 @@ producto = <span class="tk-cls">Producto</span>(nombre=<span class="tk-str">"Tec
       <button class="opcion" data-op="d">Ejecuta el inicializador de la clase padre</button>
     </div>
     <div class="pregunta" data-correcta="a">
-      <p><strong>3.</strong> ¿Qué devuelve <code>Producto(...)</code> en Pydantic?</p>
-      <button class="opcion" data-op="a">Una instancia validada de <code>Producto</code></button>
-      <button class="opcion" data-op="b">Un diccionario común</button>
-      <button class="opcion" data-op="c">Una tabla de PostgreSQL</button>
-      <button class="opcion" data-op="d">Un archivo JSON en disco</button>
+      <p><strong>3.</strong> ¿Qué relación representa un <code>Carrito</code> que guarda una lista de <code>Producto</code>?</p>
+      <button class="opcion" data-op="a">Composición: «tiene un»</button>
+      <button class="opcion" data-op="b">Herencia: «es un»</button>
+      <button class="opcion" data-op="c">Una función pura</button>
+      <button class="opcion" data-op="d">Una variable global</button>
     </div>
     <div class="pregunta" data-correcta="c">
-      <p><strong>4.</strong> En un ORM, ¿qué representa una instancia de la clase?</p>
-      <button class="opcion" data-op="a">Una columna</button>
-      <button class="opcion" data-op="b">Una base de datos completa</button>
-      <button class="opcion" data-op="c">Una fila de la tabla</button>
-      <button class="opcion" data-op="d">Un índice</button>
+      <p><strong>4.</strong> ¿Dónde se estudia a fondo la relación entre Pydantic, SQLModel y las clases?</p>
+      <button class="opcion" data-op="a">En la clase 4</button>
+      <button class="opcion" data-op="b">En la clase 6</button>
+      <button class="opcion" data-op="c">En la Parte 0 de la serie SQLModel, dentro de la clase 18</button>
+      <button class="opcion" data-op="d">En la clase 15</button>
     </div>
     <div class="resultado-quiz"></div>
   </div>
@@ -1425,9 +1301,6 @@ producto = <span class="tk-cls">Producto</span>(nombre=<span class="tk-str">"Tec
   </div>
 </section>
 
-<!-- ============================================================
-     UNIDAD 6 — ERRORES DE DISEÑO
-============================================================ -->
 <section class="modulo" data-modulo="6">
 
   <div class="portada">
