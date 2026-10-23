@@ -318,7 +318,7 @@
 
   <p class="primer-párrafo">
     En Python, una variable no es una caja con un contenido: es <strong>una etiqueta pegada a un
-    valor</strong>. El valor puede ser un número, un texto, una lista. La etiqueta se puede mover:
+    valor</strong>. El valor puede ser un número, un texto, una lista o un diccionario. La etiqueta se puede mover:
     apuntar a otro valor, o dejar de apuntar al anterior.
   </p>
 
@@ -330,20 +330,24 @@
       </div>
       <button class="copy-btn">Copiar</button>
     </div>
-<pre><code><span class="tk-kw">class</span> <span class="tk-cls">Estudiante</span>:
-    <span class="tk-kw">def</span> <span class="tk-fn">__init__</span>(<span class="tk-kw">self</span>, nombre: <span class="tk-cls">str</span>, edad: <span class="tk-cls">int</span>):
-        <span class="tk-kw">self</span>.nombre = nombre
-        <span class="tk-kw">self</span>.edad = edad
+<pre><code>estudiante = {<span class="tk-str">"nombre"</span>: <span class="tk-str">"Ana Torres"</span>, <span class="tk-str">"edad"</span>: <span class="tk-num">17</span>}
 
-
-estudiante = <span class="tk-cls">Estudiante</span>(<span class="tk-str">"Ana Torres"</span>, <span class="tk-num">17</span>)
-
-<span class="tk-cm"># La etiqueta "otro" se mueve; "estudiante" sigue apuntando al primero</span>
+<span class="tk-cm"># La etiqueta "otro" se mueve; "estudiante" sigue apuntando al primer diccionario</span>
 otro = estudiante
-otro = <span class="tk-cls">Estudiante</span>(<span class="tk-str">"Luis Díaz"</span>, <span class="tk-num">18</span>)
+otro = {<span class="tk-str">"nombre"</span>: <span class="tk-str">"Luis Díaz"</span>, <span class="tk-str">"edad"</span>: <span class="tk-num">18</span>}
 
-<span class="tk-fn">print</span>(estudiante.nombre)   <span class="tk-cm"># Ana Torres — "otro" no lo cambió</span>
-<span class="tk-fn">print</span>(otro.nombre)         <span class="tk-cm"># Luis Díaz</span></code></pre>
+<span class="tk-fn">print</span>(estudiante[<span class="tk-str">"nombre"</span>])   <span class="tk-cm"># Ana Torres — "otro" no lo cambió</span>
+<span class="tk-fn">print</span>(otro[<span class="tk-str">"nombre"</span>])         <span class="tk-cm"># Luis Díaz</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — aquí todavía no hay clases</span>
+    <p>
+      Para entender una etiqueta no necesitas objetos: un diccionario es un valor como cualquier
+      otro. Las <code>class</code>, los objetos y <code>self</code> llegan en la clase 6B, después
+      de funciones y métodos. En esta clase solo importa que la etiqueta apunta a un valor.
+    </p>
   </div>
 
   <div class="definiciones">
