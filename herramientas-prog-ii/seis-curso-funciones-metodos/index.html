@@ -2283,45 +2283,49 @@ app = <span class="tk-cls">FastAPI</span>(title=<span class="tk-str">"Biblioteca
 
   <p>
     Hoy tu informe es un <strong>texto</strong>: una cadena con líneas y todo, construida a mano.
-    Es un informe que se puede leer en una terminal y también en el navegador, pero sigue siendo
-    texto plano: no tiene títulos, ni listas, ni colores.
+    Y tu clase <code>Prestamo</code> ya agrupa tres datos y sabe calcular su multa. Ese es el
+    comienzo de algo más grande: un objeto que representa un préstamo real y protege sus reglas.
   </p>
 
   <p>
-    La próxima clase resuelve exactamente eso, con las herramientas de las clases 2 y 3. Cuatro
-    cosas de hoy siguen vivas allí:
+    La próxima clase es la <strong>6B: Objetos en Python</strong>. Allí vas a entender a fondo qué
+    es una clase, qué hace <code>self</code>, cómo se valida un objeto y por qué Pydantic y los ORM
+    se construyen sobre esta misma idea. Cuatro cosas de hoy siguen vivas:
   </p>
 
   <ol>
     <li>
-      <strong>La función que devuelve el contenido</strong> es el modelo de lo que hará la
-      plantilla: un <code>generar_informe()</code> que devuelve el texto y una plantilla que decide
-      cómo se ve.
+      <strong>La clase <code>Prestamo</code></strong> deja de ser un ejercicio aislado: se convierte
+      en el modelo de dominio que agrupa datos y comportamiento.
     </li>
     <li>
-      <strong>La lista de diccionarios que devuelve <code>leer_prestamos()</code></strong> es
-      exactamente lo que la plantilla va a recibir para pintar una tabla de libros.
+      <strong>Los métodos</strong> que escribiste hoy son los mismos que usarás para calcular,
+      validar y modificar el estado de un objeto.
     </li>
     <li>
-      <strong>Los bucles que recorren los datos</strong> son los mismos que usará el motor de
-      plantillas. El <code>{% for %}</code> es un <code>for</code> de Python con otra sintaxis, y
-      la idea es la misma.
+      <strong>La reutilización</strong> de funciones es la base de los métodos: un método es una
+      función que recibe el objeto en <code>self</code>.
     </li>
     <li>
-      <strong>El módulo <code>biblioteca.py</code></strong> es el archivo que la plantilla
-      importará. Lo que hoy se importa con <code>from biblioteca import ...</code> se importará
-      igual, y la lógica del negocio no cambiaría ni una línea.
+      <strong>El módulo <code>biblioteca.py</code></strong> seguirá siendo el archivo que importa
+      el servidor; solo cambia que ahora exporta clases además de funciones.
     </li>
   </ol>
+
+  <p>
+    Después de 6B, en la clase 7, esos objetos recibirán datos de un formulario y Pydantic los
+    validará antes de guardarlos. La secuencia es: funciones → objetos → formularios → base de
+    datos.
+  </p>
 
   <div class="recuadro aplicacion">
     <span class="rotulo">Antes de la próxima clase</span>
     <p>
-      Guarda tu taller en un repositorio de Git con un mensaje de commit claro, y comprueba que
-      <code>uv run python informe.py</code> imprime el informe, que
+      Guarda tu taller en un repositorio de Git con un mensaje de commit claro, comprueba que
+      <code>uv run python informe.py</code> imprime el informe y que
       <code>uv run python -c "from biblioteca import total_dias; print(total_dias([]))"</code>
-      devuelve <code>0</code> sin romperse, y que la ruta <code>/informe</code> del servidor
-      devuelve el mismo texto que la terminal.
+      devuelve <code>0</code>. Trae a 6B tu clase <code>Prestamo</code>: la vas a convertir en un
+      objeto con validación y métodos.
     </p>
   </div>
 
@@ -2329,9 +2333,9 @@ app = <span class="tk-cls">FastAPI</span>(title=<span class="tk-str">"Biblioteca
     <h2>Fin de la Clase 6</h2>
     <p>
       Has cerrado el ciclo de la estructura: el servidor recibe datos (clase 4), los recorre con
-      bucles (clase 5) y ahora los organiza en funciones y métodos que se pueden volver a usar
-      desde cualquier parte. A partir de aquí, la pregunta ya no es cómo se calcula el informe,
-      sino cómo se pone en una página.
+      bucles (clase 5) y ahora los organiza en funciones y métodos reutilizables. A partir de aquí,
+      la pregunta ya no es cómo se calcula el informe, sino cómo se representa cada préstamo como
+      un objeto que sabe cuidar sus propios datos.
     </p>
     <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
   </div>

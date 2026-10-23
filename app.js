@@ -136,6 +136,7 @@ function cargarProgresoPorClase() {
     'curso-herr-4-python': 6,               // clase 4: Introducción al lenguaje backend (Python)
     'curso-herr-5-repetitivas': 6,      // clase 5: Estructuras repetitivas
     'curso-herr-6-funciones': 6,          // clase 6: Funciones y métodos
+    'curso-herr-6b-objetos': 6,             // clase 6B: Objetos en Python
     'curso-herr-7-formularios': 6,          // clase 7: formularios y validación
     'curso-herr-8-conexion-bd': 6,       // clase 8: conexión a bases de datos
     'curso-herr-9-consultas-select': 6,
@@ -306,9 +307,9 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
-  // Atajos con Alt: clases 20, 21 y 22 de "Herramientas de Programación II"
-  if (e.altKey && /^Digit[234]$/.test(e.code)) {
-    const numero = { Digit2: 20, Digit3: 21, Digit4: 22 }[e.code];
+  // Atajos con Alt: clase 6B y clases 20, 21 y 22 de "Herramientas de Programación II"
+  if (e.altKey && /^Digit[2346]$/.test(e.code)) {
+    const numero = { Digit2: 20, Digit3: 21, Digit4: 22, Digit6: '6b' }[e.code];
     const card = document.querySelector('.clase-card.herr-' + numero);
     if (card) card.click();
     return;
@@ -434,7 +435,7 @@ window.addEventListener('load', () => {
                 'curso-csharp-9', 'curso-csharp-10',
                 'curso-analisis-diseno', 'curso-requerimientos',
                 'curso-elicitacion', 'curso-documentacion', 'curso-introduccion-diseno',
-                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3-css', 'curso-herr-4-python', 'curso-herr-5-repetitivas', 'curso-herr-6-funciones', 'curso-herr-7-formularios', 'curso-herr-8-conexion-bd', 'curso-herr-9-consultas-select', 'curso-herr-10-insercion', 'curso-herr-11-edicion', 'curso-herr-12-edicion-registros', 'curso-herr-13-eliminacion', 'curso-herr-14-interaccion', 'curso-herr-15-estructura', 'curso-herr-16-git-moderno', 'curso-herr-17-github',
+                 'curso-integrador', 'curso-prototipado-usabilidad', 'curso-bd-introduccion', 'curso-bd-archivos-vs-bd', 'curso-bd-asyncpg-fastapi', 'curso-bd-modelo-er', 'curso-bd-normalizacion', 'curso-bd-sql-basico', 'curso-bd-modificacion-datos', 'curso-bd-consultas-basicas', 'curso-bd-ejemplo-final', 'curso-herr-1', 'curso-herr-2', 'curso-herr-3-css', 'curso-herr-4-python', 'curso-herr-5-repetitivas', 'curso-herr-6-funciones', 'curso-herr-6b-objetos', 'curso-herr-7-formularios', 'curso-herr-8-conexion-bd', 'curso-herr-9-consultas-select', 'curso-herr-10-insercion', 'curso-herr-11-edicion', 'curso-herr-12-edicion-registros', 'curso-herr-13-eliminacion', 'curso-herr-14-interaccion', 'curso-herr-15-estructura', 'curso-herr-16-git-moderno', 'curso-herr-17-github',
                  // Serie «Aprendiendo SQLModel» (clases 18 a 22)
                  'curso-herr-18-orm', 'curso-herr-19-contrato', 'curso-herr-20-conectadas',
                  'curso-herr-21-relaciones', 'curso-herr-22-muchos'];

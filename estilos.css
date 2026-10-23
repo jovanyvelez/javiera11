@@ -121,6 +121,8 @@
 
   --herr-6-a:        #a78bfa;   /* Clase 6 Herr — violeta/lima (Funciones y métodos) */
   --herr-6-b:        #a3e635;
+  --herr-6b-a:       #60a5fa;   /* Clase 6B Herr — azul clase/coral objeto (Objetos en Python) */
+  --herr-6b-b:       #fb7185;
 
 
   --herr-7-a:        #22d3ee;   /* Clase 7 Herr — cian petición/violeta validación (Formularios) */
@@ -577,6 +579,7 @@ main {
 .clase-card.herr-4::before  { background: linear-gradient(90deg, var(--herr-4-a), var(--herr-4-b)); }
 .clase-card.herr-5::before  { background: linear-gradient(90deg, var(--herr-5-a), var(--herr-5-b)); }
 .clase-card.herr-6::before  { background: linear-gradient(90deg, var(--herr-6-a), var(--herr-6-b)); }
+.clase-card.herr-6b::before { background: linear-gradient(90deg, var(--herr-6b-a), var(--herr-6b-b)); }
 .clase-card.herr-7::before  { background: linear-gradient(90deg, var(--herr-7-a), var(--herr-7-b)); }
 .clase-card.herr-8::before  { background: linear-gradient(90deg, var(--herr-8-a), var(--herr-8-b)); }
 .clase-card.herr-9::before  { background: linear-gradient(90deg, var(--herr-9-a), var(--herr-9-b)); }
@@ -664,6 +667,7 @@ main {
 .clase-card.herr-4 .clase-badge  { background: linear-gradient(135deg, var(--herr-4-a), var(--herr-4-b)); color: #000; }
 .clase-card.herr-5 .clase-badge  { background: linear-gradient(135deg, var(--herr-5-a), var(--herr-5-b)); color: #fff; }
 .clase-card.herr-6 .clase-badge  { background: linear-gradient(135deg, var(--herr-6-a), var(--herr-6-b)); color: #000; }
+.clase-card.herr-6b .clase-badge { background: linear-gradient(135deg, var(--herr-6b-a), var(--herr-6b-b)); color: #06101f; }
 .clase-card.herr-7 .clase-badge  { background: linear-gradient(135deg, var(--herr-7-a), var(--herr-7-b)); color: #000; }
 .clase-card.herr-8 .clase-badge  { background: linear-gradient(135deg, var(--herr-8-a), var(--herr-8-b)); color: #000; }
 .clase-card.herr-9 .clase-badge  { background: linear-gradient(135deg, var(--herr-9-a), var(--herr-9-b)); color: #fff; }

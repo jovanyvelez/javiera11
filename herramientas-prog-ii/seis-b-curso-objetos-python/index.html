@@ -1,0 +1,2016 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Programación II · Clase 6B · Objetos en Python</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="marca">
+    <span class="marca-serie">Herramientas de Programación II</span>
+    <h1>Clase 6B · <em>Objetos en Python: datos que saben hacer cosas</em></h1>
+  </div>
+  <div class="instrumento">
+    <div class="barra-progreso"><div class="barra-progreso-llenado" id="barra"></div></div>
+    <span class="porcentaje" id="porcentaje">0 %</span>
+    <span class="unidad-actual" id="unidad-actual">Unidad 0 · Apertura</span>
+  </div>
+</header>
+
+<div class="disposicion">
+
+  <!-- ============ ÍNDICE LATERAL ============ -->
+  <aside class="indice">
+    <div class="indice-titulo">Índice de la clase</div>
+    <ol>
+      <li><button class="btn-modulo activo" data-modulo="0"><span class="num">00</span><span class="rotulo">Apertura: datos que saben</span></button></li>
+      <li><button class="btn-modulo" data-modulo="1"><span class="num">01</span><span class="rotulo">Clase y objeto</span></button></li>
+      <li><button class="btn-modulo" data-modulo="2"><span class="num">02</span><span class="rotulo">Métodos y estado</span></button></li>
+      <li><button class="btn-modulo" data-modulo="3"><span class="num">03</span><span class="rotulo">Validar el objeto</span></button></li>
+      <li><button class="btn-modulo btn-pausa" data-modulo="4"><span class="num">04</span><span class="rotulo">Intervalo</span></button></li>
+      <li><button class="btn-modulo" data-modulo="5"><span class="num">05</span><span class="rotulo">Herencia, Pydantic y ORM</span></button></li>
+      <li><button class="btn-modulo" data-modulo="6"><span class="num">06</span><span class="rotulo">Errores de diseño</span></button></li>
+      <li><button class="btn-modulo" data-modulo="7"><span class="num">07</span><span class="rotulo">Taller: modelo de dominio</span></button></li>
+    </ol>
+    <div class="constancias">
+      <div class="indice-titulo">Constancias</div>
+      <div class="badges" id="badges"></div>
+      <p class="constancias-vacio">Aún no has completado ninguna unidad.</p>
+    </div>
+    <div class="indice-pie">
+      <p><strong>Duración:</strong> 4 horas (240 min) incluyendo un intervalo de 15 min.</p>
+      <p><strong>Modalidad:</strong> estudio autónomo; 240 min cronometrados, de los cuales 15 son de intervalo.</p>
+      <p><strong>Producto final:</strong> un modelo <code>Producto</code> con validación, métodos y una composición <code>Carrito</code>, listo para Pydantic y un ORM.</p>
+    </div>
+  </aside>
+
+  <!-- ============ COLUMNA DE LECTURA ============ -->
+  <main class="columna">
+
+<!-- ============================================================
+     UNIDAD 0 — APERTURA
+============================================================ -->
+<section class="modulo activo" data-modulo="0">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 00 · Apertura</div>
+    <h2>El producto que era un <em>diccionario</em></h2>
+    <p class="proposito">
+      En las clases 4, 5 y 6 aprendiste a guardar datos, repetir procesos y escribir funciones.
+      Pero cuando el programa crece, un diccionario suelto se queda corto: no valida, no sabe
+      calcular su total y no impide que escribas <code>producto["presio"]</code>. Hoy le das a esos
+      datos una <strong>clase</strong> y conviertes cada producto en un <strong>objeto</strong>.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>20 minutos</b></span>
+      <span>📄 <b>Lectura y preparación</b></span>
+      <span>🧭 <b>Producto: el mapa clase → objeto</b></span>
+    </div>
+  </div>
+
+  <h3>0.1 · El diccionario que se equivocó de llave</h3>
+
+  <p class="primer-párrafo">
+    El catálogo de TechStore empezó como una lista de diccionarios. Funcionaba hasta que alguien
+    escribió <code>producto["presio"]</code> en el informe y el programa respondió con un
+    <code>KeyError</code>. Después, otro archivo calculó el total con la cantidad equivocada. Y
+    cuando llegó el momento de validar que el precio fuera positivo, la validación quedó copiada en
+    tres lugares distintos.
+  </p>
+
+  <p>
+    Un diccionario guarda datos, pero no sabe nada de ellos. No puede impedir una llave mal escrita,
+    no puede calcular su propio total y no puede avisar que un precio es inválido. Un
+    <strong>objeto</strong> sí: reúne los datos y las operaciones que tienen sentido para esos
+    datos en una sola pieza.
+  </p>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — dato suelto y objeto</span>
+    <p>
+      Un diccionario es una <strong>colección de pares clave-valor</strong>. Un objeto es una
+      <strong>instancia de una clase</strong>: tiene atributos con nombre, métodos que los usan y
+      reglas que se cumplen al construirlo. La diferencia no es la sintaxis: es que el objeto puede
+      <em>hacer</em> cosas con su propia información.
+    </p>
+  </div>
+
+  <h3>0.2 · Clase, objeto e instancia</h3>
+
+  <div class="diagrama">
+    <div class="nodo cliente">
+      <div class="rotulo-nodo">Clase</div>
+      <h5>El molde</h5>
+      <p><code>Producto</code> define qué atributos y métodos tendrá todo producto.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">Producto(...)</span>
+    </div>
+    <div class="nodo servidor">
+      <div class="rotulo-nodo">Objeto</div>
+      <h5>La instancia</h5>
+      <p><code>p1 = Producto("Teclado", 189900, 12)</code> es un producto concreto.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">p1.vender(1)</span>
+    </div>
+    <div class="nodo datos">
+      <div class="rotulo-nodo">Método</div>
+      <h5>La acción</h5>
+      <p>El objeto cambia su propio estado: la cantidad baja de 12 a 11.</p>
+    </div>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Tres palabras que no son lo mismo</caption>
+      <thead>
+        <tr><th>Palabra</th><th>Qué es</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Clase</strong></td><td>El molde o plano</td><td><code>class Producto:</code></td></tr>
+        <tr><td><strong>Objeto / instancia</strong></td><td>Una copia concreta construida con ese molde</td><td><code>p1 = Producto("Teclado", 189900, 12)</code></td></tr>
+        <tr><td><strong>Atributo</strong></td><td>Un dato que vive dentro del objeto</td><td><code>p1.precio</code></td></tr>
+        <tr><td><strong>Método</strong></td><td>Una función que vive dentro de la clase y recibe el objeto</td><td><code>p1.valor_total()</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.3 · Por qué esto importa antes de Pydantic y los ORM</h3>
+
+  <p>
+    En las clases siguientes vas a usar <strong>Pydantic</strong> para validar formularios y un
+    <strong>ORM</strong> para guardar objetos en PostgreSQL. Esas librerías no son magia: reciben
+    clases, leen sus anotaciones de tipo y construyen objetos con ellos. Si no entiendes qué es una
+    instancia, Pydantic parece una caja negra; si lo entiendes, ves que solo está haciendo lo mismo
+    que vas a escribir hoy, pero con más comodidades.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>la misma idea, tres niveles</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># 1. Tu clase de hoy</span>
+<span class="tk-kw">class</span> <span class="tk-cls">Producto</span>:
+    <span class="tk-kw">def</span> <span class="tk-fn">__init__</span>(<span class="tk-fn">self</span>, nombre: <span class="tk-fn">str</span>, precio: <span class="tk-fn">float</span>):
+        <span class="tk-fn">self</span>.nombre = nombre
+        <span class="tk-fn">self</span>.precio = precio
+
+<span class="tk-cm"># 2. Un modelo de Pydantic (clase 7 en adelante)</span>
+<span class="tk-kw">from</span> pydantic <span class="tk-kw">import</span> <span class="tk-cls">BaseModel</span>, <span class="tk-cls">Field</span>
+
+<span class="tk-kw">class</span> <span class="tk-cls">ProductoEntrada</span>(<span class="tk-cls">BaseModel</span>):
+    nombre: <span class="tk-fn">str</span> = <span class="tk-cls">Field</span>(min_length=<span class="tk-num">1</span>)
+    precio: <span class="tk-fn">float</span> = <span class="tk-cls">Field</span>(gt=<span class="tk-num">0</span>)
+
+<span class="tk-cm"># 3. Un modelo de ORM (clase 18 en adelante)</span>
+<span class="tk-kw">from</span> sqlmodel <span class="tk-kw">import</span> <span class="tk-cls">Field</span>, <span class="tk-cls">SQLModel</span>
+
+<span class="tk-kw">class</span> <span class="tk-cls">ProductoDB</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    <span class="tk-fn">id</span>: <span class="tk-fn">int</span> | <span class="tk-kw">None</span> = <span class="tk-cls">Field</span>(default=<span class="tk-kw">None</span>, primary_key=<span class="tk-kw">True</span>)
+    nombre: <span class="tk-fn">str</span>
+    precio: <span class="tk-fn">float</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — no estás aprendiendo tres cosas distintas</span>
+    <p>
+      Las tres piezas son clases. Cambia lo que la clase hereda y para qué se usa: tu clase
+      valida a mano, Pydantic valida desde anotaciones y el ORM traduce atributos a columnas. La
+      base conceptual —<code>class</code>, <code>__init__</code>, <code>self</code>, atributos,
+      métodos e instancias— es la misma.
+    </p>
+  </div>
+
+  <h3>0.4 · El programa de la clase</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Unidades, tiempos y productos</caption>
+      <thead>
+        <tr><th>Unidad</th><th>Tema</th><th>Tiempo</th><th>Producto esperado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>00</strong></td><td>Apertura y modelo mental</td><td>20 min</td><td>Clase, objeto y método diferenciados</td></tr>
+        <tr><td><strong>01</strong></td><td>Clase, <code>__init__</code>, <code>self</code> e instancias</td><td>30 min</td><td><code>Producto</code> con dos instancias independientes</td></tr>
+        <tr><td><strong>02</strong></td><td>Métodos, estado y <code>@dataclass</code></td><td>30 min</td><td><code>valor_total()</code>, descuento y stock</td></tr>
+        <tr><td><strong>03</strong></td><td>Validación e invariantes</td><td>30 min</td><td>Objetos que rechazan datos inválidos</td></tr>
+        <tr><td><strong>04</strong></td><td>Intervalo y vocabulario</td><td>15 min</td><td>Tres anotaciones</td></tr>
+        <tr><td><strong>05</strong></td><td>Herencia, Pydantic y ORM</td><td>35 min</td><td>El puente conceptual a las clases siguientes</td></tr>
+        <tr><td><strong>06</strong></td><td>Errores de diseño y cuándo usar cada modelo</td><td>35 min</td><td>Tabla de decisión</td></tr>
+        <tr><td><strong>07</strong></td><td>Taller: <code>Producto</code> + <code>Carrito</code></td><td>45 min</td><td>Modelo con composición y pruebas</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>0.5 · Lo que ya tienes de la clase 6</h3>
+
+  <p>
+    En la clase 6 viste una clase <code>Prestamo</code> de pasada, casi como una forma de agrupar
+    funciones. Hoy vas a entender por qué funcionaba, qué era <code>self</code> y cómo diseñar tus
+    propias clases para que el resto del curso no te parezca magia.
+  </p>
+
+  <div class="definiciones">
+    <div>
+      <dt>Función</dt>
+      <dd>Recibe datos, hace algo y devuelve un resultado. No guarda estado entre llamadas.</dd>
+    </div>
+    <div>
+      <dt>Método</dt>
+      <dd>Una función que vive en una clase y recibe el objeto como primer parámetro (<code>self</code>).</dd>
+    </div>
+    <div>
+      <dt>Estado</dt>
+      <dd>Los valores que el objeto tiene en un momento dado: precio, cantidad, nombre.</dd>
+    </div>
+    <div>
+      <dt>Invariante</dt>
+      <dd>Una regla que siempre debe cumplirse: el precio nunca es negativo, la cantidad nunca es menor que cero.</dd>
+    </div>
+  </div>
+
+  <h3>0.6 · Punto de partida</h3>
+
+  <p>Antes de continuar, responde por escrito:</p>
+
+  <ol>
+    <li>¿Qué puede hacer un objeto que un diccionario no puede hacer?</li>
+    <li>¿Qué crees que representa <code>self</code> dentro de un método?</li>
+    <li>¿Por qué Pydantic y un ORM necesitan clases en lugar de diccionarios sueltos?</li>
+  </ol>
+
+  <div class="navegacion-modulo">
+    <button class="btn-siguiente" data-ir="1">Comenzar la Unidad 1: clase y objeto →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 1 — CLASE Y OBJETO
+============================================================ -->
+<section class="modulo" data-modulo="1">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 01 · El molde</div>
+    <h2>La clase es el molde; el objeto es la <em>copia</em></h2>
+    <p class="proposito">
+      Una clase define qué atributos tendrá cada objeto y cómo se construye. Al llamarla con
+      argumentos se crea una instancia. Dos instancias de la misma clase comparten el molde, pero
+      no sus datos: cambiar el precio de una no cambia el de la otra.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: dos productos independientes</b></span>
+    </div>
+  </div>
+
+  <h3>1.1 · La clase más pequeña que sirve</h3>
+
+  <p class="primer-párrafo">
+    Una clase se declara con <code>class</code> y un nombre en <code>PascalCase</code>. El método
+    <code>__init__</code> se ejecuta al construir el objeto y recibe <code>self</code>, que es la
+    instancia que se está creando. Dentro, cada <code>self.algo</code> crea un atributo de esa
+    instancia.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>producto.py — la clase y dos instancias</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">Producto</span>:
+    <span class="tk-kw">def</span> <span class="tk-fn">__init__</span>(<span class="tk-fn">self</span>, nombre: <span class="tk-fn">str</span>, precio: <span class="tk-fn">float</span>, cantidad: <span class="tk-fn">int</span> = <span class="tk-num">0</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-fn">self</span>.nombre = nombre
+        <span class="tk-fn">self</span>.precio = precio
+        <span class="tk-fn">self</span>.cantidad = cantidad
+
+    <span class="tk-kw">def</span> <span class="tk-fn">__repr__</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">str</span>:
+        <span class="tk-kw">return</span> <span class="tk-str">f'Producto("{</span><span class="tk-fn">self</span>.nombre<span class="tk-str">}", {</span><span class="tk-fn">self</span>.precio<span class="tk-str">}, {</span><span class="tk-fn">self</span>.cantidad<span class="tk-str">})'</span>
+
+
+p1 = <span class="tk-cls">Producto</span>(<span class="tk-str">"Teclado mecánico"</span>, <span class="tk-num">189900</span>, <span class="tk-num">12</span>)
+p2 = <span class="tk-cls">Producto</span>(<span class="tk-str">"Mouse inalámbrico"</span>, <span class="tk-num">89900</span>, <span class="tk-num">25</span>)
+
+<span class="tk-fn">print</span>(p1)
+<span class="tk-fn">print</span>(p2)
+
+p1.cantidad = <span class="tk-num">10</span>
+<span class="tk-fn">print</span>(p1.cantidad)   <span class="tk-cm"># 10</span>
+<span class="tk-fn">print</span>(p2.cantidad)   <span class="tk-cm"># 25: son objetos distintos</span>
+</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>salida</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>Producto("Teclado mecánico", 189900, 12)
+Producto("Mouse inalámbrico", 89900, 25)
+10
+25</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>class Producto:</code></dt>
+      <dd>Declara el molde. Por convención, el nombre de una clase empieza con mayúscula.</dd>
+    </div>
+    <div>
+      <dt><code>__init__</code></dt>
+      <dd>El método que inicializa la instancia cuando escribes <code>Producto(...)</code>. No devuelve nada; solo llena el objeto.</dd>
+    </div>
+    <div>
+      <dt><code>self</code></dt>
+      <dd>La instancia concreta. Python la pasa automáticamente: <code>p1.vender()</code> equivale a <code>Producto.vender(p1)</code>.</dd>
+    </div>
+    <div>
+      <dt><code>self.nombre</code></dt>
+      <dd>Un atributo de instancia. Cada objeto tiene su propio valor.</dd>
+    </div>
+    <div>
+      <dt><code>__repr__</code></dt>
+      <dd>Una representación legible para depurar. Si no la defines, <code>print(p1)</code> muestra algo como <code>&lt;__main__.Producto object at 0x...&gt;</code>.</dd>
+    </div>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>__init__</code> no es el «constructor» completo</span>
+    <p>
+      En Python, el objeto se crea con <code>__new__</code> y se inicializa con
+      <code>__init__</code>. En el día a día decimos «constructor» a la llamada
+      <code>Producto(...)</code>, pero lo que escribes tú es <code>__init__</code>. No necesitas
+      tocar <code>__new__</code> en este curso.
+    </p>
+  </div>
+
+  <h3>1.2 · Cada instancia tiene su propio estado</h3>
+
+  <p>
+    <code>p1</code> y <code>p2</code> salen del mismo molde, pero son dos objetos separados en
+    memoria. Cambiar <code>p1.cantidad</code> no toca <code>p2.cantidad</code>. Esa independencia es
+    la base de un catálogo: cada producto tiene su precio y su stock.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Qué comparten y qué no</caption>
+      <thead>
+        <tr><th>Elemento</th><th>¿Se comparte entre instancias?</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Los métodos</td><td>Sí: son código de la clase</td><td><code>p1.vender</code> y <code>p2.vender</code> son el mismo método</td></tr>
+        <tr><td>Los atributos de instancia</td><td>No: cada objeto tiene los suyos</td><td><code>p1.precio</code> ≠ <code>p2.precio</code></td></tr>
+        <tr><td>Los atributos de clase</td><td>Sí: se definen fuera de <code>__init__</code></td><td><code>Producto.IVA</code></td></tr>
+        <tr><td>El nombre de la clase</td><td>Sí: es el molde</td><td><code>type(p1) is Producto</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>1.3 · Comprobar qué es un objeto</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — type, isinstance y atributos</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-fn">print</span>(<span class="tk-fn">type</span>(p1))                 <span class="tk-cm"># &lt;class '__main__.Producto'&gt;</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">isinstance</span>(p1, <span class="tk-cls">Producto</span>)) <span class="tk-cm"># True</span>
+<span class="tk-fn">print</span>(p1.__dict__)              <span class="tk-cm"># {'nombre': ..., 'precio': ..., 'cantidad': ...}</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">hasattr</span>(p1, <span class="tk-str">"precio"</span>))    <span class="tk-cm"># True</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">hasattr</span>(p1, <span class="tk-str">"presio"</span>))    <span class="tk-cm"># False</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — un atributo inexistente no se crea solo</span>
+    <p>
+      Si escribes <code>p1.presio = 10</code>, Python no corrige la ortografía: crea un atributo
+      nuevo llamado <code>presio</code> y el original <code>precio</code> sigue igual. Los objetos
+      no adivinan nombres. Para eso existe la validación y, más adelante, los modelos de Pydantic,
+      que rechazan campos que no declaraste.
+    </p>
+  </div>
+
+  <h3>1.4 · Un objeto sin clase no es un objeto de verdad</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>lo que NO debes hacer para un catálogo</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Un diccionario guarda datos, pero no valida ni calcula nada</span>
+producto = {
+    <span class="tk-str">"nombre"</span>: <span class="tk-str">"Teclado"</span>,
+    <span class="tk-str">"precio"</span>: <span class="tk-num">189900</span>,
+    <span class="tk-str">"cantidad"</span>: <span class="tk-num">12</span>,
+}
+
+<span class="tk-fn">print</span>(producto[<span class="tk-str">"presio"</span>])  <span class="tk-cm"># KeyError: no hay validación de nombres</span>
+</code></pre>
+  </div>
+
+  <p>
+    Un diccionario sigue siendo útil para datos temporales, respuestas JSON o configuraciones. La
+    clase conviene cuando hay <strong>reglas</strong> y <strong>comportamiento</strong> que deben
+    viajar juntos: validar, calcular, descontar, vender.
+  </p>
+
+  <h3>1.5 · Ejercicio corto: dos productos, dos estados</h3>
+
+  <p>
+    En tu editor, crea <code>producto.py</code> con la clase de arriba. Construye un tercer producto,
+    cambia su precio y comprueba con <code>print</code> que los otros dos no cambiaron. Después
+    responde: ¿qué habría pasado si <code>precio</code> fuera una lista compartida?
+  </p>
+
+  <div class="quiz" data-quiz="1">
+    <h3>Cuestionario de comprensión · Unidad 1</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Qué es <code>self</code> dentro de un método?</p>
+      <button class="opcion" data-op="a">El nombre de la clase</button>
+      <button class="opcion" data-op="b">Una variable global de Python</button>
+      <button class="opcion" data-op="c">La instancia concreta que recibe el método</button>
+      <button class="opcion" data-op="d">El archivo donde está la clase</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Qué hace <code>p1 = Producto("Teclado", 189900, 12)</code>?</p>
+      <button class="opcion" data-op="a">Define una clase nueva</button>
+      <button class="opcion" data-op="b">Crea una instancia de <code>Producto</code> y ejecuta <code>__init__</code></button>
+      <button class="opcion" data-op="c">Borra la clase anterior</button>
+      <button class="opcion" data-op="d">Convierte el producto en un diccionario</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> Si cambias <code>p1.cantidad</code>, ¿qué pasa con <code>p2.cantidad</code>?</p>
+      <button class="opcion" data-op="a">No cambia: son atributos de instancias distintas</button>
+      <button class="opcion" data-op="b">Cambia también, porque comparten el atributo</button>
+      <button class="opcion" data-op="c">Se borra</button>
+      <button class="opcion" data-op="d">Python lanza un error</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>4.</strong> ¿Para qué sirve <code>__repr__</code>?</p>
+      <button class="opcion" data-op="a">Para validar el precio</button>
+      <button class="opcion" data-op="b">Para crear la clase</button>
+      <button class="opcion" data-op="c">Para heredar de otra clase</button>
+      <button class="opcion" data-op="d">Para mostrar una representación legible del objeto al depurar</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="0">← Unidad 0: Apertura</button>
+    <button class="btn-siguiente" data-ir="2">Unidad 2: métodos y estado →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 2 — MÉTODOS Y ESTADO
+============================================================ -->
+<section class="modulo" data-modulo="2">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 02 · El comportamiento</div>
+    <h2>Métodos: el objeto <em>hace</em> cosas con sus datos</h2>
+    <p class="proposito">
+      Un objeto no es una bolsa de atributos. Sabe calcular su total, aplicar un descuento, vender
+      una unidad y reponer stock. Cada método recibe <code>self</code>, lee o modifica el estado y
+      devuelve un resultado. Ahí está la diferencia entre un diccionario y un objeto.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: métodos que cambian el estado</b></span>
+    </div>
+  </div>
+
+  <h3>2.1 · Del dato a la acción</h3>
+
+  <p class="primer-párrafo">
+    El método <code>valor_total</code> no recibe el precio ni la cantidad como parámetros: los lee
+    de <code>self</code>. El método <code>vender</code> sí recibe las unidades, porque es una acción
+    nueva, y modifica <code>self.cantidad</code>. El objeto es el dueño de su estado.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>producto.py — métodos con estado</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">Producto</span>:
+    <span class="tk-cls">IVA</span> = <span class="tk-num">0.19</span>
+
+    <span class="tk-kw">def</span> <span class="tk-fn">__init__</span>(<span class="tk-fn">self</span>, nombre: <span class="tk-fn">str</span>, precio: <span class="tk-fn">float</span>, cantidad: <span class="tk-fn">int</span> = <span class="tk-num">0</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-fn">self</span>.nombre = nombre
+        <span class="tk-fn">self</span>.precio = precio
+        <span class="tk-fn">self</span>.cantidad = cantidad
+
+    <span class="tk-kw">def</span> <span class="tk-fn">valor_total</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">float</span>:
+        <span class="tk-kw">return</span> <span class="tk-fn">self</span>.precio * <span class="tk-fn">self</span>.cantidad
+
+    <span class="tk-kw">def</span> <span class="tk-fn">precio_con_iva</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">float</span>:
+        <span class="tk-kw">return</span> <span class="tk-fn">round</span>(<span class="tk-fn">self</span>.precio * (<span class="tk-num">1</span> + <span class="tk-fn">self</span>.<span class="tk-cls">IVA</span>), <span class="tk-num">2</span>)
+
+    <span class="tk-kw">def</span> <span class="tk-fn">aplicar_descuento</span>(<span class="tk-fn">self</span>, porcentaje: <span class="tk-fn">float</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-fn">self</span>.precio = <span class="tk-fn">round</span>(<span class="tk-fn">self</span>.precio * (<span class="tk-num">1</span> - porcentaje / <span class="tk-num">100</span>), <span class="tk-num">2</span>)
+
+    <span class="tk-kw">def</span> <span class="tk-fn">vender</span>(<span class="tk-fn">self</span>, unidades: <span class="tk-fn">int</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-kw">if</span> unidades &gt; <span class="tk-fn">self</span>.cantidad:
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">f"No hay stock suficiente: quedan {</span><span class="tk-fn">self</span>.cantidad<span class="tk-str">}"</span>)
+        <span class="tk-fn">self</span>.cantidad -= unidades
+
+    <span class="tk-kw">def</span> <span class="tk-fn">reponer</span>(<span class="tk-fn">self</span>, unidades: <span class="tk-fn">int</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-fn">self</span>.cantidad += unidades
+
+
+p = <span class="tk-cls">Producto</span>(<span class="tk-str">"Teclado"</span>, <span class="tk-num">189900</span>, <span class="tk-num">12</span>)
+<span class="tk-fn">print</span>(p.valor_total())        <span class="tk-cm"># 2278800</span>
+p.vender(<span class="tk-num">2</span>)
+<span class="tk-fn">print</span>(p.cantidad)             <span class="tk-cm"># 10</span>
+p.aplicar_descuento(<span class="tk-num">10</span>)
+<span class="tk-fn">print</span>(p.precio)               <span class="tk-cm"># 170910.0</span>
+</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt>Método de instancia</dt>
+      <dd>Recibe <code>self</code> y trabaja con los atributos de ese objeto. Es el tipo normal de método.</dd>
+    </div>
+    <div>
+      <dt>Estado</dt>
+      <dd>El conjunto de atributos en un momento dado. <code>vender</code> cambia el estado; <code>valor_total</code> solo lo lee.</dd>
+    </div>
+    <div>
+      <dt>Efecto lateral</dt>
+      <dd>Un cambio que el método produce fuera de su valor de retorno: modificar <code>self.cantidad</code> es un efecto lateral intencional.</dd>
+    </div>
+    <div>
+      <dt><code>IVA</code></dt>
+      <dd>Un atributo de clase: vale lo mismo para todos los productos y se lee como <code>self.IVA</code> o <code>Producto.IVA</code>.</dd>
+    </div>
+  </div>
+
+  <h3>2.2 · Un método puede llamar a otro</h3>
+
+  <p>
+    Dentro de la clase no necesitas repetir la fórmula: <code>precio_con_iva</code> puede usar
+    <code>self.precio</code>, y un método más complejo puede llamar a <code>self.valor_total()</code>.
+    Esa es la misma reutilización de funciones de la clase 6, pero con el objeto como contexto.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>un método que usa otro método</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">Carrito</span>:
+    <span class="tk-kw">def</span> <span class="tk-fn">__init__</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-fn">self</span>.productos: <span class="tk-fn">list</span>[<span class="tk-cls">Producto</span>] = []
+
+    <span class="tk-kw">def</span> <span class="tk-fn">agregar</span>(<span class="tk-fn">self</span>, producto: <span class="tk-cls">Producto</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-fn">self</span>.productos.append(producto)
+
+    <span class="tk-kw">def</span> <span class="tk-fn">total</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">float</span>:
+        <span class="tk-kw">return</span> <span class="tk-fn">sum</span>(p.valor_total() <span class="tk-kw">for</span> p <span class="tk-kw">in</span> <span class="tk-fn">self</span>.productos)
+
+    <span class="tk-kw">def</span> <span class="tk-fn">unidades</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">int</span>:
+        <span class="tk-kw">return</span> <span class="tk-fn">sum</span>(p.cantidad <span class="tk-kw">for</span> p <span class="tk-kw">in</span> <span class="tk-fn">self</span>.productos)
+</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — composición: un objeto dentro de otro</span>
+    <p>
+      <code>Carrito</code> no hereda de <code>Producto</code>: <strong>tiene</strong> productos.
+      Esa relación se llama composición y suele ser más flexible que la herencia. La verás otra vez
+      en la unidad 5 y en el taller.
+    </p>
+  </div>
+
+  <h3>2.3 · El atributo de clase que se comparte por accidente</h3>
+
+  <p>
+    Si defines una lista como atributo de clase, todas las instancias apuntan a la misma lista.
+    Es uno de los errores más caros para principiantes porque no falla al escribir: falla cuando
+    dos carritos empiezan a mezclar productos.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>el error de la lista compartida</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">CarritoMalo</span>:
+    items = []          <span class="tk-cm"># ¡compartido por todas las instancias!</span>
+
+    <span class="tk-kw">def</span> <span class="tk-fn">agregar</span>(<span class="tk-fn">self</span>, item):
+        <span class="tk-fn">self</span>.items.append(item)
+
+
+a = <span class="tk-cls">CarritoMalo</span>()
+b = <span class="tk-cls">CarritoMalo</span>()
+a.agregar(<span class="tk-str">"teclado"</span>)
+<span class="tk-fn">print</span>(b.items)          <span class="tk-cm"># ['teclado']: b nunca agregó nada</span>
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">CarritoBueno</span>:
+    <span class="tk-kw">def</span> <span class="tk-fn">__init__</span>(<span class="tk-fn">self</span>):
+        <span class="tk-fn">self</span>.items = []  <span class="tk-cm"># cada instancia tiene su propia lista</span>
+
+    <span class="tk-kw">def</span> <span class="tk-fn">agregar</span>(<span class="tk-fn">self</span>, item):
+        <span class="tk-fn">self</span>.items.append(item)
+</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — los mutables van en <code>__init__</code></span>
+    <p>
+      Listas, diccionarios y conjuntos son mutables. Si los pones como atributo de clase, se
+      comparten. Si los pones dentro de <code>__init__</code> con <code>self.items = []</code>,
+      cada objeto recibe una lista nueva. La regla es simple: <strong>estado mutable, en la
+      instancia</strong>.
+    </p>
+  </div>
+
+  <h3>2.4 · <code>@dataclass</code>: menos código para los mismos datos</h3>
+
+  <p>
+    Cuando una clase es sobre todo un contenedor de datos, <code>@dataclass</code> genera
+    <code>__init__</code>, <code>__repr__</code> y <code>__eq__</code> a partir de las anotaciones.
+    Puedes seguir añadiendo métodos normales.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>producto.py — la versión con dataclass</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> dataclasses <span class="tk-kw">import</span> dataclass
+
+
+<span class="tk-fn">@dataclass</span>
+<span class="tk-kw">class</span> <span class="tk-cls">Producto</span>:
+    nombre: <span class="tk-fn">str</span>
+    precio: <span class="tk-fn">float</span>
+    cantidad: <span class="tk-fn">int</span> = <span class="tk-num">0</span>
+
+    <span class="tk-kw">def</span> <span class="tk-fn">valor_total</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">float</span>:
+        <span class="tk-kw">return</span> <span class="tk-fn">self</span>.precio * <span class="tk-fn">self</span>.cantidad
+
+
+p = <span class="tk-cls">Producto</span>(<span class="tk-str">"Teclado"</span>, <span class="tk-num">189900</span>, <span class="tk-num">12</span>)
+<span class="tk-fn">print</span>(p)                    <span class="tk-cm"># Producto(nombre='Teclado', precio=189900, cantidad=12)</span>
+<span class="tk-fn">print</span>(p.valor_total())      <span class="tk-cm"># 2278800</span>
+<span class="tk-fn">print</span>(p == <span class="tk-cls">Producto</span>(<span class="tk-str">"Teclado"</span>, <span class="tk-num">189900</span>, <span class="tk-num">12</span>))  <span class="tk-cm"># True</span>
+</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Clase normal o <code>dataclass</code></caption>
+      <thead>
+        <tr><th></th><th>Clase normal</th><th><code>@dataclass</code></th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>__init__</code></td><td>Lo escribes tú</td><td>Se genera desde las anotaciones</td></tr>
+        <tr><td><code>__repr__</code></td><td>Lo escribes tú</td><td>Se genera</td></tr>
+        <tr><td>Igualdad por valores</td><td>No, por defecto compara identidad</td><td>Sí, por defecto</td></tr>
+        <tr><td>Validación</td><td>Dentro de <code>__init__</code></td><td>En <code>__post_init__</code></td></tr>
+        <tr><td>Métodos propios</td><td>Sí</td><td>Sí, igual</td></tr>
+        <tr><td>Cuándo usarla</td><td>Cuando hay bastante comportamiento o construcción especial</td><td>Cuando el objeto es principalmente datos con algunos métodos</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>2.5 · Ejercicio corto</h3>
+
+  <p>
+    Agrega a <code>Producto</code> un método <code>esta_agotado()</code> que devuelva
+    <code>True</code> cuando la cantidad sea cero. Después crea un producto con cantidad
+    <code>0</code>, llama al método y comprueba el resultado. No cambies los métodos existentes.
+  </p>
+
+  <div class="quiz" data-quiz="2">
+    <h3>Cuestionario de comprensión · Unidad 2</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué recibe un método de instancia como primer parámetro?</p>
+      <button class="opcion" data-op="a">La clase</button>
+      <button class="opcion" data-op="b">El objeto (<code>self</code>)</button>
+      <button class="opcion" data-op="c">El módulo</button>
+      <button class="opcion" data-op="d">Una copia del diccionario</button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué hace <code>vender</code> con <code>self.cantidad</code>?</p>
+      <button class="opcion" data-op="a">La imprime solamente</button>
+      <button class="opcion" data-op="b">La convierte en texto</button>
+      <button class="opcion" data-op="c">La borra</button>
+      <button class="opcion" data-op="d">La modifica: descuenta las unidades vendidas</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Por qué <code>items = []</code> como atributo de clase es peligroso?</p>
+      <button class="opcion" data-op="a">Porque todas las instancias comparten la misma lista</button>
+      <button class="opcion" data-op="b">Porque Python no permite listas en clases</button>
+      <button class="opcion" data-op="c">Porque la lista se vuelve inmutable</button>
+      <button class="opcion" data-op="d">Porque borra los métodos</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Qué genera <code>@dataclass</code> automáticamente?</p>
+      <button class="opcion" data-op="a">Una base de datos</button>
+      <button class="opcion" data-op="b">Un servidor FastAPI</button>
+      <button class="opcion" data-op="c"><code>__init__</code>, <code>__repr__</code> y comparación por valores</button>
+      <button class="opcion" data-op="d">Una conexión a PostgreSQL</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="1">← Unidad 1: Clase y objeto</button>
+    <button class="btn-siguiente" data-ir="3">Unidad 3: validar el objeto →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 3 — VALIDAR EL OBJETO
+============================================================ -->
+<section class="modulo" data-modulo="3">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 03 · Las reglas</div>
+    <h2>Un objeto válido desde que <em>nace</em></h2>
+    <p class="proposito">
+      Un objeto con precio negativo no es un producto: es un error esperando a ocurrir. La
+      validación en el constructor garantiza que ninguna instancia nazca rota. Es la misma idea que
+      Pydantic usará después, pero escrita a mano para que veas qué hay debajo.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>30 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: invariantes y objetos que rechazan datos inválidos</b></span>
+    </div>
+  </div>
+
+  <h3>3.1 · Validar en <code>__init__</code></h3>
+
+  <p class="primer-párrafo">
+    El constructor es la aduana del objeto. Si un dato no cumple la regla, lanza
+    <code>ValueError</code> antes de crear una instancia inválida. El resto del programa puede
+    confiar en que todo <code>Producto</code> que existe tiene nombre, precio positivo y cantidad no
+    negativa.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>producto.py — invariantes en el constructor</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">Producto</span>:
+    <span class="tk-kw">def</span> <span class="tk-fn">__init__</span>(<span class="tk-fn">self</span>, nombre: <span class="tk-fn">str</span>, precio: <span class="tk-fn">float</span>, cantidad: <span class="tk-fn">int</span> = <span class="tk-num">0</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-kw">if</span> <span class="tk-kw">not</span> <span class="tk-fn">isinstance</span>(nombre, <span class="tk-fn">str</span>) <span class="tk-kw">or</span> <span class="tk-kw">not</span> nombre.strip():
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"El nombre es obligatorio."</span>)
+        <span class="tk-kw">if</span> <span class="tk-kw">not</span> <span class="tk-fn">isinstance</span>(precio, (<span class="tk-fn">int</span>, <span class="tk-fn">float</span>)) <span class="tk-kw">or</span> precio &lt;= <span class="tk-num">0</span>:
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"El precio debe ser mayor que cero."</span>)
+        <span class="tk-kw">if</span> <span class="tk-kw">not</span> <span class="tk-fn">isinstance</span>(cantidad, <span class="tk-fn">int</span>) <span class="tk-kw">or</span> cantidad &lt; <span class="tk-num">0</span>:
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"La cantidad debe ser un entero mayor o igual que cero."</span>)
+
+        <span class="tk-fn">self</span>.nombre = nombre.strip()
+        <span class="tk-fn">self</span>.precio = <span class="tk-fn">float</span>(precio)
+        <span class="tk-fn">self</span>.cantidad = cantidad
+
+    <span class="tk-kw">def</span> <span class="tk-fn">__repr__</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">str</span>:
+        <span class="tk-kw">return</span> <span class="tk-str">f'Producto("{</span><span class="tk-fn">self</span>.nombre<span class="tk-str">}", {</span><span class="tk-fn">self</span>.precio<span class="tk-str">}, {</span><span class="tk-fn">self</span>.cantidad<span class="tk-str">})'</span>
+
+
+<span class="tk-kw">try</span>:
+    p = <span class="tk-cls">Producto</span>(<span class="tk-str">""</span>, -<span class="tk-num">10</span>, <span class="tk-num">2</span>)
+<span class="tk-kw">except</span> <span class="tk-cls">ValueError</span> <span class="tk-kw">as</span> error:
+    <span class="tk-fn">print</span>(error)  <span class="tk-cm"># El nombre es obligatorio.</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — validar solo al principio no basta</span>
+    <p>
+      El constructor protege el nacimiento, pero después alguien puede escribir
+      <code>p.precio = -1</code>. En Python los atributos son públicos por defecto. Para el nivel de
+      esta clase, valida también en los métodos que cambian estado y, si necesitas más control,
+      usa <code>@property</code> o un modelo de Pydantic. Lo importante es que la regla viva en una
+      sola capa, no repetida en cada pantalla.
+    </p>
+  </div>
+
+  <h3>3.2 · Validar con <code>@dataclass</code> y <code>__post_init__</code></h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>producto.py — dataclass con validación</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> dataclasses <span class="tk-kw">import</span> dataclass, field
+
+
+<span class="tk-fn">@dataclass</span>
+<span class="tk-kw">class</span> <span class="tk-cls">Producto</span>:
+    nombre: <span class="tk-fn">str</span>
+    precio: <span class="tk-fn">float</span>
+    cantidad: <span class="tk-fn">int</span> = <span class="tk-num">0</span>
+    etiquetas: <span class="tk-fn">list</span>[<span class="tk-fn">str</span>] = field(default_factory=<span class="tk-fn">list</span>)
+
+    <span class="tk-kw">def</span> <span class="tk-fn">__post_init__</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-kw">if</span> <span class="tk-kw">not</span> <span class="tk-fn">self</span>.nombre.strip():
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"El nombre es obligatorio."</span>)
+        <span class="tk-kw">if</span> <span class="tk-fn">self</span>.precio &lt;= <span class="tk-num">0</span>:
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"El precio debe ser mayor que cero."</span>)
+        <span class="tk-kw">if</span> <span class="tk-fn">self</span>.cantidad &lt; <span class="tk-num">0</span>:
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"La cantidad no puede ser negativa."</span>)
+
+    <span class="tk-kw">def</span> <span class="tk-fn">valor_total</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">float</span>:
+        <span class="tk-kw">return</span> <span class="tk-fn">self</span>.precio * <span class="tk-fn">self</span>.cantidad
+</code></pre>
+  </div>
+
+  <div class="recuadro precision">
+    <span class="rotulo">Precisión — <code>default_factory</code> crea una lista por objeto</span>
+    <p>
+      Si escribieras <code>etiquetas: list[str] = []</code>, todas las instancias compartirían la
+      misma lista. <code>field(default_factory=list)</code> le pide a <code>dataclass</code> una
+      lista nueva para cada objeto. Es la versión elegante de «el mutable va en la instancia».
+    </p>
+  </div>
+
+  <h3>3.3 · El mismo trabajo, con Pydantic</h3>
+
+  <p>
+    Pydantic hace lo que acabas de escribir, pero a partir de anotaciones: valida tipos, rangos y
+    campos obligatorios, y devuelve todos los errores juntos. Así lo usarás en la clase 7 para los
+    formularios y en las clases de ORM para los modelos.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>pydantic — el mismo contrato, declarado</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> pydantic <span class="tk-kw">import</span> <span class="tk-cls">BaseModel</span>, <span class="tk-cls">Field</span>, <span class="tk-cls">ValidationError</span>
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">Producto</span>(<span class="tk-cls">BaseModel</span>):
+    nombre: <span class="tk-fn">str</span> = <span class="tk-cls">Field</span>(min_length=<span class="tk-num">1</span>, max_length=<span class="tk-num">100</span>)
+    precio: <span class="tk-fn">float</span> = <span class="tk-cls">Field</span>(gt=<span class="tk-num">0</span>)
+    cantidad: <span class="tk-fn">int</span> = <span class="tk-cls">Field</span>(ge=<span class="tk-num">0</span>)
+
+
+<span class="tk-kw">try</span>:
+    p = <span class="tk-cls">Producto</span>(nombre=<span class="tk-str">""</span>, precio=-<span class="tk-num">1</span>, cantidad=<span class="tk-num">2</span>)
+<span class="tk-kw">except</span> <span class="tk-cls">ValidationError</span> <span class="tk-kw">as</span> error:
+    <span class="tk-fn">print</span>(error.errors())
+    <span class="tk-cm"># [{'type': 'string_too_short', 'loc': ('nombre',), ...},</span>
+    <span class="tk-cm">#  {'type': 'greater_than', 'loc': ('precio',), ...}]</span>
+</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Validación a mano y validación declarada</caption>
+      <thead>
+        <tr><th></th><th>Tu clase</th><th>Pydantic</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Dónde se escribe la regla</td><td>En <code>if</code> dentro de <code>__init__</code></td><td>En anotaciones y <code>Field</code></td></tr>
+        <tr><td>Cuántos errores devuelve</td><td>El primero que encuentra</td><td>Una lista con todos</td></tr>
+        <tr><td>Convierte tipos</td><td>No, salvo que lo programes</td><td>Sí, por ejemplo <code>"12"</code> → <code>12</code></td></tr>
+        <tr><td>Cuándo usarla</td><td>Para entender y para modelos internos simples</td><td>Para datos que vienen de fuera: formularios, JSON, API</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>3.4 · Laboratorio: construye el objeto</h3>
+
+  <p>
+    Este laboratorio simula la clase <code>Producto</code>. Crea un objeto, cámbialo con sus métodos,
+    crea un segundo producto y comprueba que cada uno tiene su propio estado. Prueba también el
+    ejemplo inválido para ver qué hace una validación.
+  </p>
+
+  <div class="objetos" data-obj>
+    <div class="obj-cabecera">
+      <span class="etiqueta">Laboratorio</span>
+      <h4>Clase, instancia y estado</h4>
+      <p>
+        La clase está simulada en JavaScript, pero se comporta como la de Python: el constructor
+        valida, los métodos cambian el objeto y cada instancia es independiente.
+      </p>
+    </div>
+
+    <div class="obj-cuerpo">
+      <form class="obj-form" data-obj-form>
+        <div class="obj-field">
+          <label for="obj-nombre">Nombre</label>
+          <input id="obj-nombre" type="text" data-obj-nombre value="Teclado mecánico">
+        </div>
+        <div class="obj-field">
+          <label for="obj-precio">Precio</label>
+          <input id="obj-precio" type="text" data-obj-precio value="189900" inputmode="decimal">
+        </div>
+        <div class="obj-field">
+          <label for="obj-cantidad">Cantidad</label>
+          <input id="obj-cantidad" type="number" data-obj-cantidad value="12" min="0">
+        </div>
+
+        <div class="obj-botones">
+          <button type="submit" class="obj-btn primario">Producto(...)</button>
+          <button type="button" class="obj-btn" data-obj-ejemplo>Ejemplo inválido</button>
+          <button type="button" class="obj-btn" data-obj-reiniciar>Reiniciar</button>
+        </div>
+      </form>
+
+      <div class="obj-panel">
+        <div class="obj-repr" data-obj-repr>Producto(...)</div>
+        <div class="obj-estado" data-obj-estado>Todavía no hay ningún objeto. Crea el primero.</div>
+
+        <div class="obj-acciones">
+          <button type="button" class="obj-btn" data-obj-accion="descuento" disabled>aplicar_descuento(10)</button>
+          <button type="button" class="obj-btn" data-obj-accion="vender" disabled>vender(1)</button>
+          <button type="button" class="obj-btn" data-obj-accion="reponer" disabled>reponer(5)</button>
+        </div>
+
+        <pre class="obj-json" data-obj-json>{
+  "detail": "Crea un objeto para ver su estado."
+}</pre>
+        <div class="obj-historial" data-obj-historial>-- sin operaciones todavía</div>
+      </div>
+    </div>
+
+    <div class="obj-lista" data-obj-lista>
+      <span class="obj-vacio">La lista de objetos está vacía.</span>
+    </div>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — qué mirar en el laboratorio</span>
+    <p>
+      Al crear el primer objeto, el panel muestra su representación y su estado. Si aplicas un
+      descuento, cambia el precio de <em>ese</em> objeto. Crea un segundo producto y selecciona uno
+      u otro en la lista: cada instancia conserva su propio precio y su propia cantidad. El ejemplo
+      inválido no crea nada; solo muestra el error.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <h3>Cuestionario de comprensión · Unidad 3</h3>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>1.</strong> ¿Dónde se valida que un objeto nazca con datos correctos?</p>
+      <button class="opcion" data-op="a">En el <code>print</code></button>
+      <button class="opcion" data-op="b">En el <code>import</code></button>
+      <button class="opcion" data-op="c">En <code>__init__</code> o en <code>__post_init__</code></button>
+      <button class="opcion" data-op="d">En el nombre del archivo</button>
+    </div>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>2.</strong> ¿Qué excepción lanza una validación manual con <code>raise</code>?</p>
+      <button class="opcion" data-op="a"><code>ImportError</code></button>
+      <button class="opcion" data-op="b"><code>ValueError</code></button>
+      <button class="opcion" data-op="c"><code>KeyError</code></button>
+      <button class="opcion" data-op="d"><code>SystemExit</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>3.</strong> ¿Qué ventaja tiene Pydantic frente a tus <code>if</code>?</p>
+      <button class="opcion" data-op="a">No necesita clases</button>
+      <button class="opcion" data-op="b">Borra los datos inválidos</button>
+      <button class="opcion" data-op="c">Reemplaza a PostgreSQL</button>
+      <button class="opcion" data-op="d">Declara las reglas en anotaciones y devuelve todos los errores juntos</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>4.</strong> ¿Por qué <code>field(default_factory=list)</code> es mejor que <code>= []</code>?</p>
+      <button class="opcion" data-op="a">Porque crea una lista nueva para cada instancia</button>
+      <button class="opcion" data-op="b">Porque hace la lista inmutable</button>
+      <button class="opcion" data-op="c">Porque la guarda en la base de datos</button>
+      <button class="opcion" data-op="d">Porque elimina la necesidad de <code>__init__</code></button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="2">← Unidad 2: Métodos y estado</button>
+    <button class="btn-siguiente" data-ir="4">Unidad 4: Intervalo →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 4 — INTERVALO
+============================================================ -->
+<section class="modulo" data-modulo="4">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 04 · Intervalo</div>
+    <h2>Pausa activa y <em>vocabulario de objetos</em></h2>
+    <p class="proposito">
+      Quince minutos de pausa, de los cuales cinco son de trabajo: una bitácora breve que fija la
+      diferencia entre clase, instancia, atributo y método.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>15 minutos</b></span>
+      <span>📄 <b>5 de trabajo, 10 de descanso</b></span>
+    </div>
+  </div>
+
+  <div class="intervalo">
+    <h2>Intervalo de 15 minutos</h2>
+    <p class="lead">
+      Levántate, estira y toma agua. Los últimos tres minutos del intervalo se vuelven a la bitácora.
+    </p>
+
+    <div class="reglas">
+      <div class="regla">
+        <h4>Regla 20-20-20</h4>
+        <p>Mira a 20 pies (6 metros) durante 20 segundos. Repite tres veces.</p>
+      </div>
+      <div class="regla">
+        <h4>Movimiento</h4>
+        <p>Un minuto caminando, estirar brazos y cuello, girar la espalda con cuidado.</p>
+      </div>
+      <div class="regla">
+        <h4>Hidratación</h4>
+        <p>Un vaso de agua. La lectura densa agota más de lo que parece.</p>
+      </div>
+      <div class="regla">
+        <h4>Bitácora</h4>
+        <p>Los últimos tres minutos: completa las tres anotaciones de abajo.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>4.1 · Bitácora de objetos (5 minutos)</h3>
+
+  <p>Escribe en tu cuaderno, con tus propias palabras:</p>
+
+  <ol>
+    <li><strong>En una frase:</strong> ¿qué diferencia hay entre una clase y una instancia?</li>
+    <li><strong>En una frase:</strong> ¿qué hace <code>self</code> y por qué no se pasa a mano al llamar al método?</li>
+    <li><strong>En una frase:</strong> ¿por qué un objeto con precio negativo es un problema de diseño y no solo de datos?</li>
+  </ol>
+
+  <h3>4.2 · Vocabulario del taller</h3>
+
+  <div class="definiciones">
+    <div>
+      <dt>Clase</dt>
+      <dd>El molde que define atributos y métodos. Se declara con <code>class</code>.</dd>
+    </div>
+    <div>
+      <dt>Instancia / objeto</dt>
+      <dd>Una copia concreta construida con la clase, con su propio estado.</dd>
+    </div>
+    <div>
+      <dt>Atributo</dt>
+      <dd>Un dato guardado en el objeto o en la clase; se accede con <code>objeto.atributo</code>.</dd>
+    </div>
+    <div>
+      <dt>Método</dt>
+      <dd>Una función definida dentro de la clase que recibe <code>self</code>.</dd>
+    </div>
+    <div>
+      <dt><code>__init__</code></dt>
+      <dd>El método que inicializa la instancia al construirla.</dd>
+    </div>
+    <div>
+      <dt><code>__repr__</code></dt>
+      <dd>La representación legible del objeto para depuración.</dd>
+    </div>
+    <div>
+      <dt>Invariante</dt>
+      <dd>Una regla que se cumple siempre: precio positivo, cantidad no negativa.</dd>
+    </div>
+    <div>
+      <dt>Composición</dt>
+      <dd>Un objeto contiene otros objetos; por ejemplo, un carrito tiene productos.</dd>
+    </div>
+    <div>
+      <dt>Herencia</dt>
+      <dd>Una clase deriva de otra y reutiliza sus atributos y métodos.</dd>
+    </div>
+    <div>
+      <dt>Pydantic</dt>
+      <dd>Una librería que valida objetos a partir de anotaciones de tipo y devuelve errores estructurados.</dd>
+    </div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="3">← Unidad 3: Validar el objeto</button>
+    <button class="btn-siguiente" data-ir="5">Unidad 5: herencia, Pydantic y ORM →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 5 — HERENCIA, PYDANTIC Y ORM
+============================================================ -->
+<section class="modulo" data-modulo="5">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 05 · El puente</div>
+    <h2>De tu clase a <em>Pydantic</em> y al ORM</h2>
+    <p class="proposito">
+      Ya sabes construir objetos y validarlos. Ahora verás dos usos reales de las clases en el
+      backend: heredar para especializar un producto y declarar modelos que Pydantic valida y que un
+      ORM convierte en filas de PostgreSQL. No es magia nueva: es la misma idea con más herramientas.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: el mapa clase → Pydantic → ORM</b></span>
+    </div>
+  </div>
+
+  <h3>5.1 · Herencia: «es un» producto</h3>
+
+  <p class="primer-párrafo">
+    Un producto digital <strong>es un</strong> producto, pero además tiene un archivo. En vez de
+    copiar todos los atributos, se hereda de <code>Producto</code> y se añade lo nuevo. La clase
+    hija llama a <code>super().__init__</code> para que el padre inicialice la parte común.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>producto.py — heredar y especializar</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">Producto</span>:
+    <span class="tk-kw">def</span> <span class="tk-fn">__init__</span>(<span class="tk-fn">self</span>, nombre: <span class="tk-fn">str</span>, precio: <span class="tk-fn">float</span>, cantidad: <span class="tk-fn">int</span> = <span class="tk-num">0</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-fn">self</span>.nombre = nombre
+        <span class="tk-fn">self</span>.precio = precio
+        <span class="tk-fn">self</span>.cantidad = cantidad
+
+    <span class="tk-kw">def</span> <span class="tk-fn">entregar</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">str</span>:
+        <span class="tk-kw">return</span> <span class="tk-str">"Envío físico"</span>
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">ProductoDigital</span>(<span class="tk-cls">Producto</span>):
+    <span class="tk-kw">def</span> <span class="tk-fn">__init__</span>(
+        <span class="tk-fn">self</span>, nombre: <span class="tk-fn">str</span>, precio: <span class="tk-fn">float</span>, cantidad: <span class="tk-fn">int</span>, archivo: <span class="tk-fn">str</span>
+    ) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-fn">super</span>().<span class="tk-fn">__init__</span>(nombre, precio, cantidad)
+        <span class="tk-fn">self</span>.archivo = archivo
+
+    <span class="tk-kw">def</span> <span class="tk-fn">entregar</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">str</span>:
+        <span class="tk-kw">return</span> <span class="tk-str">f"Descarga del archivo {</span><span class="tk-fn">self</span>.archivo<span class="tk-str">}"</span>
+
+    <span class="tk-kw">def</span> <span class="tk-fn">__repr__</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">str</span>:
+        <span class="tk-kw">return</span> <span class="tk-str">f'ProductoDigital("{</span><span class="tk-fn">self</span>.nombre<span class="tk-str">}", {</span><span class="tk-fn">self</span>.precio<span class="tk-str">}, "{</span><span class="tk-fn">self</span>.archivo<span class="tk-str">}")'</span>
+
+
+digital = <span class="tk-cls">ProductoDigital</span>(<span class="tk-str">"Curso de Git"</span>, <span class="tk-num">49900</span>, <span class="tk-num">999</span>, <span class="tk-str">"git.pdf"</span>)
+<span class="tk-fn">print</span>(digital.entregar())          <span class="tk-cm"># Descarga del archivo git.pdf</span>
+<span class="tk-fn">print</span>(<span class="tk-fn">isinstance</span>(digital, <span class="tk-cls">Producto</span>))  <span class="tk-cm"># True</span>
+</code></pre>
+  </div>
+
+  <div class="definiciones">
+    <div>
+      <dt><code>super()</code></dt>
+      <dd>Llama al método de la clase padre. Aquí inicializa nombre, precio y cantidad antes de añadir <code>archivo</code>.</dd>
+    </div>
+    <div>
+      <dt>Sobrescribir</dt>
+      <dd>La clase hija define <code>entregar</code> con otro comportamiento. Al llamar <code>digital.entregar()</code>, gana la versión hija.</dd>
+    </div>
+    <div>
+      <dt><code>isinstance</code></dt>
+      <dd>Un <code>ProductoDigital</code> también es un <code>Producto</code>. Es la prueba de la relación «es un».</dd>
+    </div>
+    <div>
+      <dt>Herencia</dt>
+      <dd>Útil cuando la relación es realmente «es un». Si es «tiene un», conviene composición.</dd>
+    </div>
+  </div>
+
+  <h3>5.2 · Composición: «tiene» productos</h3>
+
+  <p>
+    Un carrito no es un producto: <strong>tiene</strong> productos. Por eso no hereda; guarda una
+    lista de objetos y delega en ellos. En el taller vas a usar esta relación porque es la que
+    aparece en casi todos los modelos de negocio.
+  </p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Herencia o composición</caption>
+      <thead>
+        <tr><th>Relación</th><th>Se lee</th><th>Ejemplo</th><th>Herramienta</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Es un</strong></td><td>Un producto digital es un producto</td><td><code>ProductoDigital(Producto)</code></td><td>Herencia</td></tr>
+        <tr><td><strong>Tiene un</strong></td><td>Un carrito tiene productos</td><td><code>self.productos: list[Producto]</code></td><td>Composición</td></tr>
+        <tr><td><strong>Usa un</strong></td><td>Una tienda usa un repositorio</td><td><code>self.repo = repositorio</code></td><td>Composición / inyección</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>5.3 · Pydantic: la clase que valida sola</h3>
+
+  <p>
+    Pydantic recibe una clase que hereda de <code>BaseModel</code>, lee las anotaciones y construye
+    un objeto validado. Si un dato no cumple, lanza <code>ValidationError</code> con todos los
+    errores. Es el puente directo entre lo que acabas de aprender y los formularios de la clase 7.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>pydantic — construir un objeto validado</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> pydantic <span class="tk-kw">import</span> <span class="tk-cls">BaseModel</span>, <span class="tk-cls">Field</span>
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">Producto</span>(<span class="tk-cls">BaseModel</span>):
+    nombre: <span class="tk-fn">str</span> = <span class="tk-cls">Field</span>(min_length=<span class="tk-num">1</span>, max_length=<span class="tk-num">100</span>)
+    precio: <span class="tk-fn">float</span> = <span class="tk-cls">Field</span>(gt=<span class="tk-num">0</span>)
+    cantidad: <span class="tk-fn">int</span> = <span class="tk-cls">Field</span>(ge=<span class="tk-num">0</span>)
+
+
+p = <span class="tk-cls">Producto</span>(nombre=<span class="tk-str">"Teclado"</span>, precio=<span class="tk-num">189900</span>, cantidad=<span class="tk-num">12</span>)
+<span class="tk-fn">print</span>(p.nombre)             <span class="tk-cm"># Teclado</span>
+<span class="tk-fn">print</span>(p.model_dump())       <span class="tk-cm"># {'nombre': 'Teclado', 'precio': 189900.0, 'cantidad': 12}</span>
+
+<span class="tk-cm"># También puede validar un diccionario que viene de un JSON:</span>
+datos = {<span class="tk-str">"nombre"</span>: <span class="tk-str">"Mouse"</span>, <span class="tk-str">"precio"</span>: <span class="tk-num">89900</span>, <span class="tk-str">"cantidad"</span>: <span class="tk-num">25</span>}
+q = <span class="tk-cls">Producto</span>.model_validate(datos)
+<span class="tk-fn">print</span>(q.precio)             <span class="tk-cm"># 89900.0</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — Pydantic no «convierte en diccionario» el objeto</span>
+    <p>
+      <code>Producto(...)</code> devuelve una instancia de <code>Producto</code>, con atributos y
+      métodos heredados de <code>BaseModel</code>. <code>model_dump()</code> es solo una forma de
+      exportar sus datos cuando necesitas un diccionario para JSON o para la base. El objeto sigue
+      siendo un objeto.
+    </p>
+  </div>
+
+  <h3>5.4 · ORM: la clase que representa una tabla</h3>
+
+  <p>
+    Un ORM (Object-Relational Mapping) traduce objetos a filas. Con SQLModel, una clase con
+    <code>table=True</code> representa una tabla; cada atributo es una columna y cada instancia es
+    una fila. Al guardar el objeto con una sesión, el ORM genera el <code>INSERT</code>.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>sqlmodel — la clase es la tabla</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> sqlmodel <span class="tk-kw">import</span> <span class="tk-cls">Field</span>, <span class="tk-cls">Session</span>, <span class="tk-cls">SQLModel</span>
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">Producto</span>(<span class="tk-cls">SQLModel</span>, table=<span class="tk-kw">True</span>):
+    <span class="tk-fn">id</span>: <span class="tk-fn">int</span> | <span class="tk-kw">None</span> = <span class="tk-cls">Field</span>(default=<span class="tk-kw">None</span>, primary_key=<span class="tk-kw">True</span>)
+    nombre: <span class="tk-fn">str</span>
+    precio: <span class="tk-fn">float</span>
+    cantidad: <span class="tk-fn">int</span> = <span class="tk-num">0</span>
+
+
+producto = <span class="tk-cls">Producto</span>(nombre=<span class="tk-str">"Teclado"</span>, precio=<span class="tk-num">189900</span>, cantidad=<span class="tk-num">12</span>)
+
+<span class="tk-cm"># engine ya está configurado por la aplicación
+</span><span class="tk-kw">with</span> <span class="tk-cls">Session</span>(engine) <span class="tk-kw">as</span> session:
+    session.add(producto)
+    session.commit()
+    session.refresh(producto)
+
+<span class="tk-fn">print</span>(producto.id)  <span class="tk-cm"># la base asignó el id</span>
+</code></pre>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>La misma clase, tres responsabilidades</caption>
+      <thead>
+        <tr><th>Nivel</th><th>La clase representa</th><th>Qué aporta</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Tu clase</td><td>Un producto del dominio</td><td>Reglas y comportamiento escritos por ti</td></tr>
+        <tr><td>Pydantic</td><td>Un contrato de entrada/salida</td><td>Validación declarativa y errores estructurados</td></tr>
+        <tr><td>ORM</td><td>Una tabla de la base</td><td>Traducción objeto ↔ fila, consultas y relaciones</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro distincion">
+    <span class="rotulo">Distinción — no mezcles los tres modelos sin querer</span>
+    <p>
+      En un proyecto real suele haber un modelo de dominio, uno de entrada (Pydantic) y uno de
+      persistencia (ORM). A veces se combinan, pero no son lo mismo: el de entrada no debería tener
+      <code>id</code>, el de base sí; el de dominio puede tener métodos de negocio, el de entrada no.
+      Esta separación evita que un formulario pueda cambiar el <code>id</code> de una fila.
+    </p>
+  </div>
+
+  <h3>5.5 · El mapa completo</h3>
+
+  <div class="diagrama">
+    <div class="nodo cliente">
+      <div class="rotulo-nodo">1 · Tu clase</div>
+      <h5>Producto</h5>
+      <p>Atributos, validación y métodos como <code>valor_total()</code>.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">hereda /<br>declara</span>
+    </div>
+    <div class="nodo servidor">
+      <div class="rotulo-nodo">2 · Pydantic</div>
+      <h5><code>BaseModel</code></h5>
+      <p>Valida lo que llega del formulario o del JSON antes de crear el objeto.</p>
+    </div>
+    <div class="flecha">
+      <span class="glifo">──▶</span>
+      <span class="etiqueta">traduce</span>
+    </div>
+    <div class="nodo datos">
+      <div class="rotulo-nodo">3 · ORM</div>
+      <h5><code>SQLModel</code></h5>
+      <p>Convierte la instancia en una fila de <code>productos</code>.</p>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="5">
+    <h3>Cuestionario de comprensión · Unidad 5</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Cuándo conviene herencia?</p>
+      <button class="opcion" data-op="a">Cuando un carrito tiene productos</button>
+      <button class="opcion" data-op="b">Cuando la relación se puede leer como «es un»</button>
+      <button class="opcion" data-op="c">Siempre que haya dos clases</button>
+      <button class="opcion" data-op="d">Cuando se quiere evitar <code>self</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Qué hace <code>super().__init__(...)</code> en una clase hija?</p>
+      <button class="opcion" data-op="a">Borra la clase padre</button>
+      <button class="opcion" data-op="b">Crea una base de datos</button>
+      <button class="opcion" data-op="c">Convierte la instancia en diccionario</button>
+      <button class="opcion" data-op="d">Ejecuta el inicializador de la clase padre</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué devuelve <code>Producto(...)</code> en Pydantic?</p>
+      <button class="opcion" data-op="a">Una instancia validada de <code>Producto</code></button>
+      <button class="opcion" data-op="b">Un diccionario común</button>
+      <button class="opcion" data-op="c">Una tabla de PostgreSQL</button>
+      <button class="opcion" data-op="d">Un archivo JSON en disco</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> En un ORM, ¿qué representa una instancia de la clase?</p>
+      <button class="opcion" data-op="a">Una columna</button>
+      <button class="opcion" data-op="b">Una base de datos completa</button>
+      <button class="opcion" data-op="c">Una fila de la tabla</button>
+      <button class="opcion" data-op="d">Un índice</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="4">← Unidad 4: Intervalo</button>
+    <button class="btn-siguiente" data-ir="6">Unidad 6: errores de diseño →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 6 — ERRORES DE DISEÑO
+============================================================ -->
+<section class="modulo" data-modulo="6">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 06 · Los tropiezos</div>
+    <h2>Errores de diseño: cuando el objeto <em>miente</em></h2>
+    <p class="proposito">
+      La mayoría de los errores con objetos no son de sintaxis: son de diseño. Un atributo que se
+      comparte, un método que no valida, un objeto que permite cualquier cosa. Esta unidad reúne los
+      tropiezos que vas a ver en Pydantic y en los ORM, y te da una tabla para decidir qué
+      herramienta usar.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>35 minutos</b></span>
+      <span>📄 <b>Lectura y práctica</b></span>
+      <span>🧭 <b>Producto: tabla de decisión y errores identificados</b></span>
+    </div>
+  </div>
+
+  <h3>6.1 · Los errores que más se repiten</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Del mensaje a la causa</caption>
+      <thead>
+        <tr><th>Mensaje o síntoma</th><th>Causa habitual</th><th>Cómo se corrige</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>TypeError: __init__() missing 1 required positional argument</code></td>
+          <td>Falta un argumento al construir el objeto</td>
+          <td>Revisa la firma de <code>__init__</code> y pasa todos los obligatorios</td>
+        </tr>
+        <tr>
+          <td><code>AttributeError: 'Producto' object has no attribute 'precio'</code></td>
+          <td>El atributo no se creó en <code>__init__</code> o está mal escrito</td>
+          <td>Declara <code>self.precio</code> y revisa la ortografía</td>
+        </tr>
+        <tr>
+          <td><code>NameError: name 'self' is not defined</code></td>
+          <td>Usaste <code>self</code> fuera de un método o olvidaste el parámetro</td>
+          <td>Define el método con <code>def metodo(self, ...)</code></td>
+        </tr>
+        <tr>
+          <td>Dos objetos comparten una lista</td>
+          <td>La lista se declaró como atributo de clase</td>
+          <td>Crea la lista en <code>__init__</code> o usa <code>default_factory</code></td>
+        </tr>
+        <tr>
+          <td>El precio se vuelve negativo después de crearlo</td>
+          <td>Solo validaste en el constructor</td>
+          <td>Valida también en los métodos que cambian estado, o usa propiedades/Pydantic</td>
+        </tr>
+        <tr>
+          <td><code>ValueError</code> al crear un producto</td>
+          <td>Una invariante se rompió; es el comportamiento esperado</td>
+          <td>Corrige el dato o muestra el mensaje al usuario</td>
+        </tr>
+        <tr>
+          <td><code>ValidationError</code> de Pydantic</td>
+          <td>El contrato de entrada rechazó uno o más campos</td>
+          <td>Lee <code>error.errors()</code> y devuelve los mensajes por campo</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>6.2 · El objeto que acepta cualquier cosa</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>un objeto sin invariantes no protege nada</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">Producto</span>:
+    <span class="tk-kw">pass</span>
+
+
+p = <span class="tk-cls">Producto</span>()
+p.precio = -<span class="tk-num">10</span>       <span class="tk-cm"># Python lo permite</span>
+p.cantidad = <span class="tk-str">"mucho"</span> <span class="tk-cm"># y esto también</span>
+p.presio = <span class="tk-num">5</span>         <span class="tk-cm"># y esto crea un atributo nuevo</span>
+
+<span class="tk-cm"># El objeto existe, pero no representa un producto válido.</span>
+</code></pre>
+  </div>
+
+  <p>
+    Un objeto sin reglas es un diccionario con otra sintaxis. La clase empieza a valer la pena
+    cuando impide estados imposibles: precio positivo, cantidad entera, nombre no vacío. Esa es la
+    diferencia entre escribir <code>class</code> y diseñar un modelo.
+  </p>
+
+  <h3>6.3 · ¿Clase normal, dataclass, Pydantic u ORM?</h3>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-compara">
+      <caption>Qué herramienta usar según el trabajo</caption>
+      <thead>
+        <tr><th>Necesidad</th><th>Herramienta</th><th>Por qué</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Un objeto con lógica de negocio y validación propia</td><td>Clase normal</td><td>Control total de métodos e invariantes</td></tr>
+        <tr><td>Un contenedor de datos con pocos métodos</td><td><code>@dataclass</code></td><td>Menos código repetido, comparación por valores</td></tr>
+        <tr><td>Datos que llegan de un formulario o un JSON</td><td>Pydantic</td><td>Valida, convierte tipos y acumula errores</td></tr>
+        <tr><td>Guardar y consultar en PostgreSQL</td><td>ORM (SQLModel)</td><td>Traduce objetos a filas y relaciones</td></tr>
+        <tr><td>Una respuesta JSON de salida</td><td>Pydantic / esquema de salida</td><td>Controla qué campos se exponen</td></tr>
+        <tr><td>Un dato temporal dentro de una función</td><td>Diccionario</td><td>No necesita reglas ni comportamiento</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — no conviertas todo en una clase</span>
+    <p>
+      Una clase por cada cosa es sobreingeniería. Si solo necesitas agrupar tres valores durante
+      diez líneas, un diccionario o una tupla es suficiente. La clase aparece cuando hay
+      <strong>reglas</strong>, <strong>comportamiento</strong> o <strong>identidad</strong> que
+      deben perdurar.
+    </p>
+  </div>
+
+  <h3>6.4 · Igualdad, representación y depuración</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>por qué <code>__repr__</code> y <code>__eq__</code> importan</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-cm"># Sin __eq__, dos productos con los mismos datos no son iguales:</span>
+p1 = <span class="tk-cls">Producto</span>(<span class="tk-str">"Teclado"</span>, <span class="tk-num">189900</span>, <span class="tk-num">12</span>)
+p2 = <span class="tk-cls">Producto</span>(<span class="tk-str">"Teclado"</span>, <span class="tk-num">189900</span>, <span class="tk-num">12</span>)
+<span class="tk-fn">print</span>(p1 == p2)  <span class="tk-cm"># False: compara identidad, no valores</span>
+
+<span class="tk-cm"># Con @dataclass, la igualdad es por valores:</span>
+<span class="tk-fn">print</span>(p1 == p2)  <span class="tk-cm"># True</span>
+
+<span class="tk-cm"># __repr__ hace que print(p1) sea legible en vez de</span>
+<span class="tk-cm"># &lt;__main__.Producto object at 0x...&gt;</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro nota">
+    <span class="rotulo">Nota — la identidad también es un dato</span>
+    <p>
+      Dos productos con el mismo nombre y precio no son necesariamente el mismo producto. En la
+      base de datos, el <code>id</code> resuelve esa ambigüedad. En el dominio, puedes comparar por
+      valores (dataclass) o por identidad (clase normal); elige según lo que signifique «igual» en
+      tu negocio.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz="6">
+    <h3>Cuestionario de comprensión · Unidad 6</h3>
+    <div class="pregunta" data-correcta="b">
+      <p><strong>1.</strong> ¿Qué causa que dos objetos compartan una lista sin querer?</p>
+      <button class="opcion" data-op="a">Usar <code>self.items = []</code></button>
+      <button class="opcion" data-op="b">Declarar <code>items = []</code> como atributo de clase</button>
+      <button class="opcion" data-op="c">Usar <code>@dataclass</code></button>
+      <button class="opcion" data-op="d">Llamar a <code>__repr__</code></button>
+    </div>
+    <div class="pregunta" data-correcta="d">
+      <p><strong>2.</strong> ¿Cuándo conviene usar Pydantic?</p>
+      <button class="opcion" data-op="a">Para reemplazar PostgreSQL</button>
+      <button class="opcion" data-op="b">Para escribir bucles</button>
+      <button class="opcion" data-op="c">Para definir variables globales</button>
+      <button class="opcion" data-op="d">Para validar datos que llegan de fuera, como un formulario o un JSON</button>
+    </div>
+    <div class="pregunta" data-correcta="a">
+      <p><strong>3.</strong> ¿Qué representa una clase con <code>table=True</code> en un ORM?</p>
+      <button class="opcion" data-op="a">Una tabla de la base de datos</button>
+      <button class="opcion" data-op="b">Un archivo CSS</button>
+      <button class="opcion" data-op="c">Una función pura</button>
+      <button class="opcion" data-op="d">Un formulario HTML</button>
+    </div>
+    <div class="pregunta" data-correcta="c">
+      <p><strong>4.</strong> ¿Cuándo es suficiente un diccionario y no hace falta una clase?</p>
+      <button class="opcion" data-op="a">Cuando hay reglas de negocio complejas</button>
+      <button class="opcion" data-op="b">Cuando el objeto debe persistir en una base</button>
+      <button class="opcion" data-op="c">Cuando solo agrupas datos temporales sin reglas ni comportamiento</button>
+      <button class="opcion" data-op="d">Cuando necesitas herencia</button>
+    </div>
+    <div class="resultado-quiz"></div>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="5">← Unidad 5: Herencia, Pydantic y ORM</button>
+    <button class="btn-siguiente" data-ir="7">Unidad 7: Taller →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     UNIDAD 7 — TALLER
+============================================================ -->
+<section class="modulo" data-modulo="7">
+
+  <div class="portada">
+    <div class="ojo"><span class="linea"></span> Unidad 07 · Taller integrador</div>
+    <h2>Tu <em>modelo de dominio</em></h2>
+    <p class="proposito">
+      En 45 minutos vas a construir el modelo que las clases siguientes van a reutilizar: un
+      <code>Producto</code> validado y un <code>Carrito</code> que lo contiene. Al final tendrás
+      pruebas que demuestran que el objeto protege sus reglas y que cada instancia es independiente.
+    </p>
+    <div class="meta-modulo">
+      <span>⏱ <b>45 minutos</b></span>
+      <span>💻 <b>Taller integrador</b></span>
+      <span>🧭 <b>Producto: Producto + Carrito con pruebas</b></span>
+    </div>
+  </div>
+
+  <h3>7.1 · El encargo</h3>
+
+  <div class="taller">
+    <div class="taller-cabecera">
+      <span class="etiqueta">Taller</span>
+      <h3>El catálogo que no acepta productos rotos</h3>
+    </div>
+
+    <p>
+      Crea un archivo <code>tienda.py</code> con una clase <code>Producto</code> que valide nombre,
+      precio y cantidad, calcule su total, aplique descuentos y venda stock. Después crea una clase
+      <code>Carrito</code> que contenga varios productos y calcule el total. No copies una lista de
+      diccionarios: usa objetos de verdad.
+    </p>
+
+    <h4>Ficha del sistema</h4>
+    <div class="contenedor-tabla">
+      <table class="tabla-compara">
+        <tbody>
+          <tr>
+            <td><strong>Entrada</strong></td>
+            <td>Nombre, precio y cantidad de cada producto</td>
+          </tr>
+          <tr>
+            <td><strong>Salida</strong></td>
+            <td>Objetos validados y totales calculados por el propio objeto</td>
+          </tr>
+          <tr>
+            <td><strong>Invariantes</strong></td>
+            <td>Nombre no vacío, precio &gt; 0, cantidad entera ≥ 0, stock suficiente al vender</td>
+          </tr>
+          <tr>
+            <td><strong>Comportamiento</strong></td>
+            <td><code>valor_total</code>, <code>aplicar_descuento</code>, <code>vender</code>, <code>reponer</code></td>
+          </tr>
+          <tr>
+            <td><strong>Composición</strong></td>
+            <td><code>Carrito</code> tiene una lista de <code>Producto</code></td>
+          </tr>
+          <tr>
+            <td><strong>Pruebas</strong></td>
+            <td>Producto válido, producto inválido, descuento y venta sin stock</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Entregables</h4>
+    <ol class="entregables">
+      <li><strong><code>Producto</code></strong> con <code>__init__</code>, validación y <code>__repr__</code>.</li>
+      <li><strong>Métodos</strong> <code>valor_total</code>, <code>aplicar_descuento</code>, <code>vender</code> y <code>reponer</code>.</li>
+      <li><strong><code>Carrito</code></strong> con composición y total.</li>
+      <li><strong><code>test_tienda.py</code></strong> con al menos cuatro pruebas.</li>
+      <li><strong>Una versión refactorizada</strong> con <code>@dataclass</code> o Pydantic, y un párrafo que explique qué cambió.</li>
+    </ol>
+  </div>
+
+  <h3>7.2 · El modelo base</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>tienda.py — Producto y Carrito</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">class</span> <span class="tk-cls">Producto</span>:
+    <span class="tk-kw">def</span> <span class="tk-fn">__init__</span>(<span class="tk-fn">self</span>, nombre: <span class="tk-fn">str</span>, precio: <span class="tk-fn">float</span>, cantidad: <span class="tk-fn">int</span> = <span class="tk-num">0</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-kw">if</span> <span class="tk-kw">not</span> nombre.strip():
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"El nombre es obligatorio."</span>)
+        <span class="tk-kw">if</span> precio &lt;= <span class="tk-num">0</span>:
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"El precio debe ser mayor que cero."</span>)
+        <span class="tk-kw">if</span> cantidad &lt; <span class="tk-num">0</span>:
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"La cantidad no puede ser negativa."</span>)
+
+        <span class="tk-fn">self</span>.nombre = nombre.strip()
+        <span class="tk-fn">self</span>.precio = <span class="tk-fn">float</span>(precio)
+        <span class="tk-fn">self</span>.cantidad = cantidad
+
+    <span class="tk-kw">def</span> <span class="tk-fn">__repr__</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">str</span>:
+        <span class="tk-kw">return</span> <span class="tk-str">f'Producto("{</span><span class="tk-fn">self</span>.nombre<span class="tk-str">}", {</span><span class="tk-fn">self</span>.precio<span class="tk-str">}, {</span><span class="tk-fn">self</span>.cantidad<span class="tk-str">})'</span>
+
+    <span class="tk-kw">def</span> <span class="tk-fn">valor_total</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">float</span>:
+        <span class="tk-kw">return</span> <span class="tk-fn">self</span>.precio * <span class="tk-fn">self</span>.cantidad
+
+    <span class="tk-kw">def</span> <span class="tk-fn">aplicar_descuento</span>(<span class="tk-fn">self</span>, porcentaje: <span class="tk-fn">float</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-kw">if</span> <span class="tk-kw">not</span> <span class="tk-num">0</span> &lt;= porcentaje &lt;= <span class="tk-num">100</span>:
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"El descuento debe estar entre 0 y 100."</span>)
+        <span class="tk-fn">self</span>.precio = <span class="tk-fn">round</span>(<span class="tk-fn">self</span>.precio * (<span class="tk-num">1</span> - porcentaje / <span class="tk-num">100</span>), <span class="tk-num">2</span>)
+
+    <span class="tk-kw">def</span> <span class="tk-fn">vender</span>(<span class="tk-fn">self</span>, unidades: <span class="tk-fn">int</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-kw">if</span> unidades &lt;= <span class="tk-num">0</span>:
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"Las unidades deben ser positivas."</span>)
+        <span class="tk-kw">if</span> unidades &gt; <span class="tk-fn">self</span>.cantidad:
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"No hay stock suficiente."</span>)
+        <span class="tk-fn">self</span>.cantidad -= unidades
+
+    <span class="tk-kw">def</span> <span class="tk-fn">reponer</span>(<span class="tk-fn">self</span>, unidades: <span class="tk-fn">int</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-kw">if</span> unidades &lt;= <span class="tk-num">0</span>:
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"Las unidades deben ser positivas."</span>)
+        <span class="tk-fn">self</span>.cantidad += unidades
+
+
+<span class="tk-kw">class</span> <span class="tk-cls">Carrito</span>:
+    <span class="tk-kw">def</span> <span class="tk-fn">__init__</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-fn">self</span>.productos: <span class="tk-fn">list</span>[<span class="tk-cls">Producto</span>] = []
+
+    <span class="tk-kw">def</span> <span class="tk-fn">agregar</span>(<span class="tk-fn">self</span>, producto: <span class="tk-cls">Producto</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-fn">self</span>.productos.append(producto)
+
+    <span class="tk-kw">def</span> <span class="tk-fn">total</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">float</span>:
+        <span class="tk-kw">return</span> <span class="tk-fn">sum</span>(p.valor_total() <span class="tk-kw">for</span> p <span class="tk-kw">in</span> <span class="tk-fn">self</span>.productos)
+
+    <span class="tk-kw">def</span> <span class="tk-fn">__repr__</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">str</span>:
+        <span class="tk-kw">return</span> <span class="tk-str">f"Carrito({</span><span class="tk-fn">len</span>(<span class="tk-fn">self</span>.productos)<span class="tk-str">} productos, total={</span><span class="tk-fn">self</span>.total()<span class="tk-str">})"</span>
+</code></pre>
+  </div>
+
+  <h3>7.3 · Las pruebas</h3>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>terminal — ejecutar</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code>uv add --dev pytest
+uv run pytest -q
+</code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>test_tienda.py — cinco caminos</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">import</span> pytest
+
+<span class="tk-kw">from</span> tienda <span class="tk-kw">import</span> <span class="tk-cls">Carrito</span>, <span class="tk-cls">Producto</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_producto_valido_calcula_total</span>():
+    p = <span class="tk-cls">Producto</span>(<span class="tk-str">"Teclado"</span>, <span class="tk-num">100000</span>, <span class="tk-num">2</span>)
+    <span class="tk-kw">assert</span> p.valor_total() == <span class="tk-num">200000</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_producto_invalido_lanza_value_error</span>():
+    <span class="tk-kw">with</span> pytest.raises(<span class="tk-cls">ValueError</span>):
+        <span class="tk-cls">Producto</span>(<span class="tk-str">""</span>, <span class="tk-num">100000</span>, <span class="tk-num">2</span>)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_descuento_cambia_el_precio</span>():
+    p = <span class="tk-cls">Producto</span>(<span class="tk-str">"Teclado"</span>, <span class="tk-num">100000</span>, <span class="tk-num">1</span>)
+    p.aplicar_descuento(<span class="tk-num">10</span>)
+    <span class="tk-kw">assert</span> p.precio == <span class="tk-num">90000</span>
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_vender_sin_stock_falla</span>():
+    p = <span class="tk-cls">Producto</span>(<span class="tk-str">"Mouse"</span>, <span class="tk-num">50000</span>, <span class="tk-num">1</span>)
+    <span class="tk-kw">with</span> pytest.raises(<span class="tk-cls">ValueError</span>):
+        p.vender(<span class="tk-num">2</span>)
+
+
+<span class="tk-kw">def</span> <span class="tk-fn">test_carrito_suma_sus_productos</span>():
+    carrito = <span class="tk-cls">Carrito</span>()
+    carrito.agregar(<span class="tk-cls">Producto</span>(<span class="tk-str">"Teclado"</span>, <span class="tk-num">100000</span>, <span class="tk-num">1</span>))
+    carrito.agregar(<span class="tk-cls">Producto</span>(<span class="tk-str">"Mouse"</span>, <span class="tk-num">50000</span>, <span class="tk-num">2</span>))
+    <span class="tk-kw">assert</span> carrito.total() == <span class="tk-num">200000</span>
+</code></pre>
+  </div>
+
+  <div class="recuadro advertencia">
+    <span class="rotulo">Advertencia — cada prueba crea sus propios objetos</span>
+    <p>
+      No uses una lista global de productos entre pruebas: una prueba modificaría el estado de la
+      siguiente. Cada <code>test</code> construye sus propios objetos. Es la misma independencia
+      entre instancias que viste en la unidad 1, aplicada a las pruebas.
+    </p>
+  </div>
+
+  <h3>7.4 · Refactorizar sin cambiar el contrato</h3>
+
+  <p>
+    Cuando las pruebas pasen, reescribe <code>Producto</code> como <code>@dataclass</code> con
+    <code>__post_init__</code> o como modelo de Pydantic. Las pruebas deben seguir pasando: el
+    contrato es el mismo, cambia la herramienta. Ese ejercicio es el corazón del curso: aprender a
+    mover una idea entre implementaciones sin perder el comportamiento.
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-left">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>refactor con dataclass — mismo contrato</span>
+      </div>
+      <button class="copy-btn">Copiar</button>
+    </div>
+<pre><code><span class="tk-kw">from</span> dataclasses <span class="tk-kw">import</span> dataclass
+
+
+<span class="tk-fn">@dataclass</span>
+<span class="tk-kw">class</span> <span class="tk-cls">Producto</span>:
+    nombre: <span class="tk-fn">str</span>
+    precio: <span class="tk-fn">float</span>
+    cantidad: <span class="tk-fn">int</span> = <span class="tk-num">0</span>
+
+    <span class="tk-kw">def</span> <span class="tk-fn">__post_init__</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-kw">if</span> <span class="tk-kw">not</span> <span class="tk-fn">self</span>.nombre.strip():
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"El nombre es obligatorio."</span>)
+        <span class="tk-kw">if</span> <span class="tk-fn">self</span>.precio &lt;= <span class="tk-num">0</span>:
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"El precio debe ser mayor que cero."</span>)
+        <span class="tk-kw">if</span> <span class="tk-fn">self</span>.cantidad &lt; <span class="tk-num">0</span>:
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"La cantidad no puede ser negativa."</span>)
+
+    <span class="tk-kw">def</span> <span class="tk-fn">valor_total</span>(<span class="tk-fn">self</span>) -&gt; <span class="tk-fn">float</span>:
+        <span class="tk-kw">return</span> <span class="tk-fn">self</span>.precio * <span class="tk-fn">self</span>.cantidad
+
+    <span class="tk-kw">def</span> <span class="tk-fn">aplicar_descuento</span>(<span class="tk-fn">self</span>, porcentaje: <span class="tk-fn">float</span>) -&gt; <span class="tk-kw">None</span>:
+        <span class="tk-kw">if</span> <span class="tk-kw">not</span> <span class="tk-num">0</span> &lt;= porcentaje &lt;= <span class="tk-num">100</span>:
+            <span class="tk-kw">raise</span> <span class="tk-cls">ValueError</span>(<span class="tk-str">"El descuento debe estar entre 0 y 100."</span>)
+        <span class="tk-fn">self</span>.precio = <span class="tk-fn">round</span>(<span class="tk-fn">self</span>.precio * (<span class="tk-num">1</span> - porcentaje / <span class="tk-num">100</span>), <span class="tk-num">2</span>)
+</code></pre>
+  </div>
+
+  <h3>7.5 · Rúbrica de autoevaluación</h3>
+
+  <div class="contenedor-tabla">
+    <table class="rubrica">
+      <caption>Instrumento de autoevaluación del modelo de objetos</caption>
+      <thead>
+        <tr><th>Criterio</th><th>0 — Ausente</th><th>1 — Parcial</th><th>2 — Completo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Clase e instancias</td>
+          <td>No hay clase</td>
+          <td>Hay clase, pero todo se guarda en listas externas</td>
+          <td><code>__init__</code>, <code>self</code> y atributos de instancia correctos</td>
+        </tr>
+        <tr>
+          <td>Métodos</td>
+          <td>No hay métodos</td>
+          <td>Los métodos no usan el estado del objeto</td>
+          <td><code>valor_total</code>, descuento, venta y reposición con <code>self</code></td>
+        </tr>
+        <tr>
+          <td>Invariantes</td>
+          <td>No valida</td>
+          <td>Valida solo en algunos campos</td>
+          <td>Nombre, precio, cantidad y stock protegidos</td>
+        </tr>
+        <tr>
+          <td>Composición</td>
+          <td>No hay carrito</td>
+          <td>El carrito guarda diccionarios</td>
+          <td>El carrito contiene objetos <code>Producto</code> y suma sus totales</td>
+        </tr>
+        <tr>
+          <td>Representación</td>
+          <td>Imprime una dirección de memoria</td>
+          <td><code>__repr__</code> poco claro</td>
+          <td><code>__repr__</code> legible para depurar</td>
+        </tr>
+        <tr>
+          <td>Pruebas</td>
+          <td>No hay o no corren</td>
+          <td>Cubren solo el caso feliz</td>
+          <td>Válido, inválido, descuento, stock y carrito</td>
+        </tr>
+        <tr>
+          <td>Refactor</td>
+          <td>No hay</td>
+          <td>Cambió la sintaxis, pero rompió pruebas</td>
+          <td>Dataclass o Pydantic con el mismo contrato y pruebas verdes</td>
+        </tr>
+        <tr>
+          <td>Argumentación</td>
+          <td>No hay texto</td>
+          <td>Describe el qué, no el porqué</td>
+          <td>Explica qué se ganó, qué se perdió y por qué eligió esa herramienta</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.6 · Síntesis: siete ideas para llevarse</h3>
+
+  <div class="sintesis">
+    <div class="idea">
+      <div class="idea-n">01</div>
+      <p>Una clase es un molde; un objeto es una instancia con su propio estado.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">02</div>
+      <p><code>__init__</code> inicializa la instancia y <code>self</code> es el objeto que recibe el método.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">03</div>
+      <p>Los métodos convierten datos en comportamiento: calcular, descontar, vender, reponer.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">04</div>
+      <p>Valida en el constructor y en los métodos que cambian estado; un objeto inválido no debería existir.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">05</div>
+      <p>La composición («tiene») suele ser más flexible que la herencia («es un»).</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">06</div>
+      <p>Pydantic y los ORM son clases con superpoderes: la misma base conceptual que acabas de escribir.</p>
+    </div>
+    <div class="idea">
+      <div class="idea-n">07</div>
+      <p>No conviertas todo en clase: úsala cuando haya reglas, comportamiento o identidad que conservar.</p>
+    </div>
+  </div>
+
+  <h3>7.7 · Puente hacia la clase 7</h3>
+
+  <p>
+    En la clase 7 vas a recibir datos de un formulario y validarlos antes de guardarlos. Ahora sabes
+    qué hay detrás de Pydantic: una clase, anotaciones, atributos y reglas. Cuando veas
+    <code>class Producto(BaseModel)</code>, no será una caja negra; será una versión más cómoda de
+    lo que acabas de construir.
+  </p>
+
+  <div class="recuadro aplicacion">
+    <span class="rotulo">Antes de cerrar</span>
+    <p>
+      Deja <code>tienda.py</code> con <code>Producto</code> y <code>Carrito</code>, las pruebas en
+      verde y una versión refactorizada con <code>@dataclass</code> o Pydantic. Comprueba que un
+      producto inválido lanza <code>ValueError</code>, que vender sin stock falla y que dos
+      productos distintos no comparten su cantidad.
+    </p>
+  </div>
+
+  <div class="cierre">
+    <h2>Fin de la Clase 6B</h2>
+    <p>
+      Has pasado de datos sueltos a objetos con reglas y comportamiento. Esa es la base que necesitas
+      para que Pydantic, los formularios y los ORM tengan sentido: al final, todo son clases que
+      saben qué datos tienen y qué pueden hacer con ellos.
+    </p>
+    <button class="btn-final" data-reiniciar>↺ Volver al inicio de la clase</button>
+  </div>
+
+  <div class="navegacion-modulo">
+    <button class="btn-anterior" data-ir="6">← Unidad 6: Errores de diseño</button>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <span class="fb">Herramientas de Programación II · Clase 6B · Objetos en Python</span>
+  <p class="pie-sub">class · __init__ · self · métodos · dataclass · validación · Pydantic · ORM</p>
+  <p>Currículo 2026 · Tecnología e Informática · Grado Once · 4 horas</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
