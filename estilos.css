@@ -156,6 +156,17 @@
   --herr-17-a:       #6e5494;   /* Clase 17 Herr — púrpura GitHub/azul link (Publicar tu código) */
   --herr-17-b:       #79b8ff;
 
+  --herr-18-a:       #06b6d4;   /* Clase 18 Herr — cian SQLModel/verde tabla (Aprendiendo SQLModel I) */
+  --herr-18-b:       #4ade80;
+  --herr-19-a:       #e11d48;   /* Clase 19 Herr — rosa contrato/azul API (Aprendiendo SQLModel II) */
+  --herr-19-b:       #7dd3fc;
+  --herr-20-a:       #e11d48;   /* Clase 20 Herr — rosa tabla/azul relación (Aprendiendo SQLModel III) */
+  --herr-20-b:       #7dd3fc;
+  --herr-21-a:       #e11d48;   /* Clase 21 Herr — rosa relaciones/azul ORM (Aprendiendo SQLModel IV) */
+  --herr-21-b:       #7dd3fc;
+  --herr-22-a:       #e11d48;   /* Clase 22 Herr — rosa muchos-a-muchos/azul intermedia (Aprendiendo SQLModel V) */
+  --herr-22-b:       #7dd3fc;
+
   --gris:            #94a3b8;
 
   --sombra:          0 12px 40px rgba(0, 0, 0, 0.5);
