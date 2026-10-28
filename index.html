@@ -40,6 +40,23 @@
   <h2>🚀 Tu ruta de aprendizaje</h2>
   <p class="lead-hub">Este año vas a dominar <strong>algoritmos, análisis de software, bases de datos y herramientas de programación</strong>. Cada minicurso es interactivo, dura unas 3h45min y combina teoría con práctica. Elige por dónde empezar.</p>
 
+  <!-- Acción principal: retoma donde ibas (se rellena desde app.js) -->
+  <div class="acciones-hero">
+    <a href="#" class="btn-continuar" id="btn-continuar" hidden>
+      <span aria-hidden="true">▶</span>
+      <span id="btn-continuar-texto">Continuar</span>
+    </a>
+  </div>
+
+  <!-- Filtro por curso -->
+  <div class="filtros-cursos" role="group" aria-label="Filtrar cursos">
+    <button type="button" class="filtro-chip activo" data-filtro="todos" aria-pressed="true">Todos</button>
+    <button type="button" class="filtro-chip" data-filtro="csharp" aria-pressed="false">⚡ C#</button>
+    <button type="button" class="filtro-chip" data-filtro="analisis" aria-pressed="false">📐 Análisis</button>
+    <button type="button" class="filtro-chip" data-filtro="bd" aria-pressed="false">🗄️ Bases de Datos</button>
+    <button type="button" class="filtro-chip" data-filtro="herr" aria-pressed="false">🛠️ Herramientas</button>
+  </div>
+
   <!-- Dashboard de estadísticas -->
   <div class="dashboard-stats">
     <div class="stat-card">

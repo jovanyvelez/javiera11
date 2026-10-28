@@ -387,6 +387,83 @@ main {
   text-align: center;
 }
 
+/* -------- ACCIONES DEL HERO -------- */
+.acciones-hero {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  position: relative;
+  margin-bottom: 1.4rem;
+}
+
+.btn-continuar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.85rem 1.9rem;
+  border-radius: 30px;
+  background: linear-gradient(135deg, var(--purpura), var(--cyan));
+  color: #fff;
+  font-weight: 800;
+  font-size: 1rem;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.35);
+  transition: var(--transicion);
+}
+
+.btn-continuar[hidden] {
+  display: none;
+}
+
+.btn-continuar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(6, 182, 212, 0.4);
+}
+
+/* -------- FILTROS POR CURSO -------- */
+.filtros-cursos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  position: relative;
+  margin-bottom: 0.4rem;
+}
+
+.filtro-chip {
+  cursor: pointer;
+  padding: 0.5rem 1.1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(192, 132, 252, 0.3);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--texto-suave);
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: inherit;
+  transition: var(--transicion);
+}
+
+.filtro-chip:hover {
+  border-color: var(--cyan);
+  color: var(--cyan-cl);
+}
+
+.filtro-chip:focus-visible {
+  outline: 2px solid var(--dorado);
+  outline-offset: 2px;
+}
+
+.filtro-chip.activo {
+  background: linear-gradient(135deg, var(--purpura), var(--cyan));
+  border-color: transparent;
+  color: #fff;
+}
+
+.curso-bloque.filtro-oculto,
+.proximamente.filtro-oculto {
+  display: none;
+}
+
 /* -------- CURSO BLOQUE -------- */
 .curso-bloque {
   margin-bottom: 3rem;

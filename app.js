@@ -6,6 +6,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   mostrarFecha();
   configurarAcordeon();
+  configurarFiltros();
   cargarProgresoPorClase();
   animarStats();
 });
@@ -161,6 +162,12 @@ function cargarProgresoPorClase() {
   // Progreso agregado por curso (para el chip del encabezado)
   const porCurso = {};
 
+  // Mejor destino para el botón «Continuar»
+  let claseEnCurso = null;   // pct entre 1 y 99, la más avanzada
+  let pctEnCurso = 0;
+  let claseNueva = null;     // primera sin empezar (fallback)
+  let algunAvance = false;   // hay al menos un % de progreso en el alumno
+
   document.querySelectorAll('.clase-card[data-storage]').forEach(card => {
     const key = card.dataset.storage;
     const totalMods = TOTALES_MODULOS[key] || 7;
@@ -171,6 +178,16 @@ function cargarProgresoPorClase() {
     totalGlobal += totalMods;
     completosGlobal += Math.round((pct / 100) * totalMods);
 
+    if (pct > 0) algunAvance = true;
+    if (pct > 0 && pct < 100) {
+      if (!claseEnCurso || pct > pctEnCurso) {
+        claseEnCurso = card;
+        pctEnCurso = pct;
+      }
+    } else if (pct === 0 && !claseNueva) {
+      claseNueva = card;
+    }
+
     // Suma al curso correspondiente (data-curso del bloque padre)
     const bloque = card.closest('.curso-bloque');
     if (bloque) {
@@ -180,6 +197,8 @@ function cargarProgresoPorClase() {
       porCurso[id].n += 1;
     }
   });
+
+  actualizarBotonContinuar(claseEnCurso, pctEnCurso, claseNueva, algunAvance);
 
   // Actualiza el chip de progreso en cada encabezado
   document.querySelectorAll('.curso-bloque').forEach(bloque => {
@@ -203,6 +222,69 @@ function cargarProgresoPorClase() {
   if (elProg) {
     animarNumero(elProg, 0, pctGlobal, 1000, valor => valor + '%');
   }
+}
+
+/* ---------- BOTÓN «CONTINUAR» ---------- */
+function actualizarBotonContinuar(claseEnCurso, pctEnCurso, claseNueva, algunAvance) {
+  const btn = document.getElementById('btn-continuar');
+  const texto = document.getElementById('btn-continuar-texto');
+  if (!btn || !texto) return;
+
+  const destino = claseEnCurso || claseNueva;
+  if (!destino) {
+    btn.hidden = true;
+    return;
+  }
+
+  btn.href = destino.getAttribute('href');
+  btn.hidden = false;
+  if (claseEnCurso) {
+    texto.textContent = `Continuar donde ibas · ${pctEnCurso}%`;
+  } else if (algunAvance) {
+    texto.textContent = 'Continuar con la siguiente clase';
+  } else {
+    texto.textContent = 'Empezar por la primera clase';
+  }
+}
+
+/* ---------- FILTRO POR CURSO ---------- */
+function configurarFiltros() {
+  const chips = document.querySelectorAll('.filtro-chip');
+  const bloques = document.querySelectorAll('.curso-bloque');
+  const proximamente = document.querySelector('.proximamente');
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const filtro = chip.dataset.filtro;
+
+      chips.forEach(c => {
+        const activo = c === chip;
+        c.classList.toggle('activo', activo);
+        c.setAttribute('aria-pressed', activo ? 'true' : 'false');
+      });
+
+      bloques.forEach(bloque => {
+        const visible = filtro === 'todos' || bloque.dataset.curso === filtro;
+        bloque.classList.toggle('filtro-oculto', !visible);
+      });
+
+      if (proximamente) {
+        proximamente.classList.toggle('filtro-oculto', filtro !== 'todos');
+      }
+
+      // Al elegir un curso concreto, ábrelo y llévalo a la vista
+      if (filtro !== 'todos') {
+        const bloque = document.querySelector(`.curso-bloque[data-curso="${filtro}"]`);
+        if (bloque) {
+          if (bloque.classList.contains('colapsado')) {
+            const encabezado = bloque.querySelector('.curso-encabezado');
+            if (encabezado) encabezado.click();
+          }
+          bloque.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    });
+  });
 }
 
 function calcularProgresoCurso(key, totalMods) {

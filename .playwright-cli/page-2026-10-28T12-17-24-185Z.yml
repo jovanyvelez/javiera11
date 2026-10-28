@@ -1,0 +1,209 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]: 🎓
+      - generic [ref=e5]:
+        - heading "Currículo 2026" [level=1] [ref=e6]
+        - paragraph [ref=e7]: Grado Once · Tecnología e Informática
+    - generic [ref=e8]:
+      - paragraph [ref=e9]: ¡Bienvenid@!
+      - paragraph [ref=e10]: Miércoles, 28 de octubre de 2026
+  - main [ref=e11]:
+    - generic [ref=e12]:
+      - heading "🚀 Tu ruta de aprendizaje" [level=2] [ref=e13]
+      - paragraph [ref=e14]:
+        - text: Este año vas a dominar
+        - strong [ref=e15]: algoritmos, análisis de software, bases de datos y herramientas de programación
+        - text: . Cada minicurso es interactivo, dura unas 3h45min y combina teoría con práctica. Elige por dónde empezar.
+      - link "Empezar por la primera clase" [ref=e17] [cursor=pointer]:
+        - /url: Algoritmos%20con%20C%23/uno-curso-entorno-csharp/index.html
+        - generic [aria-hidden] [ref=e18]: ▶
+      - group "Filtrar cursos" [ref=e20]:
+        - button "Todos" [ref=e21] [cursor=pointer]
+        - button "⚡ C#" [ref=e22] [cursor=pointer]
+        - button "📐 Análisis" [ref=e23] [cursor=pointer]
+        - button "🗄️ Bases de Datos" [active] [pressed] [ref=e24] [cursor=pointer]
+        - button "🛠️ Herramientas" [ref=e25] [cursor=pointer]
+      - generic [ref=e26]:
+        - generic [ref=e27]:
+          - generic [ref=e28]: "4"
+          - generic [ref=e29]: Minicursos
+        - generic [ref=e30]:
+          - generic [ref=e31]: "48"
+          - generic [ref=e32]: Clases disponibles
+        - generic [ref=e33]:
+          - generic [ref=e34]: 188+
+          - generic [ref=e35]: Horas de estudio
+        - generic [ref=e36]:
+          - generic [ref=e37]: 0%
+          - generic [ref=e38]: Tu progreso global
+    - generic [ref=e63]:
+      - button "🗄️ Bases de Datos El intermediario invisible entre tus apps y tus datos. Diseño relacional, SQL, normalización y consultas que mueven el mundo digital. 0% 📚 EN CURSO 9 de 10 clases" [expanded] [ref=e64] [cursor=pointer]:
+        - generic [ref=e65]:
+          - generic [ref=e66]: 🗄️
+          - generic [ref=e67]:
+            - heading "Bases de Datos" [level=2] [ref=e68]
+            - paragraph [ref=e69]: El intermediario invisible entre tus apps y tus datos. Diseño relacional, SQL, normalización y consultas que mueven el mundo digital.
+        - generic [ref=e70]:
+          - generic [ref=e71]: 0%
+          - generic [ref=e72]: 📚 EN CURSO
+          - generic [ref=e73]: 9 de 10 clases
+        - generic [aria-hidden] [ref=e74]: ▾
+      - generic [ref=e136]:
+        - 'link "Clase 1 🗄️ Introducción a las Bases de Datos ¿Qué es una BD? · Antecedentes históricos (Hollerith → Codd → NoSQL → nube) · Necesidad de estructurar datos · Beneficios frente a sistemas manuales · Tipos de BD (relacional, NoSQL) · Villanos reales (perder contactos, pedido perdido, biblioteca caótica). ⏱️ 4h (con descanso) 🏆 8 módulos Tu progreso: 0% → Entrar" [ref=e137] [cursor=pointer]':
+          - /url: bases-de-datos/uno-curso-introduccion-bd/index.html
+          - generic [ref=e138]: Clase 1
+          - generic [ref=e139]: 🗄️
+          - heading "Introducción a las Bases de Datos" [level=3] [ref=e140]
+          - paragraph [ref=e141]: ¿Qué es una BD? · Antecedentes históricos (Hollerith → Codd → NoSQL → nube) · Necesidad de estructurar datos · Beneficios frente a sistemas manuales · Tipos de BD (relacional, NoSQL) · Villanos reales (perder contactos, pedido perdido, biblioteca caótica).
+          - generic [ref=e142]:
+            - generic [ref=e143]: ⏱️ 4h (con descanso)
+            - generic [ref=e144]: 🏆 8 módulos
+          - generic [ref=e147]:
+            - text: "Tu progreso:"
+            - strong [ref=e148]: 0%
+          - generic [ref=e149]: → Entrar
+        - 'link "Clase 2 ⚖️ Archivos vs Bases de Datos Sistemas de archivos (CSV, JSON, Excel) vs SGBD · Las 6 diferencias clave · Ventajas y desventajas de cada enfoque · ¿Cuándo usar archivo y cuándo BD? · Villanos reales (3 CSV desincronizados, clínica con 5 Excel) · Cierre: diagnóstico de consultor. ⏱️ 4h (con descanso) 🏆 8 módulos Tu progreso: 0% → Entrar" [ref=e150] [cursor=pointer]':
+          - /url: bases-de-datos/dos-curso-archivos-vs-bd/index.html
+          - generic [ref=e151]: Clase 2
+          - generic [ref=e152]: ⚖️
+          - heading "Archivos vs Bases de Datos" [level=3] [ref=e153]
+          - paragraph [ref=e154]: "Sistemas de archivos (CSV, JSON, Excel) vs SGBD · Las 6 diferencias clave · Ventajas y desventajas de cada enfoque · ¿Cuándo usar archivo y cuándo BD? · Villanos reales (3 CSV desincronizados, clínica con 5 Excel) · Cierre: diagnóstico de consultor."
+          - generic [ref=e155]:
+            - generic [ref=e156]: ⏱️ 4h (con descanso)
+            - generic [ref=e157]: 🏆 8 módulos
+          - generic [ref=e160]:
+            - text: "Tu progreso:"
+            - strong [ref=e161]: 0%
+          - generic [ref=e162]: → Entrar
+        - 'link "Clase 3 🔌 Conexión asíncrona con asyncpg + FastAPI Driver asíncrono asyncpg · Pool de conexiones (create_pool) · Dependencia get_db con yield · Lifespan (arrancar/apagar) · Endpoint con Depends · Buenas prácticas FastAPI (Annotated, APIRouter, response_model) · Villanos reales (event loop bloqueado, conexión por request, pool que nunca se cierra) · Cierre: diagnóstico de backend. ⏱️ 4h (con descanso) 🏆 8 módulos Tu progreso: 0% → Entrar" [ref=e163] [cursor=pointer]':
+          - /url: bases-de-datos/tres-curso-asyncpg-fastapi/index.html
+          - generic [ref=e164]: Clase 3
+          - generic [ref=e165]: 🔌
+          - heading "Conexión asíncrona con asyncpg + FastAPI" [level=3] [ref=e166]
+          - paragraph [ref=e167]: "Driver asíncrono asyncpg · Pool de conexiones (create_pool) · Dependencia get_db con yield · Lifespan (arrancar/apagar) · Endpoint con Depends · Buenas prácticas FastAPI (Annotated, APIRouter, response_model) · Villanos reales (event loop bloqueado, conexión por request, pool que nunca se cierra) · Cierre: diagnóstico de backend."
+          - generic [ref=e168]:
+            - generic [ref=e169]: ⏱️ 4h (con descanso)
+            - generic [ref=e170]: 🏆 8 módulos
+          - generic [ref=e173]:
+            - text: "Tu progreso:"
+            - strong [ref=e174]: 0%
+          - generic [ref=e175]: → Entrar
+        - 'link "Clase 4 🔗 Modelo Entidad-Relación Introducción al modelo ER · Entidades, atributos, relaciones y cardinalidades (1:1, 1:N, M:N) · Claves primarias y foráneas · Transformación ER → relacional · Tipos de datos SQL · Diagramas ER con Mermaid · Taller: Biblioteca online. ⏱️ 4h (con descanso) 🏆 8 módulos Tu progreso: 0% → Entrar" [ref=e176] [cursor=pointer]':
+          - /url: bases-de-datos/cuatro-curso-modelo-er/index.html
+          - generic [ref=e177]: Clase 4
+          - generic [ref=e178]: 🔗
+          - heading "Modelo Entidad-Relación" [level=3] [ref=e179]
+          - paragraph [ref=e180]: "Introducción al modelo ER · Entidades, atributos, relaciones y cardinalidades (1:1, 1:N, M:N) · Claves primarias y foráneas · Transformación ER → relacional · Tipos de datos SQL · Diagramas ER con Mermaid · Taller: Biblioteca online."
+          - generic [ref=e181]:
+            - generic [ref=e182]: ⏱️ 4h (con descanso)
+            - generic [ref=e183]: 🏆 8 módulos
+          - generic [ref=e186]:
+            - text: "Tu progreso:"
+            - strong [ref=e187]: 0%
+          - generic [ref=e188]: → Entrar
+        - 'link "Clase 5 · Nuevo 🧹 Normalización de Bases de Datos Anomalías de inserción, actualización y borrado · Primera, Segunda y Tercera Forma Normal (1FN, 2FN, 3FN) · Dependencias parciales y transitivas · Normalizador interactivo · Taller entregable: \"Tienda Gamer\". ⏱️ 4h (con descanso) 🏆 8 módulos Tu progreso: 0% → Entrar" [ref=e189] [cursor=pointer]':
+          - /url: bases-de-datos/cinco-curso-normalizacion/index.html
+          - generic [ref=e190]: Clase 5 · Nuevo
+          - generic [ref=e191]: 🧹
+          - heading "Normalización de Bases de Datos" [level=3] [ref=e192]
+          - paragraph [ref=e193]: "Anomalías de inserción, actualización y borrado · Primera, Segunda y Tercera Forma Normal (1FN, 2FN, 3FN) · Dependencias parciales y transitivas · Normalizador interactivo · Taller entregable: \"Tienda Gamer\"."
+          - generic [ref=e194]:
+            - generic [ref=e195]: ⏱️ 4h (con descanso)
+            - generic [ref=e196]: 🏆 8 módulos
+          - generic [ref=e199]:
+            - text: "Tu progreso:"
+            - strong [ref=e200]: 0%
+          - generic [ref=e201]: → Entrar
+        - 'link "Clase 6 · Nuevo 🗣️ SQL Básico: DDL + DML ¿Qué es SQL? · Sub-lenguajes (DDL, DML, DCL, TCL) · Estructura general y sintaxis · CREATE/DROP/ALTER DATABASE · CREATE TABLE con PK, FK y restricciones · INSERT/SELECT/UPDATE/DELETE (CRUD) · Playground SQL en vivo · Taller entregable: \"Mascotitas\". ⏱️ 4h (con descanso) 🏆 8 módulos Tu progreso: 0% → Entrar" [ref=e202] [cursor=pointer]':
+          - /url: bases-de-datos/seis-curso-sql-basico/index.html
+          - generic [ref=e203]: Clase 6 · Nuevo
+          - generic [ref=e204]: 🗣️
+          - 'heading "SQL Básico: DDL + DML" [level=3] [ref=e205]'
+          - paragraph [ref=e206]: "¿Qué es SQL? · Sub-lenguajes (DDL, DML, DCL, TCL) · Estructura general y sintaxis · CREATE/DROP/ALTER DATABASE · CREATE TABLE con PK, FK y restricciones · INSERT/SELECT/UPDATE/DELETE (CRUD) · Playground SQL en vivo · Taller entregable: \"Mascotitas\"."
+          - generic [ref=e207]:
+            - generic [ref=e208]: ⏱️ 4h (con descanso)
+            - generic [ref=e209]: 🏆 8 módulos
+          - generic [ref=e212]:
+            - text: "Tu progreso:"
+            - strong [ref=e213]: 0%
+          - generic [ref=e214]: → Entrar
+        - 'link "Clase 7 · Nuevo ✏️ Inserción, modificación y eliminación de datos INSERT a fondo (multi-fila, RETURNING, ON CONFLICT) · UPDATE con WHERE y expresiones · DELETE con filtros seguros, TRUNCATE y CASCADE · Transacciones BEGIN/COMMIT/ROLLBACK · Playground DML en vivo · Taller entregable: \"Mascotitas: inventario\". ⏱️ 4h (con descanso) 🏆 8 módulos Tu progreso: 0% → Entrar" [ref=e215] [cursor=pointer]':
+          - /url: bases-de-datos/siete-curso-modificacion-datos/index.html
+          - generic [ref=e216]: Clase 7 · Nuevo
+          - generic [ref=e217]: ✏️
+          - heading "Inserción, modificación y eliminación de datos" [level=3] [ref=e218]
+          - paragraph [ref=e219]: "INSERT a fondo (multi-fila, RETURNING, ON CONFLICT) · UPDATE con WHERE y expresiones · DELETE con filtros seguros, TRUNCATE y CASCADE · Transacciones BEGIN/COMMIT/ROLLBACK · Playground DML en vivo · Taller entregable: \"Mascotitas: inventario\"."
+          - generic [ref=e220]:
+            - generic [ref=e221]: ⏱️ 4h (con descanso)
+            - generic [ref=e222]: 🏆 8 módulos
+          - generic [ref=e225]:
+            - text: "Tu progreso:"
+            - strong [ref=e226]: 0%
+          - generic [ref=e227]: → Entrar
+        - 'link "Clase 8 · Nuevo 🔍 Consultas básicas: SELECT, WHERE y ORDER BY SELECT a fondo (columnas, *, COUNT, DISTINCT) · WHERE con operadores de comparación (=, <>, >, <) · Operadores avanzados (LIKE, BETWEEN, IN, IS NULL) · Combinaciones AND / OR / NOT con precedencia · ORDER BY (ASC, DESC, multicolumna) y LIMIT · Playground de consultas en vivo · Taller entregable: \"Biblioteca online\". ⏱️ 4h (con descanso) 🏆 8 módulos Tu progreso: 0% → Entrar" [ref=e228] [cursor=pointer]':
+          - /url: bases-de-datos/ocho-curso-consultas-basicas/index.html
+          - generic [ref=e229]: Clase 8 · Nuevo
+          - generic [ref=e230]: 🔍
+          - 'heading "Consultas básicas: SELECT, WHERE y ORDER BY" [level=3] [ref=e231]'
+          - paragraph [ref=e232]: "SELECT a fondo (columnas, *, COUNT, DISTINCT) · WHERE con operadores de comparación (=, <>, >, <) · Operadores avanzados (LIKE, BETWEEN, IN, IS NULL) · Combinaciones AND / OR / NOT con precedencia · ORDER BY (ASC, DESC, multicolumna) y LIMIT · Playground de consultas en vivo · Taller entregable: \"Biblioteca online\"."
+          - generic [ref=e233]:
+            - generic [ref=e234]: ⏱️ 4h (con descanso)
+            - generic [ref=e235]: 🏆 8 módulos
+          - generic [ref=e238]:
+            - text: "Tu progreso:"
+            - strong [ref=e239]: 0%
+          - generic [ref=e240]: → Entrar
+        - 'link "Clase 9 · Nuevo 🏆 Ejemplo final: Torneos deportivos del colegio Caso integrador que aplica todo lo del módulo: MER (entidades, PK/FK, diagrama Mermaid) · DDL (CREATE TABLE con CHECK, FK, NOT NULL) · DML (INSERT con datos de Medellín) · DQL (consultas con JOIN, WHERE, ORDER BY: próximos partidos, histórico, tabla de posiciones con CASE WHEN) · Playground con motor SQL que soporta JOINs · Taller entregable del proyecto completo. ⏱️ 4h (con descanso) 🏆 8 módulos Tu progreso: 0% → Entrar" [ref=e241] [cursor=pointer]':
+          - /url: bases-de-datos/nueve-curso-ejemplo-final/index.html
+          - generic [ref=e242]: Clase 9 · Nuevo
+          - generic [ref=e243]: 🏆
+          - 'heading "Ejemplo final: Torneos deportivos del colegio" [level=3] [ref=e244]'
+          - paragraph [ref=e245]: "Caso integrador que aplica todo lo del módulo: MER (entidades, PK/FK, diagrama Mermaid) · DDL (CREATE TABLE con CHECK, FK, NOT NULL) · DML (INSERT con datos de Medellín) · DQL (consultas con JOIN, WHERE, ORDER BY: próximos partidos, histórico, tabla de posiciones con CASE WHEN) · Playground con motor SQL que soporta JOINs · Taller entregable del proyecto completo."
+          - generic [ref=e246]:
+            - generic [ref=e247]: ⏱️ 4h (con descanso)
+            - generic [ref=e248]: 🏆 8 módulos
+          - generic [ref=e251]:
+            - text: "Tu progreso:"
+            - strong [ref=e252]: 0%
+          - generic [ref=e253]: → Entrar
+        - generic [ref=e254]:
+          - generic [ref=e255]: Próximamente
+          - generic [ref=e256]: 📅
+          - heading "Más clases por venir" [level=3] [ref=e257]
+          - paragraph [ref=e258]: "La clase restante de este módulo se publicará durante el año. Temas tentativos: JOINs avanzados, GROUP BY, HAVING y subconsultas."
+          - generic [ref=e259]: Mantente atent@
+    - generic [ref=e100]:
+      - heading "💡 Cómo aprovechar al máximo el currículo" [level=2] [ref=e101]
+      - generic [ref=e102]:
+        - generic [ref=e103]:
+          - generic [ref=e104]: 🎯
+          - heading "Sigue el orden sugerido" [level=3] [ref=e105]
+          - paragraph [ref=e106]: Cada clase construye sobre la anterior. Hacer las cosas en orden te ayudará a entender mejor.
+        - generic [ref=e107]:
+          - generic [ref=e108]: ✋
+          - heading "Practica los talleres" [level=3] [ref=e109]
+          - paragraph [ref=e110]: "No solo leas. Todos los cursos tienen actividades interactivas. Hazlas: ahí está el aprendizaje real."
+        - generic [ref=e111]:
+          - generic [ref=e112]: 🔁
+          - heading "Vuelve cuando dudes" [level=3] [ref=e113]
+          - paragraph [ref=e114]: Tu progreso se guarda en este navegador. Puedes volver cuando quieras a repasar.
+        - generic [ref=e115]:
+          - generic [ref=e116]: 💬
+          - heading "Pregúntale a tu profe" [level=3] [ref=e117]
+          - paragraph [ref=e118]: Si algo no queda claro, pregunta. Los profesores estamos aquí para guiarte.
+  - contentinfo [ref=e119]:
+    - generic [ref=e120]:
+      - generic [ref=e121]:
+        - heading "🎓 Sobre este currículo" [level=4] [ref=e122]
+        - paragraph [ref=e123]: Material didáctico interactivo para estudiantes de grado once, diseñado para combinar teoría y práctica.
+      - generic [ref=e124]:
+        - heading "📚 Asignaturas" [level=4] [ref=e125]
+        - list [ref=e126]:
+          - listitem [ref=e127]: Tecnología e Informática
+          - listitem [ref=e128]: Programación
+          - listitem [ref=e129]: Pensamiento computacional
+      - generic [ref=e130]:
+        - heading "⚙️ Tecnología" [level=4] [ref=e131]
+        - paragraph [ref=e132]: HTML + CSS + JavaScriptSin servidor · 100% localFunciona en cualquier navegador
+    - paragraph [ref=e134]: © 2026 · Currículo de Tecnología e Informática · Grado Once

@@ -1,0 +1,856 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]: 🎓
+      - generic [ref=e5]:
+        - heading "Currículo 2026" [level=1] [ref=e6]
+        - paragraph [ref=e7]: Grado Once · Tecnología e Informática
+    - generic [ref=e8]:
+      - paragraph [ref=e9]: ¡Bienvenid@!
+      - paragraph [ref=e10]: Miércoles, 28 de octubre de 2026
+  - main [ref=e11]:
+    - generic [ref=e12]:
+      - heading "🚀 Tu ruta de aprendizaje" [level=2] [ref=e13]
+      - paragraph [ref=e14]:
+        - text: Este año vas a dominar
+        - strong [ref=e15]: algoritmos, análisis de software, bases de datos y herramientas de programación
+        - text: . Cada minicurso es interactivo, dura unas 3h45min y combina teoría con práctica. Elige por dónde empezar.
+      - link "Empezar por la primera clase" [ref=e17] [cursor=pointer]:
+        - /url: Algoritmos%20con%20C%23/uno-curso-entorno-csharp/index.html
+        - generic [aria-hidden] [ref=e18]: ▶
+      - group "Filtrar cursos" [ref=e20]:
+        - button "Todos" [pressed] [ref=e21] [cursor=pointer]
+        - button "⚡ C#" [ref=e22] [cursor=pointer]
+        - button "📐 Análisis" [ref=e23] [cursor=pointer]
+        - button "🗄️ Bases de Datos" [ref=e24] [cursor=pointer]
+        - button "🛠️ Herramientas" [ref=e25] [cursor=pointer]
+      - generic [ref=e26]:
+        - generic [ref=e27]:
+          - generic [ref=e28]: "1"
+          - generic [ref=e29]: Minicursos
+        - generic [ref=e30]:
+          - generic [ref=e31]: "14"
+          - generic [ref=e32]: Clases disponibles
+        - generic [ref=e33]:
+          - generic [ref=e34]: 49+
+          - generic [ref=e35]: Horas de estudio
+        - generic [ref=e36]:
+          - generic [ref=e37]: 0%
+          - generic [ref=e38]: Tu progreso global
+    - generic [ref=e39]:
+      - 'button "⚡ Algoritmos en C# Aprende a programar pensando como un ingeniero: de la consola vacía a los objetos. 10 clases con VS Code + .NET 10 y C# 14. 0% 📚 EN CURSO 10 clases disponibles" [ref=e40] [cursor=pointer]':
+        - generic [ref=e41]:
+          - generic [ref=e42]: ⚡
+          - generic [ref=e43]:
+            - heading "Algoritmos en C#" [level=2] [ref=e44]
+            - paragraph [ref=e45]: "Aprende a programar pensando como un ingeniero: de la consola vacía a los objetos. 10 clases con VS Code + .NET 10 y C# 14."
+        - generic [ref=e46]:
+          - generic [ref=e47]: 0%
+          - generic [ref=e48]: 📚 EN CURSO
+          - generic [ref=e49]: 10 clases disponibles
+        - generic [aria-hidden] [ref=e50]: ▾
+      - generic:
+        - 'link "Clase 1 🛠️ VS Code + .NET 10 Monta tu taller: instala VS Code con C# Dev Kit, el SDK de .NET 10, crea tu primer proyecto, ejecútalo y depúralo paso a paso. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: Algoritmos%20con%20C%23/uno-curso-entorno-csharp/index.html
+          - generic: Clase 1
+          - generic: 🛠️
+          - heading "VS Code + .NET 10" [level=3]
+          - paragraph: "Monta tu taller: instala VS Code con C# Dev Kit, el SDK de .NET 10, crea tu primer proyecto, ejecútalo y depúralo paso a paso."
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 2 📦 Tipos de variables int · double · decimal · string · bool · var · tipos nullable · conversiones seguras. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: Algoritmos%20con%20C%23/dos-curso-variables-csharp/index.html
+          - generic: Clase 2
+          - generic: 📦
+          - heading "Tipos de variables" [level=3]
+          - paragraph: int · double · decimal · string · bool · var · tipos nullable · conversiones seguras.
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 3 ➗ Operadores y precedencia Aritméticos, de comparación y lógicos: precedencia, paréntesis, asignación compuesta y trampas del lenguaje. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: Algoritmos%20con%20C%23/tres-curso-operadores-csharp/index.html
+          - generic: Clase 3
+          - generic: ➗
+          - heading "Operadores y precedencia" [level=3]
+          - paragraph: "Aritméticos, de comparación y lógicos: precedencia, paréntesis, asignación compuesta y trampas del lenguaje."
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 4 🔀 Condicionales en C# if · else · else if · switch clásico · switch expression · patrones modernos. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: Algoritmos%20con%20C%23/cuatro-curso-condicionales-csharp/index.html
+          - generic: Clase 4
+          - generic: 🔀
+          - heading "Condicionales en C#" [level=3]
+          - paragraph: if · else · else if · switch clásico · switch expression · patrones modernos.
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 5 🔁 Ciclos: for, while, foreach while · do-while · for · foreach · break y continue · ciclos anidados. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: Algoritmos%20con%20C%23/cinco-curso-ciclos-csharp/index.html
+          - generic: Clase 5
+          - generic: 🔁
+          - 'heading "Ciclos: for, while, foreach" [level=3]'
+          - paragraph: while · do-while · for · foreach · break y continue · ciclos anidados.
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 6 🧮 Acumuladores, contadores y banderas Las tres llaves del algoritmo: inicializar, recorrer, acumular y decidir con banderas. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: Algoritmos%20con%20C%23/seis-curso-acumuladores-csharp/index.html
+          - generic: Clase 6
+          - generic: 🧮
+          - heading "Acumuladores, contadores y banderas" [level=3]
+          - paragraph: "Las tres llaves del algoritmo: inicializar, recorrer, acumular y decidir con banderas."
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 7 📚 Vectores y matrices Arreglos 1D y 2D, recorridos, búsquedas, List<T>, ordenar y filtrar con LINQ. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: Algoritmos%20con%20C%23/siete-curso-arreglos-csharp/index.html
+          - generic: Clase 7
+          - generic: 📚
+          - heading "Vectores y matrices" [level=3]
+          - paragraph: Arreglos 1D y 2D, recorridos, búsquedas, List<T>, ordenar y filtrar con LINQ.
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 8 ⚙️ Funciones: entrada, retorno y referencias Anatomía de una función, parámetros, retorno, valor vs referencia, sobrecarga y recursión. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: Algoritmos%20con%20C%23/ocho-curso-funciones-csharp/index.html
+          - generic: Clase 8
+          - generic: ⚙️
+          - 'heading "Funciones: entrada, retorno y referencias" [level=3]'
+          - paragraph: Anatomía de una función, parámetros, retorno, valor vs referencia, sobrecarga y recursión.
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 9 🎛️ Menús de consola con funciones while + switch, modularización por opción, validación de entrada con TryParse y menú con arreglos. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: Algoritmos%20con%20C%23/nueve-curso-menus-csharp/index.html
+          - generic: Clase 9
+          - generic: 🎛️
+          - heading "Menús de consola con funciones" [level=3]
+          - paragraph: while + switch, modularización por opción, validación de entrada con TryParse y menú con arreglos.
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 10 🏗️ POO: clases, objetos y constructores Atributos, métodos, constructores, instanciación, composición y herencia con C# 14. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: Algoritmos%20con%20C%23/diez-curso-poo-csharp/index.html
+          - generic: Clase 10
+          - generic: 🏗️
+          - 'heading "POO: clases, objetos y constructores" [level=3]'
+          - paragraph: Atributos, métodos, constructores, instanciación, composición y herencia con C# 14.
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+    - generic [ref=e51]:
+      - button "📐 Análisis y Diseño de Software Aprende a pensar el software antes de construirlo. Desde el ciclo de vida hasta la documentación profesional. 0% 📚 EN CURSO 7 clases disponibles" [ref=e52] [cursor=pointer]:
+        - generic [ref=e53]:
+          - generic [ref=e54]: 📐
+          - generic [ref=e55]:
+            - heading "Análisis y Diseño de Software" [level=2] [ref=e56]
+            - paragraph [ref=e57]: Aprende a pensar el software antes de construirlo. Desde el ciclo de vida hasta la documentación profesional.
+        - generic [ref=e58]:
+          - generic [ref=e59]: 0%
+          - generic [ref=e60]: 📚 EN CURSO
+          - generic [ref=e61]: 7 clases disponibles
+        - generic [aria-hidden] [ref=e62]: ▾
+      - generic:
+        - 'link "Clase 1 📐 Análisis y Diseño Importancia del análisis · Ciclo de vida del software · Metodologías estructuradas vs ágiles · Lectura: ¿Qué es un requerimiento? ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: analisis-diseno/uno-curso-analisis-diseno/index.html
+          - generic: Clase 1
+          - generic: 📐
+          - heading "Análisis y Diseño" [level=3]
+          - paragraph: "Importancia del análisis · Ciclo de vida del software · Metodologías estructuradas vs ágiles · Lectura: ¿Qué es un requerimiento?"
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 2 📋 Requerimientos profundización Funcionales y no funcionales · Atributos de calidad ISO 25010 · Taller de análisis de necesidades · Historias de usuario. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: analisis-diseno/dos-curso-requerimientos/index.html
+          - generic: Clase 2
+          - generic: 📋
+          - heading "Requerimientos profundización" [level=3]
+          - paragraph: Funcionales y no funcionales · Atributos de calidad ISO 25010 · Taller de análisis de necesidades · Historias de usuario.
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 3 🔍 Elicitación de Requerimientos Entrevistas, encuestas, observación · Juego de roles cliente-analista · Simulación de levantamiento · Análisis de viabilidad. ⏱️ 3h 45min 🏆 9 módulos Tu progreso: 0% → Entrar"':
+          - /url: analisis-diseno/tres-curso-elicitacion/index.html
+          - generic: Clase 3
+          - generic: 🔍
+          - heading "Elicitación de Requerimientos" [level=3]
+          - paragraph: Entrevistas, encuestas, observación · Juego de roles cliente-analista · Simulación de levantamiento · Análisis de viabilidad.
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 9 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 4 📜 Documentación de Requerimientos Estándar IEEE 830 · Casos de uso paso a paso · Plantilla SRS profesional · Actividad de revisión cruzada. ⏱️ 3h 45min 🏆 9 módulos Tu progreso: 0% → Entrar"':
+          - /url: analisis-diseno/cuatro-curso-documentacion/index.html
+          - generic: Clase 4
+          - generic: 📜
+          - heading "Documentación de Requerimientos" [level=3]
+          - paragraph: Estándar IEEE 830 · Casos de uso paso a paso · Plantilla SRS profesional · Actividad de revisión cruzada.
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 9 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 5 ✏️ Introducción al Diseño Pensar antes de dibujar · Boceto en papel · Excalidraw · Arquitectura · Prototipado rápido · Slider interactivo antes/después. ⏱️ 3h 45min 🏆 7 módulos Tu progreso: 0% → Entrar"':
+          - /url: analisis-diseno/cinco-curso-introduccion-diseno/index.html
+          - generic: Clase 5
+          - generic: ✏️
+          - heading "Introducción al Diseño" [level=3]
+          - paragraph: Pensar antes de dibujar · Boceto en papel · Excalidraw · Arquitectura · Prototipado rápido · Slider interactivo antes/después.
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 7 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 6 🧩 El Caso Completo De la idea al proyecto: un caso end-to-end aplicando las 5 clases. Proyecto grupal + checklist + tips de sustentación. ⏱️ 3h 45min 🏆 7 módulos Tu progreso: 0% → Entrar"':
+          - /url: analisis-diseno/seis-curso-integrador/index.html
+          - generic: Clase 6
+          - generic: 🧩
+          - heading "El Caso Completo" [level=3]
+          - paragraph: "De la idea al proyecto: un caso end-to-end aplicando las 5 clases. Proyecto grupal + checklist + tips de sustentación."
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 7 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 7 · Nuevo 🧪 Prototipado y Usabilidad Prototipos navegables, taller de papel, pruebas con usuarios (think aloud) y feria de exposición entre compañeros. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: analisis-diseno/siete-curso-prototipado-usabilidad/index.html
+          - generic: Clase 7 · Nuevo
+          - generic: 🧪
+          - heading "Prototipado y Usabilidad" [level=3]
+          - paragraph: Prototipos navegables, taller de papel, pruebas con usuarios (think aloud) y feria de exposición entre compañeros.
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+    - generic [ref=e63]:
+      - button "🗄️ Bases de Datos El intermediario invisible entre tus apps y tus datos. Diseño relacional, SQL, normalización y consultas que mueven el mundo digital. 0% 📚 EN CURSO 9 de 10 clases" [ref=e64] [cursor=pointer]:
+        - generic [ref=e65]:
+          - generic [ref=e66]: 🗄️
+          - generic [ref=e67]:
+            - heading "Bases de Datos" [level=2] [ref=e68]
+            - paragraph [ref=e69]: El intermediario invisible entre tus apps y tus datos. Diseño relacional, SQL, normalización y consultas que mueven el mundo digital.
+        - generic [ref=e70]:
+          - generic [ref=e71]: 0%
+          - generic [ref=e72]: 📚 EN CURSO
+          - generic [ref=e73]: 9 de 10 clases
+        - generic [aria-hidden] [ref=e74]: ▾
+      - generic:
+        - 'link "Clase 1 🗄️ Introducción a las Bases de Datos ¿Qué es una BD? · Antecedentes históricos (Hollerith → Codd → NoSQL → nube) · Necesidad de estructurar datos · Beneficios frente a sistemas manuales · Tipos de BD (relacional, NoSQL) · Villanos reales (perder contactos, pedido perdido, biblioteca caótica). ⏱️ 4h (con descanso) 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: bases-de-datos/uno-curso-introduccion-bd/index.html
+          - generic: Clase 1
+          - generic: 🗄️
+          - heading "Introducción a las Bases de Datos" [level=3]
+          - paragraph: ¿Qué es una BD? · Antecedentes históricos (Hollerith → Codd → NoSQL → nube) · Necesidad de estructurar datos · Beneficios frente a sistemas manuales · Tipos de BD (relacional, NoSQL) · Villanos reales (perder contactos, pedido perdido, biblioteca caótica).
+          - generic:
+            - generic: ⏱️ 4h (con descanso)
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 2 ⚖️ Archivos vs Bases de Datos Sistemas de archivos (CSV, JSON, Excel) vs SGBD · Las 6 diferencias clave · Ventajas y desventajas de cada enfoque · ¿Cuándo usar archivo y cuándo BD? · Villanos reales (3 CSV desincronizados, clínica con 5 Excel) · Cierre: diagnóstico de consultor. ⏱️ 4h (con descanso) 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: bases-de-datos/dos-curso-archivos-vs-bd/index.html
+          - generic: Clase 2
+          - generic: ⚖️
+          - heading "Archivos vs Bases de Datos" [level=3]
+          - paragraph: "Sistemas de archivos (CSV, JSON, Excel) vs SGBD · Las 6 diferencias clave · Ventajas y desventajas de cada enfoque · ¿Cuándo usar archivo y cuándo BD? · Villanos reales (3 CSV desincronizados, clínica con 5 Excel) · Cierre: diagnóstico de consultor."
+          - generic:
+            - generic: ⏱️ 4h (con descanso)
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 3 🔌 Conexión asíncrona con asyncpg + FastAPI Driver asíncrono asyncpg · Pool de conexiones (create_pool) · Dependencia get_db con yield · Lifespan (arrancar/apagar) · Endpoint con Depends · Buenas prácticas FastAPI (Annotated, APIRouter, response_model) · Villanos reales (event loop bloqueado, conexión por request, pool que nunca se cierra) · Cierre: diagnóstico de backend. ⏱️ 4h (con descanso) 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: bases-de-datos/tres-curso-asyncpg-fastapi/index.html
+          - generic: Clase 3
+          - generic: 🔌
+          - heading "Conexión asíncrona con asyncpg + FastAPI" [level=3]
+          - paragraph: "Driver asíncrono asyncpg · Pool de conexiones (create_pool) · Dependencia get_db con yield · Lifespan (arrancar/apagar) · Endpoint con Depends · Buenas prácticas FastAPI (Annotated, APIRouter, response_model) · Villanos reales (event loop bloqueado, conexión por request, pool que nunca se cierra) · Cierre: diagnóstico de backend."
+          - generic:
+            - generic: ⏱️ 4h (con descanso)
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 4 🔗 Modelo Entidad-Relación Introducción al modelo ER · Entidades, atributos, relaciones y cardinalidades (1:1, 1:N, M:N) · Claves primarias y foráneas · Transformación ER → relacional · Tipos de datos SQL · Diagramas ER con Mermaid · Taller: Biblioteca online. ⏱️ 4h (con descanso) 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: bases-de-datos/cuatro-curso-modelo-er/index.html
+          - generic: Clase 4
+          - generic: 🔗
+          - heading "Modelo Entidad-Relación" [level=3]
+          - paragraph: "Introducción al modelo ER · Entidades, atributos, relaciones y cardinalidades (1:1, 1:N, M:N) · Claves primarias y foráneas · Transformación ER → relacional · Tipos de datos SQL · Diagramas ER con Mermaid · Taller: Biblioteca online."
+          - generic:
+            - generic: ⏱️ 4h (con descanso)
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 5 · Nuevo 🧹 Normalización de Bases de Datos Anomalías de inserción, actualización y borrado · Primera, Segunda y Tercera Forma Normal (1FN, 2FN, 3FN) · Dependencias parciales y transitivas · Normalizador interactivo · Taller entregable: \"Tienda Gamer\". ⏱️ 4h (con descanso) 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: bases-de-datos/cinco-curso-normalizacion/index.html
+          - generic: Clase 5 · Nuevo
+          - generic: 🧹
+          - heading "Normalización de Bases de Datos" [level=3]
+          - paragraph: "Anomalías de inserción, actualización y borrado · Primera, Segunda y Tercera Forma Normal (1FN, 2FN, 3FN) · Dependencias parciales y transitivas · Normalizador interactivo · Taller entregable: \"Tienda Gamer\"."
+          - generic:
+            - generic: ⏱️ 4h (con descanso)
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 6 · Nuevo 🗣️ SQL Básico: DDL + DML ¿Qué es SQL? · Sub-lenguajes (DDL, DML, DCL, TCL) · Estructura general y sintaxis · CREATE/DROP/ALTER DATABASE · CREATE TABLE con PK, FK y restricciones · INSERT/SELECT/UPDATE/DELETE (CRUD) · Playground SQL en vivo · Taller entregable: \"Mascotitas\". ⏱️ 4h (con descanso) 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: bases-de-datos/seis-curso-sql-basico/index.html
+          - generic: Clase 6 · Nuevo
+          - generic: 🗣️
+          - 'heading "SQL Básico: DDL + DML" [level=3]'
+          - paragraph: "¿Qué es SQL? · Sub-lenguajes (DDL, DML, DCL, TCL) · Estructura general y sintaxis · CREATE/DROP/ALTER DATABASE · CREATE TABLE con PK, FK y restricciones · INSERT/SELECT/UPDATE/DELETE (CRUD) · Playground SQL en vivo · Taller entregable: \"Mascotitas\"."
+          - generic:
+            - generic: ⏱️ 4h (con descanso)
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 7 · Nuevo ✏️ Inserción, modificación y eliminación de datos INSERT a fondo (multi-fila, RETURNING, ON CONFLICT) · UPDATE con WHERE y expresiones · DELETE con filtros seguros, TRUNCATE y CASCADE · Transacciones BEGIN/COMMIT/ROLLBACK · Playground DML en vivo · Taller entregable: \"Mascotitas: inventario\". ⏱️ 4h (con descanso) 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: bases-de-datos/siete-curso-modificacion-datos/index.html
+          - generic: Clase 7 · Nuevo
+          - generic: ✏️
+          - heading "Inserción, modificación y eliminación de datos" [level=3]
+          - paragraph: "INSERT a fondo (multi-fila, RETURNING, ON CONFLICT) · UPDATE con WHERE y expresiones · DELETE con filtros seguros, TRUNCATE y CASCADE · Transacciones BEGIN/COMMIT/ROLLBACK · Playground DML en vivo · Taller entregable: \"Mascotitas: inventario\"."
+          - generic:
+            - generic: ⏱️ 4h (con descanso)
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 8 · Nuevo 🔍 Consultas básicas: SELECT, WHERE y ORDER BY SELECT a fondo (columnas, *, COUNT, DISTINCT) · WHERE con operadores de comparación (=, <>, >, <) · Operadores avanzados (LIKE, BETWEEN, IN, IS NULL) · Combinaciones AND / OR / NOT con precedencia · ORDER BY (ASC, DESC, multicolumna) y LIMIT · Playground de consultas en vivo · Taller entregable: \"Biblioteca online\". ⏱️ 4h (con descanso) 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: bases-de-datos/ocho-curso-consultas-basicas/index.html
+          - generic: Clase 8 · Nuevo
+          - generic: 🔍
+          - 'heading "Consultas básicas: SELECT, WHERE y ORDER BY" [level=3]'
+          - paragraph: "SELECT a fondo (columnas, *, COUNT, DISTINCT) · WHERE con operadores de comparación (=, <>, >, <) · Operadores avanzados (LIKE, BETWEEN, IN, IS NULL) · Combinaciones AND / OR / NOT con precedencia · ORDER BY (ASC, DESC, multicolumna) y LIMIT · Playground de consultas en vivo · Taller entregable: \"Biblioteca online\"."
+          - generic:
+            - generic: ⏱️ 4h (con descanso)
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 9 · Nuevo 🏆 Ejemplo final: Torneos deportivos del colegio Caso integrador que aplica todo lo del módulo: MER (entidades, PK/FK, diagrama Mermaid) · DDL (CREATE TABLE con CHECK, FK, NOT NULL) · DML (INSERT con datos de Medellín) · DQL (consultas con JOIN, WHERE, ORDER BY: próximos partidos, histórico, tabla de posiciones con CASE WHEN) · Playground con motor SQL que soporta JOINs · Taller entregable del proyecto completo. ⏱️ 4h (con descanso) 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: bases-de-datos/nueve-curso-ejemplo-final/index.html
+          - generic: Clase 9 · Nuevo
+          - generic: 🏆
+          - 'heading "Ejemplo final: Torneos deportivos del colegio" [level=3]'
+          - paragraph: "Caso integrador que aplica todo lo del módulo: MER (entidades, PK/FK, diagrama Mermaid) · DDL (CREATE TABLE con CHECK, FK, NOT NULL) · DML (INSERT con datos de Medellín) · DQL (consultas con JOIN, WHERE, ORDER BY: próximos partidos, histórico, tabla de posiciones con CASE WHEN) · Playground con motor SQL que soporta JOINs · Taller entregable del proyecto completo."
+          - generic:
+            - generic: ⏱️ 4h (con descanso)
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - generic:
+          - generic: Próximamente
+          - generic: 📅
+          - heading "Más clases por venir" [level=3]
+          - paragraph: "La clase restante de este módulo se publicará durante el año. Temas tentativos: JOINs avanzados, GROUP BY, HAVING y subconsultas."
+          - generic: Mantente atent@
+    - generic [ref=e75]:
+      - 'button "🛠️ Herramientas de Programación II Construye una app web completa: Python, FastAPI, bases de datos, validación, frontend interactivo… y publícala al mundo con Git y GitHub. 0% 📚 EN CURSO 22 clases disponibles" [ref=e76] [cursor=pointer]':
+        - generic [ref=e77]:
+          - generic [ref=e78]: 🛠️
+          - generic [ref=e79]:
+            - heading "Herramientas de Programación II" [level=2] [ref=e80]
+            - paragraph [ref=e81]: "Construye una app web completa: Python, FastAPI, bases de datos, validación, frontend interactivo… y publícala al mundo con Git y GitHub."
+        - generic [ref=e82]:
+          - generic [ref=e83]: 0%
+          - generic [ref=e84]: 📚 EN CURSO
+          - generic [ref=e85]: 22 clases disponibles
+        - generic [aria-hidden] [ref=e86]: ▾
+      - generic:
+        - 'link "Clase 1 🌐 Introducción al desarrollo web full stack Arquitectura cliente-servidor, el ciclo de una petición HTTP y la frontera entre frontend y backend. ⏱️ 4h 🏆 8 unidades Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/uno-curso-web-fullstack/index.html
+          - generic: Clase 1
+          - generic: 🌐
+          - heading "Introducción al desarrollo web full stack" [level=3]
+          - paragraph: Arquitectura cliente-servidor, el ciclo de una petición HTTP y la frontera entre frontend y backend.
+          - generic:
+            - generic: ⏱️ 4h
+            - generic: 🏆 8 unidades
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 2 🧩 HTMX 4.0 y formularios Fragmentos sin recarga, formularios con validación en el navegador y en el servidor, y errores en línea. ⏱️ 4h 🏆 8 unidades Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/dos-curso-htmx-formularios/index.html
+          - generic: Clase 2
+          - generic: 🧩
+          - heading "HTMX 4.0 y formularios" [level=3]
+          - paragraph: Fragmentos sin recarga, formularios con validación en el navegador y en el servidor, y errores en línea.
+          - generic:
+            - generic: ⏱️ 4h
+            - generic: 🏆 8 unidades
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 3 📐 CSS para diseño responsivo Media queries, clases propias y la rejilla de Bootstrap: una página que se lee en cualquier pantalla. ⏱️ 4h 🏆 8 unidades Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/tres-curso-css-responsivo/index.html
+          - generic: Clase 3
+          - generic: 📐
+          - heading "CSS para diseño responsivo" [level=3]
+          - paragraph: "Media queries, clases propias y la rejilla de Bootstrap: una página que se lee en cualquier pantalla."
+          - generic:
+            - generic: ⏱️ 4h
+            - generic: 🏆 8 unidades
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 4 🐍 Introducción al lenguaje backend (Python) Sintaxis, estructuras de control, variables y tipos de datos: las reglas del servidor escritas en Python. ⏱️ 4h 🏆 8 unidades Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/cuatro-curso-python-lenguaje/index.html
+          - generic: Clase 4
+          - generic: 🐍
+          - heading "Introducción al lenguaje backend (Python)" [level=3]
+          - paragraph: "Sintaxis, estructuras de control, variables y tipos de datos: las reglas del servidor escritas en Python."
+          - generic:
+            - generic: ⏱️ 4h
+            - generic: 🏆 8 unidades
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 5 🔁 Estructuras repetitivas for, while, contadores y acumuladores: el proceso automático que sustituye al trabajo manual. ⏱️ 4h 🏆 8 unidades Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/cinco-curso-estructuras-repetitivas/index.html
+          - generic: Clase 5
+          - generic: 🔁
+          - heading "Estructuras repetitivas" [level=3]
+          - paragraph: "for, while, contadores y acumuladores: el proceso automático que sustituye al trabajo manual."
+          - generic:
+            - generic: ⏱️ 4h
+            - generic: 🏆 8 unidades
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 6 🧩 Funciones y métodos def, paso de parámetros, retorno de valores y reutilización de código: escribir una vez, usar mil veces. ⏱️ 4h 🏆 8 unidades Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/seis-curso-funciones-metodos/index.html
+          - generic: Clase 6
+          - generic: 🧩
+          - heading "Funciones y métodos" [level=3]
+          - paragraph: "def, paso de parámetros, retorno de valores y reutilización de código: escribir una vez, usar mil veces."
+          - generic:
+            - generic: ⏱️ 4h
+            - generic: 🏆 8 unidades
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 6B · Nueva 🔷 Objetos en Python Clases, instancias, self, métodos, validación y el puente conceptual hacia Pydantic y los ORM. ⏱️ 4h 🏆 8 unidades Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/seis-b-curso-objetos-python/index.html
+          - generic: Clase 6B · Nueva
+          - generic: 🔷
+          - heading "Objetos en Python" [level=3]
+          - paragraph:
+            - text: Clases, instancias,
+            - code: self
+            - text: ", métodos, validación y el puente conceptual hacia Pydantic y los ORM."
+          - generic:
+            - generic: ⏱️ 4h
+            - generic: 🏆 8 unidades
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 7 · Nuevo 📬 Formularios y validación Captura, valida y responde datos de un formulario de contacto con HTML, FastAPI y Pydantic. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/siete-curso-formularios-validacion/index.html
+          - generic: Clase 7 · Nuevo
+          - generic: 📬
+          - heading "Formularios y validación" [level=3]
+          - paragraph: Captura, valida y responde datos de un formulario de contacto con HTML, FastAPI y Pydantic.
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 8 · Nuevo 🗄️ Conexión a bases de datos Configura PostgreSQL con asyncpg, valida la conexión y diagnostica los errores más comunes. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/ocho-curso-conexion-bd/index.html
+          - generic: Clase 8 · Nuevo
+          - generic: 🗄️
+          - heading "Conexión a bases de datos" [level=3]
+          - paragraph: Configura PostgreSQL con asyncpg, valida la conexión y diagnostica los errores más comunes.
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 9 · Nuevo 🔍 Consultas SELECT y visualización Consulta datos con sentencias SELECT: proyección, filtros, orden y agregados. Lleva el resultado JSON a una tabla en el navegador. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/nueve-curso-consultas-select/index.html
+          - generic: Clase 9 · Nuevo
+          - generic: 🔍
+          - heading "Consultas SELECT y visualización" [level=3]
+          - paragraph: "Consulta datos con sentencias SELECT: proyección, filtros, orden y agregados. Lleva el resultado JSON a una tabla en el navegador."
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 10 · Nuevo ✍️ Inserción de datos Valida antes de insertar, usa INSERT ... RETURNING y controla errores 422 y 409. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/diez-curso-insercion-datos/index.html
+          - generic: Clase 10 · Nuevo
+          - generic: ✍️
+          - heading "Inserción de datos" [level=3]
+          - paragraph: Valida antes de insertar, usa INSERT ... RETURNING y controla errores 422 y 409.
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 11 ✏️ Edición de registros La «U» del CRUD: cargar un registro en un formulario, validarlo sin perder lo escrito y actualizarlo con un UPDATE parametrizado. ⏱️ 4h 🏆 8 unidades Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/once-curso-edicion-registros/index.html
+          - generic: Clase 11
+          - generic: ✏️
+          - heading "Edición de registros" [level=3]
+          - paragraph: "La «U» del CRUD: cargar un registro en un formulario, validarlo sin perder lo escrito y actualizarlo con un UPDATE parametrizado."
+          - generic:
+            - generic: ⏱️ 4h
+            - generic: 🏆 8 unidades
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 12 · Nuevo ✏️ Edición con versión Carga el registro en el formulario, actualiza con UPDATE condicional y resuelve conflictos 409 sin pisar cambios. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/doce-curso-edicion-registros/index.html
+          - generic: Clase 12 · Nuevo
+          - generic: ✏️
+          - heading "Edición con versión" [level=3]
+          - paragraph: Carga el registro en el formulario, actualiza con UPDATE condicional y resuelve conflictos 409 sin pisar cambios.
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 13 · Nuevo 🗑️ Eliminación de registros Confirma antes de borrar, ejecuta DELETE parametrizado y controla 404, 409 y borrado lógico. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/trece-curso-eliminacion-registros/index.html
+          - generic: Clase 13 · Nuevo
+          - generic: 🗑️
+          - heading "Eliminación de registros" [level=3]
+          - paragraph: Confirma antes de borrar, ejecuta DELETE parametrizado y controla 404, 409 y borrado lógico.
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 14 · Nuevo 🔗 Interacción entre módulos El flujo de acciones del sistema: listar, editar, guardar y volver. Módulos, contratos, estados de una pieza y la cadena trazada de botón a pieza. ⏱️ 3h 45min 🏆 8 módulos Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/catorce-curso-interaccion-modulos/index.html
+          - generic: Clase 14 · Nuevo
+          - generic: 🔗
+          - heading "Interacción entre módulos" [level=3]
+          - paragraph: "El flujo de acciones del sistema: listar, editar, guardar y volver. Módulos, contratos, estados de una pieza y la cadena trazada de botón a pieza."
+          - generic:
+            - generic: ⏱️ 3h 45min
+            - generic: 🏆 8 módulos
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 15 🗂️ Estructuración del CRUD El CRUD completo, repartido en carpetas: un APIRouter por módulo, archivos con una responsabilidad y una app que solo los une. ⏱️ 4h 🏆 8 unidades Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/quince-curso-estructura-crud/index.html
+          - generic: Clase 15
+          - generic: 🗂️
+          - heading "Estructuración del CRUD" [level=3]
+          - paragraph: "El CRUD completo, repartido en carpetas: un APIRouter por módulo, archivos con una responsabilidad y una app que solo los une."
+          - generic:
+            - generic: ⏱️ 4h
+            - generic: 🏆 8 unidades
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 16 · Nuevo 🌿 Git moderno en el día a día Iniciar con main, staging, commits, ramas con switch, merge y las seis formas de deshacer con restore, revert y reflog. ⏱️ 4h 🏆 8 unidades Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/dieciseis-curso-git-moderno/index.html
+          - generic: Clase 16 · Nuevo
+          - generic: 🌿
+          - heading "Git moderno en el día a día" [level=3]
+          - paragraph:
+            - text: Iniciar con
+            - code: main
+            - text: ", staging, commits, ramas con"
+            - code: switch
+            - text: ", merge y las seis formas de deshacer con"
+            - code: restore
+            - text: ","
+            - code: revert
+            - text: "y"
+            - code: reflog
+            - text: .
+          - generic:
+            - generic: ⏱️ 4h
+            - generic: 🏆 8 unidades
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 17 · Nuevo 🐙 GitHub: publica tu código Remote y origin, push y pull, README y licencia, Pull Requests e issues, y tu perfil como portafolio. Requiere la clase 16. ⏱️ 4h 🏆 8 unidades Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/diecisiete-curso-github/index.html
+          - generic: Clase 17 · Nuevo
+          - generic: 🐙
+          - 'heading "GitHub: publica tu código" [level=3]'
+          - paragraph:
+            - text: Remote y
+            - code: origin
+            - text: ", push y pull, README y licencia, Pull Requests e issues, y tu perfil como portafolio. Requiere la clase 16."
+          - generic:
+            - generic: ⏱️ 4h
+            - generic: 🏆 8 unidades
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - generic:
+          - generic: 🧬
+          - generic:
+            - strong: Serie «Aprendiendo SQLModel»
+            - paragraph: "Cinco clases encadenadas: del modelo que define la tabla hasta las relaciones de muchos a muchos. Se leen en orden, porque cada una recoge lo que dejó la anterior."
+        - 'link "Clase 18 🧬 Aprendiendo SQLModel I El modelo que es la tabla SQLModel y FastAPI: el modelo que define la tabla, el motor, la sesión como unidad de trabajo y el CRUD completo contra una base de datos real. ⏱️ 4h 🏆 8 unidades Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/dieciocho-curso-orm-sqlmodel/index.html
+          - generic: Clase 18
+          - generic: 🧬
+          - heading "Aprendiendo SQLModel I" [level=3]
+          - paragraph: El modelo que es la tabla
+          - paragraph: "SQLModel y FastAPI: el modelo que define la tabla, el motor, la sesión como unidad de trabajo y el CRUD completo contra una base de datos real."
+          - generic:
+            - generic: ⏱️ 4h
+            - generic: 🏆 8 unidades
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 19 🔐 Aprendiendo SQLModel II El contrato de la API Un modelo, cuatro modelos: lo que entra, lo que sale y lo que no. El id lo pone la base de datos, los campos internos no se filtran y el PATCH cambia solo lo que se manda. ⏱️ 4h 🏆 8 unidades Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/diecinueve-curso-contrato-api/index.html
+          - generic: Clase 19
+          - generic: 🔐
+          - heading "Aprendiendo SQLModel II" [level=3]
+          - paragraph: El contrato de la API
+          - paragraph: "Un modelo, cuatro modelos: lo que entra, lo que sale y lo que no. El id lo pone la base de datos, los campos internos no se filtran y el PATCH cambia solo lo que se manda."
+          - generic:
+            - generic: ⏱️ 4h
+            - generic: 🏆 8 unidades
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 20 🔗 Aprendiendo SQLModel III Tablas conectadas: la clave foránea y el JOIN La clave foránea y el JOIN: dos tablas que se hablan, cuatro operaciones sobre el enlace y la regla de guardar al padre antes que al hijo. ⏱️ 4h 🏆 8 unidades Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/veinte-curso-tablas-conectadas/index.html
+          - generic: Clase 20
+          - generic: 🔗
+          - heading "Aprendiendo SQLModel III" [level=3]
+          - paragraph: "Tablas conectadas: la clave foránea y el JOIN"
+          - paragraph: "La clave foránea y el JOIN: dos tablas que se hablan, cuatro operaciones sobre el enlace y la regla de guardar al padre antes que al hijo."
+          - generic:
+            - generic: ⏱️ 4h
+            - generic: 🏆 8 unidades
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 21 🪞 Aprendiendo SQLModel IV Relaciones en el ORM Relationship y back_populates: la relación pasa a ser un atributo del modelo, el espejo se mueve solo y tú decides qué pasa al borrar al padre. ⏱️ 4h 🏆 8 unidades Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/veintiuno-curso-relaciones-orm/index.html
+          - generic: Clase 21
+          - generic: 🪞
+          - heading "Aprendiendo SQLModel IV" [level=3]
+          - paragraph: Relaciones en el ORM
+          - paragraph: "Relationship y back_populates: la relación pasa a ser un atributo del modelo, el espejo se mueve solo y tú decides qué pasa al borrar al padre."
+          - generic:
+            - generic: ⏱️ 4h
+            - generic: 🏆 8 unidades
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+        - 'link "Clase 22 🕸️ Aprendiendo SQLModel V Muchos a muchos: la tabla intermedia La tabla intermedia: cuando ninguno de los dos lados manda, la relación se convierte en una tabla con sus propios datos. ⏱️ 4h 🏆 8 unidades Tu progreso: 0% → Entrar"':
+          - /url: herramientas-prog-ii/veintidos-curso-muchos-a-muchos/index.html
+          - generic: Clase 22
+          - generic: 🕸️
+          - heading "Aprendiendo SQLModel V" [level=3]
+          - paragraph: "Muchos a muchos: la tabla intermedia"
+          - paragraph: "La tabla intermedia: cuando ninguno de los dos lados manda, la relación se convierte en una tabla con sus propios datos."
+          - generic:
+            - generic: ⏱️ 4h
+            - generic: 🏆 8 unidades
+          - generic:
+            - generic:
+              - text: "Tu progreso:"
+              - strong: 0%
+          - generic: → Entrar
+    - generic [ref=e87]:
+      - heading "🔮 Próximamente este año" [level=2] [ref=e88]
+      - paragraph [ref=e89]: Cursos en desarrollo que se sumarán al currículo.
+      - generic [ref=e91]:
+        - generic [ref=e92]: 🔜 EN DESARROLLO
+        - generic [ref=e93]: 🗄️
+        - heading "Bases de Datos Avanzadas" [level=3] [ref=e94]
+        - paragraph [ref=e95]: JOINs avanzados, GROUP BY, HAVING y subconsultas para dominar SQL.
+        - generic [ref=e96]:
+          - generic [ref=e97]: JOINs
+          - generic [ref=e98]: GROUP BY
+          - generic [ref=e99]: Subconsultas
+    - generic [ref=e100]:
+      - heading "💡 Cómo aprovechar al máximo el currículo" [level=2] [ref=e101]
+      - generic [ref=e102]:
+        - generic [ref=e103]:
+          - generic [ref=e104]: 🎯
+          - heading "Sigue el orden sugerido" [level=3] [ref=e105]
+          - paragraph [ref=e106]: Cada clase construye sobre la anterior. Hacer las cosas en orden te ayudará a entender mejor.
+        - generic [ref=e107]:
+          - generic [ref=e108]: ✋
+          - heading "Practica los talleres" [level=3] [ref=e109]
+          - paragraph [ref=e110]: "No solo leas. Todos los cursos tienen actividades interactivas. Hazlas: ahí está el aprendizaje real."
+        - generic [ref=e111]:
+          - generic [ref=e112]: 🔁
+          - heading "Vuelve cuando dudes" [level=3] [ref=e113]
+          - paragraph [ref=e114]: Tu progreso se guarda en este navegador. Puedes volver cuando quieras a repasar.
+        - generic [ref=e115]:
+          - generic [ref=e116]: 💬
+          - heading "Pregúntale a tu profe" [level=3] [ref=e117]
+          - paragraph [ref=e118]: Si algo no queda claro, pregunta. Los profesores estamos aquí para guiarte.
+  - contentinfo [ref=e119]:
+    - generic [ref=e120]:
+      - generic [ref=e121]:
+        - heading "🎓 Sobre este currículo" [level=4] [ref=e122]
+        - paragraph [ref=e123]: Material didáctico interactivo para estudiantes de grado once, diseñado para combinar teoría y práctica.
+      - generic [ref=e124]:
+        - heading "📚 Asignaturas" [level=4] [ref=e125]
+        - list [ref=e126]:
+          - listitem [ref=e127]: Tecnología e Informática
+          - listitem [ref=e128]: Programación
+          - listitem [ref=e129]: Pensamiento computacional
+      - generic [ref=e130]:
+        - heading "⚙️ Tecnología" [level=4] [ref=e131]
+        - paragraph [ref=e132]: HTML + CSS + JavaScriptSin servidor · 100% localFunciona en cualquier navegador
+    - paragraph [ref=e134]: © 2026 · Currículo de Tecnología e Informática · Grado Once
